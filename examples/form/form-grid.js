@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
@@ -50,12 +48,20 @@ Ext.onReady(function(){
 
     var ds = new Ext.data.Store({
         reader: new Ext.data.ArrayReader({}, [
-               {name: 'company'},
-               {name: 'price', type: 'float'},
-               {name: 'change', type: 'float'},
-               {name: 'pctChange', type: 'float'},
-               {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-          ])
+            {name: 'company'},
+            {name: 'price', type: 'float'},
+            {name: 'change', type: 'float'},
+            {name: 'pctChange', type: 'float'},
+            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'},
+
+//          Rating dependent upon performance 0 = best, 2 = worst
+            {name: 'rating', type: 'int', convert: function(v, rec) {
+                   if (rec[3] < 0) return 2;
+                   if (rec[3] < 1) return 1;
+                   return 0;
+               }
+            }
+        ])
     });
     ds.loadData(myData);
 
@@ -82,21 +88,29 @@ Ext.onReady(function(){
         }
         return val;
     }
+    
+    // render rating as "A", "B" or "C" depending upon numeric value.
+    function rating(v) {
+        if (v == 0) return "A"
+        if (v == 1) return "B"
+        if (v == 2) return "C"
+    }
 
     // the DefaultColumnModel expects this blob to define columns. It can be extended to provide
     // custom or reusable ColumnModels
     var colModel = new Ext.grid.ColumnModel([
         {id:'company',header: "Company", width: 160, sortable: true, locked:false, dataIndex: 'company'},
-        {header: "Price", width: 75, sortable: true, renderer: Ext.util.Format.usMoney, dataIndex: 'price'},
-        {header: "Change", width: 75, sortable: true, renderer: change, dataIndex: 'change'},
-        {header: "% Change", width: 75, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-        {header: "Last Updated", width: 85, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
+        {header: "Price", width: 55, sortable: true, renderer: Ext.util.Format.usMoney, dataIndex: 'price'},
+        {header: "Change", width: 55, sortable: true, renderer: change, dataIndex: 'change'},
+        {header: "% Change", width: 65, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
+        {header: "Last Updated", width: 80, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'},
+        {header: "Rating", width: 40, sortable: true, renderer: rating, dataIndex: 'rating'}
     ]);
 
     bd.createChild({tag: 'h2', html: 'Using a Grid with a Form'});
 
 /*
- *	Here is where we create the Form
+ *    Here is where we create the Form
  */
     var gridForm = new Ext.FormPanel({
         id: 'company-form',
@@ -105,39 +119,39 @@ Ext.onReady(function(){
         title: 'Company data',
         bodyStyle:'padding:5px',
         width: 750,
-        layout: 'column',	// Specifies that the items will now be arranged in columns
+        layout: 'column',    // Specifies that the items will now be arranged in columns
         items: [{
-            columnWidth: 0.6,
+            columnWidth: 0.60,
             layout: 'fit',
             items: {
-	            xtype: 'grid',
-	            ds: ds,
-	            cm: colModel,
-	            sm: new Ext.grid.RowSelectionModel({
-	                singleSelect: true,
-	                listeners: {
-	                    rowselect: function(sm, row, rec) {
-	                        Ext.getCmp("company-form").getForm().loadRecord(rec);
-	                    }
-	                }
-	            }),
-	            autoExpandColumn: 'company',
-	            height: 350,
-	            title:'Company Data',
-	            border: true,
-		        listeners: {
-		        	render: function(g) {
-		        		g.getSelectionModel().selectRow(0);
-		        	},
-		        	delay: 10 // Allow rows to be rendered.
-		        }
-        	}
+                xtype: 'grid',
+                ds: ds,
+                cm: colModel,
+                sm: new Ext.grid.RowSelectionModel({
+                    singleSelect: true,
+                    listeners: {
+                        rowselect: function(sm, row, rec) {
+                            Ext.getCmp("company-form").getForm().loadRecord(rec);
+                        }
+                    }
+                }),
+                autoExpandColumn: 'company',
+                height: 350,
+                title:'Company Data',
+                border: true,
+                listeners: {
+                    render: function(g) {
+                        g.getSelectionModel().selectRow(0);
+                    },
+                    delay: 10 // Allow rows to be rendered.
+                }
+            }
         },{
-        	columnWidth: 0.4,
+            columnWidth: 0.4,
             xtype: 'fieldset',
             labelWidth: 90,
             title:'Company details',
-            defaults: {width: 140},	// Default config options for child items
+            defaults: {width: 140, border:false},    // Default config options for child items
             defaultType: 'textfield',
             autoHeight: true,
             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
@@ -159,6 +173,51 @@ Ext.onReady(function(){
                 xtype: 'datefield',
                 fieldLabel: 'Last Updated',
                 name: 'lastChange'
+            }, {
+                xtype: 'panel',
+                layout: 'table',
+                layoutConfig: {
+                    columns: 4
+                },
+                anchor: '100%',
+                defaults: {
+                    border: false,
+                    layout: 'form',
+                    labelWidth: 15,
+                    style: {
+                        paddingRight: '10px'
+                    }
+                },
+
+// A radio group: A setValue on any of the following 'radio' inputs using the numeric
+// 'rating' field checks the radio instance which has the matching inputValue.
+                items: [{
+                    cellCls: 'x-form-item',
+                    xtype: 'label',
+                    text: 'Rating',
+                       width: 98
+                }, {
+                    items: {    
+                        xtype: 'radio',
+                        name: 'rating',
+                        inputValue: '0',
+                        fieldLabel: 'A'
+                    }
+                }, {
+                    items: {
+                        xtype: 'radio',
+                        name: 'rating',
+                        inputValue: '1',
+                        fieldLabel: 'B'
+                    }
+                }, {
+                    items: {
+                        xtype: 'radio',
+                        name: 'rating',
+                        inputValue: '2',
+                        fieldLabel: 'C'
+                    }
+                }]
             }]
         }],
         renderTo: bd

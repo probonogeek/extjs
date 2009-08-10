@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 MainPanel = function(){
     this.preview = new Ext.Panel({
         id: 'preview',
@@ -159,9 +157,7 @@ Ext.extend(MainPanel, Ext.TabPanel, {
 
     movePreview : function(m, pressed){
         if(!m){ // cycle if not a menu item click
-            var readMenu = Ext.menu.MenuMgr.get('reading-menu');
-            readMenu.render();
-            var items = readMenu.items.items;
+            var items = Ext.menu.MenuMgr.get('reading-menu').items.items;
             var b = items[0], r = items[1], h = items[2];
             if(b.checked){
                 r.setChecked(true);
@@ -237,3 +233,5 @@ Ext.extend(MainPanel, Ext.TabPanel, {
         this.endUpdate();
     }
 });
+
+Ext.reg('appmainpanel', MainPanel);

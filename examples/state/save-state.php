@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if(!isset($_SESSION['state'])){
     $_SESSION['state'] = array(
@@ -14,4 +14,3 @@ foreach($_COOKIE as $name=>$value){
         setCookie($name, '', time()-10000, '/');
     }
 }
-?>

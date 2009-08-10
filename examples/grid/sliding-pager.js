@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
 
     var myData = [
@@ -62,7 +60,7 @@ Ext.onReady(function(){
 
     // create the data store
     var store = new Ext.data.Store({
-        proxy: new Ext.data.PagingMemoryProxy(myData),
+        proxy: new Ext.ux.data.PagingMemoryProxy(myData),
         remoteSort:true,
         sortInfo: {field:'price', direction:'ASC'},
         reader: new Ext.data.ArrayReader({
@@ -96,7 +94,7 @@ Ext.onReady(function(){
         plugins: new Ext.ux.PanelResizer({
             minHeight: 100
         }),
-        
+
         bbar: new Ext.PagingToolbar({
             pageSize: 10,
             store: store,

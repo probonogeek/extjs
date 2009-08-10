@@ -1,6 +1,12 @@
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
 /*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+ * Ext JS Library 2.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -40,12 +46,6 @@ Ext.ux.ValidationStatus = Ext.extend(Ext.Component, {
             if(this.form){
                 this.form = Ext.getCmp(this.form).getForm();
                 this.startMonitoring();
-                
-                // Have to give the status bar time to render since it happens in afterRender
-                (function(){
-                    sb.statusEl.on('click', this.onStatusClick, this, {buffer:200});
-                }).defer(200, this);
-                
                 this.form.on('beforeaction', function(f, action){
                     if(action.type == 'submit'){
                         // Ignore monitoring while submitting otherwise the field validation
@@ -60,6 +60,10 @@ Ext.ux.ValidationStatus = Ext.extend(Ext.Component, {
                 this.form.on('actionfailed', startMonitor, this);
             }
         }, this, {single:true});
+        sb.on('afterlayout', function(){
+            // Grab the statusEl after the first layout.
+            sb.statusEl.getEl().on('click', this.onStatusClick, this, {buffer:200});
+        }, this, {single: true});
     },
     
     // private

@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
@@ -13,7 +11,7 @@ Ext.onReady(function(){
     var xg = Ext.grid;
 
     var reader = new Ext.data.JsonReader({
-        idProperty:'taskId',
+        idProperty: 'taskId',
         fields: [
             {name: 'projectId', type: 'int'},
             {name: 'project', type: 'string'},
@@ -28,24 +26,25 @@ Ext.onReady(function(){
     });
 
     // define a custom summary function
-    Ext.grid.GroupSummary.Calculations['totalCost'] = function(v, record, field){
+    Ext.ux.grid.GroupSummary.Calculations['totalCost'] = function(v, record, field){
         return v + (record.data.estimate * record.data.rate);
-    }
+    };
 
-    var summary = new Ext.grid.GroupSummary(); 
+	// utilize custom extension for Group Summary
+    var summary = new Ext.ux.grid.GroupSummary();
 
     var grid = new xg.EditorGridPanel({
         ds: new Ext.data.GroupingStore({
             reader: reader,
-            data: xg.dummyData,
-            sortInfo:{field: 'due', direction: "ASC"},
-            groupField:'project'
+			// use local data
+            data: app.grid.dummyData,
+            sortInfo: {field: 'due', direction: 'ASC'},
+            groupField: 'project'
         }),
-
         columns: [
             {
                 id: 'description',
-                header: "Task",
+                header: 'Task',
                 width: 80,
                 sortable: true,
                 dataIndex: 'description',
@@ -58,26 +57,26 @@ Ext.onReady(function(){
                    allowBlank: false
                 })
             },{
-                header: "Project",
+                header: 'Project',
                 width: 20,
                 sortable: true,
                 dataIndex: 'project'
             },{
-                header: "Due Date",
+                header: 'Due Date',
                 width: 25,
                 sortable: true,
                 dataIndex: 'due',
-                summaryType:'max',
+                summaryType: 'max',
                 renderer: Ext.util.Format.dateRenderer('m/d/Y'),
                 editor: new Ext.form.DateField({
                     format: 'm/d/Y'
                 })
             },{
-                header: "Estimate",
+                header: 'Estimate',
                 width: 20,
                 sortable: true,
                 dataIndex: 'estimate',
-                summaryType:'sum',
+                summaryType: 'sum',
                 renderer : function(v){
                     return v +' hours';
                 },
@@ -87,12 +86,12 @@ Ext.onReady(function(){
                    style: 'text-align:left'
                 })
             },{
-                header: "Rate",
+                header: 'Rate',
                 width: 20,
                 sortable: true,
                 renderer: Ext.util.Format.usMoney,
                 dataIndex: 'rate',
-                summaryType:'average',
+                summaryType: 'average',
                 editor: new Ext.form.NumberField({
                     allowBlank: false,
                     allowNegative: false,
@@ -100,7 +99,7 @@ Ext.onReady(function(){
                 })
             },{
                 id: 'cost',
-                header: "Cost",
+                header: 'Cost',
                 width: 20,
                 sortable: false,
                 groupable: false,
@@ -108,21 +107,28 @@ Ext.onReady(function(){
                     return Ext.util.Format.usMoney(record.data.estimate * record.data.rate);
                 },
                 dataIndex: 'cost',
-                summaryType:'totalCost',
+                summaryType: 'totalCost',
                 summaryRenderer: Ext.util.Format.usMoney
             }
         ],
 
         view: new Ext.grid.GroupingView({
-            forceFit:true,
+            forceFit: true,
             showGroupName: false,
-            enableNoGroups:false, // REQUIRED!
+            enableNoGroups: false,
+			enableGroupingMenu: false,
             hideGroupedColumn: true
         }),
 
         plugins: summary,
 
-        frame:true,
+        tbar : [{
+            text: 'Toggle',
+            tooltip: 'Toggle the visibility of summary row',
+            handler: function(){summary.toggleSummaries();}
+        }],
+
+        frame: true,
         width: 800,
         height: 450,
         clicksToEdit: 1,
@@ -134,15 +140,13 @@ Ext.onReady(function(){
         iconCls: 'icon-grid',
         renderTo: document.body
     });
+
 });
 
-Ext.grid.dummyProjects = [
-    {projectId: 100, project: 'Ext Forms: Field Anchoring'},
-    {projectId: 101, project: 'Ext Grid: Single-level Grouping'},
-    {projectId: 102, project: 'Ext Grid: Summary Rows'}
-];
-
-Ext.grid.dummyData = [
+// set up namespace for application
+Ext.ns('app.grid');
+// store dummy data in the app namespace
+app.grid.dummyData = [
     {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 112, description: 'Integrate 2.0 Forms with 2.0 Layouts', estimate: 6, rate: 150, due:'06/24/2007'},
     {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 113, description: 'Implement AnchorLayout', estimate: 4, rate: 150, due:'06/25/2007'},
     {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 114, description: 'Add support for multiple types of anchors', estimate: 4, rate: 150, due:'06/27/2007'},

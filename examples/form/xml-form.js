@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
@@ -62,7 +60,7 @@ Ext.onReady(function(){
                     new Ext.form.ComboBox({
                         fieldLabel: 'State',
                         hiddenName:'state',
-                        store: new Ext.data.SimpleStore({
+                        store: new Ext.data.ArrayStore({
                             fields: ['abbr', 'state'],
                             data : Ext.exampledata.states // from states.js
                         }),

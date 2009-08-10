@@ -1,3 +1,9 @@
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
 .body-wrap {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	color: #222;
@@ -44,7 +50,7 @@
     border-right:1px solid #d0d0d0;
 	border-top:1px solid #eee;
 	border-left:1px solid #eee;
-    background: #f9f9f9 url(../../resources/images/default/grid/grid3-hrow.gif) repeat-x 0 top;
+    background: #f9f9f9 url(../resources/images/default/grid/grid3-hrow.gif) repeat-x 0 top;
 	padding:3px;
 }
 .body-wrap .msource-header {

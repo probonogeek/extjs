@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.BLANK_IMAGE_URL = '../../resources/images/default/s.gif';
 
 Ext.example = function(){
@@ -30,6 +28,7 @@ Ext.example = function(){
         },
 
         init : function(){
+            /*
             var t = Ext.get('exttheme');
             if(!t){ // run locally?
                 return;
@@ -44,7 +43,7 @@ Ext.example = function(){
                 setTimeout(function(){
                     window.location.reload();
                 }, 250);
-            });
+            });*/
 
             var lb = Ext.get('lib-bar');
             if(lb){

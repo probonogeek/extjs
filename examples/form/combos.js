@@ -1,16 +1,14 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
     Ext.QuickTips.init();
 
     // simple array store
-    var store = new Ext.data.SimpleStore({
+    var store = new Ext.data.ArrayStore({
         fields: ['abbr', 'state', 'nick'],
         data : Ext.exampledata.states // from states.js
     });
@@ -32,15 +30,15 @@ Ext.onReady(function(){
     //to be the value, while the value at index 1 is assumed to be the text.  For example,
     //[['AL', 'Alabama'],['AK', 'Alaska'], etc.]. Any other values beyond index 1 within
     //each item will be ignored using this approach.
-	var comboFromArray = new Ext.form.ComboBox({
-	    store: Ext.exampledata.states,
-	    typeAhead: true,
+    var comboFromArray = new Ext.form.ComboBox({
+        store: Ext.exampledata.states,
+        typeAhead: true,
         forceSelection: true,
-	    triggerAction: 'all',
-	    emptyText:'Select a state...',
-	    selectOnFocus:true,
-	    applyTo: 'array-states'
-	});
+        triggerAction: 'all',
+        emptyText:'Select a state...',
+        selectOnFocus:true,
+        applyTo: 'array-states'
+    });
 
     var comboWithTooltip = new Ext.form.ComboBox({
         tpl: '<tpl for="."><div ext:qtip="{state}. {nick}" class="x-combo-list-item">{state}</div></tpl>',

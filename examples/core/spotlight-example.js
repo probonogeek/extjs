@@ -1,18 +1,16 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
-    
-    var spot = new Ext.Spotlight({
+
+    var spot = new Ext.ux.Spotlight({
         easing: 'easeOut',
         duration: .3
     });
-    
+
     var DemoPanel = Ext.extend(Ext.Panel, {
         title: 'Demo Panel',
         frame: true,
@@ -20,12 +18,12 @@ Ext.onReady(function(){
         height: 150,
         html: 'Some panel content goes here!',
         bodyStyle: 'padding:10px 15px;',
-        
+
         toggle: function(on){
             this.buttons[0].setDisabled(!on);
         }
     });
-    
+
     var p1, p2, p3;
     var updateSpot = function(id){
         if(typeof id == 'string'){
@@ -37,7 +35,7 @@ Ext.onReady(function(){
         p2.toggle(id==p2.id);
         p3.toggle(id==p3.id);
     };
-    
+
     new Ext.Panel({
         renderTo: Ext.getBody(),
         layout: 'table',
@@ -68,12 +66,12 @@ Ext.onReady(function(){
             }]
         })]
     });
-    
+
     new Ext.Button({
         text: 'Start',
         renderTo: 'start-ct',
         handler: updateSpot.createDelegate(this, ['panel1'])
     });
-    
+
     updateSpot(false);
 });

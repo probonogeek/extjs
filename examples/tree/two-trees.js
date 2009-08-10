@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 var TreeTest = function(){
     // shorthand
     var Tree = Ext.tree;
@@ -14,12 +12,12 @@ var TreeTest = function(){
         init : function(){
             // yui-ext tree
             var tree = new Tree.TreePanel({
-                el:'tree',
                 animate:true, 
                 autoScroll:true,
                 loader: new Tree.TreeLoader({dataUrl:'get-nodes.php'}),
                 enableDD:true,
                 containerScroll: true,
+                border: false,
                 dropConfig: {appendOnly:true}
             });
             
@@ -30,12 +28,12 @@ var TreeTest = function(){
             var root = new Tree.AsyncTreeNode({
                 text: 'Ext JS', 
                 draggable:false, // disable root node dragging
-                id:'source'
+                id:'src'
             });
             tree.setRootNode(root);
             
             // render the tree
-            tree.render();
+            tree.render('tree');
             
             root.expand(false, /*no anim*/ false);
             
@@ -43,7 +41,6 @@ var TreeTest = function(){
             
             // YUI tree            
             var tree2 = new Tree.TreePanel({
-                el:'tree2',
                 animate:true,
                 autoScroll:true,
                 //rootVisible: false,
@@ -52,6 +49,7 @@ var TreeTest = function(){
                     baseParams: {lib:'yui'} // custom http params
                 }),
                 containerScroll: true,
+                border: false,
                 enableDD:true,
                 dropConfig: {appendOnly:true}
             });
@@ -66,7 +64,7 @@ var TreeTest = function(){
                 id:'yui'
             });
             tree2.setRootNode(root2);
-            tree2.render();
+            tree2.render('tree2');
             
             root2.expand(false, /*no anim*/ false);
         }

@@ -1,19 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
-/*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
- 
 var ImageChooser = function(config){
 	this.config = config;
 }
@@ -21,11 +11,11 @@ var ImageChooser = function(config){
 ImageChooser.prototype = {
     // cache data by image name for easy lookup
     lookup : {},
-    
+
 	show : function(el, callback){
 		if(!this.win){
 			this.initTemplates();
-			
+
 			this.store = new Ext.data.JsonStore({
 			    url: this.config.url,
 			    root: 'images',
@@ -39,7 +29,7 @@ ImageChooser.prototype = {
 			    }
 			});
 			this.store.load();
-			
+
 			var formatSize = function(data){
 		        if(data.size < 1024) {
 		            return data.size + " bytes";
@@ -47,7 +37,7 @@ ImageChooser.prototype = {
 		            return (Math.round(((data.size*10) / 1024))/10) + " KB";
 		        }
 		    };
-			
+
 			var formatData = function(data){
 		    	data.shortName = data.name.ellipse(15);
 		    	data.sizeString = formatSize(data);
@@ -55,7 +45,7 @@ ImageChooser.prototype = {
 		    	this.lookup[data.name] = data;
 		    	return data;
 		    };
-			
+
 		    this.view = new Ext.DataView({
 				tpl: this.thumbTemplate,
 				singleSelect: true,
@@ -73,7 +63,7 @@ ImageChooser.prototype = {
 				},
 				prepareData: formatData.createDelegate(this)
 			});
-		    
+
 			var cfg = {
 		    	title: 'Choose an Image',
 		    	id: 'img-chooser-dlg',
@@ -116,7 +106,7 @@ ImageChooser.prototype = {
 				        valueField: 'name',
 				        lazyInit: false,
 				        value: 'name',
-				        store: new Ext.data.SimpleStore({
+				        store: new Ext.data.ArrayStore({
 					        fields: ['name', 'desc'],
 					        data : [['name', 'Name'],['size', 'File Size'],['lastmod', 'Last Modified']]
 					    }),
@@ -151,13 +141,13 @@ ImageChooser.prototype = {
 			Ext.apply(cfg, this.config);
 		    this.win = new Ext.Window(cfg);
 		}
-		
+
 		this.reset();
 	    this.win.show(el);
 		this.callback = callback;
 		this.animateTarget = el;
 	},
-	
+
 	initTemplates : function(){
 		this.thumbTemplate = new Ext.XTemplate(
 			'<tpl for=".">',
@@ -167,7 +157,7 @@ ImageChooser.prototype = {
 			'</tpl>'
 		);
 		this.thumbTemplate.compile();
-		
+
 		this.detailsTemplate = new Ext.XTemplate(
 			'<div class="details">',
 				'<tpl for=".">',
@@ -183,7 +173,7 @@ ImageChooser.prototype = {
 		);
 		this.detailsTemplate.compile();
 	},
-	
+
 	showDetails : function(){
 	    var selNode = this.view.getSelectedNodes();
 	    var detailEl = Ext.getCmp('img-detail-panel').body;
@@ -199,19 +189,19 @@ ImageChooser.prototype = {
 		    detailEl.update('');
 		}
 	},
-	
+
 	filter : function(){
 		var filter = Ext.getCmp('filter');
 		this.view.store.filter('name', filter.getValue());
 		this.view.select(0);
 	},
-	
+
 	sortImages : function(){
 		var v = Ext.getCmp('sortSelect').getValue();
     	this.view.store.sort(v, v == 'name' ? 'asc' : 'desc');
     	this.view.select(0);
     },
-	
+
 	reset : function(){
 		if(this.win.rendered){
 			Ext.getCmp('filter').reset();
@@ -220,7 +210,7 @@ ImageChooser.prototype = {
 	    this.view.store.clearFilter();
 		this.view.select(0);
 	},
-	
+
 	doCallback : function(){
         var selNode = this.view.getSelectedNodes()[0];
 		var callback = this.callback;
@@ -232,9 +222,9 @@ ImageChooser.prototype = {
 			}
 		});
     },
-	
+
 	onLoadException : function(v,o){
-	    this.view.getEl().update('<div style="padding:10px;">Error loading images.</div>'); 
+	    this.view.getEl().update('<div style="padding:10px;">Error loading images.</div>');
 	}
 };
 

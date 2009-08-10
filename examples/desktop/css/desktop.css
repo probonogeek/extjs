@@ -1,19 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
-
-/*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
- * licensing@extjs.com
- * 
  * http://www.extjs.com/license
  */
-
 html, body {
 	background:#3d71b8 url(../wallpapers/desktop.jpg) no-repeat left top;
     font: normal 12px tahoma, arial, verdana, sans-serif;
@@ -73,15 +63,11 @@ html, body {
 }
 
 #ux-taskbar .x-btn {
-	float: left;
 	margin: 1px 0 0 1px;
-    position:relative;
 }
 
 #ux-taskbar-start .x-btn {
-	float: left;
 	margin: 0;
-    position:relative;
 }
 
 #ux-taskbar button {
@@ -178,7 +164,7 @@ html, body {
 	white-space:nowrap;
 }
 
-#ux-taskbar .ux-taskbutton-left{ 
+#ux-taskbar .ux-taskbutton-left{
 	background-position:0 0;
 }
 #ux-taskbar .ux-taskbutton-right{
@@ -409,7 +395,7 @@ html, body {
 	/* overflow:hidden;
 	position:relative;
 	width:100%; */
-	
+
 	width:100%;
     overflow:hidden;
     position:relative;
@@ -524,7 +510,7 @@ td.ux-taskButtons-edge {
 }
 
 .ux-start-menu-tools-panel ul.x-menu-list li.x-menu-list-item .x-menu-item-active a.x-menu-item {
-	color:#000000;	
+	color:#000000;
 }
 
 .ux-start-menu-tools-panel .x-menu-item-active {
@@ -575,7 +561,7 @@ td.ux-taskButtons-edge {
 	white-space:nowrap;
 }
 
-#ux-taskbar .ux-startbutton-left{ 
+#ux-taskbar .ux-startbutton-left{
 	background-position:0 0;
 }
 #ux-taskbar .ux-startbutton-right{

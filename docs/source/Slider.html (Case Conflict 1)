@@ -1,0 +1,68 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">Ext.onReady(function(){
+
+    new Ext.Slider({
+        renderTo: 'basic-slider',
+        width: 214,
+        minValue: 0,
+        maxValue: 100
+    });
+
+    new Ext.Slider({
+        renderTo: 'increment-slider',
+        width: 214,
+        value:50,
+        increment: 10,
+        minValue: 0,
+        maxValue: 100
+    });
+
+    new Ext.Slider({
+        renderTo: 'vertical-slider',
+        height: 214,
+        vertical: true,
+        minValue: 0,
+        maxValue: 100
+    });
+
+    new Ext.Slider({
+        renderTo: 'tip-slider',
+        width: 214,
+        minValue: 0,
+        maxValue: 100,
+        plugins: new Ext.ux.SliderTip()
+    });
+
+    var tip = new Ext.ux.SliderTip({
+        getText: function(slider){
+            return String.format('<b>{0}% complete</b>', slider.getValue());
+        }
+    });
+
+    new Ext.Slider({
+        renderTo: 'custom-tip-slider',
+        width: 214,
+        increment: 10,
+        minValue: 0,
+        maxValue: 100,
+        plugins: tip
+    });
+
+    new Ext.Slider({
+        renderTo: 'custom-slider',
+        width: 214,
+        increment: 10,
+        minValue: 0,
+        maxValue: 100,
+        plugins: new Ext.ux.SliderTip()
+    });
+});
+</pre>    
+</body>
+</html>

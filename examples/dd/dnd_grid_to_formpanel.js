@@ -1,21 +1,11 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
-/*
- * Ext JS Library 2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
-
 Ext.onReady(function(){
-  
+
     var myData = {
 		records : [
 			{ name : "Record 0", column1 : "0", column2 : "0" },
@@ -38,14 +28,14 @@ Ext.onReady(function(){
 	   {name: 'column1', mapping : 'column1'},
 	   {name: 'column2', mapping : 'column2'}
 	];
-	
+
     // create the data store
     var gridStore = new Ext.data.JsonStore({
         fields : fields,
 		data   : myData,
 		root   : 'records'
     });
-	
+
 
 	// Column Model shortcut array
 	var cols = [
@@ -53,7 +43,7 @@ Ext.onReady(function(){
 		{header: "column1", width: 50, sortable: true, dataIndex: 'column1'},
 		{header: "column2", width: 50, sortable: true, dataIndex: 'column2'}
 	];
-    
+
 	// declare the source Grid
     var grid = new Ext.grid.GridPanel({
 		ddGroup          : 'gridDDGroup',
@@ -68,29 +58,29 @@ Ext.onReady(function(){
 		selModel         : new Ext.grid.RowSelectionModel({singleSelect : true})
     });
 
-	
-	
+
+
 	// Declare the text fields.  This could have been done inline, is easier to read
 	// for folks learning :)
 	var textField1 = new Ext.form.TextField({
 		fieldLabel : 'Record Name',
 		name       : 'name'
 	});
-	
-	
+
+
 	var textField2 = new Ext.form.TextField({
 		fieldLabel : 'Column 1',
 		name       : 'column1'
 	});
-	
-	
+
+
 	var textField3 = new Ext.form.TextField({
 		fieldLabel : 'Column 2',
 		name       : 'column2'
-	});	
-	
-	
-	// Setup the form panel 
+	});
+
+
+	// Setup the form panel
 	var formPanel = new Ext.form.FormPanel({
 		region     : 'center',
 		title      : 'Generic Form Panel',
@@ -105,7 +95,7 @@ Ext.onReady(function(){
 	});
 
 
-	
+
 	//Simple 'border layout' panel to house both grids
 	var displayPanel = new Ext.Panel({
 		width    : 650,
@@ -128,7 +118,7 @@ Ext.onReady(function(){
 			}
 		]
 	});
-	
+
 
 	// used to add records to the destination stores
 	var blankRecord =  Ext.data.Record.create(fields);
@@ -136,34 +126,34 @@ Ext.onReady(function(){
 	/****
 	* Setup Drop Targets
 	***/
-	
+
 	// This will make sure we only drop to the view container
 	var formPanelDropTargetEl =  formPanel.body.dom;
-	
+
 	var formPanelDropTarget = new Ext.dd.DropTarget(formPanelDropTargetEl, {
 		ddGroup     : 'gridDDGroup',
 		notifyEnter : function(ddSource, e, data) {
-			
+
 			//Add some flare to invite drop.
 			formPanel.body.stopFx();
 			formPanel.body.highlight();
 		},
 		notifyDrop  : function(ddSource, e, data){
-			
+
 			// Reference the record (single selection) for readability
-			var selectedRecord = ddSource.dragData.selections[0];						
-			
-			
+			var selectedRecord = ddSource.dragData.selections[0];
+
+
 			// Load the record into the form
-			formPanel.getForm().loadRecord(selectedRecord);	
-			
-			
+			formPanel.getForm().loadRecord(selectedRecord);
+
+
 			// Delete record from the grid.  not really required.
-			ddSource.grid.store.remove(selectedRecord);	
+			ddSource.grid.store.remove(selectedRecord);
 
 			return(true);
 		}
-	}); 	
-	
+	});
+
 
 });

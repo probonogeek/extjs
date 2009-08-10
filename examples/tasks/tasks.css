@@ -1,19 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
-
-/*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
- * licensing@extjs.com
- * 
  * http://www.extjs.com/license
  */
-
 #tasks-grid .x-grid3-header {
     background: #f9f9f9 url(images/hrow.gif) repeat-x left top;
 }
@@ -119,7 +109,7 @@
 	border:0 none;
 }
 #action-panel .x-panel-body li {
-	margin:3px;	
+	margin:3px;
 }
 #action-panel .x-panel-body li img {
 	width:16px;

@@ -1,29 +1,35 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
+ * http://www.extjs.com/license
+ */
+/*
+ * Ext JS Library 2.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ *
  * http://extjs.com/license
  */
 
 
 Ext.onReady(function(){
-    
+
     // This is a shared function that simulates a load action on a StatusBar.
     // It is reused by most of the example panels.
     var loadFn = function(btn, statusBar){
         btn = Ext.getCmp(btn);
         statusBar = Ext.getCmp(statusBar);
-        
+
         btn.disable();
         statusBar.showBusy();
-        
+
         (function(){
             statusBar.clearStatus({useDefaults:true});
             btn.enable();
         }).defer(2000);
     };
-    
+
 /*
  * ================  Basic StatusBar example  =======================
  */
@@ -39,7 +45,7 @@ Ext.onReady(function(){
             text: 'Do Loading',
             handler: loadFn.createCallback('basic-button', 'basic-statusbar')
         }],
-        bbar: new Ext.StatusBar({
+        bbar: new Ext.ux.StatusBar({
             defaultText: 'Default status',
             id: 'basic-statusbar',
 	        items: [{
@@ -47,7 +53,7 @@ Ext.onReady(function(){
 	        }, '-', 'Plain Text', ' ', ' ']
         })
     });
-    
+
 /*
  * ================  Right-aligned StatusBar example  =======================
  */
@@ -63,7 +69,7 @@ Ext.onReady(function(){
             text: 'Do Loading',
             handler: loadFn.createCallback('right-button', 'right-statusbar')
         }],
-        bbar: new Ext.StatusBar({
+        bbar: new Ext.ux.StatusBar({
             defaultText: 'Default status',
             id: 'right-statusbar',
             statusAlign: 'right', // the magic config
@@ -72,7 +78,7 @@ Ext.onReady(function(){
             }, '-', 'Plain Text', ' ', ' ']
         })
     });
-    
+
 /*
  * ================  StatusBar Window example  =======================
  */
@@ -90,7 +96,7 @@ Ext.onReady(function(){
             text: 'Do Loading',
             handler: loadFn.createCallback('win-button', 'win-statusbar')
         }],
-        bbar: new Ext.StatusBar({
+        bbar: new Ext.ux.StatusBar({
             id: 'win-statusbar',
             defaultText: 'Ready',
             items: [{
@@ -106,7 +112,7 @@ Ext.onReady(function(){
             }]
         })
     });
-    
+
     new Ext.Button({
         text: 'Show Window',
         renderTo: 'window',
@@ -114,20 +120,20 @@ Ext.onReady(function(){
             win.show();
         }
     });
-    
+
 /*
  * ================  Ext Word Processor example  =======================
- * 
- * The StatusBar used in this example is completely standard.  What is 
+ *
+ * The StatusBar used in this example is completely standard.  What is
  * customized are the styles and event handling to make the example a
  * lot more dynamic and application-oriented.
- * 
+ *
  */
     // Create these explicitly so we can manipulate them later
     var wordCount = new Ext.Toolbar.TextItem('Words: 0');
     var charCount = new Ext.Toolbar.TextItem('Chars: 0');
     var clock = new Ext.Toolbar.TextItem('');
-    
+
     new Ext.Panel({
         title: 'Ext Word Processor',
         renderTo: 'word-proc',
@@ -135,7 +141,7 @@ Ext.onReady(function(){
         autoHeight: true,
         bodyStyle: 'padding:5px;',
         layout: 'fit',
-        bbar: new Ext.StatusBar({
+        bbar: new Ext.ux.StatusBar({
             id: 'word-status',
             // These are just the standard toolbar TextItems we created above.  They get
             // custom classes below in the render handler which is what gives them their
@@ -155,7 +161,7 @@ Ext.onReady(function(){
                     fn: function(t){
                         var v = t.getValue(),
                             wc = 0, cc = v.length ? v.length : 0;
-                            
+
                         if(cc > 0){
                             wc = v.match(/\b/g);
                             wc = wc ? wc.length / 2 : 0;
@@ -168,16 +174,16 @@ Ext.onReady(function(){
             }
         },
         listeners: {
-            'render': {
+            render: {
                 fn: function(){
-                    // Add a class to the parent TD of each text item so we can give them some custom inset box 
+                    // Add a class to the parent TD of each text item so we can give them some custom inset box
                     // styling. Also, since we are using a greedy spacer, we have to add a block level element
                     // into each text TD in order to give them a fixed width (TextItems are spans).  Insert a
                     // spacer div into each TD using createChild() so that we can give it a width in CSS.
-                    Ext.fly(wordCount.getEl().parentNode).addClass('x-status-text-panel').createChild({cls:'spacer'});
-                    Ext.fly(charCount.getEl().parentNode).addClass('x-status-text-panel').createChild({cls:'spacer'});
-                    Ext.fly(clock.getEl().parentNode).addClass('x-status-text-panel').createChild({cls:'spacer'});
-                    
+                    Ext.fly(wordCount.getEl().parent()).addClass('x-status-text-panel').createChild({cls:'spacer'});
+                    Ext.fly(charCount.getEl().parent()).addClass('x-status-text-panel').createChild({cls:'spacer'});
+                    Ext.fly(clock.getEl().parent()).addClass('x-status-text-panel').createChild({cls:'spacer'});
+
                     // Kick off the clock timer that updates the clock el every second:
 				    Ext.TaskMgr.start({
 				        run: function(){
@@ -185,11 +191,12 @@ Ext.onReady(function(){
 				        },
 				        interval: 1000
 				    });
-                }
+                },
+                delay: 100
             }
         }
     });
-    
+
     // This sets up a fake auto-save function.  It monitors keyboard activity and after no typing
     // has occurred for 1.5 seconds, it updates the status message to indicate that it's saving.
     // After a fake delay so that you can see the save activity it will update again to indicate
@@ -204,5 +211,5 @@ Ext.onReady(function(){
             });
         }).defer(4000);
     }, this, {buffer:1500});
-    
+
 });

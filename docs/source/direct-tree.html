@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">Ext.onReady(function(){
+    Ext.Direct.addProvider(Ext.app.REMOTING_API);
+
+    var tree = new Ext.tree.TreePanel({
+        width: 400,
+        height: 400,
+        autoScroll: true,
+        renderTo: document.body,
+        root: {
+            id: 'root',
+            text: 'Root'
+        },
+        loader: new Ext.tree.TreeLoader({
+            directFn: TestAction.getTree
+        }),
+        fbar: [{
+            text: 'Reload root',
+            handler: function(){
+                tree.getRootNode().reload();
+            }
+        }]
+    });
+});
+</pre>    
+</body>
+</html>

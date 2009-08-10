@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">Ext.onReady(function(){
+
+    var tabs = new Ext.TabPanel({
+        renderTo:'tabs',
+        resizeTabs:true, // turn on tab resizing
+        minTabWidth: 115,
+        tabWidth:135,
+        enableTabScroll:true,
+        width:600,
+        height:250,
+        defaults: {autoScroll:true},
+        plugins: new Ext.ux.TabCloseMenu()
+    });
+
+    // tab generation code
+    var index = 0;
+    while(index < 7){
+        addTab();
+    }
+    function addTab(){
+        tabs.add({
+            title: 'New Tab ' + (++index),
+            iconCls: 'tabs',
+            html: 'Tab Body ' + (index) + '<br/><br/>'
+                    + Ext.example.bogusMarkup,
+            closable:true
+        }).show();
+    }
+
+    new Ext.Button({
+        text: 'Add Tab',
+        handler: addTab,
+        iconCls:'new-tab'
+    }).render(document.body, 'tabs');
+});</pre>    
+</body>
+</html>

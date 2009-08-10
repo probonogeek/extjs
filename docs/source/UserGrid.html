@@ -1,0 +1,138 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">Ext.ns('App', 'App.user');
+<div id="prop-Ext.ux.TaskBar.TaskButton-Grid"></div>/**
+ * App.user.Grid
+ * A typical EditorGridPanel extension.
+ */
+App.user.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
+    renderTo: 'user-grid',
+    iconCls: 'silk-grid',
+    frame: true,
+    title: 'Users',
+    height: 300,
+    width: 500,
+    style: 'margin-top: 10px',
+
+    initComponent : function() {
+
+        // typical viewConfig
+        this.viewConfig = {
+            forceFit: true
+        };
+
+        // relay the Store's CRUD events into this grid so these events can be conveniently listened-to in our application-code.
+        this.relayEvents(this.store, ['destroy', 'save', 'update']);
+
+        // build toolbars and buttons.
+        this.tbar = this.buildTopToolbar();
+        this.bbar = this.buildBottomToolbar();
+        this.buttons = this.buildUI();
+
+        // super
+        App.user.Grid.superclass.initComponent.call(this);
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-buildTopToolbar"></div>/**
+     * buildTopToolbar
+     */
+    buildTopToolbar : function() {
+        return [{
+            text: 'Add',
+            iconCls: 'silk-add',
+            handler: this.onAdd,
+            scope: this
+        }, '-', {
+            text: 'Delete',
+            iconCls: 'silk-delete',
+            handler: this.onDelete,
+            scope: this
+        }, '-'];
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-buildBottomToolbar"></div>/**
+     * buildBottomToolbar
+     */
+    buildBottomToolbar : function() {
+        return ['<b>@cfg:</b>', '-', {
+            text: 'autoSave',
+            enableToggle: true,
+            pressed: true,
+            tooltip: 'When enabled, Store will execute Ajax requests as soon as a Record becomes dirty.',
+            toggleHandler: function(btn, pressed) {
+                this.store.autoSave = pressed;
+            },
+            scope: this
+        }, '-', {
+            text: 'batch',
+            enableToggle: true,
+            pressed: true,
+            tooltip: 'When enabled, Store will batch all records for each type of CRUD verb into a single Ajax request.',
+            toggleHandler: function(btn, pressed) {
+                this.store.batch = pressed;
+            },
+            scope: this
+        }, '-', {
+            text: 'writeAllFields',
+            enableToggle: true,
+            tooltip: 'When enabled, Writer will write *all* fields to the server -- not just those that changed.',
+            toggleHandler: function(btn, pressed) {
+                store.writer.writeAllFields = pressed;
+            },
+            scope: this
+        }, '-'];
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-buildUI"></div>/**
+     * buildUI
+     */
+    buildUI : function() {
+        return [{
+            text: 'Save',
+            iconCls: 'icon-save',
+            handler: this.onSave,
+            scope: this
+        }];
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-onSave"></div>/**
+     * onSave
+     */
+    onSave : function(btn, ev) {
+        this.store.save();
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-onAdd"></div>/**
+     * onAdd
+     */
+    onAdd : function(btn, ev) {
+        var u = new this.store.recordType({
+            first : '',
+            last: '',
+            email : ''
+        });
+        this.stopEditing();
+        this.store.insert(0, u);
+        this.startEditing(0, 1);
+    },
+
+    <div id="method-Ext.ux.TaskBar.TaskButton-onDelete"></div>/**
+     * onDelete
+     */
+    onDelete : function(btn, ev) {
+        var index = this.getSelectionModel().getSelectedCell();
+        if (!index) {
+            return false;
+        }
+        var rec = this.store.getAt(index[0]);
+        this.store.remove(rec);
+    }
+});
+</pre>    
+</body>
+</html>

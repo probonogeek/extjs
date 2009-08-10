@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 FeedViewer = {};
 
 Ext.onReady(function(){
@@ -58,6 +56,12 @@ Ext.onReady(function(){
         url:'http://feeds.feedburner.com/ajaxian',
         text: 'Ajaxian'
     }, true);
+    
+    Ext.get('header').on('click', function() {
+        viewport.focus();
+    });
+    
+    feeds.focus();
 });
 
 // This is a custom event handler passed to preview panels so link open in a new windw

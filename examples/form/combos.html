@@ -38,7 +38,7 @@ The combo box can use any type of Ext.data.Store as its data source.
 </div>
 <div id="state-combo-code-panel" style="margin-top:10px">
 <pre id="state-combo-code" class="code"><code>// simple array store
-var store = new Ext.data.SimpleStore({
+var store = new Ext.data.ArrayStore({
     fields: ['abbr', 'state'],
     data : exampleData
 });
@@ -65,7 +65,7 @@ var combo = new Ext.form.ComboBox({
 </div>
 <div id="state-combo-qtip-code-panel" style="margin-top:10px">
 <pre id="state-combo-qtip-code" class="code"><code>// simple array store
-var store = new Ext.data.SimpleStore({
+var store = new Ext.data.ArrayStore({
     fields: ['abbr', 'state', 'nick'],
     data : exampleData
 });
@@ -85,7 +85,7 @@ var comboWithTooltip = new Ext.form.ComboBox({
 
 <p>
 The combo box can also use plain array data directly as its data source, wrapping the array internally
-with a SimpleStore as needed.  You can pass a 1-dimensional or multi-dimensional array as the store config:</p>
+with a ArrayStore as needed.  You can pass a 1-dimensional or multi-dimensional array as the store config:</p>
 <div>
     <input type="text" id="array-states" size="20"/>
 </div>

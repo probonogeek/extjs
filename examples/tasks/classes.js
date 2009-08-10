@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.BLANK_IMAGE_URL = 'images/s.gif';
     
 Task = Ext.data.Record.create([
@@ -97,7 +95,7 @@ CategoryStore = function(){
     });
 }
 
-Ext.extend(CategoryStore, Ext.data.SimpleStore, {
+Ext.extend(CategoryStore, Ext.data.ArrayStore, {
     init : function(store){
         var cats = store.collect('category', false, true);
         this.loadData(cats);

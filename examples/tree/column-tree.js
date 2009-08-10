@@ -1,20 +1,18 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
-    var tree = new Ext.tree.ColumnTree({
+    var tree = new Ext.ux.tree.ColumnTree({
         width: 550,
         height: 300,
         rootVisible:false,
         autoScroll:true,
         title: 'Example Tasks',
         renderTo: Ext.getBody(),
-        
+
         columns:[{
             header:'Task',
             width:330,
@@ -32,7 +30,7 @@ Ext.onReady(function(){
         loader: new Ext.tree.TreeLoader({
             dataUrl:'column-data.json',
             uiProviders:{
-                'col': Ext.tree.ColumnNodeUI
+                'col': Ext.ux.tree.ColumnNodeUI
             }
         }),
 

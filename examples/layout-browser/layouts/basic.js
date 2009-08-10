@@ -1,20 +1,18 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 //
-// Note that these are all defined as panel configs, rather than instantiated 
+// Note that these are all defined as panel configs, rather than instantiated
 // as panel objects.  You could just as easily do this instead:
 //
 // var absolute = new Ext.Panel({ ... });
 //
-// However, by passing configs into the main container instead of objects, we can defer 
+// However, by passing configs into the main container instead of objects, we can defer
 // layout AND object instantiation until absolutely needed.  Since most of these panels
-// won't be shown by default until requested, this will save us some processing 
+// won't be shown by default until requested, this will save us some processing
 // time up front when initially rendering the page.
 //
 // Since all of these configs are being added into a layout container, they are
@@ -35,7 +33,7 @@ var start = {
 };
 
 /*
- * ================  AnbsoluteLayout config  =======================
+ * ================  AbsoluteLayout config  =======================
  */
 var absolute = {
 	id: 'absolute-panel',
@@ -64,9 +62,9 @@ var absolute = {
  * ================  AccordionLayout config  =======================
  */
 var accordion = {
-    id:'accordion-panel',
+    id: 'accordion-panel',
 	title: 'Accordion Layout',
-    layout:'accordion',
+    layout: 'accordion',
     bodyBorder: false,  // useful for accordion containers since the inner panels have borders already
     bodyStyle: 'background-color:#DFE8F6',  // if all accordion panels are collapsed, this looks better in this layout
 	defaults: {bodyStyle: 'padding:15px'},
@@ -123,7 +121,7 @@ var anchor = {
 var border = {
 	id:'border-panel',
 	title: 'Border Layout',
-    layout:'border',
+    layout: 'border',
     bodyBorder: false,
 	defaults: {
 		collapsible: true,
@@ -154,7 +152,7 @@ var border = {
 	},{
 		title: 'Main Content',
 		collapsible: false,
-        region:'center',
+        region: 'center',
 		margins: '5 0 0 0',
 		html: '<h1>Main Page</h1><p>This is where the main content would go</p>'
 	}]
@@ -163,8 +161,8 @@ var border = {
 /*
  * ================  CardLayout config (TabPanel)  =======================
  */
-// Note that the TabPanel component uses an internal CardLayout -- it's not
-// something you have to explicitly configure.  However, it's still a perfect
+// Note that the TabPanel component uses an internal CardLayout -- it is not
+// something you have to explicitly configure.  However, it is still a perfect
 // example of how this layout style can be used in a complex component.
 var cardTabs = {
 	xtype: 'tabpanel',
@@ -208,12 +206,12 @@ var cardWizard = {
 	defaults: {border:false},
 	bbar: ['->', {
 		id: 'card-prev',
-		text: '&laquo; Previous', 
+		text: '&laquo; Previous',
 		handler: cardNav.createDelegate(this, [-1]),
 		disabled: true
 	},{
 		id: 'card-next',
-		text: 'Next &raquo;', 
+		text: 'Next &raquo;',
 		handler: cardNav.createDelegate(this, [1])
 	}],
 	items: [{
@@ -234,16 +232,16 @@ var cardWizard = {
 var column = {
 	id:'column-panel',
 	title: 'Column Layout',
-    layout:'column',
-    bodyStyle:'padding:5px',
+    layout: 'column',
+    bodyStyle: 'padding:5px',
 	defaults: {bodyStyle:'padding:15px'},
     items: [{
-        title: 'Width = .25',
-		columnWidth: .25,
+        title: 'Width = 0.25',
+		columnWidth: 0.25,
 		html: '<p>This is some short content.</p>'
     },{
-        title: 'Width = .75',
-		columnWidth: .75,
+        title: 'Width = 0.75',
+		columnWidth: 0.75,
 		html: '<p>This is some longer content.</p><p>This is some longer content.</p><p>This is some longer content.</p><p>This is some longer content.</p><p>This is some longer content.</p><p>This is some longer content.</p>'
     },{
         title: 'Width = 250px',
@@ -256,9 +254,9 @@ var column = {
  * ================  FitLayout config  =======================
  */
 var fit = {
-	id:'fit-panel',
+	id: 'fit-panel',
 	title: 'Fit Layout',
-    layout:'fit',
+    layout: 'fit',
     items: {
 		title: 'Inner Panel',
 		html: '<p>This panel is fit within its container.</p>',
@@ -278,7 +276,7 @@ var form = {
 	id: 'form-panel',
     labelWidth: 75,
     title: 'Form Layout',
-    bodyStyle:'padding:15px',
+    bodyStyle: 'padding:15px',
     width: 350,
 	labelPad: 20,
 	layoutConfig: {
@@ -312,9 +310,9 @@ var form = {
  * ================  TableLayout config  =======================
  */
 var table = {
-	id:'table-panel',
+	id: 'table-panel',
 	title: 'Table Layout',
-    layout:'table',
+    layout: 'table',
 	layoutConfig: {
 		columns: 4
 	},
@@ -349,4 +347,63 @@ var table = {
 		html: '<p>Spanning all columns.</p>',
 		colspan: 4
 	}]
+};
+
+
+/*
+ * ================  VBoxLayout config  =======================
+ */
+var vbox = {
+    id: 'vbox-panel',
+    title: 'vBox Layout',
+    layout: {
+        type: 'vbox',
+        pack: 'start',
+        align: 'stretch'
+    },
+    defaults: {
+        frame: true
+    },
+    items: [{
+        title: 'Panel 1',
+        flex: 1,
+        html: 'flex : 1'
+    }, {
+        title: 'Panel 2',
+        height: 100,
+        html: 'height: 100'
+    }, {
+        title: 'Panel 3',
+        flex: 2,
+        html: 'flex : 2'
+    }]
+};
+
+/*
+ * ================  HBoxLayout config  =======================
+ */
+var hbox = {
+    id: 'hbox-panel',
+    title: 'hBox Layout',
+    layout: {
+        type: 'hbox',
+        pack: 'start',
+        align: 'stretch'
+    },
+    defaults: {
+        frame: true
+    },
+    items: [{
+        title: 'Panel 1',
+        flex: 1,
+        html: 'flex : 1'
+    }, {
+        title: 'Panel 2',
+        width: 100,
+        html: 'width : 100'
+    }, {
+        title: 'Panel 3',
+        flex: 2,
+        html: 'flex : 2'
+    }]
 };

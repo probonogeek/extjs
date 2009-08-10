@@ -1,9 +1,8 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
 
 //
@@ -30,7 +29,7 @@ Ext.onReady(function(){
 		border: false,
 		items: [
 			// from basic.js:
-			start, absolute, accordion, anchor, border, cardTabs, cardWizard, column, fit, form, table,
+			start, absolute, accordion, anchor, border, cardTabs, cardWizard, column, fit, form, table, vbox, hbox,
 			// from custom.js:
 			rowLayout, centerLayout,
 			// from combination.js:

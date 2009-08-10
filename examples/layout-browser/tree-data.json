@@ -41,6 +41,14 @@
         text:'Table',
         id:'table',
         leaf:true
+    },{
+        text:'vBox',
+        id:'vbox',
+        leaf:true
+    },{
+        text:'hBox',
+        id:'hbox',
+        leaf:true
     }]
 },{
     text:'Custom Layouts',

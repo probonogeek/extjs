@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if(!isset($_SESSION['state'])){
     $_SESSION['state'] = array(
@@ -8,4 +8,3 @@ if(!isset($_SESSION['state'])){
 echo 'Ext.appState = ';
 echo json_encode($_SESSION['state']);
 echo ';';
-?>

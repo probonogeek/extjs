@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 html, body {
 	font: normal 12px tahoma, arial, verdana, sans-serif;
 	margin: 0;
@@ -208,9 +206,10 @@ body.x-border-layout-ct {
     border-top:0 none;
 }*/
 .reading-menu .x-menu-item-checked {
-   border:1px dotted #a3bae9 !important;
+    border:1px dotted #a3bae9 !important;
     background:#DFE8F6;
-	padding:0;
+    padding:0;
+    margin: 0;
 }
 .x-tab-panel-header {
     border-bottom-width:0 !important;

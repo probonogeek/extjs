@@ -1,34 +1,20 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>Grid3 Group Summary Plugin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Custom Group Summary Plugin Example</title>
 
+    <!-- ** CSS ** -->
+    <!-- base library -->
     <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
 
-    <!-- GC -->
- 	<!-- LIBS -->
- 	<script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
- 	<!-- ENDLIBS -->
+    <!-- overrides to base library -->
+    <link rel="stylesheet" type="text/css" href="../ux/css/GroupSummary.css" />
 
-    <script type="text/javascript" src="../../ext-all.js"></script>
-
-
-    <script type="text/javascript" src="GroupSummary.js"></script>
-    <script type="text/javascript" src="totals.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="summary.css" />
+    <!-- page specific -->
+    <link rel="stylesheet" type="text/css" href="../shared/examples.css" />
     <link rel="stylesheet" type="text/css" href="grid-examples.css" />
 
-    <!-- Common Styles for the examples -->
-    <link rel="stylesheet" type="text/css" href="../shared/examples.css" />
-
     <style type="text/css">
-        .negative {
-            color: #dd0000;
-        }
-        .positive {
-            color: green;
-        }
         .x-grid3-cell-inner {
             font-family:"segoe ui",tahoma, arial, sans-serif;
         }
@@ -52,11 +38,26 @@
             background-image:none;
         }
     </style>
+
+    <!-- ** Javascript ** -->
+    <!-- ExtJS library: base/adapter -->
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+
+    <!-- ExtJS library: all widgets -->
+    <script type="text/javascript" src="../../ext-all.js"></script>
+
+    <!-- overrides to base library -->
+
+    <!-- extensions -->
+    <script type="text/javascript" src="../ux/GroupSummary.js"></script>
+
+    <!-- page specific -->
+    <script type="text/javascript" src="totals.js"></script>
+
 </head>
 <body>
-<script type="text/javascript" src="../shared/examples.js"></script><!-- EXAMPLES -->
-<h1>Group Summary Plugin</h1>
-<p>Note that the js is not minified so it is readable. See <a href="totals.js">totals.js</a>.</p>
-
+    <h1>Custom Group Summary Plugin Example</h1>
+    <p>Demonstrates the custom <a href="../ux/GroupSummary.js">Ext.ux.grid.GroupSummary</a> class.</p>
+    <p>Note that the js is not minified so it is readable. See <a href="totals.js">totals.js</a>.</p>
 </body>
 </html>

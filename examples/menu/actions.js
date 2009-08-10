@@ -1,11 +1,9 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
+/*!
+ * Ext JS Library 3.0.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
- * 
- * http://extjs.com/license
+ * http://www.extjs.com/license
  */
-
 Ext.onReady(function(){
     // The action
     var action = new Ext.Action({
@@ -37,10 +35,10 @@ Ext.onReady(function(){
         renderTo: Ext.getBody()
     });
 
-
+    var tb = panel.getTopToolbar();
     // Buttons added to the toolbar of the Panel above
     // to test/demo doing group operations with an action
-    panel.getTopToolbar().add('->', {
+    tb.add('->', {
         text: 'Disable',
         handler: function(){
             action.setDisabled(!action.isDisabled());
@@ -64,4 +62,5 @@ Ext.onReady(function(){
             action.setIconClass(action.getIconClass() == 'blist' ? 'bmenu' : 'blist');
         }
     });
+    tb.doLayout();
 });
