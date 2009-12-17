@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -15,18 +15,18 @@
  * 12-April-2007 04:06PM
  */
 
-Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">�?ang tải...</div>';
+Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Đang tải...</div>';
 
 if(Ext.View){
    Ext.View.prototype.emptyText = "";
 }
 
 if(Ext.grid.GridPanel){
-   Ext.grid.GridPanel.prototype.ddText = "{0} dòng được ch�?n";
+   Ext.grid.GridPanel.prototype.ddText = "{0} dòng được chọn";
 }
 
 if(Ext.TabPanelItem){
-   Ext.TabPanelItem.prototype.closeText = "�?óng thẻ này";
+   Ext.TabPanelItem.prototype.closeText = "Đóng thẻ này";
 }
 
 if(Ext.form.Field){
@@ -34,7 +34,7 @@ if(Ext.form.Field){
 }
 
 if(Ext.LoadMask){
-    Ext.LoadMask.prototype.msg = "�?ang tải...";
+    Ext.LoadMask.prototype.msg = "Đang tải...";
 }
 
 Date.monthNames = [
@@ -64,8 +64,8 @@ Date.dayNames = [
 
 if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
-      ok     : "�?ồng ý",
-      cancel : "Hủy b�?",
+      ok     : "Đồng ý",
+      cancel : "Hủy bỏ",
       yes    : "Có",
       no     : "Không"
    };
@@ -82,7 +82,7 @@ if(Ext.util.Format){
 if(Ext.DatePicker){
    Ext.apply(Ext.DatePicker.prototype, {
       todayText         : "Hôm nay",
-      minText           : "Ngày này nh�? hơn ngày nh�? nhất",
+      minText           : "Ngày này nhỏ hơn ngày nhỏ nhất",
       maxText           : "Ngày này lớn hơn ngày lớn nhất",
       disabledDaysText  : "",
       disabledDatesText : "",
@@ -90,7 +90,7 @@ if(Ext.DatePicker){
       dayNames		: Date.dayNames,
       nextText          : 'Tháng sau (Control+Right)',
       prevText          : 'Tháng trước (Control+Left)',
-      monthYearText     : 'Ch�?n một tháng (Control+Up/Down để thay đổi năm)',
+      monthYearText     : 'Chọn một tháng (Control+Up/Down để thay đổi năm)',
       todayTip          : "{0} (Spacebar - Phím trắng)",
       format            : "d/m/y"
    });
@@ -112,8 +112,8 @@ if(Ext.PagingToolbar){
 
 if(Ext.form.TextField){
    Ext.apply(Ext.form.TextField.prototype, {
-      minLengthText : "Chi�?u dài tối thiểu của ô này là {0}",
-      maxLengthText : "Chi�?u dài tối đa của ô này là {0}",
+      minLengthText : "Chiều dài tối thiểu của ô này là {0}",
+      maxLengthText : "Chiều dài tối đa của ô này là {0}",
       blankText     : "Ô này cần phải nhập giá trị",
       regexText     : "",
       emptyText     : null
@@ -122,7 +122,7 @@ if(Ext.form.TextField){
 
 if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
-      minText : "Giá trị nh�? nhất của ô này là {0}",
+      minText : "Giá trị nhỏ nhất của ô này là {0}",
       maxText : "Giá trị lớn nhất của ô này là  {0}",
       nanText : "{0} hông phải là một số hợp lệ"
    });
@@ -141,7 +141,7 @@ if(Ext.form.DateField){
 
 if(Ext.form.ComboBox){
    Ext.apply(Ext.form.ComboBox.prototype, {
-      loadingText       : "�?ang tải...",
+      loadingText       : "Đang tải...",
       valueNotFoundText : undefined
    });
 }
@@ -160,7 +160,7 @@ if(Ext.grid.GridView){
       sortAscText  : "Tăng dần",
       sortDescText : "Giảm dần",
       lockText     : "Khóa cột",
-      unlockText   : "B�? khóa cột",
+      unlockText   : "Bỏ khóa cột",
       columnsText  : "Các cột"
    });
 }

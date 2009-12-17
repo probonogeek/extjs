@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -22,23 +22,7 @@ cp.on('select', function(palette, selColor){
  * @param {Object} config The config object
  * @xtype colorpalette
  */
-Ext.ColorPalette = function(config){
-    Ext.ColorPalette.superclass.constructor.call(this, config);
-    this.addEvents(
-        /**
-	     * @event select
-	     * Fires when a color is selected
-	     * @param {ColorPalette} this
-	     * @param {String} color The 6-digit color hex code (without the # symbol)
-	     */
-        'select'
-    );
-
-    if(this.handler){
-        this.on('select', this.handler, this.scope, true);
-    }
-};
-Ext.extend(Ext.ColorPalette, Ext.Component, {
+Ext.ColorPalette = Ext.extend(Ext.Component, {
 	/**
 	 * @cfg {String} tpl An existing XTemplate instance to be used in place of the default template for rendering the component.
 	 */
@@ -53,6 +37,11 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
      * the hex codes are case-sensitive.
      */
     value : null,
+    /**
+     * @cfg {String} clickEvent
+     * The DOM event that will cause a color to be selected. This can be any valid event name (dblclick, contextmenu). 
+     * Defaults to <tt>'click'</tt>.
+     */
     clickEvent :'click',
     // private
     ctype : 'Ext.ColorPalette',
@@ -101,18 +90,36 @@ cp.colors = ['000000', '993300', '333300'];
      * The scope (<tt><b>this</b></tt> reference) in which the <code>{@link #handler}</code>
      * function will be called.  Defaults to this ColorPalette instance.
      */
+    
+    // private
+    initComponent : function(){
+        Ext.ColorPalette.superclass.initComponent.call(this);
+        this.addEvents(
+            /**
+             * @event select
+             * Fires when a color is selected
+             * @param {ColorPalette} this
+             * @param {String} color The 6-digit color hex code (without the # symbol)
+             */
+            'select'
+        );
+
+        if(this.handler){
+            this.on('select', this.handler, this.scope, true);
+        }    
+    },
 
     // private
     onRender : function(container, position){
+        this.autoEl = {
+            tag: 'div',
+            cls: this.itemCls
+        };
+        Ext.ColorPalette.superclass.onRender.call(this, container, position);
         var t = this.tpl || new Ext.XTemplate(
             '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
         );
-        var el = document.createElement('div');
-        el.id = this.getId();
-        el.className = this.itemCls;
-        t.overwrite(el, this.colors);
-        container.dom.insertBefore(el, position);
-        this.el = Ext.get(el);
+        t.overwrite(this.el, this.colors);
         this.mon(this.el, this.clickEvent, this.handleClick, this, {delegate: 'a'});
         if(this.clickEvent != 'click'){
         	this.mon(this.el, 'click', Ext.emptyFn, this, {delegate: 'a', preventDefault: true});

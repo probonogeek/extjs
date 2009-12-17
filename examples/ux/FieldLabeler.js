@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -36,8 +36,13 @@ Ext.ux.FieldLabeler = (function(){
 
 //      Add behaviour at important points in the Field's lifecycle.
         init: function(f) {
+//          Replace the Field's onRender method with a sequence that calls the plugin's onRender after the Field's onRender
             f.onRender = f.onRender.createSequence(this.onRender);
-            f.onResize = f.onResize.createSequence(this.onResize);
+
+//          We need to completely override the onResize method because of the complexity
+            f.onResize = this.onResize;
+
+//          Replace the Field's onDestroy method with a sequence that calls the plugin's onDestroy after the Field's onRender
             f.onDestroy = f.onDestroy.createSequence(this.onDestroy);
         },
 
@@ -47,20 +52,26 @@ Ext.ux.FieldLabeler = (function(){
                 if (this.ownerCt.layout instanceof Ext.layout.FormLayout) {
                     return;
                 }
-                if (this.nextSibling()) {
-                    this.margins = '0 0 5 0';
-                }
             }
 
-            this.resizeEl = this.el.wrap({
-                cls: 'x-form-element'
+            this.resizeEl = (this.wrap || this.el).wrap({
+                cls: 'x-form-element',
+                style: Ext.isIE ? 'position:absolute;top:0;left:0;overflow:visible' : ''
             });
             this.positionEl = this.itemCt = this.resizeEl.wrap({
                 cls: 'x-form-item '
             });
+            if (this.nextSibling()) {
+                this.margins = {
+                    top: 0,
+                    right: 0,
+                    bottom: this.positionEl.getMargins('b'),
+                    left: 0
+                };
+            }
             this.actionMode = 'itemCt';
 
-//          If we are hiding labels, then we're done!
+//          If our Container is hiding labels, then we're done!
             if (!Ext.isDefined(this.hideLabels)) {
                 this.hideLabels = getParentProperty.call(this, "hideLabels");
             }
@@ -69,7 +80,7 @@ Ext.ux.FieldLabeler = (function(){
                 return;
             }
 
-//          Collect info we need to render the label.
+//          Collect the info we need to render the label from our Container.
             if (!Ext.isDefined(this.labelSeparator)) {
                 this.labelSeparator = getParentProperty.call(this, "labelSeparator");
             }
@@ -103,11 +114,20 @@ Ext.ux.FieldLabeler = (function(){
                 html: this.fieldLabel + (this.labelSeparator || ':')
             });
         },
-    
+
 //      private
 //      Ensure the input field is sized to fit in the content area of the resizeEl (to the right of its padding-left)
-        onResize: function() {
-            this.el.setWidth(this.resizeEl.getWidth(true));
+//      We perform all necessary sizing here. We do NOT call the current class's onResize because we need this control
+//      we skip that and go up the hierarchy to Ext.form.Field
+        onResize: function(w, h) {
+            Ext.form.Field.prototype.onResize.apply(this, arguments);
+            w -= this.resizeEl.getPadding('l');
+            if (this.getTriggerWidth) {
+                this.wrap.setWidth(w);
+                this.el.setWidth(w - this.getTriggerWidth());
+            } else {
+                this.el.setWidth(w);
+            }
             if (this.el.dom.tagName.toLowerCase() == 'textarea') {
                 var h = this.resizeEl.getHeight(true);
                 if (!this.hideLabels && (this.labelAlign == 'top')) {

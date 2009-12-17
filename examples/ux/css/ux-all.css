@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -12,7 +12,9 @@
 body.ux-layout-center {            
     text-align:center;
 }
-.x-column-tree .x-panel-header {
+td.ux-grid-hd-group-cell {
+    background: url(../../../resources/images/default/grid/grid3-hrow.gif) repeat-x bottom;
+}.x-column-tree .x-panel-header {
 	padding: 3px 0px 0px 0px;
 	border-bottom-width: 0px;
 }
@@ -399,6 +401,34 @@ li.x-menu-list-item div {
 .x-tab-with-icon{
    border-style:none !important;
 }
+.x-grid3-locked, .x-grid3-unlocked {
+	overflow: hidden;
+	position: absolute;
+}
+
+.x-grid3-locked {
+	border-right: 1px solid #99BBE8;
+}
+
+.x-grid3-locked .x-grid3-scroller {
+	overflow: hidden;
+}
+
+.x-grid3-locked .x-grid3-row {
+	border-right: 0;
+}
+
+.x-grid3-scroll-spacer {
+	height: 19px;
+}
+
+.x-grid3-unlocked .x-grid3-header-offset {
+	padding-left: 0;
+}
+
+.x-grid3-unlocked .x-grid3-row {
+	border-left: 0;
+}
 .ux-mselect{
     overflow:auto;
     background:white;
@@ -689,4 +719,60 @@ li.x-menu-list-item div {
 }
 .x-status-error-list li a {
     color: #15428B;
+}/*!
+ * Ext JS Library 3.1.0
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+.x-treegrid-root-table {
+    border-right: 1px solid;
+}
+
+.x-treegrid-root-node {
+    overflow: auto;
+}
+
+.x-treegrid-hd-hidden {
+    visibility: hidden;
+    border: 0;
+    width: 0;
+}
+
+.x-treegrid-col {
+    border-bottom: 1px solid;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: top;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.x-treegrid-text {
+    padding-left: 4px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+}
+
+.x-treegrid-resizer {
+    border-left:1px solid;
+    border-right:1px solid;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+.x-treegrid-header-inner {
+    overflow: hidden;
+}
+
+.x-treegrid-root-table,
+.x-treegrid-col {
+    border-color: #ededed;
+}
+
+.x-treegrid-resizer {
+    border-left-color:#555;
+    border-right-color:#555;
 }

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -54,9 +54,9 @@ Ext.tree.TreeNodeUI.prototype = {
     // private
     onDisableChange : function(node, state){
         this.disabled = state;
-		if (this.checkbox) {
-			this.checkbox.disabled = state;
-		}        
+        if (this.checkbox) {
+            this.checkbox.disabled = state;
+        }        
         if(state){
             this.addClass("x-tree-node-disabled");
         }else{
@@ -241,8 +241,8 @@ Ext.tree.TreeNodeUI.prototype = {
     // private
     onCheckChange : function(){
         var checked = this.checkbox.checked;
-		// fix for IE6
-		this.checkbox.defaultChecked = checked;		
+        // fix for IE6
+        this.checkbox.defaultChecked = checked;        
         this.node.attributes.checked = checked;
         this.fireEvent('checkchange', this.node, checked);
     },
@@ -369,7 +369,10 @@ Ext.tree.TreeNodeUI.prototype = {
         return this.ctNode;  
     },
 
-    // private
+/**
+ * Returns the element which encapsulates this node.
+ * @return {HtmlElement} The DOM element. The default implementation uses a <code>&lt;li></code>.
+ */
     getEl : function(){
         return this.wrap;  
     },
@@ -432,10 +435,10 @@ Ext.tree.TreeNodeUI.prototype = {
         // add some indent caching, this helps performance when rendering a large tree
         this.indentMarkup = n.parentNode ? n.parentNode.ui.getChildIndent() : '';
 
-        var cb = typeof a.checked == 'boolean';
-
-        var href = a.href ? a.href : Ext.isGecko ? "" : "#";
-        var buf = ['<li class="x-tree-node"><div ext:tree-node-id="',n.id,'" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls,'" unselectable="on">',
+        var cb = Ext.isBoolean(a.checked),
+            nel,
+            href = a.href ? a.href : Ext.isGecko ? "" : "#",
+            buf = ['<li class="x-tree-node"><div ext:tree-node-id="',n.id,'" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls,'" unselectable="on">',
             '<span class="x-tree-node-indent">',this.indentMarkup,"</span>",
             '<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
             '<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',(a.icon ? " x-tree-node-inline-icon" : ""),(a.iconCls ? " "+a.iconCls : ""),'" unselectable="on" />',
@@ -445,7 +448,6 @@ Ext.tree.TreeNodeUI.prototype = {
             '<ul class="x-tree-node-ct" style="display:none;"></ul>',
             "</li>"].join('');
 
-        var nel;
         if(bulkRender !== true && n.nextSibling && (nel = n.nextSibling.ui.getEl())){
             this.wrap = Ext.DomHelper.insertHtml("beforeBegin", nel, buf);
         }else{
@@ -461,8 +463,8 @@ Ext.tree.TreeNodeUI.prototype = {
         var index = 3;
         if(cb){
             this.checkbox = cs[3];
-			// fix for IE6
-			this.checkbox.defaultChecked = this.checkbox.checked;						
+            // fix for IE6
+            this.checkbox.defaultChecked = this.checkbox.checked;
             index++;
         }
         this.anchor = cs[index];
@@ -505,9 +507,11 @@ Ext.tree.TreeNodeUI.prototype = {
     // private
     updateExpandIcon : function(){
         if(this.rendered){
-            var n = this.node, c1, c2;
-            var cls = n.isLast() ? "x-tree-elbow-end" : "x-tree-elbow";
-            var hasChild = n.hasChildNodes();
+            var n = this.node, 
+                c1, 
+                c2,
+                cls = n.isLast() ? "x-tree-elbow-end" : "x-tree-elbow",
+                hasChild = n.hasChildNodes();
             if(hasChild || n.attributes.expandable){
                 if(n.expanded){
                     cls += "-minus";
@@ -552,8 +556,8 @@ Ext.tree.TreeNodeUI.prototype = {
     // private
     getChildIndent : function(){
         if(!this.childIndent){
-            var buf = [];
-            var p = this.node;
+            var buf = [],
+                p = this.node;
             while(p){
                 if(!p.isRoot || (p.isRoot && p.ownerTree.rootVisible)){
                     if(!p.isLast()) {
@@ -572,8 +576,8 @@ Ext.tree.TreeNodeUI.prototype = {
     // private
     renderIndent : function(){
         if(this.rendered){
-            var indent = "";
-            var p = this.node.parentNode;
+            var indent = "",
+                p = this.node.parentNode;
             if(p){
                 indent = p.ui.getChildIndent();
             }
@@ -589,23 +593,14 @@ Ext.tree.TreeNodeUI.prototype = {
         if(this.elNode){
             Ext.dd.Registry.unregister(this.elNode.id);
         }
-        delete this.elNode;
-        delete this.ctNode;
-        delete this.indentNode;
-        delete this.ecNode;
-        delete this.iconNode;
-        delete this.checkbox;
-        delete this.anchor;
-        delete this.textNode;
         
-        if (this.holder){
-             delete this.wrap;
-             Ext.removeNode(this.holder);
-             delete this.holder;
-        }else{
-            Ext.removeNode(this.wrap);
-            delete this.wrap;
-        }
+        Ext.each(['textnode', 'anchor', 'checkbox', 'indentNode', 'ecNode', 'iconNode', 'elNode', 'ctNode', 'wrap', 'holder'], function(el){
+            if(this[el]){
+                Ext.fly(this[el]).remove();
+                delete this[el];
+            }
+        }, this);
+        delete this.node;
     }
 };
 

@@ -1,69 +1,16 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.dd.DragTracker"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.dd.DragTracker"></div>/**
  * @class Ext.dd.DragTracker
  * @extends Ext.util.Observable
  */
-Ext.dd.DragTracker = function(config){
-    Ext.apply(this, config);
-    this.addEvents(
-        <div id="event-Ext.dd.DragTracker-mousedown"></div>/**
-         * @event mousedown
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mousedown',
-        <div id="event-Ext.dd.DragTracker-mouseup"></div>/**
-         * @event mouseup
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mouseup',
-        <div id="event-Ext.dd.DragTracker-mousemove"></div>/**
-         * @event mousemove
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mousemove',
-        <div id="event-Ext.dd.DragTracker-dragstart"></div>/**
-         * @event dragstart
-         * @param {Object} this
-         * @param {Object} startXY the page coordinates of the event
-         */
-        'dragstart',
-        <div id="event-Ext.dd.DragTracker-dragend"></div>/**
-         * @event dragend
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'dragend',
-        <div id="event-Ext.dd.DragTracker-drag"></div>/**
-         * @event drag
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'drag'
-    );
-
-    this.dragRegion = new Ext.lib.Region(0,0,0,0);
-
-    if(this.el){
-        this.initEl(this.el);
-    }
-}
-
-Ext.extend(Ext.dd.DragTracker, Ext.util.Observable,  {
+Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
     <div id="cfg-Ext.dd.DragTracker-active"></div>/**
      * @cfg {Boolean} active
 	 * Defaults to <tt>false</tt>.
@@ -80,6 +27,55 @@ Ext.extend(Ext.dd.DragTracker, Ext.util.Observable,  {
 	 * Specify a Number for the number of milliseconds to defer trigger start.
 	 */	
     autoStart: false,
+    
+    constructor : function(config){
+        Ext.apply(this, config);
+	    this.addEvents(
+	        <div id="event-Ext.dd.DragTracker-mousedown"></div>/**
+	         * @event mousedown
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mousedown',
+	        <div id="event-Ext.dd.DragTracker-mouseup"></div>/**
+	         * @event mouseup
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mouseup',
+	        <div id="event-Ext.dd.DragTracker-mousemove"></div>/**
+	         * @event mousemove
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mousemove',
+	        <div id="event-Ext.dd.DragTracker-dragstart"></div>/**
+	         * @event dragstart
+	         * @param {Object} this
+	         * @param {Object} startXY the page coordinates of the event
+	         */
+	        'dragstart',
+	        <div id="event-Ext.dd.DragTracker-dragend"></div>/**
+	         * @event dragend
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'dragend',
+	        <div id="event-Ext.dd.DragTracker-drag"></div>/**
+	         * @event drag
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'drag'
+	    );
+	
+	    this.dragRegion = new Ext.lib.Region(0,0,0,0);
+	
+	    if(this.el){
+	        this.initEl(this.el);
+	    }
+        Ext.dd.DragTracker.superclass.constructor.call(this, config);
+    },
 
     initEl: function(el){
         this.el = Ext.get(el);
@@ -221,6 +217,6 @@ Ext.extend(Ext.dd.DragTracker, Ext.util.Observable,  {
             return [dr.left, dr.top];
         }
     }
-});</pre>
+});</pre>    
 </body>
 </html>

@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.dd.StatusProxy"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.dd.StatusProxy"></div>/**
  * @class Ext.dd.StatusProxy
  * A specialized drag proxy that supports a drop status icon, {@link Ext.Layer} styles and auto-repair.  This is the
  * default drag proxy used by all Ext.dd components.
@@ -144,8 +139,8 @@ Ext.dd.StatusProxy.prototype = {
      * Causes the proxy to return to its position of origin via an animation.  Should be called after an
      * invalid drop operation by the item being dragged.
      * @param {Array} xy The XY position of the element ([x, y])
-     * @param {Function} callback The function to call after the repair is complete
-     * @param {Object} scope The scope in which to execute the callback
+     * @param {Function} callback The function to call after the repair is complete.
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      */
     repair : function(xy, callback, scope){
         this.callback = callback;
@@ -174,7 +169,11 @@ Ext.dd.StatusProxy.prototype = {
         }
         this.callback = null;
         this.scope = null;
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.ghost, this.el);    
     }
-};</pre>
+};</pre>    
 </body>
 </html>

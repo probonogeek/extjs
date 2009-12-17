@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.layout.MenuLayout"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.MenuLayout"></div>/**
  * @class Ext.layout.MenuLayout
  * @extends Ext.layout.ContainerLayout
  * <p>Layout manager used by {@link Ext.menu.Menu}. Generally this class should not need to be used directly.</p>
@@ -181,7 +176,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      * configuration. Defaults to <tt>[0, 0]</tt>.
      */
     defaultOffsets : [0, 0],
-    
+
     <div id="cfg-Ext.menu.Menu-plain"></div>/**
      * @cfg {Boolean} plain
      * True to remove the incised line down the left side of the menu. Defaults to <tt>false</tt>.
@@ -213,6 +208,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
     scrollerHeight : 8,
     autoLayout : true,       // Provided for backwards compat
     defaultType : 'menuitem',
+    bufferResize : false,
 
     initComponent : function(){
         if(Ext.isArray(this.initialConfig)){
@@ -505,7 +501,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
     constrainScroll : function(y){
         var max, full = this.ul.setHeight('auto').getHeight();
         if(this.floating){
-            max = this.maxHeight ? this.maxHeight : Ext.fly(this.el.dom.parentNode).getViewSize().height - y;
+            max = this.maxHeight ? this.maxHeight : Ext.fly(this.el.dom.parentNode).getViewSize(false).height - y;
         }else{
             max = this.getHeight();
         }
@@ -691,6 +687,11 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
 
     //private
     onDestroy : function(){
+        var pm = this.parentMenu;
+        if(pm && pm.activeChild == this){
+            delete pm.activeChild;
+        }
+        delete this.parentMenu;
         Ext.menu.Menu.superclass.onDestroy.call(this);
         Ext.menu.MenuMgr.unregister(this);
         Ext.EventManager.removeResizeListener(this.hide, this);
@@ -778,6 +779,6 @@ Ext.menu.MenuNav = Ext.extend(Ext.KeyNav, function(){
         }
     };
 }());
-</pre>
+</pre>    
 </body>
 </html>

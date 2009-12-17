@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -113,7 +113,12 @@ Ext.data.DataReader.prototype = {
             rs.phantom = false; // <-- That's what it's all about
             rs._phid = rs.id;  // <-- copy phantom-id -> _phid, so we can remap in Store#onCreateRecords
             rs.id = this.getId(data);
-            rs.data = data;
+
+            rs.fields.each(function(f) {
+                if (data[f.name] !== f.defaultValue) {
+                    rs.data[f.name] = data[f.name];
+                }
+            });
             rs.commit();
         }
     },
@@ -145,10 +150,54 @@ Ext.data.DataReader.prototype = {
                 data = data.shift();
             }
             if (this.isData(data)) {
-                rs.data = Ext.apply(rs.data, data);
+                rs.fields.each(function(f) {
+                    if (data[f.name] !== f.defaultValue) {
+                        rs.data[f.name] = data[f.name];
+                    }
+                });
             }
             rs.commit();
         }
+    },
+
+    /**
+     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
+     * @param {Object[]/Object} data-root from server response
+     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
+     * @private
+     */
+    extractData : function(root, returnRecords) {
+        // A bit ugly this, too bad the Record's raw data couldn't be saved in a common property named "raw" or something.
+        var rawName = (this instanceof Ext.data.JsonReader) ? 'json' : 'node';
+
+        var rs = [];
+
+        // Had to add Check for XmlReader, #isData returns true if root is an Xml-object.  Want to check in order to re-factor
+        // #extractData into DataReader base, since the implementations are almost identical for JsonReader, XmlReader
+        if (this.isData(root) && !(this instanceof Ext.data.XmlReader)) {
+            root = [root];
+        }
+        var f       = this.recordType.prototype.fields,
+            fi      = f.items,
+            fl      = f.length,
+            rs      = [];
+        if (returnRecords === true) {
+            var Record = this.recordType;
+            for (var i = 0; i < root.length; i++) {
+                var n = root[i];
+                var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
+                record[rawName] = n;    // <-- There's implementation of ugly bit, setting the raw record-data.
+                rs.push(record);
+            }
+        }
+        else {
+            for (var i = 0; i < root.length; i++) {
+                var data = this.extractValues(root[i], fi, fl);
+                data[this.meta.idProperty] = this.getId(root[i]);
+                rs.push(data);
+            }
+        }
+        return rs;
     },
 
     /**
@@ -189,39 +238,3 @@ Ext.apply(Ext.data.DataReader.Error.prototype, {
         'invalid-response': "#readResponse received an invalid response from the server."
     }
 });
-
-
-/**
- * Ext.data.Response
- * A generic response class to normalize response-handling internally to the framework.
- * TODO move to own file, add to jsb.
- */
-Ext.data.Response = function(params) {
-    Ext.apply(this, params);
-};
-Ext.data.Response.prototype = {
-    /**
-     * @property {String} action {@link Ext.data.Api#actions}
-     */
-    action: undefined,
-    /**
-     * @property {Boolean} success
-     */
-    success : undefined,
-    /**
-     * @property {String} message
-     */
-    message : undefined,
-    /**
-     * @property {Array/Object} data
-     */
-    data: undefined,
-    /**
-     * @property {Object} raw The raw response returned from server-code
-     */
-    raw: undefined,
-    /**
-     * @property {Ext.data.Record/Ext.data.Record[]} record(s) related to the Request action
-     */
-    records: undefined
-}

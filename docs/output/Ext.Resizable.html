@@ -1,4 +1,4 @@
-<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.Resizable-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.Resizable-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.Resizable-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.Resizable-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.Resizable"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">Resizable</pre></div><h1>Class <a href="source/Resizable.html#cls-Ext.Resizable">Ext.Resizable</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">Resizable.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Resizable.html#cls-Ext.Resizable">Resizable</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr><tr><td class="hd-info"></td></tr></table><div class="description"><p>Applies drag handles to an element to make it resizable. The drag handles are inserted into the element 
+<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">Resizable</pre></div><h1>Class <a href="source/Resizable.html#cls-Ext.Resizable">Ext.Resizable</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">Resizable.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Resizable.html#cls-Ext.Resizable">Resizable</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description"><p>Applies drag handles to an element to make it resizable. The drag handles are inserted into the element 
 and positioned absolute. Some elements, such as a textarea or image, don't support this. To overcome that, you can wrap
 the textarea in a div and set 'resizeChild' to true (or to the id of the element), <b>or</b> set wrap:true in your config and
 the element will be wrapped for you automatically.</p>
@@ -156,7 +156,7 @@ Or a shorthand syntax:<br>
     :
                                         void<div class="mdesc"><div class="short">Destroys this resizable. If the element was wrapped and &#13;
 removeEl is not true then the element remains.</div><div class="long">Destroys this resizable. If the element was wrapped and 
-removeEl is not true then the element remains.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>removeEl</code> : Boolean<div class="sub-desc">(optional) true to remove the element from the DOM</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Resizable</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>Object&nbsp;events</code>&nbsp;)
+removeEl is not true then the element remains.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>removeEl</code> : Boolean<div class="sub-desc">(optional) true to remove the element from the DOM</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Resizable</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>String/Array&nbsp;events</code>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
 this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
@@ -165,13 +165,13 @@ this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fi
 implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
 access the required target more quickly.</p>
 <p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
-<i>//  Add functionality to Field<em>'s initComponent to enable the change event to bubble</i>
-    initComponent: Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
-        this.enableBubble('</em>change<em>');
+    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
+    initComponent : Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
+        this.enableBubble(<em>'change'</em>);
     }),
 
-<i>//  We know that we want Field'</em>s events to bubble directly to the FormPanel.</i>
-    getBubbleTarget: <b>function</b>() {
+    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
+    getBubbleTarget : <b>function</b>() {
         <b>if</b> (!this.formPanel) {
             this.formPanel = this.findParentByType(<em>'form'</em>);
         }
@@ -186,11 +186,11 @@ access the required target more quickly.</p>
     }],
     listeners: {
         change: <b>function</b>() {
-<i>//          Title goes red <b>if</b> form has been modified.</i>
-            myForm.header.setStyle(<em>"color"</em>, <em>"red"</em>);
+            <i>// Title goes red <b>if</b> form has been modified.</i>
+            myForm.header.setStyle(<em>'color'</em>, <em>'red'</em>);
         }
     }
-});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc">The event name to bubble, or an Array of event names.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-fireEvent"></a><b><a href="source/Observable.html#method-Ext.util.Observable-fireEvent">fireEvent</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Object...&nbsp;args</code>&nbsp;)
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : String/Array<div class="sub-desc">The event name to bubble, or an Array of event names.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-fireEvent"></a><b><a href="source/Observable.html#method-Ext.util.Observable-fireEvent">fireEvent</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Object...&nbsp;args</code>&nbsp;)
     :
                                         Boolean<div class="mdesc"><div class="short">Fires the specified event with the passed parameters (minus the event name).
 An event may be set to bubble up an Obse...</div><div class="long"><p>Fires the specified event with the passed parameters (minus the event name).</p>

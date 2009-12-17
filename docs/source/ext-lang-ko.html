@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="prop-Ext.Direct.Transaction-indicatorText"></div>/**
+    <pre class="prettyprint lang-js"><div id="prop-Ext.Direct.Transaction-indicatorText"></div>/**
  * Korean Translations By nicetip
  * 05 September 2007
  * Modify by techbug / 25 February 2008
@@ -24,7 +19,7 @@ if(Ext.View){
 }
 
 if(Ext.grid.GridPanel){
-   Ext.grid.GridPanel.prototype.ddText = "{0} 개가 선�?�?�었습니다.";
+   Ext.grid.GridPanel.prototype.ddText = "{0} 개가 선택되었습니다.";
 }
 
 if(Ext.TabPanelItem){
@@ -32,7 +27,7 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-   Ext.form.Field.prototype.invalidText = "올바른 값�?� 아닙니다.";
+   Ext.form.Field.prototype.invalidText = "올바른 값이 아닙니다.";
 }
 
 if(Ext.LoadMask){
@@ -55,7 +50,7 @@ Date.monthNames = [
 ];
 
 Date.dayNames = [
-   "�?�",
+   "일",
    "월",
    "화",
    "수",
@@ -66,7 +61,7 @@ Date.dayNames = [
 
 if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
-      ok     : "확�?�",
+      ok     : "확인",
       cancel : "취소",
       yes    : "예",
       no     : "아니오"
@@ -90,12 +85,12 @@ if(Ext.DatePicker){
       disabledDatesText : "",
       monthNames        : Date.monthNames,
       dayNames          : Date.dayNames,
-      nextText          : '다�?�달(컨트롤키+오른쪽 화살표)',
-      prevText          : '�?�전달 (컨트롤키+왼족 화살표)',
-      monthYearText     : '월�?� 선�?해주세요. (컨트롤키+위/아래 화살표)',
-      todayTip          : "{0} (스페�?�스바)",
+      nextText          : '다음달(컨트롤키+오른쪽 화살표)',
+      prevText          : '이전달 (컨트롤키+왼족 화살표)',
+      monthYearText     : '월을 선택해주세요. (컨트롤키+위/아래 화살표)',
+      todayTip          : "{0} (스페이스바)",
       format            : "m/d/y",
-      okText            : "확�?�",
+      okText            : "확인",
       cancelText        : "취소",
       startDay          : 0
    });
@@ -103,23 +98,23 @@ if(Ext.DatePicker){
 
 if(Ext.PagingToolbar){
    Ext.apply(Ext.PagingToolbar.prototype, {
-      beforePageText : "페�?�지",
+      beforePageText : "페이지",
       afterPageText  : "/ {0}",
-      firstText      : "첫 페�?�지",
-      prevText       : "�?�전 페�?�지",
-      nextText       : "다�?� 페�?�지",
-      lastText       : "마지막 페�?�지",
+      firstText      : "첫 페이지",
+      prevText       : "이전 페이지",
+      nextText       : "다음 페이지",
+      lastText       : "마지막 페이지",
       refreshText    : "새로고침",
       displayMsg     : "전체 {2} 중 {0} - {1}",
-      emptyMsg       : '표시할 �?��?�터가 없습니다.'
+      emptyMsg       : '표시할 데이터가 없습니다.'
    });
 }
 
 if(Ext.form.TextField){
    Ext.apply(Ext.form.TextField.prototype, {
-      minLengthText : "최소길�?�는 {0}입니다.",
-      maxLengthText : "최대길�?�는 {0}입니다.",
-      blankText     : "값�?� 입력해주세요.",
+      minLengthText : "최소길이는 {0}입니다.",
+      maxLengthText : "최대길이는 {0}입니다.",
+      blankText     : "값을 입력해주세요.",
       regexText     : "",
       emptyText     : null
    });
@@ -127,9 +122,9 @@ if(Ext.form.TextField){
 
 if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
-      minText : "최소값�?� {0}입니다.",
-      maxText : "최대값�?� {0}입니다.",
-      nanText : "{0}는 올바른 숫�?가 아닙니다."
+      minText : "최소값은 {0}입니다.",
+      maxText : "최대값은 {0}입니다.",
+      nanText : "{0}는 올바른 숫자가 아닙니다."
    });
 }
 
@@ -137,9 +132,9 @@ if(Ext.form.DateField){
    Ext.apply(Ext.form.DateField.prototype, {
       disabledDaysText  : "비활성",
       disabledDatesText : "비활성",
-      minText           : "{0}�?� �?�후여야 합니다.",
-      maxText           : "{0}�?� �?�전�?�어야 합니다.",
-      invalidText       : "{0}는 올바른 날짜형�?�?� 아닙니다. - 다�?�과 같�?� 형�?�?�어야 합니다. {1}",
+      minText           : "{0}일 이후여야 합니다.",
+      maxText           : "{0}일 이전이어야 합니다.",
+      invalidText       : "{0}는 올바른 날짜형식이 아닙니다. - 다음과 같은 형식이어야 합니다. {1}",
       format            : "m/d/y"
    });
 }
@@ -153,80 +148,80 @@ if(Ext.form.ComboBox){
 
 if(Ext.form.VTypes){
    Ext.apply(Ext.form.VTypes, {
-      emailText    : '�?�메�?� 주소 형�?�? 맞게 입력해야합니다. (예: "user@example.com")',
-      urlText      : 'URL 형�?�? 맞게 입력해야합니다. (예: "http:/'+'/www.example.com")',
-      alphaText    : '�?문, 밑줄(_)만 입력할 수 있습니다.',
-      alphanumText : '�?문, 숫�?, 밑줄(_)만 입력할 수 있습니다.'
+      emailText    : '이메일 주소 형식에 맞게 입력해야합니다. (예: "user@example.com")',
+      urlText      : 'URL 형식에 맞게 입력해야합니다. (예: "http:/'+'/www.example.com")',
+      alphaText    : '영문, 밑줄(_)만 입력할 수 있습니다.',
+      alphanumText : '영문, 숫자, 밑줄(_)만 입력할 수 있습니다.'
    });
 }
 
 if(Ext.form.HtmlEditor){
    Ext.apply(Ext.form.HtmlEditor.prototype, {
-   createLinkText : 'URL�?� 입력해주세요:',
+   createLinkText : 'URL을 입력해주세요:',
    buttonTips : {
             bold : {
                title: '굵게 (Ctrl+B)',
-               text: '선�?한 �?스트를 굵게 표시합니다.',
+               text: '선택한 텍스트를 굵게 표시합니다.',
                cls: 'x-html-editor-tip'
             },
             italic : {
                title: '기울임꼴 (Ctrl+I)',
-               text: '선�?한 �?스트를 기울임꼴로 표시합니다.',
+               text: '선택한 텍스트를 기울임꼴로 표시합니다.',
                cls: 'x-html-editor-tip'
             },
             underline : {
                title: '밑줄 (Ctrl+U)',
-               text: '선�?한 �?스트�? 밑줄�?� 표시합니다.',
+               text: '선택한 텍스트에 밑줄을 표시합니다.',
                cls: 'x-html-editor-tip'
            },
            increasefontsize : {
-               title: '글꼴�?�기 늘림',
-               text: '글꼴 �?�기를 �?�게 합니다.',
+               title: '글꼴크기 늘림',
+               text: '글꼴 크기를 크게 합니다.',
                cls: 'x-html-editor-tip'
            },
            decreasefontsize : {
-               title: '글꼴�?�기 줄임',
-               text: '글꼴 �?�기를 작게 합니다.',
+               title: '글꼴크기 줄임',
+               text: '글꼴 크기를 작게 합니다.',
                cls: 'x-html-editor-tip'
            },
            backcolor : {
-               title: '�?스트 강조 색',
-               text: '선�?한 �?스트�?� 배경색�?� 변경합니다.',
+               title: '텍스트 강조 색',
+               text: '선택한 텍스트의 배경색을 변경합니다.',
                cls: 'x-html-editor-tip'
            },
            forecolor : {
                title: '글꼴색',
-               text: '선�?한 �?스트�?� 색�?� 변경합니다.',
+               text: '선택한 텍스트의 색을 변경합니다.',
                cls: 'x-html-editor-tip'
            },
            justifyleft : {
-               title: '�?스트 왼쪽 맞춤',
-               text: '왼쪽�? �?스트를 맞춥니다.',
+               title: '텍스트 왼쪽 맞춤',
+               text: '왼쪽에 텍스트를 맞춥니다.',
                cls: 'x-html-editor-tip'
            },
            justifycenter : {
-               title: '가운�?� 맞춤',
-               text: '가운�?��? �?스트를 맞춥니다.',
+               title: '가운데 맞춤',
+               text: '가운데에 텍스트를 맞춥니다.',
                cls: 'x-html-editor-tip'
            },
            justifyright : {
-               title: '�?스트 오른쪽 맞춤',
-               text: '오른쪽�? �?스트를 맞춥니다.',
+               title: '텍스트 오른쪽 맞춤',
+               text: '오른쪽에 텍스트를 맞춥니다.',
                cls: 'x-html-editor-tip'
            },
            insertunorderedlist : {
                title: '글머리 기호',
-               text: '글머리 기호 목�?�?� 시작합니다.',
+               text: '글머리 기호 목록을 시작합니다.',
                cls: 'x-html-editor-tip'
            },
            insertorderedlist : {
                title: '번호 매기기',
-               text: '번호 매기기 목�?�?� 시작합니다.',
+               text: '번호 매기기 목록을 시작합니다.',
                cls: 'x-html-editor-tip'
            },
            createlink : {
-               title: '하�?��?��?�?�',
-               text: '선�?한 �?스트�? 하�?��?��?�?�를 만듭니다.',
+               title: '하이퍼링크',
+               text: '선택한 텍스트에 하이퍼링크를 만듭니다.',
                cls: 'x-html-editor-tip'
            },
            sourceedit : {
@@ -244,7 +239,7 @@ if(Ext.grid.GridView){
       sortDescText : "내림차순 정렬",
       lockText     : "칼럼 잠금",
       unlockText   : "칼럼 잠금해제",
-      columnsText  : "칼럼 목�?"
+      columnsText  : "칼럼 목록"
    });
 }
 
@@ -267,11 +262,11 @@ if(Ext.grid.PropertyColumnModel){
 
 if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
    Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
-      splitTip            : "�?�기변경�?� 위해 드래그하세요.",
-      collapsibleSplitTip : "�?�기변경�?� 위해 드래그, 숨기기 위해 �?�블�?�릭 하세요."
+      splitTip            : "크기변경을 위해 드래그하세요.",
+      collapsibleSplitTip : "크기변경을 위해 드래그, 숨기기 위해 더블클릭 하세요."
    });
 }
 
-</pre>
+</pre>    
 </body>
 </html>

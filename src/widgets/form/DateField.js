@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -139,6 +139,18 @@ disabledDates: ["^03"]
         this.disabledDatesRE = null;
         this.initDisabledDays();
     },
+    
+    initEvents: function() {
+        Ext.form.DateField.superclass.initEvents.call(this);
+        this.keyNav = new Ext.KeyNav(this.el, {
+            "down": function(e) {
+                this.onTriggerClick();
+            },
+            scope: this,
+            forceKeyDown: true
+        });
+    },
+
 
     // private
     initDisabledDays : function(){
@@ -304,7 +316,7 @@ dateField.setValue('2006-05-04');
 
     // private
     onDestroy : function(){
-		Ext.destroy(this.menu);
+		Ext.destroy(this.menu, this.keyNav);
         Ext.form.DateField.superclass.onDestroy.call(this);
     },
 
@@ -325,7 +337,8 @@ dateField.setValue('2006-05-04');
         }
         if(this.menu == null){
             this.menu = new Ext.menu.DateMenu({
-                hideOnClick: false
+                hideOnClick: false,
+                focusOnSelect: false
             });
         }
         this.onFocus();

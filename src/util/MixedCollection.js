@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -188,7 +188,7 @@ mc.add(otherEl);
      * </ul></div>
      * The function should return a boolean value. Returning false from the function will stop the iteration.
      * @param {Function} fn The function to execute for each item.
-     * @param {Object} scope (optional) The scope in which to execute the function.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current item in the iteration.
      */
     each : function(fn, scope){
         var items = [].concat(this.items); // each safe for removal
@@ -203,7 +203,7 @@ mc.add(otherEl);
      * Executes the specified function once for every key in the collection, passing each
      * key, and its associated item as the first two parameters.
      * @param {Function} fn The function to execute for each item.
-     * @param {Object} scope (optional) The scope in which to execute the function.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.
      */
     eachKey : function(fn, scope){
         for(var i = 0, len = this.keys.length; i < len; i++){
@@ -215,7 +215,7 @@ mc.add(otherEl);
      * Returns the first item in the collection which elicits a true return value from the
      * passed selection function.
      * @param {Function} fn The selection function to execute for each item.
-     * @param {Object} scope (optional) The scope in which to execute the function.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.
      * @return {Object} The first item in the collection which returned true from the selection function.
      */
     find : function(fn, scope){
@@ -303,7 +303,7 @@ mc.add(otherEl);
     getCount : function(){
         return this.length;
     },
-    
+
     /**
      * Returns index within the collection of the passed Object.
      * @param {Object} o The item to find the index of.
@@ -404,14 +404,14 @@ mc.add(otherEl);
      * @param {String} property Property to sort by ('key', 'value', or 'index')
      * @param {String} dir (optional) Direction to sort 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
-     * Defaults to sorting by numeric value.  
+     * Defaults to sorting by numeric value.
      */
     _sort : function(property, dir, fn){
         var i,
             len,
             dsc = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
             c = [], k = this.keys, items = this.items;
-            
+
         fn = fn || function(a, b){
             return a-b;
         };
@@ -436,7 +436,7 @@ mc.add(otherEl);
      * Sorts this collection by <b>item</b> value with the passed comparison function.
      * @param {String} direction (optional) 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
-     * Defaults to sorting by numeric value.  
+     * Defaults to sorting by numeric value.
      */
     sort : function(dir, fn){
         this._sort('value', dir, fn);
@@ -446,7 +446,7 @@ mc.add(otherEl);
      * Sorts this collection by <b>key</b>s.
      * @param {String} direction (optional) 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
-     * Defaults to sorting by case insensitive string.  
+     * Defaults to sorting by case insensitive string.
      */
     keySort : function(dir, fn){
         this._sort('key', dir, fn || function(a, b){
@@ -506,7 +506,7 @@ mc.add(otherEl);
      * The passed function will be called with each object in the collection.
      * If the function returns true, the value is included otherwise it is filtered.
      * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key)
-     * @param {Object} scope (optional) The scope of the function (defaults to this)
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.
      * @return {MixedCollection} The new filtered collection
      */
     filterBy : function(fn, scope){
@@ -545,7 +545,7 @@ mc.add(otherEl);
      * Find the index of the first matching object in this collection by a function.
      * If the function returns <i>true</i> it is considered a match.
      * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key).
-     * @param {Object} scope (optional) The scope of the function (defaults to this).
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.
      * @param {Number} start (optional) The index to start searching at (defaults to 0).
      * @return {Number} The matched index or -1
      */
@@ -560,12 +560,21 @@ mc.add(otherEl);
     },
 
     // private
-    createValueMatcher : function(value, anyMatch, caseSensitive){
-        if(!value.exec){ // not a regex
+    createValueMatcher : function(value, anyMatch, caseSensitive, exactMatch) {
+        if (!value.exec) { // not a regex
+            var er = Ext.escapeRe;
             value = String(value);
-            value = new RegExp((anyMatch === true ? '' : '^') + Ext.escapeRe(value), caseSensitive ? '' : 'i');
-        }
-        return value;
+            if (anyMatch === true) {
+                value = er(value);
+            } else {
+                value = '^' + er(value);
+                if (exactMatch === true) {
+                    value += '$';
+                }
+            }
+            value = new RegExp(value, caseSensitive ? '' : 'i');
+         }
+         return value;
     },
 
     /**

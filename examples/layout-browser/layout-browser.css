@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -58,14 +58,16 @@ a:hover {
     background: #f9f9f9;
 }
 .x-tab-panel-header-plain .x-tab-strip-top {
-    background: #DFE8F6 url(../images/default/tabs/tab-strip-bg.gif) repeat-x scroll center bottom !important;
+    background: #DFE8F6 url(../../resources/images/default/tabs/tab-strip-bg.gif) repeat-x scroll center bottom !important;
 }
-.custom-accordion .x-panel-body {
+.custom-accordion .x-panel-body{
+    background:#ffe;
+    text-align:center;
+}
+.custom-accordion .x-panel-body p {
     font-family:georgia,serif;
     padding:20px 80px !important;
-    background:#ffe;
     font-size:18px;
-    text-align:center;
     color:#15428B;
 }
 .custom-accordion .x-panel-header-text {

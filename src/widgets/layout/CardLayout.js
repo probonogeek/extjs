@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -93,7 +93,7 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
     
     constructor: function(config){
         Ext.layout.CardLayout.superclass.constructor.call(this, config);
-        this.forceLayout = (this.deferredRender === false);
+      //  this.forceLayout = (this.deferredRender === false);
     },
 
     /**
@@ -101,18 +101,23 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
      * @param {String/Number} item The string component id or numeric index of the item to activate
      */
     setActiveItem : function(item){
+        var ai = this.activeItem;
         item = this.container.getComponent(item);
-        if(this.activeItem != item){
-            if(this.activeItem){
-                this.activeItem.hide();
+        if(ai != item){
+            if(ai){
+                ai.hide();
+                ai.fireEvent('deactivate', ai);
             }
             var layout = item.doLayout && (this.layoutOnCardChange || !item.rendered);
             this.activeItem = item;
-            item.show();
+            if(item){
+                item.show();
+            }
             this.layout();
-            if(layout){
+            if(item && layout){
                 item.doLayout();
             }
+            item.fireEvent('activate', item);
         }
     },
 

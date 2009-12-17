@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -81,9 +81,13 @@ Ext.SplitButton = Ext.extend(Ext.Button, {
     },
 
     isClickOnArrow : function(e){
-        return this.arrowAlign != 'bottom' ?
-               e.getPageX() > this.el.child(this.buttonSelector).getRegion().right :
-               e.getPageY() > this.el.child(this.buttonSelector).getRegion().bottom;
+	if (this.arrowAlign != 'bottom') {
+	    var visBtn = this.el.child('em.x-btn-split');
+	    var right = visBtn.getRegion().right - visBtn.getPadding('r');
+	    return e.getPageX() > right;
+	} else {
+	    return e.getPageY() > this.btnEl.getRegion().bottom;
+	}
     },
 
     // private
@@ -112,12 +116,12 @@ Ext.SplitButton = Ext.extend(Ext.Button, {
 
     // private
     isMenuTriggerOver : function(e){
-        return this.menu && e.target.tagName == 'em';
+        return this.menu && e.target.tagName == this.arrowSelector;
     },
 
     // private
     isMenuTriggerOut : function(e, internal){
-        return this.menu && e.target.tagName != 'em';
+        return this.menu && e.target.tagName != this.arrowSelector;
     }
 });
 

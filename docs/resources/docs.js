@@ -20,9 +20,9 @@ ApiPanel = function() {
         animate: false,
         collapseMode:'mini',
         loader: new Ext.tree.TreeLoader({
-            preloadChildren: true,
-            clearOnLoad: false
-        }),
+			preloadChildren: true,
+			clearOnLoad: false
+		}),
         root: new Ext.tree.AsyncTreeNode({
             text:'Ext JS',
             id:'root',
@@ -40,6 +40,68 @@ ApiPanel = function() {
 };
 
 Ext.extend(ApiPanel, Ext.tree.TreePanel, {
+    initComponent: function(){
+        this.hiddenPkgs = [];
+        Ext.apply(this, {
+            tbar:[ ' ',
+			new Ext.form.TextField({
+				width: 200,
+				emptyText:'Find a Class',
+                enableKeyEvents: true,
+				listeners:{
+					render: function(f){
+                    	this.filter = new Ext.tree.TreeFilter(this, {
+                    		clearBlank: true,
+                    		autoClear: true
+                    	});
+					},
+                    keydown: {
+                        fn: this.filterTree,
+                        buffer: 350,
+                        scope: this
+                    },
+                    scope: this
+				}
+			}), ' ', ' ',
+			{
+                iconCls: 'icon-expand-all',
+				tooltip: 'Expand All',
+                handler: function(){ this.root.expand(true); },
+                scope: this
+            }, '-', {
+                iconCls: 'icon-collapse-all',
+                tooltip: 'Collapse All',
+                handler: function(){ this.root.collapse(true); },
+                scope: this
+            }]
+        })
+        ApiPanel.superclass.initComponent.call(this);
+    },
+	filterTree: function(t, e){
+		var text = t.getValue();
+		Ext.each(this.hiddenPkgs, function(n){
+			n.ui.show();
+		});
+		if(!text){
+			this.filter.clear();
+			return;
+		}
+		this.expandAll();
+		
+		var re = new RegExp('^' + Ext.escapeRe(text), 'i');
+		this.filter.filterBy(function(n){
+			return !n.attributes.isClass || re.test(n.text);
+		});
+		
+		// hide empty packages that weren't filtered
+		this.hiddenPkgs = [];
+		this.root.cascade(function(n){
+			if(!n.attributes.isClass && n.ui.ctNode.offsetHeight < 3){
+				n.ui.hide();
+				this.hiddenPkgs.push(n);
+			}
+		});
+	},
     selectClass : function(cls){
         if(cls){
             var parts = cls.split('.');
@@ -69,60 +131,109 @@ Ext.extend(ApiPanel, Ext.tree.TreePanel, {
 DocPanel = Ext.extend(Ext.Panel, {
     closable: true,
     autoScroll:true,
-
+    
     initComponent : function(){
         var ps = this.cclass.split('.');
         this.title = ps[ps.length-1];
-
+        Ext.apply(this,{
+            tbar: ['->',{
+                text: 'Config Options',
+                handler: this.scrollToMember.createDelegate(this, ['configs']),
+                iconCls: 'icon-config'
+            },'-',{
+                text: 'Properties',
+                handler: this.scrollToMember.createDelegate(this, ['props']),
+                iconCls: 'icon-prop'
+            }, '-',{
+                text: 'Methods',
+                handler: this.scrollToMember.createDelegate(this, ['methods']),
+                iconCls: 'icon-method'
+            }, '-',{
+                text: 'Events',
+                handler: this.scrollToMember.createDelegate(this, ['events']),
+                iconCls: 'icon-event'
+            }, '-',{
+                text: 'Direct Link',
+                handler: this.directLink,
+                scope: this,
+                iconCls: 'icon-fav'
+            }, '-',{
+                tooltip:'Hide Inherited Members',
+                iconCls: 'icon-hide-inherited',
+                enableToggle: true,
+                scope: this,
+                toggleHandler : function(b, pressed){
+                     this.body[pressed ? 'addClass' : 'removeClass']('hide-inherited');
+                }
+            }, '-', {
+                tooltip:'Expand All Members',
+                iconCls: 'icon-expand-members',
+                enableToggle: true,
+                scope: this,
+                toggleHandler : function(b, pressed){
+                    this.body[pressed ? 'addClass' : 'removeClass']('full-details');
+                }
+            }]
+        });
         DocPanel.superclass.initComponent.call(this);
     },
 
+    directLink : function(){
+        var link = String.format(
+            "<a href=\"{0}\" target=\"_blank\">{0}</a>",
+            document.location.href+'?class='+this.cclass
+        );
+        Ext.Msg.alert('Direct Link to ' + this.cclass,link);
+    },
+    
     scrollToMember : function(member){
         var el = Ext.fly(this.cclass + '-' + member);
         if(el){
             var top = (el.getOffsetsTo(this.body)[1]) + this.body.dom.scrollTop;
-            this.body.scrollTo('top', top-25, {duration:.75, callback: this.hlMember.createDelegate(this, [member])});
+            this.body.scrollTo('top', top-25, {duration:0.75, callback: this.hlMember.createDelegate(this, [member])});
         }
     },
 
-    scrollToSection : function(id){
-        var el = Ext.getDom(id);
-        if(el){
-            var top = (Ext.fly(el).getOffsetsTo(this.body)[1]) + this.body.dom.scrollTop;
-            this.body.scrollTo('top', top-25, {duration:.5, callback: function(){
-                Ext.fly(el).next('h2').pause(.2).highlight('#8DB2E3', {attr:'color'});
+	scrollToSection : function(id){
+		var el = Ext.getDom(id);
+		if(el){
+			var top = (Ext.fly(el).getOffsetsTo(this.body)[1]) + this.body.dom.scrollTop;
+			this.body.scrollTo('top', top-25, {duration:0.5, callback: function(){
+                Ext.fly(el).next('h2').pause(0.2).highlight('#8DB2E3', {attr:'color'});
             }});
         }
-    },
+	},
 
     hlMember : function(member){
         var el = Ext.fly(this.cclass + '-' + member);
         if(el){
-            el.up('tr').highlight('#cadaf9');
+            if (tr = el.up('tr')) {
+                tr.highlight('#cadaf9');
+            }
         }
     }
 });
 
 
 MainPanel = function(){
-
-    this.searchStore = new Ext.data.Store({
+	
+	this.searchStore = new Ext.data.Store({
         proxy: new Ext.data.ScriptTagProxy({
             url: 'http://extjs.com/playpen/api.php'
         }),
         reader: new Ext.data.JsonReader({
-                root: 'data'
-            },
-            ['cls', 'member', 'type', 'doc']
-        ),
-        baseParams: {},
+	            root: 'data'
+	        }, 
+			['cls', 'member', 'type', 'doc']
+		),
+		baseParams: {},
         listeners: {
             'beforeload' : function(){
                 this.baseParams.qt = Ext.getCmp('search-type').getValue();
             }
         }
-    });
-
+    }); 
+	
     MainPanel.superclass.constructor.call(this, {
         id:'doc-body',
         region:'center',
@@ -140,8 +251,8 @@ MainPanel = function(){
             autoLoad: {url: 'welcome.html', callback: this.initSearch, scope: this},
             iconCls:'icon-docs',
             autoScroll: true,
-            tbar: [
-                'Search: ', ' ',
+			tbar: [
+				'Search: ', ' ',
                 new Ext.ux.SelectBox({
                     listClass:'x-combo-list-small',
                     width:90,
@@ -155,10 +266,10 @@ MainPanel = function(){
                     displayField: 'text'
                 }), ' ',
                 new Ext.app.SearchField({
-                    width:240,
-                    store: this.searchStore,
-                    paramName: 'q'
-                })
+	                width:240,
+					store: this.searchStore,
+					paramName: 'q'
+	            })
             ]
         }
     });
@@ -169,45 +280,6 @@ Ext.extend(MainPanel, Ext.TabPanel, {
     initEvents : function(){
         MainPanel.superclass.initEvents.call(this);
         this.body.on('click', this.onClick, this);
-        this.body.on({
-            mouseover: this.onMarginEnter,
-            mouseout: this.onMarginLeave,
-            scope: this,
-            delegate: 'td.micon'
-        });
-        new Ext.ToolTip({
-            renderTo: document.body,
-            target: this.body,
-            delegate: 'td.micon',
-            showDelay: 100,
-            dismissDelay: 1000,
-            listeners: {
-//              Don't show if you *can't* expand it.
-                beforeshow: function(t) {
-                    var tr = Ext.get(t.triggerElement.parentNode);
-                    var result = tr.hasClass("expandable");
-                    if (result) {
-                        t.body.dom.innerHTML = (tr.hasClass("expanded")) ? "Click to collapse" : "Click to expand";
-                    }
-                    return result;
-                }
-            }
-        });
-    },
-
-    onMarginEnter: function(e) {
-        var t = e.getTarget('td.micon', 2, true);
-        if (t && Ext.fly(t.dom.parentNode).hasClass("expandable")) {
-            t.addClass('over');
-        }
-    },
-
-    onMarginLeave: function(e) {
-        var t = e.getTarget('td.micon', 2, true), toTd = Ext.get(e.getRelatedTarget());
-        if (toTd) toTd = toTd.up('td.micon', 2);
-        if (!toTd || (toTd !== t)) {
-               t.removeClass('over');
-        }
     },
 
     onClick: function(e, target){
@@ -255,43 +327,43 @@ Ext.extend(MainPanel, Ext.TabPanel, {
             this.setActiveTab(p);
         }
     },
-
-    initSearch : function(){
-        // Custom rendering Template for the View
-        var resultTpl = new Ext.XTemplate(
-            '<tpl for=".">',
-            '<div class="search-item">',
-                '<a class="member" ext:cls="{cls}" ext:member="{member}" href="output/{cls}.html">',
-                '<img src="resources/images/default/s.gif" class="item-icon icon-{type}"/>{member}',
-                '</a> ',
-                '<a class="cls" ext:cls="{cls}" href="output/{cls}.html">{cls}</a>',
-                '<p>{doc}</p>',
-            '</div></tpl>'
-        );
-
-        var p = new Ext.DataView({
+	
+	initSearch : function(){
+		// Custom rendering Template for the View
+	    var resultTpl = new Ext.XTemplate(
+	        '<tpl for=".">',
+	        '<div class="search-item">',
+	            '<a class="member" ext:cls="{cls}" ext:member="{member}" href="output/{cls}.html">',
+				'<img src="resources/images/default/s.gif" class="item-icon icon-{type}"/>{member}',
+				'</a> ',
+				'<a class="cls" ext:cls="{cls}" href="output/{cls}.html">{cls}</a>',
+	            '<p>{doc}</p>',
+	        '</div></tpl>'
+	    );
+		
+		var p = new Ext.DataView({
             applyTo: 'search',
-            tpl: resultTpl,
-            loadingText:'Searching...',
+			tpl: resultTpl,
+			loadingText:'Searching...',
             store: this.searchStore,
             itemSelector: 'div.search-item',
-            emptyText: '<h3>Use the search field above to search the Ext API for classes, properties, config options, methods and events.</h3>'
+			emptyText: '<h3>Use the search field above to search the Ext API for classes, properties, config options, methods and events.</h3>'
         });
-    },
-
-    doSearch : function(e){
-        var k = e.getKey();
-        if(!e.isSpecialKey()){
-            var text = e.target.value;
-            if(!text){
-                this.searchStore.baseParams.q = '';
-                this.searchStore.removeAll();
-            }else{
-                this.searchStore.baseParams.q = text;
-                this.searchStore.reload();
-            }
-        }
-    }
+	},
+	
+	doSearch : function(e){
+		var k = e.getKey();
+		if(!e.isSpecialKey()){
+			var text = e.target.value;
+			if(!text){
+				this.searchStore.baseParams.q = '';
+				this.searchStore.removeAll();
+			}else{
+				this.searchStore.baseParams.q = text;
+				this.searchStore.reload();
+			}
+		}
+	}
 });
 
 
@@ -310,62 +382,20 @@ Ext.onReady(function(){
     });
 
     mainPanel.on('tabchange', function(tp, tab){
-        api.selectClass(tab.cclass);
+        api.selectClass(tab.cclass); 
     });
-
-    var hd = new Ext.Panel({
-        border: false,
-        layout:'anchor',
-        region:'north',
-        cls: 'docs-header',
-        height:60,
-        items: [{
-            xtype:'box',
-            el:'header',
-            border:false,
-            anchor: 'none -25'
-        },
-        new Ext.Toolbar({
-            cls:'top-toolbar',
-            items:[ ' ',
-            new Ext.form.TextField({
-                width: 200,
-                emptyText:'Find a Class',
-                listeners:{
-                    render: function(f){
-                        f.el.on('keydown', filterTree, f, {buffer: 350});
-                    }
-                }
-            }), ' ', ' ',
-            {
-                iconCls: 'icon-expand-all',
-                tooltip: 'Expand All',
-                handler: function(){ api.root.expand(true); }
-            }, '-', {
-                iconCls: 'icon-collapse-all',
-                tooltip: 'Collapse All',
-                handler: function(){ api.root.collapse(true); }
-            }, '->', {
-                tooltip:'Hide Inherited Members',
-                iconCls: 'icon-hide-inherited',
-                enableToggle: true,
-                toggleHandler : function(b, pressed){
-                     mainPanel[pressed ? 'addClass' : 'removeClass']('hide-inherited');
-                }
-            }, '-', {
-                tooltip:'Expand All Members',
-                iconCls: 'icon-expand-members',
-                enableToggle: true,
-                toggleHandler : function(b, pressed){
-                    mainPanel[pressed ? 'addClass' : 'removeClass']('full-details');
-                }
-            }]
-        })]
-    })
 
     var viewport = new Ext.Viewport({
         layout:'border',
-        items:[ hd, api, mainPanel ]
+        items:[ {
+            cls: 'docs-header',
+            height: 36,
+            region:'north',
+            xtype:'box',
+            el:'header',
+            border:false,
+            margins: '0 0 5 0'
+        }, api, mainPanel ]
     });
 
     api.expandPath('/root/apidocs');
@@ -377,55 +407,24 @@ Ext.onReady(function(){
         var cls = ps['class'];
         mainPanel.loadClass('output/' + cls + '.html', cls, ps.member);
     }
-
+    
     viewport.doLayout();
-
-    setTimeout(function(){
+	
+	setTimeout(function(){
         Ext.get('loading').remove();
         Ext.get('loading-mask').fadeOut({remove:true});
     }, 250);
-
-    var filter = new Ext.tree.TreeFilter(api, {
-        clearBlank: true,
-        autoClear: true
-    });
-    var hiddenPkgs = [];
-    function filterTree(e){
-        var text = e.target.value;
-        Ext.each(hiddenPkgs, function(n){
-            n.ui.show();
-        });
-        if(!text){
-            filter.clear();
-            return;
-        }
-        api.expandAll();
-
-        var re = new RegExp('^' + Ext.escapeRe(text), 'i');
-        filter.filterBy(function(n){
-            return !n.attributes.isClass || re.test(n.text);
-        });
-
-        // hide empty packages that weren't filtered
-        hiddenPkgs = [];
-        api.root.cascade(function(n){
-            if(!n.attributes.isClass && n.ui.ctNode.offsetHeight < 3){
-                n.ui.hide();
-                hiddenPkgs.push(n);
-            }
-        });
-    }
-
+	
 });
 
 
 Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
     initComponent : function(){
         if(!this.store.baseParams){
-            this.store.baseParams = {};
-        }
-        Ext.app.SearchField.superclass.initComponent.call(this);
-        this.on('specialkey', function(f, e){
+			this.store.baseParams = {};
+		}
+		Ext.app.SearchField.superclass.initComponent.call(this);
+		this.on('specialkey', function(f, e){
             if(e.getKey() == e.ENTER){
                 this.onTrigger2Click();
             }
@@ -444,11 +443,11 @@ Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
     onTrigger1Click : function(){
         if(this.hasSearch){
             this.store.baseParams[this.paramName] = '';
-            this.store.removeAll();
-            this.el.dom.value = '';
+			this.store.removeAll();
+			this.el.dom.value = '';
             this.triggers[0].hide();
             this.hasSearch = false;
-            this.focus();
+			this.focus();
         }
     },
 
@@ -458,16 +457,16 @@ Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
             this.onTrigger1Click();
             return;
         }
-        if(v.length < 2){
-            Ext.Msg.alert('Invalid Search', 'You must enter a minimum of 2 characters to search the API');
-            return;
-        }
-        this.store.baseParams[this.paramName] = v;
+		if(v.length < 2){
+			Ext.Msg.alert('Invalid Search', 'You must enter a minimum of 2 characters to search the API');
+			return;
+		}
+		this.store.baseParams[this.paramName] = v;
         var o = {start: 0};
         this.store.reload({params:o});
         this.hasSearch = true;
         this.triggers[0].show();
-        this.focus();
+		this.focus();
     }
 });
 
@@ -485,182 +484,182 @@ Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
  * Slight mods for Ext 2.0
  */
 Ext.ux.SelectBox = function(config){
-    this.searchResetDelay = 1000;
-    config = config || {};
-    config = Ext.apply(config || {}, {
-        editable: false,
-        forceSelection: true,
-        rowHeight: false,
-        lastSearchTerm: false,
+	this.searchResetDelay = 1000;
+	config = config || {};
+	config = Ext.apply(config || {}, {
+		editable: false,
+		forceSelection: true,
+		rowHeight: false,
+		lastSearchTerm: false,
         triggerAction: 'all',
         mode: 'local'
     });
 
-    Ext.ux.SelectBox.superclass.constructor.apply(this, arguments);
+	Ext.ux.SelectBox.superclass.constructor.apply(this, arguments);
 
-    this.lastSelectedIndex = this.selectedIndex || 0;
+	this.lastSelectedIndex = this.selectedIndex || 0;
 };
 
 Ext.extend(Ext.ux.SelectBox, Ext.form.ComboBox, {
     lazyInit: false,
-    initEvents : function(){
-        Ext.ux.SelectBox.superclass.initEvents.apply(this, arguments);
-        // you need to use keypress to capture upper/lower case and shift+key, but it doesn't work in IE
-        this.el.on('keydown', this.keySearch, this, true);
-        this.cshTask = new Ext.util.DelayedTask(this.clearSearchHistory, this);
-    },
+	initEvents : function(){
+		Ext.ux.SelectBox.superclass.initEvents.apply(this, arguments);
+		// you need to use keypress to capture upper/lower case and shift+key, but it doesn't work in IE
+		this.el.on('keydown', this.keySearch, this, true);
+		this.cshTask = new Ext.util.DelayedTask(this.clearSearchHistory, this);
+	},
 
-    keySearch : function(e, target, options) {
-        var raw = e.getKey();
-        var key = String.fromCharCode(raw);
-        var startIndex = 0;
+	keySearch : function(e, target, options) {
+		var raw = e.getKey();
+		var key = String.fromCharCode(raw);
+		var startIndex = 0;
 
-        if( !this.store.getCount() ) {
-            return;
-        }
+		if( !this.store.getCount() ) {
+			return;
+		}
 
-        switch(raw) {
-            case Ext.EventObject.HOME:
-                e.stopEvent();
-                this.selectFirst();
-                return;
+		switch(raw) {
+			case Ext.EventObject.HOME:
+				e.stopEvent();
+				this.selectFirst();
+				return;
 
-            case Ext.EventObject.END:
-                e.stopEvent();
-                this.selectLast();
-                return;
+			case Ext.EventObject.END:
+				e.stopEvent();
+				this.selectLast();
+				return;
 
-            case Ext.EventObject.PAGEDOWN:
-                this.selectNextPage();
-                e.stopEvent();
-                return;
+			case Ext.EventObject.PAGEDOWN:
+				this.selectNextPage();
+				e.stopEvent();
+				return;
 
-            case Ext.EventObject.PAGEUP:
-                this.selectPrevPage();
-                e.stopEvent();
-                return;
-        }
+			case Ext.EventObject.PAGEUP:
+				this.selectPrevPage();
+				e.stopEvent();
+				return;
+		}
 
-        // skip special keys other than the shift key
-        if( (e.hasModifier() && !e.shiftKey) || e.isNavKeyPress() || e.isSpecialKey() ) {
-            return;
-        }
-        if( this.lastSearchTerm == key ) {
-            startIndex = this.lastSelectedIndex;
-        }
-        this.search(this.displayField, key, startIndex);
-        this.cshTask.delay(this.searchResetDelay);
-    },
+		// skip special keys other than the shift key
+		if( (e.hasModifier() && !e.shiftKey) || e.isNavKeyPress() || e.isSpecialKey() ) {
+			return;
+		}
+		if( this.lastSearchTerm == key ) {
+			startIndex = this.lastSelectedIndex;
+		}
+		this.search(this.displayField, key, startIndex);
+		this.cshTask.delay(this.searchResetDelay);
+	},
 
-    onRender : function(ct, position) {
-        this.store.on('load', this.calcRowsPerPage, this);
-        Ext.ux.SelectBox.superclass.onRender.apply(this, arguments);
-        if( this.mode == 'local' ) {
-            this.calcRowsPerPage();
-        }
-    },
+	onRender : function(ct, position) {
+		this.store.on('load', this.calcRowsPerPage, this);
+		Ext.ux.SelectBox.superclass.onRender.apply(this, arguments);
+		if( this.mode == 'local' ) {
+			this.calcRowsPerPage();
+		}
+	},
 
-    onSelect : function(record, index, skipCollapse){
-        if(this.fireEvent('beforeselect', this, record, index) !== false){
-            this.setValue(record.data[this.valueField || this.displayField]);
-            if( !skipCollapse ) {
-                this.collapse();
-            }
-            this.lastSelectedIndex = index + 1;
-            this.fireEvent('select', this, record, index);
-        }
-    },
+	onSelect : function(record, index, skipCollapse){
+		if(this.fireEvent('beforeselect', this, record, index) !== false){
+			this.setValue(record.data[this.valueField || this.displayField]);
+			if( !skipCollapse ) {
+				this.collapse();
+			}
+			this.lastSelectedIndex = index + 1;
+			this.fireEvent('select', this, record, index);
+		}
+	},
 
-    render : function(ct) {
-        Ext.ux.SelectBox.superclass.render.apply(this, arguments);
-        if( Ext.isSafari ) {
-            this.el.swallowEvent('mousedown', true);
-        }
-        this.el.unselectable();
-        this.innerList.unselectable();
-        this.trigger.unselectable();
-        this.innerList.on('mouseup', function(e, target, options) {
-            if( target.id && target.id == this.innerList.id ) {
-                return;
-            }
-            this.onViewClick();
-        }, this);
+	render : function(ct) {
+		Ext.ux.SelectBox.superclass.render.apply(this, arguments);
+		if( Ext.isSafari ) {
+			this.el.swallowEvent('mousedown', true);
+		}
+		this.el.unselectable();
+		this.innerList.unselectable();
+		this.trigger.unselectable();
+		this.innerList.on('mouseup', function(e, target, options) {
+			if( target.id && target.id == this.innerList.id ) {
+				return;
+			}
+			this.onViewClick();
+		}, this);
 
-        this.innerList.on('mouseover', function(e, target, options) {
-            if( target.id && target.id == this.innerList.id ) {
-                return;
-            }
-            this.lastSelectedIndex = this.view.getSelectedIndexes()[0] + 1;
-            this.cshTask.delay(this.searchResetDelay);
-        }, this);
+		this.innerList.on('mouseover', function(e, target, options) {
+			if( target.id && target.id == this.innerList.id ) {
+				return;
+			}
+			this.lastSelectedIndex = this.view.getSelectedIndexes()[0] + 1;
+			this.cshTask.delay(this.searchResetDelay);
+		}, this);
 
-        this.trigger.un('click', this.onTriggerClick, this);
-        this.trigger.on('mousedown', function(e, target, options) {
-            e.preventDefault();
-            this.onTriggerClick();
-        }, this);
+		this.trigger.un('click', this.onTriggerClick, this);
+		this.trigger.on('mousedown', function(e, target, options) {
+			e.preventDefault();
+			this.onTriggerClick();
+		}, this);
 
-        this.on('collapse', function(e, target, options) {
-            Ext.getDoc().un('mouseup', this.collapseIf, this);
-        }, this, true);
+		this.on('collapse', function(e, target, options) {
+			Ext.getDoc().un('mouseup', this.collapseIf, this);
+		}, this, true);
 
-        this.on('expand', function(e, target, options) {
-            Ext.getDoc().on('mouseup', this.collapseIf, this);
-        }, this, true);
-    },
+		this.on('expand', function(e, target, options) {
+			Ext.getDoc().on('mouseup', this.collapseIf, this);
+		}, this, true);
+	},
 
-    clearSearchHistory : function() {
-        this.lastSelectedIndex = 0;
-        this.lastSearchTerm = false;
-    },
+	clearSearchHistory : function() {
+		this.lastSelectedIndex = 0;
+		this.lastSearchTerm = false;
+	},
 
-    selectFirst : function() {
-        this.focusAndSelect(this.store.data.first());
-    },
+	selectFirst : function() {
+		this.focusAndSelect(this.store.data.first());
+	},
 
-    selectLast : function() {
-        this.focusAndSelect(this.store.data.last());
-    },
+	selectLast : function() {
+		this.focusAndSelect(this.store.data.last());
+	},
 
-    selectPrevPage : function() {
-        if( !this.rowHeight ) {
-            return;
-        }
-        var index = Math.max(this.selectedIndex-this.rowsPerPage, 0);
-        this.focusAndSelect(this.store.getAt(index));
-    },
+	selectPrevPage : function() {
+		if( !this.rowHeight ) {
+			return;
+		}
+		var index = Math.max(this.selectedIndex-this.rowsPerPage, 0);
+		this.focusAndSelect(this.store.getAt(index));
+	},
 
-    selectNextPage : function() {
-        if( !this.rowHeight ) {
-            return;
-        }
-        var index = Math.min(this.selectedIndex+this.rowsPerPage, this.store.getCount() - 1);
-        this.focusAndSelect(this.store.getAt(index));
-    },
+	selectNextPage : function() {
+		if( !this.rowHeight ) {
+			return;
+		}
+		var index = Math.min(this.selectedIndex+this.rowsPerPage, this.store.getCount() - 1);
+		this.focusAndSelect(this.store.getAt(index));
+	},
 
-    search : function(field, value, startIndex) {
-        field = field || this.displayField;
-        this.lastSearchTerm = value;
-        var index = this.store.find.apply(this.store, arguments);
-        if( index !== -1 ) {
-            this.focusAndSelect(index);
-        }
-    },
+	search : function(field, value, startIndex) {
+		field = field || this.displayField;
+		this.lastSearchTerm = value;
+		var index = this.store.find.apply(this.store, arguments);
+		if( index !== -1 ) {
+			this.focusAndSelect(index);
+		}
+	},
 
-    focusAndSelect : function(record) {
-        var index = typeof record === 'number' ? record : this.store.indexOf(record);
-        this.select(index, this.isExpanded());
-        this.onSelect(this.store.getAt(record), index, this.isExpanded());
-    },
+	focusAndSelect : function(record) {
+		var index = typeof record === 'number' ? record : this.store.indexOf(record);
+		this.select(index, this.isExpanded());
+		this.onSelect(this.store.getAt(record), index, this.isExpanded());
+	},
 
-    calcRowsPerPage : function() {
-        if( this.store.getCount() ) {
-            this.rowHeight = Ext.fly(this.view.getNode(0)).getHeight();
-            this.rowsPerPage = this.maxHeight / this.rowHeight;
-        } else {
-            this.rowHeight = false;
-        }
-    }
+	calcRowsPerPage : function() {
+		if( this.store.getCount() ) {
+			this.rowHeight = Ext.fly(this.view.getNode(0)).getHeight();
+			this.rowsPerPage = this.maxHeight / this.rowHeight;
+		} else {
+			this.rowHeight = false;
+		}
+	}
 
 });
 

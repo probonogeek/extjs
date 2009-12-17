@@ -10,8 +10,8 @@ html, body {
     width:100%;
 }
 #class .loading-indicator{
-    font-size:12px;
-    height:18px;
+	font-size:12px;
+	height:18px;
 }
 
 
@@ -21,7 +21,7 @@ html, body {
     background:transparent;
 }
 #docs .top-toolbar button {
-
+    
 }
 .x-panel-noborder {
     border: 0 none;
@@ -52,8 +52,8 @@ html, body {
     background-repeat: no-repeat;
     background-position:top left;
     padding-left:20px;
-    height:18px;
-    text-align:left;
+	height:18px;
+	text-align:left;
 }
 
 #doc-body .loading-indicator {
@@ -66,43 +66,43 @@ html, body {
     background-repeat: no-repeat;
     background-position:left 5px;
     padding:10px 10px 10px 38px;
-    text-align:left;
+	text-align:left;
 }
 a#welcome-link{
-    background:#fff url(docs.gif) no-repeat 0px 0px;
-    padding-left:18px;
+	background:#fff url(docs.gif) no-repeat 0px 0px;
+	padding-left:18px;
 }
 a#help-forums{
-    background:#fff url(forum.gif) no-repeat 16px 0px;
-    padding-left:34px;
-    display:block
+	background:#fff url(forum.gif) no-repeat 16px 0px;
+	padding-left:34px;
+	display:block
 }
 #loading-mask{
-    position:absolute;
-    left:0;
-    top:0;
+	position:absolute;
+	left:0;
+	top:0;
     width:100%;
     height:100%;
     z-index:20000;
     background-color:white;
 }
 #loading{
-    position:absolute;
-    left:45%;
-    top:40%;
-    padding:2px;
-    z-index:20001;
+	position:absolute;
+	left:45%;
+	top:40%;
+	padding:2px;
+	z-index:20001;
     height:auto;
 }
 #loading img {
     margin-bottom:5px;
 }
 #loading .loading-indicator{
-    background:white;
-    color:#555;
-    font:bold 13px tahoma,arial,helvetica;
-    padding:10px;
-    margin:0;
+	background:white;
+	color:#555;
+	font:bold 13px tahoma,arial,helvetica;
+	padding:10px;
+	margin:0;
     text-align:center;
     height:auto;
 }
@@ -127,27 +127,27 @@ a#help-forums{
     background:#DFE8F6;
 }
 #api-tree  .x-tree-node .x-tree-selected a span{
-    background:transparent;
-    color:#1E4176;
+	background:transparent;
+	color:#1E4176;
     font-weight:bold;
 }
 
 a {
-    color: #1E4176;
+	color: #1E4176;
 }
 a:link {
-    color: #1E4176;
-    text-decoration: none;
+	color: #1E4176;
+	text-decoration: none;
 }
 
 a:visited {
    color: #555;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
-    color: #15428b;
+	text-decoration: underline;
+	color: #15428b;
 }
 
 #welcome {
@@ -157,7 +157,7 @@ a:hover {
     zoom:1;
 }
 .col{
-    margin:0 250px 0 10px;
+	margin:0 250px 0 10px;
     zoom:1;
     padding: 10px 0;
 }
@@ -170,34 +170,34 @@ a:hover {
 }
 
 .block{
-    margin-bottom:10px;
+	margin-bottom:10px;
 }
 .block-title{
-    color: #1E4176;
-    font:normal 18px tahoma,verdana,sans-serif;
+	color: #1E4176;
+	font:normal 18px tahoma,verdana,sans-serif;
     letter-spacing:-1px;
     padding: 4px;
-    padding-left: 8px;
+	padding-left: 8px;
 }
 .block-body{
-    padding:8px;
-    padding-top:2px;
+	padding:8px;
+	padding-top:2px;
 }
 .block-body b{
-    color:#333333;
-    font-size:11px;
+	color:#333333;
+	font-size:11px;
 }
 .block-body em {
-    display:block;
-    margin-top:5px;
-    font-size:11px;
+	display:block;
+	margin-top:5px;
+	font-size:11px;
    color:gray;
-    text-align:right;
+	text-align:right;
 }
 .list{
-    list-style: square;
-    padding-left:20px;
-    margin-top:5px;
+	list-style: square;
+	padding-left:20px;
+	margin-top:5px;
 }
 
 .res-block {
@@ -282,65 +282,69 @@ a:hover {
 }
 
 #legend li {
-    line-height:16px;
+	line-height:16px;
 }
 .item-icon {
-    vertical-align:top;
-    width:16px;
-    height:16px;
-    margin-right:6px;
+	vertical-align:top;
+	width:16px;
+	height:16px;
+	margin-right:6px;
 }
 .ext-ie .item-icon {
-    vertical-align:middle;
+	vertical-align:middle;
 }
 h3.home-title {
-    margin:5px 0;
-    font:bold 13px tahoma,arial,sans-serif;
-    color:#444;
+	margin:5px 0;
+	font:bold 13px tahoma,arial,sans-serif;
+	color:#444;
 }
 
 .search-item {
-    margin:5px 5px 9px;
-    padding:0 5px 10px 0;
+	margin:5px 5px 9px;
+	padding:0 5px 10px 0;
 }
 
 .search-item .member {
-    font:bold 12px tahoma,arial,sans-serif;
-    color:#444;
-    margin:5px;
-    overflow:hidden;
-    white-space:nowrap;
-    zoom:1;
+	font:bold 12px tahoma,arial,sans-serif;
+	color:#444;
+	margin:5px;
+	overflow:hidden;
+	white-space:nowrap;
+	zoom:1;
 }
 
 .search-item .cls {
-    font:normal 12px tahoma,arial,sans-serif;
-    color:#444;
-    margin:5px;
-    overflow:hidden;
-    text-align:left;
-    white-space:nowrap;
-    zoom:1;
+	font:normal 12px tahoma,arial,sans-serif;
+	color:#444;
+	margin:5px;
+	overflow:hidden;
+	text-align:left;
+	white-space:nowrap;
+	zoom:1;
 }
 .search-item p {
-    font:normal 11px tahoma,arial,sans-serif;
-    clear:both;
-    margin: 0 5px 5px 28px;
-    color:#444;
-    zoom:1;
+	font:normal 11px tahoma,arial,sans-serif;
+	clear:both;
+	margin: 0 5px 5px 28px;
+	color:#444;
+	zoom:1;
 }
 #search .loading-indicator {
-    position:static !important;
+	position:static !important;
 }
 #search h3 {
-    font:normal 12px tahoma,arial,sans-serif;
-    color:#444;
-    margin:10px;
+	font:normal 12px tahoma,arial,sans-serif;
+	color:#444;
+	margin:10px;
 }
 .inner-link .item-icon, .bookmark .item-icon{
-    margin-right:3px;
+	margin-right:3px;
 }
 .inner-link, .bookmark {
-    margin-left:10px;
+	margin-left:10px;
+}
+
+.brick-icon {
+    background-image: url(brick.png) !important;
 }
 

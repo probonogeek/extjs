@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -47,7 +47,7 @@ Ext.extend(Ext.data.MemoryProxy, Ext.data.DataProxy, {
      * <li>The "arg" argument from the load function</li>
      * <li>A boolean success indicator</li>
      * </ul>
-     * @param {Object} scope The scope in which to call the callback
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      * @param {Object} arg An optional argument which is passed to the callback as its second parameter.
      */
     doRequest : function(action, rs, params, reader, callback, scope, arg) {

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -95,6 +95,9 @@ Ext.onReady(function() {
                 '</tbody></table></div>' +
              '</tpl>',
         itemSelector: 'div.patient-source',
+        overClass: 'patient-over',
+        selectedClass: 'patient-selected',
+        singleSelect: true,
         store: patientStore,
         listeners: {
             render: initializePatientDragZone
@@ -148,7 +151,7 @@ Ext.onReady(function() {
             width: 100
         }],
         viewConfig: {
-            tpl: new Ext.XTemplate('<div class="hospital-target"></div>'),
+            tpl: new Ext.XTemplate('<div class="hospital-target">Drop Patient Here</div>'),
             enableRowBody: true,
             getRowClass: function(rec, idx, p, store) {
                 p.body = this.tpl.apply(rec.data);
@@ -165,7 +168,7 @@ Ext.onReady(function() {
         items: [{
             cls: 'app-header',
             region: 'north',
-            height: 100,
+            height: 30,
             html: '<h1>Patient Hospital Assignment</h1>',
             margins: '5 5 5 5'
         }, {
@@ -272,6 +275,8 @@ function initializeHospitalDropZone(g) {
         onNodeDrop : function(target, dd, e, data){
             var rowIndex = g.getView().findRowIndex(target);
             var h = g.getStore().getAt(rowIndex);
+            var targetEl = Ext.get(target);
+            targetEl.update(data.patientData.name+', '+targetEl.dom.innerHTML);
             Ext.Msg.alert('Drop gesture', 'Dropped patient ' + data.patientData.name +
                 ' on hospital ' + h.data.name);
             return true;

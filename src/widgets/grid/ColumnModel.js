@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -88,66 +88,7 @@
  * @param {Mixed} config Specify either an Array of {@link Ext.grid.Column} configuration objects or specify
  * a configuration Object (see introductory section discussion utilizing Initialization Method 2 above).
  */
-Ext.grid.ColumnModel = function(config){
-    /**
-     * An Array of {@link Ext.grid.Column Column definition} objects representing the configuration
-     * of this ColumnModel.  See {@link Ext.grid.Column} for the configuration properties that may
-     * be specified.
-     * @property config
-     * @type Array
-     */
-    if(config.columns){
-        Ext.apply(this, config);
-        this.setConfig(config.columns, true);
-    }else{
-        this.setConfig(config, true);
-    }
-    this.addEvents(
-        /**
-         * @event widthchange
-         * Fires when the width of a column is programmaticially changed using
-         * <code>{@link #setColumnWidth}</code>.
-         * Note internal resizing suppresses the event from firing. See also
-         * {@link Ext.grid.GridPanel}.<code>{@link #columnresize}</code>.
-         * @param {ColumnModel} this
-         * @param {Number} columnIndex The column index
-         * @param {Number} newWidth The new width
-         */
-        "widthchange",
-        /**
-         * @event headerchange
-         * Fires when the text of a header changes.
-         * @param {ColumnModel} this
-         * @param {Number} columnIndex The column index
-         * @param {String} newText The new header text
-         */
-        "headerchange",
-        /**
-         * @event hiddenchange
-         * Fires when a column is hidden or "unhidden".
-         * @param {ColumnModel} this
-         * @param {Number} columnIndex The column index
-         * @param {Boolean} hidden true if hidden, false otherwise
-         */
-        "hiddenchange",
-        /**
-         * @event columnmoved
-         * Fires when a column is moved.
-         * @param {ColumnModel} this
-         * @param {Number} oldIndex
-         * @param {Number} newIndex
-         */
-        "columnmoved",
-        /**
-         * @event configchange
-         * Fires when the configuration is changed
-         * @param {ColumnModel} this
-         */
-        "configchange"
-    );
-    Ext.grid.ColumnModel.superclass.constructor.call(this);
-};
-Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
+Ext.grid.ColumnModel = Ext.extend(Ext.util.Observable, {
     /**
      * @cfg {Number} defaultWidth (optional) The width of columns which have no <tt>{@link #width}</tt>
      * specified (defaults to <tt>100</tt>).  This property shall preferably be configured through the
@@ -170,6 +111,66 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      * configuration options to all <tt><b>{@link #columns}</b></tt>.  Configuration options specified with
      * individual {@link Ext.grid.Column column} configs will supersede these <tt><b>{@link #defaults}</b></tt>.
      */
+    
+    constructor : function(config){
+        /**
+	     * An Array of {@link Ext.grid.Column Column definition} objects representing the configuration
+	     * of this ColumnModel.  See {@link Ext.grid.Column} for the configuration properties that may
+	     * be specified.
+	     * @property config
+	     * @type Array
+	     */
+	    if(config.columns){
+	        Ext.apply(this, config);
+	        this.setConfig(config.columns, true);
+	    }else{
+	        this.setConfig(config, true);
+	    }
+	    this.addEvents(
+	        /**
+	         * @event widthchange
+	         * Fires when the width of a column is programmaticially changed using
+	         * <code>{@link #setColumnWidth}</code>.
+	         * Note internal resizing suppresses the event from firing. See also
+	         * {@link Ext.grid.GridPanel}.<code>{@link #columnresize}</code>.
+	         * @param {ColumnModel} this
+	         * @param {Number} columnIndex The column index
+	         * @param {Number} newWidth The new width
+	         */
+	        "widthchange",
+	        /**
+	         * @event headerchange
+	         * Fires when the text of a header changes.
+	         * @param {ColumnModel} this
+	         * @param {Number} columnIndex The column index
+	         * @param {String} newText The new header text
+	         */
+	        "headerchange",
+	        /**
+	         * @event hiddenchange
+	         * Fires when a column is hidden or "unhidden".
+	         * @param {ColumnModel} this
+	         * @param {Number} columnIndex The column index
+	         * @param {Boolean} hidden true if hidden, false otherwise
+	         */
+	        "hiddenchange",
+	        /**
+	         * @event columnmoved
+	         * Fires when a column is moved.
+	         * @param {ColumnModel} this
+	         * @param {Number} oldIndex
+	         * @param {Number} newIndex
+	         */
+	        "columnmoved",
+	        /**
+	         * @event configchange
+	         * Fires when the configuration is changed
+	         * @param {ColumnModel} this
+	         */
+	        "configchange"
+	    );
+	    Ext.grid.ColumnModel.superclass.constructor.call(this);
+    },
 
     /**
      * Returns the id of the column at the specified index.
@@ -296,8 +297,10 @@ var columns = grid.getColumnModel().getColumnsBy(function(c){
   return c.hidden;
 });
 </code></pre>
-     * @param {Function} fn
-     * @param {Object} scope (optional)
+     * @param {Function} fn A function which, when passed a {@link Ext.grid.Column Column} object, must
+     * return <code>true</code> if the column is to be included in the returned Array.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function
+     * is executed. Defaults to this ColumnModel.
      * @return {Array} result
      */
     getColumnsBy : function(fn, scope){
@@ -339,6 +342,10 @@ var columns = grid.getColumnModel().getColumnsBy(function(c){
             return Ext.grid.ColumnModel.defaultRenderer;
         }
         return this.config[col].renderer;
+    },
+    
+    getRendererScope : function(col){
+        return this.config[col].scope;
     },
 
     /**

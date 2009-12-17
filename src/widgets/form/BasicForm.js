@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -40,9 +40,9 @@ Ext.form.BasicForm = function(el, config){
         this.paramOrder = this.paramOrder.split(/[\s,|]/);
     }
     /**
-     * @property items
-     * A {@link Ext.util.MixedCollection MixedCollection) containing all the Ext.form.Fields in this form.
+     * A {@link Ext.util.MixedCollection MixedCollection} containing all the Ext.form.Fields in this form.
      * @type MixedCollection
+     * @property items
      */
     this.items = new Ext.util.MixedCollection(false, function(o){
         return o.getItemId();
@@ -183,7 +183,7 @@ paramOrder: 'param1|param2|param'
      * <tt>{@link #paramOrder}</tt> nullifies this configuration.
      */
     paramsAsHash: false,
-
+    
     /**
      * @cfg {String} waitTitle
      * The default title to show for the waiting message box (defaults to <tt>'Please Wait...'</tt>)
@@ -634,10 +634,33 @@ myFormPanel.getForm().submit({
         return Ext.urlDecode(fs);
     },
 
-    getFieldValues : function(){
-        var o = {};
+    /**
+     * Retrieves the fields in the form as a set of key/value pairs, using the {@link Ext.form.Field#getValue getValue()} method.
+     * If multiple fields exist with the same name they are returned as an array.
+     * @param {Boolean} dirtyOnly (optional) True to return only fields that are dirty.
+     * @return {Object} The values in the form
+     */
+    getFieldValues : function(dirtyOnly){
+        var o = {},
+            n,
+            key,
+            val;
         this.items.each(function(f){
-           o[f.getName()] = f.getValue();
+            if(dirtyOnly !== true || f.isDirty()){
+                n = f.getName();
+                key = o[n];
+                val = f.getValue();
+                
+                if(Ext.isDefined(key)){
+                    if(Ext.isArray(key)){
+                        o[n].push(val);
+                    }else{
+                        o[n] = [key, val];
+                    }
+                }else{
+                    o[n] = val;
+                }
+            }
         });
         return o;
     },

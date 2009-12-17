@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -63,28 +63,69 @@ Ext.Element.addMethods({
      */
     anchorTo : function(el, alignment, offsets, animate, monitorScroll, callback){        
 	    var me = this,
-            dom = me.dom;
-	    
-	    function action(){
-            Ext.fly(dom).alignTo(el, alignment, offsets, animate);
-            Ext.callback(callback, Ext.fly(dom));
-        }
+            dom = me.dom,
+            scroll = !Ext.isEmpty(monitorScroll),
+            action = function(){
+                Ext.fly(dom).alignTo(el, alignment, offsets, animate);
+                Ext.callback(callback, Ext.fly(dom));
+            },
+            anchor = this.getAnchor();
+            
+        // previous listener anchor, remove it
+        this.removeAnchor();
+        Ext.apply(anchor, {
+            fn: action,
+            scroll: scroll
+        });
+
+        Ext.EventManager.onWindowResize(action, null);
         
-        Ext.EventManager.onWindowResize(action, me);
-        
-        if(!Ext.isEmpty(monitorScroll)){
-            Ext.EventManager.on(window, 'scroll', action, me,
+        if(scroll){
+            Ext.EventManager.on(window, 'scroll', action, null,
                 {buffer: !isNaN(monitorScroll) ? monitorScroll : 50});
         }
         action.call(me); // align immediately
         return me;
+    },
+    
+    /**
+     * Remove any anchor to this element. See {@link #anchorTo}.
+     * @return {Ext.Element} this
+     */
+    removeAnchor : function(){
+        var me = this,
+            anchor = this.getAnchor();
+            
+        if(anchor && anchor.fn){
+            Ext.EventManager.removeResizeListener(anchor.fn);
+            if(anchor.scroll){
+                Ext.EventManager.un(window, 'scroll', anchor.fn);
+            }
+            delete anchor.fn;
+        }
+        return me;
+    },
+    
+    // private
+    getAnchor : function(){
+        var data = Ext.Element.data,
+            dom = this.dom;
+            if (!dom) {
+                return;
+            }
+            var anchor = data(dom, '_anchor');
+            
+        if(!anchor){
+            anchor = data(dom, '_anchor', {});
+        }
+        return anchor;
     },
 
     /**
      * Gets the x,y coordinates to align this element with another element. See {@link #alignTo} for more info on the
      * supported position values.
      * @param {Mixed} element The element to align to.
-     * @param {String} position The position to align to.
+     * @param {String} position (optional, defaults to "tl-bl?") The position to align to.
      * @param {Array} offsets (optional) Offset the positioning by [x, y]
      * @return {Array} [x, y]
      */
@@ -96,7 +137,7 @@ Ext.Element.addMethods({
         }
         
         o = o || [0,0];
-        p = (p == "?" ? "tl-bl?" : (!/-/.test(p) && p !== "" ? "tl-" + p : p || "tl-bl")).toLowerCase();       
+        p = (!p || p == "?" ? "tl-bl?" : (!/-/.test(p) && p !== "" ? "tl-" + p : p || "tl-bl")).toLowerCase();       
                 
         var me = this,
         	d = me.dom,
@@ -219,7 +260,7 @@ el.alignTo("other-el", "br-l?");
 el.alignTo("other-el", "c-bl", [-6, 0]);
 </code></pre>
      * @param {Mixed} element The element to align to.
-     * @param {String} position The position to align to.
+     * @param {String} position (optional, defaults to "tl-bl?") The position to align to.
      * @param {Array} offsets (optional) Offset the positioning by [x, y]
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
      * @return {Ext.Element} this

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -14,14 +14,7 @@
  * is applied as a config object (and should contain a <tt>text</tt> property).
  * @xtype menutextitem
  */
-Ext.menu.TextItem = function(cfg){
-    if(typeof cfg == 'string'){
-        cfg = {text: cfg}
-    }
-    Ext.menu.TextItem.superclass.constructor.call(this, cfg);
-};
-
-Ext.extend(Ext.menu.TextItem, Ext.menu.BaseItem, {
+Ext.menu.TextItem = Ext.extend(Ext.menu.BaseItem, {
     /**
      * @cfg {String} text The text to display for this item (defaults to '')
      */
@@ -33,6 +26,13 @@ Ext.extend(Ext.menu.TextItem, Ext.menu.BaseItem, {
      * @cfg {String} itemCls The default CSS class to use for text items (defaults to "x-menu-text")
      */
     itemCls : "x-menu-text",
+    
+    constructor : function(config){
+        if(typeof config == 'string'){
+            config = {text: config}
+        }
+        Ext.menu.TextItem.superclass.constructor.call(this, config);
+    },
 
     // private
     onRender : function(){

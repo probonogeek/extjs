@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -193,7 +193,7 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         var res = new Ext.data.Response({
             action: action,
             success: this.getSuccess(o),
-            data: this.extractData(root),
+            data: (root) ? this.extractData(root, false) : [],
             message: this.getMessage(o),
             raw: o
         });
@@ -308,40 +308,6 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
             return Ext.emptyFn;
         };
     }(),
-
-    /**
-     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
-     * @param {Object[]/Object} data-root from server response
-     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
-     * @private
-     */
-    extractData : function(root, returnRecords) {
-        var rs = undefined;
-        if (this.isData(root)) {
-            root = [root];
-        }
-        if (Ext.isArray(root)) {
-            var f       = this.recordType.prototype.fields,
-                fi      = f.items,
-                fl      = f.length,
-                rs      = [];
-            if (returnRecords === true) {
-                var Record = this.recordType;
-                for (var i = 0; i < root.length; i++) {
-                    var n = root[i];
-                    var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
-                    record.json = n;
-                    rs.push(record);
-                }
-            }
-            else {
-                for (var i = 0; i < root.length; i++) {
-                    rs.push(this.extractValues(root[i], fi, fl));
-                }
-            }
-        }
-        return rs;
-    },
 
     /**
      * type-casts a single row of raw-data from server

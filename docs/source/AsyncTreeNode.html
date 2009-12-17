@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.tree.AsyncTreeNode"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.tree.AsyncTreeNode"></div>/**
  * @class Ext.tree.AsyncTreeNode
  * @extends Ext.tree.TreeNode
  * @cfg {TreeLoader} loader A TreeLoader to be used by this node (defaults to the loader defined on the tree)
@@ -102,7 +97,7 @@ Ext.extend(Ext.tree.AsyncTreeNode, Ext.tree.TreeNode, {
     /**
      * Trigger a reload for this node
      * @param {Function} callback
-     * @param {Object} scope (optional) The scope in which to execute the callback.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the callback is executed. Defaults to this Node.
      */
     reload : function(callback, scope){
         this.collapse(false, false);
@@ -118,6 +113,6 @@ Ext.extend(Ext.tree.AsyncTreeNode, Ext.tree.TreeNode, {
     }
 });
 
-Ext.tree.TreePanel.nodeTypes.async = Ext.tree.AsyncTreeNode;</pre>
+Ext.tree.TreePanel.nodeTypes.async = Ext.tree.AsyncTreeNode;</pre>    
 </body>
 </html>

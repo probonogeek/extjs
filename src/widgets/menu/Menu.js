@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -174,7 +174,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      * configuration. Defaults to <tt>[0, 0]</tt>.
      */
     defaultOffsets : [0, 0],
-    
+
     /**
      * @cfg {Boolean} plain
      * True to remove the incised line down the left side of the menu. Defaults to <tt>false</tt>.
@@ -206,6 +206,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
     scrollerHeight : 8,
     autoLayout : true,       // Provided for backwards compat
     defaultType : 'menuitem',
+    bufferResize : false,
 
     initComponent : function(){
         if(Ext.isArray(this.initialConfig)){
@@ -498,7 +499,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
     constrainScroll : function(y){
         var max, full = this.ul.setHeight('auto').getHeight();
         if(this.floating){
-            max = this.maxHeight ? this.maxHeight : Ext.fly(this.el.dom.parentNode).getViewSize().height - y;
+            max = this.maxHeight ? this.maxHeight : Ext.fly(this.el.dom.parentNode).getViewSize(false).height - y;
         }else{
             max = this.getHeight();
         }
@@ -684,6 +685,11 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
 
     //private
     onDestroy : function(){
+        var pm = this.parentMenu;
+        if(pm && pm.activeChild == this){
+            delete pm.activeChild;
+        }
+        delete this.parentMenu;
         Ext.menu.Menu.superclass.onDestroy.call(this);
         Ext.menu.MenuMgr.unregister(this);
         Ext.EventManager.removeResizeListener(this.hide, this);

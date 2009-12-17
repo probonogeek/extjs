@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -33,7 +33,7 @@ var p = new Ext.Panel({
     layout:'column',
     items: [{
         title: 'Column 1',
-        columnWidth: .25 
+        columnWidth: .25
     },{
         title: 'Column 2',
         columnWidth: .6
@@ -65,14 +65,17 @@ var p = new Ext.Panel({
 Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     monitorResize:true,
-    
+
     extraCls: 'x-column',
 
     scrollOffset : 0,
 
     // private
+
+    targetCls: 'x-column-layout-ct',
+
     isValidParent : function(c, target){
-        return (c.getPositionEl ? c.getPositionEl() : c.getEl()).dom.parentNode == this.innerCt.dom;
+        return c.getPositionEl().dom.parentNode == this.innerCt.dom;
     },
 
     // private
@@ -80,8 +83,6 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         var cs = ct.items.items, len = cs.length, c, i;
 
         if(!this.innerCt){
-            target.addClass('x-column-layout-ct');
-
             // the innerCt prevents wrapping and shuffling while
             // the container is resizing
             this.innerCt = target.createChild({cls:'x-column-inner'});
@@ -89,25 +90,25 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         }
         this.renderAll(ct, this.innerCt);
 
-        var size = Ext.isIE && target.dom != Ext.getBody().dom ? target.getStyleSize() : target.getViewSize();
+        var size = target.getViewSize(true);
 
         if(size.width < 1 && size.height < 1){ // display none?
             return;
         }
 
-        var w = size.width - target.getPadding('lr') - this.scrollOffset,
-            h = size.height - target.getPadding('tb'),
+        var w = size.width - this.scrollOffset,
+            h = size.height,
             pw = w;
 
         this.innerCt.setWidth(w);
-        
+
         // some columns can be percentages while others are fixed
         // so we need to make 2 passes
 
         for(i = 0; i < len; i++){
             c = cs[i];
             if(!c.columnWidth){
-                pw -= (c.getSize().width + c.getEl().getMargins('lr'));
+                pw -= (c.getSize().width + c.getPositionEl().getMargins('lr'));
             }
         }
 
@@ -116,11 +117,11 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         for(i = 0; i < len; i++){
             c = cs[i];
             if(c.columnWidth){
-                c.setSize(Math.floor(c.columnWidth*pw) - c.getEl().getMargins('lr'));
+                c.setSize(Math.floor(c.columnWidth * pw) - c.getPositionEl().getMargins('lr'));
             }
         }
     }
-    
+
     /**
      * @property activeItem
      * @hide

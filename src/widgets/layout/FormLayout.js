@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -114,17 +114,17 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
      * @type String
      * @property labelStyle
      */
-    
+
     /**
      * @cfg {Boolean} trackLabels
      * True to show/hide the field label when the field is hidden. Defaults to <tt>false</tt>.
      */
     trackLabels: false,
-    
+
 
     onRemove: function(c){
         Ext.layout.FormLayout.superclass.onRemove.call(this, c);
-        if(this.trackLabels && !this.isHide(c)){
+        if(this.trackLabels){
             c.un('show', this.onFieldShow, this);
             c.un('hide', this.onFieldHide, this);
         }
@@ -132,7 +132,9 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
         var el = c.getPositionEl(),
                 ct = c.getItemCt && c.getItemCt();
         if(c.rendered && ct){
-            el.insertAfter(ct);
+            if (el && el.dom) {
+                el.insertAfter(ct);
+            }
             Ext.destroy(ct);
             Ext.destroyMembers(c, 'label', 'itemCt');
             if(c.customItemCt){
@@ -140,7 +142,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
             }
         }
     },
-    
+
     // private
     setContainer : function(ct){
         Ext.layout.FormLayout.superclass.setContainer.call(this, ct);
@@ -174,17 +176,18 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
             }
         }
     },
-    
+
+    // private
     isHide: function(c){
         return c.hideLabel || this.container.hideLabels;
     },
-    
+
     onFieldShow: function(c){
         c.getItemCt().removeClass('x-hide-' + c.hideMode);
     },
-    
+
     onFieldHide: function(c){
-        c.getItemCt().addClass('x-hide-' + c.hideMode);   
+        c.getItemCt().addClass('x-hide-' + c.hideMode);
     },
 
     //private
@@ -247,11 +250,6 @@ new Ext.Template(
             }else{
                 c.itemCt = this.fieldTpl.append(target, args, true);
             }
-            if(!c.rendered){
-                c.render('x-form-el-' + c.id);
-            }else if(!this.isValidParent(c, target)){
-                Ext.fly('x-form-el-' + c.id).appendChild(c.getPositionEl());
-            }
             if(!c.getItemCt){
                 // Non form fields don't have getItemCt, apply it here
                 // This will get cleaned up in onRemove
@@ -263,7 +261,12 @@ new Ext.Template(
                 });
             }
             c.label = c.getItemCt().child('label.x-form-item-label');
-            if(this.trackLabels && !this.isHide(c)){
+            if(!c.rendered){
+                c.render('x-form-el-' + c.id);
+            }else if(!this.isValidParent(c, target)){
+                Ext.fly('x-form-el-' + c.id).appendChild(c.getPositionEl());
+            }
+            if(this.trackLabels){
                 if(c.hidden){
                     this.onFieldHide(c);
                 }
@@ -301,7 +304,7 @@ new Ext.Template(
      * <li><b><tt>clearCls</tt></b> : String<div class="sub-desc">The CSS class to apply to the special clearing div
      * rendered directly after each form field wrapper (defaults to <tt>'x-form-clear-left'</tt>)</div></li>
      * </ul></div>
-     * @param field The {@link Field Ext.form.Field} being rendered.
+     * @param (Ext.form.Field} field The {@link Ext.form.Field Field} being rendered.
      * @return An object hash containing the properties required to render the Field.
      */
     getTemplateArgs: function(field) {
@@ -325,7 +328,7 @@ new Ext.Template(
         }
         return value;
     },
-    
+
     adjustHeightAnchor : function(value, c){
         if(c.label && !this.isHide(c) && (this.container.labelAlign == 'top')){
             return value - c.label.getHeight();
@@ -335,7 +338,7 @@ new Ext.Template(
 
     // private
     isValidParent : function(c, target){
-        return target && this.container.getEl().contains(c.getDomPositionEl());
+        return target && this.container.getEl().contains(c.getPositionEl());
     }
 
     /**

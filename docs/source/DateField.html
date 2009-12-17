@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.form.DateField"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.form.DateField"></div>/**
  * @class Ext.form.DateField
  * @extends Ext.form.TriggerField
  * Provides a date input field with a {@link Ext.DatePicker} dropdown and automatic date validation.
@@ -146,6 +141,18 @@ disabledDates: ["^03"]
         this.disabledDatesRE = null;
         this.initDisabledDays();
     },
+    
+    initEvents: function() {
+        Ext.form.DateField.superclass.initEvents.call(this);
+        this.keyNav = new Ext.KeyNav(this.el, {
+            "down": function(e) {
+                this.onTriggerClick();
+            },
+            scope: this,
+            forceKeyDown: true
+        });
+    },
+
 
     // private
     initDisabledDays : function(){
@@ -311,7 +318,7 @@ dateField.setValue('2006-05-04');
 
     // private
     onDestroy : function(){
-		Ext.destroy(this.menu);
+		Ext.destroy(this.menu, this.keyNav);
         Ext.form.DateField.superclass.onDestroy.call(this);
     },
 
@@ -332,7 +339,8 @@ dateField.setValue('2006-05-04');
         }
         if(this.menu == null){
             this.menu = new Ext.menu.DateMenu({
-                hideOnClick: false
+                hideOnClick: false,
+                focusOnSelect: false
             });
         }
         this.onFocus();
@@ -393,6 +401,6 @@ dateField.setValue('2006-05-04');
      * @method autoSize
      */
 });
-Ext.reg('datefield', Ext.form.DateField);</pre>
+Ext.reg('datefield', Ext.form.DateField);</pre>    
 </body>
 </html>

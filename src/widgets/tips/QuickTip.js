@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -96,13 +96,12 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
             this.clearTimer('show');
         }
     },
-
-    // private
+    
     getTipCfg: function(e) {
         var t = e.getTarget(), 
             ttp, 
             cfg;
-        if(this.interceptTitles && t.title){
+        if(this.interceptTitles && t.title && Ext.isString(t.title)){
             ttp = t.title;
             t.qtip = ttp;
             t.removeAttribute("title");

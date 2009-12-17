@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -21,14 +21,7 @@
  * @constructor
  * @param {Object} config The configuration options
  */
-Ext.grid.RowNumberer = function(config){
-    Ext.apply(this, config);
-    if(this.rowspan){
-        this.renderer = this.renderer.createDelegate(this);
-    }
-};
-
-Ext.grid.RowNumberer.prototype = {
+Ext.grid.RowNumberer = Ext.extend(Object, {
     /**
      * @cfg {String} header Any valid text or HTML fragment to display in the header cell for the row
      * number column (defaults to '').
@@ -43,6 +36,13 @@ Ext.grid.RowNumberer.prototype = {
      * @hide
      */
     sortable: false,
+    
+    constructor : function(config){
+        Ext.apply(this, config);
+        if(this.rowspan){
+            this.renderer = this.renderer.createDelegate(this);
+        }
+    },
 
     // private
     fixed:true,
@@ -58,4 +58,4 @@ Ext.grid.RowNumberer.prototype = {
         }
         return rowIndex+1;
     }
-};
+});

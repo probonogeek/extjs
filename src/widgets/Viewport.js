@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -29,7 +29,7 @@ new Ext.Viewport({
         collapsible: true,
         title: 'Navigation',
         width: 200
-        // the west region might typically utilize a {@link Ext.tree.TreePanel TreePanel} or a Panel with {@link Ext.layout.AccordionLayout Accordion layout} 
+        // the west region might typically utilize a {@link Ext.tree.TreePanel TreePanel} or a Panel with {@link Ext.layout.AccordionLayout Accordion layout}
     }, {
         region: 'south',
         title: 'Title for Panel',
@@ -64,44 +64,45 @@ new Ext.Viewport({
  * @xtype viewport
  */
 Ext.Viewport = Ext.extend(Ext.Container, {
-	/*
-	 * Privatize config options which, if used, would interfere with the
-	 * correct operation of the Viewport as the sole manager of the
-	 * layout of the document body.
-	 */
+    /*
+     * Privatize config options which, if used, would interfere with the
+     * correct operation of the Viewport as the sole manager of the
+     * layout of the document body.
+     */
     /**
      * @cfg {Mixed} applyTo @hide
-	 */
+     */
     /**
      * @cfg {Boolean} allowDomMove @hide
-	 */
+     */
     /**
      * @cfg {Boolean} hideParent @hide
-	 */
+     */
     /**
      * @cfg {Mixed} renderTo @hide
-	 */
+     */
     /**
      * @cfg {Boolean} hideParent @hide
-	 */
+     */
     /**
      * @cfg {Number} height @hide
-	 */
+     */
     /**
      * @cfg {Number} width @hide
-	 */
+     */
     /**
      * @cfg {Boolean} autoHeight @hide
-	 */
+     */
     /**
      * @cfg {Boolean} autoWidth @hide
-	 */
+     */
     /**
      * @cfg {Boolean} deferHeight @hide
-	 */
+     */
     /**
      * @cfg {Boolean} monitorResize @hide
-	 */
+     */
+
     initComponent : function() {
         Ext.Viewport.superclass.initComponent.call(this);
         document.getElementsByTagName('html')[0].className += ' x-viewport';
@@ -118,7 +119,7 @@ Ext.Viewport = Ext.extend(Ext.Container, {
     },
 
     fireResize : function(w, h){
-        this.fireEvent('resize', this, w, h, w, h);
+        this.onResize(w, h, w, h);
     }
 });
 Ext.reg('viewport', Ext.Viewport);

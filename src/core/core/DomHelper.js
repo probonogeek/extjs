@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -167,9 +167,11 @@ Ext.DomHelper = function(){
         if(Ext.isString(o)){
             b = o;
         } else if (Ext.isArray(o)) {
-            Ext.each(o, function(v) {
-                b += createHtml(v);
-            });
+            for (var i=0; i < o.length; i++) {
+                if(o[i]) {
+                    b += createHtml(o[i]);
+                }
+            };
         } else {
             b += '<' + (o.tag = o.tag || 'div');
             Ext.iterate(o, function(attr, val){

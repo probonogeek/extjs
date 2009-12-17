@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -108,9 +108,9 @@
             }else if(isset(by)) {
                 if (Ext.isArray(start)){
                     end = [];
-                    Ext.each(start, function(v, i){
-                        end[i] = v + by[i];
-                    });
+					for(var i=0,len=start.length; i<len; i++) {
+						end[i] = start[i] + by[i];
+					}
                 }else{
                     end = start + by;
                 }
@@ -273,8 +273,9 @@
             },
             
             run: function(){
-                var tf;
-                Ext.each(queue, function(tween){
+                var tf, i, len, tween;
+                for(i = 0, len = queue.length; i<len; i++) {
+                    tween = queue[i];
                     if(tween && tween.isAnimated){
                         tf = tween.totalFrames;
                         if(tween.curFrame < tf || tf === null){
@@ -286,22 +287,20 @@
                         }else{
                             me.stop(tween);
                         }
-                    }
-                }, me);
+                    }                   
+                }
             }
         });
 
         var getIndex = function(anim) {
-            var out = -1;
-            Ext.each(queue, function(item, idx){
-                if(item == anim){
-                    out = idx;
-                    return false;
+            var i, len;
+            for(i = 0, len = queue.length; i<len; i++) {
+                if(queue[i] === anim) {
+                    return i;
                 }
-            });
-            return out;
+            }
+            return -1;
         };
-
 
         var correctFrame = function(tween) {
             var frames = tween.totalFrames,

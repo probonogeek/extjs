@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,23 +11,7 @@
  * <p>While subclasses are provided to render data in different ways, this class renders a passed
  * data field unchanged and is usually used for textual columns.</p>
  */
-Ext.grid.Column = function(config){
-    Ext.apply(this, config);
-
-    if(Ext.isString(this.renderer)){
-        this.renderer = Ext.util.Format[this.renderer];
-    } else if(Ext.isObject(this.renderer)){
-        this.scope = this.renderer.scope;
-        this.renderer = this.renderer.fn;
-    }
-    this.renderer = this.renderer.createDelegate(this.scope || config);
-
-    if(this.editor){
-        this.editor = Ext.create(this.editor, 'textfield');
-    }
-};
-
-Ext.grid.Column.prototype = {
+Ext.grid.Column = Ext.extend(Object, {
     /**
      * @cfg {Boolean} editable Optional. Defaults to <tt>true</tt>, enabling the configured
      * <tt>{@link #editor}</tt>.  Set to <tt>false</tt> to initially disable editing on this column.
@@ -232,6 +216,24 @@ var grid = new Ext.grid.GridPanel({
      * Defaults to true.
      */
     isColumn : true,
+    
+    constructor : function(config){
+        Ext.apply(this, config);
+
+        if(Ext.isString(this.renderer)){
+            this.renderer = Ext.util.Format[this.renderer];
+        }else if(Ext.isObject(this.renderer)){
+            this.scope = this.renderer.scope;
+            this.renderer = this.renderer.fn;
+        }
+        if(!this.scope){
+            this.scope = this;
+        }
+
+        if(this.editor){
+            this.editor = Ext.create(this.editor, 'textfield');
+        }
+    },
 
     /**
      * Optional. A function which returns displayable data when passed the following parameters:
@@ -283,7 +285,7 @@ var grid = new Ext.grid.GridPanel({
         }
         return null;
     }
-};
+});
 
 /**
  * @class Ext.grid.BooleanColumn
@@ -379,7 +381,7 @@ Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
      */
     constructor: function(cfg){
         Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = Ext.isObject(this.tpl) ? this.tpl : new Ext.XTemplate(this.tpl);
+        var tpl = (!Ext.isPrimitive(this.tpl) && this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
         this.renderer = function(value, p, r){
             return tpl.apply(r.data);
         };

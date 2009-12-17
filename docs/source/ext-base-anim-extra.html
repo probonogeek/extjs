@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-// Easing functions
+    <pre class="prettyprint lang-js">// Easing functions
 (function(){
 	// shortcuts to aid compression
 	var abs = Math.abs,
@@ -175,7 +170,7 @@
 	    if (s.length == 3) {
             return s;
         }
-        
+		
         Ext.each([hexRE, rgbRE, hex3RE], function(re, idx){
             base = (idx % 2 == 0) ? 16 : 10;
             c = re.exec(s);
@@ -206,15 +201,16 @@
         doMethod : function(attr, start, end) {
             var me = this,
             	val,
-            	floor = Math.floor;            
+            	floor = Math.floor,
+				i, len = start.length, v;            
 
             if(colorRE.test(attr)){
                 val = [];
-             
-	            Ext.each(start, function(v, i) {
-                    val[i] = superclass.doMethod.call(me, attr, v, end[i]);
-                });
-
+				
+				for(i=0; i<len; i++) {
+					v = start[i];
+					val[i] = superclass.doMethod.call(me, attr, v, end[i]);
+				}
                 val = 'rgb(' + floor(val[0]) + ',' + floor(val[1]) + ',' + floor(val[2]) + ')';
             }else{
                 val = superclass.doMethod.call(me, attr, start, end);
@@ -237,9 +233,9 @@
 
                 if(!isset(to) && isset(by)){
                     end = parseColor(by);
-                    Ext.each(start, function(item, i){
-                        end[i] = item + end[i];
-                    });
+					for(var i=0,len=start.length; i<len; i++) {
+						end[i] = start[i] + end[i];
+					}
                 }
                 ra.start = start;
                 ra.end = end;
@@ -305,6 +301,6 @@
             }
         }
     });
-})();</pre>
+})();</pre>    
 </body>
 </html>

@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.layout.BorderLayout"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.BorderLayout"></div>/**
  * @class Ext.layout.BorderLayout
  * @extends Ext.layout.ContainerLayout
  * <p>This is a multi-pane, application-oriented UI layout style that supports multiple
@@ -38,7 +33,7 @@ var myBorderPanel = new Ext.Panel({
         {@link Ext.layout.BorderLayout.Region#BorderLayout.Region region}: 'south',     // position for region
         {@link Ext.BoxComponent#height height}: 100,
         {@link Ext.layout.BorderLayout.Region#split split}: true,         // enable resizing
-        {@link Ext.SplitBar#minSize minSize}: 75,         // defaults to {@link Ext.layout.BorderLayout.Region#minHeight 50} 
+        {@link Ext.SplitBar#minSize minSize}: 75,         // defaults to {@link Ext.layout.BorderLayout.Region#minHeight 50}
         {@link Ext.SplitBar#maxSize maxSize}: 150,
         {@link Ext.layout.BorderLayout.Region#margins margins}: '0 5 5 5'
     },{
@@ -96,11 +91,12 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     rendered : false,
 
+    targetCls: 'x-border-layout-ct',
+
     // private
     onLayout : function(ct, target){
         var collapsed;
         if(!this.rendered){
-            target.addClass('x-border-layout-ct');
             var items = ct.items.items;
             collapsed = [];
             for(var i = 0, len = items.length; i < len; i++) {
@@ -112,7 +108,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
                 c.collapsed = false;
                 if(!c.rendered){
                     c.render(target, i);
-                    c.getDomPositionEl().addClass('x-border-panel');
+                    c.getPositionEl().addClass('x-border-panel');
                 }
                 this[pos] = pos != 'center' && c.split ?
                     new Ext.layout.BorderLayout.SplitRegion(this, c.initialConfig, pos) :
@@ -122,7 +118,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
             this.rendered = true;
         }
 
-        var size = target.getViewSize();
+        var size = target.getViewSize(false);
         if(size.width < 20 || size.height < 20){ // display none?
             if(collapsed){
                 this.restoreCollapsed = collapsed;
@@ -349,19 +345,19 @@ Ext.layout.BorderLayout.Region.prototype = {
     collapsible : false,
     <div id="cfg-Ext.layout.BorderLayout.Region-split"></div>/**
      * @cfg {Boolean} split
-     * <p><tt>true</tt> to create a {@link Ext.layout.BorderLayout.SplitRegion SplitRegion} and 
+     * <p><tt>true</tt> to create a {@link Ext.layout.BorderLayout.SplitRegion SplitRegion} and
      * display a 5px wide {@link Ext.SplitBar} between this region and its neighbor, allowing the user to
      * resize the regions dynamically.  Defaults to <tt>false</tt> creating a
      * {@link Ext.layout.BorderLayout.Region Region}.</p><br>
      * <p><b>Notes</b>:</p><div class="mdetail-params"><ul>
-     * <li>this configuration option is ignored if <tt>region='center'</tt></li> 
+     * <li>this configuration option is ignored if <tt>region='center'</tt></li>
      * <li>when <tt>split == true</tt>, it is common to specify a
      * <tt>{@link Ext.SplitBar#minSize minSize}</tt> and <tt>{@link Ext.SplitBar#maxSize maxSize}</tt>
      * for the {@link Ext.BoxComponent BoxComponent} representing the region. These are not native
      * configs of {@link Ext.BoxComponent BoxComponent}, and are used only by this class.</li>
      * <li>if <tt>{@link #collapseMode} = 'mini'</tt> requires <tt>split = true</tt> to reserve space
-     * for the collapse tool</tt></li> 
-     * </ul></div> 
+     * for the collapse tool</tt></li>
+     * </ul></div>
      */
     split:false,
     <div id="cfg-Ext.layout.BorderLayout.Region-floatable"></div>/**
@@ -375,8 +371,8 @@ Ext.layout.BorderLayout.Region.prototype = {
      * @cfg {Number} minWidth
      * <p>The minimum allowable width in pixels for this region (defaults to <tt>50</tt>).
      * <tt>maxWidth</tt> may also be specified.</p><br>
-     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> / 
-     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified 
+     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> /
+     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified
      * <tt>minWidth</tt> / <tt>maxWidth</tt>.</p>
      */
     minWidth:50,
@@ -384,8 +380,8 @@ Ext.layout.BorderLayout.Region.prototype = {
      * @cfg {Number} minHeight
      * The minimum allowable height in pixels for this region (defaults to <tt>50</tt>)
      * <tt>maxHeight</tt> may also be specified.</p><br>
-     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> / 
-     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified 
+     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> /
+     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified
      * <tt>minHeight</tt> / <tt>maxHeight</tt>.</p>
      */
     minHeight:50,
@@ -500,7 +496,6 @@ Ext.layout.BorderLayout.Region.prototype = {
     // private
     onExpandClick : function(e){
         if(this.isSlid){
-            this.afterSlideIn();
             this.panel.expand(false);
         }else{
             this.panel.expand();
@@ -519,7 +514,9 @@ Ext.layout.BorderLayout.Region.prototype = {
             this.splitEl.hide();
         }
         this.getCollapsedEl().show();
-        this.panel.el.setStyle('z-index', 100);
+        var el = this.panel.getEl();
+        this.originalZIndex = el.getStyle('z-index');
+        el.setStyle('z-index', 100);
         this.isCollapsed = true;
         this.layout.layout();
     },
@@ -538,6 +535,9 @@ Ext.layout.BorderLayout.Region.prototype = {
 
     // private
     beforeExpand : function(animate){
+        if(this.isSlid){
+            this.afterSlideIn();
+        }
         var c = this.getCollapsedEl();
         this.el.show();
         if(this.position == 'east' || this.position == 'west'){
@@ -557,7 +557,7 @@ Ext.layout.BorderLayout.Region.prototype = {
             this.splitEl.show();
         }
         this.layout.layout();
-        this.panel.el.setStyle('z-index', 1);
+        this.panel.el.setStyle('z-index', this.originalZIndex);
         this.state.collapsed = false;
         this.panel.saveState();
     },
@@ -689,6 +689,7 @@ Ext.layout.BorderLayout.Region.prototype = {
                 };
             }
             this.el.on(this.autoHideHd);
+            this.collapsedEl.on(this.autoHideHd);
         }
     },
 
@@ -697,6 +698,8 @@ Ext.layout.BorderLayout.Region.prototype = {
         if(this.autoHide !== false){
             this.el.un("mouseout", this.autoHideHd.mouseout);
             this.el.un("mouseover", this.autoHideHd.mouseover);
+            this.collapsedEl.un("mouseout", this.autoHideHd.mouseout);
+            this.collapsedEl.un("mouseover", this.autoHideHd.mouseover);
         }
     },
 
@@ -872,6 +875,10 @@ Ext.layout.BorderLayout.Region.prototype = {
                 return [0, cm.top+cm.bottom+c.getHeight()];
             break;
         }
+    },
+
+    destroy : function(){
+        Ext.destroy(this.miniCollapsedEl, this.collapsedEl);
     }
 };
 
@@ -1104,14 +1111,11 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
 
     // inherit docs
     destroy : function() {
-        Ext.destroy(
-            this.miniSplitEl,
-            this.split,
-            this.splitEl
-        );
+        Ext.destroy(this.miniSplitEl, this.split, this.splitEl);
+        Ext.layout.BorderLayout.SplitRegion.superclass.destroy.call(this);
     }
 });
 
-Ext.Container.LAYOUTS['border'] = Ext.layout.BorderLayout;</pre>
+Ext.Container.LAYOUTS['border'] = Ext.layout.BorderLayout;</pre>    
 </body>
 </html>

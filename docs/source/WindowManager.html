@@ -1,19 +1,14 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.WindowGroup"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.WindowGroup"></div>/**
  * @class Ext.WindowGroup
- * An object that represents a group of {@link Ext.Window} instances and provides z-order management
+ * An object that manages a group of {@link Ext.Window} instances and provides z-order management
  * and window activation behavior.
  * @constructor
  */
@@ -70,20 +65,42 @@ Ext.WindowGroup = function(){
 
     return {
         <div id="prop-Ext.WindowGroup-zseed"></div>/**
-         * The starting z-index for windows (defaults to 9000)
+         * The starting z-index for windows in this WindowGroup (defaults to 9000)
          * @type Number The z-index value
          */
         zseed : 9000,
 
-        // private
+        <div id="method-Ext.WindowGroup-register"></div>/**
+         * <p>Registers a {@link Ext.Window Window} with this WindowManager. This should not
+         * need to be called under normal circumstances. Windows are automatically registered
+         * with a {@link Ext.Window#manager manager} at construction time.</p>
+         * <p>Where this may be useful is moving Windows between two WindowManagers. For example,
+         * to bring the Ext.MessageBox dialog under the same manager as the Desktop's
+         * WindowManager in the desktop sample app:</p><code><pre>
+var msgWin = Ext.MessageBox.getDialog();
+MyDesktop.getDesktop().getManager().register(msgWin);
+</pre></code>
+         * @param {Window} win The Window to register.
+         */
         register : function(win){
+            if(win.manager){
+                win.manager.unregister(win);
+            }
+            win.manager = this;
+
             list[win.id] = win;
             accessList.push(win);
             win.on('hide', activateLast);
         },
 
-        // private
+        <div id="method-Ext.WindowGroup-unregister"></div>/**
+         * <p>Unregisters a {@link Ext.Window Window} from this WindowManager. This should not
+         * need to be called. Windows are automatically unregistered upon destruction.
+         * See {@link #register}.</p>
+         * @param {Window} win The Window to unregister.
+         */
         unregister : function(win){
+            delete win.manager;
             delete list[win.id];
             win.un('hide', activateLast);
             accessList.remove(win);
@@ -99,7 +116,7 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-bringToFront"></div>/**
-         * Brings the specified window to the front of any other active windows.
+         * Brings the specified window to the front of any other active windows in this WindowGroup.
          * @param {String/Object} win The id of the window or a {@link Ext.Window} instance
          * @return {Boolean} True if the dialog was brought to the front, else false
          * if it was already in front
@@ -115,7 +132,7 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-sendToBack"></div>/**
-         * Sends the specified window to the back of other active windows.
+         * Sends the specified window to the back of other active windows in this WindowGroup.
          * @param {String/Object} win The id of the window or a {@link Ext.Window} instance
          * @return {Ext.Window} The window
          */
@@ -127,7 +144,7 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-hideAll"></div>/**
-         * Hides all windows in the group.
+         * Hides all windows in this WindowGroup.
          */
         hideAll : function(){
             for(var id in list){
@@ -138,7 +155,7 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-getActive"></div>/**
-         * Gets the currently-active window in the group.
+         * Gets the currently-active window in this WindowGroup.
          * @return {Ext.Window} The active window
          */
         getActive : function(){
@@ -146,11 +163,11 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-getBy"></div>/**
-         * Returns zero or more windows in the group using the custom search function passed to this method.
+         * Returns zero or more windows in this WindowGroup using the custom search function passed to this method.
          * The function should accept a single {@link Ext.Window} reference as its only argument and should
          * return true if the window matches the search criteria, otherwise it should return false.
          * @param {Function} fn The search function
-         * @param {Object} scope (optional) The scope in which to execute the function (defaults to the window
+         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Window being tested.
          * that gets passed to the function if not specified)
          * @return {Array} An array of zero or more matching windows
          */
@@ -166,10 +183,10 @@ Ext.WindowGroup = function(){
         },
 
         <div id="method-Ext.WindowGroup-each"></div>/**
-         * Executes the specified function once for every window in the group, passing each
+         * Executes the specified function once for every window in this WindowGroup, passing each
          * window as the only parameter. Returning false from the function will stop the iteration.
          * @param {Function} fn The function to execute for each item
-         * @param {Object} scope (optional) The scope in which to execute the function
+         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Window in the iteration.
          */
         each : function(fn, scope){
             for(var id in list){
@@ -191,6 +208,6 @@ Ext.WindowGroup = function(){
  * with separate z-order stacks, create additional instances of {@link Ext.WindowGroup} as needed.
  * @singleton
  */
-Ext.WindowMgr = new Ext.WindowGroup();</pre>
+Ext.WindowMgr = new Ext.WindowGroup();</pre>    
 </body>
 </html>

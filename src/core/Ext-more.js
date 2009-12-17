@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,7 +8,7 @@
  * @class Ext
  */
 
-Ext.ns("Ext.grid", "Ext.dd", "Ext.tree", "Ext.form", "Ext.menu",
+Ext.ns("Ext.grid", "Ext.list", "Ext.dd", "Ext.tree", "Ext.form", "Ext.menu",
        "Ext.state", "Ext.layout", "Ext.app", "Ext.ux", "Ext.chart", "Ext.direct");
     /**
      * Namespace alloted for extensions to the framework.
@@ -59,7 +59,7 @@ Ext.apply(Ext, function(){
          */
         num : function(v, defaultValue){
             v = Number(Ext.isEmpty(v) || Ext.isBoolean(v) ? NaN : v);
-            return isNaN(v)? defaultValue : v;
+            return isNaN(v) ? defaultValue : v;
         },
 
         /**

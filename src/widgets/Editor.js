@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -64,6 +64,11 @@ Ext.extend(Ext.Editor, Ext.Component, {
      * The position to align to (see {@link Ext.Element#alignTo} for more details, defaults to "c-c?").
      */
     alignment: "c-c?",
+    /**
+     * @cfg {Array} offsets
+     * The offsets to use when aligning (see {@link Ext.Element#alignTo} for more details. Defaults to <tt>[0, 0]</tt>.
+     */
+    offsets: [0, 0],
     /**
      * @cfg {Boolean/String} shadow "sides" for sides/bottom only, "frame" for 4-way shadow, and "drop"
      * for bottom-right shadow (defaults to "frame")
@@ -220,9 +225,9 @@ Ext.extend(Ext.Editor, Ext.Component, {
         }
         if(this.fireEvent("beforestartedit", this, this.boundEl, v) !== false){
             this.startValue = v;
+            this.field.reset();
             this.field.setValue(v);
-            this.doAutoSize();
-            this.el.alignTo(this.boundEl, this.alignment);
+            this.realign(true);
             this.editing = true;
             this.show();
         }
@@ -269,9 +274,13 @@ Ext.extend(Ext.Editor, Ext.Component, {
 
     /**
      * Realigns the editor to the bound field based on the current alignment config value.
+     * @param {Boolean} autoSize (optional) True to size the field to the dimensions of the bound element.
      */
-    realign : function(){
-        this.el.alignTo(this.boundEl, this.alignment);
+    realign : function(autoSize){
+        if(autoSize === true){
+            this.doAutoSize();
+        }
+        this.el.alignTo(this.boundEl, this.alignment, this.offsets);
     },
 
     /**
@@ -376,8 +385,10 @@ Ext.extend(Ext.Editor, Ext.Component, {
     },
 
     beforeDestroy : function(){
-        Ext.destroy(this.field);
-        this.field = null;
+        Ext.destroyMembers(this, 'field');
+        
+        delete this.parentEl;
+        delete this.boundEl;
     }
 });
 Ext.reg('editor', Ext.Editor);

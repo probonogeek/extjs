@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -29,13 +29,13 @@
  * @cfg {Boolean} draggable True to make this node draggable (defaults to false)
  * @cfg {Boolean} isTarget False to not allow this node to act as a drop target (defaults to true)
  * @cfg {Boolean} allowChildren False to not allow this node to have child nodes (defaults to true)
- * @cfg {Boolean} editable False to not allow this node to be edited by an (@link Ext.tree.TreeEditor} (defaults to true)
+ * @cfg {Boolean} editable False to not allow this node to be edited by an {@link Ext.tree.TreeEditor} (defaults to true)
  * @constructor
  * @param {Object/String} attributes The attributes/config for the node or just a string with the text for the node
  */
 Ext.tree.TreeNode = function(attributes){
     attributes = attributes || {};
-    if(typeof attributes == 'string'){
+    if(Ext.isString(attributes)){
         attributes = {text: attributes};
     }
     this.childrenRendered = false;
@@ -186,7 +186,7 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
 
     getLoader : function(){
         var owner;
-        return this.loader || ((owner = this.getOwnerTree()) && owner.loader ? owner.loader : new Ext.tree.TreeLoader());
+        return this.loader || ((owner = this.getOwnerTree()) && owner.loader ? owner.loader : (this.loader = new Ext.tree.TreeLoader()));
     },
 
     // private override
@@ -228,11 +228,11 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
     },
 
     // private override
-    removeChild : function(node){
+    removeChild : function(node, destroy){
         this.ownerTree.getSelectionModel().unselect(node);
         Ext.tree.TreeNode.superclass.removeChild.apply(this, arguments);
         // if it's been rendered remove dom node
-        if(this.childrenRendered){
+        if(node.ui.rendered){
             node.ui.remove();
         }
         if(this.childNodes.length < 1){
@@ -265,8 +265,7 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      */
     setText : function(text){
         var oldText = this.text;
-        this.text = text;
-        this.attributes.text = text;
+        this.text = this.attributes.text = text;
         if(this.rendered){ // event without subscribing
             this.ui.onTextChange(this, text, oldText);
         }
@@ -277,14 +276,21 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      * Triggers selection of this node
      */
     select : function(){
-        this.getOwnerTree().getSelectionModel().select(this);
+        var t = this.getOwnerTree();
+        if(t){
+            t.getSelectionModel().select(this);
+        }
     },
 
     /**
      * Triggers deselection of this node
+     * @param {Boolean} silent (optional) True to stop selection change events from firing.
      */
-    unselect : function(){
-        this.getOwnerTree().getSelectionModel().unselect(this);
+    unselect : function(silent){
+        var t = this.getOwnerTree();
+        if(t){
+            t.getSelectionModel().unselect(this, silent);
+        }
     },
 
     /**
@@ -292,7 +298,8 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      * @return {Boolean}
      */
     isSelected : function(){
-        return this.getOwnerTree().getSelectionModel().isSelected(this);
+        var t = this.getOwnerTree();
+        return t ? t.getSelectionModel().isSelected(this) : false;
     },
 
     /**
@@ -302,7 +309,7 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      * @param {Function} callback (optional) A callback to be called when
      * expanding this node completes (does not wait for deep expand to complete).
      * Called with 1 parameter, this node.
-     * @param {Object} scope (optional) The scope in which to execute the callback.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the callback is executed. Defaults to this TreeNode.
      */
     expand : function(deep, anim, callback, scope){
         if(!this.expanded){
@@ -352,7 +359,7 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      * @param {Function} callback (optional) A callback to be called when
      * expanding this node completes (does not wait for deep expand to complete).
      * Called with 1 parameter, this node.
-     * @param {Object} scope (optional) The scope in which to execute the callback.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the callback is executed. Defaults to this TreeNode.
      */
     collapse : function(deep, anim, callback, scope){
         if(this.expanded && !this.isHiddenRoot()){
@@ -415,7 +422,7 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
      * Ensures all parent nodes are expanded, and if necessary, scrolls
      * the node into view.
      * @param {Function} callback (optional) A function to call when the node has been made visible.
-     * @param {Object} scope (optional) The scope in which to execute the callback.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the callback is executed. Defaults to this TreeNode.
      */
     ensureVisible : function(callback, scope){
         var tree = this.getOwnerTree();
@@ -533,15 +540,10 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
     },
 
     destroy : function(){
-        if(this.childNodes){
-            for(var i = 0,l = this.childNodes.length; i < l; i++){
-                this.childNodes[i].destroy();
-            }
-            this.childNodes = null;
-        }
-        if(this.ui.destroy){
-            this.ui.destroy();
-        }
+        this.unselect(true);
+        Ext.tree.TreeNode.superclass.destroy.call(this);
+        Ext.destroy(this.ui, this.loader);
+        this.ui = this.loader = null;
     },
 
     // private

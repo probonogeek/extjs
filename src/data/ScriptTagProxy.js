@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -37,6 +37,21 @@ if (scriptTag) {
 out.print(dataBlock.toJsonString());
 if (scriptTag) {
     out.write(");");
+}
+</code></pre>
+ * <p>Below is a PHP example to do the same thing:</p><pre><code>
+$callback = $_REQUEST['callback'];
+
+// Create the output object.
+$output = array('a' => 'Apple', 'b' => 'Banana');
+
+//start output
+if ($callback) {
+    header('Content-Type: text/javascript');
+    echo $callback . '(' . json_encode($output) . ');';
+} else {
+    header('Content-Type: application/x-json');
+    echo json_encode($output);
 }
 </code></pre>
  *
@@ -108,7 +123,7 @@ Ext.extend(Ext.data.ScriptTagProxy, Ext.data.DataProxy, {
      * <li>The "arg" argument from the load function</li>
      * <li>A boolean success indicator</li>
      * </ul>
-     * @param {Object} scope The scope in which to call the callback
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      * @param {Object} arg An optional argument which is passed to the callback as its second parameter.
      */
     doRequest : function(action, rs, params, reader, callback, scope, arg) {
@@ -171,7 +186,7 @@ Ext.extend(Ext.data.ScriptTagProxy, Ext.data.DataProxy, {
      * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
      * @param {Object} trans The request transaction object
      * @param {Object} res The server response
-     * @private
+     * @protected
      */
     onRead : function(action, trans, res) {
         var result;
@@ -200,7 +215,7 @@ Ext.extend(Ext.data.ScriptTagProxy, Ext.data.DataProxy, {
      * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
      * @param {Object} trans The request transaction object
      * @param {Object} res The server response
-     * @private
+     * @protected
      */
     onWrite : function(action, trans, response, rs) {
         var reader = trans.reader;

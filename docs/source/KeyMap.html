@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.KeyMap"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.KeyMap"></div>/**
  * @class Ext.KeyMap
  * Handles mapping keys to actions for an element. One key map can be used for multiple actions.
  * The constructor accepts the same config object as defined by {@link #addBinding}.
@@ -179,7 +174,7 @@ map.addBinding({
      * following options:
      * {key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}
      * @param {Function} fn The function to call
-     * @param {Object} scope (optional) The scope of the function
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.
      */
     on : function(key, fn, scope){
         var keyCode, shift, ctrl, alt;
@@ -246,6 +241,6 @@ map.addBinding({
     setDisabled : function(disabled){
         this[disabled ? "disable" : "enable"]();
     }
-};</pre>
+};</pre>    
 </body>
 </html>

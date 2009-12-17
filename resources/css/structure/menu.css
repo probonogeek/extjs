@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -46,11 +46,14 @@
 
 .x-menu-list-item{
     white-space: nowrap;
+	display:block;
+	padding:1px;
+}
+
+.x-menu-item{
     -moz-user-select: none;
     -khtml-user-select:none;
     -webkit-user-select:ignore;
-	display:block;
-	padding:1px;
 }
 
 .x-menu-item-arrow{
@@ -177,6 +180,25 @@ a.x-menu-item {
 
 .x-date-menu {
    padding:0 !important;
+}
+
+/*
+ * Ugly mess to remove the white border under the picker
+ */
+.ext-ie .x-date-menu{
+    height: 199px;
+}
+
+.ext-strict .ext-ie .x-date-menu, .ext-border-box .ext-ie8 .x-date-menu{
+    height: 197px;
+}
+
+.ext-strict .ext-ie7 .x-date-menu{
+    height: 195px;
+}
+
+.ext-strict .ext-ie8 .x-date-menu{
+    height: auto;
 }
 
 .x-cycle-menu .x-menu-item-checked {

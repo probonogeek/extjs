@@ -1,24 +1,26 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 // private
 // This is a support class used internally by the Grid components
-Ext.grid.HeaderDragZone = function(grid, hd, hd2){
-    this.grid = grid;
-    this.view = grid.getView();
-    this.ddGroup = "gridHeader" + this.grid.getGridEl().id;
-    Ext.grid.HeaderDragZone.superclass.constructor.call(this, hd);
-    if(hd2){
-        this.setHandleElId(Ext.id(hd));
-        this.setOuterHandleElId(Ext.id(hd2));
-    }
-    this.scroll = false;
-};
-Ext.extend(Ext.grid.HeaderDragZone, Ext.dd.DragZone, {
+Ext.grid.HeaderDragZone = Ext.extend(Ext.dd.DragZone, {
     maxDragWidth: 120,
+    
+    constructor : function(grid, hd, hd2){
+        this.grid = grid;
+        this.view = grid.getView();
+        this.ddGroup = "gridHeader" + this.grid.getGridEl().id;
+        Ext.grid.HeaderDragZone.superclass.constructor.call(this, hd);
+        if(hd2){
+            this.setHandleElId(Ext.id(hd));
+            this.setOuterHandleElId(Ext.id(hd2));
+        }
+        this.scroll = false;
+    },
+    
     getDragData : function(e){
         var t = Ext.lib.Event.getTarget(e);
         var h = this.view.findHeaderCell(t);
@@ -54,28 +56,29 @@ Ext.extend(Ext.grid.HeaderDragZone, Ext.dd.DragZone, {
 
 // private
 // This is a support class used internally by the Grid components
-Ext.grid.HeaderDropZone = function(grid, hd, hd2){
-    this.grid = grid;
-    this.view = grid.getView();
-    // split the proxies so they don't interfere with mouse events
-    this.proxyTop = Ext.DomHelper.append(document.body, {
-        cls:"col-move-top", html:"&#160;"
-    }, true);
-    this.proxyBottom = Ext.DomHelper.append(document.body, {
-        cls:"col-move-bottom", html:"&#160;"
-    }, true);
-    this.proxyTop.hide = this.proxyBottom.hide = function(){
-        this.setLeftTop(-100,-100);
-        this.setStyle("visibility", "hidden");
-    };
-    this.ddGroup = "gridHeader" + this.grid.getGridEl().id;
-    // temporarily disabled
-    //Ext.dd.ScrollManager.register(this.view.scroller.dom);
-    Ext.grid.HeaderDropZone.superclass.constructor.call(this, grid.getGridEl().dom);
-};
-Ext.extend(Ext.grid.HeaderDropZone, Ext.dd.DropZone, {
+Ext.grid.HeaderDropZone = Ext.extend(Ext.dd.DropZone, {
     proxyOffsets : [-4, -9],
     fly: Ext.Element.fly,
+    
+    constructor : function(grid, hd, hd2){
+        this.grid = grid;
+        this.view = grid.getView();
+        // split the proxies so they don't interfere with mouse events
+        this.proxyTop = Ext.DomHelper.append(document.body, {
+            cls:"col-move-top", html:"&#160;"
+        }, true);
+        this.proxyBottom = Ext.DomHelper.append(document.body, {
+            cls:"col-move-bottom", html:"&#160;"
+        }, true);
+        this.proxyTop.hide = this.proxyBottom.hide = function(){
+            this.setLeftTop(-100,-100);
+            this.setStyle("visibility", "hidden");
+        };
+        this.ddGroup = "gridHeader" + this.grid.getGridEl().id;
+        // temporarily disabled
+        //Ext.dd.ScrollManager.register(this.view.scroller.dom);
+        Ext.grid.HeaderDropZone.superclass.constructor.call(this, grid.getGridEl().dom);
+    },
 
     getTargetFromEvent : function(e){
         var t = Ext.lib.Event.getTarget(e);
@@ -181,15 +184,14 @@ Ext.extend(Ext.grid.HeaderDropZone, Ext.dd.DropZone, {
     }
 });
 
-
-Ext.grid.GridView.ColumnDragZone = function(grid, hd){
-    Ext.grid.GridView.ColumnDragZone.superclass.constructor.call(this, grid, hd, null);
-    this.proxy.el.addClass('x-grid3-col-dd');
-};
-
-Ext.extend(Ext.grid.GridView.ColumnDragZone, Ext.grid.HeaderDragZone, {
+Ext.grid.GridView.ColumnDragZone = Ext.extend(Ext.grid.HeaderDragZone, {
+    
+    constructor : function(grid, hd){
+        Ext.grid.GridView.ColumnDragZone.superclass.constructor.call(this, grid, hd, null);
+        this.proxy.el.addClass('x-grid3-col-dd');
+    },
+    
     handleMouseDown : function(e){
-
     },
 
     callHandleMouseDown : function(e){

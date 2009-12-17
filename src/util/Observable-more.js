@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -7,28 +7,28 @@
 /**
  * @class Ext.util.Observable
  */
-Ext.apply(Ext.util.Observable.prototype, function(){    
+Ext.apply(Ext.util.Observable.prototype, function(){
     // this is considered experimental (along with beforeMethod, afterMethod, removeMethodListener?)
     // allows for easier interceptor and sequences, including cancelling and overwriting the return value of the call
     // private
     function getMethodEvent(method){
         var e = (this.methodEvents = this.methodEvents ||
         {})[method], returnValue, v, cancel, obj = this;
-        
+
         if (!e) {
             this.methodEvents[method] = e = {};
             e.originalFn = this[method];
             e.methodName = method;
             e.before = [];
             e.after = [];
-            
+
             var makeCall = function(fn, scope, args){
                 if (!Ext.isEmpty(v = fn.apply(scope || obj, args))) {
                     if (Ext.isObject(v)) {
                         returnValue = !Ext.isEmpty(v.returnValue) ? v.returnValue : v;
                         cancel = !!v.cancel;
                     }
-                    else 
+                    else
                         if (v === false) {
                             cancel = true;
                         }
@@ -37,19 +37,19 @@ Ext.apply(Ext.util.Observable.prototype, function(){
                         }
                 }
             };
-            
+
             this[method] = function(){
                 var args = Ext.toArray(arguments);
                 returnValue = v = undefined;
                 cancel = false;
-                
+
                 Ext.each(e.before, function(b){
                     makeCall(b.fn, b.scope, args);
                     if (cancel) {
                         return returnValue;
                     }
                 });
-                
+
                 if (!Ext.isEmpty(v = e.originalFn.apply(obj, args))) {
                     returnValue = v;
                 }
@@ -64,26 +64,26 @@ Ext.apply(Ext.util.Observable.prototype, function(){
         }
         return e;
     }
-    
+
     return {
         // these are considered experimental
         // allows for easier interceptor and sequences, including cancelling and overwriting the return value of the call
-        // adds an "interceptor" called before the original method
-        beforeMethod: function(method, fn, scope){
+        // adds an 'interceptor' called before the original method
+        beforeMethod : function(method, fn, scope){
             getMethodEvent.call(this, method).before.push({
                 fn: fn,
                 scope: scope
             });
         },
-        
-        // adds a "sequence" called after the original method
-        afterMethod: function(method, fn, scope){
+
+        // adds a 'sequence' called after the original method
+        afterMethod : function(method, fn, scope){
             getMethodEvent.call(this, method).after.push({
                 fn: fn,
                 scope: scope
             });
         },
-        
+
         removeMethodListener: function(method, fn, scope){
             var e = getMethodEvent.call(this, method), found = false;
             Ext.each(e.before, function(b, i, arr){
@@ -102,13 +102,13 @@ Ext.apply(Ext.util.Observable.prototype, function(){
                 });
             }
         },
-        
+
         /**
          * Relays selected events from the specified Observable as if the events were fired by <tt><b>this</b></tt>.
          * @param {Object} o The Observable whose events this object is to relay.
          * @param {Array} events Array of event names to relay.
          */
-        relayEvents: function(o, events){
+        relayEvents : function(o, events){
             var me = this;
             function createHandler(ename){
                 return function(){
@@ -120,7 +120,7 @@ Ext.apply(Ext.util.Observable.prototype, function(){
                 o.on(ename, createHandler(ename), me);
             });
         },
-        
+
         /**
          * <p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
          * <code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
@@ -129,13 +129,13 @@ Ext.apply(Ext.util.Observable.prototype, function(){
          * access the required target more quickly.</p>
          * <p>Example:</p><pre><code>
 Ext.override(Ext.form.Field, {
-//  Add functionality to Field's initComponent to enable the change event to bubble
-    initComponent: Ext.form.Field.prototype.initComponent.createSequence(function() {
+    //  Add functionality to Field&#39;s initComponent to enable the change event to bubble
+    initComponent : Ext.form.Field.prototype.initComponent.createSequence(function() {
         this.enableBubble('change');
     }),
 
-//  We know that we want Field's events to bubble directly to the FormPanel.
-    getBubbleTarget: function() {
+    //  We know that we want Field&#39;s events to bubble directly to the FormPanel.
+    getBubbleTarget : function() {
         if (!this.formPanel) {
             this.formPanel = this.findParentByType('form');
         }
@@ -150,15 +150,15 @@ var myForm = new Ext.formPanel({
     }],
     listeners: {
         change: function() {
-//          Title goes red if form has been modified.
-            myForm.header.setStyle("color", "red");
+            // Title goes red if form has been modified.
+            myForm.header.setStyle('color', 'red');
         }
     }
 });
 </code></pre>
-         * @param {Object} events The event name to bubble, or an Array of event names.
+         * @param {String/Array} events The event name to bubble, or an Array of event names.
          */
-        enableBubble: function(events){
+        enableBubble : function(events){
             var me = this;
             if(!Ext.isEmpty(events)){
                 events = Ext.isArray(events) ? events : Ext.toArray(arguments);
@@ -182,9 +182,9 @@ var myForm = new Ext.formPanel({
  * to the supplied function with the event name + standard signature of the event
  * <b>before</b> the event is fired. If the supplied function returns false,
  * the event will not fire.
- * @param {Observable} o The Observable to capture
- * @param {Function} fn The function to call
- * @param {Object} scope (optional) The scope (this object) for the fn
+ * @param {Observable} o The Observable to capture events from.
+ * @param {Function} fn The function to call when an event is fired.
+ * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Observable firing the event.
  * @static
  */
 Ext.util.Observable.capture = function(o, fn, scope){
@@ -199,15 +199,21 @@ Ext.util.Observable.capture = function(o, fn, scope){
  * <p>Usage:</p><pre><code>
 Ext.util.Observable.observeClass(Ext.data.Connection);
 Ext.data.Connection.on('beforerequest', function(con, options) {
-    console.log("Ajax request made to " + options.url);
+    console.log('Ajax request made to ' + options.url);
 });</code></pre>
  * @param {Function} c The class constructor to make observable.
+ * @param {Object} listeners An object containing a series of listeners to add. See {@link #addListener}. 
  * @static
  */
-Ext.util.Observable.observeClass = function(c){
-    Ext.apply(c, new Ext.util.Observable());
-    c.prototype.fireEvent = function(){
-        return (c.fireEvent.apply(c, arguments) !== false) &&
-        (Ext.util.Observable.prototype.fireEvent.apply(this, arguments) !== false);
-    };
+Ext.util.Observable.observeClass = function(c, listeners){
+    if(c){
+      if(!c.fireEvent){
+          Ext.apply(c, new Ext.util.Observable());
+          Ext.util.Observable.capture(c.prototype, c.fireEvent, c);
+      }
+      if(Ext.isObject(listeners)){
+          c.on(listeners);
+      }
+      return c;
+   }
 };

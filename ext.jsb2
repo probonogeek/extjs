@@ -1,7 +1,7 @@
 {
     projectName: 'Ext JS',
-    deployDir: 'ext-3.0.3',
-    licenseText: "Ext JS Library 3.0.3\nCopyright(c) 2006-2009 Ext JS, LLC\nlicensing@extjs.com\nhttp://www.extjs.com/license",
+    deployDir: 'ext-3.1+',
+    licenseText: "Ext JS Library 3.1+\nCopyright(c) 2006-2009 Ext JS, LLC\nlicensing@extjs.com\nhttp://www.extjs.com/license",
     pkgs: [{
         name: 'Ext Base',
         file: 'adapter/ext/ext-base.js',
@@ -10,9 +10,9 @@
             text: 'Ext.js',
             path: 'src/core/core/'
         },{
-	    text: 'Ext-more.js',
-    	    path: 'src/core/'
-	},{
+            text: 'Ext-more.js',
+            path: 'src/core/'
+        },{
             text: 'TaskMgr.js',
             path: 'src/util/core/'
         },{
@@ -24,7 +24,7 @@
         },{
             text: 'ext-base-dom-more.js',
             path: 'src/adapter/'
-	},{
+        },{
             text: 'ext-base-event.js',
             path: 'src/adapter/core/'
         },{
@@ -33,10 +33,10 @@
         },{
             text: 'ext-base-region.js',
             path: 'src/adapter/core/'
-	},{
+        },{
             text: 'ext-base-point.js',
             path: 'src/adapter/core/'
-	},{
+        },{
             text: 'ext-base-anim.js',
             path: 'src/adapter/core/'
         },{
@@ -118,6 +118,9 @@
             text: 'DomQuery.js',
             path: 'src/core/core/'
         },{
+            text: 'DelayedTask.js',
+            path: 'src/util/core/'
+        },{
             text: 'Observable.js',
             path: 'src/util/core/'
         },{
@@ -141,6 +144,9 @@
         },{
             text: 'Element.traversal.js',
             path: 'src/core/core/'
+        },{
+            text: 'Element.traversal-more.js',
+            path: 'src/core/'
         },{
             text: 'Element.insertion.js',
             path: 'src/core/core/'
@@ -196,9 +202,6 @@
             text: 'Date.js',
             path: 'src/util/'
         },{
-            text: 'DelayedTask.js',
-            path: 'src/util/core/'
-        },{
             text: 'MixedCollection.js',
             path: 'src/util/'
         },{
@@ -230,8 +233,8 @@
             path: 'src/util/'
         },{
             text: 'Error.js',
-	    path: 'src/core/'
-	}]
+            path: 'src/core/'
+        }]
     },{
         name: 'Drag Drop',
         file: 'pkgs/ext-dd.js',
@@ -253,9 +256,9 @@
             text: 'StatusProxy.js',
             path: 'src/dd/'
         },{
-	    text: 'DragSource.js',
+            text: 'DragSource.js',
             path: 'src/dd/'
-	},{
+        },{
             text: 'DropTarget.js',
             path: 'src/dd/'
         },{
@@ -301,9 +304,15 @@
             text: 'DataProxy.js',
             path: 'src/data/'
         },{
-	    text: 'ScriptTagProxy.js',
-	    path: 'src/data/'
-	},{
+            text: 'Request.js',
+            path: 'src/data/'
+        }, {
+            text: 'Response.js',
+            path: 'src/data/'
+        }, {
+            text: 'ScriptTagProxy.js',
+            path: 'src/data/'
+        },{
             text: 'HttpProxy.js',
             path: 'src/data/'
         },{
@@ -466,7 +475,7 @@
             text: 'DatePicker.js',
             path: 'src/widgets/'
         },{
-	    text: 'LoadMask.js',
+            text: 'LoadMask.js',
             path: 'src/widgets/'
         },{
             text: 'Slider.js',
@@ -518,6 +527,9 @@
             path: 'src/widgets/'
         },{
             text: 'ListView.js',
+            path: 'src/widgets/list/'
+        },{
+            text: 'Column.js',
             path: 'src/widgets/list/'
         },{
             text: 'ColumnResizer.js',
@@ -618,9 +630,9 @@
             text: 'TreeSelectionModel.js',
             path: 'src/widgets/tree/'
         },{
-	    text: 'Tree.js',
-	    path: 'src/data/'
-	},{
+            text: 'Tree.js',
+            path: 'src/data/'
+        },{
             text: 'TreeNode.js',
             path: 'src/widgets/tree/'
         },{
@@ -844,35 +856,35 @@
         name: 'Ext All',
         file: 'ext-all.js',
         isDebug: true,
-	includeDeps: true,
+        includeDeps: true,
         pkgDeps: [
-		'pkgs/ext-foundation.js',
-		'pkgs/cmp-foundation.js',
-		'pkgs/ext-dd.js',
-		'pkgs/data-foundation.js',
-		'pkgs/data-json.js',
-		'pkgs/data-xml.js',
-		'pkgs/data-grouping.js',
-		'pkgs/direct.js',
-                'pkgs/resizable.js',
-		'pkgs/window.js',
-		'pkgs/state.js',
-		'pkgs/data-list-views.js',
-		'pkgs/pkg-tabs.js',
-		'pkgs/pkg-buttons.js',
-		'pkgs/pkg-toolbars.js',
-		'pkgs/pkg-history.js',
-		'pkgs/pkg-tips.js',
-		'pkgs/pkg-tree.js',
-		'pkgs/pkg-charts.js',
-		'pkgs/pkg-menu.js',
-		'pkgs/pkg-forms.js',
-		'pkgs/pkg-grid-foundation.js',
-		'pkgs/pkg-grid-editor.js',
-		'pkgs/pkg-grid-property.js',
-		'pkgs/pkg-grid-grouping.js'
-	],
-	fileIncludes: []
+            'pkgs/ext-foundation.js',
+            'pkgs/cmp-foundation.js',
+            'pkgs/ext-dd.js',
+            'pkgs/data-foundation.js',
+            'pkgs/data-json.js',
+            'pkgs/data-xml.js',
+            'pkgs/data-grouping.js',
+            'pkgs/direct.js',
+            'pkgs/resizable.js',
+            'pkgs/window.js',
+            'pkgs/state.js',
+            'pkgs/data-list-views.js',
+            'pkgs/pkg-tabs.js',
+            'pkgs/pkg-buttons.js',
+            'pkgs/pkg-toolbars.js',
+            'pkgs/pkg-history.js',
+            'pkgs/pkg-tips.js',
+            'pkgs/pkg-tree.js',
+            'pkgs/pkg-charts.js',
+            'pkgs/pkg-menu.js',
+            'pkgs/pkg-forms.js',
+            'pkgs/pkg-grid-foundation.js',
+            'pkgs/pkg-grid-editor.js',
+            'pkgs/pkg-grid-property.js',
+            'pkgs/pkg-grid-grouping.js'
+        ],
+        fileIncludes: []
     },{
        name: 'User Extension JS Pack',
        file: 'examples/ux/ux-all.js',
@@ -885,6 +897,9 @@
           path: 'examples/ux/'
        },{
           text: 'CheckColumn.js',
+          path: 'examples/ux/'
+       },{
+          text: 'ColumnHeaderGroup.js',
           path: 'examples/ux/'
        },{
           text: 'ColumnNodeUI.js',
@@ -936,6 +951,9 @@
           path: 'examples/ux/'
        },{
           text: 'ItemSelector.js',
+          path: 'examples/ux/'
+       },{
+          text: 'LockingGridView.js',
           path: 'examples/ux/'
        },{
           text: 'MultiSelect.js',
@@ -1006,12 +1024,33 @@
        },{
           text: 'ValidationStatus.js',
           path: 'examples/ux/statusbar/'
+       }, {
+          text: 'TreeGridColumns.js',
+          path: 'examples/ux/treegrid/'
+       },{
+          text: 'TreeGridNodeUI.js',
+          path: 'examples/ux/treegrid/'
+       },{
+          text: 'TreeGridColumnResizer.js',
+          path: 'examples/ux/treegrid/'
+       },{
+          text: 'TreeGridSorter.js',
+          path: 'examples/ux/treegrid/'
+       },{
+          text: 'TreeGridLoader.js',
+          path: 'examples/ux/treegrid/'
+       },{
+          text: 'TreeGrid.js',
+          path: 'examples/ux/treegrid/'
        }]
     },{
        name: 'User Extension CSS Pack',
        file: 'examples/ux/css/ux-all.css',
        fileIncludes: [{
           text: 'CenterLayout.css',
+          path: 'examples/ux/css/'
+       },{
+          text: 'ColumnHeaderGroup.css',
           path: 'examples/ux/css/'
        },{
           text: 'ColumnNodeUI.css',
@@ -1032,6 +1071,9 @@
           text: 'GroupTab.css',
           path: 'examples/ux/css/'
        },{
+          text: 'LockingGridView.css',
+          path: 'examples/ux/css/'
+       },{
           text: 'MultiSelect.css',
           path: 'examples/ux/css/'
        },{
@@ -1049,6 +1091,9 @@
        },{
           text: 'statusbar.css',
           path: 'examples/ux/statusbar/css/'
+       },{
+          text: 'treegrid.css',
+          path: 'examples/ux/treegrid/'
        }]
     },{
        name: 'Ext All CSS',
@@ -1103,9 +1148,6 @@
            path: 'resources/css/structure/'
        },{
            text: 'box.css',
-           path: 'resources/css/structure/'
-       },{
-           text: 'debug.css',
            path: 'resources/css/structure/'
        },{
            text: 'combo.css',
@@ -1184,9 +1226,6 @@
            text: 'box.css',
            path: 'resources/css/visual/'
        },{
-           text: 'debug.css',
-           path: 'resources/css/visual/'
-       },{
            text: 'combo.css',
            path: 'resources/css/visual/'
        },{
@@ -1217,6 +1256,16 @@
            text: 'dialog.css',
            path: 'resources/css/visual/'
        }]
+    },{
+       name: 'Ext Debug CSS',
+       file: 'resources/css/debug.css',
+       fileIncludes: [{
+           text: 'debug.css',
+           path: 'resources/css/structure/'
+       },{
+           text: 'debug.css',
+           path: 'resources/css/visual/'
+        }]
     }],
     resources: [{
         src: 'src/',
@@ -1235,6 +1284,10 @@
         dest: 'license.txt',
         filters: ".*"
     },{
+        src: 'gpl-3.0.txt',
+        dest: 'gpl-3.0.txt',
+        filters: ".*"
+    },{
         src: 'INCLUDE_ORDER.txt',
         dest: 'INCLUDE_ORDER.txt',
         filters: ".*"
@@ -1244,4 +1297,3 @@
         filters: ".*"
     }]
 }
-

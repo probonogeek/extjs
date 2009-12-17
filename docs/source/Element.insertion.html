@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-/**
+    <pre class="prettyprint lang-js">/**
  * @class Ext.Element
  */
 Ext.Element.addMethods(
@@ -94,8 +89,8 @@ function() {
 	     * @return {Ext.Element} this
 	     */
 	    replaceWith: function(el){
-		    var me = this,
-		    	Element = Ext.Element;
+		    var me = this;
+                
             if(el.nodeType || el.dom || typeof el == 'string'){
                 el = GETDOM(el);
                 me.dom.parentNode.insertBefore(el, me.dom);
@@ -103,10 +98,11 @@ function() {
                 el = DH.insertBefore(me.dom, el);
             }
 	        
-	        delete Element.cache[me.id];
+	        delete Ext.elCache[me.id];
 	        Ext.removeNode(me.dom);      
 	        me.id = Ext.id(me.dom = el);
-	        return Element.cache[me.id] = me;        
+	        Ext.Element.addToCache(me.isFlyweight ? new Ext.Element(me.dom) : me);     
+            return me;
 	    },
 	    
 		<div id="method-Ext.Element-createChild"></div>/**
@@ -148,6 +144,6 @@ function() {
 		    return returnEl ? Ext.get(el) : el;
 		}
 	}
-}());</pre>
+}());</pre>    
 </body>
 </html>

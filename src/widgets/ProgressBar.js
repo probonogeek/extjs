@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -285,6 +285,16 @@ myAction.on('complete', function(){
             this.hide();
         }
         return this;
+    },
+    
+    onDestroy: function(){
+        if(this.rendered){
+            if(this.textEl.isComposite){
+                this.textEl.clear();
+            }
+            Ext.destroyMembers(this, 'textEl', 'progressBar', 'textTopEl');
+        }
+        Ext.ProgressBar.superclass.onDestroy.call(this);
     }
 });
 Ext.reg('progress', Ext.ProgressBar);

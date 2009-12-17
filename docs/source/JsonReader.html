@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.data.JsonReader"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.data.JsonReader"></div>/**
  * @class Ext.data.JsonReader
  * @extends Ext.data.DataReader
  * <p>Data reader class to create an Array of {@link Ext.data.Record} objects
@@ -200,7 +195,7 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         var res = new Ext.data.Response({
             action: action,
             success: this.getSuccess(o),
-            data: this.extractData(root),
+            data: (root) ? this.extractData(root, false) : [],
             message: this.getMessage(o),
             raw: o
         });
@@ -317,40 +312,6 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
     }(),
 
     /**
-     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
-     * @param {Object[]/Object} data-root from server response
-     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
-     * @private
-     */
-    extractData : function(root, returnRecords) {
-        var rs = undefined;
-        if (this.isData(root)) {
-            root = [root];
-        }
-        if (Ext.isArray(root)) {
-            var f       = this.recordType.prototype.fields,
-                fi      = f.items,
-                fl      = f.length,
-                rs      = [];
-            if (returnRecords === true) {
-                var Record = this.recordType;
-                for (var i = 0; i < root.length; i++) {
-                    var n = root[i];
-                    var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
-                    record.json = n;
-                    rs.push(record);
-                }
-            }
-            else {
-                for (var i = 0; i < root.length; i++) {
-                    rs.push(this.extractValues(root[i], fi, fl));
-                }
-            }
-        }
-        return rs;
-    },
-
-    /**
      * type-casts a single row of raw-data from server
      * @param {Object} data
      * @param {Array} items
@@ -388,6 +349,6 @@ Ext.apply(Ext.data.JsonReader.Error.prototype, {
         'root-empty': 'Data was expected to be returned by the server in the "root" property of the response.  Please review your JsonReader configuration to ensure the "root" property matches that returned in the server-response.  See JsonReader docs.'
     }
 });
-</pre>
+</pre>    
 </body>
 </html>

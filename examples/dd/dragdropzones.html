@@ -2,28 +2,31 @@
 <head>
 <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
 <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
-<script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
 <script type="text/javascript" src="../../ext-all-debug.js"></script>
 <script type="text/javascript" src="../code-display.js"></script>
 <script type="text/javascript" src="dragdropzones.js"></script>
 <style type="text/css">
 .app-header .x-panel-body {
-    background-color: #99BBE8;
+    background-color: #ddd;
+    padding-left: 5px;
 }
 
 .app-header h1 {
     font-family: verdana,arial,sans-serif;
     font-size: 20px;
+    color: #15428B;
 }
 
 .hospital-target {
     border: 1px solid red;
     width: 400ps;
-    height: 30px;
+    height: 16px;
+    margin: 5px;
+    padding: 5px;
 }
 
 .hospital-target.hospital-target-hover {
-    background-color: #D88;
+    background-color: #C0C0C0;
 }
 
 .patient-source {
@@ -42,6 +45,15 @@ td.patient-label {
     text-align: right;
     width: 100px;
     padding: 0px 3px 0px 0px;
+}
+
+.patient-over {
+    background-color:#EFEFEF;
+    cursor: pointer;
+}
+.patient-selected {
+    background-color: #DFE8F6;
+    cursor: pointer;
 }
 </style>
 <title>Ext Drag/Drop</title>

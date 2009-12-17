@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -169,7 +169,8 @@ new Ext.data.HttpProxy({
                 proxy.api[action] = proxy.api[action] || proxy.url || proxy.directFn;
                 if (typeof(proxy.api[action]) == 'string') {
                     proxy.api[action] = {
-                        url: proxy.api[action]
+                        url: proxy.api[action],
+                        method: (proxy.restful === true) ? Ext.data.Api.restActions[action] : undefined
                     };
                 }
             }
@@ -195,16 +196,13 @@ new Ext.data.HttpProxy({
                 });
 
                 switch (response.status) {
-                    case 200:   // standard 200 response, send control back to HttpProxy#onWrite
+                    case 200:   // standard 200 response, send control back to HttpProxy#onWrite by returning true from this intercepted #onWrite
                         return true;
                         break;
                     case 201:   // entity created but no response returned
-                        //res[reader.meta.successProperty] = true;
                         res.success = true;
                         break;
                     case 204:  // no-content.  Create a fake response.
-                        //res[reader.meta.successProperty] = true;
-                        //res[reader.meta.root] = null;
                         res.success = true;
                         res.data = null;
                         break;
@@ -212,13 +210,6 @@ new Ext.data.HttpProxy({
                         return true;
                         break;
                 }
-                /*
-                if (res[reader.meta.successProperty] === true) {
-                    this.fireEvent("write", this, action, res[reader.meta.root], res, rs, o.request.arg);
-                } else {
-                    this.fireEvent('exception', this, 'remote', action, o, res, rs);
-                }
-                */
                 if (res.success === true) {
                     this.fireEvent("write", this, action, res.data, res, rs, o.request.arg);
                 } else {

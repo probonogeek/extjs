@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,17 +11,17 @@
  * implemented by descendant classes.  This class should not be directly instantiated.
  * @constructor
  */
-Ext.grid.AbstractSelectionModel = function(){
-    this.locked = false;
-    Ext.grid.AbstractSelectionModel.superclass.constructor.call(this);
-};
-
-Ext.extend(Ext.grid.AbstractSelectionModel, Ext.util.Observable,  {
+Ext.grid.AbstractSelectionModel = Ext.extend(Ext.util.Observable,  {
     /**
      * The GridPanel for which this SelectionModel is handling selection. Read-only.
      * @type Object
      * @property grid
      */
+    
+    constructor : function(){
+        this.locked = false;
+        Ext.grid.AbstractSelectionModel.superclass.constructor.call(this);
+    },
 
     /** @ignore Called by the grid automatically. Do not call directly. */
     init : function(grid){

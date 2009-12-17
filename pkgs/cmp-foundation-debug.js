@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -53,10 +53,10 @@ Ext.ComponentMgr = function(){
         },
 
         /**
-         * Registers a function that will be called when a specified component is added to ComponentMgr
+         * Registers a function that will be called when a Component with the specified id is added to ComponentMgr. This will happen on instantiation.
          * @param {String} id The component {@link Ext.Component#id id}
          * @param {Function} fn The callback function
-         * @param {Object} scope The scope of the callback
+         * @param {Object} scope The scope (<code>this</code> reference) in which the callback is executed. Defaults to the Component.
          */
         onAvailable : function(id, fn, scope){
             all.on("add", function(index, o){
@@ -133,7 +133,12 @@ Ext.ComponentMgr = function(){
          * @return {Ext.Component} The newly instantiated Plugin.
          */
         createPlugin : function(config, defaultType){
-            return new ptypes[config.ptype || defaultType](config);
+            var PluginCls = ptypes[config.ptype || defaultType];
+            if (PluginCls.init) {
+                return PluginCls;                
+            } else {
+                return new PluginCls(config);
+            }            
         }
     };
 }();
@@ -236,7 +241,7 @@ menutextitem     {@link Ext.menu.TextItem}
 
 Form components
 ---------------------------------------
-form             {@link Ext.FormPanel}
+form             {@link Ext.form.FormPanel}
 checkbox         {@link Ext.form.Checkbox}
 checkboxgroup    {@link Ext.form.CheckboxGroup}
 combo            {@link Ext.form.ComboBox}
@@ -306,6 +311,14 @@ Ext.Component = function(config){
     Ext.apply(this, config);
     this.addEvents(
         /**
+         * @event added
+         * Fires when a component is added to an Ext.Container
+         * @param {Ext.Component} this
+         * @param {Ext.Container} ownerCt Container which holds the component
+         * @param {number} index Position at which the component was added
+         */
+        'added',
+        /**
          * @event disable
          * Fires after the component is disabled.
          * @param {Ext.Component} this
@@ -344,6 +357,13 @@ Ext.Component = function(config){
          * @param {Ext.Component} this
          */
         'hide',
+        /**
+         * @event removed
+         * Fires when a component is removed from an Ext.Container
+         * @param {Ext.Component} this
+         * @param {Ext.Container} ownerCt Container which holds the component
+         */
+        'removed',
         /**
          * @event beforerender
          * Fires before the component is {@link #rendered}. Return false from an
@@ -439,7 +459,7 @@ Ext.Component = function(config){
     }
 
     if(this.stateful !== false){
-        this.initState(config);
+        this.initState();
     }
 
     if(this.applyTo){
@@ -950,6 +970,53 @@ new Ext.Panel({
      */
     rendered : false,
 
+    /**
+     * @cfg {String} contentEl
+     * <p>Optional. Specify an existing HTML element, or the <code>id</code> of an existing HTML element to use as the content
+     * for this component.</p>
+     * <ul>
+     * <li><b>Description</b> :
+     * <div class="sub-desc">This config option is used to take an existing HTML element and place it in the layout element
+     * of a new component (it simply moves the specified DOM element <i>after the Component is rendered</i> to use as the content.</div></li>
+     * <li><b>Notes</b> :
+     * <div class="sub-desc">The specified HTML element is appended to the layout element of the component <i>after any configured
+     * {@link #html HTML} has been inserted</i>, and so the document will not contain this element at the time the {@link #render} event is fired.</div>
+     * <div class="sub-desc">The specified HTML element used will not participate in any <code><b>{@link Ext.Container#layout layout}</b></code>
+     * scheme that the Component may use. It is just HTML. Layouts operate on child <code><b>{@link Ext.Container#items items}</b></code>.</div>
+     * <div class="sub-desc">Add either the <code>x-hidden</code> or the <code>x-hide-display</code> CSS class to
+     * prevent a brief flicker of the content before it is rendered to the panel.</div></li>
+     * </ul>
+     */
+    /**
+     * @cfg {String/Object} html
+     * An HTML fragment, or a {@link Ext.DomHelper DomHelper} specification to use as the layout element
+     * content (defaults to ''). The HTML content is added after the component is rendered,
+     * so the document will not contain this HTML at the time the {@link #render} event is fired.
+     * This content is inserted into the body <i>before</i> any configured {@link #contentEl} is appended.
+     */
+
+    /**
+     * @cfg {Mixed} tpl
+     * An <bold>{@link Ext.Template}</bold>, <bold>{@link Ext.XTemplate}</bold>
+     * or an array of strings to form an Ext.XTemplate.
+     * Used in conjunction with the <code>{@link #data}</code> and 
+     * <code>{@link #tplWriteMode}</code> configurations.
+     */
+
+    /**
+     * @cfg {String} tplWriteMode The Ext.(X)Template method to use when
+     * updating the content area of the Component. Defaults to <tt>'overwrite'</tt>
+     * (see <code>{@link Ext.XTemplate#overwrite}</code>).
+     */
+    tplWriteMode : 'overwrite',
+
+    /**
+     * @cfg {Mixed} data
+     * The initial set of data to apply to the <code>{@link #tpl}</code> to
+     * update the content area of the Component.
+     */
+
+
     // private
     ctype : 'Ext.Component',
 
@@ -1065,7 +1132,32 @@ Ext.Foo = Ext.extend(Ext.Bar, {
                 this.el.addClassOnOver(this.overCls);
             }
             this.fireEvent('render', this);
+
+
+            // Populate content of the component with html, contentEl or
+            // a tpl.
+            var contentTarget = this.getContentTarget();
+            if (this.html){
+                contentTarget.update(Ext.DomHelper.markup(this.html));
+                delete this.html;
+            }
+            if (this.contentEl){
+                var ce = Ext.getDom(this.contentEl);
+                Ext.fly(ce).removeClass(['x-hidden', 'x-hide-display']);
+                contentTarget.appendChild(ce);
+            }
+            if (this.tpl) {
+                if (!this.tpl.compile) {
+                    this.tpl = new Ext.XTemplate(this.tpl);
+                }
+                if (this.data) {
+                    this.tpl[this.tplWriteMode](contentTarget, this.data);
+                    delete this.data;
+                }
+            }
             this.afterRender(this.container);
+
+
             if(this.hidden){
                 // call this so we don't fire initial hide events.
                 this.doHide();
@@ -1078,17 +1170,70 @@ Ext.Foo = Ext.extend(Ext.Bar, {
             if(this.stateful !== false){
                 this.initStateEvents();
             }
-            this.initRef();
             this.fireEvent('afterrender', this);
         }
         return this;
     },
 
-    initRef : function(){
+
+    /**
+     * Update the content area of a component.
+     * @param {Mixed} htmlOrData
+     * If this component has been configured with a template via the tpl config
+     * then it will use this argument as data to populate the template.
+     * If this component was not configured with a template, the components
+     * content area will be updated via Ext.Element update
+     * @param {Boolean} loadScripts
+     * (optional) Only legitimate when using the html configuration. Defaults to false
+     * @param {Function} callback
+     * (optional) Only legitimate when using the html configuration. Callback to execute when scripts have finished loading
+     */
+    update: function(htmlOrData, loadScripts, cb) {
+        var contentTarget = this.getContentTarget();
+        if (this.tpl && typeof htmlOrData !== "string") {
+            this.tpl[this.tplWriteMode](contentTarget, htmlOrData || {});
+        } else {
+            var html = Ext.isObject(htmlOrData) ? Ext.DomHelper.markup(htmlOrData) : htmlOrData;
+            contentTarget.update(html, loadScripts, cb);
+        }
+    },
+
+
+    /**
+     * @private
+     * Method to manage awareness of when components are added to their
+     * respective Container, firing an added event.
+     * References are established at add time rather than at render time.
+     * @param {Ext.Container} container Container which holds the component
+     * @param {number} pos Position at which the component was added
+     */
+    onAdded : function(container, pos) {
+        this.ownerCt = container;
+        this.initRef();
+        this.fireEvent('added', this, container, pos);
+    },
+
+    /**
+     * @private
+     * Method to manage awareness of when components are removed from their
+     * respective Container, firing an removed event. References are properly
+     * cleaned up after removing a component from its owning container.
+     */
+    onRemoved : function() {
+        this.removeRef();
+        this.fireEvent('removed', this, this.ownerCt);
+        delete this.ownerCt;
+    },
+
+    /**
+     * @private
+     * Method to establish a reference to a component.
+     */
+    initRef : function() {
         /**
          * @cfg {String} ref
-         * <p>A path specification, relative to the Component's {@link #ownerCt} specifying into which
-         * ancestor Container to place a named reference to this Component.</p>
+         * <p>A path specification, relative to the Component's <code>{@link #ownerCt}</code>
+         * specifying into which ancestor Container to place a named reference to this Component.</p>
          * <p>The ancestor axis can be traversed by using '/' characters in the path.
          * For example, to put a reference to a Toolbar Button into <i>the Panel which owns the Toolbar</i>:</p><pre><code>
 var myGrid = new Ext.grid.EditorGridPanel({
@@ -1109,33 +1254,50 @@ var myGrid = new Ext.grid.EditorGridPanel({
     }
 });
 </code></pre>
-         * <p>In the code above, if the ref had been <code>'saveButton'</code> the reference would
-         * have been placed into the Toolbar. Each '/' in the ref moves up one level from the
-         * Component's {@link #ownerCt}.</p>
+         * <p>In the code above, if the <code>ref</code> had been <code>'saveButton'</code>
+         * the reference would have been placed into the Toolbar. Each '/' in the <code>ref</code>
+         * moves up one level from the Component's <code>{@link #ownerCt}</code>.</p>
+         * <p>Also see the <code>{@link #added}</code> and <code>{@link #removed}</code> events.</p>
          */
-        if(this.ref){
-            var levels = this.ref.split('/');
-            var last = levels.length, i = 0;
-            var t = this;
-            while(i < last){
-                if(t.ownerCt){
-                    t = t.ownerCt;
-                }
-                i++;
+        if(this.ref && !this.refOwner){
+            var levels = this.ref.split('/'),
+                last = levels.length, 
+                i = 0,
+                t = this;
+                
+            while(t && i < last){
+                t = t.ownerCt;
+                ++i;
             }
-            t[levels[--i]] = this;
+            if(t){
+                t[this.refName = levels[--i]] = this;
+                /**
+                 * @type Ext.Container
+                 * @property refOwner
+                 * The ancestor Container into which the {@link #ref} reference was inserted if this Component
+                 * is a child of a Container, and has been configured with a <code>ref</code>.
+                 */
+                this.refOwner = t;
+            }
+        }
+    },
+
+    removeRef : function() {
+        if (this.refOwner && this.refName) {
+            delete this.refOwner[this.refName];
+            delete this.refOwner;
         }
     },
 
     // private
-    initState : function(config){
+    initState : function(){
         if(Ext.state.Manager){
             var id = this.getStateId();
             if(id){
                 var state = Ext.state.Manager.get(id);
                 if(state){
                     if(this.fireEvent('beforestaterestore', this, state) !== false){
-                        this.applyState(state);
+                        this.applyState(Ext.apply({}, state));
                         this.fireEvent('staterestore', this, state);
                     }
                 }
@@ -1240,6 +1402,10 @@ var myGrid = new Ext.grid.EditorGridPanel({
             this.el = Ext.get(this.el);
             if(this.allowDomMove !== false){
                 ct.dom.insertBefore(this.el.dom, position);
+                if (div) {
+                    Ext.removeNode(div);
+                    div = null;
+                }
             }
         }
     },
@@ -1267,9 +1433,12 @@ var myGrid = new Ext.grid.EditorGridPanel({
     destroy : function(){
         if(!this.isDestroyed){
             if(this.fireEvent('beforedestroy', this) !== false){
+                this.destroying = true;
                 this.beforeDestroy();
+                if(this.ownerCt && this.ownerCt.remove){
+                    this.ownerCt.remove(this, false);
+                }
                 if(this.rendered){
-                    this.el.removeAllListeners();
                     this.el.remove();
                     if(this.actionMode == 'container' || this.removeMode == 'container'){
                         this.container.remove();
@@ -1279,8 +1448,16 @@ var myGrid = new Ext.grid.EditorGridPanel({
                 Ext.ComponentMgr.unregister(this);
                 this.fireEvent('destroy', this);
                 this.purgeListeners();
+                this.destroying = false;
                 this.isDestroyed = true;
             }
+        }
+    },
+
+    deleteMembers : function(){
+        var args = arguments;
+        for(var i = 0, len = args.length; i < len; ++i){
+            delete this[args[i]];
         }
     },
 
@@ -1312,6 +1489,11 @@ new Ext.Panel({
      * @return {Ext.Element} The Element which encapsulates this Component.
      */
     getEl : function(){
+        return this.el;
+    },
+
+    // private
+    getContentTarget : function(){
         return this.el;
     },
 
@@ -1596,8 +1778,9 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
             });
     },
 
-    getDomPositionEl : function(){
-        return this.getPositionEl ? this.getPositionEl() : this.getEl();
+    // protected
+    getPositionEl : function(){
+        return this.positionEl || this.el;
     },
 
     // private
@@ -1615,7 +1798,7 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
         }, this);
         this.mons = [];
     },
-    
+
     // private
     createMons: function(){
         if(!this.mons){
@@ -1624,7 +1807,26 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
         }
     },
 
-    // internal function for auto removal of assigned event handlers on destruction
+    /**
+     * <p>Adds listeners to any Observable object (or Elements) which are automatically removed when this Component
+     * is destroyed. Usage:</p><code><pre>
+myGridPanel.mon(myGridPanel.getSelectionModel(), 'selectionchange', handleSelectionChange, null, {buffer: 50});
+</pre></code>
+     * <p>or:</p><code><pre>
+myGridPanel.mon(myGridPanel.getSelectionModel(), {
+    selectionchange: handleSelectionChange,
+    buffer: 50
+});
+</pre></code>
+     * @param {Observable|Element} item The item to which to add a listener/listeners.
+     * @param {Object|String} ename The event name, or an object containing event name properties.
+     * @param {Function} fn Optional. If the <code>ename</code> parameter was an event name, this
+     * is the handler function.
+     * @param {Object} scope Optional. If the <code>ename</code> parameter was an event name, this
+     * is the scope (<code>this</code> reference) in which the handler function is executed.
+     * @param {Object} opt Optional. If the <code>ename</code> parameter was an event name, this
+     * is the {@link Ext.util.Observable#addListener addListener} options.
+     */
     mon : function(item, ename, fn, scope, opt){
         this.createMons();
         if(Ext.isObject(ename)){
@@ -1658,7 +1860,15 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
         item.on(ename, fn, scope, opt);
     },
 
-    // protected, opposite of mon
+    /**
+     * Removes listeners that were added by the {@link #mon} method.
+     * @param {Observable|Element} item The item from which to remove a listener/listeners.
+     * @param {Object|String} ename The event name, or an object containing event name properties.
+     * @param {Function} fn Optional. If the <code>ename</code> parameter was an event name, this
+     * is the handler function.
+     * @param {Object} scope Optional. If the <code>ename</code> parameter was an event name, this
+     * is the scope (<code>this</code> reference) in which the handler function is executed.
+     */
     mun : function(item, ename, fn, scope){
         var found, mon;
         this.createMons();
@@ -1711,8 +1921,7 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
     }
 });
 
-Ext.reg('component', Ext.Component);
-/**
+Ext.reg('component', Ext.Component);/**
  * @class Ext.Action
  * <p>An Action is a piece of reusable functionality that can be abstracted out of any particular component so that it
  * can be usefully shared among multiple components.  Actions let you share handlers, configuration options and UI
@@ -1765,13 +1974,7 @@ aRef.setText('New text');
  * @constructor
  * @param {Object} config The configuration options
  */
-Ext.Action = function(config){
-    this.initialConfig = config;
-    this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
-    this.items = [];
-}
-
-Ext.Action.prototype = {
+Ext.Action = Ext.extend(Object, {
     /**
      * @cfg {String} text The text to set for all components using this action (defaults to '').
      */
@@ -1804,9 +2007,16 @@ Ext.Action.prototype = {
      * See {@link Ext.Component}.{@link Ext.Component#itemId itemId}.
      */
     /**
-     * @cfg {Object} scope The scope in which the {@link #handler} function will execute.
+     * @cfg {Object} scope The scope (<tt><b>this</b></tt> reference) in which the
+     * <code>{@link #handler}</code> is executed. Defaults to this Button.
      */
 
+    constructor : function(config){
+        this.initialConfig = config;
+        this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
+        this.items = [];
+    },
+    
     // private
     isAction : true,
 
@@ -1906,10 +2116,10 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Sets the function that will be called by each component using this action when its primary event is triggered.
+     * Sets the function that will be called by each Component using this action when its primary event is triggered.
      * @param {Function} fn The function that will be invoked by the action's components.  The function
      * will be called with no arguments.
-     * @param {Object} scope The scope in which the function will execute
+     * @param {Object} scope The scope (<code>this</code> reference) in which the function is executed. Defaults to the Component firing the event.
      */
     setHandler : function(fn, scope){
         this.initialConfig.handler = fn;
@@ -1918,10 +2128,10 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Executes the specified function once for each component currently tied to this action.  The function passed
+     * Executes the specified function once for each Component currently tied to this action.  The function passed
      * in should accept a single argument that will be an object that supports the basic Action config/method interface.
      * @param {Function} fn The function to execute for each component
-     * @param {Object} scope The scope in which the function will execute
+     * @param {Object} scope The scope (<code>this</code> reference) in which the function is executed.  Defaults to the Component.
      */
     each : function(fn, scope){
         Ext.each(this.items, fn, scope);
@@ -1957,7 +2167,7 @@ Ext.Action.prototype = {
     execute : function(){
         this.initialConfig.handler.apply(this.initialConfig.scope || window, arguments);
     }
-};
+});
 /**
  * @class Ext.Layer
  * @extends Ext.Element
@@ -2128,7 +2338,7 @@ Ext.extend(Ext.Layer, Ext.Element, {
         }
         this.removeAllListeners();
         Ext.removeNode(this.dom);
-        Ext.Element.uncache(this.id);
+        delete this.dom;
     },
 
     remove : function(){
@@ -2417,7 +2627,8 @@ Ext.extend(Ext.Layer, Ext.Element, {
         return this;
     }
 });
-})();/**
+})();
+/**
  * @class Ext.Shadow
  * Simple class that can provide a shadow effect for any element.  Note that the element MUST be absolutely positioned,
  * and the shadow does not provide any shimming.  This should be used only in simple cases -- for more advanced
@@ -2701,6 +2912,26 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
      * <b>Note</b> to express this dimension as a percentage or offset see {@link Ext.Component#anchor}.
      */
     /**
+     * @cfg {Number} boxMinHeight
+     * <p>The minimum value in pixels which this BoxComponent will set its height to.</p>
+     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     */
+    /**
+     * @cfg {Number} boxMinWidth
+     * <p>The minimum value in pixels which this BoxComponent will set its width to.</p>
+     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     */
+    /**
+     * @cfg {Number} boxMaxHeight
+     * <p>The maximum value in pixels which this BoxComponent will set its height to.</p>
+     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     */
+    /**
+     * @cfg {Number} boxMaxWidth
+     * <p>The maximum value in pixels which this BoxComponent will set its width to.</p>
+     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     */
+    /**
      * @cfg {Boolean} autoHeight
      * <p>True to use height:'auto', false to use fixed height (or allow it to be managed by its parent
      * Container's {@link Ext.Container#layout layout manager}. Defaults to false.</p>
@@ -2774,6 +3005,11 @@ var myPanel = new Ext.Panel({
 });
 </code></pre>
      */
+    /**
+     * @cfg {Boolean} autoScroll
+     * <code>true</code> to use overflow:'auto' on the components layout element and show scroll bars automatically when
+     * necessary, <code>false</code> to clip any overflowing content (defaults to <code>false</code>).
+     */
 
     /* // private internal config
      * {Boolean} deferHeight
@@ -2829,15 +3065,26 @@ var myPanel = new Ext.Panel({
      * @return {Ext.BoxComponent} this
      */
     setSize : function(w, h){
+
         // support for standard size objects
         if(typeof w == 'object'){
-            h = w.height;
-            w = w.width;
+            h = w.height, w = w.width;
+        }
+        if (Ext.isDefined(w) && Ext.isDefined(this.boxMinWidth) && (w < this.boxMinWidth)) {
+            w = this.boxMinWidth;
+        }
+        if (Ext.isDefined(h) && Ext.isDefined(this.boxMinHeight) && (h < this.boxMinHeight)) {
+            h = this.boxMinHeight;
+        }
+        if (Ext.isDefined(w) && Ext.isDefined(this.boxMaxWidth) && (w > this.boxMaxWidth)) {
+            w = this.boxMaxWidth;
+        }
+        if (Ext.isDefined(h) && Ext.isDefined(this.boxMaxHeight) && (h > this.boxMaxHeight)) {
+            h = this.boxMaxHeight;
         }
         // not rendered
         if(!this.boxReady){
-            this.width = w;
-            this.height = h;
+            this.width = w, this.height = h;
             return this;
         }
 
@@ -2846,10 +3093,12 @@ var myPanel = new Ext.Panel({
             return this;
         }
         this.lastSize = {width: w, height: h};
-        var adj = this.adjustSize(w, h);
-        var aw = adj.width, ah = adj.height;
+        var adj = this.adjustSize(w, h),
+            aw = adj.width,
+            ah = adj.height,
+            rz;
         if(aw !== undefined || ah !== undefined){ // this code is nasty but performs better with floaters
-            var rz = this.getResizeEl();
+            rz = this.getResizeEl();
             if(!this.deferHeight && aw !== undefined && ah !== undefined){
                 rz.setSize(aw, ah);
             }else if(!this.deferHeight && ah !== undefined){
@@ -2858,7 +3107,6 @@ var myPanel = new Ext.Panel({
                 rz.setWidth(aw);
             }
             this.onResize(aw, ah, w, h);
-            this.fireEvent('resize', this, aw, ah, w, h);
         }
         return this;
     },
@@ -2968,14 +3216,23 @@ var myPanel = new Ext.Panel({
      * contains both the <code>&lt;input></code> Element (which is what would be returned
      * by its <code>{@link #getEl}</code> method, <i>and</i> the trigger button Element.
      * This Element is returned as the <code>resizeEl</code>.
+     * @return {Ext.Element} The Element which is to be resized by size managing layouts.
      */
     getResizeEl : function(){
         return this.resizeEl || this.el;
     },
 
-    // protected
-    getPositionEl : function(){
-        return this.positionEl || this.el;
+    /**
+     * Sets the overflow on the content element of the component.
+     * @param {Boolean} scroll True to allow the Component to auto scroll.
+     * @return {Ext.BoxComponent} this
+     */
+    setAutoScroll : function(scroll){
+        if(this.rendered){
+            this.getContentTarget().setOverflow(scroll ? 'auto' : '');
+        }
+        this.autoScroll = scroll;
+        return this;
     },
 
     /**
@@ -3048,6 +3305,7 @@ var myPanel = new Ext.Panel({
             this.positionEl = Ext.get(this.positionEl);
         }
         this.boxReady = true;
+        this.setAutoScroll(this.autoScroll);
         this.setSize(this.width, this.height);
         if(this.x || this.y){
             this.setPosition(this.x, this.y);
@@ -3075,7 +3333,7 @@ var myPanel = new Ext.Panel({
      * @param {Number} rawHeight The height that was originally specified
      */
     onResize : function(adjWidth, adjHeight, rawWidth, rawHeight){
-
+        this.fireEvent('resize', this, adjWidth, adjHeight, rawWidth, rawHeight);
     },
 
     /* // protected
@@ -3137,12 +3395,12 @@ split.on('moved', splitterMoved);
  * @param {Mixed} dragElement The element to be dragged and act as the SplitBar.
  * @param {Mixed} resizingElement The element to be resized based on where the SplitBar element is dragged
  * @param {Number} orientation (optional) Either Ext.SplitBar.HORIZONTAL or Ext.SplitBar.VERTICAL. (Defaults to HORIZONTAL)
- * @param {Number} placement (optional) Either Ext.SplitBar.LEFT or Ext.SplitBar.RIGHT for horizontal or  
+ * @param {Number} placement (optional) Either Ext.SplitBar.LEFT or Ext.SplitBar.RIGHT for horizontal or
                         Ext.SplitBar.TOP or Ext.SplitBar.BOTTOM for vertical. (By default, this is determined automatically by the initial
                         position of the SplitBar).
  */
 Ext.SplitBar = function(dragElement, resizingElement, orientation, placement, existingProxy){
-    
+
     /** @private */
     this.el = Ext.get(dragElement, true);
     this.el.dom.unselectable = "on";
@@ -3156,7 +3414,7 @@ Ext.SplitBar = function(dragElement, resizingElement, orientation, placement, ex
      * @type Number
      */
     this.orientation = orientation || Ext.SplitBar.HORIZONTAL;
-    
+
     /**
      * The increment, in pixels by which to move this SplitBar. When <i>undefined</i>, the SplitBar moves smoothly.
      * @type Number
@@ -3167,28 +3425,28 @@ Ext.SplitBar = function(dragElement, resizingElement, orientation, placement, ex
      * @type Number
      */
     this.minSize = 0;
-    
+
     /**
      * The maximum size of the resizing element. (Defaults to 2000)
      * @type Number
      */
     this.maxSize = 2000;
-    
+
     /**
      * Whether to animate the transition to the new size
      * @type Boolean
      */
     this.animate = false;
-    
+
     /**
      * Whether to create a transparent shim that overlays the page when dragging, enables dragging across iframes.
      * @type Boolean
      */
     this.useShim = false;
-    
+
     /** @private */
     this.shim = null;
-    
+
     if(!existingProxy){
         /** @private */
         this.proxy = Ext.SplitBar.createProxy(this.orientation);
@@ -3197,22 +3455,22 @@ Ext.SplitBar = function(dragElement, resizingElement, orientation, placement, ex
     }
     /** @private */
     this.dd = new Ext.dd.DDProxy(this.el.dom.id, "XSplitBars", {dragElId : this.proxy.id});
-    
+
     /** @private */
     this.dd.b4StartDrag = this.onStartProxyDrag.createDelegate(this);
-    
+
     /** @private */
     this.dd.endDrag = this.onEndProxyDrag.createDelegate(this);
-    
+
     /** @private */
     this.dragSpecs = {};
-    
+
     /**
      * @private The adapter to use to positon and resize elements
      */
     this.adapter = new Ext.SplitBar.BasicLayoutAdapter();
     this.adapter.init(this);
-    
+
     if(this.orientation == Ext.SplitBar.HORIZONTAL){
         /** @private */
         this.placement = placement || (this.el.getX() > this.resizingEl.getX() ? Ext.SplitBar.LEFT : Ext.SplitBar.RIGHT);
@@ -3222,7 +3480,7 @@ Ext.SplitBar = function(dragElement, resizingElement, orientation, placement, ex
         this.placement = placement || (this.el.getY() > this.resizingEl.getY() ? Ext.SplitBar.TOP : Ext.SplitBar.BOTTOM);
         this.el.addClass("x-splitbar-v");
     }
-    
+
     this.addEvents(
         /**
          * @event resize
@@ -3267,7 +3525,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
         if(this.orientation == Ext.SplitBar.HORIZONTAL){
             this.dd.resetConstraints();
             this.dd.setXConstraint(
-                this.placement == Ext.SplitBar.LEFT ? c1 : c2, 
+                this.placement == Ext.SplitBar.LEFT ? c1 : c2,
                 this.placement == Ext.SplitBar.LEFT ? c2 : c1,
                 this.tickSize
             );
@@ -3276,7 +3534,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
             this.dd.resetConstraints();
             this.dd.setXConstraint(0, 0);
             this.dd.setYConstraint(
-                this.placement == Ext.SplitBar.TOP ? c1 : c2, 
+                this.placement == Ext.SplitBar.TOP ? c1 : c2,
                 this.placement == Ext.SplitBar.TOP ? c2 : c1,
                 this.tickSize
             );
@@ -3285,8 +3543,8 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
         this.dragSpecs.startPoint = [x, y];
         Ext.dd.DDProxy.prototype.b4StartDrag.call(this.dd, x, y);
     },
-    
-    /** 
+
+    /**
      * @private Called after the drag operation by the DDProxy
      */
     onEndProxyDrag : function(e){
@@ -3298,13 +3556,13 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
         }
         var newSize;
         if(this.orientation == Ext.SplitBar.HORIZONTAL){
-            newSize = this.dragSpecs.startSize + 
+            newSize = this.dragSpecs.startSize +
                 (this.placement == Ext.SplitBar.LEFT ?
                     endPoint[0] - this.dragSpecs.startPoint[0] :
                     this.dragSpecs.startPoint[0] - endPoint[0]
                 );
         }else{
-            newSize = this.dragSpecs.startSize + 
+            newSize = this.dragSpecs.startSize +
                 (this.placement == Ext.SplitBar.TOP ?
                     endPoint[1] - this.dragSpecs.startPoint[1] :
                     this.dragSpecs.startPoint[1] - endPoint[1]
@@ -3319,7 +3577,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
             }
         }
     },
-    
+
     /**
      * Get the adapter this SplitBar uses
      * @return The adapter object
@@ -3327,7 +3585,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
     getAdapter : function(){
         return this.adapter;
     },
-    
+
     /**
      * Set the adapter this SplitBar uses
      * @param {Object} adapter A SplitBar adapter object
@@ -3336,7 +3594,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
         this.adapter = adapter;
         this.adapter.init(this);
     },
-    
+
     /**
      * Gets the minimum size for the resizing element
      * @return {Number} The minimum size
@@ -3344,7 +3602,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
     getMinimumSize : function(){
         return this.minSize;
     },
-    
+
     /**
      * Sets the minimum size for the resizing element
      * @param {Number} minSize The minimum size
@@ -3352,7 +3610,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
     setMinimumSize : function(minSize){
         this.minSize = minSize;
     },
-    
+
     /**
      * Gets the maximum size for the resizing element
      * @return {Number} The maximum size
@@ -3360,7 +3618,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
     getMaximumSize : function(){
         return this.maxSize;
     },
-    
+
     /**
      * Sets the maximum size for the resizing element
      * @param {Number} maxSize The maximum size
@@ -3368,7 +3626,7 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
     setMaximumSize : function(maxSize){
         this.maxSize = maxSize;
     },
-    
+
     /**
      * Sets the initialize size for the resizing element
      * @param {Number} size The initial size
@@ -3379,18 +3637,18 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
         this.adapter.setElementSize(this, size);
         this.animate = oldAnimate;
     },
-    
+
     /**
-     * Destroy this splitbar. 
+     * Destroy this splitbar.
      * @param {Boolean} removeEl True to remove the element
      */
     destroy : function(removeEl){
-		Ext.destroy(this.shim, Ext.get(this.proxy));
+        Ext.destroy(this.shim, Ext.get(this.proxy));
         this.dd.unreg();
         if(removeEl){
             this.el.remove();
         }
-		this.purgeListeners();
+        this.purgeListeners();
     }
 });
 
@@ -3399,14 +3657,14 @@ Ext.extend(Ext.SplitBar, Ext.util.Observable, {
  */
 Ext.SplitBar.createProxy = function(dir){
     var proxy = new Ext.Element(document.createElement("div"));
+    document.body.appendChild(proxy.dom);
     proxy.unselectable();
     var cls = 'x-splitbar-proxy';
     proxy.addClass(cls + ' ' + (dir == Ext.SplitBar.HORIZONTAL ? cls +'-h' : cls + '-v'));
-    document.body.appendChild(proxy.dom);
     return proxy.dom;
 };
 
-/** 
+/**
  * @class Ext.SplitBar.BasicLayoutAdapter
  * Default Adapter. It assumes the splitter and resizing element are not positioned
  * elements and only gets/sets the width of the element. Generally used for table based layouts.
@@ -3417,10 +3675,10 @@ Ext.SplitBar.BasicLayoutAdapter = function(){
 Ext.SplitBar.BasicLayoutAdapter.prototype = {
     // do nothing for now
     init : function(s){
-    
+
     },
     /**
-     * Called before drag operations to get the current size of the resizing element. 
+     * Called before drag operations to get the current size of the resizing element.
      * @param {Ext.SplitBar} s The SplitBar using this adapter
      */
      getElementSize : function(s){
@@ -3430,7 +3688,7 @@ Ext.SplitBar.BasicLayoutAdapter.prototype = {
             return s.resizingEl.getHeight();
         }
     },
-    
+
     /**
      * Called after drag operations to set the size of the resizing element.
      * @param {Ext.SplitBar} s The SplitBar using this adapter
@@ -3448,7 +3706,7 @@ Ext.SplitBar.BasicLayoutAdapter.prototype = {
                 s.resizingEl.setWidth(newSize, true, .1, onComplete, 'easeOut');
             }
         }else{
-            
+
             if(!s.animate){
                 s.resizingEl.setHeight(newSize);
                 if(onComplete){
@@ -3461,10 +3719,10 @@ Ext.SplitBar.BasicLayoutAdapter.prototype = {
     }
 };
 
-/** 
+/**
  *@class Ext.SplitBar.AbsoluteLayoutAdapter
  * @extends Ext.SplitBar.BasicLayoutAdapter
- * Adapter that  moves the splitter element to align with the resized sizing element. 
+ * Adapter that  moves the splitter element to align with the resized sizing element.
  * Used with an absolute positioned SplitBar.
  * @param {Mixed} container The container that wraps around the absolute positioned content. If it's
  * document.body, make sure you assign an id to the body element.
@@ -3478,15 +3736,15 @@ Ext.SplitBar.AbsoluteLayoutAdapter.prototype = {
     init : function(s){
         this.basic.init(s);
     },
-    
+
     getElementSize : function(s){
         return this.basic.getElementSize(s);
     },
-    
+
     setElementSize : function(s, newSize, onComplete){
         this.basic.setElementSize(s, newSize, this.moveSplitter.createDelegate(this, [s]));
     },
-    
+
     moveSplitter : function(s){
         var yes = Ext.SplitBar;
         switch(s.placement){
@@ -3556,12 +3814,12 @@ Ext.SplitBar.BOTTOM = 4;
  * <p>The most commonly used Container classes are {@link Ext.Panel}, {@link Ext.Window} and {@link Ext.TabPanel}.
  * If you do not need the capabilities offered by the aforementioned classes you can create a lightweight
  * Container to be encapsulated by an HTML element to your specifications by using the
- * <tt><b>{@link Ext.Component#autoEl autoEl}</b></tt> config option. This is a useful technique when creating
+ * <code><b>{@link Ext.Component#autoEl autoEl}</b></code> config option. This is a useful technique when creating
  * embedded {@link Ext.layout.ColumnLayout column} layouts inside {@link Ext.form.FormPanel FormPanels}
  * for example.</p>
  *
  * <p>The code below illustrates both how to explicitly create a Container, and how to implicitly
- * create one using the <b><tt>'container'</tt></b> xtype:<pre><code>
+ * create one using the <b><code>'container'</code></b> xtype:<pre><code>
 // explicitly create a Container
 var embeddedColumns = new Ext.Container({
     autoEl: 'div',  // This is the default
@@ -3606,7 +3864,7 @@ var embeddedColumns = new Ext.Container({
  * Container, and <b>does not apply any sizing</b> at all.</p>
  * <p>A common mistake is when a developer neglects to specify a
  * <b><code>{@link #layout}</code></b> (e.g. widgets like GridPanels or
- * TreePanels are added to Containers for which no <tt><b>{@link #layout}</b></tt>
+ * TreePanels are added to Containers for which no <code><b>{@link #layout}</b></code>
  * has been specified). If a Container is left to use the default
  * {@link Ext.layout.ContainerLayout ContainerLayout} scheme, none of its
  * child components will be resized, or changed in any way when the Container
@@ -3632,10 +3890,10 @@ myTabPanel.{@link Ext.TabPanel#setActiveTab setActiveTab}(myNewGrid);
  * <p><b><u>Overnesting is a common problem</u></b>.
  * An example of overnesting occurs when a GridPanel is added to a TabPanel
  * by wrapping the GridPanel <i>inside</i> a wrapping Panel (that has no
- * <tt><b>{@link #layout}</b></tt> specified) and then add that wrapping Panel
+ * <code><b>{@link #layout}</b></code> specified) and then add that wrapping Panel
  * to the TabPanel. The point to realize is that a GridPanel <b>is</b> a
  * Component which can be added directly to a Container. If the wrapping Panel
- * has no <tt><b>{@link #layout}</b></tt> configuration, then the overnested
+ * has no <code><b>{@link #layout}</b></code> configuration, then the overnested
  * GridPanel will not be sized as expected.<p>
  *
  * <p><u><b>Adding via remote configuration</b></u></p>
@@ -3664,7 +3922,7 @@ Ext.Ajax.request({
 });
 </code></pre>
  * <p>The server script needs to return an executable Javascript statement which, when processed
- * using <tt>eval()</tt>, will return either a config object with an {@link Ext.Component#xtype xtype},
+ * using <code>eval()</code>, will return either a config object with an {@link Ext.Component#xtype xtype},
  * or an instantiated Component. The server might return this for example:</p><pre><code>
 (function() {
     function formatDate(value){
@@ -3704,10 +3962,10 @@ Ext.Ajax.request({
     return grid;  // return instantiated component
 })();
 </code></pre>
- * <p>When the above code fragment is passed through the <tt>eval</tt> function in the success handler
+ * <p>When the above code fragment is passed through the <code>eval</code> function in the success handler
  * of the Ajax request, the code is executed by the Javascript processor, and the anonymous function
  * runs, and returns the instantiated grid component.</p>
- * <p>Note: since the code above is <i>generated</i> by a server script, the <tt>baseParams</tt> for
+ * <p>Note: since the code above is <i>generated</i> by a server script, the <code>baseParams</code> for
  * the Store, the metadata to allow generation of the Record layout, and the ColumnModel
  * can all be generated into the code since these are all known on the server.</p>
  *
@@ -3759,31 +4017,31 @@ layout: {
 }
 </code></pre>
      *
-     * <li><tt><b>type</b></tt></li>
+     * <li><code><b>type</b></code></li>
      * <br/><p>The layout type to be used for this container.  If not specified,
      * a default {@link Ext.layout.ContainerLayout} will be created and used.</p>
-     * <br/><p>Valid layout <tt>type</tt> values are:</p>
+     * <br/><p>Valid layout <code>type</code> values are:</p>
      * <div class="sub-desc"><ul class="mdetail-params">
-     * <li><tt><b>{@link Ext.layout.AbsoluteLayout absolute}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.AccordionLayout accordion}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.AnchorLayout anchor}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.ContainerLayout auto}</b></tt> &nbsp;&nbsp;&nbsp; <b>Default</b></li>
-     * <li><tt><b>{@link Ext.layout.BorderLayout border}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.CardLayout card}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.ColumnLayout column}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.FitLayout fit}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.FormLayout form}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.HBoxLayout hbox}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.MenuLayout menu}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.TableLayout table}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.ToolbarLayout toolbar}</b></tt></li>
-     * <li><tt><b>{@link Ext.layout.VBoxLayout vbox}</b></tt></li>
+     * <li><code><b>{@link Ext.layout.AbsoluteLayout absolute}</b></code></li>
+     * <li><code><b>{@link Ext.layout.AccordionLayout accordion}</b></code></li>
+     * <li><code><b>{@link Ext.layout.AnchorLayout anchor}</b></code></li>
+     * <li><code><b>{@link Ext.layout.ContainerLayout auto}</b></code> &nbsp;&nbsp;&nbsp; <b>Default</b></li>
+     * <li><code><b>{@link Ext.layout.BorderLayout border}</b></code></li>
+     * <li><code><b>{@link Ext.layout.CardLayout card}</b></code></li>
+     * <li><code><b>{@link Ext.layout.ColumnLayout column}</b></code></li>
+     * <li><code><b>{@link Ext.layout.FitLayout fit}</b></code></li>
+     * <li><code><b>{@link Ext.layout.FormLayout form}</b></code></li>
+     * <li><code><b>{@link Ext.layout.HBoxLayout hbox}</b></code></li>
+     * <li><code><b>{@link Ext.layout.MenuLayout menu}</b></code></li>
+     * <li><code><b>{@link Ext.layout.TableLayout table}</b></code></li>
+     * <li><code><b>{@link Ext.layout.ToolbarLayout toolbar}</b></code></li>
+     * <li><code><b>{@link Ext.layout.VBoxLayout vbox}</b></code></li>
      * </ul></div>
      *
      * <li>Layout specific configuration properties</li>
      * <br/><p>Additional layout specific configuration properties may also be
      * specified. For complete details regarding the valid config options for
-     * each layout type, see the layout class corresponding to the <tt>type</tt>
+     * each layout type, see the layout class corresponding to the <code>type</code>
      * specified.</p>
      *
      * </ul></div>
@@ -3798,13 +4056,13 @@ layoutConfig: {
     align: 'left'
 }
 </code></pre>
-     * <li><tt><b>layout</b></tt></li>
-     * <br/><p>The layout <tt>type</tt> to be used for this container (see list
+     * <li><code><b>layout</b></code></li>
+     * <br/><p>The layout <code>type</code> to be used for this container (see list
      * of valid layout type values above).</p><br/>
-     * <li><tt><b>{@link #layoutConfig}</b></tt></li>
+     * <li><code><b>{@link #layoutConfig}</b></code></li>
      * <br/><p>Additional layout specific configuration properties. For complete
      * details regarding the valid config options for each layout type, see the
-     * layout class corresponding to the <tt>layout</tt> specified.</p>
+     * layout class corresponding to the <code>layout</code> specified.</p>
      * </ul></div></ul></div>
      */
     /**
@@ -3817,7 +4075,7 @@ layoutConfig: {
      * @cfg {Boolean/Number} bufferResize
      * When set to true (50 milliseconds) or a number of milliseconds, the layout assigned for this container will buffer
      * the frequency it calculates and does a re-layout of components. This is useful for heavy containers or containers
-     * with a large quantity of sub-components for which frequent layout calls would be expensive. Defaults to <tt>50</tt>.
+     * with a large quantity of sub-components for which frequent layout calls would be expensive. Defaults to <code>50</code>.
      */
     bufferResize: 50,
 
@@ -3868,14 +4126,18 @@ layout: 'anchor', // specify a layout!
      * </ul></div>
      */
     /**
-     * @cfg {Object} defaults
-     * <p>A config object that will be applied to all components added to this container either via the {@link #items}
-     * config or via the {@link #add} or {@link #insert} methods.  The <tt>defaults</tt> config can contain any
-     * number of name/value property pairs to be added to each item, and should be valid for the types of items
-     * being added to the container.  For example, to automatically apply padding to the body of each of a set of
-     * contained {@link Ext.Panel} items, you could pass: <tt>defaults: {bodyStyle:'padding:15px'}</tt>.</p><br/>
-     * <p><b>Note</b>: <tt>defaults</tt> will not be applied to config objects if the option is already specified.
-     * For example:</p><pre><code>
+     * @cfg {Object|Function} defaults
+     * <p>This option is a means of applying default settings to all added items whether added through the {@link #items}
+     * config or via the {@link #add} or {@link #insert} methods.</p>
+     * <p>If an added item is a config object, and <b>not</b> an instantiated Component, then the default properties are
+     * unconditionally applied. If the added item <b>is</b> an instantiated Component, then the default properties are
+     * applied conditionally so as not to override existing properties in the item.</p>
+     * <p>If the defaults option is specified as a function, then the function will be called using this Container as the
+     * scope (<code>this</code> reference) and passing the added item as the first parameter. Any resulting object
+     * from that call is then applied to the item as default properties.</p>
+     * <p>For example, to automatically apply padding to the body of each of a set of
+     * contained {@link Ext.Panel} items, you could pass: <code>defaults: {bodyStyle:'padding:15px'}</code>.</p>
+     * <p>Usage:</p><pre><code>
 defaults: {               // defaults are applied to items, not the container
     autoScroll:true
 },
@@ -3913,20 +4175,21 @@ items: [
     /** @cfg {String} defaultType
      * <p>The default {@link Ext.Component xtype} of child Components to create in this Container when
      * a child item is specified as a raw configuration object, rather than as an instantiated Component.</p>
-     * <p>Defaults to <tt>'panel'</tt>, except {@link Ext.menu.Menu} which defaults to <tt>'menuitem'</tt>,
-     * and {@link Ext.Toolbar} and {@link Ext.ButtonGroup} which default to <tt>'button'</tt>.</p>
+     * <p>Defaults to <code>'panel'</code>, except {@link Ext.menu.Menu} which defaults to <code>'menuitem'</code>,
+     * and {@link Ext.Toolbar} and {@link Ext.ButtonGroup} which default to <code>'button'</code>.</p>
      */
     defaultType : 'panel',
 
     /** @cfg {String} resizeEvent
-     * The event to listen to for resizing in layouts. Defaults to <tt>'resize'</tt>.
+     * The event to listen to for resizing in layouts. Defaults to <code>'resize'</code>.
      */
     resizeEvent: 'resize',
-    
+
     /**
      * @cfg {Array} bubbleEvents
      * <p>An array of events that, when fired, should be bubbled to any parent container.
-     * Defaults to <tt>['add', 'remove']</tt>.
+     * See {@link Ext.util.Observable#enableBubble}.
+     * Defaults to <code>['add', 'remove']</code>.
      */
     bubbleEvents: ['add', 'remove'],
 
@@ -4011,7 +4274,7 @@ items: [
     },
 
     afterRender: function(){
-        Ext.Container.superclass.afterRender.call(this);
+        this.layoutDone = false;
         if(!this.layout){
             this.layout = 'auto';
         }
@@ -4024,15 +4287,21 @@ items: [
         }
         this.setLayout(this.layout);
 
-        if(this.activeItem !== undefined){
+        // BoxComponent's afterRender will set the size.
+        // This will will trigger a layout if the layout is configured to monitor resize
+        Ext.Container.superclass.afterRender.call(this);
+
+        if(Ext.isDefined(this.activeItem)){
             var item = this.activeItem;
             delete this.activeItem;
             this.layout.setActiveItem(item);
         }
-        if(!this.ownerCt){
-            // force a layout if no ownerCt is set
+
+        // If we have no ownerCt and the BoxComponent's sizing did not trigger a layout, force a layout
+        if(!this.ownerCt && !this.layoutDone){
             this.doLayout(false, true);
         }
+
         if(this.monitorResize === true){
             Ext.EventManager.onWindowResize(this.doLayout, this, [false]);
         }
@@ -4065,10 +4334,10 @@ items: [
      * </ul></div>
      * <br><p><b>Notes</b></u> :
      * <div><ul class="mdetail-params">
-     * <li>If the Container is <i>already rendered</i> when <tt>add</tt>
+     * <li>If the Container is <i>already rendered</i> when <code>add</code>
      * is called, you may need to call {@link #doLayout} to refresh the view which causes
      * any unrendered child Components to be rendered. This is required so that you can
-     * <tt>add</tt> multiple child components if needed while only refreshing the layout
+     * <code>add</code> multiple child components if needed while only refreshing the layout
      * once. For example:<pre><code>
 var tb = new {@link Ext.Toolbar}();
 tb.render(document.body);  // toolbar is rendered
@@ -4091,24 +4360,38 @@ tb.{@link #doLayout}();             // refresh the layout
         this.initItems();
         var args = arguments.length > 1;
         if(args || Ext.isArray(comp)){
+            var result = [];
             Ext.each(args ? arguments : comp, function(c){
-                this.add(c);
+                result.push(this.add(c));
             }, this);
-            return;
+            return result;
         }
         var c = this.lookupComponent(this.applyDefaults(comp));
-        var pos = this.items.length;
-        if(this.fireEvent('beforeadd', this, c, pos) !== false && this.onBeforeAdd(c) !== false){
+        var index = this.items.length;
+        if(this.fireEvent('beforeadd', this, c, index) !== false && this.onBeforeAdd(c) !== false){
             this.items.add(c);
-            c.ownerCt = this;
+            // *onAdded
+            c.onAdded(this, index);
             this.onAdd(c);
-            this.fireEvent('add', this, c, pos);
+            this.fireEvent('add', this, c, index);
         }
         return c;
     },
 
     onAdd : function(c){
         // Empty template method
+    },
+    
+    // private
+    onAdded : function(container, pos) {
+        //overridden here so we can cascade down, not worth creating a template method.
+        this.ownerCt = container;
+        this.initRef();
+        //initialize references for child items
+        this.cascade(function(c){
+            c.initRef();
+        });
+        this.fireEvent('added', this, container, pos);
     },
 
     /**
@@ -4133,10 +4416,11 @@ tb.{@link #doLayout}();             // refresh the layout
         this.initItems();
         var a = arguments, len = a.length;
         if(len > 2){
+            var result = [];
             for(var i = len-1; i >= 1; --i) {
-                this.insert(index, a[i]);
+                result.push(this.insert(index, a[i]));
             }
-            return;
+            return result;
         }
         var c = this.lookupComponent(this.applyDefaults(comp));
         index = Math.min(index, this.items.length);
@@ -4145,7 +4429,7 @@ tb.{@link #doLayout}();             // refresh the layout
                 this.items.remove(c);
             }
             this.items.insert(index, c);
-            c.ownerCt = this;
+            c.onAdded(this, index);
             this.onAdd(c);
             this.fireEvent('add', this, c, index);
         }
@@ -4154,14 +4438,18 @@ tb.{@link #doLayout}();             // refresh the layout
 
     // private
     applyDefaults : function(c){
-        if(this.defaults){
+        var d = this.defaults;
+        if(d){
+            if(Ext.isFunction(d)){
+                d = d.call(this, c);
+            }
             if(Ext.isString(c)){
                 c = Ext.ComponentMgr.get(c);
-                Ext.apply(c, this.defaults);
+                Ext.apply(c, d);
             }else if(!c.events){
-                Ext.applyIf(c, this.defaults);
+                Ext.applyIf(c, d);
             }else{
-                Ext.apply(c, this.defaults);
+                Ext.apply(c, d);
             }
         }
         return c;
@@ -4189,15 +4477,7 @@ tb.{@link #doLayout}();             // refresh the layout
         this.initItems();
         var c = this.getComponent(comp);
         if(c && this.fireEvent('beforeremove', this, c) !== false){
-            delete c.ownerCt;
-            if(this.layout && this.rendered){
-                this.layout.onRemove(c);
-            }
-            this.onRemove(c);
-            this.items.remove(c);
-            if(autoDestroy === true || (autoDestroy !== false && this.autoDestroy)){
-                c.destroy();
-            }
+            this.doRemove(c, autoDestroy);
             this.fireEvent('remove', this, c);
         }
         return c;
@@ -4205,6 +4485,19 @@ tb.{@link #doLayout}();             // refresh the layout
 
     onRemove: function(c){
         // Empty template method
+    },
+
+    // private
+    doRemove: function(c, autoDestroy){
+        if(this.layout && this.rendered){
+            this.layout.onRemove(c);
+        }
+        this.items.remove(c);
+        c.onRemoved();
+        this.onRemove(c);
+        if(autoDestroy === true || (autoDestroy !== false && this.autoDestroy)){
+            c.destroy();
+        }
     },
 
     /**
@@ -4234,9 +4527,9 @@ tb.{@link #doLayout}();             // refresh the layout
      * and gets a direct child component of this container.
      * @param {String/Number} comp This parameter may be any of the following:
      * <div><ul class="mdetail-params">
-     * <li>a <b><tt>String</tt></b> : representing the <code>{@link Ext.Component#itemId itemId}</code>
+     * <li>a <b><code>String</code></b> : representing the <code>{@link Ext.Component#itemId itemId}</code>
      * or <code>{@link Ext.Component#id id}</code> of the child component </li>
-     * <li>a <b><tt>Number</tt></b> : representing the position of the child component
+     * <li>a <b><code>Number</code></b> : representing the position of the child component
      * within the <code>{@link #items}</code> <b>property</b></li>
      * </ul></div>
      * <p>For additional information see {@link Ext.util.MixedCollection#get}.
@@ -4260,16 +4553,24 @@ tb.{@link #doLayout}();             // refresh the layout
     },
 
     // private
-    createComponent : function(config){
-        return Ext.create(config, this.defaultType);
+    createComponent : function(config, defaultType){
+        // add in ownerCt at creation time but then immediately
+        // remove so that onBeforeAdd can handle it
+        var c = config.render ? config : Ext.create(Ext.apply({
+            ownerCt: this
+        }, config), defaultType || this.defaultType);
+        delete c.ownerCt;
+        return c;
     },
 
-    // private
+    /**
+    * We can only lay out if there is a view area in which to layout.
+    * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
+    */
     canLayout: function() {
-        var el = this.getVisibilityEl();
-        return el && !el.isStyle("display", "none");
+        var el = this.getLayoutTarget(), vs;
+        return !!(el && (vs = el.dom.offsetWidth || el.dom.offsetHeight));
     },
-
 
     /**
      * Force this container's layout to be recalculated. A call to this function is required after adding a new component
@@ -4280,9 +4581,11 @@ tb.{@link #doLayout}();             // refresh the layout
      * @return {Ext.Container} this
      */
     doLayout: function(shallow, force){
-        var rendered = this.rendered;
-        forceLayout = force || this.forceLayout;
+        var rendered = this.rendered,
+            forceLayout = force || this.forceLayout,
+            cs, i, len, c;
 
+        this.layoutDone = true;
         if(!this.canLayout() || this.collapsed){
             this.deferLayout = this.deferLayout || !shallow;
             if(!forceLayout){
@@ -4292,16 +4595,26 @@ tb.{@link #doLayout}();             // refresh the layout
         } else {
             delete this.deferLayout;
         }
+
+        cs = (shallow !== true && this.items) ? this.items.items : [];
+
+//      Inhibit child Containers from relaying on resize since we are about to to explicitly call doLayout on them all!
+        for(i = 0, len = cs.length; i < len; i++){
+            if ((c = cs[i]).layout) {
+                c.suspendLayoutResize = true;
+            }
+        }
+
+//      Tell the layout manager to ensure all child items are rendered, and sized according to their rules.
+//      Will not cause the child items to relayout.
         if(rendered && this.layout){
             this.layout.layout();
         }
-        if(shallow !== true && this.items){
-            var cs = this.items.items;
-            for(var i = 0, len = cs.length; i < len; i++){
-                var c = cs[i];
-                if(c.doLayout){
-                    c.doLayout(false, forceLayout);
-                }
+
+//      Explicitly lay out all child items
+        for(i = 0; i < len; i++){
+            if((c = cs[i]).doLayout){
+                c.doLayout(false, forceLayout);
             }
         }
         if(rendered){
@@ -4310,43 +4623,39 @@ tb.{@link #doLayout}();             // refresh the layout
         // Initial layout completed
         this.hasLayout = true;
         delete this.forceLayout;
+
+//      Re-enable child layouts relaying on resize.
+        for(i = 0; i < len; i++){
+            if ((c = cs[i]).layout) {
+                delete c.suspendLayoutResize;
+            }
+        }
     },
 
     //private
     onLayout : Ext.emptyFn,
 
-    // private
-    shouldBufferLayout: function(){
-        /*
-         * Returns true if the container should buffer a layout.
-         * This is true only if the container has previously been laid out
-         * and has a parent container that is pending a layout.
-         */
-        var hl = this.hasLayout;
-        if(this.ownerCt){
-            // Only ever buffer if we've laid out the first time and we have one pending.
-            return hl ? !this.hasLayoutPending() : false;
+    onResize: function(adjWidth, adjHeight, rawWidth, rawHeight){
+        Ext.Container.superclass.onResize.apply(this, arguments);
+        if ((this.rendered && this.layout && this.layout.monitorResize) && !this.suspendLayoutResize) {
+            this.layout.onResize();
         }
-        // Never buffer initial layout
-        return hl;
     },
 
     // private
     hasLayoutPending: function(){
         // Traverse hierarchy to see if any parent container has a pending layout.
-        var pending = false;
+        var pending = this.layoutPending;
         this.ownerCt.bubble(function(c){
-            if(c.layoutPending){
-                pending = true;
-                return false;
-            }
+            return !(pending = c.layoutPending);
         });
         return pending;
+
     },
 
     onShow : function(){
         Ext.Container.superclass.onShow.call(this);
-        if(this.deferLayout !== undefined){
+        if(Ext.isDefined(this.deferLayout)){
             this.doLayout(true);
         }
     },
@@ -4366,8 +4675,11 @@ tb.{@link #doLayout}();             // refresh the layout
 
     // private
     beforeDestroy : function(){
+        var c;
         if(this.items){
-            Ext.destroy.apply(Ext, this.items.items);
+            while(c = this.items.first()){
+                this.doRemove(c, true);
+            }
         }
         if(this.monitorResize){
             Ext.EventManager.removeResizeListener(this.doLayout, this);
@@ -4505,11 +4817,7 @@ Ext.reg('container', Ext.Container);
  * <p>This class is intended to be extended or created via the <tt><b>{@link Ext.Container#layout layout}</b></tt>
  * configuration property.  See <tt><b>{@link Ext.Container#layout}</b></tt> for additional details.</p>
  */
-Ext.layout.ContainerLayout = function(config){
-    Ext.apply(this, config);
-};
-
-Ext.layout.ContainerLayout.prototype = {
+Ext.layout.ContainerLayout = Ext.extend(Object, {
     /**
      * @cfg {String} extraCls
      * <p>An optional extra CSS class that will be added to the container. This can be useful for adding
@@ -4549,11 +4857,19 @@ Ext.layout.ContainerLayout.prototype = {
     // private
     activeItem : null,
 
+    constructor : function(config){
+        Ext.apply(this, config);
+    },
+
     // private
     layout : function(){
         var target = this.container.getLayoutTarget();
+        if(!(this.hasLayout || Ext.isEmpty(this.targetCls))){
+            target.addClass(this.targetCls)
+        }
         this.onLayout(this.container, target);
         this.container.fireEvent('afterlayout', this.container, this);
+        this.hasLayout = true;
     },
 
     // private
@@ -4563,7 +4879,7 @@ Ext.layout.ContainerLayout.prototype = {
 
     // private
     isValidParent : function(c, target){
-		return target && c.getDomPositionEl().dom.parentNode == (target.dom || target);
+        return target && c.getPositionEl().dom.parentNode == (target.dom || target);
     },
 
     // private
@@ -4586,26 +4902,27 @@ Ext.layout.ContainerLayout.prototype = {
             if(Ext.isNumber(position)){
                 position = target.dom.childNodes[position];
             }
-            target.dom.insertBefore(c.getDomPositionEl().dom, position || null);
+            target.dom.insertBefore(c.getPositionEl().dom, position || null);
             c.container = target;
             this.configureItem(c, position);
         }
     },
-    
+
     // private
     configureItem: function(c, position){
         if(this.extraCls){
             var t = c.getPositionEl ? c.getPositionEl() : c;
             t.addClass(this.extraCls);
         }
-        if (this.renderHidden && c != this.activeItem) {
-            c.hide();
-        }
+        // If we are forcing a layout, do so *before* we hide so elements have height/width
         if(c.doLayout && this.forceLayout){
             c.doLayout(false, true);
         }
+        if (this.renderHidden && c != this.activeItem) {
+            c.hide();
+        }
     },
-    
+
     onRemove: function(c){
          if(this.activeItem == c){
             delete this.activeItem;
@@ -4619,14 +4936,19 @@ Ext.layout.ContainerLayout.prototype = {
     // private
     onResize: function(){
         var ct = this.container,
-            b;
-            
-        if(ct.collapsed){
+            b = ct.bufferResize;
+
+        if (ct.collapsed){
             return;
         }
-        if(b = ct.bufferResize){
-            // Only allow if we should buffer the layout
-            if(ct.shouldBufferLayout()){
+
+        // Not having an ownerCt negates the buffering: floating and top level
+        // Containers (Viewport, Window, ToolTip, Menu) need to lay out ASAP.
+        if (b && ct.ownerCt) {
+            // If we do NOT already have a layout pending from an ancestor, schedule one.
+            // If there is a layout pending, we do nothing here.
+            // buffering to be deprecated soon
+            if (!ct.hasLayoutPending()){
                 if(!this.resizeTask){
                     this.resizeTask = new Ext.util.DelayedTask(this.runLayout, this);
                     this.resizeBuffer = Ext.isNumber(b) ? b : 50;
@@ -4635,10 +4957,10 @@ Ext.layout.ContainerLayout.prototype = {
                 this.resizeTask.delay(this.resizeBuffer);
             }
         }else{
-            ct.doLayout();
+            ct.doLayout(false, this.forceLayout);
         }
     },
-    
+
     // private
     runLayout: function(){
         var ct = this.container;
@@ -4648,6 +4970,8 @@ Ext.layout.ContainerLayout.prototype = {
 
     // private
     setContainer : function(ct){
+        // No longer use events to handle resize. Instead this will be handled through a direct function call.
+        /*
         if(this.monitorResize && ct != this.container){
             var old = this.container;
             if(old){
@@ -4657,6 +4981,7 @@ Ext.layout.ContainerLayout.prototype = {
                 ct.on(ct.resizeEvent, this.onResize, this);
             }
         }
+        */
         this.container = ct;
     },
 
@@ -4707,15 +5032,23 @@ Ext.layout.ContainerLayout.prototype = {
         t.disableFormats = true;
         return t.compile();
     })(),
-	
+
     /*
      * Destroys this layout. This is a template method that is empty by default, but should be implemented
      * by subclasses that require explicit destruction to purge event handlers or remove DOM nodes.
      * @protected
      */
-    destroy : Ext.emptyFn
-};
-Ext.Container.LAYOUTS['auto'] = Ext.layout.ContainerLayout;/**
+    destroy : function(){
+        if(!Ext.isEmpty(this.targetCls)){
+            var target = this.container.getLayoutTarget();
+            if(target){
+                target.removeClass(this.targetCls);
+            }
+        }
+    }
+});
+Ext.Container.LAYOUTS['auto'] = Ext.layout.ContainerLayout;
+/**
  * @class Ext.layout.FitLayout
  * @extends Ext.layout.ContainerLayout
  * <p>This is a base class for layouts that contain <b>a single item</b> that automatically expands to fill the layout's
@@ -4744,8 +5077,7 @@ Ext.layout.FitLayout = Ext.extend(Ext.layout.ContainerLayout, {
     onLayout : function(ct, target){
         Ext.layout.FitLayout.superclass.onLayout.call(this, ct, target);
         if(!this.container.collapsed){
-            var sz = (Ext.isIE6 && Ext.isStrict && target.dom == document.body) ? target.getViewSize() : target.getStyleSize();
-            this.setItemSize(this.activeItem || ct.items.itemAt(0), sz);
+            this.setItemSize(this.activeItem || ct.items.itemAt(0), target.getViewSize(true));
         }
     },
 
@@ -4845,7 +5177,7 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
     
     constructor: function(config){
         Ext.layout.CardLayout.superclass.constructor.call(this, config);
-        this.forceLayout = (this.deferredRender === false);
+      //  this.forceLayout = (this.deferredRender === false);
     },
 
     /**
@@ -4853,18 +5185,23 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
      * @param {String/Number} item The string component id or numeric index of the item to activate
      */
     setActiveItem : function(item){
+        var ai = this.activeItem;
         item = this.container.getComponent(item);
-        if(this.activeItem != item){
-            if(this.activeItem){
-                this.activeItem.hide();
+        if(ai != item){
+            if(ai){
+                ai.hide();
+                ai.fireEvent('deactivate', ai);
             }
             var layout = item.doLayout && (this.layoutOnCardChange || !item.rendered);
             this.activeItem = item;
-            item.show();
+            if(item){
+                item.show();
+            }
             this.layout();
-            if(layout){
+            if(item && layout){
                 item.doLayout();
             }
+            item.fireEvent('activate', item);
         }
     },
 
@@ -4919,12 +5256,12 @@ Ext.layout.AnchorLayout = Ext.extend(Ext.layout.ContainerLayout, {
      * @cfg {String} anchor
      * <p>This configuation option is to be applied to <b>child <tt>items</tt></b> of a container managed by
      * this layout (ie. configured with <tt>layout:'anchor'</tt>).</p><br/>
-     * 
+     *
      * <p>This value is what tells the layout how an item should be anchored to the container. <tt>items</tt>
      * added to an AnchorLayout accept an anchoring-specific config property of <b>anchor</b> which is a string
      * containing two values: the horizontal anchor value and the vertical anchor value (for example, '100% 50%').
      * The following types of anchor values are supported:<div class="mdetail-params"><ul>
-     * 
+     *
      * <li><b>Percentage</b> : Any value between 1 and 100, expressed as a percentage.<div class="sub-desc">
      * The first anchor is the percentage width that the item should take up within the container, and the
      * second is the percentage height.  For example:<pre><code>
@@ -4934,7 +5271,7 @@ anchor: '100% 50%' // render item complete width of the container and
 // one value specified
 anchor: '100%'     // the width value; the height will default to auto
      * </code></pre></div></li>
-     * 
+     *
      * <li><b>Offsets</b> : Any positive or negative integer value.<div class="sub-desc">
      * This is a raw adjustment where the first anchor is the offset from the right edge of the container,
      * and the second is the offset from the bottom edge. For example:<pre><code>
@@ -4946,7 +5283,7 @@ anchor: '-50 -100' // render item the complete width of the container
 anchor: '-50'      // anchor value is assumed to be the right offset value
                    // bottom offset will default to 0
      * </code></pre></div></li>
-     * 
+     *
      * <li><b>Sides</b> : Valid values are <tt>'right'</tt> (or <tt>'r'</tt>) and <tt>'bottom'</tt>
      * (or <tt>'b'</tt>).<div class="sub-desc">
      * Either the container must have a fixed size or an anchorSize config value defined at render time in
@@ -4956,27 +5293,28 @@ anchor: '-50'      // anchor value is assumed to be the right offset value
      * Anchor values can also be mixed as needed.  For example, to render the width offset from the container
      * right edge by 50 pixels and 75% of the container's height use:
      * <pre><code>
-anchor: '-50 75%' 
+anchor: '-50 75%'
      * </code></pre></div></li>
-     * 
-     * 
+     *
+     *
      * </ul></div>
      */
-    
+
     // private
     monitorResize:true,
 
     // private
+    // deprecate
     getAnchorViewSize : function(ct, target){
         return target.dom == document.body ?
-                   target.getViewSize() : target.getStyleSize();
+                   target.getViewSize(true) : target.getStyleSize();
     },
 
     // private
     onLayout : function(ct, target){
         Ext.layout.AnchorLayout.superclass.onLayout.call(this, ct, target);
 
-        var size = this.getAnchorViewSize(ct, target);
+        var size = target.getViewSize(true);
 
         var w = size.width, h = size.height;
 
@@ -4998,20 +5336,21 @@ anchor: '-50 75%'
             ah = ct.initialConfig.height;
         }
 
-        var cs = ct.items.items, len = cs.length, i, c, a, cw, ch;
+        var cs = ct.items.items, len = cs.length, i, c, a, cw, ch, el, vs;
         for(i = 0; i < len; i++){
             c = cs[i];
+            el = c.getPositionEl();
             if(c.anchor){
                 a = c.anchorSpec;
                 if(!a){ // cache all anchor values
-                    var vs = c.anchor.split(' ');
+                    vs = c.anchor.split(' ');
                     c.anchorSpec = a = {
                         right: this.parseAnchor(vs[0], c.initialConfig.width, aw),
                         bottom: this.parseAnchor(vs[1], c.initialConfig.height, ah)
                     };
                 }
-                cw = a.right ? this.adjustWidthAnchor(a.right(w), c) : undefined;
-                ch = a.bottom ? this.adjustHeightAnchor(a.bottom(h), c) : undefined;
+                cw = a.right ? this.adjustWidthAnchor(a.right(w) - el.getMargins('lr'), c) : undefined;
+                ch = a.bottom ? this.adjustHeightAnchor(a.bottom(h) - el.getMargins('tb'), c) : undefined;
 
                 if(cw || ch){
                     c.setSize(cw || undefined, ch || undefined);
@@ -5064,13 +5403,14 @@ anchor: '-50 75%'
     adjustHeightAnchor : function(value, comp){
         return value;
     }
-    
+
     /**
      * @property activeItem
      * @hide
      */
 });
-Ext.Container.LAYOUTS['anchor'] = Ext.layout.AnchorLayout;/**
+Ext.Container.LAYOUTS['anchor'] = Ext.layout.AnchorLayout;
+/**
  * @class Ext.layout.ColumnLayout
  * @extends Ext.layout.ContainerLayout
  * <p>This is the layout style of choice for creating structural layouts in a multi-column format where the width of
@@ -5099,7 +5439,7 @@ var p = new Ext.Panel({
     layout:'column',
     items: [{
         title: 'Column 1',
-        columnWidth: .25 
+        columnWidth: .25
     },{
         title: 'Column 2',
         columnWidth: .6
@@ -5131,14 +5471,17 @@ var p = new Ext.Panel({
 Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     monitorResize:true,
-    
+
     extraCls: 'x-column',
 
     scrollOffset : 0,
 
     // private
+
+    targetCls: 'x-column-layout-ct',
+
     isValidParent : function(c, target){
-        return (c.getPositionEl ? c.getPositionEl() : c.getEl()).dom.parentNode == this.innerCt.dom;
+        return c.getPositionEl().dom.parentNode == this.innerCt.dom;
     },
 
     // private
@@ -5146,8 +5489,6 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         var cs = ct.items.items, len = cs.length, c, i;
 
         if(!this.innerCt){
-            target.addClass('x-column-layout-ct');
-
             // the innerCt prevents wrapping and shuffling while
             // the container is resizing
             this.innerCt = target.createChild({cls:'x-column-inner'});
@@ -5155,25 +5496,25 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         }
         this.renderAll(ct, this.innerCt);
 
-        var size = Ext.isIE && target.dom != Ext.getBody().dom ? target.getStyleSize() : target.getViewSize();
+        var size = target.getViewSize(true);
 
         if(size.width < 1 && size.height < 1){ // display none?
             return;
         }
 
-        var w = size.width - target.getPadding('lr') - this.scrollOffset,
-            h = size.height - target.getPadding('tb'),
+        var w = size.width - this.scrollOffset,
+            h = size.height,
             pw = w;
 
         this.innerCt.setWidth(w);
-        
+
         // some columns can be percentages while others are fixed
         // so we need to make 2 passes
 
         for(i = 0; i < len; i++){
             c = cs[i];
             if(!c.columnWidth){
-                pw -= (c.getSize().width + c.getEl().getMargins('lr'));
+                pw -= (c.getSize().width + c.getPositionEl().getMargins('lr'));
             }
         }
 
@@ -5182,11 +5523,11 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         for(i = 0; i < len; i++){
             c = cs[i];
             if(c.columnWidth){
-                c.setSize(Math.floor(c.columnWidth*pw) - c.getEl().getMargins('lr'));
+                c.setSize(Math.floor(c.columnWidth * pw) - c.getPositionEl().getMargins('lr'));
             }
         }
     }
-    
+
     /**
      * @property activeItem
      * @hide
@@ -5220,7 +5561,7 @@ var myBorderPanel = new Ext.Panel({
         {@link Ext.layout.BorderLayout.Region#BorderLayout.Region region}: 'south',     // position for region
         {@link Ext.BoxComponent#height height}: 100,
         {@link Ext.layout.BorderLayout.Region#split split}: true,         // enable resizing
-        {@link Ext.SplitBar#minSize minSize}: 75,         // defaults to {@link Ext.layout.BorderLayout.Region#minHeight 50} 
+        {@link Ext.SplitBar#minSize minSize}: 75,         // defaults to {@link Ext.layout.BorderLayout.Region#minHeight 50}
         {@link Ext.SplitBar#maxSize maxSize}: 150,
         {@link Ext.layout.BorderLayout.Region#margins margins}: '0 5 5 5'
     },{
@@ -5278,11 +5619,12 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     rendered : false,
 
+    targetCls: 'x-border-layout-ct',
+
     // private
     onLayout : function(ct, target){
         var collapsed;
         if(!this.rendered){
-            target.addClass('x-border-layout-ct');
             var items = ct.items.items;
             collapsed = [];
             for(var i = 0, len = items.length; i < len; i++) {
@@ -5294,7 +5636,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
                 c.collapsed = false;
                 if(!c.rendered){
                     c.render(target, i);
-                    c.getDomPositionEl().addClass('x-border-panel');
+                    c.getPositionEl().addClass('x-border-panel');
                 }
                 this[pos] = pos != 'center' && c.split ?
                     new Ext.layout.BorderLayout.SplitRegion(this, c.initialConfig, pos) :
@@ -5304,7 +5646,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
             this.rendered = true;
         }
 
-        var size = target.getViewSize();
+        var size = target.getViewSize(false);
         if(size.width < 20 || size.height < 20){ // display none?
             if(collapsed){
                 this.restoreCollapsed = collapsed;
@@ -5531,19 +5873,19 @@ Ext.layout.BorderLayout.Region.prototype = {
     collapsible : false,
     /**
      * @cfg {Boolean} split
-     * <p><tt>true</tt> to create a {@link Ext.layout.BorderLayout.SplitRegion SplitRegion} and 
+     * <p><tt>true</tt> to create a {@link Ext.layout.BorderLayout.SplitRegion SplitRegion} and
      * display a 5px wide {@link Ext.SplitBar} between this region and its neighbor, allowing the user to
      * resize the regions dynamically.  Defaults to <tt>false</tt> creating a
      * {@link Ext.layout.BorderLayout.Region Region}.</p><br>
      * <p><b>Notes</b>:</p><div class="mdetail-params"><ul>
-     * <li>this configuration option is ignored if <tt>region='center'</tt></li> 
+     * <li>this configuration option is ignored if <tt>region='center'</tt></li>
      * <li>when <tt>split == true</tt>, it is common to specify a
      * <tt>{@link Ext.SplitBar#minSize minSize}</tt> and <tt>{@link Ext.SplitBar#maxSize maxSize}</tt>
      * for the {@link Ext.BoxComponent BoxComponent} representing the region. These are not native
      * configs of {@link Ext.BoxComponent BoxComponent}, and are used only by this class.</li>
      * <li>if <tt>{@link #collapseMode} = 'mini'</tt> requires <tt>split = true</tt> to reserve space
-     * for the collapse tool</tt></li> 
-     * </ul></div> 
+     * for the collapse tool</tt></li>
+     * </ul></div>
      */
     split:false,
     /**
@@ -5557,8 +5899,8 @@ Ext.layout.BorderLayout.Region.prototype = {
      * @cfg {Number} minWidth
      * <p>The minimum allowable width in pixels for this region (defaults to <tt>50</tt>).
      * <tt>maxWidth</tt> may also be specified.</p><br>
-     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> / 
-     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified 
+     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> /
+     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified
      * <tt>minWidth</tt> / <tt>maxWidth</tt>.</p>
      */
     minWidth:50,
@@ -5566,8 +5908,8 @@ Ext.layout.BorderLayout.Region.prototype = {
      * @cfg {Number} minHeight
      * The minimum allowable height in pixels for this region (defaults to <tt>50</tt>)
      * <tt>maxHeight</tt> may also be specified.</p><br>
-     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> / 
-     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified 
+     * <p><b>Note</b>: setting the <tt>{@link Ext.SplitBar#minSize minSize}</tt> /
+     * <tt>{@link Ext.SplitBar#maxSize maxSize}</tt> supersedes any specified
      * <tt>minHeight</tt> / <tt>maxHeight</tt>.</p>
      */
     minHeight:50,
@@ -5682,7 +6024,6 @@ Ext.layout.BorderLayout.Region.prototype = {
     // private
     onExpandClick : function(e){
         if(this.isSlid){
-            this.afterSlideIn();
             this.panel.expand(false);
         }else{
             this.panel.expand();
@@ -5701,7 +6042,9 @@ Ext.layout.BorderLayout.Region.prototype = {
             this.splitEl.hide();
         }
         this.getCollapsedEl().show();
-        this.panel.el.setStyle('z-index', 100);
+        var el = this.panel.getEl();
+        this.originalZIndex = el.getStyle('z-index');
+        el.setStyle('z-index', 100);
         this.isCollapsed = true;
         this.layout.layout();
     },
@@ -5720,6 +6063,9 @@ Ext.layout.BorderLayout.Region.prototype = {
 
     // private
     beforeExpand : function(animate){
+        if(this.isSlid){
+            this.afterSlideIn();
+        }
         var c = this.getCollapsedEl();
         this.el.show();
         if(this.position == 'east' || this.position == 'west'){
@@ -5739,7 +6085,7 @@ Ext.layout.BorderLayout.Region.prototype = {
             this.splitEl.show();
         }
         this.layout.layout();
-        this.panel.el.setStyle('z-index', 1);
+        this.panel.el.setStyle('z-index', this.originalZIndex);
         this.state.collapsed = false;
         this.panel.saveState();
     },
@@ -5871,6 +6217,7 @@ Ext.layout.BorderLayout.Region.prototype = {
                 };
             }
             this.el.on(this.autoHideHd);
+            this.collapsedEl.on(this.autoHideHd);
         }
     },
 
@@ -5879,6 +6226,8 @@ Ext.layout.BorderLayout.Region.prototype = {
         if(this.autoHide !== false){
             this.el.un("mouseout", this.autoHideHd.mouseout);
             this.el.un("mouseover", this.autoHideHd.mouseover);
+            this.collapsedEl.un("mouseout", this.autoHideHd.mouseout);
+            this.collapsedEl.un("mouseover", this.autoHideHd.mouseover);
         }
     },
 
@@ -6054,6 +6403,10 @@ Ext.layout.BorderLayout.Region.prototype = {
                 return [0, cm.top+cm.bottom+c.getHeight()];
             break;
         }
+    },
+
+    destroy : function(){
+        Ext.destroy(this.miniCollapsedEl, this.collapsedEl);
     }
 };
 
@@ -6286,11 +6639,8 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
 
     // inherit docs
     destroy : function() {
-        Ext.destroy(
-            this.miniSplitEl,
-            this.split,
-            this.splitEl
-        );
+        Ext.destroy(this.miniSplitEl, this.split, this.splitEl);
+        Ext.layout.BorderLayout.SplitRegion.superclass.destroy.call(this);
     }
 });
 
@@ -6404,17 +6754,17 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
      * @type String
      * @property labelStyle
      */
-    
+
     /**
      * @cfg {Boolean} trackLabels
      * True to show/hide the field label when the field is hidden. Defaults to <tt>false</tt>.
      */
     trackLabels: false,
-    
+
 
     onRemove: function(c){
         Ext.layout.FormLayout.superclass.onRemove.call(this, c);
-        if(this.trackLabels && !this.isHide(c)){
+        if(this.trackLabels){
             c.un('show', this.onFieldShow, this);
             c.un('hide', this.onFieldHide, this);
         }
@@ -6422,7 +6772,9 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
         var el = c.getPositionEl(),
                 ct = c.getItemCt && c.getItemCt();
         if(c.rendered && ct){
-            el.insertAfter(ct);
+            if (el && el.dom) {
+                el.insertAfter(ct);
+            }
             Ext.destroy(ct);
             Ext.destroyMembers(c, 'label', 'itemCt');
             if(c.customItemCt){
@@ -6430,7 +6782,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
             }
         }
     },
-    
+
     // private
     setContainer : function(ct){
         Ext.layout.FormLayout.superclass.setContainer.call(this, ct);
@@ -6464,17 +6816,18 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
             }
         }
     },
-    
+
+    // private
     isHide: function(c){
         return c.hideLabel || this.container.hideLabels;
     },
-    
+
     onFieldShow: function(c){
         c.getItemCt().removeClass('x-hide-' + c.hideMode);
     },
-    
+
     onFieldHide: function(c){
-        c.getItemCt().addClass('x-hide-' + c.hideMode);   
+        c.getItemCt().addClass('x-hide-' + c.hideMode);
     },
 
     //private
@@ -6537,11 +6890,6 @@ new Ext.Template(
             }else{
                 c.itemCt = this.fieldTpl.append(target, args, true);
             }
-            if(!c.rendered){
-                c.render('x-form-el-' + c.id);
-            }else if(!this.isValidParent(c, target)){
-                Ext.fly('x-form-el-' + c.id).appendChild(c.getPositionEl());
-            }
             if(!c.getItemCt){
                 // Non form fields don't have getItemCt, apply it here
                 // This will get cleaned up in onRemove
@@ -6553,7 +6901,12 @@ new Ext.Template(
                 });
             }
             c.label = c.getItemCt().child('label.x-form-item-label');
-            if(this.trackLabels && !this.isHide(c)){
+            if(!c.rendered){
+                c.render('x-form-el-' + c.id);
+            }else if(!this.isValidParent(c, target)){
+                Ext.fly('x-form-el-' + c.id).appendChild(c.getPositionEl());
+            }
+            if(this.trackLabels){
                 if(c.hidden){
                     this.onFieldHide(c);
                 }
@@ -6591,7 +6944,7 @@ new Ext.Template(
      * <li><b><tt>clearCls</tt></b> : String<div class="sub-desc">The CSS class to apply to the special clearing div
      * rendered directly after each form field wrapper (defaults to <tt>'x-form-clear-left'</tt>)</div></li>
      * </ul></div>
-     * @param field The {@link Field Ext.form.Field} being rendered.
+     * @param (Ext.form.Field} field The {@link Ext.form.Field Field} being rendered.
      * @return An object hash containing the properties required to render the Field.
      */
     getTemplateArgs: function(field) {
@@ -6615,7 +6968,7 @@ new Ext.Template(
         }
         return value;
     },
-    
+
     adjustHeightAnchor : function(value, c){
         if(c.label && !this.isHide(c) && (this.container.labelAlign == 'top')){
             return value - c.label.getHeight();
@@ -6625,7 +6978,7 @@ new Ext.Template(
 
     // private
     isValidParent : function(c, target){
-        return target && this.container.getEl().contains(c.getDomPositionEl());
+        return target && this.container.getEl().contains(c.getPositionEl());
     }
 
     /**
@@ -6634,7 +6987,8 @@ new Ext.Template(
      */
 });
 
-Ext.Container.LAYOUTS['form'] = Ext.layout.FormLayout;/**
+Ext.Container.LAYOUTS['form'] = Ext.layout.FormLayout;
+/**
  * @class Ext.layout.AccordionLayout
  * @extends Ext.layout.FitLayout
  * <p>This is a layout that manages multiple Panels in an expandable accordion style such that only
@@ -6740,7 +7094,7 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
             c.collapseFirst = this.collapseFirst;
         }
         if(!this.activeItem && !c.collapsed){
-            this.activeItem = c;
+            this.setActiveItem(c, true);
         }else if(this.activeItem && this.activeItem != c){
             c.collapsed = true;
         }
@@ -6773,7 +7127,7 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
                 ai.collapse(this.animate);
             }
         }
-        this.activeItem = p;
+        this.setActive(p);
         if(this.activeOnTop){
             p.el.dom.parentNode.insertBefore(p.el.dom, p.el.dom.parentNode.firstChild);
         }
@@ -6799,15 +7153,24 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
      * @param {String/Number} item The string component id or numeric index of the item to activate
      */
     setActiveItem : function(item){
+        this.setActive(item, true);
+    },
+    
+    // private
+    setActive : function(item, expand){
+        var ai = this.activeItem;
         item = this.container.getComponent(item);
-        if(this.activeItem != item){
-            if(item.rendered && item.collapsed){
+        if(ai != item){
+            if(item.rendered && item.collapsed && expand){
                 item.expand();
             }else{
+                if(ai){
+                   ai.fireEvent('deactivate', ai);
+                }
                 this.activeItem = item;
+                item.fireEvent('activate', item);
             }
         }
-
     }
 });
 Ext.Container.LAYOUTS.accordion = Ext.layout.AccordionLayout;
@@ -6881,6 +7244,8 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     monitorResize:false,
+    
+    targetCls: 'x-table-layout-ct',
 
     /**
      * @cfg {Object} tableAttrs
@@ -6915,8 +7280,6 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
         var cs = ct.items.items, len = cs.length, c, i;
 
         if(!this.table){
-            target.addClass('x-table-layout-ct');
-
             this.table = target.createChild(
                 Ext.apply({tag:'table', cls:'x-table-layout', cellspacing: 0, cn: {tag: 'tbody'}}, this.tableAttrs), null, true);
         }
@@ -6985,7 +7348,7 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
             this.configureItem(c, position);
         }else if(c && !this.isValidParent(c, target)){
             var container = this.getNextCell(c);
-            container.insertBefore(c.getDomPositionEl().dom, null);
+            container.insertBefore(c.getPositionEl().dom, null);
             c.container = Ext.get(container);
             this.configureItem(c, position);
         }
@@ -6993,7 +7356,7 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     isValidParent : function(c, target){
-        return c.getDomPositionEl().up('table', 5).dom.parentNode === (target.dom || target);
+        return c.getPositionEl().up('table', 5).dom.parentNode === (target.dom || target);
     }
 
     /**
@@ -7116,7 +7479,7 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
     defaultMargins : {left:0,top:0,right:0,bottom:0},
     /**
      * @cfg {String} padding
-     * <p>Sets the padding to be applied to all child items managed by this layout.</p> 
+     * <p>Sets the padding to be applied to all child items managed by this layout.</p>
      * <p>This property must be specified as a string containing
      * space-separated, numeric padding values. The order of the sides associated
      * with each value matches the way CSS processes padding values:</p>
@@ -7139,9 +7502,9 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
     monitorResize : true,
     scrollOffset : 0,
     extraCls : 'x-box-item',
-    ctCls : 'x-box-layout-ct',
+    targetCls : 'x-box-layout-ct',
     innerCls : 'x-box-inner',
-    
+
     constructor : function(config){
         Ext.layout.BoxLayout.superclass.constructor.call(this, config);
         if(Ext.isString(this.defaultMargins)){
@@ -7151,7 +7514,7 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     isValidParent : function(c, target){
-        return c.getEl().dom.parentNode == this.innerCt.dom;
+        return c.getPositionEl().dom.parentNode == this.innerCt.dom;
     },
 
     // private
@@ -7159,12 +7522,10 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
         var cs = ct.items.items, len = cs.length, c, i, last = len-1, cm;
 
         if(!this.innerCt){
-            target.addClass(this.ctCls);
-
             // the innerCt prevents wrapping and shuffling while
             // the container is resizing
             this.innerCt = target.createChild({cls:this.innerCls});
-            this.padding = this.parseMargins(this.padding); 
+            this.padding = this.parseMargins(this.padding);
         }
         this.renderAll(ct, this.innerCt);
     },
@@ -7179,10 +7540,11 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
         Ext.layout.BoxLayout.superclass.renderItem.apply(this, arguments);
     },
 
+    // deprecate
     getTargetSize : function(target){
-        return (Ext.isIE6 && Ext.isStrict && target.dom == document.body) ? target.getStyleSize() : target.getViewSize();
+        return (Ext.isIE6 && Ext.isStrict && target.dom == document.body) ? target.getStyleSize() : target.getViewSize(true);
     },
-    
+
     getItems: function(ct){
         var items = [];
         ct.items.each(function(c){
@@ -7192,11 +7554,6 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
         });
         return items;
     }
-
-    /**
-     * @property activeItem
-     * @hide
-     */
 });
 
 /**
@@ -7248,33 +7605,33 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
     // private
     onLayout : function(ct, target){
         Ext.layout.VBoxLayout.superclass.onLayout.call(this, ct, target);
-                    
-        
-        var cs = this.getItems(ct), cm, ch, margin,
-            size = this.getTargetSize(target),
-            w = size.width - target.getPadding('lr'),
-            h = size.height - target.getPadding('tb') - this.scrollOffset,
+
+        var cs = this.getItems(ct), cm, ch, margin, cl, diff, aw,
+            size = target.getViewSize(true),
+            w = size.width,
+            h = size.height - this.scrollOffset,
             l = this.padding.left, t = this.padding.top,
             isStart = this.pack == 'start',
-            isRestore = ['stretch', 'stretchmax'].indexOf(this.align) == -1,
             stretchWidth = w - (this.padding.left + this.padding.right),
             extraHeight = 0,
             maxWidth = 0,
             totalFlex = 0,
             flexHeight = 0,
-            usedHeight = 0;
-            
-        Ext.each(cs, function(c){
+            usedHeight = 0,
+            idx = 0,
+            heights = [],
+            restore = [],
+            c,
+            csLen = cs.length;
+
+        // Do only width calculations and apply those first, as they can affect height
+        for (i = 0 ; i < csLen; i++) {
+            c = cs[i];
             cm = c.margins;
-            totalFlex += c.flex || 0;
-            ch = c.getHeight();
             margin = cm.top + cm.bottom;
-            extraHeight += ch + margin;
-            flexHeight += margin + (c.flex ? 0 : ch);
             maxWidth = Math.max(maxWidth, c.getWidth() + cm.left + cm.right);
-        });
-        extraHeight = h - extraHeight - this.padding.top - this.padding.bottom;
-        
+        }
+
         var innerCtWidth = maxWidth + this.padding.left + this.padding.right;
         switch(this.align){
             case 'stretch':
@@ -7289,45 +7646,10 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                 break;
         }
 
-        var availHeight = Math.max(0, h - this.padding.top - this.padding.bottom - flexHeight),
-            leftOver = availHeight,
-            heights = [],
-            restore = [],
-            idx = 0,
-            availableWidth = Math.max(0, w - this.padding.left - this.padding.right);
-            
-
-        Ext.each(cs, function(c){
-            if(isStart && c.flex){
-                ch = Math.floor(availHeight * (c.flex / totalFlex));
-                leftOver -= ch;
-                heights.push(ch);
-            }
-        }); 
-        
-        if(this.pack == 'center'){
-            t += extraHeight ? extraHeight / 2 : 0;
-        }else if(this.pack == 'end'){
-            t += extraHeight;
-        }
-        Ext.each(cs, function(c){
-            cm = c.margins;
-            t += cm.top;
-            c.setPosition(l + cm.left, t);
-            if(isStart && c.flex){
-                ch = Math.max(0, heights[idx++] + (leftOver-- > 0 ? 1 : 0));
-                if(isRestore){
-                    restore.push(c.getWidth());
-                }
-                c.setSize(availableWidth, ch);
-            }else{
-                ch = c.getHeight();
-            }
-            t += ch + cm.bottom;
-        });
-        
-        idx = 0;
-        Ext.each(cs, function(c){
+        var availableWidth = Math.max(0, w - this.padding.left - this.padding.right);
+        // Apply widths
+        for (i = 0 ; i < csLen; i++) {
+            c = cs[i];
             cm = c.margins;
             if(this.align == 'stretch'){
                 c.setWidth((stretchWidth - (cm.left + cm.right)).constrain(
@@ -7335,23 +7657,66 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
             }else if(this.align == 'stretchmax'){
                 c.setWidth((maxWidth - (cm.left + cm.right)).constrain(
                     c.minWidth || 0, c.maxWidth || 1000000));
-            }else{
-                if(this.align == 'center'){
-                    var diff = availableWidth - (c.getWidth() + cm.left + cm.right);
-                    if(diff > 0){
-                        c.setPosition(l + cm.left + (diff/2), c.y);
-                    }
-                }
-                if(isStart && c.flex){
-                    c.setWidth(restore[idx++]);
+            }else if(isStart && c.flex){
+                c.setWidth();
+            }
+
+        }
+
+        // Do height calculations
+        for (i = 0 ; i < csLen; i++) {
+            c = cs[i];
+            cm = c.margins;
+            totalFlex += c.flex || 0;
+            ch = c.getHeight();
+            margin = cm.top + cm.bottom;
+            extraHeight += ch + margin;
+            flexHeight += margin + (c.flex ? 0 : ch);
+        }
+        extraHeight = h - extraHeight - this.padding.top - this.padding.bottom;
+
+        var availHeight = Math.max(0, h - this.padding.top - this.padding.bottom - flexHeight),
+            leftOver = availHeight;
+        for (i = 0 ; i < csLen; i++) {
+            c = cs[i];
+            if(isStart && c.flex){
+                ch = Math.floor(availHeight * (c.flex / totalFlex));
+                leftOver -= ch;
+                heights.push(ch);
+            }
+        }
+        if(this.pack == 'center'){
+            t += extraHeight ? extraHeight / 2 : 0;
+        }else if(this.pack == 'end'){
+            t += extraHeight;
+        }
+        idx = 0;
+        // Apply heights
+        for (i = 0 ; i < csLen; i++) {
+            c = cs[i];
+            cm = c.margins;
+            t += cm.top;
+            aw = availableWidth;
+            cl = l + cm.left // default left pos
+
+//          Adjust left pos for centering
+            if(this.align == 'center'){
+                if((diff = availableWidth - (c.getWidth() + cm.left + cm.right)) > 0){
+                    cl += (diff/2);
+                    aw -= diff;
                 }
             }
-        }, this);
+
+            c.setPosition(cl, t);
+            if(isStart && c.flex){
+                ch = Math.max(0, heights[idx++] + (leftOver-- > 0 ? 1 : 0));
+                c.setSize(aw, ch);
+            }else{
+                ch = c.getHeight();
+            }
+            t += ch + cm.bottom;
+        }
     }
-    /**
-     * @property activeItem
-     * @hide
-     */
 });
 
 Ext.Container.LAYOUTS.vbox = Ext.layout.VBoxLayout;
@@ -7370,13 +7735,13 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
      * property are:
      * <div class="mdetail-params"><ul>
      * <li><b><tt>top</tt></b> : <b>Default</b><div class="sub-desc">child items are aligned vertically
-     * at the <b>left</b> side of the container</div></li>
-     * <li><b><tt>middle</tt></b> : <div class="sub-desc">child items are aligned vertically at the
-     * <b>mid-height</b> of the container</div></li>
+     * at the <b>top</b> of the container</div></li>
+     * <li><b><tt>middle</tt></b> : <div class="sub-desc">child items are aligned vertically in the
+     * <b>middle</b> of the container</div></li>
      * <li><b><tt>stretch</tt></b> : <div class="sub-desc">child items are stretched vertically to fill
      * the height of the container</div></li>
      * <li><b><tt>stretchmax</tt></b> : <div class="sub-desc">child items are stretched vertically to
-     * the size of the largest item.</div></li>
+     * the height of the largest item.</div></li>
      */
     align : 'top', // top, middle, stretch, strechmax
     /**
@@ -7404,11 +7769,11 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
     // private
     onLayout : function(ct, target){
         Ext.layout.HBoxLayout.superclass.onLayout.call(this, ct, target);
-        
-        var cs = this.getItems(ct), cm, cw, margin,
-            size = this.getTargetSize(target),
-            w = size.width - target.getPadding('lr') - this.scrollOffset,
-            h = size.height - target.getPadding('tb'),
+
+        var cs = this.getItems(ct), cm, cw, margin, ch, diff,
+            size = target.getViewSize(true),
+            w = size.width - this.scrollOffset,
+            h = size.height,
             l = this.padding.left, t = this.padding.top,
             isStart = this.pack == 'start',
             isRestore = ['stretch', 'stretchmax'].indexOf(this.align) == -1,
@@ -7418,7 +7783,7 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
             totalFlex = 0,
             flexWidth = 0,
             usedWidth = 0;
-        
+
         Ext.each(cs, function(c){
             cm = c.margins;
             totalFlex += c.flex || 0;
@@ -7429,7 +7794,7 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
             maxHeight = Math.max(maxHeight, c.getHeight() + cm.top + cm.bottom);
         });
         extraWidth = w - extraWidth - this.padding.left - this.padding.right;
-        
+
         var innerCtHeight = maxHeight + this.padding.top + this.padding.bottom;
         switch(this.align){
             case 'stretch':
@@ -7443,7 +7808,7 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                 this.innerCt.setSize(w, h = Math.max(h, innerCtHeight));
                 break;
         }
-        
+
 
         var availWidth = Math.max(0, w - this.padding.left - this.padding.right - flexWidth),
             leftOver = availWidth,
@@ -7451,7 +7816,7 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
             restore = [],
             idx = 0,
             availableHeight = Math.max(0, h - this.padding.top - this.padding.bottom);
-            
+
 
         Ext.each(cs, function(c){
             if(isStart && c.flex){
@@ -7459,8 +7824,8 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                 leftOver -= cw;
                 widths.push(cw);
             }
-        }); 
-        
+        });
+
         if(this.pack == 'center'){
             l += extraWidth ? extraWidth / 2 : 0;
         }else if(this.pack == 'end'){
@@ -7481,10 +7846,14 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
             }
             l += cw + cm.right;
         });
-        
+
         idx = 0;
         Ext.each(cs, function(c){
-            var cm = c.margins;
+            cm = c.margins;
+            ch = c.getHeight();
+            if(isStart && c.flex){
+                ch = restore[idx++];
+            }
             if(this.align == 'stretch'){
                 c.setHeight((stretchHeight - (cm.top + cm.bottom)).constrain(
                     c.minHeight || 0, c.maxHeight || 1000000));
@@ -7493,22 +7862,18 @@ Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                     c.minHeight || 0, c.maxHeight || 1000000));
             }else{
                 if(this.align == 'middle'){
-                    var diff = availableHeight - (c.getHeight() + cm.top + cm.bottom);
+                    diff = availableHeight - (ch + cm.top + cm.bottom);
+                    ch = t + cm.top + (diff/2);
                     if(diff > 0){
-                        c.setPosition(c.x, t + cm.top + (diff/2));
+                        c.setPosition(c.x, ch);
                     }
                 }
                 if(isStart && c.flex){
-                    c.setHeight(restore[idx++]);
+                    c.setHeight(ch);
                 }
             }
         }, this);
     }
-
-    /**
-     * @property activeItem
-     * @hide
-     */
 });
 
 Ext.Container.LAYOUTS.hbox = Ext.layout.HBoxLayout;
@@ -7537,7 +7902,7 @@ new Ext.Viewport({
         collapsible: true,
         title: 'Navigation',
         width: 200
-        // the west region might typically utilize a {@link Ext.tree.TreePanel TreePanel} or a Panel with {@link Ext.layout.AccordionLayout Accordion layout} 
+        // the west region might typically utilize a {@link Ext.tree.TreePanel TreePanel} or a Panel with {@link Ext.layout.AccordionLayout Accordion layout}
     }, {
         region: 'south',
         title: 'Title for Panel',
@@ -7572,44 +7937,45 @@ new Ext.Viewport({
  * @xtype viewport
  */
 Ext.Viewport = Ext.extend(Ext.Container, {
-	/*
-	 * Privatize config options which, if used, would interfere with the
-	 * correct operation of the Viewport as the sole manager of the
-	 * layout of the document body.
-	 */
+    /*
+     * Privatize config options which, if used, would interfere with the
+     * correct operation of the Viewport as the sole manager of the
+     * layout of the document body.
+     */
     /**
      * @cfg {Mixed} applyTo @hide
-	 */
+     */
     /**
      * @cfg {Boolean} allowDomMove @hide
-	 */
+     */
     /**
      * @cfg {Boolean} hideParent @hide
-	 */
+     */
     /**
      * @cfg {Mixed} renderTo @hide
-	 */
+     */
     /**
      * @cfg {Boolean} hideParent @hide
-	 */
+     */
     /**
      * @cfg {Number} height @hide
-	 */
+     */
     /**
      * @cfg {Number} width @hide
-	 */
+     */
     /**
      * @cfg {Boolean} autoHeight @hide
-	 */
+     */
     /**
      * @cfg {Boolean} autoWidth @hide
-	 */
+     */
     /**
      * @cfg {Boolean} deferHeight @hide
-	 */
+     */
     /**
      * @cfg {Boolean} monitorResize @hide
-	 */
+     */
+
     initComponent : function() {
         Ext.Viewport.superclass.initComponent.call(this);
         document.getElementsByTagName('html')[0].className += ' x-viewport';
@@ -7626,10 +7992,11 @@ Ext.Viewport = Ext.extend(Ext.Container, {
     },
 
     fireResize : function(w, h){
-        this.fireEvent('resize', this, w, h, w, h);
+        this.onResize(w, h, w, h);
     }
 });
-Ext.reg('viewport', Ext.Viewport);/**
+Ext.reg('viewport', Ext.Viewport);
+/**
  * @class Ext.Panel
  * @extends Ext.Container
  * <p>Panel is a container that has specific functionality and structural components that make
@@ -7984,7 +8351,7 @@ var w = new Ext.Window({
      * <li><b>event</b> : Ext.EventObject<div class="sub-desc">The click event.</div></li>
      * <li><b>toolEl</b> : Ext.Element<div class="sub-desc">The tool Element.</div></li>
      * <li><b>panel</b> : Ext.Panel<div class="sub-desc">The host Panel</div></li>
-     * <li><b>tc</b> : Ext.Panel<div class="sub-desc">The tool configuration object</div></li>
+     * <li><b>tc</b> : Object<div class="sub-desc">The tool configuration object</div></li>
      * </ul></div></li>
      * <li><b>stopEvent</b> : Boolean<div class="sub-desc">Defaults to true. Specify as false to allow click event to propagate.</div></li>
      * <li><b>scope</b> : Object<div class="sub-desc">The scope in which to call the handler.</div></li>
@@ -8069,11 +8436,7 @@ var win = new Ext.Window({
      * {@link Ext.layout.BorderLayout.Region BorderLayout.Region}
      * <code>{@link Ext.layout.BorderLayout.Region#floatable floatable}</code> config option.
      */
-    /**
-     * @cfg {Boolean} autoScroll
-     * <code>true</code> to use overflow:'auto' on the panel's body element and show scroll bars automatically when
-     * necessary, <code>false</code> to clip any overflowing content (defaults to <code>false</code>).
-     */
+
     /**
      * @cfg {Mixed} floating
      * <p>This property is used to configure the underlying {@link Ext.Layer}. Acceptable values for this
@@ -8108,33 +8471,6 @@ var win = new Ext.Window({
      * @cfg {Boolean} shim
      * <code>false</code> to disable the iframe shim in browsers which need one (defaults to <code>true</code>).
      * Note that this option only applies when <code>{@link #floating} = true</code>.
-     */
-    /**
-     * @cfg {String/Object} html
-     * An HTML fragment, or a {@link Ext.DomHelper DomHelper} specification to use as the panel's body
-     * content (defaults to ''). The HTML content is added by the Panel's {@link #afterRender} method,
-     * and so the document will not contain this HTML at the time the {@link #render} event is fired.
-     * This content is inserted into the body <i>before</i> any configured {@link #contentEl} is appended.
-     */
-    /**
-     * @cfg {String} contentEl
-     * <p>Optional. Specify an existing HTML element, or the <code>id</code> of an existing HTML element to use as this Panel's
-     * <code><b>{@link #body}</b></code> content.</p>
-     * <ul>
-     * <li><b>Description</b> :
-     * <div class="sub-desc">This config option is used to take an existing HTML element and place it in the body
-     * of a new panel (it simply moves the specified DOM element into the body element of the Panel
-     * <i>after the Panel is rendered</i> to use as the content (it is not going to be the actual panel itself).</div></li>
-     * <li><b>Notes</b> :
-     * <div class="sub-desc">The specified HTML element is appended to the Panel's {@link #body} Element by the
-     * Panel's <code>afterRender</code> method <i>after any configured {@link #html HTML} has
-     * been inserted</i>, and so the document will not contain this element at the time the
-     * {@link #render} event is fired.</div>
-     * <div class="sub-desc">The specified HTML element used will not participate in any <code><b>{@link Ext.Container#layout layout}</b></code>
-     * scheme that the Panel may use. It is just HTML. Layouts operate on child <code><b>{@link Ext.Container#items items}</b></code>.</div>
-     * <div class="sub-desc">Add either the <code>x-hidden</code> or the <code>x-hide-display</code> CSS class to
-     * prevent a brief flicker of the content before it is rendered to the panel.</div></li>
-     * </ul>
      */
     /**
      * @cfg {Object/Array} keys
@@ -8305,7 +8641,16 @@ new Ext.Panel({
      * footer, etc.).
      */
     preventBodyReset : false,
-    
+
+    /**
+     * @cfg {Number/String} padding
+     * A shortcut for setting a padding style on the body element. The value can either be
+     * a number to be applied to all sides, or a normal css string describing padding.
+     * Defaults to <tt>undefined</tt>.
+     *
+     */
+    padding: undefined,
+
     /** @cfg {String} resizeEvent
      * The event to listen to for resizing in layouts. Defaults to <tt>'bodyresize'</tt>.
      */
@@ -8424,19 +8769,18 @@ new Ext.Panel({
             this.baseCls = 'x-plain';
         }
 
+
+        this.toolbars = [];
         // shortcuts
         if(this.tbar){
             this.elements += ',tbar';
-            if(Ext.isObject(this.tbar)){
-                this.topToolbar = this.tbar;
-            }
+            this.topToolbar = this.createToolbar(this.tbar);
             delete this.tbar;
+
         }
         if(this.bbar){
             this.elements += ',bbar';
-            if(Ext.isObject(this.bbar)){
-                this.bottomToolbar = this.bbar;
-            }
+            this.bottomToolbar = this.createToolbar(this.bbar);
             delete this.bbar;
         }
 
@@ -8453,31 +8797,59 @@ new Ext.Panel({
         }
 
         if(this.buttons){
-            this.elements += ',footer';
-            var btns = this.buttons;
-            /**
-             * This Panel's Array of buttons as created from the <code>{@link #buttons}</code>
-             * config property. Read only.
-             * @type Array
-             * @property buttons
-             */
-            this.buttons = [];
-            Ext.each(btns, function(btn){
-                if(btn.render){ // button instance
-                    this.buttons.push(btn);
-                }else if(btn.xtype){
-                    this.buttons.push(Ext.create(btn, 'button'));
-                }else{
-                    this.addButton(btn);
-                }
-            }, this);
+            this.fbar = this.buttons;
+            delete this.buttons;
         }
         if(this.fbar){
-            this.elements += ',footer';
+            this.createFbar(this.fbar);
         }
         if(this.autoLoad){
             this.on('render', this.doAutoLoad, this, {delay:10});
         }
+    },
+
+    // private
+    createFbar : function(fbar){
+        var min = this.minButtonWidth;
+        this.elements += ',footer';
+        this.fbar = this.createToolbar(fbar, {
+            buttonAlign: this.buttonAlign,
+            toolbarCls: 'x-panel-fbar',
+            enableOverflow: false,
+            defaults: function(c){
+                return {
+                    minWidth: c.minWidth || min
+                };
+            }
+        });
+        //@compat addButton and buttons could possibly be removed
+        //@target 4.0
+        /**
+         * This Panel's Array of buttons as created from the <code>{@link #buttons}</code>
+         * config property. Read only.
+         * @type Array
+         * @property buttons
+         */
+        this.fbar.items.each(function(c){
+            c.minWidth = c.minWidth || this.minButtonWidth;
+        }, this);
+        this.buttons = this.fbar.items.items;
+    },
+
+    // private
+    createToolbar: function(tb, options){
+        var result;
+        // Convert array to proper toolbar config
+        if(Ext.isArray(tb)){
+            tb = {
+                items: tb
+            };
+        }
+        result = tb.events ? Ext.apply(tb, options) : this.createComponent(Ext.apply({}, tb, options), 'toolbar');
+        result.ownerCt = this;
+        result.bufferResize = false;
+        this.toolbars.push(result);
+        return result;
     },
 
     // private
@@ -8513,23 +8885,23 @@ new Ext.Panel({
             d = el.dom,
             bw,
             ts;
-            
-            
+
+
         if(this.collapsible && !this.hideCollapseTool){
             this.tools = this.tools ? this.tools.slice(0) : [];
             this.tools[this.collapseFirst?'unshift':'push']({
                 id: 'toggle',
                 handler : this.toggleCollapse,
                 scope: this
-            });   
+            });
         }
-        
+
         if(this.tools){
             ts = this.tools;
             this.elements += (this.header !== false) ? ',header' : '';
         }
         this.tools = {};
-            
+
         el.addClass(this.baseCls);
         if(d.firstChild){ // existing markup
             this.header = el.down('.'+this.headerCls);
@@ -8582,7 +8954,7 @@ new Ext.Panel({
              * b) The last element is reported incorrectly when using a loadmask
              */
             this.ft = Ext.get(this.bwrap.dom.lastChild);
-            this.mc = Ext.get(this.bwrap.dom.firstChild.firstChild.firstChild);
+            this.mc = Ext.get(mc);
         }else{
             this.createElement('header', d);
             this.createElement('bwrap', d);
@@ -8654,50 +9026,18 @@ new Ext.Panel({
         if(ts){
             this.addTool.apply(this, ts);
         }
-
-        if(this.buttons && this.buttons.length > 0){
-            this.fbar = new Ext.Toolbar({
-                items: this.buttons,
-                toolbarCls: 'x-panel-fbar'
-            });
-        }
-        this.toolbars = [];
         if(this.fbar){
-            this.fbar = Ext.create(this.fbar, 'toolbar');
-            this.fbar.enableOverflow = false;
-            if(this.fbar.items){
-                this.fbar.items.each(function(c){
-                    c.minWidth = c.minWidth || this.minButtonWidth;
-                }, this);
-            }
-            this.fbar.toolbarCls = 'x-panel-fbar';
-
-            var bct = this.footer.createChild({cls: 'x-panel-btns x-panel-btns-'+this.buttonAlign});
-            this.fbar.ownerCt = this;
-            this.fbar.render(bct);
-            bct.createChild({cls:'x-clear'});
-            this.toolbars.push(this.fbar);
+            this.footer.addClass('x-panel-btns');
+            this.fbar.render(this.footer);
+            this.footer.createChild({cls:'x-clear'});
         }
 
         if(this.tbar && this.topToolbar){
-            if(Ext.isArray(this.topToolbar)){
-                this.topToolbar = new Ext.Toolbar(this.topToolbar);
-            }else if(!this.topToolbar.events){
-                this.topToolbar = Ext.create(this.topToolbar, 'toolbar');
-            }
-            this.topToolbar.ownerCt = this;
             this.topToolbar.render(this.tbar);
-            this.toolbars.push(this.topToolbar);
         }
         if(this.bbar && this.bottomToolbar){
-            if(Ext.isArray(this.bottomToolbar)){
-                this.bottomToolbar = new Ext.Toolbar(this.bottomToolbar);
-            }else if(!this.bottomToolbar.events){
-                this.bottomToolbar = Ext.create(this.bottomToolbar, 'toolbar');
-            }
-            this.bottomToolbar.ownerCt = this;
             this.bottomToolbar.render(this.bbar);
-            this.toolbars.push(this.bottomToolbar);
+
         }
     },
 
@@ -8731,14 +9071,12 @@ new Ext.Panel({
     // private
     makeFloating : function(cfg){
         this.floating = true;
-        this.el = new Ext.Layer(
-            Ext.isObject(cfg) ? cfg : {
-                shadow: Ext.isDefined(this.shadow) ? this.shadow : 'sides',
-                shadowOffset: this.shadowOffset,
-                constrain:false,
-                shim: this.shim === false ? false : undefined
-            }, this.el
-        );
+        this.el = new Ext.Layer(Ext.apply({}, cfg, {
+            shadow: Ext.isDefined(this.shadow) ? this.shadow : 'sides',
+            shadowOffset: this.shadowOffset,
+            constrain:false,
+            shim: this.shim === false ? false : undefined
+        }), this.el);
     },
 
     /**
@@ -8763,27 +9101,23 @@ new Ext.Panel({
      * @param {String/Object} config A valid {@link Ext.Button} config.  A string will become the text for a default
      * button config, an object will be treated as a button config object.
      * @param {Function} handler The function to be called on button {@link Ext.Button#click}
-     * @param {Object} scope The scope to use for the button handler function
+     * @param {Object} scope The scope (<code>this</code> reference) in which the button handler function is executed. Defaults to the Button.
      * @return {Ext.Button} The button that was added
      */
     addButton : function(config, handler, scope){
-        var bc = {
-            handler: handler,
-            scope: scope,
-            minWidth: this.minButtonWidth,
-            hideParent:true
-        };
-        if(Ext.isString(config)){
-            bc.text = config;
-        }else{
-            Ext.apply(bc, config);
+        if(!this.fbar){
+            this.createFbar([]);
         }
-        var btn = new Ext.Button(bc);
-        if(!this.buttons){
-            this.buttons = [];
+        if(handler){
+            if(Ext.isString(config)){
+                config = {text: config};
+            }
+            config = Ext.apply({
+                handler: handler,
+                scope: scope
+            }, config)
         }
-        this.buttons.push(btn);
-        return btn;
+        return this.fbar.add(config);
     },
 
     // private
@@ -8850,13 +9184,14 @@ new Ext.Panel({
     syncHeight : function(){
         var h = this.toolbarHeight,
                 bd = this.body,
-                lsh = this.lastSize.height;
-                
+                lsh = this.lastSize.height,
+                sz;
+
         if(this.autoHeight || !Ext.isDefined(lsh) || lsh == 'auto'){
             return;
         }
-            
-           
+
+
         if(h != this.getToolbarHeight()){
             h = Math.max(0, this.adjustBodyHeight(lsh - this.getFrameHeight()));
             bd.setHeight(h);
@@ -8895,7 +9230,7 @@ new Ext.Panel({
         };
     },
 
-    // private
+    // private    
     afterRender : function(){
         if(this.floating && !this.hidden){
             this.el.show();
@@ -8903,35 +9238,13 @@ new Ext.Panel({
         if(this.title){
             this.setTitle(this.title);
         }
-        this.setAutoScroll();
-        if(this.html){
-            this.body.update(Ext.isObject(this.html) ?
-                             Ext.DomHelper.markup(this.html) :
-                             this.html);
-            delete this.html;
-        }
-        if(this.contentEl){
-            var ce = Ext.getDom(this.contentEl);
-            Ext.fly(ce).removeClass(['x-hidden', 'x-hide-display']);
-            this.body.dom.appendChild(ce);
-        }
         if(this.collapsed){
             this.collapsed = false;
             this.collapse(false);
         }
         Ext.Panel.superclass.afterRender.call(this); // do sizing calcs last
         this.initEvents();
-    },
-
-    // private
-    setAutoScroll : function(){
-        if(this.rendered && this.autoScroll){
-            var el = this.body || this.el;
-            if(el){
-                el.setOverflow('auto');
-            }
-        }
-    },
+    },    
 
     // private
     getKeyMap : function(){
@@ -8962,6 +9275,7 @@ new Ext.Panel({
                 this.syncHeight();
             }
         }
+
     },
 
     // private
@@ -9123,49 +9437,43 @@ new Ext.Panel({
     onResize : function(w, h){
         if(Ext.isDefined(w) || Ext.isDefined(h)){
             if(!this.collapsed){
+                // First, set the the Panel's body width.
+                // If we have auto-widthed it, get the resulting full offset width so we can size the Toolbars to match
+                // The Toolbars must not buffer this resize operation because we need to know their heights.
+
                 if(Ext.isNumber(w)){
-                    w = this.adjustBodyWidth(w - this.getFrameWidth());
-                    if(this.tbar){
-                        this.tbar.setWidth(w);
-                        if(this.topToolbar){
-                            this.topToolbar.setSize(w);
-                        }
-                    }
-                    if(this.bbar){
-                        this.bbar.setWidth(w);
-                        if(this.bottomToolbar){
-                            this.bottomToolbar.setSize(w);
-                        }
-                    }
-                    if(this.fbar){
-                        var f = this.fbar,
-                            fWidth = 1,
-                            strict = Ext.isStrict;
-                        if(this.buttonAlign == 'left'){
-                           fWidth = w - f.container.getFrameWidth('lr');
-                        }else{
-                            //center/right alignment off in webkit
-                            if(Ext.isIE || Ext.isWebKit){
-                                //center alignment ok on webkit.
-                                //right broken in both, center on IE
-                                if(!(this.buttonAlign == 'center' && Ext.isWebKit) && (!strict || (!Ext.isIE8 && strict))){
-                                    (function(){
-                                        f.setWidth(f.getEl().child('.x-toolbar-ct').getWidth());
-                                    }).defer(1);
-                                }else{
-                                    fWidth = 'auto';
-                                }
-                            }else{
-                                fWidth = 'auto';
-                            }
-                        }
-                        f.setWidth(fWidth);
-                    }
-                    this.body.setWidth(w);
-                }else if(w == 'auto'){
-                    this.body.setWidth(w);
+                    this.body.setWidth(w = this.adjustBodyWidth(w - this.getFrameWidth()));
+                } else if (w == 'auto') {
+                    w = this.body.setWidth('auto').dom.offsetWidth;
+                } else {
+                    w = this.body.dom.offsetWidth;
                 }
 
+                if(this.tbar){
+                    this.tbar.setWidth(w);
+                    if(this.topToolbar){
+                        this.topToolbar.setSize(w);
+                    }
+                }
+                if(this.bbar){
+                    this.bbar.setWidth(w);
+                    if(this.bottomToolbar){
+                        this.bottomToolbar.setSize(w);
+                        // The bbar does not move on resize without this.
+                        if (Ext.isIE) {
+                            this.bbar.setStyle('position', 'static');
+                            this.bbar.setStyle('position', '');
+                        }
+                    }
+                }
+                if(this.footer){
+                    this.footer.setWidth(w);
+                    if(this.fbar){
+                        this.fbar.setSize(Ext.isIE ? (w - this.footer.getFrameWidth('lr')) : 'auto');
+                    }
+                }
+
+                // At this point, the Toolbars must be layed out for getFrameHeight to find a result.
                 if(Ext.isNumber(h)){
                     h = Math.max(0, this.adjustBodyHeight(h - this.getFrameHeight()));
                     this.body.setHeight(h);
@@ -9183,20 +9491,20 @@ new Ext.Panel({
                     this.on('expand', function(){
                         delete this.queuedExpand;
                         this.onResize(this.queuedBodySize.width, this.queuedBodySize.height);
-                        this.doLayout();
                     }, this, {single:true});
                 }
             }
             this.onBodyResize(w, h);
         }
         this.syncShadow();
+        Ext.Panel.superclass.onResize.call(this);
     },
-    
+
     // private
     onBodyResize: function(w, h){
         this.fireEvent('bodyresize', this, w, h);
     },
-    
+
     // private
     getToolbarHeight: function(){
         var h = 0;
@@ -9288,6 +9596,11 @@ new Ext.Panel({
         return this.body;
     },
 
+    // private
+    getContentTarget : function(){
+        return this.body;
+    },
+
     /**
      * <p>Sets the title text for the panel and optionally the {@link #iconCls icon class}.</p>
      * <p>In order to be able to set the title, a header element must have been created
@@ -9345,38 +9658,44 @@ panel.load({
 
     // private
     beforeDestroy : function(){
+        Ext.Panel.superclass.beforeDestroy.call(this);
         if(this.header){
             this.header.removeAllListeners();
-            if(this.headerAsText){
-                Ext.Element.uncache(this.header.child('span'));
-            }
         }
-        Ext.Element.uncache(
-            this.ft,
-            this.mc,
-            this.header,
-            this.tbar,
-            this.bbar,
-            this.footer,
-            this.body,
-            this.bwrap
-        );
         if(this.tools){
             for(var k in this.tools){
                 Ext.destroy(this.tools[k]);
             }
         }
-        if(this.buttons){
-            for(var b in this.buttons){
-                Ext.destroy(this.buttons[b]);
+        if(Ext.isArray(this.buttons)){
+            while(this.buttons.length) {
+                Ext.destroy(this.buttons[0]);
             }
         }
         if(this.rendered){
-            Ext.destroy(this.toolbars);
+            Ext.destroy(
+                this.ft,
+                this.header,
+                this.footer,
+                this.toolbars,
+                this.tbar,
+                this.bbar,
+                this.body,
+                this.mc,
+                this.bwrap
+            );
+            if (this.fbar) {
+                Ext.destroy(
+                    this.fbar,
+                    this.fbar.el
+                );
+            }
         }else{
-            Ext.destroy(this.topToolbar, this.bottomToolbar);
+            Ext.destroy(
+                this.topToolbar,
+                this.bottomToolbar
+            );
         }
-        Ext.Panel.superclass.beforeDestroy.call(this);
     },
 
     // private
@@ -9496,6 +9815,11 @@ Ext.extend(Ext.Editor, Ext.Component, {
      * The position to align to (see {@link Ext.Element#alignTo} for more details, defaults to "c-c?").
      */
     alignment: "c-c?",
+    /**
+     * @cfg {Array} offsets
+     * The offsets to use when aligning (see {@link Ext.Element#alignTo} for more details. Defaults to <tt>[0, 0]</tt>.
+     */
+    offsets: [0, 0],
     /**
      * @cfg {Boolean/String} shadow "sides" for sides/bottom only, "frame" for 4-way shadow, and "drop"
      * for bottom-right shadow (defaults to "frame")
@@ -9652,9 +9976,9 @@ Ext.extend(Ext.Editor, Ext.Component, {
         }
         if(this.fireEvent("beforestartedit", this, this.boundEl, v) !== false){
             this.startValue = v;
+            this.field.reset();
             this.field.setValue(v);
-            this.doAutoSize();
-            this.el.alignTo(this.boundEl, this.alignment);
+            this.realign(true);
             this.editing = true;
             this.show();
         }
@@ -9701,9 +10025,13 @@ Ext.extend(Ext.Editor, Ext.Component, {
 
     /**
      * Realigns the editor to the bound field based on the current alignment config value.
+     * @param {Boolean} autoSize (optional) True to size the field to the dimensions of the bound element.
      */
-    realign : function(){
-        this.el.alignTo(this.boundEl, this.alignment);
+    realign : function(autoSize){
+        if(autoSize === true){
+            this.doAutoSize();
+        }
+        this.el.alignTo(this.boundEl, this.alignment, this.offsets);
     },
 
     /**
@@ -9808,11 +10136,14 @@ Ext.extend(Ext.Editor, Ext.Component, {
     },
 
     beforeDestroy : function(){
-        Ext.destroy(this.field);
-        this.field = null;
+        Ext.destroyMembers(this, 'field');
+        
+        delete this.parentEl;
+        delete this.boundEl;
     }
 });
-Ext.reg('editor', Ext.Editor);/**
+Ext.reg('editor', Ext.Editor);
+/**
  * @class Ext.ColorPalette
  * @extends Ext.Component
  * Simple color palette class for choosing colors.  The palette can be rendered to any container.<br />
@@ -9830,23 +10161,7 @@ cp.on('select', function(palette, selColor){
  * @param {Object} config The config object
  * @xtype colorpalette
  */
-Ext.ColorPalette = function(config){
-    Ext.ColorPalette.superclass.constructor.call(this, config);
-    this.addEvents(
-        /**
-	     * @event select
-	     * Fires when a color is selected
-	     * @param {ColorPalette} this
-	     * @param {String} color The 6-digit color hex code (without the # symbol)
-	     */
-        'select'
-    );
-
-    if(this.handler){
-        this.on('select', this.handler, this.scope, true);
-    }
-};
-Ext.extend(Ext.ColorPalette, Ext.Component, {
+Ext.ColorPalette = Ext.extend(Ext.Component, {
 	/**
 	 * @cfg {String} tpl An existing XTemplate instance to be used in place of the default template for rendering the component.
 	 */
@@ -9861,6 +10176,11 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
      * the hex codes are case-sensitive.
      */
     value : null,
+    /**
+     * @cfg {String} clickEvent
+     * The DOM event that will cause a color to be selected. This can be any valid event name (dblclick, contextmenu). 
+     * Defaults to <tt>'click'</tt>.
+     */
     clickEvent :'click',
     // private
     ctype : 'Ext.ColorPalette',
@@ -9909,18 +10229,36 @@ cp.colors = ['000000', '993300', '333300'];
      * The scope (<tt><b>this</b></tt> reference) in which the <code>{@link #handler}</code>
      * function will be called.  Defaults to this ColorPalette instance.
      */
+    
+    // private
+    initComponent : function(){
+        Ext.ColorPalette.superclass.initComponent.call(this);
+        this.addEvents(
+            /**
+             * @event select
+             * Fires when a color is selected
+             * @param {ColorPalette} this
+             * @param {String} color The 6-digit color hex code (without the # symbol)
+             */
+            'select'
+        );
+
+        if(this.handler){
+            this.on('select', this.handler, this.scope, true);
+        }    
+    },
 
     // private
     onRender : function(container, position){
+        this.autoEl = {
+            tag: 'div',
+            cls: this.itemCls
+        };
+        Ext.ColorPalette.superclass.onRender.call(this, container, position);
         var t = this.tpl || new Ext.XTemplate(
             '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
         );
-        var el = document.createElement('div');
-        el.id = this.getId();
-        el.className = this.itemCls;
-        t.overwrite(el, this.colors);
-        container.dom.insertBefore(el, position);
-        this.el = Ext.get(el);
+        t.overwrite(this.el, this.colors);
         this.mon(this.el, this.clickEvent, this.handleClick, this, {delegate: 'a'});
         if(this.clickEvent != 'click'){
         	this.mon(this.el, 'click', Ext.emptyFn, this, {delegate: 'a', preventDefault: true});
@@ -9971,7 +10309,10 @@ Ext.reg('colorpalette', Ext.ColorPalette);
 /**
  * @class Ext.DatePicker
  * @extends Ext.Component
- * Simple date picker class.
+ * <p>A popup date picker. This class is used by the {@link Ext.form.DateField DateField} class
+ * to allow browsing and selection of valid dates.</p>
+ * <p>All the string values documented below may be overridden by including an Ext locale file in
+ * your page.</p>
  * @constructor
  * Create a new DatePicker
  * @param {Object} config The config object
@@ -9980,61 +10321,63 @@ Ext.reg('colorpalette', Ext.ColorPalette);
 Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     /**
      * @cfg {String} todayText
-     * The text to display on the button that selects the current date (defaults to <tt>'Today'</tt>)
+     * The text to display on the button that selects the current date (defaults to <code>'Today'</code>)
      */
     todayText : 'Today',
     /**
      * @cfg {String} okText
-     * The text to display on the ok button (defaults to <tt>'&#160;OK&#160;'</tt> to give the user extra clicking room)
+     * The text to display on the ok button (defaults to <code>'&#160;OK&#160;'</code> to give the user extra clicking room)
      */
     okText : '&#160;OK&#160;',
     /**
      * @cfg {String} cancelText
-     * The text to display on the cancel button (defaults to <tt>'Cancel'</tt>)
+     * The text to display on the cancel button (defaults to <code>'Cancel'</code>)
      */
     cancelText : 'Cancel',
     /**
      * @cfg {Function} handler
      * Optional. A function that will handle the select event of this picker.
      * The handler is passed the following parameters:<div class="mdetail-params"><ul>
-     * <li><code>picker</code> : DatePicker<div class="sub-desc">The Ext.DatePicker.</div></li>
+     * <li><code>picker</code> : DatePicker<div class="sub-desc">This DatePicker.</div></li>
      * <li><code>date</code> : Date<div class="sub-desc">The selected date.</div></li>
      * </ul></div>
      */
     /**
      * @cfg {Object} scope
-     * The scope (<tt><b>this</b></tt> reference) in which the <code>{@link #handler}</code>
+     * The scope (<code><b>this</b></code> reference) in which the <code>{@link #handler}</code>
      * function will be called.  Defaults to this DatePicker instance.
      */ 
     /**
      * @cfg {String} todayTip
-     * The tooltip to display for the button that selects the current date (defaults to <tt>'{current date} (Spacebar)'</tt>)
+     * A string used to format the message for displaying in a tooltip over the button that
+     * selects the current date. Defaults to <code>'{0} (Spacebar)'</code> where
+     * the <code>{0}</code> token is replaced by today's date.
      */
     todayTip : '{0} (Spacebar)',
     /**
      * @cfg {String} minText
-     * The error text to display if the minDate validation fails (defaults to <tt>'This date is before the minimum date'</tt>)
+     * The error text to display if the minDate validation fails (defaults to <code>'This date is before the minimum date'</code>)
      */
     minText : 'This date is before the minimum date',
     /**
      * @cfg {String} maxText
-     * The error text to display if the maxDate validation fails (defaults to <tt>'This date is after the maximum date'</tt>)
+     * The error text to display if the maxDate validation fails (defaults to <code>'This date is after the maximum date'</code>)
      */
     maxText : 'This date is after the maximum date',
     /**
      * @cfg {String} format
      * The default date format string which can be overriden for localization support.  The format must be
-     * valid according to {@link Date#parseDate} (defaults to <tt>'m/d/y'</tt>).
+     * valid according to {@link Date#parseDate} (defaults to <code>'m/d/y'</code>).
      */
     format : 'm/d/y',
     /**
      * @cfg {String} disabledDaysText
-     * The tooltip to display when the date falls on a disabled day (defaults to <tt>'Disabled'</tt>)
+     * The tooltip to display when the date falls on a disabled day (defaults to <code>'Disabled'</code>)
      */
     disabledDaysText : 'Disabled',
     /**
      * @cfg {String} disabledDatesText
-     * The tooltip text to display when the date falls on a disabled date (defaults to <tt>'Disabled'</tt>)
+     * The tooltip text to display when the date falls on a disabled date (defaults to <code>'Disabled'</code>)
      */
     disabledDatesText : 'Disabled',
     /**
@@ -10049,17 +10392,17 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     dayNames : Date.dayNames,
     /**
      * @cfg {String} nextText
-     * The next month navigation button tooltip (defaults to <tt>'Next Month (Control+Right)'</tt>)
+     * The next month navigation button tooltip (defaults to <code>'Next Month (Control+Right)'</code>)
      */
     nextText : 'Next Month (Control+Right)',
     /**
      * @cfg {String} prevText
-     * The previous month navigation button tooltip (defaults to <tt>'Previous Month (Control+Left)'</tt>)
+     * The previous month navigation button tooltip (defaults to <code>'Previous Month (Control+Left)'</code>)
      */
     prevText : 'Previous Month (Control+Left)',
     /**
      * @cfg {String} monthYearText
-     * The header month selector tooltip (defaults to <tt>'Choose a month (Control+Up/Down to move years)'</tt>)
+     * The header month selector tooltip (defaults to <code>'Choose a month (Control+Up/Down to move years)'</code>)
      */
     monthYearText : 'Choose a month (Control+Up/Down to move years)',
     /**
@@ -10070,7 +10413,7 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     /**
      * @cfg {Boolean} showToday
      * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar
-     * that selects the current date (defaults to <tt>true</tt>).
+     * that selects the current date (defaults to <code>true</code>).
      */
     showToday : true,
     /**
@@ -10106,6 +10449,10 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
      * In order to support regular expressions, if you are using a date format that has '.' in it, you will have to
      * escape the dot when restricting dates. For example: ['03\\.08\\.03'].
      */
+    
+    // private
+    // Set by other components to stop the picker focus being updated when the value changes.
+    focusOnSelect: true,
 
     // private
     initComponent : function(){
@@ -10118,7 +10465,7 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
             /**
              * @event select
              * Fires when a date is selected
-             * @param {DatePicker} this
+             * @param {DatePicker} this DatePicker
              * @param {Date} date The selected date
              */
             'select'
@@ -10565,7 +10912,9 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     handleDateClick : function(e, t){
         e.stopEvent();
         if(!this.disabled && t.dateValue && !Ext.fly(t.parentNode).hasClass('x-date-disabled')){
+            this.cancelFocus = this.focusOnSelect === false;
             this.setValue(new Date(t.dateValue));
+            delete this.cancelFocus;
             this.fireEvent('select', this, this.value);
         }
     },
@@ -10590,12 +10939,12 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
 	                this.cells.each(function(c){
 	                   if(c.dom.firstChild.dateValue == t){
 	                       c.addClass('x-date-selected');
-	                       if(vis){
+	                       if(vis && !this.cancelFocus){
 	                           Ext.fly(c.dom.firstChild).focus(50);
 	                       }
 	                       return false;
 	                   }
-	                });
+	                }, this);
 	                return;
 	            }
 	        }
@@ -10722,16 +11071,18 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     // private
     beforeDestroy : function() {
         if(this.rendered){
-            this.keyNav.disable();
-            this.keyNav = null;
             Ext.destroy(
-                this.leftClickRpt,
-                this.rightClickRpt,
+                this.keyNav,
                 this.monthPicker,
                 this.eventEl,
                 this.mbtn,
+                this.nextRepeater,
+                this.prevRepeater,
+                this.cells.el,
                 this.todayBtn
             );
+            delete this.textNodes;
+            delete this.cells.elements;
         }
     }
 
@@ -10762,16 +11113,22 @@ Ext.LoadMask = function(el, config){
     this.el = Ext.get(el);
     Ext.apply(this, config);
     if(this.store){
-        this.store.on('beforeload', this.onBeforeLoad, this);
-        this.store.on('load', this.onLoad, this);
-        this.store.on('exception', this.onLoad, this);
+        this.store.on({
+            scope: this,
+            beforeload: this.onBeforeLoad,
+            load: this.onLoad,
+            exception: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, false);
     }else{
         var um = this.el.getUpdater();
         um.showLoadIndicator = false; // disable the default indicator
-        um.on('beforeupdate', this.onBeforeLoad, this);
-        um.on('update', this.onLoad, this);
-        um.on('failure', this.onLoad, this);
+        um.on({
+            scope: this,
+            beforeupdate: this.onBeforeLoad,
+            update: this.onLoad,
+            failure: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, true);
     }
 };
@@ -11015,12 +11372,13 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
             autoStart: 300
         });
         this.tracker.initEl(this.thumb);
-        this.on('beforedestroy', this.tracker.destroy, this.tracker);
     },
 
 	// private override
     onMouseDown : function(e){
-        if(this.disabled) {return;}
+        if(this.disabled){
+            return;
+        }
         if(this.clickToChange && e.target != this.thumb.dom){
             var local = this.innerEl.translatePoints(e.getXY());
             this.onClickChange(local);
@@ -11065,11 +11423,12 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
 
 	// private
     doSnap : function(value){
-        if(!this.increment || this.increment == 1 || !value) {
+        if(!(this.increment && value)){
             return value;
         }
-        var newValue = value, inc = this.increment;
-        var m = value % inc;
+        var newValue = value, 
+            inc = this.increment,
+            m = value % inc;
         if(m != 0){
             newValue -= m;
             if(m * 2 > inc){
@@ -11097,8 +11456,8 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
 
 	// private
     getRatio : function(){
-        var w = this.innerEl.getWidth();
-        var v = this.maxValue - this.minValue;
+        var w = this.innerEl.getWidth(),
+            v = this.maxValue - this.minValue;
         return v == 0 ? w : (w/v);
     },
 
@@ -11131,12 +11490,12 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
 	// private
     translateValue : function(v){
         var ratio = this.getRatio();
-        return (v * ratio)-(this.minValue * ratio)-this.halfThumb;
+        return (v * ratio) - (this.minValue * ratio) - this.halfThumb;
     },
 
 	reverseValue : function(pos){
         var ratio = this.getRatio();
-        return (pos+this.halfThumb+(this.minValue * ratio))/ratio;
+        return (pos + this.halfThumb + (this.minValue * ratio)) / ratio;
     },
 
 	// private
@@ -11212,7 +11571,7 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
         this.thumb.removeClass(this.disabledClass);
         if(Ext.isIE){
             this.innerEl.removeClass(this.disabledClass).dom.disabled = false;
-            if (this.thumbHolder){
+            if(this.thumbHolder){
                 this.thumbHolder.hide();
             }
             this.thumb.show();
@@ -11238,6 +11597,12 @@ Ext.Slider = Ext.extend(Ext.BoxComponent, {
 	 */
     getValue : function(){
         return this.value;
+    },
+    
+    // private
+    beforeDestroy : function(){
+        Ext.destroyMembers(this, 'endEl', 'innerEl', 'thumb', 'halfThumb', 'focusEl', 'tracker', 'thumbHolder');
+        Ext.Slider.superclass.beforeDestroy.call(this);
     }
 });
 Ext.reg('slider', Ext.Slider);
@@ -11250,8 +11615,8 @@ Ext.Slider.Vertical = {
     },
 
     getRatio : function(){
-        var h = this.innerEl.getHeight();
-        var v = this.maxValue - this.minValue;
+        var h = this.innerEl.getHeight(),
+            v = this.maxValue - this.minValue;
         return h/v;
     },
 
@@ -11264,15 +11629,15 @@ Ext.Slider.Vertical = {
     },
 
     onDrag: function(e){
-        var pos = this.innerEl.translatePoints(this.tracker.getXY());
-        var bottom = this.innerEl.getHeight()-pos.top;
+        var pos = this.innerEl.translatePoints(this.tracker.getXY()),
+            bottom = this.innerEl.getHeight()-pos.top;
         this.setValue(this.minValue + Ext.util.Format.round(bottom/this.getRatio(), this.decimalPrecision), false);
         this.fireEvent('drag', this, e);
     },
 
     onClickChange : function(local){
         if(local.left > this.clickRange[0] && local.left < this.clickRange[1]){
-            var bottom = this.innerEl.getHeight()-local.top;
+            var bottom = this.innerEl.getHeight() - local.top;
             this.setValue(this.minValue + Ext.util.Format.round(bottom/this.getRatio(), this.decimalPrecision), undefined, true);
         }
     }
@@ -11557,6 +11922,16 @@ myAction.on('complete', function(){
             this.hide();
         }
         return this;
+    },
+    
+    onDestroy: function(){
+        if(this.rendered){
+            if(this.textEl.isComposite){
+                this.textEl.clear();
+            }
+            Ext.destroyMembers(this, 'textEl', 'progressBar', 'textTopEl');
+        }
+        Ext.ProgressBar.superclass.onDestroy.call(this);
     }
 });
 Ext.reg('progress', Ext.ProgressBar);

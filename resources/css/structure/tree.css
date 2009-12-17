@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -31,7 +31,11 @@
 }
 
 .ext-ie .x-tree-node-indent img, .ext-ie .x-tree-node-icon, .ext-ie .x-tree-ec-icon {
-    vertical-align:middle !important;
+    vertical-align: middle !important;
+}
+
+.ext-strict .ext-ie8 .x-tree-node-indent img, .ext-strict .ext-ie8 .x-tree-node-icon, .ext-strict .ext-ie8 .x-tree-ec-icon {
+    vertical-align: top !important;
 }
 
 /* checkboxes */

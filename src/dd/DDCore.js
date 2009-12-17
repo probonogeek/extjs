@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -519,14 +519,15 @@ Ext.dd.DragDrop.prototype = {
      * @param {Boolean} inContent (optional) Constrain the draggable in the content box of the element (inside padding and borders)
      */
     constrainTo : function(constrainTo, pad, inContent){
-        if(typeof pad == "number"){
+        if(Ext.isNumber(pad)){
             pad = {left: pad, right:pad, top:pad, bottom:pad};
         }
         pad = pad || this.defaultPadding;
-        var b = Ext.get(this.getEl()).getBox();
-        var ce = Ext.get(constrainTo);
-        var s = ce.getScroll();
-        var c, cd = ce.dom;
+        var b = Ext.get(this.getEl()).getBox(),
+            ce = Ext.get(constrainTo),
+            s = ce.getScroll(),
+            c, 
+            cd = ce.dom;
         if(cd == document.body){
             c = { x: s.left, y: s.top, width: Ext.lib.Dom.getViewWidth(), height: Ext.lib.Dom.getViewHeight()};
         }else{
@@ -535,8 +536,8 @@ Ext.dd.DragDrop.prototype = {
         }
 
 
-        var topSpace = b.y - c.y;
-        var leftSpace = b.x - c.x;
+        var topSpace = b.y - c.y,
+            leftSpace = b.x - c.x;
 
         this.resetConstraints();
         this.setXConstraint(leftSpace - (pad.left||0), // left
@@ -1436,7 +1437,7 @@ Ext.dd.DragDropMgr = function() {
 
         /**
          * The number of milliseconds after the mousedown event to initiate the
-         * drag if we don't get a mouseup event. Default=1000
+         * drag if we don't get a mouseup event. Default=350
          * @property clickTimeThresh
          * @type int
          * @static
@@ -2986,6 +2987,169 @@ Ext.dd.DDTarget = function(id, sGroup, config) {
 
 // Ext.dd.DDTarget.prototype = new Ext.dd.DragDrop();
 Ext.extend(Ext.dd.DDTarget, Ext.dd.DragDrop, {
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    getDragEl: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    isValidHandleChild: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    startDrag: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    endDrag: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onDrag: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onDragDrop: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onDragEnter: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onDragOut: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onDragOver: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onInvalidDrop: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onMouseDown: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    onMouseUp: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setXConstraint: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setYConstraint: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    resetConstraints: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    clearConstraints: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    clearTicks: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setInitPosition: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setDragElId: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setHandleElId: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    setOuterHandleElId: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    addInvalidHandleClass: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    addInvalidHandleId: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    addInvalidHandleType: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    removeInvalidHandleClass: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    removeInvalidHandleId: Ext.emptyFn,
+    /**
+     * @hide
+     * Overridden and disabled. A DDTarget does not support being dragged.
+     * @method
+     */
+    removeInvalidHandleType: Ext.emptyFn,
+
     toString: function() {
         return ("DDTarget " + this.id);
     }

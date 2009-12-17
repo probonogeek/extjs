@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -229,17 +229,17 @@ function() {
 	     * If params are specified it uses POST, otherwise it uses GET.<br><br>
 	     * <b>Note:</b> Due to the asynchronous nature of remote server requests, the Element
 	     * will not have been fully updated when the function returns. To post-process the returned
-	     * data, use the callback option, or an <b><tt>update</tt></b> event handler.
+	     * data, use the callback option, or an <b><code>update</code></b> event handler.
 	     * @param {Object} options A config object containing any of the following options:<ul>
 	     * <li>url : <b>String/Function</b><p class="sub-desc">The URL to request or a function which
 	     * <i>returns</i> the URL (defaults to the value of {@link Ext.Ajax#url} if not specified).</p></li>
 	     * <li>method : <b>String</b><p class="sub-desc">The HTTP method to
-	     * use. Defaults to POST if the <tt>params</tt> argument is present, otherwise GET.</p></li>
+	     * use. Defaults to POST if the <code>params</code> argument is present, otherwise GET.</p></li>
 	     * <li>params : <b>String/Object/Function</b><p class="sub-desc">The
 	     * parameters to pass to the server (defaults to none). These may be specified as a url-encoded
 	     * string, or as an object containing properties which represent parameters,
 	     * or as a function, which returns such an object.</p></li>
-	     * <li>scripts : <b>Boolean</b><p class="sub-desc">If <tt>true</tt>
+	     * <li>scripts : <b>Boolean</b><p class="sub-desc">If <code>true</code>
 	     * any &lt;script&gt; tags embedded in the response text will be extracted
 	     * and executed (defaults to {@link Ext.Updater.defaults#loadScripts}). If this option is specified,
 	     * the callback will be called <i>after</i> the execution of the scripts.</p></li>
@@ -252,11 +252,11 @@ function() {
 	     * <li><b>options</b> : Object<p class="sub-desc">The config object passed to the update call.</p></li></ul>
 	     * </p></li>
 	     * <li>scope : <b>Object</b><p class="sub-desc">The scope in which
-	     * to execute the callback (The callback's <tt>this</tt> reference.) If the
-	     * <tt>params</tt> argument is a function, this scope is used for that function also.</p></li>
+	     * to execute the callback (The callback's <code>this</code> reference.) If the
+	     * <code>params</code> argument is a function, this scope is used for that function also.</p></li>
 	     * <li>discardUrl : <b>Boolean</b><p class="sub-desc">By default, the URL of this request becomes
 	     * the default URL for this Updater object, and will be subsequently used in {@link #refresh}
-	     * calls.  To bypass this behavior, pass <tt>discardUrl:true</tt> (defaults to false).</p></li>
+	     * calls.  To bypass this behavior, pass <code>discardUrl:true</code> (defaults to false).</p></li>
 	     * <li>timeout : <b>Number</b><p class="sub-desc">The number of seconds to wait for a response before
 	     * timing out (defaults to {@link Ext.Updater.defaults#timeout}).</p></li>
 	     * <li>text : <b>String</b><p class="sub-desc">The text to use as the innerHTML of the
@@ -332,14 +332,14 @@ function() {
 	    },	    	
 
 		/**
-	     * <p>Performs an async form post, updating this element with the response. If the form has the attribute
+	     * <p>Performs an asynchronous form post, updating this element with the response. If the form has the attribute
 	     * enctype="<a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>", it assumes it's a file upload.
 	     * Uses this.sslBlankUrl for SSL file uploads to prevent IE security warning.</p>
 	     * <p>File uploads are not performed using normal "Ajax" techniques, that is they are <b>not</b>
 	     * performed using XMLHttpRequests. Instead the form is submitted in the standard manner with the
-	     * DOM <tt>&lt;form></tt> element temporarily modified to have its
+	     * DOM <code>&lt;form></code> element temporarily modified to have its
 	     * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
-	     * to a dynamically generated, hidden <tt>&lt;iframe></tt> which is inserted into the document
+	     * to a dynamically generated, hidden <code>&lt;iframe></code> which is inserted into the document
 	     * but removed after the return data has been gathered.</p>
 	     * <p>Be aware that file upload packets, sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>
 	     * and some server technologies (notably JEE) may require some custom processing in order to
@@ -516,17 +516,17 @@ Ext.Updater.updateElement = function(el, url, params, options){
 
 /**
  * @class Ext.Updater.BasicRenderer
- * Default Content renderer. Updates the elements innerHTML with the responseText.
+ * <p>This class is a base class implementing a simple render method which updates an element using results from an Ajax request.</p>
+ * <p>The BasicRenderer updates the element's innerHTML with the responseText. To perform a custom render (i.e. XML or JSON processing),
+ * create an object with a conforming {@link #render} method and pass it to setRenderer on the Updater.</p>
  */
 Ext.Updater.BasicRenderer = function(){};
 
 Ext.Updater.BasicRenderer.prototype = {
     /**
-     * This is called when the transaction is completed and it's time to update the element - The BasicRenderer
-     * updates the elements innerHTML with the responseText - To perform a custom render (i.e. XML or JSON processing),
-     * create an object with a "render(el, response)" method and pass it to setRenderer on the Updater.
+     * This method is called when an Ajax response is received, and an Element needs updating.
      * @param {Ext.Element} el The element being rendered
-     * @param {Object} response The XMLHttpRequest object
+     * @param {Object} xhr The XMLHttpRequest object
      * @param {Updater} updateManager The calling update manager
      * @param {Function} callback A callback that will need to be called if loadScripts is true on the Updater
      */

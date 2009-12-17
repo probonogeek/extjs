@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -9,7 +9,7 @@
  * By salix 17 April 2007
  */
 
-Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Notiek iel�?de...</div>';
+Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Notiek ielāde...</div>';
 
 if(Ext.View){
    Ext.View.prototype.emptyText = "";
@@ -24,16 +24,16 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-   Ext.form.Field.prototype.invalidText = "Vērtība šaj�? lauk�? nav pareiza";
+   Ext.form.Field.prototype.invalidText = "Vērtība šajā laukā nav pareiza";
 }
 
 if(Ext.LoadMask){
-    Ext.LoadMask.prototype.msg = "Iel�?dē...";
+    Ext.LoadMask.prototype.msg = "Ielādē...";
 }
 
 Date.monthNames = [
-   "Janv�?ris",
-   "Febru�?ris",
+   "Janvāris",
+   "Februāris",
    "Marts",
    "Aprīlis",
    "Maijs",
@@ -60,7 +60,7 @@ if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
       ok     : "Labi",
       cancel : "Atcelt",
-      yes    : "J�?",
+      yes    : "Jā",
       no     : "Nē"
    };
 }
@@ -76,15 +76,15 @@ if(Ext.util.Format){
 if(Ext.DatePicker){
    Ext.apply(Ext.DatePicker.prototype, {
       todayText         : "Šodiena",
-      minText           : "Nor�?dītais datums ir maz�?ks par minim�?lo datumu",
-      maxText           : "Nor�?dītais datums ir liel�?ks par maksim�?lo datumu",
+      minText           : "Norādītais datums ir mazāks par minimālo datumu",
+      maxText           : "Norādītais datums ir lielāks par maksimālo datumu",
       disabledDaysText  : "",
       disabledDatesText : "",
       monthNames	: Date.monthNames,
       dayNames		: Date.dayNames,
-      nextText          : 'N�?kamais mēnesis (Control+pa labi)',
+      nextText          : 'Nākamais mēnesis (Control+pa labi)',
       prevText          : 'Iepriekšējais mēnesis (Control+pa kreisi)',
-      monthYearText     : 'Mēneša izvēle (Control+uz augšu/uz leju lai p�?rslēgtu gadus)',
+      monthYearText     : 'Mēneša izvēle (Control+uz augšu/uz leju lai pārslēgtu gadus)',
       todayTip          : "{0} (Tukšumzīme)",
       format            : "d.m.Y",
       startDay          : 1
@@ -95,21 +95,21 @@ if(Ext.PagingToolbar){
    Ext.apply(Ext.PagingToolbar.prototype, {
       beforePageText : "Lapa",
       afterPageText  : "no {0}",
-      firstText      : "Pirm�? lapa",
-      prevText       : "iepriekšēj�? lapa",
-      nextText       : "N�?kam�? lapa",
-      lastText       : "Pēdēj�? lapa",
-      refreshText    : "Atsvaidzin�?t",
-      displayMsg     : "R�?da no {0} līdz {1} ierakstiem, kop�? {2}",
-      emptyMsg       : 'Nav datu, ko par�?dīt'
+      firstText      : "Pirmā lapa",
+      prevText       : "iepriekšējā lapa",
+      nextText       : "Nākamā lapa",
+      lastText       : "Pēdējā lapa",
+      refreshText    : "Atsvaidzināt",
+      displayMsg     : "Rāda no {0} līdz {1} ierakstiem, kopā {2}",
+      emptyMsg       : 'Nav datu, ko parādīt'
    });
 }
 
 if(Ext.form.TextField){
    Ext.apply(Ext.form.TextField.prototype, {
-      minLengthText : "Minim�?lais garums šim laukam ir {0}",
-      maxLengthText : "Maksim�?lais garums šim laukam ir {0}",
-      blankText     : "Šis ir oblig�?ts lauks",
+      minLengthText : "Minimālais garums šim laukam ir {0}",
+      maxLengthText : "Maksimālais garums šim laukam ir {0}",
+      blankText     : "Šis ir obligāts lauks",
       regexText     : "",
       emptyText     : null
    });
@@ -117,8 +117,8 @@ if(Ext.form.TextField){
 
 if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
-      minText : "Minim�?lais garums šim laukam ir  {0}",
-      maxText : "Maksim�?lais garums šim laukam ir  {0}",
+      minText : "Minimālais garums šim laukam ir  {0}",
+      maxText : "Maksimālais garums šim laukam ir  {0}",
       nanText : "{0} nav pareizs skaitlis"
    });
 }
@@ -127,24 +127,24 @@ if(Ext.form.DateField){
    Ext.apply(Ext.form.DateField.prototype, {
       disabledDaysText  : "Atspējots",
       disabledDatesText : "Atspējots",
-      minText           : "Datumam šaj�? lauk�? j�?būt liel�?kam k�? {0}",
-      maxText           : "Datumam šaj�? lauk�? j�?būt maz�?kam k�? {0}",
-      invalidText       : "{0} nav pareizs datums - tam j�?būt š�?d�? form�?t�?: {1}",
+      minText           : "Datumam šajā laukā jābūt lielākam kā {0}",
+      maxText           : "Datumam šajā laukā jābūt mazākam kā {0}",
+      invalidText       : "{0} nav pareizs datums - tam jābūt šādā formātā: {1}",
       format            : "d.m.Y"
    });
 }
 
 if(Ext.form.ComboBox){
    Ext.apply(Ext.form.ComboBox.prototype, {
-      loadingText       : "Iel�?dē...",
+      loadingText       : "Ielādē...",
       valueNotFoundText : undefined
    });
 }
 
 if(Ext.form.VTypes){
    Ext.apply(Ext.form.VTypes, {
-      emailText    : 'Šaj�? lauk�? j�?ieraksta e-pasta adrese form�?t�? "lietot�?s@domēns.lv"',
-      urlText      : 'Šaj�? lauk�? j�?ieraksta URL form�?t�? "http:/'+'/www.domēns.lv"',
+      emailText    : 'Šajā laukā jāieraksta e-pasta adrese formātā "lietotās@domēns.lv"',
+      urlText      : 'Šajā laukā jāieraksta URL formātā "http:/'+'/www.domēns.lv"',
       alphaText    : 'Šis lauks drīkst saturēt tikai burtus un _ zīmi',
       alphanumText : 'Šis lauks drīkst saturēt tikai burtus, ciparus un _ zīmi'
    });
@@ -152,8 +152,8 @@ if(Ext.form.VTypes){
 
 if(Ext.grid.GridView){
    Ext.apply(Ext.grid.GridView.prototype, {
-      sortAscText  : "K�?rtot pieaugoš�? secīb�?",
-      sortDescText : "K�?rtot dilstoš�? secīb�?",
+      sortAscText  : "Kārtot pieaugošā secībā",
+      sortDescText : "Kārtot dilstošā secībā",
       lockText     : "Noslēgt kolonnu",
       unlockText   : "Atslēgt kolonnu",
       columnsText  : "Kolonnas"

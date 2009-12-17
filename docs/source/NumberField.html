@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.form.NumberField"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.form.NumberField"></div>/**
  * @class Ext.form.NumberField
  * @extends Ext.form.TextField
  * Numeric text field that provides automatic keystroke filtering and numeric validation.
@@ -116,9 +111,25 @@ Ext.form.NumberField = Ext.extend(Ext.form.TextField,  {
     },
 
     setValue : function(v){
-    	v = typeof v == 'number' ? v : parseFloat(String(v).replace(this.decimalSeparator, "."));
+    	v = Ext.isNumber(v) ? v : parseFloat(String(v).replace(this.decimalSeparator, "."));
         v = isNaN(v) ? '' : String(v).replace(".", this.decimalSeparator);
         return Ext.form.NumberField.superclass.setValue.call(this, v);
+    },
+    
+    <div id="method-Ext.form.NumberField-setMinValue"></div>/**
+     * Replaces any existing {@link #minValue} with the new value.
+     * @param {Number} value The minimum value
+     */
+    setMinValue : function(value){
+        this.minValue = Ext.num(value, Number.NEGATIVE_INFINITY);
+    },
+    
+    <div id="method-Ext.form.NumberField-setMaxValue"></div>/**
+     * Replaces any existing {@link #maxValue} with the new value.
+     * @param {Number} value The maximum value
+     */
+    setMaxValue : function(value){
+        this.maxValue = Ext.num(value, Number.MAX_VALUE);    
     },
 
     // private
@@ -143,6 +154,6 @@ Ext.form.NumberField = Ext.extend(Ext.form.TextField,  {
         }
     }
 });
-Ext.reg('numberfield', Ext.form.NumberField);</pre>
+Ext.reg('numberfield', Ext.form.NumberField);</pre>    
 </body>
 </html>

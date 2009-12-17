@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -24,15 +24,15 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
     /**
      * @cfg {Date/String} minValue
      * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string 
-     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to null).
+     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
-    minValue : null,
+    minValue : undefined,
     /**
      * @cfg {Date/String} maxValue
      * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string 
-     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to null).
+     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
-    maxValue : null,
+    maxValue : undefined,
     /**
      * @cfg {String} minText
      * The error text to display when the date in the cell is before minValue (defaults to
@@ -84,26 +84,67 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
 
     // private
     initComponent : function(){
-        if(typeof this.minValue == "string"){
-            this.minValue = this.parseDate(this.minValue);
+        if(Ext.isDefined(this.minValue)){
+            this.setMinValue(this.minValue, true);
         }
-        if(typeof this.maxValue == "string"){
-            this.maxValue = this.parseDate(this.maxValue);
+        if(Ext.isDefined(this.maxValue)){
+            this.setMaxValue(this.maxValue, true);
         }
-
         if(!this.store){
-            var min = this.parseDate(this.minValue) || new Date(this.initDate).clearTime();
-            var max = this.parseDate(this.maxValue) || new Date(this.initDate).clearTime().add('mi', (24 * 60) - 1);
-            var times = [];
-            while(min <= max){
-                times.push(min.dateFormat(this.format));
-                min = min.add('mi', this.increment);
-            }
-            this.store = times;
+            this.generateStore(true);
         }
         Ext.form.TimeField.superclass.initComponent.call(this);
     },
+    
+    /**
+     * Replaces any existing {@link #minValue} with the new time and refreshes the store.
+     * @param {Date/String} value The minimum time that can be selected
+     */
+    setMinValue: function(value, /* private */ initial){
+        this.setLimit(value, true, initial);
+        return this;
+    },
 
+    /**
+     * Replaces any existing {@link #maxValue} with the new time and refreshes the store.
+     * @param {Date/String} value The maximum time that can be selected
+     */
+    setMaxValue: function(value, /* private */ initial){
+        this.setLimit(value, false, initial);
+        return this;
+    },
+    
+    // private
+    generateStore: function(initial){
+        var min = this.minValue || new Date(this.initDate).clearTime(),
+            max = this.maxValue || new Date(this.initDate).clearTime().add('mi', (24 * 60) - 1),
+            times = [];
+            
+        while(min <= max){
+            times.push(min.dateFormat(this.format));
+            min = min.add('mi', this.increment);
+        }
+        this.bindStore(times, initial);
+    },
+
+    // private
+    setLimit: function(value, isMin, initial){
+        var d;
+        if(Ext.isString(value)){
+            d = this.parseDate(value);
+        }else if(Ext.isDate(value)){
+            d = value;
+        }
+        if(d){
+            var val = new Date(this.initDate).clearTime();
+            val.setHours(d.getHours(), d.getMinutes(), isMin ? 0 : 59, 0);
+            this[isMin ? 'minValue' : 'maxValue'] = val;
+            if(!initial){
+                this.generateStore();
+            }
+        }
+    },
+    
     // inherited docs
     getValue : function(){
         var v = Ext.form.TimeField.superclass.getValue.call(this);

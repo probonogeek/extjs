@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -64,20 +64,19 @@ Ext.ux.GroupTab = Ext.extend(Ext.Container, {
      */
     setActiveTab : function(item){
         item = this.getComponent(item);
-        if(!item || this.fireEvent('beforetabchange', this, item, this.activeTab) === false){
-            return;
+        if(!item){
+            return false;
         }
         if(!this.rendered){
             this.activeTab = item;
-            return;
+            return true;
         }
-        if(this.activeTab != item){
+        if(this.activeTab != item && this.fireEvent('beforetabchange', this, item, this.activeTab) !== false){
             if(this.activeTab && this.activeTab != this.mainItem){
                 var oldEl = this.getTabEl(this.activeTab);
                 if(oldEl){
                     Ext.fly(oldEl).removeClass('x-grouptabs-strip-active');
                 }
-                this.activeTab.fireEvent('deactivate', this.activeTab);
             }
             var el = this.getTabEl(item);
             Ext.fly(el).addClass('x-grouptabs-strip-active');
@@ -92,9 +91,10 @@ Ext.ux.GroupTab = Ext.extend(Ext.Container, {
                 this.scrollToTab(item, this.animScroll);
             }
 
-            item.fireEvent('activate', item);
             this.fireEvent('tabchange', this, item);
+            return true;
         }
+        return false;
     },
     
     getTabEl: function(item){

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -168,7 +168,7 @@
 	    if (s.length == 3) {
             return s;
         }
-        
+		
         Ext.each([hexRE, rgbRE, hex3RE], function(re, idx){
             base = (idx % 2 == 0) ? 16 : 10;
             c = re.exec(s);
@@ -199,15 +199,16 @@
         doMethod : function(attr, start, end) {
             var me = this,
             	val,
-            	floor = Math.floor;            
+            	floor = Math.floor,
+				i, len = start.length, v;            
 
             if(colorRE.test(attr)){
                 val = [];
-             
-	            Ext.each(start, function(v, i) {
-                    val[i] = superclass.doMethod.call(me, attr, v, end[i]);
-                });
-
+				
+				for(i=0; i<len; i++) {
+					v = start[i];
+					val[i] = superclass.doMethod.call(me, attr, v, end[i]);
+				}
                 val = 'rgb(' + floor(val[0]) + ',' + floor(val[1]) + ',' + floor(val[2]) + ')';
             }else{
                 val = superclass.doMethod.call(me, attr, start, end);
@@ -230,9 +231,9 @@
 
                 if(!isset(to) && isset(by)){
                     end = parseColor(by);
-                    Ext.each(start, function(item, i){
-                        end[i] = item + end[i];
-                    });
+					for(var i=0,len=start.length; i<len; i++) {
+						end[i] = start[i] + end[i];
+					}
                 }
                 ra.start = start;
                 ra.end = end;

@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.menu.Separator"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.menu.Separator"></div>/**
  * @class Ext.menu.Separator
  * @extends Ext.menu.BaseItem
  * Adds a separator bar to a menu, used to divide logical groups of menu items. Generally you will
@@ -20,11 +15,7 @@
  * @param {Object} config Configuration options
  * @xtype menuseparator
  */
-Ext.menu.Separator = function(config){
-    Ext.menu.Separator.superclass.constructor.call(this, config);
-};
-
-Ext.extend(Ext.menu.Separator, Ext.menu.BaseItem, {
+Ext.menu.Separator = Ext.extend(Ext.menu.BaseItem, {
     <div id="cfg-Ext.menu.Separator-itemCls"></div>/**
      * @cfg {String} itemCls The default CSS class to use for separators (defaults to "x-menu-sep")
      */
@@ -50,6 +41,6 @@ Ext.extend(Ext.menu.Separator, Ext.menu.BaseItem, {
         Ext.menu.Separator.superclass.onRender.apply(this, arguments);
     }
 });
-Ext.reg('menuseparator', Ext.menu.Separator);</pre>
+Ext.reg('menuseparator', Ext.menu.Separator);</pre>    
 </body>
 </html>

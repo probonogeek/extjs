@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -30,7 +30,9 @@ Ext.menu.MenuMgr = function(){
            c.each(function(m){
                m.hide();
            });
+           return true;
        }
+       return false;
    }
 
    // private
@@ -103,9 +105,10 @@ Ext.menu.MenuMgr = function(){
 
        /**
         * Hides all menus that are currently visible
+        * @return {Boolean} success True if any active menus were hidden.
         */
        hideAll : function(){
-            hideAll();  
+            return hideAll();  
        },
 
        // private
@@ -114,18 +117,12 @@ Ext.menu.MenuMgr = function(){
                init();
            }
            menus[menu.id] = menu;
-           menu.on("beforehide", onBeforeHide);
-           menu.on("hide", onHide);
-           menu.on("beforeshow", onBeforeShow);
-           menu.on("show", onShow);
-           var g = menu.group;
-           if(g && menu.events["checkchange"]){
-               if(!groups[g]){
-                   groups[g] = [];
-               }
-               groups[g].push(menu);
-               menu.on("checkchange", onCheck);
-           }
+           menu.on({
+               beforehide: onBeforeHide,
+               hide: onHide,
+               beforeshow: onBeforeShow,
+               show: onShow
+           });
        },
 
         /**
@@ -156,11 +153,6 @@ Ext.menu.MenuMgr = function(){
            menu.un("hide", onHide);
            menu.un("beforeshow", onBeforeShow);
            menu.un("show", onShow);
-           var g = menu.group;
-           if(g && menu.events["checkchange"]){
-               groups[g].remove(menu);
-               menu.un("checkchange", onCheck);
-           }
        },
 
        // private

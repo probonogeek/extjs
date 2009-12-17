@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -94,31 +94,41 @@ Ext.tree.TreeEventModel.prototype = {
     },
 
     delegateClick : function(e, t){
-        if(!this.beforeEvent(e)){
-            return;
-        }
-
-        if(e.getTarget('input[type=checkbox]', 1)){
-            this.onCheckboxClick(e, this.getNode(e));
-        }
-        else if(e.getTarget('.x-tree-ec-icon', 1)){
-            this.onIconClick(e, this.getNode(e));
-        }
-        else if(this.getNodeTarget(e)){
-            this.onNodeClick(e, this.getNode(e));
+        if(this.beforeEvent(e)){
+            if(e.getTarget('input[type=checkbox]', 1)){
+                this.onCheckboxClick(e, this.getNode(e));
+            }else if(e.getTarget('.x-tree-ec-icon', 1)){
+                this.onIconClick(e, this.getNode(e));
+            }else if(this.getNodeTarget(e)){
+                this.onNodeClick(e, this.getNode(e));
+            }else{
+                this.onContainerEvent(e, 'click');
+            }
         }
     },
 
     delegateDblClick : function(e, t){
-        if(this.beforeEvent(e) && this.getNodeTarget(e)){
-            this.onNodeDblClick(e, this.getNode(e));
+        if(this.beforeEvent(e)){
+            if(this.getNodeTarget(e)){
+                this.onNodeDblClick(e, this.getNode(e));
+            }else{
+                this.onContainerEvent(e, 'dblclick');    
+            }
         }
     },
 
     delegateContextMenu : function(e, t){
-        if(this.beforeEvent(e) && this.getNodeTarget(e)){
-            this.onNodeContextMenu(e, this.getNode(e));
+        if(this.beforeEvent(e)){
+            if(this.getNodeTarget(e)){
+                this.onNodeContextMenu(e, this.getNode(e));
+            }else{
+                this.onContainerEvent(e, 'contextmenu');    
+            }
         }
+    },
+    
+    onContainerEvent: function(e, type){
+        this.tree.fireEvent('container' + type, this.tree, e); 
     },
 
     onNodeClick : function(e, node){

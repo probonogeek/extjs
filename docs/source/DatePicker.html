@@ -1,20 +1,18 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.DatePicker"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.DatePicker"></div>/**
  * @class Ext.DatePicker
  * @extends Ext.Component
- * Simple date picker class.
+ * <p>A popup date picker. This class is used by the {@link Ext.form.DateField DateField} class
+ * to allow browsing and selection of valid dates.</p>
+ * <p>All the string values documented below may be overridden by including an Ext locale file in
+ * your page.</p>
  * @constructor
  * Create a new DatePicker
  * @param {Object} config The config object
@@ -23,61 +21,63 @@
 Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     <div id="cfg-Ext.DatePicker-todayText"></div>/**
      * @cfg {String} todayText
-     * The text to display on the button that selects the current date (defaults to <tt>'Today'</tt>)
+     * The text to display on the button that selects the current date (defaults to <code>'Today'</code>)
      */
     todayText : 'Today',
     <div id="cfg-Ext.DatePicker-okText"></div>/**
      * @cfg {String} okText
-     * The text to display on the ok button (defaults to <tt>'&#160;OK&#160;'</tt> to give the user extra clicking room)
+     * The text to display on the ok button (defaults to <code>'&#160;OK&#160;'</code> to give the user extra clicking room)
      */
     okText : '&#160;OK&#160;',
     <div id="cfg-Ext.DatePicker-cancelText"></div>/**
      * @cfg {String} cancelText
-     * The text to display on the cancel button (defaults to <tt>'Cancel'</tt>)
+     * The text to display on the cancel button (defaults to <code>'Cancel'</code>)
      */
     cancelText : 'Cancel',
     <div id="cfg-Ext.DatePicker-handler"></div>/**
      * @cfg {Function} handler
      * Optional. A function that will handle the select event of this picker.
      * The handler is passed the following parameters:<div class="mdetail-params"><ul>
-     * <li><code>picker</code> : DatePicker<div class="sub-desc">The Ext.DatePicker.</div></li>
+     * <li><code>picker</code> : DatePicker<div class="sub-desc">This DatePicker.</div></li>
      * <li><code>date</code> : Date<div class="sub-desc">The selected date.</div></li>
      * </ul></div>
      */
     <div id="cfg-Ext.DatePicker-scope"></div>/**
      * @cfg {Object} scope
-     * The scope (<tt><b>this</b></tt> reference) in which the <code>{@link #handler}</code>
+     * The scope (<code><b>this</b></code> reference) in which the <code>{@link #handler}</code>
      * function will be called.  Defaults to this DatePicker instance.
      */ 
     <div id="cfg-Ext.DatePicker-todayTip"></div>/**
      * @cfg {String} todayTip
-     * The tooltip to display for the button that selects the current date (defaults to <tt>'{current date} (Spacebar)'</tt>)
+     * A string used to format the message for displaying in a tooltip over the button that
+     * selects the current date. Defaults to <code>'{0} (Spacebar)'</code> where
+     * the <code>{0}</code> token is replaced by today's date.
      */
     todayTip : '{0} (Spacebar)',
     <div id="cfg-Ext.DatePicker-minText"></div>/**
      * @cfg {String} minText
-     * The error text to display if the minDate validation fails (defaults to <tt>'This date is before the minimum date'</tt>)
+     * The error text to display if the minDate validation fails (defaults to <code>'This date is before the minimum date'</code>)
      */
     minText : 'This date is before the minimum date',
     <div id="cfg-Ext.DatePicker-maxText"></div>/**
      * @cfg {String} maxText
-     * The error text to display if the maxDate validation fails (defaults to <tt>'This date is after the maximum date'</tt>)
+     * The error text to display if the maxDate validation fails (defaults to <code>'This date is after the maximum date'</code>)
      */
     maxText : 'This date is after the maximum date',
     <div id="cfg-Ext.DatePicker-format"></div>/**
      * @cfg {String} format
      * The default date format string which can be overriden for localization support.  The format must be
-     * valid according to {@link Date#parseDate} (defaults to <tt>'m/d/y'</tt>).
+     * valid according to {@link Date#parseDate} (defaults to <code>'m/d/y'</code>).
      */
     format : 'm/d/y',
     <div id="cfg-Ext.DatePicker-disabledDaysText"></div>/**
      * @cfg {String} disabledDaysText
-     * The tooltip to display when the date falls on a disabled day (defaults to <tt>'Disabled'</tt>)
+     * The tooltip to display when the date falls on a disabled day (defaults to <code>'Disabled'</code>)
      */
     disabledDaysText : 'Disabled',
     <div id="cfg-Ext.DatePicker-disabledDatesText"></div>/**
      * @cfg {String} disabledDatesText
-     * The tooltip text to display when the date falls on a disabled date (defaults to <tt>'Disabled'</tt>)
+     * The tooltip text to display when the date falls on a disabled date (defaults to <code>'Disabled'</code>)
      */
     disabledDatesText : 'Disabled',
     <div id="cfg-Ext.DatePicker-monthNames"></div>/**
@@ -92,17 +92,17 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     dayNames : Date.dayNames,
     <div id="cfg-Ext.DatePicker-nextText"></div>/**
      * @cfg {String} nextText
-     * The next month navigation button tooltip (defaults to <tt>'Next Month (Control+Right)'</tt>)
+     * The next month navigation button tooltip (defaults to <code>'Next Month (Control+Right)'</code>)
      */
     nextText : 'Next Month (Control+Right)',
     <div id="cfg-Ext.DatePicker-prevText"></div>/**
      * @cfg {String} prevText
-     * The previous month navigation button tooltip (defaults to <tt>'Previous Month (Control+Left)'</tt>)
+     * The previous month navigation button tooltip (defaults to <code>'Previous Month (Control+Left)'</code>)
      */
     prevText : 'Previous Month (Control+Left)',
     <div id="cfg-Ext.DatePicker-monthYearText"></div>/**
      * @cfg {String} monthYearText
-     * The header month selector tooltip (defaults to <tt>'Choose a month (Control+Up/Down to move years)'</tt>)
+     * The header month selector tooltip (defaults to <code>'Choose a month (Control+Up/Down to move years)'</code>)
      */
     monthYearText : 'Choose a month (Control+Up/Down to move years)',
     <div id="cfg-Ext.DatePicker-startDay"></div>/**
@@ -113,7 +113,7 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     <div id="cfg-Ext.DatePicker-showToday"></div>/**
      * @cfg {Boolean} showToday
      * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar
-     * that selects the current date (defaults to <tt>true</tt>).
+     * that selects the current date (defaults to <code>true</code>).
      */
     showToday : true,
     <div id="cfg-Ext.DatePicker-minDate"></div>/**
@@ -149,6 +149,10 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
      * In order to support regular expressions, if you are using a date format that has '.' in it, you will have to
      * escape the dot when restricting dates. For example: ['03\\.08\\.03'].
      */
+    
+    // private
+    // Set by other components to stop the picker focus being updated when the value changes.
+    focusOnSelect: true,
 
     // private
     initComponent : function(){
@@ -161,7 +165,7 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
             <div id="event-Ext.DatePicker-select"></div>/**
              * @event select
              * Fires when a date is selected
-             * @param {DatePicker} this
+             * @param {DatePicker} this DatePicker
              * @param {Date} date The selected date
              */
             'select'
@@ -608,7 +612,9 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     handleDateClick : function(e, t){
         e.stopEvent();
         if(!this.disabled && t.dateValue && !Ext.fly(t.parentNode).hasClass('x-date-disabled')){
+            this.cancelFocus = this.focusOnSelect === false;
             this.setValue(new Date(t.dateValue));
+            delete this.cancelFocus;
             this.fireEvent('select', this, this.value);
         }
     },
@@ -633,12 +639,12 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
 	                this.cells.each(function(c){
 	                   if(c.dom.firstChild.dateValue == t){
 	                       c.addClass('x-date-selected');
-	                       if(vis){
+	                       if(vis && !this.cancelFocus){
 	                           Ext.fly(c.dom.firstChild).focus(50);
 	                       }
 	                       return false;
 	                   }
-	                });
+	                }, this);
 	                return;
 	            }
 	        }
@@ -765,16 +771,18 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
     // private
     beforeDestroy : function() {
         if(this.rendered){
-            this.keyNav.disable();
-            this.keyNav = null;
             Ext.destroy(
-                this.leftClickRpt,
-                this.rightClickRpt,
+                this.keyNav,
                 this.monthPicker,
                 this.eventEl,
                 this.mbtn,
+                this.nextRepeater,
+                this.prevRepeater,
+                this.cells.el,
                 this.todayBtn
             );
+            delete this.textNodes;
+            delete this.cells.elements;
         }
     }
 
@@ -784,6 +792,6 @@ Ext.DatePicker = Ext.extend(Ext.BoxComponent, {
 });
 
 Ext.reg('datepicker', Ext.DatePicker);
-</pre>
+</pre>    
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,32 +18,37 @@ Ext.apply(Ext.Element.prototype, function() {
 	     * @param {Mixed/Object/Array} el The id, element to insert or a DomHelper config to create and insert *or* an array of any of those.
 	     * @param {String} where (optional) 'before' or 'after' defaults to before
 	     * @param {Boolean} returnDom (optional) True to return the raw DOM element instead of Ext.Element
-	     * @return {Ext.Element} the inserted Element
+	     * @return {Ext.Element} The inserted Element. If an array is passed, the last inserted element is returned.
 	     */
 	    insertSibling: function(el, where, returnDom){
 	        var me = this,
-	        	rt;
+	        	rt,
+                isAfter = (where || 'before').toLowerCase() == 'after',
+                insertEl;
 	        	
-	        if(Ext.isArray(el)){            
+	        if(Ext.isArray(el)){
+                insertEl = me;
 	            Ext.each(el, function(e) {
-		            rt = me.insertSibling(e, where, returnDom);
+		            rt = Ext.fly(insertEl, '_internal').insertSibling(e, where, returnDom);
+                    if(isAfter){
+                        insertEl = rt;
+                    }
 	            });
 	            return rt;
 	        }
 	                
-	        where = (where || 'before').toLowerCase();
 	        el = el || {};
 	       	
             if(el.nodeType || el.dom){
-                rt = me.dom.parentNode.insertBefore(GETDOM(el), where == 'before' ? me.dom : me.dom.nextSibling);
+                rt = me.dom.parentNode.insertBefore(GETDOM(el), isAfter ? me.dom.nextSibling : me.dom);
                 if (!returnDom) {
                     rt = GET(rt);
                 }
             }else{
-                if (where == 'after' && !me.dom.nextSibling) {
+                if (isAfter && !me.dom.nextSibling) {
                     rt = DH.append(me.dom.parentNode, el, !returnDom);
                 } else {                    
-                    rt = DH[where == 'after' ? 'insertAfter' : 'insertBefore'](me.dom, el, !returnDom);
+                    rt = DH[isAfter ? 'insertAfter' : 'insertBefore'](me.dom, el, !returnDom);
                 }
             }
 	        return rt;

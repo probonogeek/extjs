@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,14 +17,16 @@ Ext.Element.addMethods({
      */
     scrollTo : function(side, value, animate){
         var top = /top/i.test(side), //check if we're scrolling top or left
-            prop = 'scroll' + (top ? 'Left' : 'Top'), // if scrolling top, we need to grab scrollLeft, if left, scrollTop
-            me = this,
-            dom = me.dom;
+        	me = this,
+        	dom = me.dom,
+            prop;
         if (!animate || !me.anim) {
+            prop = 'scroll' + (top ? 'Top' : 'Left'), // just setting the value, so grab the direction
             dom[prop] = value;
-        } else {
+        }else{
+            prop = 'scroll' + (top ? 'Left' : 'Top'), // if scrolling top, we need to grab scrollLeft, if left, scrollTop
             me.anim({scroll: {to: top ? [dom[prop], value] : [value, dom[prop]]}},
-                     me.preanim(arguments, 2), 'scroll');
+            		 me.preanim(arguments, 2), 'scroll');
         }
         return me;
     },

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,46 +17,46 @@
  * @constructor
  * @param {Object} config The object containing the configuration of this model.
  */
-Ext.grid.CellSelectionModel = function(config){
-    Ext.apply(this, config);
+Ext.grid.CellSelectionModel = Ext.extend(Ext.grid.AbstractSelectionModel,  {
+    
+    constructor : function(config){
+        Ext.apply(this, config);
 
-    this.selection = null;
-
-    this.addEvents(
-        /**
-	     * @event beforecellselect
-	     * Fires before a cell is selected, return false to cancel the selection.
-	     * @param {SelectionModel} this
-	     * @param {Number} rowIndex The selected row index
-	     * @param {Number} colIndex The selected cell index
-	     */
-	    "beforecellselect",
-        /**
-	     * @event cellselect
-	     * Fires when a cell is selected.
-	     * @param {SelectionModel} this
-	     * @param {Number} rowIndex The selected row index
-	     * @param {Number} colIndex The selected cell index
-	     */
-	    "cellselect",
-        /**
-	     * @event selectionchange
-	     * Fires when the active selection changes.
-	     * @param {SelectionModel} this
-	     * @param {Object} selection null for no selection or an object with two properties
-         * <div class="mdetail-params"><ul>
-         * <li><b>cell</b> : see {@link #getSelectedCell} 
-         * <li><b>record</b> : Ext.data.record<p class="sub-desc">The {@link Ext.data.Record Record}
-         * which provides the data for the row containing the selection</p></li>
-         * </ul></div>
-	     */
-	    "selectionchange"
-    );
-
-    Ext.grid.CellSelectionModel.superclass.constructor.call(this);
-};
-
-Ext.extend(Ext.grid.CellSelectionModel, Ext.grid.AbstractSelectionModel,  {
+	    this.selection = null;
+	
+	    this.addEvents(
+	        /**
+	         * @event beforecellselect
+	         * Fires before a cell is selected, return false to cancel the selection.
+	         * @param {SelectionModel} this
+	         * @param {Number} rowIndex The selected row index
+	         * @param {Number} colIndex The selected cell index
+	         */
+	        "beforecellselect",
+	        /**
+	         * @event cellselect
+	         * Fires when a cell is selected.
+	         * @param {SelectionModel} this
+	         * @param {Number} rowIndex The selected row index
+	         * @param {Number} colIndex The selected cell index
+	         */
+	        "cellselect",
+	        /**
+	         * @event selectionchange
+	         * Fires when the active selection changes.
+	         * @param {SelectionModel} this
+	         * @param {Object} selection null for no selection or an object with two properties
+	         * <div class="mdetail-params"><ul>
+	         * <li><b>cell</b> : see {@link #getSelectedCell} 
+	         * <li><b>record</b> : Ext.data.record<p class="sub-desc">The {@link Ext.data.Record Record}
+	         * which provides the data for the row containing the selection</p></li>
+	         * </ul></div>
+	         */
+	        "selectionchange"
+	    );
+	
+	    Ext.grid.CellSelectionModel.superclass.constructor.call(this);
+    },
 
     /** @ignore */
     initEvents : function(){

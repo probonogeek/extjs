@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.tree.TreeFilter"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.tree.TreeFilter"></div>/**
  * @class Ext.tree.TreeFilter
  * Note this class is experimental and doesn't update the indent (lines) or expand collapse icons of the nodes
  * @param {TreePanel} tree
@@ -65,7 +60,7 @@ Ext.tree.TreeFilter.prototype = {
      * node in the tree (or from the startNode). If the function returns true, the node is kept
      * otherwise it is filtered. If a node is filtered, its children are also filtered.
      * @param {Function} fn The filter function
-     * @param {Object} scope (optional) The scope of the function (defaults to the current node)
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Node.
      */
     filterBy : function(fn, scope, startNode){
         startNode = startNode || this.tree.root;
@@ -119,6 +114,6 @@ Ext.tree.TreeFilter.prototype = {
         this.filtered = {};
     }
 };
-</pre>
+</pre>    
 </body>
 </html>

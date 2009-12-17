@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -219,6 +219,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
             allowNegative: false,
             enableKeyEvents: true,
             selectOnFocus: true,
+            submitValue: false,
             listeners: {
                 scope: this,
                 keydown: this.onPagingKeyDown,
@@ -411,12 +412,6 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
                 }
             }
         }
-    },
-
-    // private
-    getParams : function(){
-        //retain backwards compat, allow params on the toolbar itself, if they exist.
-        return this.paramNames || this.store.paramNames;
     },
 
     // private

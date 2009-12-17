@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -39,7 +39,7 @@ Date.monthNames = [
   "Január",
   "Február",
   "Március",
-  "�?prilis",
+  "Április",
   "Május",
   "Június",
   "Július",
@@ -58,7 +58,7 @@ Date.monthNumbers = {
   'Jan' : 0,
   'Feb' : 1,
   'Már' : 2,
-  '�?pr' : 3,
+  'Ápr' : 3,
   'Máj' : 4,
   'Jún' : 5,
   'Júl' : 6,
@@ -290,7 +290,7 @@ if(Ext.grid.PropertyColumnModel){
 
 if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
   Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
-    splitTip            : "�?tméretezés húzásra.",
-    collapsibleSplitTip : "�?tméretezés húzásra. Eltüntetés duplaklikk."
+    splitTip            : "Átméretezés húzásra.",
+    collapsibleSplitTip : "Átméretezés húzásra. Eltüntetés duplaklikk."
   });
 }

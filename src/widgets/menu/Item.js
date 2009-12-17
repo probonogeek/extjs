@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -15,13 +15,7 @@
  * @param {Object} config Configuration options
  * @xtype menuitem
  */
-Ext.menu.Item = function(config){
-    Ext.menu.Item.superclass.constructor.call(this, config);
-    if(this.menu){
-        this.menu = Ext.menu.MenuMgr.get(this.menu);
-    }
-};
-Ext.extend(Ext.menu.Item, Ext.menu.BaseItem, {
+Ext.menu.Item = Ext.extend(Ext.menu.BaseItem, {
     /**
      * @property menu
      * @type Ext.menu.Menu
@@ -66,6 +60,14 @@ Ext.extend(Ext.menu.Item, Ext.menu.BaseItem, {
     // private
     ctype: 'Ext.menu.Item',
 
+    initComponent : function(){
+        Ext.menu.Item.superclass.initComponent.call(this);
+        if(this.menu){
+            this.menu = Ext.menu.MenuMgr.get(this.menu);
+            this.menu.ownerCt = this;
+        }
+    },
+
     // private
     onRender : function(container, position){
         if (!this.itemTpl) {
@@ -84,6 +86,9 @@ Ext.extend(Ext.menu.Item, Ext.menu.BaseItem, {
         this.el = position ? this.itemTpl.insertBefore(position, a, true) : this.itemTpl.append(container, a, true);
         this.iconEl = this.el.child('img.x-menu-item-icon');
         this.textEl = this.el.child('.x-menu-item-text');
+        if(!this.href) { // if no link defined, prevent the default anchor event
+            this.mon(this.el, 'click', Ext.emptyFn, null, { preventDefault: true });
+        }
         Ext.menu.Item.superclass.onRender.call(this, container, position);
     },
 
@@ -122,10 +127,11 @@ Ext.extend(Ext.menu.Item, Ext.menu.BaseItem, {
             this.iconEl.replaceClass(oldCls, this.iconCls);
         }
     },
-    
+
     //private
     beforeDestroy: function(){
         if (this.menu){
+            delete this.menu.ownerCt;
             this.menu.destroy();
         }
         Ext.menu.Item.superclass.beforeDestroy.call(this);

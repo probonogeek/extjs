@@ -37,6 +37,7 @@ Ext.ux.TabCloseMenu = function(){
             }
         });
         items.get(tabs.id + '-close-others').setDisabled(disableOthers);
+	e.stopEvent();
         menu.showAt(e.getPoint());
     }
 };

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,14 +8,31 @@
  * @class Ext.data.XmlWriter
  * @extends Ext.data.DataWriter
  * DataWriter extension for writing an array or single {@link Ext.data.Record} object(s) in preparation for executing a remote CRUD action via XML.
+ * XmlWriter uses an instance of {@link Ext.XTemplate} for maximum flexibility in defining your own custom XML schema if the default schema is not appropriate for your needs.
+ * See the {@link #tpl} configuration-property.
  */
 Ext.data.XmlWriter = function(params) {
     Ext.data.XmlWriter.superclass.constructor.apply(this, arguments);
-    this.tpl = new Ext.XTemplate(this.tpl).compile();
+    // compile the XTemplate for rendering XML documents.
+    this.tpl = (typeof(this.tpl) === 'string') ? new Ext.XTemplate(this.tpl).compile() : this.tpl.compile();
 };
 Ext.extend(Ext.data.XmlWriter, Ext.data.DataWriter, {
     /**
-     * @cfg {String} root [records] The name of the root element when writing <b>multiple</b> records to the server.  Each
+     * @cfg {String} documentRoot [xrequest] (Optional) The name of the XML document root-node.  <b>Note:</b>
+     * this parameter is required </b>only when</b> sending extra {@link Ext.data.Store#baseParams baseParams} to the server
+     * during a write-request -- if no baseParams are set, the {@link Ext.data.XmlReader#record} meta-property can
+     * suffice as the XML document root-node for write-actions involving just a <b>single record</b>.  For requests
+     * involving <b>multiple</b> records and <b>NO</b> baseParams, the {@link Ext.data.XmlWriter#root} property can
+     * act as the XML document root.
+     */
+    documentRoot: 'xrequest',
+    /**
+     * @cfg {Boolean} forceDocumentRoot [false] Set to <tt>true</tt> to force XML documents having a root-node as defined
+     * by {@link #documentRoot}, even with no baseParams defined.
+     */
+    forceDocumentRoot: false,
+    /**
+     * @cfg {String} root [records] The name of the containing element which will contain the nodes of an write-action involving <b>multiple</b> records.  Each
      * xml-record written to the server will be wrapped in an element named after {@link Ext.data.XmlReader#record} property.
      * eg:
 <code><pre>
@@ -32,7 +49,7 @@ Ext.extend(Ext.data.XmlWriter, Ext.data.DataWriter, {
         &lt;records>&lt;first>Barney&lt;/first>&lt;/user>
     &lt;/records>
 </code></pre>
-     * Defaults to <tt>records</tt>
+     * Defaults to <tt>records</tt>.  Do not confuse the nature of this property with that of {@link #documentRoot}
      */
     root: 'records',
     /**
@@ -46,88 +63,96 @@ Ext.extend(Ext.data.XmlWriter, Ext.data.DataWriter, {
      */
     xmlEncoding: 'ISO-8859-15',
     /**
-     * @cfg {String} tpl The xml template.  Defaults to
+     * @cfg {String/Ext.XTemplate} tpl The XML template used to render {@link Ext.data.Api#actions write-actions} to your server.
+     * <p>One can easily provide his/her own custom {@link Ext.XTemplate#constructor template-definition} if the default does not suffice.</p>
+     * <p>Defaults to:</p>
 <code><pre>
 &lt;?xml version="{version}" encoding="{encoding}"?>
-    &lt;tpl if="{[values.nodes.length>1]}">&lt;{root}}>',
+    &lt;tpl if="documentRoot">&lt;{documentRoot}>
+    &lt;tpl for="baseParams">
+        &lt;tpl for=".">
+            &lt;{name}>{value}&lt;/{name}>
+        &lt;/tpl>
+    &lt;/tpl>
+    &lt;tpl if="records.length &gt; 1">&lt;{root}>',
     &lt;tpl for="records">
         &lt;{parent.record}>
-        &lt;tpl for="fields">
+        &lt;tpl for=".">
             &lt;{name}>{value}&lt;/{name}>
         &lt;/tpl>
         &lt;/{parent.record}>
     &lt;/tpl>
-    &lt;tpl if="{[values.records.length>1]}">&lt;/{root}}>&lt;/tpl>
+    &lt;tpl if="records.length &gt; 1">&lt;/{root}>&lt;/tpl>
+    &lt;tpl if="documentRoot">&lt;/{documentRoot}>&lt;/tpl>
 </pre></code>
+     * <p>Templates will be called with the following API</p>
+     * <ul>
+     * <li>{String} version [1.0] The xml version.</li>
+     * <li>{String} encoding [ISO-8859-15] The xml encoding.</li>
+     * <li>{String/false} documentRoot The XML document root-node name or <tt>false</tt> if not required.  See {@link #documentRoot} and {@link #forceDocumentRoot}.</li>
+     * <li>{String} record The meta-data parameter defined on your {@link Ext.data.XmlReader#record} configuration represents the name of the xml-tag containing each record.</li>
+     * <li>{String} root The meta-data parameter defined by {@link Ext.data.XmlWriter#root} configuration-parameter.  Represents the name of the xml root-tag when sending <b>multiple</b> records to the server.</li>
+     * <li>{Array} records The records being sent to the server, ie: the subject of the write-action being performed.  The records parameter will be always be an array, even when only a single record is being acted upon.
+     *     Each item within the records array will contain an array of field objects having the following properties:
+     *     <ul>
+     *         <li>{String} name The field-name of the record as defined by your {@link Ext.data.Record#create Ext.data.Record definition}.  The "mapping" property will be used, otherwise it will match the "name" property.  Use this parameter to define the XML tag-name of the property.</li>
+     *         <li>{Mixed} value The record value of the field enclosed within XML tags specified by name property above.</li>
+     *     </ul></li>
+     * <li>{Array} baseParams.  The baseParams as defined upon {@link Ext.data.Store#baseParams}.  Note that the baseParams have been converted into an array of [{name : "foo", value: "bar"}, ...] pairs in the same manner as the <b>records</b> parameter above.  See {@link #documentRoot} and {@link #forceDocumentRoot}.</li>
+     * </ul>
      */
     // Break up encoding here in case it's being included by some kind of page that will parse it (eg. PHP)
     tpl: '<tpl for="."><' + '?xml version="{version}" encoding="{encoding}"?' + '><tpl if="documentRoot"><{documentRoot}><tpl for="baseParams"><tpl for="."><{name}>{value}</{name}</tpl></tpl></tpl><tpl if="records.length&gt;1"><{root}></tpl><tpl for="records"><{parent.record}><tpl for="."><{name}>{value}</{name}></tpl></{parent.record}></tpl><tpl if="records.length&gt;1"></{root}></tpl><tpl if="documentRoot"></{documentRoot}></tpl></tpl>',
 
     /**
-     * Final action of a write event.  Apply the written data-object to params.
-     * @param {String} action [Ext.data.Api.create|read|update|destroy]
-     * @param {Ext.data.Record/Ext.data.Record[]} rs
-     * @param {Object} http params
-     * @param {Object/Object[]} rendered data.
+     * XmlWriter implementation of the final stage of a write action.
+     * @param {Object} params Transport-proxy's (eg: {@link Ext.Ajax#request}) params-object to write-to.
+     * @param {Object} baseParams as defined by {@link Ext.data.Store#baseParams}.  The baseParms must be encoded by the extending class, eg: {@link Ext.data.JsonWriter}, {@link Ext.data.XmlWriter}.
+     * @param {Object/Object[]} data Data-object representing the compiled Store-recordset.
      */
-    render : function(action, rs, params, data) {
+    render : function(params, baseParams, data) {
+        baseParams = this.toArray(baseParams);
         params.xmlData = this.tpl.applyTemplate({
             version: this.xmlVersion,
             encoding: this.xmlEncoding,
+            documentRoot: (baseParams.length > 0 || this.forceDocumentRoot === true) ? this.documentRoot : false,
             record: this.meta.record,
             root: this.root,
-            records: (Ext.isArray(rs)) ? data : [data]
+            baseParams: baseParams,
+            records: (Ext.isArray(data[0])) ? data : [data]
         });
     },
 
     /**
-     * Converts an Ext.data.Record to xml
-     * @param {Ext.data.Record} rec
-     * @return {String} rendered xml-element
-     * @private
-     */
-    toXml : function(data) {
-        var fields = [];
-        Ext.iterate(data, function(k, v) {
-            fields.push({
-                name: k,
-                value: v
-            });
-        },this);
-        return {
-            fields: fields
-        };
-    },
-
-    /**
      * createRecord
+     * @protected
      * @param {Ext.data.Record} rec
-     * @return {String} xml element
-     * @private
+     * @return {Array} Array of <tt>name:value</tt> pairs for attributes of the {@link Ext.data.Record}.  See {@link Ext.data.DataWriter#toHash}.
      */
     createRecord : function(rec) {
-        return this.toXml(this.toHash(rec));
+        return this.toArray(this.toHash(rec));
     },
 
     /**
      * updateRecord
+     * @protected
      * @param {Ext.data.Record} rec
-     * @return {String} xml element
-     * @private
+     * @return {Array} Array of {name:value} pairs for attributes of the {@link Ext.data.Record}.  See {@link Ext.data.DataWriter#toHash}.
      */
     updateRecord : function(rec) {
-        return this.toXml(this.toHash(rec));
+        return this.toArray(this.toHash(rec));
 
     },
     /**
      * destroyRecord
+     * @protected
      * @param {Ext.data.Record} rec
-     * @return {String} xml element
+     * @return {Array} Array containing a attribute-object (name/value pair) representing the {@link Ext.data.DataReader#idProperty idProperty}.
      */
     destroyRecord : function(rec) {
         var data = {};
         data[this.meta.idProperty] = rec.id;
-        return this.toXml(data);
+        return this.toArray(data);
     }
 });
 
@@ -186,8 +211,11 @@ var myReader = new Ext.data.XmlReader({
 Ext.data.XmlReader = function(meta, recordType){
     meta = meta || {};
 
-    // backwards compat, convert idPath to idProperty
-    meta.idProperty = meta.idProperty || meta.idPath;
+    // backwards compat, convert idPath or id / success
+    Ext.applyIf(meta, {
+        idProperty: meta.idProperty || meta.idPath || meta.id,
+        successProperty: meta.successProperty || meta.success
+    });
 
     Ext.data.XmlReader.superclass.constructor.call(this, meta, recordType || meta.fields);
 };
@@ -245,17 +273,19 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
     /**
      * Decode a json response from server.
      * @param {String} action [{@link Ext.data.Api#actions} create|read|update|destroy]
-     * @param {Ext.data.Response} response Returns an instance of {@link Ext.data.Response}
+     * @param {Object} response HTTP Response object from browser.
+     * @return {Ext.data.Response} response Returns an instance of {@link Ext.data.Response}
      */
     readResponse : function(action, response) {
         var q   = Ext.DomQuery,
         doc     = response.responseXML;
 
+        // create general Response instance.
         var res = new Ext.data.Response({
             action: action,
             success : this.getSuccess(doc),
             message: this.getMessage(doc),
-            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc)),
+            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc), false),
             raw: doc
         });
 
@@ -263,6 +293,7 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
             throw new Ext.data.DataReader.Error('successProperty-response', this.meta.successProperty);
         }
 
+        // Create actions from a response having status 200 must return pk
         if (action === Ext.data.Api.actions.create) {
             var def = Ext.isDefined(res.data);
             if (def && Ext.isEmpty(res.data)) {
@@ -355,36 +386,6 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
             }
         };
     }(),
-
-    /**
-     * Extracts rows of record-data from server.  iterates and calls #extractValues
-     * TODO I don't care much for method-names of #extractData, #extractValues.
-     * @param {Array} root
-     * @param {Boolean} returnRecords When true, will return instances of Ext.data.Record; otherwise just hashes.
-     * @private
-     * @ignore
-     */
-    extractData : function(root, returnRecords) {
-        var Record  = this.recordType,
-        records     = [],
-        f           = Record.prototype.fields,
-        fi          = f.items,
-        fl          = f.length;
-        if (returnRecords === true) {
-            for (var i = 0, len = root.length; i < len; i++) {
-                var data = root[i],
-                    record = new Record(this.extractValues(data, fi, fl), this.getId(data));
-                    
-                record.node = data;
-                records.push(record);
-            }
-        } else {
-            for (var i = 0, len = root.length; i < len; i++) {
-                records.push(this.extractValues(root[i], fi, fl));
-            }
-        }
-        return records;
-    },
 
     /**
      * extracts values and type-casts a row of data from server, extracted by #extractData

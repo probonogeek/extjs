@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -234,6 +234,7 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     /**
      * @cfg {Array} bubbleEvents
      * <p>An array of events that, when fired, should be bubbled to any parent container.
+     * See {@link Ext.util.Observable#enableBubble}. 
      * Defaults to <tt>[]</tt>.
      */
     bubbleEvents: [],
@@ -364,6 +365,33 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
              * @param {Ext.EventObject} e
              */
             'headermousedown',
+            
+            /**
+             * @event groupmousedown
+             * Fires before a group header is clicked. <b>Only applies for grids with a {@link Ext.grid.GroupingView GroupingView}</b>.
+             * @param {Grid} this
+             * @param {String} groupField
+             * @param {String} groupValue
+             * @param {Ext.EventObject} e
+             */
+            'groupmousedown',
+            
+            /**
+             * @event rowbodymousedown
+             * Fires before the row body is clicked. <b>Only applies for grids with {@link Ext.grid.GridView#enableRowBody enableRowBody} configured.</b>
+             * @param {Grid} this
+             * @param {Number} rowIndex
+             * @param {Ext.EventObject} e
+             */
+            'rowbodymousedown',
+            
+            /**
+             * @event containermousedown
+             * Fires before the container is clicked. The container consists of any part of the grid body that is not covered by a row.
+             * @param {Grid} this
+             * @param {Ext.EventObject} e
+             */
+            'containermousedown',
 
             /**
              * @event cellclick
@@ -426,6 +454,56 @@ function(grid, rowIndex, columnIndex, e) {
              */
             'headerdblclick',
             /**
+             * @event groupclick
+             * Fires when group header is clicked. <b>Only applies for grids with a {@link Ext.grid.GroupingView GroupingView}</b>.
+             * @param {Grid} this
+             * @param {String} groupField
+             * @param {String} groupValue
+             * @param {Ext.EventObject} e
+             */
+            'groupclick',
+            /**
+             * @event groupdblclick
+             * Fires when group header is double clicked. <b>Only applies for grids with a {@link Ext.grid.GroupingView GroupingView}</b>.
+             * @param {Grid} this
+             * @param {String} groupField
+             * @param {String} groupValue
+             * @param {Ext.EventObject} e
+             */
+            'groupdblclick',
+            /**
+             * @event containerclick
+             * Fires when the container is clicked. The container consists of any part of the grid body that is not covered by a row.
+             * @param {Grid} this
+             * @param {Ext.EventObject} e
+             */
+            'containerclick',
+            /**
+             * @event containerdblclick
+             * Fires when the container is double clicked. The container consists of any part of the grid body that is not covered by a row.
+             * @param {Grid} this
+             * @param {Ext.EventObject} e
+             */
+            'containerdblclick',
+            
+            /**
+             * @event rowbodyclick
+             * Fires when the row body is clicked. <b>Only applies for grids with {@link Ext.grid.GridView#enableRowBody enableRowBody} configured.</b>
+             * @param {Grid} this
+             * @param {Number} rowIndex
+             * @param {Ext.EventObject} e
+             */
+            'rowbodyclick',
+            /**
+             * @event rowbodydblclick
+             * Fires when the row body is double clicked. <b>Only applies for grids with {@link Ext.grid.GridView#enableRowBody enableRowBody} configured.</b>
+             * @param {Grid} this
+             * @param {Number} rowIndex
+             * @param {Ext.EventObject} e
+             */
+            'rowbodydblclick',
+            
+            /**
              * @event rowcontextmenu
              * Fires when a row is right clicked
              * @param {Grid} this
@@ -450,6 +528,30 @@ function(grid, rowIndex, columnIndex, e) {
              * @param {Ext.EventObject} e
              */
             'headercontextmenu',
+            /**
+             * @event groupcontextmenu
+             * Fires when group header is right clicked. <b>Only applies for grids with a {@link Ext.grid.GroupingView GroupingView}</b>.
+             * @param {Grid} this
+             * @param {String} groupField
+             * @param {String} groupValue
+             * @param {Ext.EventObject} e
+             */
+            'groupcontextmenu',
+            /**
+             * @event containercontextmenu
+             * Fires when the container is right clicked. The container consists of any part of the grid body that is not covered by a row.
+             * @param {Grid} this
+             * @param {Ext.EventObject} e
+             */
+            'containercontextmenu',
+            /**
+             * @event rowbodycontextmenu
+             * Fires when the row body is right clicked. <b>Only applies for grids with {@link Ext.grid.GridView#enableRowBody enableRowBody} configured.</b>
+             * @param {Grid} this
+             * @param {Number} rowIndex
+             * @param {Ext.EventObject} e
+             */
+            'rowbodycontextmenu',
             /**
              * @event bodyscroll
              * Fires when the body element is scrolled
@@ -485,7 +587,13 @@ function(grid, rowIndex, columnIndex, e) {
              * @param {Ext.data.Store} store The new store
              * @param {Ext.grid.ColumnModel} colModel The new column model
              */
-            'reconfigure'
+            'reconfigure',
+            /**
+             * @event viewready
+             * Fires when the grid view is available (use this for selecting a default row). 
+             * @param {Grid} this
+             */
+            'viewready'
         );
     },
 
@@ -533,8 +641,8 @@ function(grid, rowIndex, columnIndex, e) {
             cs = state.columns;
         if(cs){
             for(var i = 0, len = cs.length; i < len; i++){
-                var s = cs[i];
-                var c = cm.getColumnById(s.id);
+                var s = cs[i],
+                    c = cm.getColumnById(s.id);
                 if(c){
                     c.hidden = s.hidden;
                     c.width = s.width;
@@ -601,15 +709,20 @@ function(grid, rowIndex, columnIndex, e) {
      * @param {Ext.grid.ColumnModel} colModel The new {@link Ext.grid.ColumnModel} object
      */
     reconfigure : function(store, colModel){
-        if(this.loadMask){
-            this.loadMask.destroy();
-            this.loadMask = new Ext.LoadMask(this.bwrap,
-                    Ext.apply({}, {store:store}, this.initialConfig.loadMask));
+        var rendered = this.rendered;
+        if(rendered){
+            if(this.loadMask){
+                this.loadMask.destroy();
+                this.loadMask = new Ext.LoadMask(this.bwrap,
+                        Ext.apply({}, {store:store}, this.initialConfig.loadMask));
+            }
         }
-        this.view.initData(store, colModel);
+        if(this.view){
+            this.view.initData(store, colModel);
+        }
         this.store = store;
         this.colModel = colModel;
-        if(this.rendered){
+        if(rendered){
             this.view.refresh(true);
         }
         this.fireEvent('reconfigure', this, store, colModel);
@@ -618,9 +731,6 @@ function(grid, rowIndex, columnIndex, e) {
     // private
     onDestroy : function(){
         if(this.rendered){
-            var c = this.body;
-            c.removeAllListeners();
-            c.update('');
             Ext.destroy(this.view, this.loadMask);
         }else if(this.store && this.store.autoDestroy){
             this.store.destroy();
@@ -633,21 +743,31 @@ function(grid, rowIndex, columnIndex, e) {
     // private
     processEvent : function(name, e){
         this.fireEvent(name, e);
-        var t = e.getTarget();
-        var v = this.view;
-        var header = v.findHeaderIndex(t);
+        var t = e.getTarget(),
+            v = this.view,
+            header = v.findHeaderIndex(t);
+            
         if(header !== false){
             this.fireEvent('header' + name, this, header, e);
         }else{
-            var row = v.findRowIndex(t);
-            var cell = v.findCellIndex(t);
+            var row = v.findRowIndex(t),
+                cell,
+                body;
             if(row !== false){
                 this.fireEvent('row' + name, this, row, e);
+                cell = v.findCellIndex(t);
+                body = v.findRowBody(t);
                 if(cell !== false){
                     this.fireEvent('cell' + name, this, row, cell, e);
                 }
+                if(body){
+                    this.fireEvent('rowbody' + name, this, row, e);
+                }
+            }else{
+                this.fireEvent('container' + name, this, e);
             }
         }
+        this.view.processEvent(name, e);
     },
 
     // private
@@ -672,8 +792,11 @@ function(grid, rowIndex, columnIndex, e) {
 
     // private
     walkCells : function(row, col, step, fn, scope){
-        var cm = this.colModel, clen = cm.getColumnCount();
-        var ds = this.store, rlen = ds.getCount(), first = true;
+        var cm = this.colModel, 
+            clen = cm.getColumnCount(),
+            ds = this.store, 
+            rlen = ds.getCount(), 
+            first = true;
         if(step < 0){
             if(col < 0){
                 row--;
@@ -891,7 +1014,7 @@ function(grid, rowIndex, columnIndex, e) {
      * @hide 
      */
     /** 
-     * @event afterLayout 
+     * @event afterlayout 
      * @hide 
      */
     /** 

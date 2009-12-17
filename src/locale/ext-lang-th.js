@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,7 +18,7 @@ if(Ext.View){
 }
 
 if(Ext.grid.GridPanel){
-  Ext.grid.GridPanel.prototype.ddText = "{0} àÅ×�?¡áÅéÇ·Ñé§Ë�?Žá¶Ç";
+  Ext.grid.GridPanel.prototype.ddText = "{0} àÅ×Í¡áÅéÇ·Ñé§ËÁŽá¶Ç";
 }
 
 if(Ext.TabPanelItem){
@@ -26,7 +26,7 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-  Ext.form.Field.prototype.invalidText = "€èÒ¢�?§ªè�?§¹Õéä�?è¶Ù¡µé�?§";
+  Ext.form.Field.prototype.invalidText = "€èÒ¢Í§ªèÍ§¹ÕéäÁè¶Ù¡µéÍ§";
 }
 
 if(Ext.LoadMask){
@@ -34,18 +34,18 @@ if(Ext.LoadMask){
 }
 
 Date.monthNames = [
-  "�?¡ÃÒ€�?",
-  "¡Ø�?ŸÒÓŸÑ¹žì",
-  "�?Õ¹Ò€�?",
-  "à�?ÉÒÂ¹",
-  "ŸÄÉÀÒ€�?",
-  "�?Ô¶Ø¹ÒÂ¹",
-  "¡Ä¡¯Ò€�?",
-  "ÊÔ§ËÒ€�?",
+  "Á¡ÃÒ€Á",
+  "¡ØÁŸÒÓŸÑ¹žì",
+  "ÁÕ¹Ò€Á",
+  "àÁÉÒÂ¹",
+  "ŸÄÉÀÒ€Á",
+  "ÁÔ¶Ø¹ÒÂ¹",
+  "¡Ä¡¯Ò€Á",
+  "ÊÔ§ËÒ€Á",
   "¡Ñ¹ÂÒÂ¹",
-  "µØÅÒ€�?",
+  "µØÅÒ€Á",
   "ŸÄÈšÔ¡ÒÂ¹",
-  "žÑ¹ÇÒ€�?"
+  "žÑ¹ÇÒ€Á"
 ];
 
 Date.getShortMonthName = function(month) {
@@ -53,12 +53,12 @@ Date.getShortMonthName = function(month) {
 };
 
 Date.monthNumbers = {
-  "�?€" : 0,
+  "Á€" : 0,
   "¡Ÿ" : 1,
-  "�?Õ€" : 2,
-  "à�?Â" : 3,
+  "ÁÕ€" : 2,
+  "àÁÂ" : 3,
   "Ÿ€" : 4,
-  "�?ÔÂ" : 5,
+  "ÁÔÂ" : 5,
   "¡€" : 6,
   "Ê€" : 7,
   "¡Â" : 8,
@@ -72,9 +72,9 @@ Date.getMonthNumber = function(name) {
 };
 
 Date.dayNames = [
-  "�?Ò·ÔµÂì",
+  "ÍÒ·ÔµÂì",
   "šÑ¹·Ãì",
-  "�?Ñ§€ÒÃ",
+  "ÍÑ§€ÒÃ",
   "ŸØ×ž",
   "ŸÄËÑÊºŽÕ",
   "ÈØ¡Ãì",
@@ -90,7 +90,7 @@ if(Ext.MessageBox){
     ok     : "µ¡Å§",
     cancel : "Â¡àÅÔ¡",
     yes    : "ãªè",
-    no     : "ä�?èãªè"
+    no     : "äÁèãªè"
   };
 }
 
@@ -111,9 +111,9 @@ if(Ext.DatePicker){
     disabledDatesText : "",
     monthNames        : Date.monthNames,
     dayNames          : Date.dayNames,
-    nextText          : 'àŽ×�?¹¶ÑŽä» (Control+Right)',
-    prevText          : 'àŽ×�?¹¡è�?¹Ë¹éÒ (Control+Left)',
-    monthYearText     : 'àÅ×�?¡àŽ×�?¹ (Control+Up/Down to move years)',
+    nextText          : 'àŽ×Í¹¶ÑŽä» (Control+Right)',
+    prevText          : 'àŽ×Í¹¡èÍ¹Ë¹éÒ (Control+Left)',
+    monthYearText     : 'àÅ×Í¡àŽ×Í¹ (Control+Up/Down to move years)',
     todayTip          : "{0} (Spacebar)",
     format            : "m/d/y",
     okText            : "&#160;µ¡Å§&#160;",
@@ -127,12 +127,12 @@ if(Ext.PagingToolbar){
     beforePageText : "Ë¹éÒ",
     afterPageText  : "of {0}",
     firstText      : "Ë¹éÒáÃ¡",
-    prevText       : "¡è�?¹Ë¹éÒ",
+    prevText       : "¡èÍ¹Ë¹éÒ",
     nextText       : "¶ÑŽä»",
     lastText       : "Ë¹éÒÊØŽ·éÒÂ",
     refreshText    : "ÃÕà¿Ãª",
     displayMsg     : "¡ÓÅÑ§áÊŽ§ {0} - {1} šÒ¡ {2}",
-    emptyMsg       : 'ä�?è�?Õ¢é�?�?ÙÅáÊŽ§'
+    emptyMsg       : 'äÁèÁÕ¢éÍÁÙÅáÊŽ§'
   });
 }
 

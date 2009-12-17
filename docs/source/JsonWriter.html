@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.data.JsonWriter"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.data.JsonWriter"></div>/**
  * @class Ext.data.JsonWriter
  * @extends Ext.data.DataWriter
  * DataWriter extension for writing an array or single {@link Ext.data.Record} object(s) in preparation for executing a remote CRUD action.
@@ -20,14 +15,14 @@ Ext.data.JsonWriter = function(config) {
     Ext.data.JsonWriter.superclass.constructor.call(this, config);
 
     // careful to respect "returnJson", renamed to "encode"
-    // TODO: remove after v3 final release
+    // TODO: remove after Ext-3.0.1 release
     if (this.returnJson != undefined) {
         this.encode = this.returnJson;
     }
 }
 Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
     <div id="cfg-Ext.data.JsonWriter-returnJson"></div>/**
-     * @cfg {Boolean} returnJson <b>Deprecated</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
+     * @cfg {Boolean} returnJson <b>Deprecated, will be removed in Ext-3.0.1</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
      */
     returnJson : undefined,
     <div id="cfg-Ext.data.JsonWriter-encode"></div>/**
@@ -44,17 +39,20 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
 
     <div id="method-Ext.data.JsonWriter-render"></div>/**
      * Final action of a write event.  Apply the written data-object to params.
-     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
-     * @param {Record[]} rs
-     * @param {Object} http params
-     * @param {Object} data object populated according to DataReader meta-data "root" and "idProperty"
+     * @param {Object} http params-object to write-to.
+     * @param {Object} baseParams as defined by {@link Ext.data.Store#baseParams}.  The baseParms must be encoded by the extending class, eg: {@link Ext.data.JsonWriter}, {@link Ext.data.XmlWriter}.
+     * @param {Object/Object[]} data Data-object representing compiled Store-recordset.
      */
-    render : function(action, rs, params, data) {
+    render : function(params, baseParams, data) {
         if (this.encode === true) {
+            // Encode here now.
+            Ext.apply(params, baseParams);
             params[this.meta.root] = Ext.encode(data);
         } else {
-            params.jsonData = {};
-            params.jsonData[this.meta.root] = data;
+            // defer encoding for some other layer, probably in {@link Ext.Ajax#request}.  Place everything into "jsonData" key.
+            var jdata = Ext.apply({}, baseParams);
+            jdata[this.meta.root] = data;
+            params.jsonData = jdata;
         }
     },
     <div id="method-Ext.data.JsonWriter-createRecord"></div>/**
@@ -85,6 +83,6 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
     destroyRecord : function(rec) {
         return rec.id;
     }
-});</pre>
+});</pre>    
 </body>
 </html>

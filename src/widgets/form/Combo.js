@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -330,6 +330,19 @@ var combo = new Ext.form.ComboBox({
     lazyInit : true,
 
     /**
+     * @cfg {Boolean} clearFilterOnReset <tt>true</tt> to clear any filters on the store (when in local mode) when reset is called
+     * (defaults to <tt>true</tt>)
+     */
+    clearFilterOnReset : true,
+
+    /**
+     * @cfg {Boolean} submitValue False to clear the name attribute on the field so that it is not submitted during a form post.
+     * If a hiddenName is specified, setting this to true will cause both the hidden field and the element to be submitted.
+     * Defaults to <tt>undefined</tt>.
+     */
+    submitValue: undefined,
+
+    /**
      * The value of the match string used to filter the store. Delete this property to force a requery.
      * Example use:
      * <pre><code>
@@ -435,10 +448,8 @@ var combo = new Ext.form.ComboBox({
                 this.target = true;
                 this.el = Ext.DomHelper.insertBefore(s, this.autoCreate || this.defaultAutoCreate);
                 this.render(this.el.parentNode, s);
-                Ext.removeNode(s); // remove it
-            }else{
-                Ext.removeNode(s); // remove it
             }
+            Ext.removeNode(s);
         }
         //auto-configure store from local array data
         else if(this.store){
@@ -465,13 +476,14 @@ var combo = new Ext.form.ComboBox({
 
     // private
     onRender : function(ct, position){
+        if(this.hiddenName && !Ext.isDefined(this.submitValue)){
+            this.submitValue = false;
+        }
         Ext.form.ComboBox.superclass.onRender.call(this, ct, position);
         if(this.hiddenName){
             this.hiddenField = this.el.insertSibling({tag:'input', type:'hidden', name: this.hiddenName,
                     id: (this.hiddenId||this.hiddenName)}, 'before', true);
 
-            // prevent input submission
-            this.el.dom.removeAttribute('name');
         }
         if(Ext.isGecko){
             this.el.dom.setAttribute('autocomplete', 'off');
@@ -503,7 +515,8 @@ var combo = new Ext.form.ComboBox({
                 parentEl: this.getListParent(),
                 shadow: this.shadow,
                 cls: [cls, this.listClass].join(' '),
-                constrain:false
+                constrain:false,
+                zindex: 12000
             });
 
             var lw = this.listWidth || Math.max(this.wrap.getWidth(), this.minListWidth);
@@ -689,6 +702,13 @@ var menu = new Ext.menu.Menu({
         }
     },
 
+    reset : function(){
+        Ext.form.ComboBox.superclass.reset.call(this);
+        if(this.clearFilterOnReset && this.mode == 'local'){
+            this.store.clearFilter();
+        }
+    },
+
     // private
     initEvents : function(){
         Ext.form.ComboBox.superclass.initEvents.call(this);
@@ -745,7 +765,7 @@ var menu = new Ext.menu.Menu({
         if(this.typeAhead){
             this.taTask = new Ext.util.DelayedTask(this.onTypeAhead, this);
         }
-        if(this.editable !== false && !this.enableKeyEvents){
+        if(!this.enableKeyEvents){
             this.mon(this.el, 'keyup', this.onKeyUp, this);
         }
     },
@@ -763,6 +783,7 @@ var menu = new Ext.menu.Menu({
             this.pageTb,
             this.list
         );
+        Ext.destroyMembers(this, 'hiddenField');
         Ext.form.ComboBox.superclass.onDestroy.call(this);
     },
 
@@ -782,13 +803,13 @@ var menu = new Ext.menu.Menu({
             this.bufferSize = w;
         }
     },
-    
+
     doResize: function(w){
         if(!Ext.isDefined(this.listWidth)){
             var lw = Math.max(w, this.minListWidth);
             this.list.setWidth(lw);
             this.innerList.setWidth(lw - this.list.getFrameWidth('lr'));
-        }    
+        }
     },
 
     // private
@@ -981,7 +1002,7 @@ var menu = new Ext.menu.Menu({
             ha = this.getPosition()[1]-Ext.getBody().getScroll().top,
             hb = Ext.lib.Dom.getViewHeight()-ha-this.getSize().height,
             space = Math.max(ha, hb, this.minHeight || 0)-this.list.shadowOffset-pad-5;
-            
+
         h = Math.min(h, space, this.maxHeight);
 
         this.innerList.setHeight(h);
@@ -1067,7 +1088,7 @@ var menu = new Ext.menu.Menu({
     // private
     onKeyUp : function(e){
         var k = e.getKey();
-        if(this.editable !== false && (k == e.BACKSPACE || !e.isSpecialKey())){
+        if(this.editable !== false && this.readOnly !== true && (k == e.BACKSPACE || !e.isSpecialKey())){
             this.lastKey = k;
             this.dqTask.delay(this.queryDelay);
         }
@@ -1090,7 +1111,7 @@ var menu = new Ext.menu.Menu({
             rec = this.findRecord(this.displayField, val);
         if(!rec && this.forceSelection){
             if(val.length > 0 && val != this.emptyText){
-                this.el.dom.value = Ext.isDefined(this.lastSelectionText) ? this.lastSelectionText : '';
+                this.el.dom.value = Ext.isEmpty(this.lastSelectionText) ? '' : this.lastSelectionText;
                 this.applyEmptyText();
             }else{
                 this.clearValue();
@@ -1196,7 +1217,7 @@ var menu = new Ext.menu.Menu({
         if(Ext.isGecko2){
             this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac
         }
-        Ext.getDoc().on({
+        this.mon(Ext.getDoc(), {
             scope: this,
             mousewheel: this.collapseIf,
             mousedown: this.collapseIf
@@ -1211,7 +1232,7 @@ var menu = new Ext.menu.Menu({
     // private
     // Implements the default empty TriggerField.onTriggerClick function
     onTriggerClick : function(){
-        if(this.disabled){
+        if(this.readOnly || this.disabled){
             return;
         }
         if(this.isExpanded()){

@@ -24,10 +24,10 @@ h3.collapser-collapsed {
     padding-left:34px;
     -moz-outline:none;
     outline:none;
-     white-space: nowrap;
+	 white-space: nowrap;
 }
 #classes a:hover{
-    text-decoration: underline;
+	text-decoration: underline;
 }
 #classes a.ex{
     background: #fff url(example.gif) no-repeat 16px -1px;

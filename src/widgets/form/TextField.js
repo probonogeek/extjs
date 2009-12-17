@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -278,9 +278,14 @@ var myField = new Ext.form.NumberField({
 
     // private
     onKeyUpBuffered : function(e){
-        if(!e.isNavKeyPress()){
+        if(this.doAutoSize(e)){
             this.autoSize();
         }
+    },
+    
+    // private
+    doAutoSize : function(e){
+        return !e.isNavKeyPress();
     },
 
     // private
@@ -336,12 +341,18 @@ var myField = new Ext.form.NumberField({
 
     // private
     filterKeys : function(e){
-        // special keys don't generate charCodes, so leave them alone
-        if(e.ctrlKey || e.isSpecialKey()){
+        if(e.ctrlKey){
             return;
         }
-        
-        if(!this.maskRe.test(String.fromCharCode(e.getCharCode()))){
+        var k = e.getKey();
+        if(Ext.isGecko && (e.isNavKeyPress() || k == e.BACKSPACE || (k == e.DELETE && e.button == -1))){
+            return;
+        }
+        var cc = String.fromCharCode(e.getCharCode());
+        if(!Ext.isGecko && e.isSpecialKey() && !cc){
+            return;
+        }
+        if(!this.maskRe.test(cc)){
             e.stopEvent();
         }
     },
@@ -508,8 +519,8 @@ var myField = new Ext.form.NumberField({
         var d = document.createElement('div');
         d.appendChild(document.createTextNode(v));
         v = d.innerHTML;
-        d = null;
         Ext.removeNode(d);
+        d = null;
         v += '&#160;';
         var w = Math.min(this.growMax, Math.max(this.metrics.getWidth(v) + /* add extra padding */ 10, this.growMin));
         this.el.setWidth(w);

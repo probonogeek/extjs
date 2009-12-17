@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.menu.DateMenu"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.menu.DateMenu"></div>/**
  * @class Ext.menu.DateMenu
  * @extends Ext.menu.Menu
  * <p>A menu containing an {@link Ext.DatePicker} Component.</p>
@@ -104,6 +99,7 @@
          * @param {Date} date The selected date
          */
         this.relayEvents(this.picker, ['select']);
+        this.on('show', this.picker.focus, this.picker);
         this.on('select', this.menuHide, this);
         if(this.handler){
             this.on('select', this.handler, this.scope || this);
@@ -128,6 +124,6 @@
     }
  });
  Ext.reg('datemenu', Ext.menu.DateMenu);
- </pre>
+ </pre>    
 </body>
 </html>

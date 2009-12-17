@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -236,10 +236,11 @@ Ext.debug.LogPanel = Ext.extend(Ext.Panel, {
     log : function(){
         var markup = [  '<div style="padding:5px !important;border-bottom:1px solid #ccc;">',
                     Ext.util.Format.htmlEncode(Array.prototype.join.call(arguments, ', ')).replace(/\n/g, '<br/>').replace(/\s/g, '&#160;'),
-                    '</div>'].join('');
+                    '</div>'].join(''),
+            bd = this.body.dom;
 
         this.body.insertHtml('beforeend', markup);
-        this.body.scrollTo('top', 100000);
+        bd.scrollTop = bd.scrollHeight;
     },
 
     clear : function(){

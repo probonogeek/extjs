@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.EventManager"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.EventManager"></div>/**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
  * several useful events directly.
@@ -19,42 +14,88 @@
  * @singleton
  */
 Ext.EventManager = function(){
-    var docReadyEvent, 
-        docReadyProcId, 
-        docReadyState = false,        
+    var docReadyEvent,
+        docReadyProcId,
+        docReadyState = false,
         E = Ext.lib.Event,
         D = Ext.lib.Dom,
         DOC = document,
         WINDOW = window,
         IEDEFERED = "ie-deferred-loader",
         DOMCONTENTLOADED = "DOMContentLoaded",
-        elHash = {},
-        propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
+        propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
+        /*
+         * This cache is used to hold special js objects, the document and window, that don't have an id. We need to keep
+         * a reference to them so we can look them up at a later point.
+         */
+        specialElCache = [];
+
+     function getId(el){
+        var id = false,
+            i = 0,
+            len = specialElCache.length,
+            id = false,
+            skip = false,
+            o;
+        if(el){
+            if(el.getElementById || el.navigator){
+                // look up the id
+                for(; i < len; ++i){
+                    o = specialElCache[i];
+                    if(o.el === el){
+                        id = o.id;
+                        break;
+                    }
+                }
+                if(!id){
+                    // for browsers that support it, ensure that give the el the same id
+                    id = Ext.id(el);
+                    specialElCache.push({
+                        id: id,
+                        el: el
+                    });
+                    skip = true;
+                }
+            }else{
+                id = Ext.id(el);
+            }
+            if(!Ext.elCache[id]){
+                Ext.Element.addToCache(new Ext.Element(el), id);
+                if(skip){
+                    Ext.elCache[id].skipGC = true;
+                }
+            }
+        }
+        return id;
+     };
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
-    function addListener(el, ename, fn, wrap, scope){        
-        var id = Ext.id(el),
-            es = elHash[id] = elHash[id] || {};         
-       
-        (es[ename] = es[ename] || []).push([fn, wrap, scope]);
-        E.on(el, ename, wrap);
+    function addListener(el, ename, fn, wrap, scope){
+        el = Ext.getDom(el);
+        var id = getId(el),
+            es = Ext.elCache[id].events,
+            wfn;
+
+        wfn = E.on(el, ename, wrap);
+        es[ename] = es[ename] || [];
+        es[ename].push([fn, wrap, scope, wfn]);
 
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
         if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
-            E.on(window, 'unload', function(){
-                el.removeEventListener.apply(el, args);                
+            Ext.EventManager.addListener(WINDOW, 'unload', function(){
+                el.removeEventListener.apply(el, args);
             });
         }
         if(ename == "mousedown" && el == document){ // fix stopped mousedowns on the document
             Ext.EventManager.stoppedMouseDownEvent.addListener(wrap);
         }
     };
-    
+
     function fireDocReady(){
-        if(!docReadyState){            
+        if(!docReadyState){
             Ext.isReady = docReadyState = true;
             if(docReadyProcId){
                 clearInterval(docReadyProcId);
@@ -71,26 +112,26 @@ Ext.EventManager = function(){
             }
             if(docReadyEvent){
                 docReadyEvent.fire();
-                docReadyEvent.clearListeners();
+                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
             }
         }
     };
 
     function initDocReady(){
         var COMPLETE = "complete";
-            
+
         docReadyEvent = new Ext.util.Event();
         if (Ext.isGecko || Ext.isOpera) {
             DOC.addEventListener(DOMCONTENTLOADED, fireDocReady, false);
         } else if (Ext.isIE){
-            DOC.write("<s"+'cript id=' + IEDEFERED + ' defer="defer" src="/'+'/:"></s'+"cript>");            
+            DOC.write("<s"+'cript id=' + IEDEFERED + ' defer="defer" src="/'+'/:"></s'+"cript>");
             DOC.getElementById(IEDEFERED).onreadystatechange = function(){
                 if(this.readyState == COMPLETE){
                     fireDocReady();
                 }
             };
         } else if (Ext.isWebKit){
-            docReadyProcId = setInterval(function(){                
+            docReadyProcId = setInterval(function(){
                 if(DOC.readyState == COMPLETE) {
                     fireDocReady();
                  }
@@ -107,14 +148,15 @@ Ext.EventManager = function(){
                 h.apply(this, args);
             }
         };
-    };    
-    
-    function createBuffered(h, o){
-        var task = new Ext.util.DelayedTask(h);
-        return function(e){
-            // create new event object impl so new events don't wipe out properties            
-            task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
+    };
+
+    function createBuffered(h, o, fn){
+        fn.task = new Ext.util.DelayedTask(h);
+        var w = function(e){
+            // create new event object impl so new events don't wipe out properties
+            fn.task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
         };
+        return w;
     };
 
     function createSingle(h, el, ename, fn, scope){
@@ -124,29 +166,30 @@ Ext.EventManager = function(){
         };
     };
 
-    function createDelayed(h, o){
+    function createDelayed(h, o, fn){
         return function(e){
-            // create new event object impl so new events don't wipe out properties   
-            e = new Ext.EventObjectImpl(e);
-            setTimeout(function(){
-                h(e);
-            }, o.delay || 10);
+            var task = new Ext.util.DelayedTask(h);
+            if(!fn.tasks) {
+                fn.tasks = [];
+            }
+            fn.tasks.push(task);
+            task.delay(o.delay || 10, h, null, [new Ext.EventObjectImpl(e)]);
         };
     };
 
     function listen(element, ename, opt, fn, scope){
         var o = !Ext.isObject(opt) ? {} : opt,
             el = Ext.getDom(element);
-            
-        fn = fn || o.fn; 
+
+        fn = fn || o.fn;
         scope = scope || o.scope;
-        
+
         if(!el){
             throw "Error listening for \"" + ename + '\". Element "' + element + '" doesn\'t exist.';
         }
         function h(e){
             // prevent errors while unload occurring
-            if(!Ext){// !window[xname]){  ==> can't we do this? 
+            if(!Ext){// !window[xname]){  ==> can't we do this?
                 return;
             }
             e = Ext.EventObject.setEvent(e);
@@ -157,7 +200,7 @@ Ext.EventManager = function(){
                 }
             } else {
                 t = e.target;
-            }            
+            }
             if (o.stopEvent) {
                 e.stopEvent();
             }
@@ -170,20 +213,20 @@ Ext.EventManager = function(){
             if (o.normalized) {
                 e = e.browserEvent;
             }
-            
+
             fn.call(scope || el, e, t, o);
         };
         if(o.target){
             h = createTargeted(h, o);
         }
         if(o.delay){
-            h = createDelayed(h, o);
+            h = createDelayed(h, o, fn);
         }
         if(o.single){
             h = createSingle(h, el, ename, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o);
+            h = createBuffered(h, o, fn);
         }
 
         addListener(el, ename, fn, h, scope);
@@ -221,12 +264,12 @@ Ext.EventManager = function(){
          * </ul><br>
          * <p>See {@link Ext.Element#addListener} for examples of how to use these options.</p>
          */
-        addListener : function(element, eventName, fn, scope, options){                                       
-            if(Ext.isObject(eventName)){                
+        addListener : function(element, eventName, fn, scope, options){
+            if(Ext.isObject(eventName)){
                 var o = eventName, e, val;
                 for(e in o){
                     val = o[e];
-                    if(!propRe.test(e)){                                             
+                    if(!propRe.test(e)){
                         if(Ext.isFunction(val)){
                             // shared options
                             listen(element, e, o, val, o.scope);
@@ -240,7 +283,7 @@ Ext.EventManager = function(){
                 listen(element, eventName, options, fn, scope);
             }
         },
-        
+
         <div id="method-Ext.EventManager-removeListener"></div>/**
          * Removes an event handler from an element.  The shorthand version {@link #un} is equivalent.  Typically
          * you will use {@link Ext.Element#removeListener} directly on an Element in favor of calling this version.
@@ -250,49 +293,130 @@ Ext.EventManager = function(){
          * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
          * then this must refer to the same object.
          */
-        removeListener : function(element, eventName, fn, scope){            
-            var el = Ext.getDom(element),
-                id = Ext.id(el),
-                wrap;      
-            
-            Ext.each((elHash[id] || {})[eventName], function (v,i,a) {
-                if (Ext.isArray(v) && v[0] == fn && (!scope || v[2] == scope)) {                                    
-                    E.un(el, eventName, wrap = v[1]);
-                    a.splice(i,1);
-                    return false;                    
+        removeListener : function(el, eventName, fn, scope){
+            el = Ext.getDom(el);
+            var id = getId(el),
+                f = el && (Ext.elCache[id].events)[eventName] || [],
+                wrap, i, l, k, wf;
+
+            for (i = 0, len = f.length; i < len; i++) {
+                if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
+                    if(fn.task) {
+                        fn.task.cancel();
+                        delete fn.task;
+                    }
+                    k = fn.tasks && fn.tasks.length;
+                    if(k) {
+                        while(k--) {
+                            fn.tasks[k].cancel();
+                        }
+                        delete fn.tasks;
+                    }
+                    wf = wrap = f[i][1];
+                    if (E.extAdapter) {
+                        wf = f[i][3];
+                    }
+                    E.un(el, eventName, wf);
+                    f.splice(i,1);
+                    if (f.length === 0) {
+                        delete Ext.elCache[id].events[eventName];
+                    }
+                    for (k in Ext.elCache[id].events) {
+                        return false;
+                    }
+                    Ext.elCache[id].events = {};
+                    return false;
                 }
-            });    
+            }
 
             // jQuery workaround that should be removed from Ext Core
             if(eventName == "mousewheel" && el.addEventListener && wrap){
                 el.removeEventListener("DOMMouseScroll", wrap, false);
             }
-                        
+
             if(eventName == "mousedown" && el == DOC && wrap){ // fix stopped mousedowns on the document
                 Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
             }
         },
-        
+
         <div id="method-Ext.EventManager-removeAll"></div>/**
          * Removes all event handers from an element.  Typically you will use {@link Ext.Element#removeAllListeners}
          * directly on an Element in favor of calling this version.
          * @param {String/HTMLElement} el The id or html element from which to remove all event handlers.
          */
         removeAll : function(el){
-            var id = Ext.id(el = Ext.getDom(el)), 
-                es = elHash[id],                 
-                ename;
-           
+            el = Ext.getDom(el);
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
+                f, i, len, ename, fn, k;
+
             for(ename in es){
-                if(es.hasOwnProperty(ename)){                        
-                    Ext.each(es[ename], function(v) {
-                        E.un(el, ename, v.wrap);                    
-                    });
-                }            
+                if(es.hasOwnProperty(ename)){
+                    f = es[ename];
+                    for (i = 0, len = f.length; i < len; i++) {
+                        fn = f[i][0];
+                        if(fn.task) {
+                            fn.task.cancel();
+                            delete fn.task;
+                        }
+                        if(fn.tasks && (k = fn.tasks.length)) {
+                            while(k--) {
+                                fn.tasks[k].cancel();
+                            }
+                            delete fn.tasks;
+                        }
+                        E.un(el, ename, E.extAdapter ? f[i][3] : f[i][1]);
+                    }
+                }
             }
-            elHash[id] = null;       
+            if (Ext.elCache[id]) {
+                Ext.elCache[id].events = {};
+            }
         },
 
+        getListeners : function(el, eventName) {
+            el = Ext.getDom(el);
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
+                results = [];
+            if (es && es[eventName]) {
+                return es[eventName];
+            } else {
+                return null;
+            }
+        },
+
+        purgeElement : function(el, recurse, eventName) {
+            el = Ext.getDom(el);
+            var id = getId(el),
+                ec = Ext.elCache[id] || {},
+                es = ec.events || {},
+                i, f, len;
+            if (eventName) {
+                if (es && es.hasOwnProperty(eventName)) {
+                    f = es[eventName];
+                    for (i = 0, len = f.length; i < len; i++) {
+                        Ext.EventManager.removeListener(el, eventName, f[i][0]);
+                    }
+                }
+            } else {
+                Ext.EventManager.removeAll(el);
+            }
+            if (recurse && el && el.childNodes) {
+                for (i = 0, len = el.childNodes.length; i < len; i++) {
+                    Ext.EventManager.purgeElement(el.childNodes[i], recurse, eventName);
+                }
+            }
+        },
+
+        _unload : function() {
+            var el;
+            for (el in Ext.elCache) {
+                Ext.EventManager.removeAll(el);
+            }
+        },
         <div id="method-Ext.EventManager-onDocumentReady"></div>/**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
          * accessed shorthanded as Ext.onReady().
@@ -305,16 +429,14 @@ Ext.EventManager = function(){
             if(docReadyState){ // if it already fired
                 docReadyEvent.addListener(fn, scope, options);
                 docReadyEvent.fire();
-                docReadyEvent.clearListeners();               
+                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
             } else {
                 if(!docReadyEvent) initDocReady();
                 options = options || {};
-                options.delay = options.delay || 1;                
+                options.delay = options.delay || 1;
                 docReadyEvent.addListener(fn, scope, options);
             }
-        },
-        
-        elHash : elHash   
+        }
     };
      <div id="method-Ext.EventManager-on"></div>/**
      * Appends an event handler to an element.  Shorthand for {@link #addListener}.
@@ -356,7 +478,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
 
 //Initialize doc classes
 (function(){
-    
+
     var initExtCss = function(){
         // find the body element
         var bd = document.body || document.getElementsByTagName('body')[0];
@@ -398,7 +520,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
 
 <div id="cls-Ext.EventObject"></div>/**
  * @class Ext.EventObject
- * Just as {@link Ext.Element} wraps around a native DOM node, Ext.EventObject 
+ * Just as {@link Ext.Element} wraps around a native DOM node, Ext.EventObject
  * wraps the browser's native event-object normalizing cross-browser differences,
  * such as which mouse button is clicked, keys pressed, mechanisms to stop
  * event-propagation along with a method to prevent default actions from taking place.
@@ -413,7 +535,7 @@ var myDiv = {@link Ext#get Ext.get}("myDiv");  // get reference to an {@link Ext
 myDiv.on(         // 'on' is shorthand for addListener
     "click",      // perform an action on click of myDiv
     handleClick   // reference to the action handler
-);  
+);
 // other methods to do the same:
 Ext.EventManager.on("myDiv", 'click', handleClick);
 Ext.EventManager.addListener("myDiv", 'click', handleClick);
@@ -504,7 +626,7 @@ Ext.EventObject = function(){
             if(this.browserEvent){
                 E.preventDefault(this.browserEvent);
             }
-        },        
+        },
 
         <div id="method-Ext.EventObject-stopPropagation"></div>/**
          * Cancels bubbling of the event.
@@ -534,10 +656,10 @@ Ext.EventObject = function(){
         getKey : function(){
             return this.normalizeKey(this.keyCode || this.charCode)
         },
-        
+
         // private
         normalizeKey: function(k){
-            return Ext.isSafari ? (safariKeys[k] || k) : k; 
+            return Ext.isSafari ? (safariKeys[k] || k) : k;
         },
 
         <div id="method-Ext.EventObject-getPageX"></div>/**
@@ -598,7 +720,7 @@ Ext.EventObject = function(){
             }
             return delta;
         },
-        
+
         <div id="method-Ext.EventObject-within"></div>/**
         * Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
         * Example usage:<pre><code>
@@ -608,7 +730,7 @@ Ext.EventObject = function(){
                 alert('Clicked on a child of some-el!');
             }
         });
-        
+
         // Handle click directly on an element, ignoring clicks on child nodes
         Ext.getBody().on('click', function(e,t){
             if((t.id == 'some-el') && !e.within(t, true)){
@@ -631,6 +753,8 @@ Ext.EventObject = function(){
      };
 
     return new Ext.EventObjectImpl();
-}();</pre>
+}();
+
+</pre>    
 </body>
 </html>

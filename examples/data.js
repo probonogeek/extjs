@@ -1,38 +1,39 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 Ext.ns('Ext.samples');
 
+
 Ext.samples.samplesCatalog = [{
-    title: 'Combination Samples',
+    title: 'Combination Examples',
     samples: [{
         text: 'Feed Viewer',
         url:  'feed-viewer/view.html',
         icon: 'feeds.gif',
-        desc: 'RSS feed reader sample application that features a swappable reader panel layout.'
+        desc: 'RSS feed reader example application that features a swappable reader panel layout.'
     },{
         text: 'Simple Tasks',
         url:  'http://extjs.com/blog/2008/02/24/tasks2/',
         icon: 'air.gif',
-        desc: 'Complete personal task management application sample that runs on <a href="http://labs.adobe.com/technologies/air/" target="_blank">Adobe AIR</a>.'
+        desc: 'Complete personal task management application example that runs on <a href="http://labs.adobe.com/technologies/air/" target="_blank">Adobe AIR</a>.'
     },{
         text: 'Simple Tasks',
         url:  'tasks/tasks.html',
         icon: 'tasks.gif',
-        desc: 'Personal task management application sample that uses <a href="http://gears.google.com" target="_blank">Google Gears</a> for data storage.'
+        desc: 'Personal task management application example that uses <a href="http://gears.google.com" target="_blank">Google Gears</a> for data storage.'
     },{
         text: 'Image Viewer',
         url:  'organizer/organizer.html',
         icon: 'organizer.gif',
-        desc: 'DataView and TreePanel sample that demonstrates dragging data items from a DataView into a TreePanel.'
+        desc: 'DataView and TreePanel example that demonstrates dragging data items from a DataView into a TreePanel.'
     }/*,{
         text: 'Image Organizer',
         url:  'image-organizer/index.html',
         icon: 'image-organizer.gif',
-        desc: 'Image management application sample utilizing MySQL lite and Ext.Direct.',
+        desc: 'Image management application example utilizing MySQL lite and Ext.Direct.',
         status: 'new'
     }*/,{
         text: 'Ext JS API Documentation',
@@ -169,8 +170,20 @@ Ext.samples.samplesCatalog = [{
     }, {
         text: 'RESTful Store with GridPanel and RowEditor',
         url: 'restful/restful.html',
-        icon: 'restful-thumb.gif',
+        icon: 'grid-row-editor.gif',
         desc: 'A RESTful Store with JsonWriter which automatically generates CRUD requests to the server.',
+        status: 'new'
+    },{
+        text: 'Locking GridView extension',
+        url: 'grid/locking-grid.html',
+        icon: 'grid-locking.gif',
+        desc: 'An example extension that introduces the ability to add locking columns to the GridPanel',
+        status: 'new'
+    },{
+        text: 'Grouping GridView extension',
+        url: 'grid/ColumnHeaderGroup.html',
+        icon: 'grid-columngrouping.gif',
+        desc: 'An extension that adds the capability of grouping Column headers in the GridPanel',
         status: 'new'
     }]
 },{
@@ -256,10 +269,11 @@ Ext.samples.samplesCatalog = [{
         icon: 'tree-two.gif',
         desc: 'Drag and drop between two different sorted TreePanels.'
     },{
-        text: 'Column Tree',
-        url: 'tree/column-tree.html',
+        text: 'TreeGrid',
+        url: 'treegrid/treegrid.html',
         icon: 'tree-columns.gif',
-        desc: 'A custom TreePanel implementation that demonstrates extending an existing component.'
+        desc: 'The TreeGrid component',
+        status: 'new'
     },{
         text: 'Check Tree',
         url: 'tree/check-tree.html',
@@ -324,7 +338,7 @@ Ext.samples.samplesCatalog = [{
     },{
         text: 'VBox Layout',
         url:  'layout/vbox.html',
-        icon: 'blank.gif',
+        icon: 'layout-vbox.gif',
         desc: 'Interactive layout illustrating the capabilities of the VBox Layout.',
         status: 'new'
     },{
@@ -394,6 +408,12 @@ Ext.samples.samplesCatalog = [{
         url:  'multiselect/multiselect-demo.html',
         icon: 'form-multiselect.gif',
         desc: 'Example controls for selecting a list of items in forms.'
+    },{
+        text: 'Forms with vBox layout',
+        url:  'form/vbox-form.html',
+        icon: 'form-vbox.gif',
+        desc: 'Example usage of the vBox layout with forms. An added bonus is the FieldReplicator plugin.',
+	status : 'new'
     }]
 },{
     title: 'Toolbars and Menus',
@@ -514,6 +534,12 @@ Ext.samples.samplesCatalog = [{
         url: 'window/gmap.html',
         icon: 'gmap-panel.gif',
         desc: 'A Google Maps wrapper class that enables easy display of dynamic maps in Ext panels and windows.'
+    },{
+        text: 'Editor',
+        url: 'simple-widgets/editor.html',
+        icon: 'editor.gif',
+        desc: 'An example demonstrating the ease of use of the Ext.editor class to modify DOM elements',
+        status: 'new'
     },{
         text: 'Slider',
         url: 'slider/slider.html',

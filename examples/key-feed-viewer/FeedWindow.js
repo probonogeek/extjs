@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -55,7 +55,7 @@ FeedWindow = function() {
 
         buttons:[{
             text: 'Add Feed!',
-            handler: this.onAdd,
+            handler: this.onFeedAdd,
             scope: this
         },{
             text: 'Cancel',
@@ -84,7 +84,7 @@ Ext.extend(FeedWindow, Ext.Window, {
         FeedWindow.superclass.show.apply(this, arguments);
     },
 
-    onAdd: function() {
+    onFeedAdd: function() {
         this.el.mask('Validating Feed...', 'x-mask-loading');
         var url = this.feedUrl.getValue();
         Ext.Ajax.request({

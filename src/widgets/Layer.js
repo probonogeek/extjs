@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -174,7 +174,7 @@ Ext.extend(Ext.Layer, Ext.Element, {
         }
         this.removeAllListeners();
         Ext.removeNode(this.dom);
-        Ext.Element.uncache(this.id);
+        delete this.dom;
     },
 
     remove : function(){

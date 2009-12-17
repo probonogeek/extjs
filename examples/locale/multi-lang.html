@@ -13,16 +13,6 @@
 </head>
 <body class="x-gray">
 <script type="text/javascript" src="../shared/examples.js"></script><!-- EXAMPLES -->
-<script type="text/javascript">
-var params = Ext.urlDecode(window.location.search.substring(1));
-if (params.lang) {
-    var s = document.createElement("script");
-    s.type = 'text/javascript';
-    s.src = "../../src/locale/ext-lang-"+params.lang+".js";
-    s.charset = params.charset;
-    document.getElementsByTagName("head")[0].appendChild(s);
-}
-</script>
 <script type="text/javascript" src="../ux/PagingMemoryProxy.js"></script>
 <script type="text/javascript" src="multi-lang.js"></script>
 

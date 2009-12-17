@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-Ext.debug = {};
+    <pre class="prettyprint lang-js">Ext.debug = {};
 
 (function(){
 
@@ -243,10 +238,11 @@ Ext.debug.LogPanel = Ext.extend(Ext.Panel, {
     log : function(){
         var markup = [  '<div style="padding:5px !important;border-bottom:1px solid #ccc;">',
                     Ext.util.Format.htmlEncode(Array.prototype.join.call(arguments, ', ')).replace(/\n/g, '<br/>').replace(/\s/g, '&#160;'),
-                    '</div>'].join('');
+                    '</div>'].join(''),
+            bd = this.body.dom;
 
         this.body.insertHtml('beforeend', markup);
-        this.body.scrollTo('top', 100000);
+        bd.scrollTop = bd.scrollHeight;
     },
 
     clear : function(){
@@ -910,6 +906,6 @@ Ext.debug.HtmlNode = function(){
     });
 
     return HtmlNode;
-}();</pre>
+}();</pre>    
 </body>
 </html>

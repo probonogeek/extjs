@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -137,8 +137,8 @@ Ext.dd.StatusProxy.prototype = {
      * Causes the proxy to return to its position of origin via an animation.  Should be called after an
      * invalid drop operation by the item being dragged.
      * @param {Array} xy The XY position of the element ([x, y])
-     * @param {Function} callback The function to call after the repair is complete
-     * @param {Object} scope The scope in which to execute the callback
+     * @param {Function} callback The function to call after the repair is complete.
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      */
     repair : function(xy, callback, scope){
         this.callback = callback;
@@ -167,5 +167,9 @@ Ext.dd.StatusProxy.prototype = {
         }
         this.callback = null;
         this.scope = null;
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.ghost, this.el);    
     }
 };

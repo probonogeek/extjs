@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -12,10 +12,10 @@ Ext.onReady(function(){
     // Slow the buffering down from the default of 10ms to 100ms
     Ext.app.REMOTING_API.enableBuffer = 100;
     Ext.Direct.addProvider(Ext.app.REMOTING_API);
-    
+
     // provide feedback for any errors
     Ext.QuickTips.init();
-    
+
     var basicInfo = new Ext.form.FormPanel({
         // configs for FormPanel
         title: 'Basic Information',
@@ -27,7 +27,7 @@ Ext.onReady(function(){
                 basicInfo.getForm().submit({
                     params: {
                         foo: 'bar',
-                        uid: 34 
+                        uid: 34
                     }
                 });
             }
@@ -42,12 +42,12 @@ Ext.onReady(function(){
         },{
             fieldLabel: 'Email',
             msgTarget: 'side',
-            name: 'email'        
+            name: 'email'
         },{
             fieldLabel: 'Company',
             name: 'company'
         }],
-        
+
         // configs for BasicForm
         api: {
             // The server-side method to call for load() requests
@@ -55,16 +55,16 @@ Ext.onReady(function(){
             // The server-side must mark the submit handler as a 'formHandler'
             submit: Profile.updateBasicInfo
         },
-        // specify the order for the passed params    
+        // specify the order for the passed params
         paramOrder: ['uid', 'foo']
     });
-    
+
     var phoneInfo = new Ext.form.FormPanel({
         title: 'Phone Numbers',
         border: false,
         api: {
             load: Profile.getPhoneInfo
-        },    
+        },
         padding: 10,
         paramOrder: ['uid'],
         defaultType: 'textfield',
@@ -74,20 +74,20 @@ Ext.onReady(function(){
             name: 'office'
         },{
             fieldLabel: 'Cell',
-            name: 'cell'        
+            name: 'cell'
         },{
             fieldLabel: 'Home',
             name: 'home'
         }]
     });
-    
+
      var locationInfo = new Ext.form.FormPanel({
         title: 'Location Information',
         border: false,
         padding: 10,
         api: {
             load: Profile.getLocationInfo
-        },    
+        },
         paramOrder: ['uid'],
         defaultType: 'textfield',
         defaults: {anchor: '100%'},
@@ -96,7 +96,7 @@ Ext.onReady(function(){
             name: 'street'
         },{
             fieldLabel: 'City',
-            name: 'city'            
+            name: 'city'
         },{
             fieldLabel: 'State',
             name: 'state'
@@ -104,23 +104,26 @@ Ext.onReady(function(){
             fieldLabel: 'Zip',
             name: 'zip'
         }]
-    });    
+    });
 
      var accordion = new Ext.Panel({
         layout: 'accordion',
+        layoutConfig: {
+            autoWidth : false
+        },
         renderTo: Ext.getBody(),
         title: 'My Profile',
         width: 300,
-        height: 240,    
+        height: 240,
         items: [basicInfo, phoneInfo, locationInfo]
     });
-        
+
     // load the forms (notice the load requests will get batched together)
     basicInfo.getForm().load({
         // pass 2 arguments to server side getBasicInfo method (len=2)
         params: {
             foo: 'bar',
-            uid: 34 
+            uid: 34
         }
     });
 
@@ -128,7 +131,7 @@ Ext.onReady(function(){
         params: {
             uid: 5
         }
-    });    
+    });
 
     // defer this request just to simulate the request not getting batched
     // since it exceeds to configured buffer
@@ -138,8 +141,8 @@ Ext.onReady(function(){
                 uid: 5
             }
         });
-    }).defer(200);    
-    
+    }).defer(200);
+
     // rpc call
     TestAction.doEcho('sample');
 

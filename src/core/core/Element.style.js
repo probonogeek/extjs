@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -7,7 +7,7 @@
 /**
  * @class Ext.Element
  */
-Ext.Element.addMethods(function(){  
+Ext.Element.addMethods(function(){
     // local style camelizing for speed
     var propCache = {},
         camelRe = /(-[a-z])/gi,
@@ -16,7 +16,7 @@ Ext.Element.addMethods(function(){
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
-        EL = Ext.Element,   
+        EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
         BORDER = "border",
@@ -24,7 +24,7 @@ Ext.Element.addMethods(function(){
         RIGHT = "-right",
         TOP = "-top",
         BOTTOM = "-bottom",
-        WIDTH = "-width",    
+        WIDTH = "-width",
         MATH = Math,
         HIDDEN = 'hidden',
         ISCLIPPED = 'isClipped',
@@ -32,24 +32,24 @@ Ext.Element.addMethods(function(){
         OVERFLOWX = 'overflow-x',
         OVERFLOWY = 'overflow-y',
         ORIGINALCLIP = 'originalClip',
-        // special markup used throughout Ext when box wrapping elements    
+        // special markup used throughout Ext when box wrapping elements
         borders = {l: BORDER + LEFT + WIDTH, r: BORDER + RIGHT + WIDTH, t: BORDER + TOP + WIDTH, b: BORDER + BOTTOM + WIDTH},
         paddings = {l: PADDING + LEFT, r: PADDING + RIGHT, t: PADDING + TOP, b: PADDING + BOTTOM},
         margins = {l: MARGIN + LEFT, r: MARGIN + RIGHT, t: MARGIN + TOP, b: MARGIN + BOTTOM},
         data = Ext.Element.data;
-        
-    
-    // private  
+
+
+    // private
     function camelFn(m, a) {
         return a.charAt(1).toUpperCase();
     }
-    
+
     function chkCache(prop) {
         return propCache[prop] || (propCache[prop] = prop == 'float' ? propFloat : prop.replace(camelRe, camelFn));
     }
-            
+
     return {
-        // private  ==> used by Fx  
+        // private  ==> used by Fx
         adjustWidth : function(width) {
             var me = this;
             var isNum = Ext.isNumber(width);
@@ -58,62 +58,73 @@ Ext.Element.addMethods(function(){
             }
             return (isNum && width < 0) ? 0 : width;
         },
-        
-        // private   ==> used by Fx 
+
+        // private   ==> used by Fx
         adjustHeight : function(height) {
             var me = this;
             var isNum = Ext.isNumber(height);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
-               height -= (me.getBorderWidth("tb") + me.getPadding("tb"));               
+               height -= (me.getBorderWidth("tb") + me.getPadding("tb"));
             }
             return (isNum && height < 0) ? 0 : height;
         },
-    
-    
+
+
         /**
          * Adds one or more CSS classes to the element. Duplicate classes are automatically filtered out.
          * @param {String/Array} className The CSS class to add, or an array of classes
          * @return {Ext.Element} this
          */
         addClass : function(className){
-            var me = this;
-            Ext.each(className, function(v) {
-                me.dom.className += (!me.hasClass(v) && v ? " " + v : "");  
-            });
+            var me = this, i, len, v;
+            className = Ext.isArray(className) ? className : [className];
+            for (i=0, len = className.length; i < len; i++) {
+                v = className[i];
+                if (v) {
+                    me.dom.className += (!me.hasClass(v) && v ? " " + v : "");
+                };
+            };
             return me;
         },
-    
+
         /**
          * Adds one or more CSS classes to this element and removes the same class(es) from all siblings.
          * @param {String/Array} className The CSS class to add, or an array of classes
          * @return {Ext.Element} this
          */
         radioClass : function(className){
-            Ext.each(this.dom.parentNode.childNodes, function(v) {
-                if(v.nodeType == 1) {
-                    Ext.fly(v, '_internal').removeClass(className);          
+            var cn = this.dom.parentNode.childNodes, v;
+            className = Ext.isArray(className) ? className : [className];
+            for (var i=0, len = cn.length; i < len; i++) {
+                v = cn[i];
+                if(v && v.nodeType == 1) {
+                    Ext.fly(v, '_internal').removeClass(className);
                 }
-            });
+            };
             return this.addClass(className);
         },
-    
+
         /**
          * Removes one or more CSS classes from the element.
          * @param {String/Array} className The CSS class to remove, or an array of classes
          * @return {Ext.Element} this
          */
         removeClass : function(className){
-            var me = this;
+            var me = this, v;
+            className = Ext.isArray(className) ? className : [className];
             if (me.dom && me.dom.className) {
-                Ext.each(className, function(v) {               
-                    me.dom.className = me.dom.className.replace(
-                        classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), 
-                        " ");               
-                });    
+                for (var i=0, len=className.length; i < len; i++) {
+                    v = className[i];
+                    if(v) {
+                        me.dom.className = me.dom.className.replace(
+                            classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), " "
+                        );
+                    }
+                };
             }
             return me;
         },
-    
+
         /**
          * Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).
          * @param {String} className The CSS class to toggle
@@ -122,7 +133,7 @@ Ext.Element.addMethods(function(){
         toggleClass : function(className){
             return this.hasClass(className) ? this.removeClass(className) : this.addClass(className);
         },
-    
+
         /**
          * Checks if the specified CSS class exists on this element's DOM node.
          * @param {String} className The CSS class to check for
@@ -131,7 +142,7 @@ Ext.Element.addMethods(function(){
         hasClass : function(className){
             return className && (' '+this.dom.className+' ').indexOf(' '+className+' ') != -1;
         },
-    
+
         /**
          * Replaces a CSS class on the element with another.  If the old name does not exist, the new name will simply be added.
          * @param {String} oldClassName The CSS class to replace
@@ -141,42 +152,57 @@ Ext.Element.addMethods(function(){
         replaceClass : function(oldClassName, newClassName){
             return this.removeClass(oldClassName).addClass(newClassName);
         },
-        
+
         isStyle : function(style, val) {
-            return this.getStyle(style) == val;  
+            return this.getStyle(style) == val;
         },
-    
+
         /**
          * Normalizes currentStyle and computedStyle.
          * @param {String} property The style property whose value is returned.
          * @return {String} The current value of the style property for this element.
          */
-        getStyle : function(){         
+        getStyle : function(){
             return view && view.getComputedStyle ?
                 function(prop){
                     var el = this.dom,
-                        v,                  
+                        v,
                         cs,
-                        out;
-                    if(el == document) return null;
+                        out,
+                        display,
+                        wk = Ext.isWebKit,
+                        display;
+                        
+                    if(el == document){
+                        return null;
+                    }
                     prop = chkCache(prop);
-                    out = (v = el.style[prop]) ? v : 
+                    // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
+                    if(wk && /marginRight/.test(prop)){
+                        display = this.getStyle('display');
+                        el.style.display = 'inline-block';
+                    }
+                    out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
-                    
+
                     // Webkit returns rgb values for transparent.
-                    if(Ext.isWebKit && out == 'rgba(0, 0, 0, 0)'){
-                        out = 'transparent';
+                    if(wk){
+                        if(out == 'rgba(0, 0, 0, 0)'){
+                            out = 'transparent';
+                        }else if(display){
+                            el.style.display = display;
+                        }
                     }
                     return out;
                 } :
-                function(prop){      
-                    var el = this.dom, 
-                        m, 
-                        cs;     
-                        
-                    if(el == document) return null;      
+                function(prop){
+                    var el = this.dom,
+                        m,
+                        cs;
+
+                    if(el == document) return null;
                     if (prop == 'opacity') {
-                        if (el.style.filter.match) {                       
+                        if (el.style.filter.match) {
                             if(m = el.style.filter.match(opacityRe)){
                                 var fv = parseFloat(m[1]);
                                 if(!isNaN(fv)){
@@ -186,7 +212,7 @@ Ext.Element.addMethods(function(){
                         }
                         return 1;
                     }
-                    prop = chkCache(prop);  
+                    prop = chkCache(prop);
                     return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
                 };
         }(),
@@ -203,14 +229,14 @@ Ext.Element.addMethods(function(){
             var v = this.getStyle(attr),
                 color = Ext.isDefined(prefix) ? prefix : '#',
                 h;
-                
+
             if(!v || /transparent|inherit/.test(v)){
                 return defaultValue;
             }
             if(/^r/.test(v)){
                 Ext.each(v.slice(4, v.length -1).split(','), function(s){
                     h = parseInt(s, 10);
-                    color += (h < 16 ? '0' : '') + h.toString(16); 
+                    color += (h < 16 ? '0' : '') + h.toString(16);
                 });
             }else{
                 v = v.replace('#', '');
@@ -218,7 +244,7 @@ Ext.Element.addMethods(function(){
             }
             return(color.length > 5 ? color.toLowerCase() : defaultValue);
         },
-    
+
         /**
          * Wrapper for setting style properties, also takes single object parameter of multiple styles.
          * @param {String/Object} property The style property to be set, or an object of multiple styles.
@@ -226,23 +252,23 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         setStyle : function(prop, value){
-            var tmp, 
+            var tmp,
                 style,
                 camel;
             if (!Ext.isObject(prop)) {
                 tmp = {};
-                tmp[prop] = value;          
+                tmp[prop] = value;
                 prop = tmp;
             }
             for (style in prop) {
-                value = prop[style];            
-                style == 'opacity' ? 
-                    this.setOpacity(value) : 
+                value = prop[style];
+                style == 'opacity' ?
+                    this.setOpacity(value) :
                     this.dom.style[chkCache(style)] = value;
             }
             return this;
         },
-        
+
         /**
          * Set the opacity of the element
          * @param {Float} opacity The new opacity. 0 = transparent, .5 = 50% visibile, 1 = fully visible, etc
@@ -253,10 +279,10 @@ Ext.Element.addMethods(function(){
          setOpacity : function(opacity, animate){
             var me = this,
                 s = me.dom.style;
-                
-            if(!animate || !me.anim){            
+
+            if(!animate || !me.anim){
                 if(Ext.isIE){
-                    var opac = opacity < 1 ? 'alpha(opacity=' + opacity * 100 + ')' : '', 
+                    var opac = opacity < 1 ? 'alpha(opacity=' + opacity * 100 + ')' : '',
                     val = s.filter.replace(opacityRe, '').replace(trimRe, '');
 
                     s.zoom = 1;
@@ -269,7 +295,7 @@ Ext.Element.addMethods(function(){
             }
             return me;
         },
-        
+
         /**
          * Clears any opacity settings from this element. Required in some cases for IE.
          * @return {Ext.Element} this
@@ -285,7 +311,7 @@ Ext.Element.addMethods(function(){
             }
             return this;
         },
-    
+
         /**
          * Returns the offset height of the element
          * @param {Boolean} contentHeight (optional) true to get the height minus borders and padding
@@ -296,11 +322,11 @@ Ext.Element.addMethods(function(){
                 dom = me.dom,
                 hidden = Ext.isIE && me.isStyle('display', 'none'),
                 h = MATH.max(dom.offsetHeight, hidden ? 0 : dom.clientHeight) || 0;
-                
+
             h = !contentHeight ? h : h - me.getBorderWidth("tb") - me.getPadding("tb");
             return h < 0 ? 0 : h;
         },
-    
+
         /**
          * Returns the offset width of the element
          * @param {Boolean} contentWidth (optional) true to get the width minus borders and padding
@@ -314,7 +340,7 @@ Ext.Element.addMethods(function(){
             w = !contentWidth ? w : w - me.getBorderWidth("lr") - me.getPadding("lr");
             return w < 0 ? 0 : w;
         },
-    
+
         /**
          * Set the width of this Element.
          * @param {Mixed} width The new width. This may be one of:<div class="mdetail-params"><ul>
@@ -327,12 +353,12 @@ Ext.Element.addMethods(function(){
         setWidth : function(width, animate){
             var me = this;
             width = me.adjustWidth(width);
-            !animate || !me.anim ? 
+            !animate || !me.anim ?
                 me.dom.style.width = me.addUnits(width) :
                 me.anim({width : {to : width}}, me.preanim(arguments, 1));
             return me;
         },
-    
+
         /**
          * Set the height of this Element.
          * <pre><code>
@@ -343,7 +369,7 @@ Ext.fly('elementId').setHeight(200, true);
 Ext.fly('elId').setHeight(150, {
     duration : .5, // animation will have a duration of .5 seconds
     // will change the content to "finished"
-    callback: function(){ this.{@link #update}("finished"); } 
+    callback: function(){ this.{@link #update}("finished"); }
 });
          * </code></pre>
          * @param {Mixed} height The new height. This may be one of:<div class="mdetail-params"><ul>
@@ -356,12 +382,12 @@ Ext.fly('elId').setHeight(150, {
          setHeight : function(height, animate){
             var me = this;
             height = me.adjustHeight(height);
-            !animate || !me.anim ? 
+            !animate || !me.anim ?
                 me.dom.style.height = me.addUnits(height) :
                 me.anim({height : {to : height}}, me.preanim(arguments, 1));
             return me;
         },
-        
+
         /**
          * Gets the width of the border(s) for the specified side(s)
          * @param {String} side Can be t, l, r, b or any combination of those to add multiple values. For example,
@@ -371,7 +397,7 @@ Ext.fly('elId').setHeight(150, {
         getBorderWidth : function(side){
             return this.addStyles(side, borders);
         },
-    
+
         /**
          * Gets the width of the padding(s) for the specified side(s)
          * @param {String} side Can be t, l, r, b or any combination of those to add multiple values. For example,
@@ -381,7 +407,7 @@ Ext.fly('elId').setHeight(150, {
         getPadding : function(side){
             return this.addStyles(side, paddings);
         },
-    
+
         /**
          *  Store the current overflow setting and clip overflow on the element - use <tt>{@link #unclip}</tt> to remove
          * @return {Ext.Element} this
@@ -389,7 +415,7 @@ Ext.fly('elId').setHeight(150, {
         clip : function(){
             var me = this,
                 dom = me.dom;
-                
+
             if(!data(dom, ISCLIPPED)){
                 data(dom, ISCLIPPED, true);
                 data(dom, ORIGINALCLIP, {
@@ -403,7 +429,7 @@ Ext.fly('elId').setHeight(150, {
             }
             return me;
         },
-    
+
         /**
          *  Return clipping (overflow) to original clipping before <tt>{@link #clip}</tt> was called
          * @return {Ext.Element} this
@@ -411,7 +437,7 @@ Ext.fly('elId').setHeight(150, {
         unclip : function(){
             var me = this,
                 dom = me.dom;
-                
+
             if(data(dom, ISCLIPPED)){
                 data(dom, ISCLIPPED, false);
                 var o = data(dom, ORIGINALCLIP);
@@ -430,18 +456,19 @@ Ext.fly('elId').setHeight(150, {
 
         // private
         addStyles : function(sides, styles){
-            var val = 0;
-
-            Ext.each(sides.match(/\w/g), function(s) {
-                if (s = parseInt(this.getStyle(styles[s]), 10)) {
+            var val = 0,
+                m = sides.match(/\w/g),
+                s;
+            for (var i=0, len=m.length; i<len; i++) {
+                s = m[i] && parseInt(this.getStyle(styles[m[i]]), 10);
+                if (s) {
                     val += MATH.abs(s);
                 }
-            },
-            this);
+            }
             return val;
         },
 
         margins : margins
     }
-}()         
+}()
 );

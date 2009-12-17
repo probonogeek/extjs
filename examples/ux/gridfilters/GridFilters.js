@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -180,7 +180,8 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     updateBuffer : 500,
 
     /** @private */
-    constructor : function (config) {		
+    constructor : function (config) {
+        config = config || {};
         this.deferredUpdate = new Ext.util.DelayedTask(this.reload, this);
         this.filters = new Ext.util.MixedCollection();
         this.filters.getKey = function (o) {
@@ -195,8 +196,12 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     init : function (grid) {
         if (grid instanceof Ext.grid.GridPanel) {
             this.grid = grid;
-
+            
             this.bindStore(this.grid.getStore(), true);
+            // assumes no filters were passed in the constructor, so try and use ones from the colModel
+            if(this.filters.getCount() == 0){
+                this.addFilters(this.grid.getColumnModel());
+            }
           
             this.grid.filters = this;
              
@@ -447,7 +452,7 @@ TODO: lazy rendering
      */
     onBeforeLoad : function (store, options) {
         options.params = options.params || {};
-        this.cleanParams(options.params);		
+        this.cleanParams(options.params);       
         var params = this.buildQuery(this.getFilterData());
         Ext.apply(options.params, params);
     },
@@ -651,7 +656,7 @@ filters[0][data][value]="someValue3"&
      * </ul></div>
      * Override this method to customize the format of the filter query for remote requests.
      * @param {Array} filters A collection of objects representing active filters and their configuration.
-     * 	  Each element will take the form of {field: dataIndex, data: filterConf}. dataIndex is not assured
+     *    Each element will take the form of {field: dataIndex, data: filterConf}. dataIndex is not assured
      *    to be unique as any one filter may be a composite of more basic filters for the same dataIndex.
      * @return {Object} Query keys and values
      */

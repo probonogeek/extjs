@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.grid.EditorGridPanel"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.grid.EditorGridPanel"></div>/**
  * @class Ext.grid.EditorGridPanel
  * @extends Ext.grid.GridPanel
  * <p>This class extends the {@link Ext.grid.GridPanel GridPanel Class} to provide cell editing
@@ -171,6 +166,14 @@ grid.on('validateedit', function(e) {
             this.on('celldblclick', this.onCellDblClick, this);
         }
     },
+    
+    onResize : function(){
+        Ext.grid.EditorGridPanel.superclass.onResize.apply(this, arguments);
+        var ae = this.activeEditor;
+        if(this.editing && ae){
+            ae.realign(true);
+        }
+    },
 
     // private
     onCellDblClick : function(g, row, col){
@@ -182,8 +185,8 @@ grid.on('validateedit', function(e) {
         if(e.button !== 0){
             return;
         }
-        var row = this.view.findRowIndex(t);
-        var col = this.view.findCellIndex(t);
+        var row = this.view.findRowIndex(t),
+            col = this.view.findCellIndex(t);
         if(row !== false && col !== false){
             this.stopEditing();
             if(this.selModel.getSelectedCell){ // cell sm
@@ -204,8 +207,8 @@ grid.on('validateedit', function(e) {
         this.editing = false;
         this.activeEditor = null;
         
-		var r = ed.record;
-        var field = this.colModel.getDataIndex(ed.col);
+		var r = ed.record,
+            field = this.colModel.getDataIndex(ed.col);
         value = this.postEditValue(value, startValue, r, field);
         if(this.forceValidation === true || String(value) !== String(startValue)){
             var e = {
@@ -236,17 +239,17 @@ grid.on('validateedit', function(e) {
         this.stopEditing();
         if(this.colModel.isCellEditable(col, row)){
             this.view.ensureVisible(row, col, true);
-            var r = this.store.getAt(row);
-            var field = this.colModel.getDataIndex(col);
-            var e = {
-                grid: this,
-                record: r,
-                field: field,
-                value: r.data[field],
-                row: row,
-                column: col,
-                cancel:false
-            };
+            var r = this.store.getAt(row),
+                field = this.colModel.getDataIndex(col),
+                e = {
+                    grid: this,
+                    record: r,
+                    field: field,
+                    value: r.data[field],
+                    row: row,
+                    column: col,
+                    cancel:false
+                };
             if(this.fireEvent("beforeedit", e) !== false && !e.cancel){
                 this.editing = true;
                 var ed = this.colModel.getCellEditor(col, row);
@@ -314,6 +317,6 @@ grid.on('validateedit', function(e) {
         this.editing = false;
     }
 });
-Ext.reg('editorgrid', Ext.grid.EditorGridPanel);</pre>
+Ext.reg('editorgrid', Ext.grid.EditorGridPanel);</pre>    
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -44,6 +44,9 @@ var p = new Ext.Panel({
     }]
 });
  * </code></pre>
+ * @constructor
+ * Create a new ButtonGroup.
+ * @param {Object} config The config object
  * @xtype buttongroup
  */
 Ext.ButtonGroup = Ext.extend(Ext.Panel, {

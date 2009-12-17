@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.History"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.History"></div>/**
  * @class Ext.History
  * @extends Ext.util.Observable
  * History management component that allows you to register arbitrary tokens that signify application
@@ -21,9 +16,10 @@
  * @singleton
  */
 Ext.History = (function () {
-    var iframe, hiddenField;
-    var ready = false;
-    var currentToken;
+    var iframe, hiddenField,
+        ready = false,
+        currentToken,
+        ignoreNext = false;
 
     function getHash() {
         var href = top.location.href, i = href.indexOf("#");
@@ -36,11 +32,14 @@ Ext.History = (function () {
 
     function handleStateChange(token) {
         currentToken = token;
-        Ext.History.fireEvent('change', token);
+        if(!(token == ignoreNext)){
+            Ext.History.fireEvent('change', token);
+        }
+        ignoreNext = false;
     }
 
     function updateIFrame (token) {
-        var html = ['<html><body><div id="state">',token,'</div></body></html>'].join('');
+        var html = ['<html><body><div id="state">',Ext.util.Format.htmlEncode(token),'</div></body></html>'].join('');
         try {
             var doc = iframe.contentWindow.document;
             doc.open();
@@ -58,20 +57,18 @@ Ext.History = (function () {
             return;
         }
 
-        var doc = iframe.contentWindow.document;
-        var elem = doc.getElementById("state");
-        var token = elem ? elem.innerText : null;
-
-        var hash = getHash();
+        var doc = iframe.contentWindow.document,
+            elem = doc.getElementById("state"),
+            token = elem ? elem.innerText : null,
+            hash = getHash();
 
         setInterval(function () {
 
             doc = iframe.contentWindow.document;
             elem = doc.getElementById("state");
 
-            var newtoken = elem ? elem.innerText : null;
-
-            var newHash = getHash();
+            var newtoken = elem ? elem.innerText : null,
+                newHash = getHash();
 
             if (newtoken !== token) {
                 token = newtoken;
@@ -124,14 +121,14 @@ Ext.History = (function () {
          * @property
          */
         iframeId: 'x-history-frame',
-        
+
         events:{},
 
         <div id="method-Ext.History-init"></div>/**
          * Initialize the global History instance.
          * @param {Boolean} onReady (optional) A callback function that will be called once the history
          * component is fully initialized.
-         * @param {Object} scope (optional) The callback scope
+         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the callback is executed. Defaults to the browser window.
          */
         init: function (onReady, scope) {
             if(ready) {
@@ -148,7 +145,20 @@ Ext.History = (function () {
             if (Ext.isIE) {
                 iframe = Ext.getDom(Ext.History.iframeId);
             }
-            this.addEvents('ready', 'change');
+            this.addEvents(
+                <div id="event-Ext.History-ready"></div>/**
+                 * @event ready
+                 * Fires when the Ext.History singleton has been initialized and is ready for use.
+                 * @param {Ext.History} The Ext.History singleton.
+                 */
+                'ready',
+                <div id="event-Ext.History-change"></div>/**
+                 * @event change
+                 * Fires when navigation back or forwards within the local page's history occurs.
+                 * @param {String} token An identifier associated with the page state at that point in its history.
+                 */
+                'change'
+            );
             if(onReady){
                 this.on('ready', onReady, scope, {single:true});
             }
@@ -170,11 +180,14 @@ tabPanel.on('tabchange', function(tabPanel, tab){
          * it will not save a new history step. Set to false if the same state can be saved more than once
          * at the same history stack location (defaults to true).
          */
-        add: function (token, preventDup) {
+        add: function (token, preventDup, suppressEvent) {
             if(preventDup !== false){
                 if(this.getToken() == token){
                     return true;
                 }
+            }
+            if(suppressEvent){
+                ignoreNext = token;
             }
             if (Ext.isIE) {
                 return updateIFrame(token);
@@ -207,6 +220,6 @@ tabPanel.on('tabchange', function(tabPanel, tab){
         }
     };
 })();
-Ext.apply(Ext.History, new Ext.util.Observable());</pre>
+Ext.apply(Ext.History, new Ext.util.Observable());</pre>    
 </body>
 </html>

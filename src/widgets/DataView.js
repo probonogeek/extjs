@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -154,7 +154,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "click",
             /**
              * @event mouseenter
-             * Fires when the mouse enters a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse enters a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -163,7 +163,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "mouseenter",
             /**
              * @event mouseleave
-             * Fires when the mouse leaves a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse leaves a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -741,6 +741,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     },
 
     onDestroy : function(){
+        this.all.clear();
+        this.selected.clear();
         Ext.DataView.superclass.onDestroy.call(this);
         this.bindStore(null);
     }

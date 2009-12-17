@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -43,7 +43,7 @@ Ext.ux.CellFieldDropZone = Ext.extend(Ext.dd.DropZone, {
                     node: t,
                     record: this.store.getAt(rowIndex),
                     fieldName: this.grid.getColumnModel().getDataIndex(columnIndex)
-                }
+                };
             }
         }
     },

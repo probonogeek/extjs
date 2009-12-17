@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -58,7 +58,7 @@ Ext.tree.TreeFilter.prototype = {
      * node in the tree (or from the startNode). If the function returns true, the node is kept
      * otherwise it is filtered. If a node is filtered, its children are also filtered.
      * @param {Function} fn The filter function
-     * @param {Object} scope (optional) The scope of the function (defaults to the current node)
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Node.
      */
     filterBy : function(fn, scope, startNode){
         startNode = startNode || this.tree.root;

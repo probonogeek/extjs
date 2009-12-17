@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -25,16 +25,22 @@ Ext.LoadMask = function(el, config){
     this.el = Ext.get(el);
     Ext.apply(this, config);
     if(this.store){
-        this.store.on('beforeload', this.onBeforeLoad, this);
-        this.store.on('load', this.onLoad, this);
-        this.store.on('exception', this.onLoad, this);
+        this.store.on({
+            scope: this,
+            beforeload: this.onBeforeLoad,
+            load: this.onLoad,
+            exception: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, false);
     }else{
         var um = this.el.getUpdater();
         um.showLoadIndicator = false; // disable the default indicator
-        um.on('beforeupdate', this.onBeforeLoad, this);
-        um.on('update', this.onLoad, this);
-        um.on('failure', this.onLoad, this);
+        um.on({
+            scope: this,
+            beforeupdate: this.onBeforeLoad,
+            update: this.onLoad,
+            failure: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, true);
     }
 };

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,55 +8,7 @@
  * @class Ext.dd.DragTracker
  * @extends Ext.util.Observable
  */
-Ext.dd.DragTracker = function(config){
-    Ext.apply(this, config);
-    this.addEvents(
-        /**
-         * @event mousedown
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mousedown',
-        /**
-         * @event mouseup
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mouseup',
-        /**
-         * @event mousemove
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'mousemove',
-        /**
-         * @event dragstart
-         * @param {Object} this
-         * @param {Object} startXY the page coordinates of the event
-         */
-        'dragstart',
-        /**
-         * @event dragend
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'dragend',
-        /**
-         * @event drag
-         * @param {Object} this
-         * @param {Object} e event object
-         */
-        'drag'
-    );
-
-    this.dragRegion = new Ext.lib.Region(0,0,0,0);
-
-    if(this.el){
-        this.initEl(this.el);
-    }
-}
-
-Ext.extend(Ext.dd.DragTracker, Ext.util.Observable,  {
+Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
     /**
      * @cfg {Boolean} active
 	 * Defaults to <tt>false</tt>.
@@ -73,6 +25,55 @@ Ext.extend(Ext.dd.DragTracker, Ext.util.Observable,  {
 	 * Specify a Number for the number of milliseconds to defer trigger start.
 	 */	
     autoStart: false,
+    
+    constructor : function(config){
+        Ext.apply(this, config);
+	    this.addEvents(
+	        /**
+	         * @event mousedown
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mousedown',
+	        /**
+	         * @event mouseup
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mouseup',
+	        /**
+	         * @event mousemove
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'mousemove',
+	        /**
+	         * @event dragstart
+	         * @param {Object} this
+	         * @param {Object} startXY the page coordinates of the event
+	         */
+	        'dragstart',
+	        /**
+	         * @event dragend
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'dragend',
+	        /**
+	         * @event drag
+	         * @param {Object} this
+	         * @param {Object} e event object
+	         */
+	        'drag'
+	    );
+	
+	    this.dragRegion = new Ext.lib.Region(0,0,0,0);
+	
+	    if(this.el){
+	        this.initEl(this.el);
+	    }
+        Ext.dd.DragTracker.superclass.constructor.call(this, config);
+    },
 
     initEl: function(el){
         this.el = Ext.get(el);

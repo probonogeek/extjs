@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -38,18 +38,20 @@ Ext.grid.PropertyRecord = Ext.data.Record.create([
  * @param {Ext.grid.Grid} grid The grid this store will be bound to
  * @param {Object} source The source data config object
  */
-Ext.grid.PropertyStore = function(grid, source){
-    this.grid = grid;
-    this.store = new Ext.data.Store({
-        recordType : Ext.grid.PropertyRecord
-    });
-    this.store.on('update', this.onUpdate,  this);
-    if(source){
-        this.setSource(source);
-    }
-    Ext.grid.PropertyStore.superclass.constructor.call(this);
-};
-Ext.extend(Ext.grid.PropertyStore, Ext.util.Observable, {
+Ext.grid.PropertyStore = Ext.extend(Ext.util.Observable, {
+    
+    constructor : function(grid, source){
+        this.grid = grid;
+        this.store = new Ext.data.Store({
+            recordType : Ext.grid.PropertyRecord
+        });
+        this.store.on('update', this.onUpdate,  this);
+        if(source){
+            this.setSource(source);
+        }
+        Ext.grid.PropertyStore.superclass.constructor.call(this);    
+    },
+    
     // protected - should only be called by the grid.  Use grid.setSource instead.
     setSource : function(o){
         this.source = o;
@@ -85,10 +87,7 @@ Ext.extend(Ext.grid.PropertyStore, Ext.util.Observable, {
 
     // private
     isEditableValue: function(val){
-        if(Ext.isDate(val)){
-            return true;
-        }
-        return !(Ext.isObject(val) || Ext.isFunction(val));
+        return Ext.isPrimitive(val) || Ext.isDate(val);
     },
 
     // private
@@ -111,43 +110,43 @@ Ext.extend(Ext.grid.PropertyStore, Ext.util.Observable, {
  * @param {Ext.grid.Grid} grid The grid this store will be bound to
  * @param {Object} source The source data config object
  */
-Ext.grid.PropertyColumnModel = function(grid, store){
-    var g = Ext.grid,
-        f = Ext.form;
-        
-    this.grid = grid;
-    g.PropertyColumnModel.superclass.constructor.call(this, [
-        {header: this.nameText, width:50, sortable: true, dataIndex:'name', id: 'name', menuDisabled:true},
-        {header: this.valueText, width:50, resizable:false, dataIndex: 'value', id: 'value', menuDisabled:true}
-    ]);
-    this.store = store;
-
-    var bfield = new f.Field({
-        autoCreate: {tag: 'select', children: [
-            {tag: 'option', value: 'true', html: 'true'},
-            {tag: 'option', value: 'false', html: 'false'}
-        ]},
-        getValue : function(){
-            return this.el.dom.value == 'true';
-        }
-    });
-    this.editors = {
-        'date' : new g.GridEditor(new f.DateField({selectOnFocus:true})),
-        'string' : new g.GridEditor(new f.TextField({selectOnFocus:true})),
-        'number' : new g.GridEditor(new f.NumberField({selectOnFocus:true, style:'text-align:left;'})),
-        'boolean' : new g.GridEditor(bfield, {
-            autoSize: 'both'
-        })
-    };
-    this.renderCellDelegate = this.renderCell.createDelegate(this);
-    this.renderPropDelegate = this.renderProp.createDelegate(this);
-};
-
-Ext.extend(Ext.grid.PropertyColumnModel, Ext.grid.ColumnModel, {
+Ext.grid.PropertyColumnModel = Ext.extend(Ext.grid.ColumnModel, {
     // private - strings used for locale support
     nameText : 'Name',
     valueText : 'Value',
     dateFormat : 'm/j/Y',
+    
+    constructor : function(grid, store){
+        var g = Ext.grid,
+	        f = Ext.form;
+	        
+	    this.grid = grid;
+	    g.PropertyColumnModel.superclass.constructor.call(this, [
+	        {header: this.nameText, width:50, sortable: true, dataIndex:'name', id: 'name', menuDisabled:true},
+	        {header: this.valueText, width:50, resizable:false, dataIndex: 'value', id: 'value', menuDisabled:true}
+	    ]);
+	    this.store = store;
+	
+	    var bfield = new f.Field({
+	        autoCreate: {tag: 'select', children: [
+	            {tag: 'option', value: 'true', html: 'true'},
+	            {tag: 'option', value: 'false', html: 'false'}
+	        ]},
+	        getValue : function(){
+	            return this.el.dom.value == 'true';
+	        }
+	    });
+	    this.editors = {
+	        'date' : new g.GridEditor(new f.DateField({selectOnFocus:true})),
+	        'string' : new g.GridEditor(new f.TextField({selectOnFocus:true})),
+	        'number' : new g.GridEditor(new f.NumberField({selectOnFocus:true, style:'text-align:left;'})),
+	        'boolean' : new g.GridEditor(bfield, {
+	            autoSize: 'both'
+	        })
+	    };
+	    this.renderCellDelegate = this.renderCell.createDelegate(this);
+	    this.renderPropDelegate = this.renderProp.createDelegate(this);
+    },
 
     // private
     renderDate : function(dateVal){
@@ -215,7 +214,7 @@ Ext.extend(Ext.grid.PropertyColumnModel, Ext.grid.ColumnModel, {
     destroy : function(){
         Ext.grid.PropertyColumnModel.superclass.destroy.call(this);
         for(var ed in this.editors){
-            Ext.destroy(ed);
+            Ext.destroy(this.editors[ed]);
         }
     }
 });
@@ -368,5 +367,22 @@ grid.setSource({
     getSource : function(){
         return this.propStore.getSource();
     }
+
+    /**
+     * @cfg store
+     * @hide
+     */
+    /**
+     * @cfg colModel
+     * @hide
+     */
+    /**
+     * @cfg cm
+     * @hide
+     */
+    /**
+     * @cfg columns
+     * @hide
+     */
 });
 Ext.reg("propertygrid", Ext.grid.PropertyGrid);

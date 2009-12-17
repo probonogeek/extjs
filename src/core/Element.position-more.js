@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -26,13 +26,24 @@ Ext.Element.addMethods({
         me.setBounds(box.x, box.y, w, h, me.animTest.call(me, arguments, animate, 2));
         return me;
     },
-    
+
     /**
-     * Return a box {x, y, width, height} that can be used to set another elements
-     * size/location to match this element.
+     * Return an object defining the area of this Element which can be passed to {@link #setBox} to
+     * set another Element's size/location to match this element.
      * @param {Boolean} contentBox (optional) If true a box for the content of the element is returned.
      * @param {Boolean} local (optional) If true the element's left and top are returned instead of page x/y.
-     * @return {Object} box An object in the format {x, y, width, height}
+     * @return {Object} box An object in the format<pre><code>
+{
+    x: &lt;Element's X position>,
+    y: &lt;Element's Y position>,
+    width: &lt;Element's width>,
+    height: &lt;Element's height>,
+    bottom: &lt;Element's lower bound>,
+    right: &lt;Element's rightmost bound>
+}
+</code></pre>
+     * The returned object may also be addressed as an Array where index 0 contains the X position
+     * and index 1 contains the Y position. So the result may also be used for {@link #setXY}
      */
 	getBox : function(contentBox, local) {	    
 	    var me = this,

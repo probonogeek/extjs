@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -60,17 +60,16 @@ Ext.data.Field = function(config){
             case "int":
                 cv = function(v){
                     return v !== undefined && v !== null && v !== '' ?
-                           parseInt(String(v).replace(stripRe, ""), 10) : '';
+                        parseInt(String(v).replace(stripRe, ""), 10) : '';
                     };
                 break;
             case "float":
                 cv = function(v){
                     return v !== undefined && v !== null && v !== '' ?
-                           parseFloat(String(v).replace(stripRe, ""), 10) : '';
+                        parseFloat(String(v).replace(stripRe, ""), 10) : '';
                     };
                 break;
             case "bool":
-            case "boolean":
                 cv = function(v){ return v === true || v === "true" || v == 1; };
                 break;
             case "date":
@@ -93,7 +92,10 @@ Ext.data.Field = function(config){
                     var parsed = Date.parse(v);
                     return parsed ? new Date(parsed) : null;
                 };
-             break;
+                break;
+            default:
+                cv = function(v){ return v; };
+                break;
 
         }
         this.convert = cv;
@@ -154,7 +156,7 @@ var store = new Ext.data.Store({
     reader: new Ext.data.JsonReader(
         {
             idProperty: 'key',
-            root: 'daRoot',  
+            root: 'daRoot',
             totalProperty: 'total'
         },
         Dude  // recordType
@@ -239,11 +241,11 @@ sortType: function(value) {
      * <tt>"ASC"</tt>.
      */
     sortDir : "ASC",
-	/**
-	 * @cfg {Boolean} allowBlank 
-	 * (Optional) Used for validating a {@link Ext.data.Record record}, defaults to <tt>true</tt>.
-	 * An empty value here will cause {@link Ext.data.Record}.{@link Ext.data.Record#isValid isValid}
-	 * to evaluate to <tt>false</tt>.
-	 */
-	allowBlank : true
+    /**
+     * @cfg {Boolean} allowBlank
+     * (Optional) Used for validating a {@link Ext.data.Record record}, defaults to <tt>true</tt>.
+     * An empty value here will cause {@link Ext.data.Record}.{@link Ext.data.Record#isValid isValid}
+     * to evaluate to <tt>false</tt>.
+     */
+    allowBlank : true
 };

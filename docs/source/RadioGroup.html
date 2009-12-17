@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.form.RadioGroup"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.form.RadioGroup"></div>/**
  * @class Ext.form.RadioGroup
  * @extends Ext.form.CheckboxGroup
  * A grouping container for {@link Ext.form.Radio} controls.
@@ -21,6 +16,10 @@
  * @xtype radiogroup
  */
 Ext.form.RadioGroup = Ext.extend(Ext.form.CheckboxGroup, {
+    <div id="cfg-Ext.form.RadioGroup-items"></div>/**
+     * @cfg {Array} items An Array of {@link Ext.form.Radio Radio}s or Radio config objects
+     * to arrange in the group.
+     */
     <div id="cfg-Ext.form.RadioGroup-allowBlank"></div>/**
      * @cfg {Boolean} allowBlank True to allow every item in the group to be blank (defaults to true).
      * If allowBlank = false and no items are selected at validation time, {@link @blankText} will
@@ -123,6 +122,6 @@ Ext.form.RadioGroup = Ext.extend(Ext.form.CheckboxGroup, {
 });
 
 Ext.reg('radiogroup', Ext.form.RadioGroup);
-</pre>
+</pre>    
 </body>
 </html>

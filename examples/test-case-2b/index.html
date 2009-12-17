@@ -1,0 +1,374 @@
+<html>
+<head>
+ <title>Test Case for Ext JS</title>
+
+<!--- Trunk --->
+ <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
+ 
+<!--- 3.0.3 --->
+ <!---
+ <link rel="stylesheet" type="text/css" href="/ext-versions/ext-3.0.3/resources/css/ext-all.css" />
+  --->
+ 
+ <link rel="stylesheet" type="text/css" href="resources/bubble-f1eedd.css" />
+
+<!--- Trunk --->
+ <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+ <script type="text/javascript" src="../../ext-all-debug.js"></script>
+ <script type="text/javascript" src="../../examples/ux/TabCloseMenu.js"></script>
+ <!--- 3.0.3 --->
+ <!--- 
+ <script type="text/javascript" src="/ext-versions/ext-3.0.3/adapter/ext/ext-base.js"></script>
+ <script type="text/javascript" src="/ext-versions/ext-3.0.3/ext-all.js"></script>
+ <script type="text/javascript" src="/ext-versions/ext-3.0.3/examples/ux/TabCloseMenu.js"></script>
+ --->
+
+ <script type="text/javascript" src="resources/form-configs.js"></script>
+ <script type="text/javascript" src="resources/grid-configs.js"></script>
+
+ <script type="text/javascript">
+    Ext.BLANK_IMAGE_URL = '../../resources/images/default/s.gif';
+ </script>
+
+ <style type="text/css">
+    body {
+       background-color: #d9d9bd;
+       font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+       font-size: 12px;
+    }
+    html, body {
+       margin: 0; padding: 0; border: 0 none; overflow: hidden;
+       height: 100%; width: 100%;
+    }
+    .x-btn, .x-btn button { font-size: 12px; }
+    .x-border-layout-ct { background-color: #d9d9bd; }
+    .tabs-onerow ul.x-tab-strip { width: 10000px !important; }
+    .tabs-multirow ul.x-tab-strip { width: auto !important; }
+
+    .h-bar {
+       background-color: #c07c69;
+       margin-top: 3px;
+       line-height: 1px;
+       font-size: 1px;
+       height: 3px;
+    }
+    .tabs {
+       background-image: url(resources/tabs.gif) !important;
+    }
+    .new-tab {
+       background-image: url(resources/application_add.gif) !important;
+    }
+    #action-panel { background-color: #aabb69; color: #fff; }
+    #action-panel h2 { font-size: 13px; }
+    #content-panel { background-color: #f1eedd; }
+
+    fieldset {
+       border-radius: 5px;
+       -moz-border-radius: 5px;
+       -webkit-border-radius: 5px;
+    }
+    .content-class {
+       font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+       font-size: 12px;
+    }
+    .content-class h3, .content-class h2 {
+       white-space: nowrap;
+       margin: 6px 0;
+       color: #c07c69;
+    }
+    .content-class h3 {
+       padding-bottom: 6px;
+       font-style: italic;
+       font-size: 14px;
+    }
+    .content-class h2 {
+       padding-bottom: 5px;
+       font-size: 13px;
+    }
+    .content-class p {
+       margin: 10px 0px;
+       font-size: 12px;
+       line-height: 1.5;
+    }
+
+ </style>
+
+ <script type="text/javascript">
+
+    var contentPanel;  // for quick access to the card content panel.
+    var tabPanelOne;   // reference to card one tab panel.
+    var tabPanelTwo;   // reference to card two tab panel.
+
+    var newTabCount = 0;
+
+    Ext.onReady(function() {
+
+       // For creating a tab panel.
+       function createTabPanel(config) {
+
+          var tabPanel = new Ext.TabPanel({
+
+             id: config.id,
+             activeTab: 0,
+             resizeTabs: true,
+             minTabWidth: 160,
+             tabWidth: 160,
+             enableTabScroll: false,
+             cls: 'tabs-multirow',
+             plugins: new Ext.ux.TabCloseMenu(),
+
+             layoutConfig: {
+                deferredRender: true
+             },
+             defaults: {
+                iconCls: 'tabs',
+                autoScroll: true,
+                baseCls: 'content-class',
+                bodyStyle: {
+                   'background': 'transparent', 'padding': '15px 20px'
+                }
+             },
+             items: [{
+                id: config.tabId,
+                title: config.tabTitle
+             }]
+          });
+          tabPanel.on('remove', function(tab){
+             fixPanelHeight(tab);
+          });
+          tabPanel.getItem(0).on('afterrender', function(){
+             this.body.update(Ext.getDom(this.id + '-content').innerHTML);
+          });
+          return tabPanel;
+       };
+
+       // Content Panel(s).
+       contentPanel = new Ext.Panel({
+
+          id: 'content-panel',
+          region: 'center',
+          margins: '3 3 3 0',
+          border: true,
+          layout: 'card',
+          activeItem: 0,
+
+          layoutConfig: {
+             deferredRender: true
+          },
+          bodyStyle: {
+             'background': 'transparent'
+          },
+          defaults: {
+             border: false,
+             bodyStyle: { 'background': 'transparent' }
+          },
+          items: [
+             createTabPanel({
+                id: 'card-panel-one',
+                tabId: 'card-panel-one-tab',
+                tabTitle: 'Card tabPanel One'
+             }),
+             createTabPanel({
+                id: 'card-panel-two',
+                tabId: 'card-panel-two-tab',
+                tabTitle: 'Card tabPanel Two'
+             })
+           ]
+       });
+
+       tabPanelOne = Ext.getCmp('card-panel-one');
+       tabPanelTwo = Ext.getCmp('card-panel-two');
+
+       // Action Items.
+       var actionPanel = new Ext.Panel({
+
+          id: 'action-panel',
+          region: 'west',
+          margins: '3 0 3 3',
+          cmargins: '3 4 3 3',
+          title: 'Action Items',
+          border: true,
+          split: true,
+          width: 200,
+          minSize: 200,
+          maxSize: 200,
+          collapsible: true,
+          floatable: false,
+          animCollapse: true,
+          bodyStyle: {
+             'padding': '15px 20px',
+             'background': 'transparent'
+          },
+          items: [{
+             xtype: 'box',
+             html: [ '<h2>Card One</h2>', '<div class="h-bar"></div>' ]
+          },{
+             xtype: 'button', width: 158, text: 'Show Card One',
+             handler: function(){ contentPanel.layout.setActiveItem(0); }
+          },{
+             xtype: 'box',
+             html: [ '<div class="h-bar"></div>' ]
+          },{
+             xtype: 'button', width: 158, text: 'Add 1 Form',
+             handler: function(){ addForm(0, tabPanelOne, 1); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 5 Forms',
+             handler: function(){ addForm(0, tabPanelOne, 5); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 10 Forms',
+             handler: function(){ addForm(0, tabPanelOne, 10); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 1 Grid',
+             handler: function(){ addGrid(0, tabPanelOne, 1); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 5 Grids',
+             handler: function(){ addGrid(0, tabPanelOne, 5); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 10 Grids',
+             handler: function(){ addGrid(0, tabPanelOne, 10); }
+          },{
+             xtype: 'box', height: 15
+          },{
+             xtype: 'box',
+             html: [ '<h2>Card Two</h2>', '<div class="h-bar"></div>' ]
+          },{
+             xtype: 'button', width: 158, text: 'Show Card Two',
+             handler: function(){ contentPanel.layout.setActiveItem(1); }
+          },{
+             xtype: 'box',
+             html: [ '<div class="h-bar"></div>' ]
+          },{
+             xtype: 'button', width: 158, text: 'Add 1 Form',
+             handler: function(){ addForm(1, tabPanelTwo, 1); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 5 Forms',
+             handler: function(){ addForm(1, tabPanelTwo, 5); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 10 Forms',
+             handler: function(){ addForm(1, tabPanelTwo, 10); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 1 Grid',
+             handler: function(){ addGrid(1, tabPanelTwo, 1); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 5 Grids',
+             handler: function(){ addGrid(1, tabPanelTwo, 5); }
+          },{
+             xtype: 'button', width: 158, text: 'Add 10 Grids',
+             handler: function(){ addGrid(1, tabPanelTwo, 10); }
+          }]
+       });
+
+       // Build the layout.
+       var viewPort = new Ext.Viewport({
+          layout: 'border',
+          renderTo: 'body-viewport',
+          items: [ actionPanel, contentPanel ]
+       });
+
+    });
+
+    function fixPanelHeight(tab) {
+
+       // This is needed when a multi-tab row is added or removed
+       // to fix the underlying tab container height.
+
+       if (tab.container) {
+          if (Math.abs(tab.container.getHeight() - tab.getHeight()) > 2) {
+          // tab.lastSize = null;  // forces recalc
+             tab.setHeight(tab.container.getHeight() - 1); 
+             tab.setHeight(tab.container.getHeight() - 2); 
+          }
+       }
+    };
+
+    function addForm(cardIndex, tabPanel, limit) {
+
+       contentPanel.layout.setActiveItem(cardIndex);
+       var n = 0;
+
+       function loop() {
+
+          if (n++ < limit) {
+             var tab = tabPanel.add({
+                id: 'new-form-' + (++newTabCount),
+                title: 'New Form #' + newTabCount,
+                iconCls: 'new-tab',
+                closable: true
+             });
+
+             fixPanelHeight(tabPanel);
+             tab.show();
+
+             // Below is something one can have in server side scripting
+             // and adding via load or the autoLoad method. Just past the
+             // the id via params.
+             //
+             // The key thing here is to use the actual tab's add method
+             // to populate the tab body area.  Everything added here
+             // should be destroyed automatically when the tab is closed.
+
+             var c = Ext.getCmp('new-form-' + newTabCount);
+
+             c.add({
+                xtype: 'box',
+                html: '<h3>New Form #' + newTabCount + '</h3>'
+             });
+          // c.add(formConfigs[newTabCount % 2]);
+             c.add(formConfigs[cardIndex]);
+             c.doLayout();
+
+             setTimeout(loop, 1);
+          }
+       }
+       loop();
+    }
+
+    function addGrid(cardIndex, tabPanel, limit) {
+
+       contentPanel.layout.setActiveItem(cardIndex);
+       var n = 0;
+
+       function loop() {
+
+          if (n++ < limit) {
+             var tab = tabPanel.add({
+                id: 'new-grid-' + (++newTabCount),
+                title: 'New Grid #' + newTabCount,
+                iconCls: 'new-tab',
+                closable: true
+             });
+
+             fixPanelHeight(tabPanel);
+             tab.show();
+
+             var c = Ext.getCmp('new-grid-' + newTabCount);
+
+             c.add({
+                xtype: 'box',
+                html: '<h3>New Grid #' + newTabCount + '</h3>'
+             });
+          // c.add(gridConfigs[newTabCount % 2]);
+             c.add(gridConfigs[0]);
+
+             c.doLayout();
+
+             setTimeout(loop, 1);
+          }
+       }
+       loop();
+    }
+
+ </script>
+</head>
+<body>
+ <div id="body-viewport"></div>
+ <div id="card-panel-one-tab-content" class="x-hidden">
+   <h3>This is tabPanel One</h3>
+   <p>Click a button under Action Items.</p>
+ </div>
+ <div id="card-panel-two-tab-content" class="x-hidden">
+   <h3>This is tabPanel Two</h3>
+   <p>Click a button under Action Items.</p>
+ </div>
+</body>
+</html>

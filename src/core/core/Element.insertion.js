@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -87,8 +87,8 @@ function() {
 	     * @return {Ext.Element} this
 	     */
 	    replaceWith: function(el){
-		    var me = this,
-		    	Element = Ext.Element;
+		    var me = this;
+                
             if(el.nodeType || el.dom || typeof el == 'string'){
                 el = GETDOM(el);
                 me.dom.parentNode.insertBefore(el, me.dom);
@@ -96,10 +96,11 @@ function() {
                 el = DH.insertBefore(me.dom, el);
             }
 	        
-	        delete Element.cache[me.id];
+	        delete Ext.elCache[me.id];
 	        Ext.removeNode(me.dom);      
 	        me.id = Ext.id(me.dom = el);
-	        return Element.cache[me.id] = me;        
+	        Ext.Element.addToCache(me.isFlyweight ? new Ext.Element(me.dom) : me);     
+            return me;
 	    },
 	    
 		/**

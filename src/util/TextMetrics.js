@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -59,6 +59,7 @@ Ext.util.TextMetrics.Instance = function(bindTo, fixedWidth){
 
     var instance = {
         /**
+         * <p><b>Only available on the instance returned from {@link #createInstance}, <u>not</u> on the singleton.</b></p>
          * Returns the size of the specified text based on the internal element's style and width properties
          * @param {String} text The text to measure
          * @return {Object} An object containing the text's size {width: (width), height: (height)}
@@ -71,6 +72,7 @@ Ext.util.TextMetrics.Instance = function(bindTo, fixedWidth){
         },
 
         /**
+         * <p><b>Only available on the instance returned from {@link #createInstance}, <u>not</u> on the singleton.</b></p>
          * Binds this TextMetrics instance to an element from which to copy existing CSS styles
          * that can affect the size of the rendered text
          * @param {String/HTMLElement} el The element, dom node or id
@@ -82,6 +84,7 @@ Ext.util.TextMetrics.Instance = function(bindTo, fixedWidth){
         },
 
         /**
+         * <p><b>Only available on the instance returned from {@link #createInstance}, <u>not</u> on the singleton.</b></p>
          * Sets a fixed width on the internal measurement element.  If the text will be multiline, you have
          * to set a fixed width in order to accurately measure the text height.
          * @param {Number} width The width to set on the element
@@ -91,6 +94,7 @@ Ext.util.TextMetrics.Instance = function(bindTo, fixedWidth){
         },
 
         /**
+         * <p><b>Only available on the instance returned from {@link #createInstance}, <u>not</u> on the singleton.</b></p>
          * Returns the measured width of the specified text
          * @param {String} text The text to measure
          * @return {Number} width The width in pixels
@@ -101,6 +105,7 @@ Ext.util.TextMetrics.Instance = function(bindTo, fixedWidth){
         },
 
         /**
+         * <p><b>Only available on the instance returned from {@link #createInstance}, <u>not</u> on the singleton.</b></p>
          * Returns the measured height of the specified text.  For multiline text, be sure to call
          * {@link #setFixedWidth} if necessary.
          * @param {String} text The text to measure

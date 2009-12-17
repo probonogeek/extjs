@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -26,7 +26,7 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-   Ext.form.Field.prototype.invalidText = "Унешена вредно�?т није правилна";
+   Ext.form.Field.prototype.invalidText = "Унешена вредност није правилна";
 }
 
 if(Ext.LoadMask){
@@ -37,19 +37,19 @@ Date.monthNames = [
    "Јануар",
    "Фебруар",
    "Март",
-   "�?прил",
+   "Април",
    "Мај",
    "Јун",
    "Јул",
-   "�?вгу�?т",
+   "Август",
    "Септембар",
    "Октобар",
-   "�?овембар",
+   "Новембар",
    "Децембар"
 ];
 
 Date.dayNames = [
-   "�?едеља",
+   "Недеља",
    "Понедељак",
    "Уторак",
    "Среда",
@@ -61,9 +61,9 @@ Date.dayNames = [
 if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
       ok     : "У реду",
-      cancel : "Оду�?тани",
+      cancel : "Одустани",
       yes    : "Да",
-      no     : "�?е"
+      no     : "Не"
    };
 }
 
@@ -77,16 +77,16 @@ if(Ext.util.Format){
 
 if(Ext.DatePicker){
    Ext.apply(Ext.DatePicker.prototype, {
-      todayText         : "Дана�?",
-      minText           : "Датум је и�?пред најмањег дозвољеног датума",
+      todayText         : "Данас",
+      minText           : "Датум је испред најмањег дозвољеног датума",
       maxText           : "Датум је након највећег дозвољеног датума",
       disabledDaysText  : "",
       disabledDatesText : "",
       monthNames	: Date.monthNames,
       dayNames		: Date.dayNames,
-      nextText          : 'Следећи ме�?ец (Control+Де�?но)',
-      prevText          : 'Претходни ме�?ец (Control+Лево)',
-      monthYearText     : 'Изаберите ме�?ец (Control+Горе/Доле за избор године)',
+      nextText          : 'Следећи месец (Control+Десно)',
+      prevText          : 'Претходни месец (Control+Лево)',
+      monthYearText     : 'Изаберите месец (Control+Горе/Доле за избор године)',
       todayTip          : "{0} (Размакница)",
       format            : "d.m.y",
       startDay 		 : 1
@@ -97,20 +97,20 @@ if(Ext.PagingToolbar){
    Ext.apply(Ext.PagingToolbar.prototype, {
       beforePageText : "Страна",
       afterPageText  : "од {0}",
-      firstText      : "Прва �?трана",
-      prevText       : "Претходна �?трана",
-      nextText       : "Следећа �?трана",
-      lastText       : "По�?ледња �?трана",
-      refreshText    : "О�?вежи",
+      firstText      : "Прва страна",
+      prevText       : "Претходна страна",
+      nextText       : "Следећа страна",
+      lastText       : "Последња страна",
+      refreshText    : "Освежи",
       displayMsg     : "Приказана {0} - {1} од {2}",
-      emptyMsg       : '�?емам шта приказати'
+      emptyMsg       : 'Немам шта приказати'
    });
 }
 
 if(Ext.form.TextField){
    Ext.apply(Ext.form.TextField.prototype, {
       minLengthText : "Минимална дужина овог поља је {0}",
-      maxLengthText : "Мак�?имална дужина овог поља је {0}",
+      maxLengthText : "Максимална дужина овог поља је {0}",
       blankText     : "Поље је обавезно",
       regexText     : "",
       emptyText     : null
@@ -119,16 +119,16 @@ if(Ext.form.TextField){
 
 if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
-      minText : "Минимална вредно�?т у пољу је {0}",
-      maxText : "Мак�?имална вредно�?т у пољу је {0}",
+      minText : "Минимална вредност у пољу је {0}",
+      maxText : "Максимална вредност у пољу је {0}",
       nanText : "{0} није правилан број"
    });
 }
 
 if(Ext.form.DateField){
    Ext.apply(Ext.form.DateField.prototype, {
-      disabledDaysText  : "Па�?ивно",
-      disabledDatesText : "Па�?ивно",
+      disabledDaysText  : "Пасивно",
+      disabledDatesText : "Пасивно",
       minText           : "Датум у овом пољу мора бити након {0}",
       maxText           : "Датум у овом пољу мора бити пре {0}",
       invalidText       : "{0} није правилан датум - захтевани облик је {1}",
@@ -145,17 +145,17 @@ if(Ext.form.ComboBox){
 
 if(Ext.form.VTypes){
    Ext.apply(Ext.form.VTypes, {
-      emailText    : 'Ово поље прихвата e-mail адре�?у и�?кључиво у облику "korisnik@domen.com"',
-      urlText      : 'Ово поље прихвата URL адре�?у и�?кључиво у облику "http:/'+'/www.domen.com"',
-      alphaText    : 'Ово поље може �?адржати и�?кључиво �?лова и знак _',
-      alphanumText : 'Ово поље може �?адржати �?амо �?лова, бројеве и знак _'
+      emailText    : 'Ово поље прихвата e-mail адресу искључиво у облику "korisnik@domen.com"',
+      urlText      : 'Ово поље прихвата URL адресу искључиво у облику "http:/'+'/www.domen.com"',
+      alphaText    : 'Ово поље може садржати искључиво слова и знак _',
+      alphanumText : 'Ово поље може садржати само слова, бројеве и знак _'
    });
 }
 
 if(Ext.grid.GridView){
    Ext.apply(Ext.grid.GridView.prototype, {
-      sortAscText  : "Ра�?тући редо�?лед",
-      sortDescText : "Опадајући редо�?лед",
+      sortAscText  : "Растући редослед",
+      sortDescText : "Опадајући редослед",
       lockText     : "Закључај колону",
       unlockText   : "Откључај колону",
       columnsText  : "Колоне"
@@ -164,8 +164,8 @@ if(Ext.grid.GridView){
 
 if(Ext.grid.PropertyColumnModel){
    Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
-      nameText   : "�?азив",
-      valueText  : "Вредно�?т",
+      nameText   : "Назив",
+      valueText  : "Вредност",
       dateFormat : "d.m.Y"
    });
 }
@@ -173,6 +173,6 @@ if(Ext.grid.PropertyColumnModel){
 if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
    Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
       splitTip            : "Повући за измену величине.",
-      collapsibleSplitTip : "Повући за измену величине. Дво�?труки клик за �?акривање."
+      collapsibleSplitTip : "Повући за измену величине. Двоструки клик за сакривање."
    });
 }

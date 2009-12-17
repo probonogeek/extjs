@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.DomHelper"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.DomHelper"></div>/**
  * @class Ext.DomHelper
  * <p>The DomHelper class provides a layer of abstraction from DOM and transparently supports creating
  * elements via DOM or using HTML fragments. It also has the ability to create HTML fragment templates
@@ -174,9 +169,11 @@ Ext.DomHelper = function(){
         if(Ext.isString(o)){
             b = o;
         } else if (Ext.isArray(o)) {
-            Ext.each(o, function(v) {
-                b += createHtml(v);
-            });
+            for (var i=0; i < o.length; i++) {
+                if(o[i]) {
+                    b += createHtml(o[i]);
+                }
+            };
         } else {
             b += '<' + (o.tag = o.tag || 'div');
             Ext.iterate(o, function(attr, val){
@@ -420,6 +417,6 @@ Ext.DomHelper = function(){
         createHtml : createHtml
     };
     return pub;
-}();</pre>
+}();</pre>    
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -135,6 +135,14 @@ ul.x-tab-strip-bottom{
 
 .x-tab-strip-bottom .x-tab-left {
 	background-image: url(../images/default/tabs/tab-btm-inactive-left-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-over .x-tab-right {
+	background-image: url(../images/default/tabs/tab-btm-over-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-over .x-tab-left {
+	background-image: url(../images/default/tabs/tab-btm-over-left-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
@@ -1262,23 +1270,6 @@ a.x-menu-item {
 
 .x-box-blue .x-box-mr {
 	background-image: url(../images/default/box/r-blue.gif);
-}#x-debug-browser .x-tree .x-tree-node a span {
-    color:#222297;
-    font-size:11px;
-    font-family:"monotype","courier new",sans-serif;
-}
-
-#x-debug-browser .x-tree a i {
-    color:#ff4545;
-    font-style:normal;
-}
-
-#x-debug-browser .x-tree a em {
-    color:#999;
-}
-
-#x-debug-browser .x-tree .x-tree-node .x-tree-selected a span{
-    background-color:#c3daf9;
 }.x-combo-list {
     border-color:#98c0f4;
     background-color:#ddecfe;

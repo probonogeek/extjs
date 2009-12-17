@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -59,7 +59,7 @@ Date.dayNames = [
 if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
       ok     : "V redu",
-      cancel : "Prekli�?i",
+      cancel : "Prekliči",
       yes    : "Da",
       no     : "Ne"
    };
@@ -125,8 +125,8 @@ if(Ext.form.NumberField){
 
 if(Ext.form.DateField){
    Ext.apply(Ext.form.DateField.prototype, {
-      disabledDaysText  : "Onemogo�?en",
-      disabledDatesText : "Onemogo�?en",
+      disabledDaysText  : "Onemogočen",
+      disabledDatesText : "Onemogočen",
       minText           : "Datum mora biti po {0}",
       maxText           : "Datum mora biti pred {0}",
       invalidText       : "{0} ni veljaven datum - mora biti v tem formatu {1}",
@@ -145,15 +145,15 @@ if(Ext.form.VTypes){
    Ext.apply(Ext.form.VTypes, {
       emailText    : 'To polje je e-mail naslov formata "ime@domena.si"',
       urlText      : 'To polje je URL naslov formata "http:/'+'/www.domena.si"',
-      alphaText    : 'To polje lahko vsebuje samo �?rke in _',
-      alphanumText : 'To polje lahko vsebuje samo �?rke, številke in _'
+      alphaText    : 'To polje lahko vsebuje samo črke in _',
+      alphanumText : 'To polje lahko vsebuje samo črke, številke in _'
    });
 }
 
 if(Ext.grid.GridView){
    Ext.apply(Ext.grid.GridView.prototype, {
-      sortAscText  : "Sortiraj naraš�?ajo�?e",
-      sortDescText : "Sortiraj padajo�?e",
+      sortAscText  : "Sortiraj naraščajoče",
+      sortDescText : "Sortiraj padajoče",
       lockText     : "Zakleni stolpec",
       unlockText   : "Odkleni stolpec",
       columnsText  : "Stolpci"
@@ -171,6 +171,6 @@ if(Ext.grid.PropertyColumnModel){
 if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
    Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
       splitTip            : "Potegni za razširitev.",
-      collapsibleSplitTip : "Potegni za razširitev. Dvojni klik, �?e želite skriti."
+      collapsibleSplitTip : "Potegni za razširitev. Dvojni klik, če želite skriti."
    });
 }

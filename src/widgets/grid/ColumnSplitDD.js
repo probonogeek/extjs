@@ -1,25 +1,26 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 // private
 // This is a support class used internally by the Grid components
-Ext.grid.SplitDragZone = function(grid, hd, hd2){
-    this.grid = grid;
-    this.view = grid.getView();
-    this.proxy = this.view.resizeProxy;
-    Ext.grid.SplitDragZone.superclass.constructor.call(this, hd,
-        "gridSplitters" + this.grid.getGridEl().id, {
-        dragElId : Ext.id(this.proxy.dom), resizeFrame:false
-    });
-    this.setHandleElId(Ext.id(hd));
-    this.setOuterHandleElId(Ext.id(hd2));
-    this.scroll = false;
-};
-Ext.extend(Ext.grid.SplitDragZone, Ext.dd.DDProxy, {
+Ext.grid.SplitDragZone = Ext.extend(Ext.dd.DDProxy, {
     fly: Ext.Element.fly,
+    
+    constructor : function(grid, hd, hd2){
+        this.grid = grid;
+        this.view = grid.getView();
+        this.proxy = this.view.resizeProxy;
+        Ext.grid.SplitDragZone.superclass.constructor.call(this, hd,
+            "gridSplitters" + this.grid.getGridEl().id, {
+            dragElId : Ext.id(this.proxy.dom), resizeFrame:false
+        });
+        this.setHandleElId(Ext.id(hd));
+        this.setOuterHandleElId(Ext.id(hd2));
+        this.scroll = false;
+    },
 
     b4StartDrag : function(x, y){
         this.view.headersDisabled = true;

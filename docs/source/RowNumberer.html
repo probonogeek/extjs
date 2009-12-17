@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.grid.RowNumberer"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.grid.RowNumberer"></div>/**
  * @class Ext.grid.RowNumberer
  * This is a utility class that can be passed into a {@link Ext.grid.ColumnModel} as a column config that provides
  * an automatic row numbering column.
@@ -28,14 +23,7 @@
  * @constructor
  * @param {Object} config The configuration options
  */
-Ext.grid.RowNumberer = function(config){
-    Ext.apply(this, config);
-    if(this.rowspan){
-        this.renderer = this.renderer.createDelegate(this);
-    }
-};
-
-Ext.grid.RowNumberer.prototype = {
+Ext.grid.RowNumberer = Ext.extend(Object, {
     <div id="cfg-Ext.grid.RowNumberer-header"></div>/**
      * @cfg {String} header Any valid text or HTML fragment to display in the header cell for the row
      * number column (defaults to '').
@@ -50,6 +38,13 @@ Ext.grid.RowNumberer.prototype = {
      * @hide
      */
     sortable: false,
+    
+    constructor : function(config){
+        Ext.apply(this, config);
+        if(this.rowspan){
+            this.renderer = this.renderer.createDelegate(this);
+        }
+    },
 
     // private
     fixed:true,
@@ -65,6 +60,6 @@ Ext.grid.RowNumberer.prototype = {
         }
         return rowIndex+1;
     }
-};</pre>
+});</pre>    
 </body>
 </html>

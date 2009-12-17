@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
+    <pre class="prettyprint lang-js">
 <div id="cls-Ext.state.CookieProvider"></div>/**
  * @class Ext.state.CookieProvider
  * @extends Ext.state.Provider
@@ -65,13 +60,15 @@ Ext.extend(Ext.state.CookieProvider, Ext.state.Provider, {
 
     // private
     readCookies : function(){
-        var cookies = {};
-        var c = document.cookie + ";";
-        var re = /\s?(.*?)=(.*?);/g;
-    	var matches;
+        var cookies = {},
+            c = document.cookie + ";",
+            re = /\s?(.*?)=(.*?);/g,
+    	    matches,
+            name, value;
+            
     	while((matches = re.exec(c)) != null){
-            var name = matches[1];
-            var value = matches[2];
+            name = matches[1];
+            value = matches[2];
             if(name && name.substring(0,3) == "ys-"){
                 cookies[name.substr(3)] = this.decodeValue(value);
             }
@@ -95,6 +92,6 @@ Ext.extend(Ext.state.CookieProvider, Ext.state.Provider, {
            ((this.domain == null) ? "" : ("; domain=" + this.domain)) +
            ((this.secure == true) ? "; secure" : "");
     }
-});</pre>
+});</pre>    
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -13,14 +13,14 @@ Ext.data.JsonWriter = function(config) {
     Ext.data.JsonWriter.superclass.constructor.call(this, config);
 
     // careful to respect "returnJson", renamed to "encode"
-    // TODO: remove after v3 final release
+    // TODO: remove after Ext-3.0.1 release
     if (this.returnJson != undefined) {
         this.encode = this.returnJson;
     }
 }
 Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
     /**
-     * @cfg {Boolean} returnJson <b>Deprecated</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
+     * @cfg {Boolean} returnJson <b>Deprecated, will be removed in Ext-3.0.1</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
      */
     returnJson : undefined,
     /**
@@ -37,17 +37,20 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
 
     /**
      * Final action of a write event.  Apply the written data-object to params.
-     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
-     * @param {Record[]} rs
-     * @param {Object} http params
-     * @param {Object} data object populated according to DataReader meta-data "root" and "idProperty"
+     * @param {Object} http params-object to write-to.
+     * @param {Object} baseParams as defined by {@link Ext.data.Store#baseParams}.  The baseParms must be encoded by the extending class, eg: {@link Ext.data.JsonWriter}, {@link Ext.data.XmlWriter}.
+     * @param {Object/Object[]} data Data-object representing compiled Store-recordset.
      */
-    render : function(action, rs, params, data) {
+    render : function(params, baseParams, data) {
         if (this.encode === true) {
+            // Encode here now.
+            Ext.apply(params, baseParams);
             params[this.meta.root] = Ext.encode(data);
         } else {
-            params.jsonData = {};
-            params.jsonData[this.meta.root] = data;
+            // defer encoding for some other layer, probably in {@link Ext.Ajax#request}.  Place everything into "jsonData" key.
+            var jdata = Ext.apply({}, baseParams);
+            jdata[this.meta.root] = data;
+            params.jsonData = jdata;
         }
     },
     /**
@@ -267,7 +270,7 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         var res = new Ext.data.Response({
             action: action,
             success: this.getSuccess(o),
-            data: this.extractData(root),
+            data: (root) ? this.extractData(root, false) : [],
             message: this.getMessage(o),
             raw: o
         });
@@ -384,40 +387,6 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
     }(),
 
     /**
-     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
-     * @param {Object[]/Object} data-root from server response
-     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
-     * @private
-     */
-    extractData : function(root, returnRecords) {
-        var rs = undefined;
-        if (this.isData(root)) {
-            root = [root];
-        }
-        if (Ext.isArray(root)) {
-            var f       = this.recordType.prototype.fields,
-                fi      = f.items,
-                fl      = f.length,
-                rs      = [];
-            if (returnRecords === true) {
-                var Record = this.recordType;
-                for (var i = 0; i < root.length; i++) {
-                    var n = root[i];
-                    var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
-                    record.json = n;
-                    rs.push(record);
-                }
-            }
-            else {
-                for (var i = 0; i < root.length; i++) {
-                    rs.push(this.extractValues(root[i], fi, fl));
-                }
-            }
-        }
-        return rs;
-    },
-
-    /**
      * type-casts a single row of raw-data from server
      * @param {Object} data
      * @param {Array} items
@@ -506,17 +475,10 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
         this.arrayData = o;
         var s = this.meta,
             sid = s ? Ext.num(s.idIndex, s.id) : null,
-            recordType = this.recordType, 
+            recordType = this.recordType,
             fields = recordType.prototype.fields,
             records = [],
             v;
-
-        if(!this.getRoot) {
-            this.getRoot = s.root ? this.getJsonAccessor(s.root) : function(p) {return p;};
-            if(s.totalProperty) {
-                this.getTotal = this.getJsonAccessor(s.totalProperty);
-            }
-        }
 
         var root = this.getRoot(o);
 

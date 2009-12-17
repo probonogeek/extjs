@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.menu.BaseItem"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.menu.BaseItem"></div>/**
  * @class Ext.menu.BaseItem
  * @extends Ext.Component
  * The base class for all items that render into menus.  BaseItem provides default rendering, activated state
@@ -21,37 +16,7 @@
  * @param {Object} config Configuration options
  * @xtype menubaseitem
  */
-Ext.menu.BaseItem = function(config){
-    Ext.menu.BaseItem.superclass.constructor.call(this, config);
-
-    this.addEvents(
-        <div id="event-Ext.menu.BaseItem-click"></div>/**
-         * @event click
-         * Fires when this item is clicked
-         * @param {Ext.menu.BaseItem} this
-         * @param {Ext.EventObject} e
-         */
-        'click',
-        <div id="event-Ext.menu.BaseItem-activate"></div>/**
-         * @event activate
-         * Fires when this item is activated
-         * @param {Ext.menu.BaseItem} this
-         */
-        'activate',
-        <div id="event-Ext.menu.BaseItem-deactivate"></div>/**
-         * @event deactivate
-         * Fires when this item is deactivated
-         * @param {Ext.menu.BaseItem} this
-         */
-        'deactivate'
-    );
-
-    if(this.handler){
-        this.on("click", this.handler, this.scope);
-    }
-};
-
-Ext.extend(Ext.menu.BaseItem, Ext.Component, {
+Ext.menu.BaseItem = Ext.extend(Ext.Component, {
     <div id="prop-Ext.menu.BaseItem-parentMenu"></div>/**
      * @property parentMenu
      * @type Ext.menu.Menu
@@ -91,6 +56,34 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
 
     // private
     actionMode : "container",
+    
+    initComponent : function(){
+        Ext.menu.BaseItem.superclass.initComponent.call(this);
+        this.addEvents(
+	        <div id="event-Ext.menu.BaseItem-click"></div>/**
+	         * @event click
+	         * Fires when this item is clicked
+	         * @param {Ext.menu.BaseItem} this
+	         * @param {Ext.EventObject} e
+	         */
+	        'click',
+	        <div id="event-Ext.menu.BaseItem-activate"></div>/**
+	         * @event activate
+	         * Fires when this item is activated
+	         * @param {Ext.menu.BaseItem} this
+	         */
+	        'activate',
+	        <div id="event-Ext.menu.BaseItem-deactivate"></div>/**
+	         * @event deactivate
+	         * Fires when this item is deactivated
+	         * @param {Ext.menu.BaseItem} this
+	         */
+	        'deactivate'
+	    );
+	    if(this.handler){
+	        this.on("click", this.handler, this.scope);
+	    }
+    },
 
     // private
     onRender : function(container, position){
@@ -99,9 +92,12 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
             this.parentMenu = this.ownerCt;
         }else{
             this.container.addClass('x-menu-list-item');
-            this.mon(this.el, 'click', this.onClick, this);
-            this.mon(this.el, 'mouseenter', this.activate, this);
-            this.mon(this.el, 'mouseleave', this.deactivate, this);
+            this.mon(this.el, {
+                scope: this,
+                click: this.onClick,
+                mouseenter: this.activate,
+                mouseleave: this.deactivate
+            });
         }
     },
 
@@ -109,7 +105,7 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
      * Sets the function that will handle click events for this item (equivalent to passing in the {@link #handler}
      * config property).  If an existing handler is already registered, it will be unregistered for you.
      * @param {Function} handler The function that should be called on click
-     * @param {Object} scope The scope that should be passed to the handler
+     * @param {Object} scope The scope (<code>this</code> reference) in which the handler function is executed. Defaults to this menu item.
      */
     setHandler : function(handler, scope){
         if(this.handler){
@@ -169,6 +165,6 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
     // private. Do nothing
     hideMenu : Ext.emptyFn
 });
-Ext.reg('menubaseitem', Ext.menu.BaseItem);</pre>
+Ext.reg('menubaseitem', Ext.menu.BaseItem);</pre>    
 </body>
 </html>

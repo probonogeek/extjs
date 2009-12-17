@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -431,7 +431,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-toolbar .xtb-sep {
-	background-image: url(../images/default/grid/grid-blue-split.gif);
+	background-image: url(../ext/resources/images/default/grid/grid-split.gif);
 }
 
 .x-tbar-page-first{
@@ -1493,16 +1493,16 @@ a.x-menu-item {
 }
 
 .x-window-plain .x-window-mc {
-    background-color: #ccd9e8;
-    border-color: #a3bae9 #f0f0f0 #f0f0f0 #a3bae9;
+    background-color: #E8E8E8;
+    border-color: #D0D0D0 #EEEEEE #EEEEEE #D0D0D0;
 }
 
 .x-window-plain .x-window-body {
-    border-color: #f0f0f0 #a3bae9 #a3bae9 #f0f0f0;
+    border-color: #EEEEEE #D0D0D0 #D0D0D0 #EEEEEE;
 }
 
 body.x-body-masked .x-window-plain .x-window-mc {
-    background-color: #ccd9e8;
+    background-color: #E4E4E4;
 }
 .x-html-editor-wrap {
     border-color:#a9bfd3;

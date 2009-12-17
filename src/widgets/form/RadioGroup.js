@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -14,6 +14,10 @@
  * @xtype radiogroup
  */
 Ext.form.RadioGroup = Ext.extend(Ext.form.CheckboxGroup, {
+    /**
+     * @cfg {Array} items An Array of {@link Ext.form.Radio Radio}s or Radio config objects
+     * to arrange in the group.
+     */
     /**
      * @cfg {Boolean} allowBlank True to allow every item in the group to be blank (defaults to true).
      * If allowBlank = false and no items are selected at validation time, {@link @blankText} will

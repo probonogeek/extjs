@@ -19,7 +19,7 @@
         }
     </style>
     <script type="text/javascript">
-       
+
         Ext.onReady(function() {
 
             var replace = function(config){
@@ -215,7 +215,7 @@
                         },
                         items: [{
                             xtype:'button',
-                            text: 'Flex: All even',
+                            text: 'Flex: All even / Align: middle',
                             handler: function(){
                                 replace({
                                     layoutConfig: {
@@ -245,12 +245,12 @@
                             }
                         },{
                             xtype:'button',
-                            text: 'Flex: Ratio',
+                            text: 'Flex: Ratio / Align: top',
                             handler: function(){
                                 replace({
                                     layoutConfig: {
                                         padding:'5',
-                                        align:'middle'
+                                        align:'top'
                                     },
                                     defaults:{margins:'0 5 0 0'},
                                     items:[{
@@ -275,7 +275,7 @@
                             }
                         },{
                             xtype:'button',
-                            text: 'Pack: start',
+                            text: 'Pack: start / Align: middle',
                             handler: function(){
                                 replace({
                                     layoutConfig: {
@@ -301,7 +301,7 @@
                             }
                         },{
                             xtype:'button',
-                            text: 'Pack: center',
+                            text: 'Pack: center / Align: middle',
                             handler: function(){
                                 replace({
                                     layoutConfig: {
@@ -328,7 +328,7 @@
                             }
                         },{
                             xtype:'button',
-                            text: 'Pack: end',
+                            text: 'Pack: end / Align: middle',
                             handler: function(){
                                 replace({
                                     layoutConfig: {

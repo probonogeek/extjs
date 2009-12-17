@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -57,13 +57,7 @@ aRef.setText('New text');
  * @constructor
  * @param {Object} config The configuration options
  */
-Ext.Action = function(config){
-    this.initialConfig = config;
-    this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
-    this.items = [];
-}
-
-Ext.Action.prototype = {
+Ext.Action = Ext.extend(Object, {
     /**
      * @cfg {String} text The text to set for all components using this action (defaults to '').
      */
@@ -96,9 +90,16 @@ Ext.Action.prototype = {
      * See {@link Ext.Component}.{@link Ext.Component#itemId itemId}.
      */
     /**
-     * @cfg {Object} scope The scope in which the {@link #handler} function will execute.
+     * @cfg {Object} scope The scope (<tt><b>this</b></tt> reference) in which the
+     * <code>{@link #handler}</code> is executed. Defaults to this Button.
      */
 
+    constructor : function(config){
+        this.initialConfig = config;
+        this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
+        this.items = [];
+    },
+    
     // private
     isAction : true,
 
@@ -198,10 +199,10 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Sets the function that will be called by each component using this action when its primary event is triggered.
+     * Sets the function that will be called by each Component using this action when its primary event is triggered.
      * @param {Function} fn The function that will be invoked by the action's components.  The function
      * will be called with no arguments.
-     * @param {Object} scope The scope in which the function will execute
+     * @param {Object} scope The scope (<code>this</code> reference) in which the function is executed. Defaults to the Component firing the event.
      */
     setHandler : function(fn, scope){
         this.initialConfig.handler = fn;
@@ -210,10 +211,10 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Executes the specified function once for each component currently tied to this action.  The function passed
+     * Executes the specified function once for each Component currently tied to this action.  The function passed
      * in should accept a single argument that will be an object that supports the basic Action config/method interface.
      * @param {Function} fn The function to execute for each component
-     * @param {Object} scope The scope in which the function will execute
+     * @param {Object} scope The scope (<code>this</code> reference) in which the function is executed.  Defaults to the Component.
      */
     each : function(fn, scope){
         Ext.each(this.items, fn, scope);
@@ -249,4 +250,4 @@ Ext.Action.prototype = {
     execute : function(){
         this.initialConfig.handler.apply(this.initialConfig.scope || window, arguments);
     }
-};
+});

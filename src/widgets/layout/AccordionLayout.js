@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -110,7 +110,7 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
             c.collapseFirst = this.collapseFirst;
         }
         if(!this.activeItem && !c.collapsed){
-            this.activeItem = c;
+            this.setActiveItem(c, true);
         }else if(this.activeItem && this.activeItem != c){
             c.collapsed = true;
         }
@@ -143,7 +143,7 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
                 ai.collapse(this.animate);
             }
         }
-        this.activeItem = p;
+        this.setActive(p);
         if(this.activeOnTop){
             p.el.dom.parentNode.insertBefore(p.el.dom, p.el.dom.parentNode.firstChild);
         }
@@ -169,15 +169,24 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
      * @param {String/Number} item The string component id or numeric index of the item to activate
      */
     setActiveItem : function(item){
+        this.setActive(item, true);
+    },
+    
+    // private
+    setActive : function(item, expand){
+        var ai = this.activeItem;
         item = this.container.getComponent(item);
-        if(this.activeItem != item){
-            if(item.rendered && item.collapsed){
+        if(ai != item){
+            if(item.rendered && item.collapsed && expand){
                 item.expand();
             }else{
+                if(ai){
+                   ai.fireEvent('deactivate', ai);
+                }
                 this.activeItem = item;
+                item.fireEvent('activate', item);
             }
         }
-
     }
 });
 Ext.Container.LAYOUTS.accordion = Ext.layout.AccordionLayout;

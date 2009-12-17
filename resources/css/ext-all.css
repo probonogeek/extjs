@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -1839,6 +1839,10 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
     overflow:hidden;
 }
 
+.x-toolbar-left {
+    width: 100%;
+}
+
 .x-toolbar .x-item-disabled .x-btn-icon {
     opacity: .35;
     -moz-opacity: .35;
@@ -2599,6 +2603,15 @@ a.x-grid3-hd-btn:hover {
     position:relative;
 }
 
+
+/* Reset position to static when Grid Panel has been framed */
+/* to resolve 'snapping' from top to bottom behavior. */
+/* @forumThread 86656 */
+.ext-ie7 .x-grid-panel .x-panel-mc .x-panel-bbar {
+    position: static;
+}
+
+
 .ext-ie6 .x-grid3-header {
     position: relative;
 }
@@ -2689,7 +2702,11 @@ a.x-grid3-hd-btn:hover {
 }
 
 .ext-ie .x-tree-node-indent img, .ext-ie .x-tree-node-icon, .ext-ie .x-tree-ec-icon {
-    vertical-align:middle !important;
+    vertical-align: middle !important;
+}
+
+.ext-strict .ext-ie8 .x-tree-node-indent img, .ext-strict .ext-ie8 .x-tree-node-icon, .ext-strict .ext-ie8 .x-tree-ec-icon {
+    vertical-align: top !important;
 }
 
 /* checkboxes */
@@ -2950,9 +2967,15 @@ input.x-tree-node-cb {
 }
 
 table.x-date-inner {
-    width:100%;
+    width: 100%;
     table-layout:fixed;
 }
+
+.ext-webkit table.x-date-inner{
+    /* Fix for webkit browsers */
+    width: 175px;
+}
+
 
 .x-date-inner th {
     width:25px;
@@ -3316,11 +3339,14 @@ td.x-date-mp-sep {
 
 .x-menu-list-item{
     white-space: nowrap;
+	display:block;
+	padding:1px;
+}
+
+.x-menu-item{
     -moz-user-select: none;
     -khtml-user-select:none;
     -webkit-user-select:ignore;
-	display:block;
-	padding:1px;
 }
 
 .x-menu-item-arrow{
@@ -3449,6 +3475,25 @@ a.x-menu-item {
    padding:0 !important;
 }
 
+/*
+ * Ugly mess to remove the white border under the picker
+ */
+.ext-ie .x-date-menu{
+    height: 199px;
+}
+
+.ext-strict .ext-ie .x-date-menu, .ext-border-box .ext-ie8 .x-date-menu{
+    height: 197px;
+}
+
+.ext-strict .ext-ie7 .x-date-menu{
+    height: 195px;
+}
+
+.ext-strict .ext-ie8 .x-date-menu{
+    height: auto;
+}
+
 .x-cycle-menu .x-menu-item-checked {
     border:1px dotted !important;
 	padding:0;
@@ -3546,25 +3591,6 @@ a.x-menu-item {
 .x-box-tr, .x-box-br {
 	padding-right: 8px;
 	overflow: hidden;
-}#x-debug-browser .x-tree .x-tree-node a span {
-    padding-top:2px;
-    line-height:18px;
-}
-
-#x-debug-browser  .x-tool-toggle {
-    background-position:0 -75px;
-}
-
-#x-debug-browser  .x-tool-toggle-over {
-    background-position:-15px -75px;
-}
-
-#x-debug-browser.x-panel-collapsed .x-tool-toggle {
-    background-position:0 -60px;
-}
-
-#x-debug-browser.x-panel-collapsed .x-tool-toggle-over {
-    background-position:-15px -60px;
 }.x-combo-list {
     border:1px solid;
     zoom:1;
@@ -3997,29 +4023,6 @@ a.x-menu-item {
 .x-panel-btns {
     padding:5px;
     overflow:hidden;
-}
-
-.x-panel-btns-right .x-panel-fbar {
-	float:right;
-	clear:none;
-}
-
-.x-panel-btns-left .x-panel-fbar {
-	clear:none;
-}
-
-.x-panel-btns-center{
-	text-align:center; /*ie*/
-}
-
-.x-panel-btns-center .x-toolbar-ct {
-	margin:0 auto; /*everyone else*/
-    text-align:left;
-    width:auto;
-}
-
-.ext-ie .x-panel-btns-right .x-toolbar-ct, .ext-gecko2 .x-panel-btns-right .x-toolbar-ct {
-    width:auto;
 }
 
 .x-panel-btns td.x-toolbar-cell{
@@ -4864,7 +4867,8 @@ body.ext-ie6.x-body-masked .x-window select {
 
 .ext-strict .ext-ie7 .x-progress-text-back{
     width: 100%;
-}.x-list-header{
+}
+.x-list-header{
 	background: repeat-x 0 bottom;
 	cursor:default;
     zoom:1;
@@ -4944,9 +4948,6 @@ body.ext-ie6.x-body-masked .x-window select {
     padding-bottom:3px;
 }
 
-.x-list-wrap {
-    overflow: auto;
-}
 /* Shared styles */
 .x-slider {
     zoom:1;
@@ -5229,6 +5230,14 @@ ul.x-tab-strip-bottom{
 
 .x-tab-strip-bottom .x-tab-left {
 	background-image: url(../images/default/tabs/tab-btm-inactive-left-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-over .x-tab-right {
+	background-image: url(../images/default/tabs/tab-btm-over-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-over .x-tab-left {
+	background-image: url(../images/default/tabs/tab-btm-over-left-bg.gif);
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
@@ -6356,23 +6365,6 @@ a.x-menu-item {
 
 .x-box-blue .x-box-mr {
 	background-image: url(../images/default/box/r-blue.gif);
-}#x-debug-browser .x-tree .x-tree-node a span {
-    color:#222297;
-    font-size:11px;
-    font-family:"monotype","courier new",sans-serif;
-}
-
-#x-debug-browser .x-tree a i {
-    color:#ff4545;
-    font-style:normal;
-}
-
-#x-debug-browser .x-tree a em {
-    color:#999;
-}
-
-#x-debug-browser .x-tree .x-tree-node .x-tree-selected a span{
-    background-color:#c3daf9;
 }.x-combo-list {
     border-color:#98c0f4;
     background-color:#ddecfe;

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -154,7 +154,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "click",
             /**
              * @event mouseenter
-             * Fires when the mouse enters a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse enters a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -163,7 +163,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "mouseenter",
             /**
              * @event mouseleave
-             * Fires when the mouse leaves a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse leaves a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -741,6 +741,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     },
 
     onDestroy : function(){
+        this.all.clear();
+        this.selected.clear();
         Ext.DataView.superclass.onDestroy.call(this);
         this.bindStore(null);
     }
@@ -752,10 +754,11 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
  */
 Ext.DataView.prototype.setStore = Ext.DataView.prototype.bindStore;
 
-Ext.reg('dataview', Ext.DataView);/**
- * @class Ext.ListView
+Ext.reg('dataview', Ext.DataView);
+/**
+ * @class Ext.list.ListView
  * @extends Ext.DataView
- * <p>Ext.ListView is a fast and light-weight implentation of a
+ * <p>Ext.list.ListView is a fast and light-weight implentation of a
  * {@link Ext.grid.GridPanel Grid} like view with the following characteristics:</p>
  * <div class="mdetail-params"><ul>
  * <li>resizable columns</li>
@@ -796,7 +799,7 @@ var store = new Ext.data.JsonStore({
 });
 store.load();
 
-var listView = new Ext.ListView({
+var listView = new Ext.list.ListView({
     store: store,
     multiSelect: true,
     emptyText: 'No images to display',
@@ -841,7 +844,7 @@ listView.on('selectionchange', function(view, nodes){
  * @param {Object} config
  * @xtype listview
  */
-Ext.ListView = Ext.extend(Ext.DataView, {
+Ext.list.ListView = Ext.extend(Ext.DataView, {
     /**
      * Set this property to <tt>true</tt> to disable the header click handler disabling sort
      * (defaults to <tt>false</tt>).
@@ -892,7 +895,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     scrollOffset : undefined,
     /**
      * @cfg {Boolean/Object} columnResize
-     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.ColumnResizer}
+     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.list.ListView.ColumnResizer}
      * to enable the columns to be resizable (defaults to <tt>true</tt>).
      */
     columnResize: true,
@@ -928,7 +931,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      */
     /**
      * @cfg {Boolean/Object} columnSort
-     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.Sorter}
+     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.list.ListView.Sorter}
      * to enable the columns to be sortable (defaults to <tt>true</tt>).
      */
     columnSort: true,
@@ -944,18 +947,18 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     
     initComponent : function(){
         if(this.columnResize){
-            this.colResizer = new Ext.ListView.ColumnResizer(this.colResizer);
+            this.colResizer = new Ext.list.ColumnResizer(this.colResizer);
             this.colResizer.init(this);
         }
         if(this.columnSort){
-            this.colSorter = new Ext.ListView.Sorter(this.columnSort);
+            this.colSorter = new Ext.list.Sorter(this.columnSort);
             this.colSorter.init(this);
         }
         if(!this.internalTpl){
             this.internalTpl = new Ext.XTemplate(
                 '<div class="x-list-header"><div class="x-list-header-inner">',
                     '<tpl for="columns">',
-                    '<div style="width:{width}%;text-align:{align};"><em unselectable="on" id="',this.id, '-xlhd-{#}">',
+                    '<div style="width:{[values.width*100]}%;text-align:{align};"><em unselectable="on" id="',this.id, '-xlhd-{#}">',
                         '{header}',
                     '</em></div>',
                     '</tpl>',
@@ -970,7 +973,8 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '<tpl for="rows">',
                     '<dl>',
                         '<tpl for="parent.columns">',
-                        '<dt style="width:{width}%;text-align:{align};"><em unselectable="on">',
+                        '<dt style="width:{[values.width*100]}%;text-align:{align};">',
+                        '<em unselectable="on"<tpl if="cls"> class="{cls}</tpl>">',
                             '{[values.tpl.apply(parent)]}',
                         '</em></dt>',
                         '</tpl>',
@@ -979,48 +983,49 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
+        
         var cs = this.columns, 
             allocatedWidth = 0, 
             colsWithWidth = 0, 
             len = cs.length, 
             columns = [];
+            
         for(var i = 0; i < len; i++){
-            var c = Ext.apply({}, cs[i]);
-            if(!c.tpl){
-                c.tpl = new Ext.XTemplate('{' + c.dataIndex + '}');
-            }else if(Ext.isString(c.tpl)){
-                c.tpl = new Ext.XTemplate(c.tpl);
+            var c = cs[i];
+            if(!c.isColumn) {
+                c.xtype = c.xtype ? (/^lv/.test(c.xtype) ? c.xtype : 'lv' + c.xtype) : 'lvcolumn';
+                c = Ext.create(c);
             }
-            c.align = c.align || 'left';
-            if(Ext.isNumber(c.width)){
-                c.width *= 100;
-                allocatedWidth += c.width;
+            if(c.width) {
+                allocatedWidth += c.width*100;
                 colsWithWidth++;
             }
             columns.push(c);
         }
+        
         cs = this.columns = columns;
+        
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
             if(allocatedWidth < this.maxWidth){
-                var perCol = ((this.maxWidth-allocatedWidth) / remaining);
+                var perCol = ((this.maxWidth-allocatedWidth) / remaining)/100;
                 for(var j = 0; j < len; j++){
                     var c = cs[j];
-                    if(!Ext.isNumber(c.width)){
+                    if(!c.width){
                         c.width = perCol;
                     }
                 }
             }
         }
-        Ext.ListView.superclass.initComponent.call(this);
+        Ext.list.ListView.superclass.initComponent.call(this);
     },
 
     onRender : function(){
         this.autoEl = {
             cls: 'x-list-wrap'  
         };
-        Ext.ListView.superclass.onRender.apply(this, arguments);
+        Ext.list.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
         
@@ -1051,7 +1056,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      * XTemplate as described above.
      */
     collectData : function(){
-        var rs = Ext.ListView.superclass.collectData.apply(this, arguments);
+        var rs = Ext.list.ListView.superclass.collectData.apply(this, arguments);
         return {
             columns: this.columns,
             rows: rs
@@ -1094,7 +1099,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     },
 
     updateIndexes : function(){
-        Ext.ListView.superclass.updateIndexes.apply(this, arguments);
+        Ext.list.ListView.superclass.updateIndexes.apply(this, arguments);
         this.verifyInternalSize();
     },
 
@@ -1112,19 +1117,173 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     setHdWidths : function(){
         var els = this.innerHd.dom.getElementsByTagName('div');
         for(var i = 0, cs = this.columns, len = cs.length; i < len; i++){
-            els[i].style.width = cs[i].width + '%';
+            els[i].style.width = (cs[i].width*100) + '%';
         }
     }
 });
 
-Ext.reg('listview', Ext.ListView);/**
- * @class Ext.ListView.ColumnResizer
+Ext.reg('listview', Ext.list.ListView);
+
+// Backwards compatibility alias
+Ext.ListView = Ext.list.ListView;/**
+ * @class Ext.list.Column
+ * <p>This class encapsulates column configuration data to be used in the initialization of a
+ * {@link Ext.list.ListView ListView}.</p>
+ * <p>While subclasses are provided to render data in different ways, this class renders a passed
+ * data field unchanged and is usually used for textual columns.</p>
+ */
+Ext.list.Column = Ext.extend(Object, {
+    /**
+     * @private
+     * @cfg {Boolean} isColumn
+     * Used by ListView constructor method to avoid reprocessing a Column
+     * if <code>isColumn</code> is not set ListView will recreate a new Ext.list.Column
+     * Defaults to true.
+     */
+    isColumn: true,
+    
+    /**
+     * @cfg {String} align
+     * Set the CSS text-align property of the column. Defaults to <tt>'left'</tt>.
+     */        
+    align: 'left',
+    /**
+     * @cfg {String} header Optional. The header text to be used as innerHTML
+     * (html tags are accepted) to display in the ListView.  <b>Note</b>: to
+     * have a clickable header with no text displayed use <tt>'&#160;'</tt>.
+     */    
+    header: '',
+    
+    /**
+     * @cfg {Number} width Optional. Percentage of the container width
+     * this column should be allocated.  Columns that have no width specified will be
+     * allocated with an equal percentage to fill 100% of the container width.  To easily take
+     * advantage of the full container width, leave the width of at least one column undefined.
+     * Note that if you do not want to take up the full width of the container, the width of
+     * every column needs to be explicitly defined.
+     */    
+    width: null,
+
+    /**
+     * @cfg {String} cls Optional. This option can be used to add a CSS class to the cell of each
+     * row for this column.
+     */
+    cls: '',
+    
+    /**
+     * @cfg {String} tpl Optional. Specify a string to pass as the
+     * configuration string for {@link Ext.XTemplate}.  By default an {@link Ext.XTemplate}
+     * will be implicitly created using the <tt>dataIndex</tt>.
+     */
+
+    /**
+     * @cfg {String} dataIndex <p><b>Required</b>. The name of the field in the
+     * ListViews's {@link Ext.data.Store}'s {@link Ext.data.Record} definition from
+     * which to draw the column's value.</p>
+     */
+    
+    constructor : function(c){
+        if(!c.tpl){
+            c.tpl = new Ext.XTemplate('{' + c.dataIndex + '}');
+        }
+        else if(Ext.isString(c.tpl)){
+            c.tpl = new Ext.XTemplate(c.tpl);
+        }
+        
+        Ext.apply(this, c);
+    }
+});
+
+Ext.reg('lvcolumn', Ext.list.Column);
+
+/**
+ * @class Ext.list.NumberColumn
+ * @extends Ext.list.Column
+ * <p>A Column definition class which renders a numeric data field according to a {@link #format} string.  See the
+ * {@link Ext.list.Column#xtype xtype} config option of {@link Ext.list.Column} for more details.</p>
+ */
+Ext.list.NumberColumn = Ext.extend(Ext.list.Column, {
+    /**
+     * @cfg {String} format
+     * A formatting string as used by {@link Ext.util.Format#number} to format a numeric value for this Column
+     * (defaults to <tt>'0,000.00'</tt>).
+     */    
+    format: '0,000.00',
+    
+    constructor : function(c) {
+        c.tpl = c.tpl || new Ext.XTemplate('{' + c.dataIndex + ':number("' + (c.format || this.format) + '")}');       
+        Ext.list.NumberColumn.superclass.constructor.call(this, c);
+    }
+});
+
+Ext.reg('lvnumbercolumn', Ext.list.NumberColumn);
+
+/**
+ * @class Ext.list.DateColumn
+ * @extends Ext.list.Column
+ * <p>A Column definition class which renders a passed date according to the default locale, or a configured
+ * {@link #format}. See the {@link Ext.list.Column#xtype xtype} config option of {@link Ext.list.Column}
+ * for more details.</p>
+ */
+Ext.list.DateColumn = Ext.extend(Ext.list.Column, {
+    format: 'm/d/Y',
+    constructor : function(c) {
+        c.tpl = c.tpl || new Ext.XTemplate('{' + c.dataIndex + ':date("' + (c.format || this.format) + '")}');      
+        Ext.list.DateColumn.superclass.constructor.call(this, c);
+    }
+});
+Ext.reg('lvdatecolumn', Ext.list.DateColumn);
+
+/**
+ * @class Ext.list.BooleanColumn
+ * @extends Ext.list.Column
+ * <p>A Column definition class which renders boolean data fields.  See the {@link Ext.list.Column#xtype xtype}
+ * config option of {@link Ext.list.Column} for more details.</p>
+ */
+Ext.list.BooleanColumn = Ext.extend(Ext.list.Column, {
+    /**
+     * @cfg {String} trueText
+     * The string returned by the renderer when the column value is not falsey (defaults to <tt>'true'</tt>).
+     */
+    trueText: 'true',
+    /**
+     * @cfg {String} falseText
+     * The string returned by the renderer when the column value is falsey (but not undefined) (defaults to
+     * <tt>'false'</tt>).
+     */
+    falseText: 'false',
+    /**
+     * @cfg {String} undefinedText
+     * The string returned by the renderer when the column value is undefined (defaults to <tt>'&#160;'</tt>).
+     */
+    undefinedText: '&#160;',
+    
+    constructor : function(c) {
+        c.tpl = c.tpl || new Ext.XTemplate('{' + c.dataIndex + ':this.format}');
+        
+        var t = this.trueText, f = this.falseText, u = this.undefinedText;
+        c.tpl.format = function(v){
+            if(v === undefined){
+                return u;
+            }
+            if(!v || v === 'false'){
+                return f;
+            }
+            return t;
+        };
+        
+        Ext.list.DateColumn.superclass.constructor.call(this, c);
+    }
+});
+
+Ext.reg('lvbooleancolumn', Ext.list.BooleanColumn);/**
+ * @class Ext.list.ColumnResizer
  * @extends Ext.util.Observable
- * <p>Supporting Class for Ext.ListView.</p>
+ * <p>Supporting Class for Ext.list.ListView</p>
  * @constructor
  * @param {Object} config
  */
-Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
+Ext.list.ColumnResizer = Ext.extend(Ext.util.Observable, {
     /**
      * @cfg {Number} minPct The minimum percentage to allot for any column (defaults to <tt>.05</tt>)
      */
@@ -1132,7 +1291,7 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
 
     constructor: function(config){
         Ext.apply(this, config);
-        Ext.ListView.ColumnResizer.superclass.constructor.call(this);
+        Ext.list.ColumnResizer.superclass.constructor.call(this);
     },
     init : function(listView){
         this.view = listView;
@@ -1164,10 +1323,10 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
 
             if(x - r.left <= hw && pn != pn.parentNode.firstChild){
                 this.activeHd = Ext.get(pn.previousSibling.firstChild);
-				ss.cursor = Ext.isWebKit ? 'e-resize' : 'col-resize';
+                ss.cursor = Ext.isWebKit ? 'e-resize' : 'col-resize';
             } else if(r.right - x <= hw && pn != pn.parentNode.lastChild.previousSibling){
                 this.activeHd = hd;
-				ss.cursor = Ext.isWebKit ? 'w-resize' : 'col-resize';
+                ss.cursor = Ext.isWebKit ? 'w-resize' : 'col-resize';
             } else{
                 delete this.activeHd;
                 ss.cursor = '';
@@ -1204,30 +1363,31 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
     },
 
     onEnd: function(e){
+        /* calculate desired width by measuring proxy and then remove it */
         var nw = this.proxy.getWidth();
         this.proxy.remove();
 
         var index = this.hdIndex,
-            vw = this.view, 
-            cs = vw.columns, 
+            vw = this.view,
+            cs = vw.columns,
             len = cs.length,
-            w = this.view.innerHd.getWidth(), 
-            minPct = this.minPct * 100;
+            w = this.view.innerHd.getWidth(),
+            minPct = this.minPct * 100,
             pct = Math.ceil((nw * vw.maxWidth) / w),
-            diff = cs[index].width - pct,
+            diff = (cs[index].width * 100) - pct,
             each = Math.floor(diff / (len-1-index)),
             mod = diff - (each * (len-1-index));
 
         for(var i = index+1; i < len; i++){
-            var cw = cs[i].width + each,
+            var cw = (cs[i].width * 100) + each,
                 ncw = Math.max(minPct, cw);
             if(cw != ncw){
                 mod += cw - ncw;
             }
-            cs[i].width = ncw;
+            cs[i].width = ncw / 100;
         }
-        cs[index].width = pct;
-        cs[index+1].width += mod;
+        cs[index].width = pct / 100;
+        cs[index+1].width += (mod / 100);
         delete this.dragHd;
         vw.setHdWidths();
         vw.refresh();
@@ -1235,14 +1395,17 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
             vw.disableHeaders = false;
         }, 100);
     }
-});/**
- * @class Ext.ListView.Sorter
+});
+
+// Backwards compatibility alias
+Ext.ListView.ColumnResizer = Ext.list.ColumnResizer;/**
+ * @class Ext.list.Sorter
  * @extends Ext.util.Observable
- * <p>Supporting Class for Ext.ListView.</p>
+ * <p>Supporting Class for Ext.list.ListView</p>
  * @constructor
  * @param {Object} config
  */
-Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
+Ext.list.Sorter = Ext.extend(Ext.util.Observable, {
     /**
      * @cfg {Array} sortClasses
      * The CSS classes applied to a header when it is sorted. (defaults to <tt>["sort-asc", "sort-desc"]</tt>)
@@ -1251,7 +1414,7 @@ Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
 
     constructor: function(config){
         Ext.apply(this, config);
-        Ext.ListView.Sorter.superclass.constructor.call(this);
+        Ext.list.Sorter.superclass.constructor.call(this);
     },
 
     init : function(listView){
@@ -1299,3 +1462,6 @@ Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
         }
     }
 });
+
+// Backwards compatibility alias
+Ext.ListView.Sorter = Ext.list.Sorter;

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -20,7 +20,7 @@ if(Ext.View){
 }
 
 if(Ext.grid.GridPanel){
-   Ext.grid.GridPanel.prototype.ddText = "{0} ozna�?ených riadkov";
+   Ext.grid.GridPanel.prototype.ddText = "{0} označených riadkov";
 }
 
 if(Ext.TabPanelItem){
@@ -64,7 +64,7 @@ if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
       ok     : "OK",
       cancel : "Zrušiť",
-      yes    : "�?no",
+      yes    : "Áno",
       no     : "Nie"
    };
 }
@@ -82,7 +82,7 @@ if(Ext.DatePicker){
    Ext.apply(Ext.DatePicker.prototype, {
       todayText         : "Dnes",
       minText           : "Tento dátum je menší ako minimálny možný dátum",
-      maxText           : "Tento dátum je vä�?ší ako maximálny možný dátum",
+      maxText           : "Tento dátum je väčší ako maximálny možný dátum",
       disabledDaysText  : "",
       disabledDatesText : "",
       monthNames        : Date.monthNames,
@@ -125,7 +125,7 @@ if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
       minText : "Minimálna hodnota pre toto pole je {0}",
       maxText : "Maximálna hodnota pre toto pole je {0}",
-      nanText : "{0} je nesprávne �?íslo"
+      nanText : "{0} je nesprávne číslo"
    });
 }
 
@@ -152,7 +152,7 @@ if(Ext.form.VTypes){
       emailText    : 'Toto pole musí byť e-mailová adresa vo formáte "user@example.com"',
       urlText      : 'Toto pole musí byť URL vo formáte "http:/'+'/www.example.com"',
       alphaText    : 'Toto pole može obsahovať iba písmená a znak _',
-      alphanumText : 'Toto pole može obsahovať iba písmená, �?ísla a znak _'
+      alphanumText : 'Toto pole može obsahovať iba písmená, čísla a znak _'
    });
 }
 

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -56,6 +56,21 @@ Ext.override(Ext.CompositeElementLite, {
 
 Ext.CompositeElementLite.prototype = {
     isComposite: true,    
+    
+    // private
+    getElement : function(el){
+        // Set the shared flyweight dom property to the current element
+        var e = this.el;
+        e.dom = el;
+        e.id = el.id;
+        return e;
+    },
+    
+    // private
+    transformElement : function(el){
+        return Ext.getDom(el);
+    },
+    
     /**
      * Returns the number of elements in this Composite.
      * @return Number
@@ -68,27 +83,39 @@ Ext.CompositeElementLite.prototype = {
      * @param {Mixed} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
      * @return {CompositeElement} This Composite object.
      */
-    add : function(els){
-        if(els){
-            if (Ext.isArray(els)) {
-                this.elements = this.elements.concat(els);
-            } else {
-                var yels = this.elements;                                    
-                Ext.each(els, function(e) {
-                    yels.push(e);
-                });
+    add : function(els, root){
+        var me = this,
+            elements = me.elements;
+        if(!els){
+            return this;
+        }
+        if(Ext.isString(els)){
+            els = Ext.Element.selectorFunction(els, root);
+        }else if(els.isComposite){
+            els = els.elements;
+        }else if(!Ext.isIterable(els)){
+            els = [els];
+        }
+        
+        for(var i = 0, len = els.length; i < len; ++i){
+            elements.push(me.transformElement(els[i]));
+        }
+        return me;
+    },
+    
+    invoke : function(fn, args){
+        var me = this,
+            els = me.elements,
+            len = els.length, 
+            e;
+            
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e){
+                Ext.Element.prototype[fn].apply(me.getElement(e), args);
             }
         }
-        return this;
-    },
-    invoke : function(fn, args){
-        var els = this.elements,
-            el = this.el;        
-        Ext.each(els, function(e) {    
-            el.dom = e;
-            Ext.Element.prototype[fn].apply(el, args);
-        });
-        return this;
+        return me;
     },
     /**
      * Returns a flyweight Element of the dom element object at the specified index
@@ -96,19 +123,28 @@ Ext.CompositeElementLite.prototype = {
      * @return {Ext.Element}
      */
     item : function(index){
-        var me = this;
-        if(!me.elements[index]){
-            return null;
+        var me = this,
+            el = me.elements[index],
+            out = null;
+
+        if(el){
+            out = me.getElement(el);
         }
-        me.el.dom = me.elements[index];
-        return me.el;
+        return out;
     },
 
     // fixes scope with flyweight
     addListener : function(eventName, handler, scope, opt){
-        Ext.each(this.elements, function(e) {
-            Ext.EventManager.on(e, eventName, handler, scope || e, opt);
-        });
+        var els = this.elements,
+            len = els.length,
+            i, e;
+        
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e) {
+                Ext.EventManager.on(e, eventName, handler, scope || e, opt);
+            }
+        }
         return this;
     },
     /**
@@ -125,12 +161,19 @@ Ext.CompositeElementLite.prototype = {
      */
     each : function(fn, scope){       
         var me = this,
-            el = me.el;
-       
-        Ext.each(me.elements, function(e,i) {    
-            el.dom = e;
-            return fn.call(scope || el, el, me, i);
-        });
+            els = me.elements,
+            len = els.length,
+            i, e;
+        
+        for(i = 0; i<len; i++) {
+            e = els[i];
+            if(e){
+                e = this.getElement(e);
+                if(fn.call(scope || e, e, me, i)){
+                    break;
+                }
+            }
+        }
         return me;
     },
     
@@ -158,16 +201,19 @@ Ext.CompositeElementLite.prototype = {
     filter : function(selector){
         var els = [],
             me = this,
+            elements = me.elements,
             fn = Ext.isFunction(selector) ? selector
                 : function(el){
                     return el.is(selector);
-                }
+                };
+                
+        
         me.each(function(el, self, i){
             if(fn(el, i) !== false){
-                els[els.length] = el.dom;
+                els[els.length] = me.transformElement(el);
             }
         });
-        me.fill(els);
+        me.elements = els;
         return me;
     },
     
@@ -177,7 +223,7 @@ Ext.CompositeElementLite.prototype = {
      * @return Number The index of the passed Ext.Element in the composite collection, or -1 if not found.
      */
     indexOf : function(el){
-        return this.elements.indexOf(Ext.getDom(el));
+        return this.elements.indexOf(this.transformElement(el));
     },
     
     /**
@@ -239,13 +285,12 @@ if(Ext.DomQuery){
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
  * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.Element for each element (defaults to a shared flyweight object) <b>Not supported in core</b>
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
  * @return {CompositeElementLite/CompositeElement}
  * @member Ext.Element
  * @method select
  */
-Ext.Element.select = function(selector, unique, root){
+Ext.Element.select = function(selector, root){
     var els;
     if(typeof selector == "string"){
         els = Ext.Element.selectorFunction(selector, root);
@@ -261,7 +306,6 @@ Ext.Element.select = function(selector, unique, root){
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
  * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.Element for each element (defaults to a shared flyweight object)
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
  * @return {CompositeElementLite/CompositeElement}
  * @member Ext

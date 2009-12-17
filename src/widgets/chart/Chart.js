@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -9,17 +9,23 @@
  * @extends Ext.FlashComponent
  * The Ext.chart package provides the capability to visualize data with flash based charting.
  * Each chart binds directly to an Ext.data.Store enabling automatic updates of the chart.
+ * To change the look and feel of a chart, see the {@link #chartStyle} and {@link #extraStyle} config options.
  * @constructor
  * @xtype chart
  */
  
  Ext.chart.Chart = Ext.extend(Ext.FlashComponent, {
     refreshBuffer: 100,
+    
+    /**
+     * @cfg {String} backgroundColor
+     * @hide
+     */
 
     /**
      * @cfg {Object} chartStyle
-     * Sets styles for this chart. Contains a number of default values. Modifying this property will override
-     * the base styles on the chart.
+     * Sets styles for this chart. This contains default styling, so modifying this property will <b>override</b>
+     * the built in styles of the chart. Use {@link #extraStyle} to add customizations to the default styling. 
      */
     chartStyle: {
         padding: 10,
@@ -57,8 +63,74 @@
     /**
      * @cfg {Object} extraStyle
      * Contains extra styles that will be added or overwritten to the default chartStyle. Defaults to <tt>null</tt>.
+     * For a detailed list of the options available, visit the YUI Charts site 
+     * at <a href="http://developer.yahoo.com/yui/charts/#basicstyles">http://developer.yahoo.com/yui/charts/#basicstyles</a><br/>
+     * Some of the options availabe:<br />
+     * <ul style="padding:5px;padding-left:16px;list-style-type:inherit;">
+     * <li><b>padding</b> - The space around the edge of the chart's contents. Padding does not increase the size of the chart.</li>
+     * <li><b>animationEnabled</b> - A Boolean value that specifies whether marker animations are enabled or not. Enabled by default.</li>
+     * <li><b>font</b> - An Object defining the font style to be used in the chart. Defaults to <tt>{ name: 'Tahoma', color: 0x444444, size: 11 }</tt><br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>name</b> - font name</li>
+     *      <li><b>color</b> - font color (hex code, ie: "#ff0000", "ff0000" or 0xff0000)</li>
+     *      <li><b>size</b> - font size in points (numeric portion only, ie: 11)</li>
+     *      <li><b>bold</b> - boolean</li>
+     *      <li><b>italic</b> - boolean</li>
+     *      <li><b>underline</b> - boolean</li>
+     *  </ul>
+     * </li>
+     * <li><b>border</b> - An object defining the border style around the chart. The chart itself will decrease in dimensions to accomodate the border.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color</b> - border color (hex code, ie: "#ff0000", "ff0000" or 0xff0000)</li>
+     *      <li><b>size</b> - border size in pixels (numeric portion only, ie: 1)</li>
+     *  </ul>
+     * </li>
+     * <li><b>background</b> - An object defining the background style of the chart.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color</b> - border color (hex code, ie: "#ff0000", "ff0000" or 0xff0000)</li>
+     *      <li><b>image</b> - an image URL. May be relative to the current document or absolute.</li>
+     *  </ul>
+     * </li>
+     * <li><b>legend</b> - An object defining the legend style<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>display</b> - location of the legend. Possible values are "none", "left", "right", "top", and "bottom".</li>
+     *      <li><b>spacing</b> - an image URL. May be relative to the current document or absolute.</li>
+     *      <li><b>padding, border, background, font</b> - same options as described above.</li>
+     *  </ul></li>
+     * <li><b>dataTip</b> - An object defining the style of the data tip (tooltip).<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>padding, border, background, font</b> - same options as described above.</li>
+     *  </ul></li>
+     * <li><b>xAxis and yAxis</b> - An object defining the style of the style of either axis.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color</b> - same option as described above.</li>
+     *      <li><b>size</b> - same option as described above.</li>
+     *      <li><b>showLabels</b> - boolean</li>
+     *      <li><b>labelRotation</b> - a value in degrees from -90 through 90. Default is zero.</li>
+     *  </ul></li>
+     * <li><b>majorGridLines and minorGridLines</b> - An object defining the style of the style of the grid lines.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color, size</b> - same options as described above.</li>
+     *  </ul></li></li>
+     * <li><b>zeroGridLine</b> - An object defining the style of the style of the zero grid line.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color, size</b> - same options as described above.</li>
+     *  </ul></li></li>
+     * <li><b>majorTicks and minorTicks</b> - An object defining the style of the style of ticks in the chart.<br/>
+     *  <ul style="padding:5px;padding-left:26px;list-style-type:circle;">
+     *      <li><b>color, size</b> - same options as described above.</li>
+     *      <li><b>length</b> - the length of each tick in pixels extending from the axis.</li>
+     *      <li><b>display</b> - how the ticks are drawn. Possible values are "none", "inside", "outside", and "cross".</li>
+     *  </ul></li></li>
+     * </ul>
      */
     extraStyle: null,
+    
+    /**
+     * @cfg {Object} seriesStyles
+     * Contains styles to apply to the series after a refresh. Defaults to <tt>null</tt>.
+     */
+    seriesStyles: null,
     
     /**
      * @cfg {Boolean} disableCaching
@@ -82,7 +154,20 @@
             'itemdoubleclick',
             'itemdragstart',
             'itemdrag',
-            'itemdragend'
+            'itemdragend',
+            /**
+             * @event beforerefresh
+             * Fires before a refresh to the chart data is called.  If the beforerefresh handler returns
+             * <tt>false</tt> the {@link #refresh} action will be cancelled.
+             * @param {Chart} this
+             */
+            'beforerefresh',
+            /**
+             * @event refresh
+             * Fires after the chart data has been refreshed.
+             * @param {Chart} this
+             */
+            'refresh'
         );
         this.store = Ext.StoreMgr.lookup(this.store);
     },
@@ -112,6 +197,7 @@
      * @param styles {Array} Initializer for all Chart series styles.
      */
     setSeriesStyles: function(styles){
+        this.seriesStyles = styles;
         var s = [];
         Ext.each(styles, function(style){
             s.push(Ext.encode(style));
@@ -199,51 +285,57 @@
     },
 
     refresh : function(){
-        var styleChanged = false;
-        // convert the store data into something YUI charts can understand
-        var data = [], rs = this.store.data.items;
-        for(var j = 0, len = rs.length; j < len; j++){
-            data[j] = rs[j].data;
+        if(this.fireEvent('beforerefresh', this) !== false){
+	        var styleChanged = false;
+	        // convert the store data into something YUI charts can understand
+	        var data = [], rs = this.store.data.items;
+	        for(var j = 0, len = rs.length; j < len; j++){
+	            data[j] = rs[j].data;
+	        }
+	        //make a copy of the series definitions so that we aren't
+	        //editing them directly.
+	        var dataProvider = [];
+	        var seriesCount = 0;
+	        var currentSeries = null;
+	        var i = 0;
+	        if(this.series){
+	            seriesCount = this.series.length;
+	            for(i = 0; i < seriesCount; i++){
+	                currentSeries = this.series[i];
+	                var clonedSeries = {};
+	                for(var prop in currentSeries){
+	                    if(prop == "style" && currentSeries.style !== null){
+	                        clonedSeries.style = Ext.encode(currentSeries.style);
+	                        styleChanged = true;
+	                        //we don't want to modify the styles again next time
+	                        //so null out the style property.
+	                        // this causes issues
+	                        // currentSeries.style = null;
+	                    } else{
+	                        clonedSeries[prop] = currentSeries[prop];
+	                    }
+	                }
+	                dataProvider.push(clonedSeries);
+	            }
+	        }
+	
+	        if(seriesCount > 0){
+	            for(i = 0; i < seriesCount; i++){
+	                currentSeries = dataProvider[i];
+	                if(!currentSeries.type){
+	                    currentSeries.type = this.type;
+	                }
+	                currentSeries.dataProvider = data;
+	            }
+	        } else{
+	            dataProvider.push({type: this.type, dataProvider: data});
+	        }
+	        this.swf.setDataProvider(dataProvider);
+	        if(this.seriesStyles){
+	            this.setSeriesStyles(this.seriesStyles);
+	        }
+            this.fireEvent('refresh', this);
         }
-        //make a copy of the series definitions so that we aren't
-        //editing them directly.
-        var dataProvider = [];
-        var seriesCount = 0;
-        var currentSeries = null;
-        var i = 0;
-        if(this.series){
-            seriesCount = this.series.length;
-            for(i = 0; i < seriesCount; i++){
-                currentSeries = this.series[i];
-                var clonedSeries = {};
-                for(var prop in currentSeries){
-                    if(prop == "style" && currentSeries.style !== null){
-                        clonedSeries.style = Ext.encode(currentSeries.style);
-                        styleChanged = true;
-                        //we don't want to modify the styles again next time
-                        //so null out the style property.
-                        // this causes issues
-                        // currentSeries.style = null;
-                    } else{
-                        clonedSeries[prop] = currentSeries[prop];
-                    }
-                }
-                dataProvider.push(clonedSeries);
-            }
-        }
-
-        if(seriesCount > 0){
-            for(i = 0; i < seriesCount; i++){
-                currentSeries = dataProvider[i];
-                if(!currentSeries.type){
-                    currentSeries.type = this.type;
-                }
-                currentSeries.dataProvider = data;
-            }
-        } else{
-            dataProvider.push({type: this.type, dataProvider: data});
-        }
-        this.swf.setDataProvider(dataProvider);
     },
 
     createFnProxy : function(fn, old){

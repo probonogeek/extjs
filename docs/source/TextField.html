@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.form.TextField"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.form.TextField"></div>/**
  * @class Ext.form.TextField
  * @extends Ext.form.Field
  * <p>Basic text field.  Can be used as a direct replacement for traditional text inputs,
@@ -285,9 +280,14 @@ var myField = new Ext.form.NumberField({
 
     // private
     onKeyUpBuffered : function(e){
-        if(!e.isNavKeyPress()){
+        if(this.doAutoSize(e)){
             this.autoSize();
         }
+    },
+    
+    // private
+    doAutoSize : function(e){
+        return !e.isNavKeyPress();
     },
 
     // private
@@ -343,12 +343,18 @@ var myField = new Ext.form.NumberField({
 
     // private
     filterKeys : function(e){
-        // special keys don't generate charCodes, so leave them alone
-        if(e.ctrlKey || e.isSpecialKey()){
+        if(e.ctrlKey){
             return;
         }
-        
-        if(!this.maskRe.test(String.fromCharCode(e.getCharCode()))){
+        var k = e.getKey();
+        if(Ext.isGecko && (e.isNavKeyPress() || k == e.BACKSPACE || (k == e.DELETE && e.button == -1))){
+            return;
+        }
+        var cc = String.fromCharCode(e.getCharCode());
+        if(!Ext.isGecko && e.isSpecialKey() && !cc){
+            return;
+        }
+        if(!this.maskRe.test(cc)){
             e.stopEvent();
         }
     },
@@ -515,8 +521,8 @@ var myField = new Ext.form.NumberField({
         var d = document.createElement('div');
         d.appendChild(document.createTextNode(v));
         v = d.innerHTML;
-        d = null;
         Ext.removeNode(d);
+        d = null;
         v += '&#160;';
         var w = Math.min(this.growMax, Math.max(this.metrics.getWidth(v) + /* add extra padding */ 10, this.growMin));
         this.el.setWidth(w);
@@ -532,6 +538,6 @@ var myField = new Ext.form.NumberField({
 	}
 });
 Ext.reg('textfield', Ext.form.TextField);
-</pre>
+</pre>    
 </body>
 </html>

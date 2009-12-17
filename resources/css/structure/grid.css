@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -540,6 +540,15 @@ a.x-grid3-hd-btn:hover {
 .ext-ie7 .x-grid-panel .x-panel-bbar {
     position:relative;
 }
+
+
+/* Reset position to static when Grid Panel has been framed */
+/* to resolve 'snapping' from top to bottom behavior. */
+/* @forumThread 86656 */
+.ext-ie7 .x-grid-panel .x-panel-mc .x-panel-bbar {
+    position: static;
+}
+
 
 .ext-ie6 .x-grid3-header {
     position: relative;

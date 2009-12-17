@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -361,5 +361,10 @@ Ext.extend(Ext.dd.DragSource, Ext.dd.DDProxy, {
     // private - pin to cursor
     autoOffset : function(x, y) {
         this.setDelta(-12, -20);
-    }    
+    },
+    
+    destroy: function(){
+        Ext.dd.DragSource.superclass.destroy.call(this);
+        Ext.destroy(this.proxy);
+    }
 });

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -73,11 +73,10 @@ Ext.Element.addMethods(function(){
 	    /**
 	     * Creates a {@link Ext.CompositeElement} for child nodes based on the passed CSS selector (the selector should not contain an id).
 	     * @param {String} selector The CSS selector
-	     * @param {Boolean} unique (optional) True to create a unique Ext.Element for each child (defaults to false, which creates a single shared flyweight object)
 	     * @return {CompositeElement/CompositeElementLite} The composite element
 	     */
-	    select : function(selector, unique){
-	        return Ext.Element.select(selector, unique, this.dom);
+	    select : function(selector){
+	        return Ext.Element.select(selector, this.dom);
 	    },
 	
 	    /**
@@ -85,7 +84,7 @@ Ext.Element.addMethods(function(){
 	     * @param {String} selector The CSS selector
 	     * @return {Array} An array of the matched nodes
 	     */
-	    query : function(selector, unique){
+	    query : function(selector){
 	        return DQ.select(selector, this.dom);
 	    },
 	

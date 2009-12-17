@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -103,8 +103,8 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             columnresize: this.verifyLayout,
             columnmove: this.refreshFields,
             reconfigure: this.refreshFields,
-            beforedestroy : this.beforedestroy,
-            destroy : this.destroy,
+	        beforedestroy : this.beforedestroy,
+	        destroy : this.destroy,
             bodyscroll: {
                 buffer: 250,
                 fn: this.positionButtons
@@ -493,7 +493,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
                 t.hide();
             }
             t.body.update(msg);
-            t.doAutoWidth();
+            t.doAutoWidth(20);
             t.show();
         }else if(t.rendered){
             t.hide();
@@ -504,7 +504,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
         var data = ['<ul>'];
         this.items.each(function(f){
             if(!f.isValid(true)){
-                data.push('<li>', f.activeError, '</li>');
+                data.push('<li>', f.getActiveError(), '</li>');
             }
         });
         data.push('</ul>');
@@ -512,43 +512,3 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
     }
 });
 Ext.preg('roweditor', Ext.ux.grid.RowEditor);
-
-Ext.override(Ext.form.Field, {
-    markInvalid : function(msg){
-        if(!this.rendered || this.preventMark){ // not rendered
-            return;
-        }
-        msg = msg || this.invalidText;
-
-        var mt = this.getMessageHandler();
-        if(mt){
-            mt.mark(this, msg);
-        }else if(this.msgTarget){
-            this.el.addClass(this.invalidClass);
-            var t = Ext.getDom(this.msgTarget);
-            if(t){
-                t.innerHTML = msg;
-                t.style.display = this.msgDisplay;
-            }
-        }
-        this.activeError = msg;
-        this.fireEvent('invalid', this, msg);
-    }
-});
-
-Ext.override(Ext.ToolTip, {
-    doAutoWidth : function(){
-        var bw = this.body.getTextWidth();
-        if(this.title){
-            bw = Math.max(bw, this.header.child('span').getTextWidth(this.title));
-        }
-        bw += this.getFrameWidth() + (this.closable ? 20 : 0) + this.body.getPadding("lr") + 20;
-        this.setWidth(bw.constrain(this.minWidth, this.maxWidth));
-
-        // IE7 repaint bug on initial show
-        if(Ext.isIE7 && !this.repainted){
-            this.el.repaint();
-            this.repainted = true;
-        }
-    }
-});

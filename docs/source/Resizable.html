@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.Resizable"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.Resizable"></div>/**
  * @class Ext.Resizable
  * @extends Ext.util.Observable
  * <p>Applies drag handles to an element to make it resizable. The drag handles are inserted into the element 
@@ -144,6 +139,9 @@ Ext.Resizable = function(el, config){
         this.dd = this.dynamic ? 
             this.el.initDD(null) : this.el.initDDProxy(null, {dragElId: this.proxy.id});
         this.dd.setHandleElId(this.resizeChild ? this.resizeChild.id : this.el.id);
+        if(this.constrainTo){
+            this.dd.constrainTo(this.constrainTo);
+        }
     }
     
     this.addEvents(
@@ -464,6 +462,10 @@ new Ext.Panel({
         if(!this.dynamic){
             this.proxy.hide();
         }
+        if(this.draggable && this.constrainTo){
+            this.dd.resetConstraints();
+            this.dd.constrainTo(this.constrainTo);
+        }
         return box;
     },
 
@@ -765,6 +767,6 @@ Ext.Resizable.Handle.prototype = {
         this.el = null;
     }
 };
-</pre>
+</pre>    
 </body>
 </html>

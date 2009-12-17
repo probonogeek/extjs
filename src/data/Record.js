@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -27,10 +27,11 @@
  * @param {Object} data (Optional) An object, the properties of which provide values for the new Record's
  * fields. If not specified the <code>{@link Ext.data.Field#defaultValue defaultValue}</code>
  * for each field will be assigned.
- * @param {Object} id (Optional) The id of the Record. This id should be unique, and is used by the
- * {@link Ext.data.Store} object which owns the Record to index its collection of Records. If
- * an <code>id</code> is not specified a <b><code>{@link #phantom}</code></b> Record will be created
- * with an {@link #Record.id automatically generated id}.
+ * @param {Object} id (Optional) The id of the Record. The id is used by the
+ * {@link Ext.data.Store} object which owns the Record to index its collection
+ * of Records (therefore this id should be unique within each store). If an
+ * <code>id</code> is not specified a <b><code>{@link #phantom}</code></b>
+ * Record will be created with an {@link #Record.id automatically generated id}.
  */
 Ext.data.Record = function(data, id){
     // if no id, call the auto id method
@@ -137,21 +138,33 @@ Ext.data.Record.prototype = {
      * @type {Object}
      */
     /**
+     * <p><b>Only present if this Record was created by an {@link Ext.data.XmlReader XmlReader}</b>.</p>
+     * <p>The XML element which was the source of the data for this Record.</p>
+     * @property node
+     * @type {XMLElement}
+     */
+    /**
+     * <p><b>Only present if this Record was created by an {@link Ext.data.ArrayReader ArrayReader} or a {@link Ext.data.JsonReader JsonReader}</b>.</p>
+     * <p>The Array or object which was the source of the data for this Record.</p>
+     * @property json
+     * @type {Array|Object}
+     */
+    /**
      * Readonly flag - true if this Record has been modified.
      * @type Boolean
      */
     dirty : false,
     editing : false,
-    error: null,
+    error : null,
     /**
      * This object contains a key and value storing the original values of all modified
      * fields or is null if no fields have been modified.
      * @property modified
      * @type {Object}
      */
-    modified: null,
+    modified : null,
     /**
-     * <tt>false</tt> when the record does not yet exist in a server-side database (see
+     * <tt>true</tt> when the record does not yet exist in a server-side database (see
      * {@link #markDirty}).  Any record which has a real database pk set as its id property
      * is NOT a phantom -- it's real.
      * @property phantom
@@ -189,7 +202,7 @@ rec.{@link #commit}();
 
 // update the record in the store, bypass setting dirty flag,
 // and do not store the change in the {@link Ext.data.Store#getModifiedRecords modified records}
-rec.{@link #data}['firstname'] = 'Wilma'); // updates record, but not the view
+rec.{@link #data}['firstname'] = 'Wilma'; // updates record, but not the view
 rec.{@link #commit}(); // updates the view
      * </code></pre>
      * <b>Notes</b>:<div class="mdetail-params"><ul>
@@ -201,20 +214,18 @@ rec.{@link #commit}(); // updates the view
      * event fire.</li>
      * </ul></div>
      * @param {String} name The {@link Ext.data.Field#name name of the field} to set.
-     * @param {Object} value The value to set the field to.
+     * @param {String/Object/Array} value The value to set the field to.
      */
     set : function(name, value){
-        var isObj = (typeof value === 'object');
-        if(!isObj && String(this.data[name]) === String(value)){
+        var encode = Ext.isPrimitive(value) ? String : Ext.encode;
+        if(encode(this.data[name]) == encode(value)) {
             return;
-        } else if (isObj && Ext.encode(this.data[name]) === Ext.encode(value)) {
-            return;
-        }
+        }        
         this.dirty = true;
         if(!this.modified){
             this.modified = {};
         }
-        if(typeof this.modified[name] == 'undefined'){
+        if(this.modified[name] === undefined){
             this.modified[name] = this.data[name];
         }
         this.data[name] = value;
@@ -224,21 +235,21 @@ rec.{@link #commit}(); // updates the view
     },
 
     // private
-    afterEdit: function(){
+    afterEdit : function(){
         if(this.store){
             this.store.afterEdit(this);
         }
     },
 
     // private
-    afterReject: function(){
+    afterReject : function(){
         if(this.store){
             this.store.afterReject(this);
         }
     },
 
     // private
-    afterCommit: function(){
+    afterCommit : function(){
         if(this.store){
             this.store.afterCommit(this);
         }
@@ -348,10 +359,13 @@ rec.{@link #commit}(); // updates the view
     },
 
     /**
-     * Creates a copy of this Record.
-     * @param {String} id (optional) A new Record id, defaults to {@link #Record.id autogenerating an id}.
-     * Note: if an <code>id</code> is not specified the copy created will be a
-     * <code>{@link #phantom}</code> Record.
+     * Creates a copy (clone) of this Record.
+     * @param {String} id (optional) A new Record id, defaults to the id
+     * of the record being copied. See <code>{@link #id}</code>. 
+     * To generate a phantom record with a new id use:<pre><code>
+var rec = record.copy(); // clone the record
+Ext.data.Record.id(rec); // automatically generate a unique sequential id
+     * </code></pre>
      * @return {Record}
      */
     copy : function(newId) {

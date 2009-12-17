@@ -1,21 +1,38 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
-
-
+Ext.ns('Ext.ux');
+/**
+ * @class Ext.ux.TabScrollerMenu
+ * @extends Object 
+ * Plugin (ptype = 'tabscrollermenu') for adding a tab scroller menu to tabs.
+ * @constructor 
+ * @param {Object} config Configuration options
+ * @ptype tabscrollermenu
+ */
 Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
+    /**
+     * @cfg {Number} pageSize How many items to allow per submenu.
+     */
 	pageSize       : 10,
+    /**
+     * @cfg {Number} maxText How long should the title of each {@link Ext.menu.Item} be.
+     */
 	maxText        : 15,
+    /**
+     * @cfg {String} menuPrefixText Text to prefix the submenus.
+     */    
 	menuPrefixText : 'Items',
 	constructor    : function(config) {
 		config = config || {};
 		Ext.apply(this, config);
 	},
+    //private
 	init : function(tabPanel) {
-		Ext.apply(tabPanel, this.tabPanelMethods);
+		Ext.apply(tabPanel, this.parentOverrides);
 		
 		tabPanel.tabScrollerMenu = this;
 		var thisRef = this;
@@ -63,45 +80,66 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 		});
 		
 	},
-	// public
+    /**
+     * Returns an the current page size (this.pageSize);
+     * @return {Number} this.pageSize The current page size.
+     */
 	getPageSize : function() {
 		return this.pageSize;
 	},
-	// public
-	setPageSize : function(pageSize) {
+    /**
+     * Sets the number of menu items per submenu "page size".
+     * @param {Number} pageSize The page size
+     */
+    setPageSize : function(pageSize) {
 		this.pageSize = pageSize;
 	},
-	// public
-	getMaxText : function() {
+    /**
+     * Returns the current maxText length;
+     * @return {Number} this.maxText The current max text length.
+     */
+    getMaxText : function() {
 		return this.maxText;
 	},
-	// public
-	setMaxText : function(t) {
+    /**
+     * Sets the maximum text size for each menu item.
+     * @param {Number} t The max text per each menu item.
+     */
+    setMaxText : function(t) {
 		this.maxText = t;
 	},
+    /**
+     * Returns the current menu prefix text String.;
+     * @return {String} this.menuPrefixText The current menu prefix text.
+     */
 	getMenuPrefixText : function() {
 		return this.menuPrefixText;
 	},
+    /**
+     * Sets the menu prefix text String.
+     * @param {String} t The menu prefix text.
+     */    
 	setMenuPrefixText : function(t) {
 		this.menuPrefixText = t;
 	},
 	// private && applied to the tab panel itself.
-	tabPanelMethods : {
+	parentOverrides : {
 		// all execute within the scope of the tab panel
 		// private	
 		showTabsMenu : function(e) {		
-			if (! this.tabsMenu) {
-				this.tabsMenu =  new Ext.menu.Menu();
-				this.on('beforedestroy', this.tabsMenu.destroy, this.tabsMenu);
+			if  (this.tabsMenu) {
+				this.tabsMenu.destroy();
+                this.un('destroy', this.tabsMenu.destroy, this.tabsMenu);
+                this.tabsMenu = null;
 			}
-			
-			this.tabsMenu.removeAll();
-			
-			this.generateTabMenuItems();
-			
-			var target = Ext.get(e.getTarget());
+            this.tabsMenu =  new Ext.menu.Menu();
+            this.on('destroy', this.tabsMenu.destroy, this.tabsMenu);
+
+            this.generateTabMenuItems();
+
+            var target = Ext.get(e.getTarget());
 			var xy     = target.getXY();
-			
+//
 			//Y param + 24 pixels
 			xy[1] += 24;
 			
@@ -145,12 +183,10 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 						menuItems.push(this.autoGenMenuItem(item));
 					}
 					
-					
 					this.tabsMenu.add({
 						text : this.tabScrollerMenu.menuPrefixText  + ' ' + (start + 1) + ' - ' + (start + menuItems.length),
 						menu : menuItems
 					});
-					
 
 				}
 			}
@@ -160,7 +196,7 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 						menuItems.push(this.autoGenMenuItem(item));
 					}
 				}, this);
-			}	
+			}
 		},
 		// private
 		autoGenMenuItem : function(item) {
@@ -183,3 +219,5 @@ Ext.ux.TabScrollerMenu =  Ext.extend(Object, {
 		}	
 	}	
 });
+
+Ext.reg('tabscrollermenu', Ext.ux.TabScrollerMenu);

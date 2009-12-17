@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -39,6 +39,25 @@ proxy : new Ext.data.HttpProxy({
     }
 }),
  * </code></pre>
+ * <p>And <b>new in Ext version 3</b>, attach centralized event-listeners upon the DataProxy class itself!  This is a great place
+ * to implement a <i>messaging system</i> to centralize your application's user-feedback and error-handling.</p>
+ * <pre><code>
+// Listen to all "beforewrite" event fired by all proxies.
+Ext.data.DataProxy.on('beforewrite', function(proxy, action) {
+    console.log('beforewrite: ', action);
+});
+
+// Listen to "write" event fired by all proxies
+Ext.data.DataProxy.on('write', function(proxy, action, data, res, rs) {
+    console.info('write: ', action);
+});
+
+// Listen to "exception" event fired by all proxies
+Ext.data.DataProxy.on('exception', function(proxy, type, action) {
+    console.error(type + action + ' exception);
+});
+ * </code></pre>
+ * <b>Note:</b> These three events are all fired with the signature of the corresponding <i>DataProxy instance</i> event {@link #beforewrite beforewrite}, {@link #write write} and {@link #exception exception}.
  */
 Ext.data.DataProxy = function(conn){
     // make sure we have a config object here to support ux proxies.
@@ -353,7 +372,7 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
      * @param {Object} params
      * @param {Ext.data.DataReader} reader
      * @param {Function} callback
-     * @param {Object} scope Scope with which to call the callback (defaults to the Proxy object)
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the Proxy object.
      * @param {Object} options Any options specified for the action (e.g. see {@link Ext.data.Store#load}.
      */
     request : function(action, rs, params, reader, callback, scope, options) {
@@ -382,7 +401,7 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
     load : null,
 
     /**
-     * @cfg {Function} doRequest Abstract method that should be implemented in all subclasses
+     * @cfg {Function} doRequest Abstract method that should be implemented in all subclasses.  <b>Note:</b> Should only be used by custom-proxy developers.
      * (e.g.: {@link Ext.data.HttpProxy#doRequest HttpProxy.doRequest},
      * {@link Ext.data.DirectProxy#doRequest DirectProxy.doRequest}).
      */
@@ -393,6 +412,27 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
         this.load(params, reader, callback, scope, options);
     },
 
+    /**
+     * @cfg {Function} onRead Abstract method that should be implemented in all subclasses.  <b>Note:</b> Should only be used by custom-proxy developers.  Callback for read {@link Ext.data.Api#actions action}.
+     * @param {String} action Action name as per {@link Ext.data.Api.actions#read}.
+     * @param {Object} o The request transaction object
+     * @param {Object} res The server response
+     * @fires loadexception (deprecated)
+     * @fires exception
+     * @fires load
+     * @protected
+     */
+    onRead : Ext.emptyFn,
+    /**
+     * @cfg {Function} onWrite Abstract method that should be implemented in all subclasses.  <b>Note:</b> Should only be used by custom-proxy developers.  Callback for <i>create, update and destroy</i> {@link Ext.data.Api#actions actions}.
+     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
+     * @param {Object} trans The request transaction object
+     * @param {Object} res The server response
+     * @fires exception
+     * @fires write
+     * @protected
+     */
+    onWrite : Ext.emptyFn,
     /**
      * buildUrl
      * Sets the appropriate url based upon the action being executed.  If restful is true, and only a single record is being acted upon,
@@ -405,30 +445,32 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
      */
     buildUrl : function(action, record) {
         record = record || null;
-        var url = (this.api[action]) ? this.api[action].url : this.url;
+
+        // conn.url gets nullified after each request.  If it's NOT null here, that means the user must have intervened with a call
+        // to DataProxy#setUrl or DataProxy#setApi and changed it before the request was executed.  If that's the case, use conn.url,
+        // otherwise, build the url from the api or this.url.
+        var url = (this.conn && this.conn.url) ? this.conn.url : (this.api[action]) ? this.api[action].url : this.url;
         if (!url) {
             throw new Ext.data.Api.Error('invalid-url', action);
         }
 
-        // look for urls having "provides" suffix (from Rails/Merb and others...),
-        // e.g.: /users.json, /users.xml, etc
+        // look for urls having "provides" suffix used in some MVC frameworks like Rails/Merb and others.  The provides suffice informs
+        // the server what data-format the client is dealing with and returns data in the same format (eg: application/json, application/xml, etc)
+        // e.g.: /users.json, /users.xml, etc.
         // with restful routes, we need urls like:
         // PUT /users/1.json
         // DELETE /users/1.json
-        var format = null;
+        var provides = null;
         var m = url.match(/(.*)(\.json|\.xml|\.html)$/);
         if (m) {
-            format = m[2];  // eg ".json"
-            url = m[1];     // eg: "/users"
+            provides = m[2];    // eg ".json"
+            url      = m[1];    // eg: "/users"
         }
         // prettyUrls is deprectated in favor of restful-config
-        if ((this.prettyUrls === true || this.restful === true) && record instanceof Ext.data.Record && !record.phantom) {
+        if ((this.restful === true || this.prettyUrls === true) && record instanceof Ext.data.Record && !record.phantom) {
             url += '/' + record.id;
         }
-        if (format) {   // <-- append the request format if exists (ie: /users/update/69[.json])
-            url += format;
-        }
-        return url;
+        return (provides === null) ? url : url + provides;
     },
 
     /**

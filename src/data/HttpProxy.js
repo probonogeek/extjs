@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,7 +17,7 @@
  * @constructor
  * @param {Object} conn
  * An {@link Ext.data.Connection} object, or options parameter to {@link Ext.Ajax#request}.
- * <p>Note that if this HttpProxy is being used by a (@link Ext.data.Store Store}, then the
+ * <p>Note that if this HttpProxy is being used by a {@link Ext.data.Store Store}, then the
  * Store's call to {@link #load} will override any specified <tt>callback</tt> and <tt>params</tt>
  * options. In this case, use the Store's {@link Ext.data.Store#events events} to modify parameters,
  * or react to loading events. The Store's {@link Ext.data.Store#baseParams baseParams} may also be
@@ -95,8 +95,9 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
      * <li><tt>r</tt> : Ext.data.Record[] The block of Ext.data.Records.</li>
      * <li><tt>options</tt>: Options object from the action request</li>
      * <li><tt>success</tt>: Boolean success indicator</li></ul></p></div>
-     * @param {Object} scope The scope in which to call the callback
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      * @param {Object} arg An optional argument which is passed to the callback as its second parameter.
+     * @protected
      */
     doRequest : function(action, rs, params, reader, cb, scope, arg) {
         var  o = {
@@ -113,7 +114,6 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
 
         // If possible, transmit data using jsonData || xmlData on Ext.Ajax.request (An installed DataWriter would have written it there.).
         // Use std HTTP params otherwise.
-        // TODO wrap into 1 Ext.apply now?
         if (params.jsonData) {
             o.jsonData = params.jsonData;
         } else if (params.xmlData) {
@@ -122,14 +122,10 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
             o.params = params || {};
         }
         // Set the connection url.  If this.conn.url is not null here,
-        // the user may have overridden the url during a beforeaction event-handler.
+        // the user must have overridden the url during a beforewrite/beforeload event-handler.
         // this.conn.url is nullified after each request.
-        if (this.conn.url === null) {
-            this.conn.url = this.buildUrl(action, rs);
-        }
-        else if (this.restful === true && rs instanceof Ext.data.Record && !rs.phantom) { // <-- user must have intervened with #setApi or #setUrl
-            this.conn.url += '/' + rs.id;
-        }
+        this.conn.url = this.buildUrl(action, rs);
+
         if(this.useAjax){
 
             Ext.applyIf(o, this.conn);
@@ -186,7 +182,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
      * @fires loadexception (deprecated)
      * @fires exception
      * @fires load
-     * @private
+     * @protected
      */
     onRead : function(action, o, response) {
         var result;
@@ -225,7 +221,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
      * @param {Object} res The server response
      * @fires exception
      * @fires write
-     * @private
+     * @protected
      */
     onWrite : function(action, o, response, rs) {
         var reader = o.reader;

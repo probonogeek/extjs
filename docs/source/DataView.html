@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.DataView"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.DataView"></div>/**
  * @class Ext.DataView
  * @extends Ext.BoxComponent
  * A mechanism for displaying data using custom layout templates and formatting. DataView uses an {@link Ext.XTemplate}
@@ -161,7 +156,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "click",
             <div id="event-Ext.DataView-mouseenter"></div>/**
              * @event mouseenter
-             * Fires when the mouse enters a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse enters a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -170,7 +165,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             "mouseenter",
             <div id="event-Ext.DataView-mouseleave"></div>/**
              * @event mouseleave
-             * Fires when the mouse leaves a template node. trackOver:true or an overCls must be set to enable this event.
+             * Fires when the mouse leaves a template node. trackOver:true or an overClass must be set to enable this event.
              * @param {Ext.DataView} this
              * @param {Number} index The index of the target node
              * @param {HTMLElement} node The target node
@@ -748,6 +743,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     },
 
     onDestroy : function(){
+        this.all.clear();
+        this.selected.clear();
         Ext.DataView.superclass.onDestroy.call(this);
         this.bindStore(null);
     }
@@ -759,6 +756,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
  */
 Ext.DataView.prototype.setStore = Ext.DataView.prototype.bindStore;
 
-Ext.reg('dataview', Ext.DataView);</pre>
+Ext.reg('dataview', Ext.DataView);
+</pre>    
 </body>
 </html>

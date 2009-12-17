@@ -1,13 +1,13 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 /**
- * @class Ext.ListView
+ * @class Ext.list.ListView
  * @extends Ext.DataView
- * <p>Ext.ListView is a fast and light-weight implentation of a
+ * <p>Ext.list.ListView is a fast and light-weight implentation of a
  * {@link Ext.grid.GridPanel Grid} like view with the following characteristics:</p>
  * <div class="mdetail-params"><ul>
  * <li>resizable columns</li>
@@ -48,7 +48,7 @@ var store = new Ext.data.JsonStore({
 });
 store.load();
 
-var listView = new Ext.ListView({
+var listView = new Ext.list.ListView({
     store: store,
     multiSelect: true,
     emptyText: 'No images to display',
@@ -93,7 +93,7 @@ listView.on('selectionchange', function(view, nodes){
  * @param {Object} config
  * @xtype listview
  */
-Ext.ListView = Ext.extend(Ext.DataView, {
+Ext.list.ListView = Ext.extend(Ext.DataView, {
     /**
      * Set this property to <tt>true</tt> to disable the header click handler disabling sort
      * (defaults to <tt>false</tt>).
@@ -144,7 +144,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     scrollOffset : undefined,
     /**
      * @cfg {Boolean/Object} columnResize
-     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.ColumnResizer}
+     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.list.ListView.ColumnResizer}
      * to enable the columns to be resizable (defaults to <tt>true</tt>).
      */
     columnResize: true,
@@ -180,7 +180,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      */
     /**
      * @cfg {Boolean/Object} columnSort
-     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.Sorter}
+     * Specify <tt>true</tt> or specify a configuration object for {@link Ext.list.ListView.Sorter}
      * to enable the columns to be sortable (defaults to <tt>true</tt>).
      */
     columnSort: true,
@@ -196,18 +196,18 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     
     initComponent : function(){
         if(this.columnResize){
-            this.colResizer = new Ext.ListView.ColumnResizer(this.colResizer);
+            this.colResizer = new Ext.list.ColumnResizer(this.colResizer);
             this.colResizer.init(this);
         }
         if(this.columnSort){
-            this.colSorter = new Ext.ListView.Sorter(this.columnSort);
+            this.colSorter = new Ext.list.Sorter(this.columnSort);
             this.colSorter.init(this);
         }
         if(!this.internalTpl){
             this.internalTpl = new Ext.XTemplate(
                 '<div class="x-list-header"><div class="x-list-header-inner">',
                     '<tpl for="columns">',
-                    '<div style="width:{width}%;text-align:{align};"><em unselectable="on" id="',this.id, '-xlhd-{#}">',
+                    '<div style="width:{[values.width*100]}%;text-align:{align};"><em unselectable="on" id="',this.id, '-xlhd-{#}">',
                         '{header}',
                     '</em></div>',
                     '</tpl>',
@@ -222,7 +222,8 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '<tpl for="rows">',
                     '<dl>',
                         '<tpl for="parent.columns">',
-                        '<dt style="width:{width}%;text-align:{align};"><em unselectable="on">',
+                        '<dt style="width:{[values.width*100]}%;text-align:{align};">',
+                        '<em unselectable="on"<tpl if="cls"> class="{cls}</tpl>">',
                             '{[values.tpl.apply(parent)]}',
                         '</em></dt>',
                         '</tpl>',
@@ -231,48 +232,49 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
+        
         var cs = this.columns, 
             allocatedWidth = 0, 
             colsWithWidth = 0, 
             len = cs.length, 
             columns = [];
+            
         for(var i = 0; i < len; i++){
-            var c = Ext.apply({}, cs[i]);
-            if(!c.tpl){
-                c.tpl = new Ext.XTemplate('{' + c.dataIndex + '}');
-            }else if(Ext.isString(c.tpl)){
-                c.tpl = new Ext.XTemplate(c.tpl);
+            var c = cs[i];
+            if(!c.isColumn) {
+                c.xtype = c.xtype ? (/^lv/.test(c.xtype) ? c.xtype : 'lv' + c.xtype) : 'lvcolumn';
+                c = Ext.create(c);
             }
-            c.align = c.align || 'left';
-            if(Ext.isNumber(c.width)){
-                c.width *= 100;
-                allocatedWidth += c.width;
+            if(c.width) {
+                allocatedWidth += c.width*100;
                 colsWithWidth++;
             }
             columns.push(c);
         }
+        
         cs = this.columns = columns;
+        
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
             if(allocatedWidth < this.maxWidth){
-                var perCol = ((this.maxWidth-allocatedWidth) / remaining);
+                var perCol = ((this.maxWidth-allocatedWidth) / remaining)/100;
                 for(var j = 0; j < len; j++){
                     var c = cs[j];
-                    if(!Ext.isNumber(c.width)){
+                    if(!c.width){
                         c.width = perCol;
                     }
                 }
             }
         }
-        Ext.ListView.superclass.initComponent.call(this);
+        Ext.list.ListView.superclass.initComponent.call(this);
     },
 
     onRender : function(){
         this.autoEl = {
             cls: 'x-list-wrap'  
         };
-        Ext.ListView.superclass.onRender.apply(this, arguments);
+        Ext.list.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
         
@@ -303,7 +305,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      * XTemplate as described above.
      */
     collectData : function(){
-        var rs = Ext.ListView.superclass.collectData.apply(this, arguments);
+        var rs = Ext.list.ListView.superclass.collectData.apply(this, arguments);
         return {
             columns: this.columns,
             rows: rs
@@ -346,7 +348,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     },
 
     updateIndexes : function(){
-        Ext.ListView.superclass.updateIndexes.apply(this, arguments);
+        Ext.list.ListView.superclass.updateIndexes.apply(this, arguments);
         this.verifyInternalSize();
     },
 
@@ -364,9 +366,12 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     setHdWidths : function(){
         var els = this.innerHd.dom.getElementsByTagName('div');
         for(var i = 0, cs = this.columns, len = cs.length; i < len; i++){
-            els[i].style.width = cs[i].width + '%';
+            els[i].style.width = (cs[i].width*100) + '%';
         }
     }
 });
 
-Ext.reg('listview', Ext.ListView);
+Ext.reg('listview', Ext.list.ListView);
+
+// Backwards compatibility alias
+Ext.ListView = Ext.list.ListView;

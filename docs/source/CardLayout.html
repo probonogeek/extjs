@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.layout.CardLayout"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.CardLayout"></div>/**
  * @class Ext.layout.CardLayout
  * @extends Ext.layout.FitLayout
  * <p>This layout manages multiple child Components, each fitted to the Container, where only a single child Component can be
@@ -100,7 +95,7 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
     
     constructor: function(config){
         Ext.layout.CardLayout.superclass.constructor.call(this, config);
-        this.forceLayout = (this.deferredRender === false);
+      //  this.forceLayout = (this.deferredRender === false);
     },
 
     <div id="method-Ext.layout.CardLayout-setActiveItem"></div>/**
@@ -108,18 +103,23 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
      * @param {String/Number} item The string component id or numeric index of the item to activate
      */
     setActiveItem : function(item){
+        var ai = this.activeItem;
         item = this.container.getComponent(item);
-        if(this.activeItem != item){
-            if(this.activeItem){
-                this.activeItem.hide();
+        if(ai != item){
+            if(ai){
+                ai.hide();
+                ai.fireEvent('deactivate', ai);
             }
             var layout = item.doLayout && (this.layoutOnCardChange || !item.rendered);
             this.activeItem = item;
-            item.show();
+            if(item){
+                item.show();
+            }
             this.layout();
-            if(layout){
+            if(item && layout){
                 item.doLayout();
             }
+            item.fireEvent('activate', item);
         }
     },
 
@@ -132,6 +132,6 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
         }
     }
 });
-Ext.Container.LAYOUTS['card'] = Ext.layout.CardLayout;</pre>
+Ext.Container.LAYOUTS['card'] = Ext.layout.CardLayout;</pre>    
 </body>
 </html>

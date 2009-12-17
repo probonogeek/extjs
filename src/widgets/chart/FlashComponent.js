@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -15,7 +15,7 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
      * @cfg {String} flashVersion
      * Indicates the version the flash content was published for. Defaults to <tt>'9.0.45'</tt>.
      */
-    flashVersion : '9.0.45',
+    flashVersion : '9.0.115',
 
     /**
      * @cfg {String} backgroundColor
@@ -61,7 +61,14 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
     initComponent : function(){
         Ext.FlashComponent.superclass.initComponent.call(this);
 
-        this.addEvents('initialize');
+        this.addEvents(
+            /**
+             * @event initialize
+             * 
+             * @param {Chart} this
+             */
+            'initialize'
+        );
     },
 
     onRender : function(){

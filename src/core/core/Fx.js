@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -570,7 +570,7 @@ el.frame("C3DAF9", 1, {
             active;
 
         me.queueFx(o, function(){
-            color = color || '#C3DAF9'
+            color = color || '#C3DAF9';
             if(color.length == 6){
                 color = '#' + color;
             }            

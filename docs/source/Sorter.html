@@ -1,25 +1,20 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.ListView.Sorter"></div>/**
- * @class Ext.ListView.Sorter
+    <pre class="prettyprint lang-js"><div id="cls-Ext.list.Sorter"></div>/**
+ * @class Ext.list.Sorter
  * @extends Ext.util.Observable
- * <p>Supporting Class for Ext.ListView.</p>
+ * <p>Supporting Class for Ext.list.ListView</p>
  * @constructor
  * @param {Object} config
  */
-Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
-    <div id="cfg-Ext.ListView.Sorter-sortClasses"></div>/**
+Ext.list.Sorter = Ext.extend(Ext.util.Observable, {
+    <div id="cfg-Ext.list.Sorter-sortClasses"></div>/**
      * @cfg {Array} sortClasses
      * The CSS classes applied to a header when it is sorted. (defaults to <tt>["sort-asc", "sort-desc"]</tt>)
      */
@@ -27,7 +22,7 @@ Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
 
     constructor: function(config){
         Ext.apply(this, config);
-        Ext.ListView.Sorter.superclass.constructor.call(this);
+        Ext.list.Sorter.superclass.constructor.call(this);
     },
 
     init : function(listView){
@@ -74,6 +69,9 @@ Ext.ListView.Sorter = Ext.extend(Ext.util.Observable, {
             this.view.store.sort(this.view.columns[index].dataIndex);
         }
     }
-});</pre>
+});
+
+// Backwards compatibility alias
+Ext.ListView.Sorter = Ext.list.Sorter;</pre>    
 </body>
 </html>

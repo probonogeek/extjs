@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.LoadMask"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.LoadMask"></div>/**
  * @class Ext.LoadMask
  * A simple utility class for generically masking elements while loading data.  If the {@link #store}
  * config option is specified, the masking will be automatically synchronized with the store's loading
@@ -32,16 +27,22 @@ Ext.LoadMask = function(el, config){
     this.el = Ext.get(el);
     Ext.apply(this, config);
     if(this.store){
-        this.store.on('beforeload', this.onBeforeLoad, this);
-        this.store.on('load', this.onLoad, this);
-        this.store.on('exception', this.onLoad, this);
+        this.store.on({
+            scope: this,
+            beforeload: this.onBeforeLoad,
+            load: this.onLoad,
+            exception: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, false);
     }else{
         var um = this.el.getUpdater();
         um.showLoadIndicator = false; // disable the default indicator
-        um.on('beforeupdate', this.onBeforeLoad, this);
-        um.on('update', this.onLoad, this);
-        um.on('failure', this.onLoad, this);
+        um.on({
+            scope: this,
+            beforeupdate: this.onBeforeLoad,
+            update: this.onLoad,
+            failure: this.onLoad
+        });
         this.removeMask = Ext.value(this.removeMask, true);
     }
 };
@@ -127,6 +128,6 @@ Ext.LoadMask.prototype = {
             um.un('failure', this.onLoad, this);
         }
     }
-};</pre>
+};</pre>    
 </body>
 </html>

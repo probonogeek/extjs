@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.Layer"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.Layer"></div>/**
  * @class Ext.Layer
  * @extends Ext.Element
  * An extended {@link Ext.Element} object that supports a shadow and shim, constrain to viewport and
@@ -181,7 +176,7 @@ Ext.extend(Ext.Layer, Ext.Element, {
         }
         this.removeAllListeners();
         Ext.removeNode(this.dom);
-        Ext.Element.uncache(this.id);
+        delete this.dom;
     },
 
     remove : function(){
@@ -470,6 +465,7 @@ Ext.extend(Ext.Layer, Ext.Element, {
         return this;
     }
 });
-})();</pre>
+})();
+</pre>    
 </body>
 </html>

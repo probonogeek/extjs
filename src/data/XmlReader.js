@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.3
+ * Ext JS Library 3.1.0
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -59,8 +59,11 @@ var myReader = new Ext.data.XmlReader({
 Ext.data.XmlReader = function(meta, recordType){
     meta = meta || {};
 
-    // backwards compat, convert idPath to idProperty
-    meta.idProperty = meta.idProperty || meta.idPath;
+    // backwards compat, convert idPath or id / success
+    Ext.applyIf(meta, {
+        idProperty: meta.idProperty || meta.idPath || meta.id,
+        successProperty: meta.successProperty || meta.success
+    });
 
     Ext.data.XmlReader.superclass.constructor.call(this, meta, recordType || meta.fields);
 };
@@ -118,17 +121,19 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
     /**
      * Decode a json response from server.
      * @param {String} action [{@link Ext.data.Api#actions} create|read|update|destroy]
-     * @param {Ext.data.Response} response Returns an instance of {@link Ext.data.Response}
+     * @param {Object} response HTTP Response object from browser.
+     * @return {Ext.data.Response} response Returns an instance of {@link Ext.data.Response}
      */
     readResponse : function(action, response) {
         var q   = Ext.DomQuery,
         doc     = response.responseXML;
 
+        // create general Response instance.
         var res = new Ext.data.Response({
             action: action,
             success : this.getSuccess(doc),
             message: this.getMessage(doc),
-            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc)),
+            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc), false),
             raw: doc
         });
 
@@ -136,6 +141,7 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
             throw new Ext.data.DataReader.Error('successProperty-response', this.meta.successProperty);
         }
 
+        // Create actions from a response having status 200 must return pk
         if (action === Ext.data.Api.actions.create) {
             var def = Ext.isDefined(res.data);
             if (def && Ext.isEmpty(res.data)) {
@@ -228,36 +234,6 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
             }
         };
     }(),
-
-    /**
-     * Extracts rows of record-data from server.  iterates and calls #extractValues
-     * TODO I don't care much for method-names of #extractData, #extractValues.
-     * @param {Array} root
-     * @param {Boolean} returnRecords When true, will return instances of Ext.data.Record; otherwise just hashes.
-     * @private
-     * @ignore
-     */
-    extractData : function(root, returnRecords) {
-        var Record  = this.recordType,
-        records     = [],
-        f           = Record.prototype.fields,
-        fi          = f.items,
-        fl          = f.length;
-        if (returnRecords === true) {
-            for (var i = 0, len = root.length; i < len; i++) {
-                var data = root[i],
-                    record = new Record(this.extractValues(data, fi, fl), this.getId(data));
-                    
-                record.node = data;
-                records.push(record);
-            }
-        } else {
-            for (var i = 0, len = root.length; i < len; i++) {
-                records.push(this.extractValues(root[i], fi, fl));
-            }
-        }
-        return records;
-    },
 
     /**
      * extracts values and type-casts a row of data from server, extracted by #extractData

@@ -1,17 +1,12 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
   <title>The source code</title>
     <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.0.3
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-<div id="cls-Ext.data.DataReader"></div>/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.data.DataReader"></div>/**
  * @class Ext.data.DataReader
  * Abstract base class for reading structured data from a data source and converting
  * it into an object containing {@link Ext.data.Record} objects and metadata for use
@@ -120,7 +115,12 @@ Ext.data.DataReader.prototype = {
             rs.phantom = false; // <-- That's what it's all about
             rs._phid = rs.id;  // <-- copy phantom-id -> _phid, so we can remap in Store#onCreateRecords
             rs.id = this.getId(data);
-            rs.data = data;
+
+            rs.fields.each(function(f) {
+                if (data[f.name] !== f.defaultValue) {
+                    rs.data[f.name] = data[f.name];
+                }
+            });
             rs.commit();
         }
     },
@@ -152,10 +152,54 @@ Ext.data.DataReader.prototype = {
                 data = data.shift();
             }
             if (this.isData(data)) {
-                rs.data = Ext.apply(rs.data, data);
+                rs.fields.each(function(f) {
+                    if (data[f.name] !== f.defaultValue) {
+                        rs.data[f.name] = data[f.name];
+                    }
+                });
             }
             rs.commit();
         }
+    },
+
+    /**
+     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
+     * @param {Object[]/Object} data-root from server response
+     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
+     * @private
+     */
+    extractData : function(root, returnRecords) {
+        // A bit ugly this, too bad the Record's raw data couldn't be saved in a common property named "raw" or something.
+        var rawName = (this instanceof Ext.data.JsonReader) ? 'json' : 'node';
+
+        var rs = [];
+
+        // Had to add Check for XmlReader, #isData returns true if root is an Xml-object.  Want to check in order to re-factor
+        // #extractData into DataReader base, since the implementations are almost identical for JsonReader, XmlReader
+        if (this.isData(root) && !(this instanceof Ext.data.XmlReader)) {
+            root = [root];
+        }
+        var f       = this.recordType.prototype.fields,
+            fi      = f.items,
+            fl      = f.length,
+            rs      = [];
+        if (returnRecords === true) {
+            var Record = this.recordType;
+            for (var i = 0; i < root.length; i++) {
+                var n = root[i];
+                var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
+                record[rawName] = n;    // <-- There's implementation of ugly bit, setting the raw record-data.
+                rs.push(record);
+            }
+        }
+        else {
+            for (var i = 0; i < root.length; i++) {
+                var data = this.extractValues(root[i], fi, fl);
+                data[this.meta.idProperty] = this.getId(root[i]);
+                rs.push(data);
+            }
+        }
+        return rs;
     },
 
     <div id="method-Ext.data.DataReader-isData"></div>/**
@@ -196,42 +240,6 @@ Ext.apply(Ext.data.DataReader.Error.prototype, {
         'invalid-response': "#readResponse received an invalid response from the server."
     }
 });
-
-
-<div id="method-Ext.data.DataReader.Error-Response"></div>/**
- * Ext.data.Response
- * A generic response class to normalize response-handling internally to the framework.
- * TODO move to own file, add to jsb.
- */
-Ext.data.Response = function(params) {
-    Ext.apply(this, params);
-};
-Ext.data.Response.prototype = {
-    <div id="prop-Ext.data.DataReader.Error-{String}"></div>/**
-     * @property {String} action {@link Ext.data.Api#actions}
-     */
-    action: undefined,
-    <div id="prop-Ext.data.DataReader.Error-{Boolean}"></div>/**
-     * @property {Boolean} success
-     */
-    success : undefined,
-    <div id="prop-Ext.data.DataReader.Error-{String}"></div>/**
-     * @property {String} message
-     */
-    message : undefined,
-    <div id="prop-Ext.data.DataReader.Error-{Array/Object}"></div>/**
-     * @property {Array/Object} data
-     */
-    data: undefined,
-    <div id="prop-Ext.data.DataReader.Error-{Object}"></div>/**
-     * @property {Object} raw The raw response returned from server-code
-     */
-    raw: undefined,
-    <div id="prop-Ext.data.DataReader.Error-{Ext.data.Record/Ext.data.Record[]}"></div>/**
-     * @property {Ext.data.Record/Ext.data.Record[]} record(s) related to the Request action
-     */
-    records: undefined
-}
-</pre>
+</pre>    
 </body>
 </html>
