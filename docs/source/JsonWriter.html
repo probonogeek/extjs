@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.JsonWriter"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.JsonWriter"></div>/**
  * @class Ext.data.JsonWriter
  * @extends Ext.data.DataWriter
  * DataWriter extension for writing an array or single {@link Ext.data.Record} object(s) in preparation for executing a remote CRUD action.
@@ -21,7 +27,7 @@ Ext.data.JsonWriter = function(config) {
 }
 Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
     <div id="cfg-Ext.data.JsonWriter-returnJson"></div>/**
-     * @cfg {Boolean} returnJson <b>Deprecated.  Use {@link Ext.data.JsonWriter#encode} instead.
+     * @cfg {Boolean} returnJson <b>Deprecated</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
      */
     returnJson : undefined,
     <div id="cfg-Ext.data.JsonWriter-encode"></div>/**
@@ -31,7 +37,8 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * its own json-encoding.  In addition, if you're using {@link Ext.data.HttpProxy}, setting to <tt>false</tt>
      * will cause HttpProxy to transmit data using the <b>jsonData</b> configuration-params of {@link Ext.Ajax#request}
      * instead of <b>params</b>.  When using a {@link Ext.data.Store#restful} Store, some serverside frameworks are
-     * tuned to expect data through the jsonData mechanism.  In those cases, one will want to set <b>encode: <tt>false</tt></b>
+     * tuned to expect data through the jsonData mechanism.  In those cases, one will want to set <b>encode: <tt>false</tt></b>, as in
+     * let the lower-level connection object (eg: Ext.Ajax) do the encoding.
      */
     encode : true,
 
@@ -43,42 +50,41 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * @param {Object} data object populated according to DataReader meta-data "root" and "idProperty"
      */
     render : function(action, rs, params, data) {
-        Ext.apply(params, data);
-
-        if (this.encode === true) { // <-- @deprecated returnJson
-            if (Ext.isArray(rs) && data[this.meta.idProperty]) {
-                params[this.meta.idProperty] = Ext.encode(params[this.meta.idProperty]);
-            }
-            params[this.meta.root] = Ext.encode(params[this.meta.root]);
+        if (this.encode === true) {
+            params[this.meta.root] = Ext.encode(data);
+        } else {
+            params.jsonData = {};
+            params.jsonData[this.meta.root] = data;
         }
     },
     <div id="method-Ext.data.JsonWriter-createRecord"></div>/**
-     * createRecord
+     * Implements abstract Ext.data.DataWriter#createRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     createRecord : function(rec) {
-       var data = this.toHash(rec);
-       delete data[this.meta.idProperty];
-       return data;
+       return this.toHash(rec);
     },
     <div id="method-Ext.data.JsonWriter-updateRecord"></div>/**
-     * updateRecord
+     * Implements abstract Ext.data.DataWriter#updateRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     updateRecord : function(rec) {
         return this.toHash(rec);
 
     },
     <div id="method-Ext.data.JsonWriter-destroyRecord"></div>/**
-     * destroyRecord
+     * Implements abstract Ext.data.DataWriter#destroyRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     destroyRecord : function(rec) {
         return rec.id;
     }
-});</pre>    
+});</pre>
 </body>
 </html>

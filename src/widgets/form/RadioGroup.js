@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -60,27 +60,29 @@ Ext.form.RadioGroup = Ext.extend(Ext.form.CheckboxGroup, {
      * @param {Boolean} value The value to set the radio.
      * @return {Ext.form.RadioGroup} this
      */
-    setValue : function(id, value){
-        if(this.rendered){
-            if(arguments.length > 1){
-                var f = this.getBox(id);
-                if(f){
-                    f.setValue(value);
-                    if(f.checked){
-                        this.eachItem(function(item){
-                            if (item !== f){
-                                item.setValue(false);
-                            }
-                        });
-                    }
+    onSetValue : function(id, value){
+        if(arguments.length > 1){
+            var f = this.getBox(id);
+            if(f){
+                f.setValue(value);
+                if(f.checked){
+                    this.eachItem(function(item){
+                        if (item !== f){
+                            item.setValue(false);
+                        }
+                    });
                 }
-            }else{
-                this.setValueForItem(id);
             }
         }else{
-            this.values = arguments;
+            this.setValueForItem(id);
         }
-        return this;
+    },
+    
+    setValueForItem : function(val){
+        val = String(val).split(',')[0];
+        this.eachItem(function(item){
+            item.setValue(val == item.inputValue);
+        });
     },
     
     // private

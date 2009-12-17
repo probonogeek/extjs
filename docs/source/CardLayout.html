@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.CardLayout"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.layout.CardLayout"></div>/**
  * @class Ext.layout.CardLayout
  * @extends Ext.layout.FitLayout
  * <p>This layout manages multiple child Components, each fitted to the Container, where only a single child Component can be
@@ -107,10 +113,11 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
             if(this.activeItem){
                 this.activeItem.hide();
             }
+            var layout = item.doLayout && (this.layoutOnCardChange || !item.rendered);
             this.activeItem = item;
             item.show();
-            this.container.doLayout();
-            if(this.layoutOnCardChange && item.doLayout){
+            this.layout();
+            if(layout){
                 item.doLayout();
             }
         }
@@ -125,6 +132,6 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
         }
     }
 });
-Ext.Container.LAYOUTS['card'] = Ext.layout.CardLayout;</pre>    
+Ext.Container.LAYOUTS['card'] = Ext.layout.CardLayout;</pre>
 </body>
 </html>

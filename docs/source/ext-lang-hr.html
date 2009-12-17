@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+/*
  * Croatian translation
  * By Ylodi (utf8 encoding)
  * 8 May 2007
@@ -14,7 +20,7 @@
  * 17 May 2008
  */
  
-Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">UÄitavanje...</div>';
+Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">UÄ?itavanje...</div>';
 
 if(Ext.View){
    Ext.View.prototype.emptyText = "";
@@ -33,12 +39,12 @@ if(Ext.form.Field){
 }
 
 if(Ext.LoadMask){
-    Ext.LoadMask.prototype.msg = "UÄitavanje...";
+    Ext.LoadMask.prototype.msg = "UÄ?itavanje...";
 }
 
 Date.monthNames = [
-   "SijeÄanj",
-   "VeljaÄa",
+   "SijeÄ?anj",
+   "VeljaÄ?a",
    "OÅ¾ujak",
    "Travanj",
    "Svibanj",
@@ -170,7 +176,7 @@ if(Ext.form.DateField){
 
 if(Ext.form.ComboBox){
    Ext.apply(Ext.form.ComboBox.prototype, {
-      loadingText       : "UÄitavanje...",
+      loadingText       : "UÄ?itavanje...",
       valueNotFoundText : undefined
    });
 }
@@ -190,37 +196,37 @@ if(Ext.form.HtmlEditor){
     buttonTips : {
       bold : {
         title: 'Podebljano (Ctrl+B)',
-        text: 'Podebljavanje oznaÄenog teksta.',
+        text: 'Podebljavanje oznaÄ?enog teksta.',
         cls: 'x-html-editor-tip'
       },
       italic : {
         title: 'Kurziv (Ctrl+I)',
-        text: 'Pretvaranje oznaÄenog tekst u kurziv',
+        text: 'Pretvaranje oznaÄ?enog tekst u kurziv',
         cls: 'x-html-editor-tip'
       },
       underline : {
         title: 'Podcrtano (Ctrl+U)',
-        text: 'Potcrtavanje oznaÄenog teksta',
+        text: 'Potcrtavanje oznaÄ?enog teksta',
         cls: 'x-html-editor-tip'
       },
       increasefontsize : {
         title: 'PoveÄ‡anje teksta',
-        text: 'PoveÄ‡avanje veliÄine fonta.',
+        text: 'PoveÄ‡avanje veliÄ?ine fonta.',
         cls: 'x-html-editor-tip'
       },
       decreasefontsize : {
         title: 'Smanjivanje teksta',
-        text: 'Smanjivanje veliÄine fonta.',
+        text: 'Smanjivanje veliÄ?ine fonta.',
         cls: 'x-html-editor-tip'
       },
       backcolor : {
-        title: 'Boja oznaÄenog teksta',
-        text: 'Promjena boje pozadine oznaÄenog teksta.',
+        title: 'Boja oznaÄ?enog teksta',
+        text: 'Promjena boje pozadine oznaÄ?enog teksta.',
         cls: 'x-html-editor-tip'
       },
       forecolor : {
         title: 'Boja fonta',
-        text: 'Promjena boje oznaÄenog teksta.',
+        text: 'Promjena boje oznaÄ?enog teksta.',
         cls: 'x-html-editor-tip'
       },
       justifyleft : {
@@ -230,7 +236,7 @@ if(Ext.form.HtmlEditor){
       },
       justifycenter : {
         title: 'Centriranje teksta',
-        text: 'Centriranje teksta u ureÄ‘ivaÄu teksta.',
+        text: 'Centriranje teksta u ureÄ‘ivaÄ?u teksta.',
         cls: 'x-html-editor-tip'
       },
       justifyright : {
@@ -239,23 +245,23 @@ if(Ext.form.HtmlEditor){
         cls: 'x-html-editor-tip'
       },
       insertunorderedlist : {
-        title: 'OznaÄena lista',
-        text: 'ZapoÄinjanje oznaÄene liste.',
+        title: 'OznaÄ?ena lista',
+        text: 'ZapoÄ?injanje oznaÄ?ene liste.',
         cls: 'x-html-editor-tip'
       },
       insertorderedlist : {
         title: 'Numerirana lista',
-        text: 'ZapoÄinjanje numerirane liste.',
+        text: 'ZapoÄ?injanje numerirane liste.',
         cls: 'x-html-editor-tip'
       },
       createlink : {
         title: 'Hiperveza',
-        text: 'Stvaranje hiperveze od oznaÄenog teksta.',
+        text: 'Stvaranje hiperveze od oznaÄ?enog teksta.',
         cls: 'x-html-editor-tip'
       },
       sourceedit : {
         title: 'UreÄ‘ivanje izvornog koda',
-        text: 'Prebacivanje u naÄin rada za ureÄ‘ivanje izvornog koda.',
+        text: 'Prebacivanje u naÄ?in rada za ureÄ‘ivanje izvornog koda.',
         cls: 'x-html-editor-tip'
       }
     }
@@ -266,8 +272,8 @@ if(Ext.grid.GridView){
    Ext.apply(Ext.grid.GridView.prototype, {
       sortAscText  : "Sortiraj rastuÄ‡im redoslijedom",
       sortDescText : "Sortiraj padajuÄ‡im redoslijedom",
-      lockText     : "ZakljuÄaj stupac",
-      unlockText   : "OtkljuÄaj stupac",
+      lockText     : "ZakljuÄ?aj stupac",
+      unlockText   : "OtkljuÄ?aj stupac",
       columnsText  : "Stupci"
    });
 }
@@ -290,10 +296,10 @@ if(Ext.grid.PropertyColumnModel){
 
 if(Ext.layout.BorderLayout.SplitRegion){
    Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
-      splitTip            : "Povuci za promjenu veliÄine.",
-      collapsibleSplitTip : "Povuci za promjenu veliÄine. Dvostruki klik za skrivanje."
+      splitTip            : "Povuci za promjenu veliÄ?ine.",
+      collapsibleSplitTip : "Povuci za promjenu veliÄ?ine. Dvostruki klik za skrivanje."
    });
 }
-</pre>    
+</pre>
 </body>
 </html>

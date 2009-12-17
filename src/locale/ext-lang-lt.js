@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -20,7 +20,7 @@ if(Ext.DataView){
   Ext.DataView.prototype.emptyText = "";
 }
 if(Ext.grid.GridPanel){
-  Ext.grid.GridPanel.prototype.ddText = "{0} pažymėtų eilučių";
+  Ext.grid.GridPanel.prototype.ddText = "{0} pažymėtų eilu�?ių";
 }
 
 if(Ext.TabPanelItem){
@@ -86,7 +86,7 @@ Date.dayNames = [
   "Sekmadienis",
   "Pirmadienis",
   "Antradienis",
-  "Trečiadienis",
+  "Tre�?iadienis",
   "Ketvirtadienis",
   "Penktadienis",
   "Šeštadienis"
@@ -191,7 +191,7 @@ if(Ext.form.VTypes){
     emailText    : 'Šiame lauke turi būti el.pašto adresas formatu "user@example.com"',
     urlText      : 'Šiame lauke turi būti nuoroda (URL) formatu "http:/'+'/www.example.com"',
     alphaText    : 'Šiame lauke gali būti tik raidės ir ženklas "_"',
-    alphanumText : 'Šiame lauke gali būti tik raidės, skaičiai ir ženklas "_"'
+    alphanumText : 'Šiame lauke gali būti tik raidės, skai�?iai ir ženklas "_"'
   });
 }
 
@@ -279,8 +279,8 @@ if(Ext.form.BasicForm){
   
 if(Ext.grid.GridView){
   Ext.apply(Ext.grid.GridView.prototype, {
-    sortAscText  : "Rūšiuoti didėjančia tvarka",
-    sortDescText : "Rūšiuoti mažėjančia tvarka",
+    sortAscText  : "Rūšiuoti didėjan�?ia tvarka",
+    sortDescText : "Rūšiuoti mažėjan�?ia tvarka",
     lockText     : "Užfiksuoti stulpelį",
     unlockText   : "Atlaisvinti stulpelį",
     columnsText  : "Stulpeliai"

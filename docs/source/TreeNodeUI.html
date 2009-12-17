@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.tree.TreeNodeUI"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.tree.TreeNodeUI"></div>/**
  * @class Ext.tree.TreeNodeUI
  * This class provides the default UI implementation for Ext TreeNodes.
  * The TreeNode UI implementation is separate from the
@@ -135,10 +141,7 @@ Ext.tree.TreeNodeUI.prototype = {
         this.node.on("move", this.onMove, this);
 
         if(this.node.disabled){
-            this.addClass("x-tree-node-disabled");
-			if (this.checkbox) {
-				this.checkbox.disabled = true;
-			}            
+            this.onDisableChange(this.node, true);            
         }
         if(this.node.hidden){
             this.hide();
@@ -223,13 +226,15 @@ Ext.tree.TreeNodeUI.prototype = {
         if(this.disabled){
             return;
         }
-        if(this.checkbox){
-            this.toggleCheck();
+        if(this.fireEvent("beforedblclick", this.node, e) !== false){
+            if(this.checkbox){
+                this.toggleCheck();
+            }
+            if(!this.animating && this.node.isExpandable()){
+                this.node.toggle();
+            }
+            this.fireEvent("dblclick", this.node, e);
         }
-        if(!this.animating && this.node.isExpandable()){
-            this.node.toggle();
-        }
-        this.fireEvent("dblclick", this.node, e);
     },
 
     onOver : function(e){
@@ -631,6 +636,6 @@ Ext.tree.RootTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
     },
     collapse : Ext.emptyFn,
     expand : Ext.emptyFn
-});</pre>    
+});</pre>
 </body>
 </html>

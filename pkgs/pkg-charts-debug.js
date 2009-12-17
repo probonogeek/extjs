@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -805,6 +805,19 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
      * The wmode of the flash object. This can be used to control layering. Defaults to <tt>'opaque'</tt>.
      */
     wmode: 'opaque',
+    
+    /**
+     * @cfg {Object} flashVars
+     * A set of key value pairs to be passed to the flash object as flash variables. Defaults to <tt>undefined</tt>.
+     */
+    flashVars: undefined,
+    
+    /**
+     * @cfg {Object} flashParams
+     * A set of key value pairs to be passed to the flash object as parameters. Possible parameters can be found here:
+     * http://kb2.adobe.com/cps/127/tn_12701.html Defaults to <tt>undefined</tt>.
+     */
+    flashParams: undefined,
 
     /**
      * @cfg {String} url
@@ -831,15 +844,15 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
     onRender : function(){
         Ext.FlashComponent.superclass.onRender.apply(this, arguments);
 
-        var params = {
+        var params = Ext.apply({
             allowScriptAccess: 'always',
             bgcolor: this.backgroundColor,
             wmode: this.wmode
-        }, vars = {
+        }, this.flashParams), vars = Ext.apply({
             allowedDomain: document.location.hostname,
             elementID: this.getId(),
             eventHandler: 'Ext.FlashEventProxy.onEvent'
-        };
+        }, this.flashVars);
 
         new swfobject.embedSWF(this.url, this.id, this.swfWidth, this.swfHeight, this.flashVersion,
             this.expressInstall ? Ext.FlashComponent.EXPRESS_INSTALL_URL : undefined, vars, params);
@@ -1043,13 +1056,14 @@ Ext.FlashEventProxy = {
      */
     bindStore : function(store, initial){
         if(!initial && this.store){
-            this.store.un("datachanged", this.refresh, this);
-            this.store.un("add", this.delayRefresh, this);
-            this.store.un("remove", this.delayRefresh, this);
-            this.store.un("update", this.delayRefresh, this);
-            this.store.un("clear", this.refresh, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un("datachanged", this.refresh, this);
+                this.store.un("add", this.delayRefresh, this);
+                this.store.un("remove", this.delayRefresh, this);
+                this.store.un("update", this.delayRefresh, this);
+                this.store.un("clear", this.refresh, this);
             }
         }
         if(store){
@@ -1074,7 +1088,7 @@ Ext.FlashEventProxy = {
         this.swf.setType(this.type);
 
         if(this.chartStyle){
-            this.setStyles(Ext.apply(this.extraStyle || {}, this.chartStyle));
+            this.setStyles(Ext.apply({}, this.extraStyle, this.chartStyle));
         }
 
         if(this.categoryNames){
@@ -1156,7 +1170,11 @@ Ext.FlashEventProxy = {
     
     onDestroy: function(){
         Ext.chart.Chart.superclass.onDestroy.call(this);
-        delete window[this.tipFnName];
+        this.bindStore(null);
+        var tip = this.tipFnName;
+        if(!Ext.isEmpty(tip)){
+            delete window[tip];
+        }
     }
 });
 Ext.reg('chart', Ext.chart.Chart);

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -23,27 +23,22 @@ Ext.lib.Dom = {
     },
 
     isAncestor : function(p, c){
+        var ret = false;
+            
         p = Ext.getDom(p);
         c = Ext.getDom(c);
-        if (!p || !c) {return false;}
-
-        if(p.contains && !Ext.isSafari) {
-            return p.contains(c);
-        }else if(p.compareDocumentPosition) {
-            return !!(p.compareDocumentPosition(c) & 16);
-        }else{
-            var parent = c.parentNode;
-            while (parent) {
-                if (parent == p) {
-                    return true;
+        if (p && c) {
+            if (p.contains) {
+                return p.contains(c);
+            } else if (p.compareDocumentPosition) {
+                return !!(p.compareDocumentPosition(c) & 16);
+            } else {
+                while (c = c.parentNode) {
+                    ret = c == p || ret;                        
                 }
-                else if (!parent.tagName || parent.tagName.toUpperCase() == "HTML") {
-                    return false;
-                }
-                parent = parent.parentNode;
-            }
-            return false;
-        }
+            }               
+        }   
+        return ret;
     },
 
     getRegion : function(el){
@@ -232,12 +227,17 @@ Ext.lib.Event = {
         var iid = setInterval(f, 50);
     },
 
-    resolveTextNode: function(node) {
-        if (node && 3 == node.nodeType) {
-            return node.parentNode;
-        } else {
-            return node;
+    resolveTextNode: Ext.isGecko ? function(node){
+        if(!node){
+            return;
         }
+        var s = HTMLElement.prototype.toString.call(node);
+        if(s == '[xpconnect wrapped native prototype]' || s == '[object XULElement]'){
+            return;
+        }
+        return node.nodeType == 3 ? node.parentNode : node;
+    } : function(node){
+        return node && node.nodeType == 3 ? node.parentNode : node;
     },
 
     getRelatedTarget: function(ev) {
@@ -259,19 +259,42 @@ Ext.lib.Ajax = function(){
     var createComplete = function(cb){
          return function(xhr, status){
             if((status == 'error' || status == 'timeout') && cb.failure){
-                cb.failure.call(cb.scope||window, {
-                    responseText: xhr.responseText,
-                    responseXML : xhr.responseXML,
-                    argument: cb.argument
-                });
+                cb.failure.call(cb.scope||window, createResponse(cb, xhr));
             }else if(cb.success){
-                cb.success.call(cb.scope||window, {
-                    responseText: xhr.responseText,
-                    responseXML : xhr.responseXML,
-                    argument: cb.argument
-                });
+                cb.success.call(cb.scope||window, createResponse(cb, xhr));
             }
          };
+    };
+    
+    var createResponse = function(cb, xhr){
+        var headerObj = {},
+            headerStr,              
+            t,
+            s;
+
+        try {
+            headerStr = xhr.getAllResponseHeaders();   
+            Ext.each(headerStr.replace(/\r\n/g, '\n').split('\n'), function(v){
+                t = v.indexOf(':');
+                if(t >= 0){
+                    s = v.substr(0, t).toLowerCase();
+                    if(v.charAt(t + 1) == ' '){
+                        ++t;
+                    }
+                    headerObj[s] = v.substr(t + 1);
+                }
+            });
+        } catch(e) {}
+        
+        return {
+            responseText: xhr.responseText,
+            responseXML : xhr.responseXML,
+            argument: cb.argument,
+            status: xhr.status,
+            statusText: xhr.statusText,
+            getResponseHeader : function(header){return headerObj[header.toLowerCase()];},
+            getAllResponseHeaders : function(){return headerStr}
+        };
     };
     return {
         request : function(method, uri, cb, data, options){
@@ -432,6 +455,11 @@ Ext.lib.Anim = function(){
                         if (args.top.from)
                             e.setTop(args.top.from);
                     break;
+                    case 'callback':
+                    case 'scope':
+                        // jQuery can't handle callback and scope arguments, so break here
+                    break;
+
                     default:
                         o[k] = args[k].to;
                         if (args[k].from)

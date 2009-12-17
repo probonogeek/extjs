@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -175,6 +175,7 @@ Ext.onReady(function(){
     	split:true,
     	collapsible: true,
     	collapseMode: 'mini',
+        header: false,
     	width:200,
     	minWidth: 150,
     	border: false,

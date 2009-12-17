@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -28,9 +28,10 @@ Ext.get('myInputField').on('keypress', function(){
  * option <tt>buffer</tt> for {@link Ext.util.Observable#addListener addListener/on} will
  * also setup a delayed task for you to buffer events.</p> 
  * @constructor The parameters to this constructor serve as defaults and are not required.
- * @param {Function} fn (optional) The default function to timeout
- * @param {Object} scope (optional) The default scope of that timeout
- * @param {Array} args (optional) The default Array of arguments
+ * @param {Function} fn (optional) The default function to call.
+ * @param {Object} scope The default scope (The <code><b>this</b></code> reference) in which the
+ * function is called. If not specified, <code>this</code> will refer to the browser window.
+ * @param {Array} args (optional) The default Array of arguments.
  */
 Ext.util.DelayedTask = function(fn, scope, args){
     var me = this,
@@ -45,7 +46,8 @@ Ext.util.DelayedTask = function(fn, scope, args){
      * Cancels any pending timeout and queues a new one
      * @param {Number} delay The milliseconds to delay
      * @param {Function} newFn (optional) Overrides function passed to constructor
-     * @param {Object} newScope (optional) Overrides scope passed to constructor
+     * @param {Object} newScope (optional) Overrides scope passed to constructor. Remember that if no scope
+     * is specified, <code>this</code> will refer to the browser window.
      * @param {Array} newArgs (optional) Overrides args passed to constructor
      */
     me.delay = function(delay, newFn, newScope, newArgs){

@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.Component"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.Component"></div>/**
  * @class Ext.Component
  * @extends Ext.util.Observable
  * <p>Base class for all Ext components.  All subclasses of Component may participate in the automated
@@ -293,7 +299,7 @@ Ext.Component = function(config){
 Ext.Component.AUTO_ID = 1000;
 
 Ext.extend(Ext.Component, Ext.util.Observable, {
-	// Configs below are used for all Components when rendered by FormLayout.
+    // Configs below are used for all Components when rendered by FormLayout.
     <div id="cfg-Ext.Component-fieldLabel"></div>/**
      * @cfg {String} fieldLabel <p>The label text to display next to this Component (defaults to '').</p>
      * <br><p><b>Note</b>: this config is only used when this Component is rendered by a Container which
@@ -392,7 +398,11 @@ new Ext.FormPanel({
      * <p>See {@link Ext.layout.FormLayout}.{@link Ext.layout.FormLayout#fieldTpl fieldTpl} also.</p>
      */
     <div id="cfg-Ext.Component-itemCls"></div>/**
-     * @cfg {String} itemCls <p>An additional CSS class to apply to the div wrapping the form item
+     * @cfg {String} itemCls
+     * <p><b>Note</b>: this config is only used when this Component is rendered by a Container which
+     * has been configured to use the <b>{@link Ext.layout.FormLayout FormLayout}</b> layout manager (e.g.
+     * {@link Ext.form.FormPanel} or specifying <tt>layout:'form'</tt>).</p><br>
+     * <p>An additional CSS class to apply to the div wrapping the form item
      * element of this field.  If supplied, <tt>itemCls</tt> at the <b>field</b> level will override
      * the default <tt>itemCls</tt> supplied at the <b>container</b> level. The value specified for
      * <tt>itemCls</tt> will be added to the default class (<tt>'x-form-item'</tt>).</p>
@@ -402,27 +412,27 @@ new Ext.FormPanel({
      * any other element within the markup for the field.</p>
      * <br><p><b>Note</b>: see the note for <tt>{@link #fieldLabel}</tt>.</p><br>
      * Example use:<pre><code>
-// Apply a style to the field's label:
+// Apply a style to the field&#39;s label:
 &lt;style>
     .required .x-form-item-label {font-weight:bold;color:red;}
 &lt;/style>
 
 new Ext.FormPanel({
-	height: 100,
-	renderTo: Ext.getBody(),
-	items: [{
-		xtype: 'textfield',
-		fieldLabel: 'Name',
-		itemCls: 'required' //this label will be styled
-	},{
-		xtype: 'textfield',
-		fieldLabel: 'Favorite Color'
-	}]
+    height: 100,
+    renderTo: Ext.getBody(),
+    items: [{
+        xtype: 'textfield',
+        fieldLabel: 'Name',
+        itemCls: 'required' //this label will be styled
+    },{
+        xtype: 'textfield',
+        fieldLabel: 'Favorite Color'
+    }]
 });
 </code></pre>
      */
 
-	// Configs below are used for all Components when rendered by AnchorLayout.
+    // Configs below are used for all Components when rendered by AnchorLayout.
     <div id="cfg-Ext.Component-anchor"></div>/**
      * @cfg {String} anchor <p><b>Note</b>: this config is only used when this Component is rendered
      * by a Container which has been configured to use an <b>{@link Ext.layout.AnchorLayout AnchorLayout}</b>
@@ -761,9 +771,9 @@ new Ext.Panel({
      * @property el
      */
     <div id="prop-Ext.Component-ownerCt"></div>/**
-     * The component's owner {@link Ext.Container} (defaults to undefined, and is set automatically when
-     * the component is added to a container).  Read-only.
-     * <p><b>Note</b>: to access items within the container see <tt>{@link #itemId}</tt>.</p>
+     * This Component's owner {@link Ext.Container Container} (defaults to undefined, and is set automatically when
+     * this Component is added to a Container).  Read-only.
+     * <p><b>Note</b>: to access items within the Container see <tt>{@link #itemId}</tt>.</p>
      * @type Ext.Container
      * @property ownerCt
      */
@@ -992,7 +1002,7 @@ var myGrid = new Ext.grid.EditorGridPanel({
     },
 
     // private
-    applyState : function(state, config){
+    applyState : function(state){
         if(state){
             Ext.apply(this, state);
         }
@@ -1099,19 +1109,22 @@ var myGrid = new Ext.grid.EditorGridPanel({
      *
      */
     destroy : function(){
-        if(this.fireEvent('beforedestroy', this) !== false){
-            this.beforeDestroy();
-            if(this.rendered){
-                this.el.removeAllListeners();
-                this.el.remove();
-                if(this.actionMode == 'container' || this.removeMode == 'container'){
-                    this.container.remove();
+        if(!this.isDestroyed){
+            if(this.fireEvent('beforedestroy', this) !== false){
+                this.beforeDestroy();
+                if(this.rendered){
+                    this.el.removeAllListeners();
+                    this.el.remove();
+                    if(this.actionMode == 'container' || this.removeMode == 'container'){
+                        this.container.remove();
+                    }
                 }
+                this.onDestroy();
+                Ext.ComponentMgr.unregister(this);
+                this.fireEvent('destroy', this);
+                this.purgeListeners();
+                this.isDestroyed = true;
             }
-            this.onDestroy();
-            Ext.ComponentMgr.unregister(this);
-            this.fireEvent('destroy', this);
-            this.purgeListeners();
         }
     },
 
@@ -1266,7 +1279,7 @@ new Ext.Panel({
 
     // private
     onShow : function(){
-        this.getVisibiltyEl().removeClass('x-hide-' + this.hideMode);
+        this.getVisibilityEl().removeClass('x-hide-' + this.hideMode);
     },
 
     <div id="method-Ext.Component-hide"></div>/**
@@ -1294,11 +1307,11 @@ new Ext.Panel({
 
     // private
     onHide : function(){
-        this.getVisibiltyEl().addClass('x-hide-' + this.hideMode);
+        this.getVisibilityEl().addClass('x-hide-' + this.hideMode);
     },
 
     // private
-    getVisibiltyEl : function(){
+    getVisibilityEl : function(){
         return this.hideParent ? this.container : this.getActionEl();
     },
 
@@ -1316,7 +1329,7 @@ new Ext.Panel({
      * @return {Boolean} True if this component is visible, false otherwise.
      */
     isVisible : function(){
-        return this.rendered && this.getVisibiltyEl().isVisible();
+        return this.rendered && this.getVisibilityEl().isVisible();
     },
 
     <div id="method-Ext.Component-cloneConfig"></div>/**
@@ -1446,16 +1459,20 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
         }, this);
         this.mons = [];
     },
-
-    // internal function for auto removal of assigned event handlers on destruction
-    mon : function(item, ename, fn, scope, opt){
+    
+    // private
+    createMons: function(){
         if(!this.mons){
             this.mons = [];
             this.on('beforedestroy', this.clearMons, this, {single: true});
         }
+    },
 
+    // internal function for auto removal of assigned event handlers on destruction
+    mon : function(item, ename, fn, scope, opt){
+        this.createMons();
         if(Ext.isObject(ename)){
-        	var propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
+            var propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
 
             var o = ename;
             for(var e in o){
@@ -1464,21 +1481,20 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
                 }
                 if(Ext.isFunction(o[e])){
                     // shared options
-			        this.mons.push({
-			            item: item, ename: e, fn: o[e], scope: o.scope
-			        });
-			        item.on(e, o[e], o.scope, o);
+                    this.mons.push({
+                        item: item, ename: e, fn: o[e], scope: o.scope
+                    });
+                    item.on(e, o[e], o.scope, o);
                 }else{
                     // individual options
-			        this.mons.push({
-			            item: item, ename: e, fn: o[e], scope: o.scope
-			        });
-			        item.on(e, o[e]);
+                    this.mons.push({
+                        item: item, ename: e, fn: o[e], scope: o.scope
+                    });
+                    item.on(e, o[e]);
                 }
             }
             return;
         }
-
 
         this.mons.push({
             item: item, ename: ename, fn: fn, scope: scope
@@ -1489,6 +1505,7 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
     // protected, opposite of mon
     mun : function(item, ename, fn, scope){
         var found, mon;
+        this.createMons();
         for(var i = 0, len = this.mons.length; i < len; ++i){
             mon = this.mons[i];
             if(item === mon.item && ename == mon.ename && fn === mon.fn && scope === mon.scope){
@@ -1539,6 +1556,6 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
 });
 
 Ext.reg('component', Ext.Component);
-</pre>    
+</pre>
 </body>
 </html>

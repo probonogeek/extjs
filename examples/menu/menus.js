@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -98,7 +98,42 @@ Ext.onReady(function(){
             text:'Button w/ Menu',
             iconCls: 'bmenu',  // <-- icon
             menu: menu  // assign menu by instance
-        }, 
+        }, {
+            text: 'Users',
+            iconCls: 'user',
+            menu: {
+                xtype: 'menu',
+                plain: true,
+                items: {
+                    xtype: 'buttongroup',
+                    title: 'User options',
+                    autoWidth: true,
+                    columns: 2,
+                    defaults: {
+                        xtype: 'button',
+                        scale: 'large',
+                        width: '100%',
+                        iconAlign: 'left'
+                    },
+                    items: [{
+                        text: 'User<br/>manager',
+                        iconCls: 'edit'
+                    },{
+                        iconCls: 'add',
+                        width: 'auto',
+                        tooltip: 'Add user'
+                    },{
+                        colspan: 2,
+                        text: 'Import',
+                        scale: 'small'
+                    },{
+                        colspan: 2,
+                        text: 'Who is online?',
+                        scale: 'small'
+                    }]
+                }
+            }
+        },
         new Ext.Toolbar.SplitButton({
             text: 'Split Button',
             handler: onButtonClick,

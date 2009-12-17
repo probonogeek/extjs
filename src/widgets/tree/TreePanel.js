@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -123,6 +123,13 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
     enableDD : false,
     hlDrop : Ext.enableFx,
     pathSeparator: "/",
+    
+    /**
+     * @cfg {Array} bubbleEvents
+     * <p>An array of events that, when fired, should be bubbled to any parent container.
+     * Defaults to <tt>['add', 'remove']</tt>.
+     */
+    bubbleEvents: [],
 
     initComponent : function(){
         Ext.tree.TreePanel.superclass.initComponent.call(this);
@@ -307,6 +314,13 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
             * @param {Boolean} checked
             */
             "checkchange",
+            /**
+            * @event beforedblclick
+            * Fires before double click processing on a node. Return false to cancel the default action.
+            * @param {Node} node The node
+            * @param {Ext.EventObject} e The event object
+            */
+            "beforedblclick",
             /**
             * @event dblclick
             * Fires when a node is double clicked
@@ -637,9 +651,9 @@ new Ext.tree.TreePanel({
      */
     selectPath : function(path, attr, callback){
         attr = attr || "id";
-        var keys = path.split(this.pathSeparator);
-        var v = keys.pop();
-        if(keys.length > 0){
+        var keys = path.split(this.pathSeparator),
+            v = keys.pop();
+        if(keys.length > 1){
             var f = function(success, node){
                 if(success && node){
                     var n = node.findChild(attr, v);

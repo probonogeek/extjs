@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,7 +17,7 @@ var store = new Ext.data.JsonStore({
     storeId: 'myStore',
     // reader configs
     root: 'images',
-    idProperty: 'name',  
+    idProperty: 'name',
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date'}]
 });
  * </code></pre></p>
@@ -30,7 +30,7 @@ var store = new Ext.data.JsonStore({
 }
  * </code></pre>
  * An object literal of this form could also be used as the {@link #data} config option.</p>
- * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of 
+ * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of
  * <b>{@link Ext.data.JsonReader JsonReader}</b>.</p>
  * @constructor
  * @param {Object} config

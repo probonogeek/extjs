@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,14 +11,21 @@ Ext.tree.TreeEventModel = function(tree){
 
 Ext.tree.TreeEventModel.prototype = {
     initEvents : function(){
-        var el = this.tree.getTreeEl();
-        el.on('click', this.delegateClick, this);
-        if(this.tree.trackMouseOver !== false){
-            this.tree.innerCt.on('mouseover', this.delegateOver, this);
-            this.tree.innerCt.on('mouseout', this.delegateOut, this);
+        var t = this.tree;
+            
+        if(t.trackMouseOver !== false){
+            t.mon(t.innerCt, {
+                scope: this,
+                mouseover: this.delegateOver,
+                mouseout: this.delegateOut
+            });
         }
-        el.on('dblclick', this.delegateDblClick, this);
-        el.on('contextmenu', this.delegateContextMenu, this);
+        t.mon(t.getTreeEl(), {
+            scope: this,
+            click: this.delegateClick,
+            dblclick: this.delegateDblClick,
+            contextmenu: this.delegateContextMenu
+        });
     },
 
     getNode : function(e){

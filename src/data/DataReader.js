@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -33,14 +33,49 @@ Ext.data.DataReader = function(meta, recordType){
      */
     this.recordType = Ext.isArray(recordType) ?
         Ext.data.Record.create(recordType) : recordType;
+
+    // if recordType defined make sure extraction functions are defined
+    if (this.recordType){
+        this.buildExtractors();
+    }
 };
 
 Ext.data.DataReader.prototype = {
-
     /**
-     * Abstract method, overridden in {@link Ext.data.JsonReader}
+     * @cfg {String} messageProperty [undefined] Optional name of a property within a server-response that represents a user-feedback message.
+     */
+    /**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getTotal: Ext.emptyFn,
+    /**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getRoot: Ext.emptyFn,
+    /**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getMessage: Ext.emptyFn,
+    /**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getSuccess: Ext.emptyFn,
+    /**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getId: Ext.emptyFn,
+    /**
+     * Abstract method, overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
      */
     buildExtractors : Ext.emptyFn,
+    /**
+     * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
+     */
+    extractData : Ext.emptyFn,
+    /**
+     * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
+     */
+    extractValues : Ext.emptyFn,
 
     /**
      * Used for un-phantoming a record after a successful database insert.  Sets the records pk along with new data from server.
@@ -75,24 +110,19 @@ Ext.data.DataReader.prototype = {
                 //rs.commit();
                 throw new Ext.data.DataReader.Error('realize', rs);
             }
-            this.buildExtractors();
-            var values = this.extractValues(data, rs.fields.items, rs.fields.items.length);
             rs.phantom = false; // <-- That's what it's all about
             rs._phid = rs.id;  // <-- copy phantom-id -> _phid, so we can remap in Store#onCreateRecords
-            rs.id = data[this.meta.idProperty];
-            rs.data = values;
+            rs.id = this.getId(data);
+            rs.data = data;
             rs.commit();
         }
     },
 
     /**
      * Used for updating a non-phantom or "real" record's data with fresh data from server after remote-save.
-     * You <b>must</b> return a complete new record from the server.  If you don't, your local record's missing fields
-     * will be populated with the default values specified in your Ext.data.Record.create specification.  Without a defaultValue,
-     * local fields will be populated with empty string "".  So return your entire record's data after both remote create and update.
-     * In addition, you <b>must</b> return record-data from the server in the same order received.
-     * Will perform a commit as well, un-marking dirty-fields.  Store's "update" event will be suppressed as the record receives
-     * a fresh new data-hash.
+     * If returning data from multiple-records after a batch-update, you <b>must</b> return record-data from the server in
+     * the same order received.  Will perform a commit as well, un-marking dirty-fields.  Store's "update" event will be
+     * suppressed as the record receives fresh new data-hash
      * @param {Record/Record[]} rs
      * @param {Object/Object[]} data
      */
@@ -110,18 +140,13 @@ Ext.data.DataReader.prototype = {
             }
         }
         else {
-                     // If rs is NOT an array but data IS, see if data contains just 1 record.  If so extract it and carry on.
+            // If rs is NOT an array but data IS, see if data contains just 1 record.  If so extract it and carry on.
             if (Ext.isArray(data) && data.length == 1) {
                 data = data.shift();
             }
-            if (!this.isData(data)) {
-                // TODO: create custom Exception class to return record in thrown exception.  Allow exception-handler the choice
-                // to commit or not rather than blindly rs.commit() here.
-                rs.commit();
-                throw new Ext.data.DataReader.Error('update', rs);
+            if (this.isData(data)) {
+                rs.data = Ext.apply(rs.data, data);
             }
-            this.buildExtractors();
-            rs.data = this.extractValues(Ext.apply(rs.data, data), rs.fields.items, rs.fields.items.length);
             rs.commit();
         }
     },
@@ -133,7 +158,15 @@ Ext.data.DataReader.prototype = {
      * @return {Boolean}
      */
     isData : function(data) {
-        return (data && Ext.isObject(data) && !Ext.isEmpty(data[this.meta.idProperty])) ? true : false;
+        return (data && Ext.isObject(data) && !Ext.isEmpty(this.getId(data))) ? true : false;
+    },
+
+    // private function a store will createSequence upon
+    onMetaChange : function(meta){
+        delete this.ef;
+        this.meta = meta;
+        this.recordType = Ext.data.Record.create(meta.fields);
+        this.buildExtractors();
     }
 };
 
@@ -158,3 +191,37 @@ Ext.apply(Ext.data.DataReader.Error.prototype, {
 });
 
 
+/**
+ * Ext.data.Response
+ * A generic response class to normalize response-handling internally to the framework.
+ * TODO move to own file, add to jsb.
+ */
+Ext.data.Response = function(params) {
+    Ext.apply(this, params);
+};
+Ext.data.Response.prototype = {
+    /**
+     * @property {String} action {@link Ext.data.Api#actions}
+     */
+    action: undefined,
+    /**
+     * @property {Boolean} success
+     */
+    success : undefined,
+    /**
+     * @property {String} message
+     */
+    message : undefined,
+    /**
+     * @property {Array/Object} data
+     */
+    data: undefined,
+    /**
+     * @property {Object} raw The raw response returned from server-code
+     */
+    raw: undefined,
+    /**
+     * @property {Ext.data.Record/Ext.data.Record[]} record(s) related to the Request action
+     */
+    records: undefined
+}

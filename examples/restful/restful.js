@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,7 +17,8 @@ var reader = new Ext.data.JsonReader({
     totalProperty: 'total',
     successProperty: 'success',
     idProperty: 'id',
-    root: 'data'
+    root: 'data',
+    messageProperty: 'message'  // <-- New "messageProperty" meta-data
 }, [
     {name: 'id'},
     {name: 'email', allowBlank: false},
@@ -26,7 +27,9 @@ var reader = new Ext.data.JsonReader({
 ]);
 
 // The new DataWriter component.
-var writer = new Ext.data.JsonWriter();
+var writer = new Ext.data.JsonWriter({
+    encode: false   // <-- don't return encoded JSON -- causes Ext.Ajax#request to send data using jsonData config rather than HTTP params
+});
 
 // Typical Store collecting the Proxy, Reader and Writer together.
 var store = new Ext.data.Store({
@@ -34,12 +37,35 @@ var store = new Ext.data.Store({
     restful: true,     // <-- This Store is RESTful
     proxy: proxy,
     reader: reader,
-    writer: writer,    // <-- plug a DataWriter into the store just as you would a Reader
-    listeners: {
-        write : function(store, action, result, response, rs) {
-            App.setAlert(response.success, response.message);
-        }
-    }
+    writer: writer    // <-- plug a DataWriter into the store just as you would a Reader
+});
+
+// load the store immeditately
+store.load();
+
+////
+// ***New*** centralized listening of DataProxy events "beforewrite", "write" and "writeexception"
+// upon Ext.data.DataProxy class.  This is handy for centralizing user-feedback messaging into one place rather than
+// attaching listenrs to EACH Store.
+//
+// Listen to all DataProxy beforewrite events
+//
+Ext.data.DataProxy.addListener('beforewrite', function(proxy, action) {
+    App.setAlert(App.STATUS_NOTICE, "Before " + action);
+});
+
+////
+// all write events
+//
+Ext.data.DataProxy.addListener('write', function(proxy, action, result, res, rs) {
+    App.setAlert(true, action + ':' + res.message);
+});
+
+////
+// all exception events
+//
+Ext.data.DataProxy.addListener('exception', function(proxy, type, action, options, res) {
+    App.setAlert(false, "Something bad happend while executing " + action);
 });
 
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
@@ -50,8 +76,6 @@ var userColumns =  [
     {header: "Last", width: 50, sortable: true, dataIndex: 'last', editor: new Ext.form.TextField({})}
 ];
 
-// load the store immeditately
-store.load();
 
 Ext.onReady(function() {
     Ext.QuickTips.init();

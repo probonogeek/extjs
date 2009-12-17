@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -794,15 +794,15 @@ dt = Date.parseDate("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
         a: {
             g:1,
             c:"if (results[{0}] == 'am') {\n"
-                + "if (h == 12) { h = 0; }\n"
-                + "} else { if (h < 12) { h += 12; }}",
+                + "if (!h || h == 12) { h = 0; }\n"
+                + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
             s:"(am|pm)"
         },
         A: {
             g:1,
             c:"if (results[{0}] == 'AM') {\n"
-                + "if (h == 12) { h = 0; }\n"
-                + "} else { if (h < 12) { h += 12; }}",
+                + "if (!h || h == 12) { h = 0; }\n"
+                + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
             s:"(AM|PM)"
         },
         g: function() {
@@ -978,12 +978,12 @@ Ext.apply(Date.prototype, {
      * @return {Number} 0 to 364 (365 in leap years).
      */
     getDayOfYear: function() {
-        var i = 0,
-            num = 0,
+        var num = 0,
             d = this.clone(),
-            m = this.getMonth();
+            m = this.getMonth(),
+            i;
 
-        for (i = 0, d.setMonth(0); i < m; d.setMonth(++i)) {
+        for (i = 0, d.setDate(1), d.setMonth(0); i < m; d.setMonth(++i)) {
             num += d.getDaysInMonth();
         }
         return num + this.getDate() - 1;

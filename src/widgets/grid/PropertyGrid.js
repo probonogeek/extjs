@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -128,14 +128,16 @@ Ext.grid.PropertyColumnModel = function(grid, store){
             {tag: 'option', value: 'false', html: 'false'}
         ]},
         getValue : function(){
-            return this.el.value == 'true';
+            return this.el.dom.value == 'true';
         }
     });
     this.editors = {
         'date' : new g.GridEditor(new f.DateField({selectOnFocus:true})),
         'string' : new g.GridEditor(new f.TextField({selectOnFocus:true})),
         'number' : new g.GridEditor(new f.NumberField({selectOnFocus:true, style:'text-align:left;'})),
-        'boolean' : new g.GridEditor(bfield)
+        'boolean' : new g.GridEditor(bfield, {
+            autoSize: 'both'
+        })
     };
     this.renderCellDelegate = this.renderCell.createDelegate(this);
     this.renderPropDelegate = this.renderProp.createDelegate(this);

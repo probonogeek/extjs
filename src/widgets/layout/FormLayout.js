@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -114,7 +114,33 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
      * @type String
      * @property labelStyle
      */
+    
+    /**
+     * @cfg {Boolean} trackLabels
+     * True to show/hide the field label when the field is hidden. Defaults to <tt>false</tt>.
+     */
+    trackLabels: false,
+    
 
+    onRemove: function(c){
+        Ext.layout.FormLayout.superclass.onRemove.call(this, c);
+        if(this.trackLabels && !this.isHide(c)){
+            c.un('show', this.onFieldShow, this);
+            c.un('hide', this.onFieldHide, this);
+        }
+        // check for itemCt, since we may be removing a fieldset or something similar
+        var el = c.getPositionEl(),
+                ct = c.getItemCt && c.getItemCt();
+        if(c.rendered && ct){
+            el.insertAfter(ct);
+            Ext.destroy(ct);
+            Ext.destroyMembers(c, 'label', 'itemCt');
+            if(c.customItemCt){
+                Ext.destroyMembers(c, 'getItemCt', 'customItemCt');
+            }
+        }
+    },
+    
     // private
     setContainer : function(ct){
         Ext.layout.FormLayout.superclass.setContainer.call(this, ct);
@@ -123,24 +149,42 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
         }
 
         if(ct.hideLabels){
-            this.labelStyle = "display:none";
-            this.elementStyle = "padding-left:0;";
-            this.labelAdjust = 0;
+            Ext.apply(this, {
+                labelStyle: 'display:none',
+                elementStyle: 'padding-left:0;',
+                labelAdjust: 0
+            });
         }else{
             this.labelSeparator = ct.labelSeparator || this.labelSeparator;
             ct.labelWidth = ct.labelWidth || 100;
-            if(typeof ct.labelWidth == 'number'){
-                var pad = (typeof ct.labelPad == 'number' ? ct.labelPad : 5);
-                this.labelAdjust = ct.labelWidth+pad;
-                this.labelStyle = "width:"+ct.labelWidth+"px;";
-                this.elementStyle = "padding-left:"+(ct.labelWidth+pad)+'px';
+            if(Ext.isNumber(ct.labelWidth)){
+                var pad = Ext.isNumber(ct.labelPad) ? ct.labelPad : 5;
+                Ext.apply(this, {
+                    labelAdjust: ct.labelWidth + pad,
+                    labelStyle: 'width:' + ct.labelWidth + 'px;',
+                    elementStyle: 'padding-left:' + (ct.labelWidth + pad) + 'px'
+                });
             }
             if(ct.labelAlign == 'top'){
-                this.labelStyle = "width:auto;";
-                this.labelAdjust = 0;
-                this.elementStyle = "padding-left:0;";
+                Ext.apply(this, {
+                    labelStyle: 'width:auto;',
+                    labelAdjust: 0,
+                    elementStyle: 'padding-left:0;'
+                });
             }
         }
+    },
+    
+    isHide: function(c){
+        return c.hideLabel || this.container.hideLabels;
+    },
+    
+    onFieldShow: function(c){
+        c.getItemCt().removeClass('x-hide-' + c.hideMode);
+    },
+    
+    onFieldHide: function(c){
+        c.getItemCt().addClass('x-hide-' + c.hideMode);   
     },
 
     //private
@@ -193,17 +237,43 @@ new Ext.Template(
 
     // private
     renderItem : function(c, position, target){
-        if(c && !c.rendered && (c.isFormField || c.fieldLabel) && c.inputType != 'hidden'){
+        if(c && (c.isFormField || c.fieldLabel) && c.inputType != 'hidden'){
             var args = this.getTemplateArgs(c);
-            if(typeof position == 'number'){
+            if(Ext.isNumber(position)){
                 position = target.dom.childNodes[position] || null;
             }
             if(position){
-                this.fieldTpl.insertBefore(position, args);
+                c.itemCt = this.fieldTpl.insertBefore(position, args, true);
             }else{
-                this.fieldTpl.append(target, args);
+                c.itemCt = this.fieldTpl.append(target, args, true);
             }
-            c.render('x-form-el-'+c.id);
+            if(!c.rendered){
+                c.render('x-form-el-' + c.id);
+            }else if(!this.isValidParent(c, target)){
+                Ext.fly('x-form-el-' + c.id).appendChild(c.getPositionEl());
+            }
+            if(!c.getItemCt){
+                // Non form fields don't have getItemCt, apply it here
+                // This will get cleaned up in onRemove
+                Ext.apply(c, {
+                    getItemCt: function(){
+                        return c.itemCt;
+                    },
+                    customItemCt: true
+                });
+            }
+            c.label = c.getItemCt().child('label.x-form-item-label');
+            if(this.trackLabels && !this.isHide(c)){
+                if(c.hidden){
+                    this.onFieldHide(c);
+                }
+                c.on({
+                    scope: this,
+                    show: this.onFieldShow,
+                    hide: this.onFieldHide
+                });
+            }
+            this.configureItem(c);
         }else {
             Ext.layout.FormLayout.superclass.renderItem.apply(this, arguments);
         }
@@ -239,22 +309,33 @@ new Ext.Template(
         return {
             id: field.id,
             label: field.fieldLabel,
-            labelStyle: field.labelStyle||this.labelStyle||'',
+            labelStyle: this.getLabelStyle(field.labelStyle),
             elementStyle: this.elementStyle||'',
-            labelSeparator: noLabelSep ? '' : (typeof field.labelSeparator == 'undefined' ? this.labelSeparator : field.labelSeparator),
+            labelSeparator: noLabelSep ? '' : (Ext.isDefined(field.labelSeparator) ? field.labelSeparator : this.labelSeparator),
             itemCls: (field.itemCls||this.container.itemCls||'') + (field.hideLabel ? ' x-hide-label' : ''),
             clearCls: field.clearCls || 'x-form-clear-left'
         };
     },
 
     // private
-    adjustWidthAnchor : function(value, comp){
-        return value - (comp.isFormField || comp.fieldLabel  ? (comp.hideLabel ? 0 : this.labelAdjust) : 0);
+    adjustWidthAnchor: function(value, c){
+        if(c.label && !this.isHide(c) && (this.container.labelAlign != 'top')){
+            var adjust = Ext.isIE6 || (Ext.isIE && !Ext.isStrict);
+            return value - this.labelAdjust + (adjust ? -3 : 0);
+        }
+        return value;
+    },
+    
+    adjustHeightAnchor : function(value, c){
+        if(c.label && !this.isHide(c) && (this.container.labelAlign == 'top')){
+            return value - c.label.getHeight();
+        }
+        return value;
     },
 
     // private
     isValidParent : function(c, target){
-        return true;
+        return target && this.container.getEl().contains(c.getDomPositionEl());
     }
 
     /**

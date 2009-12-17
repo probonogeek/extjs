@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -35,7 +35,7 @@
  * {@link Ext.grid.Column} column configuration object within the specified Array defines the initial
  * order of the column display.  A Column's display may be initially hidden using the
  * <tt>{@link Ext.grid.Column#hidden hidden}</tt></b> config property (and then shown using the column
- * header menu).  Field's that are not included in the ColumnModel will not be displayable at all.</p>
+ * header menu).  Fields that are not included in the ColumnModel will not be displayable at all.</p>
  * <p>How each column in the grid correlates (maps) to the {@link Ext.data.Record} field in the
  * {@link Ext.data.Store Store} the column draws its data from is configured through the
  * <b><tt>{@link Ext.grid.Column#dataIndex dataIndex}</tt></b>.  If the
@@ -214,12 +214,16 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
 
         this.config = config;
         this.lookup = {};
-        // if no id, create one
+
         for(i = 0, len = config.length; i < len; i++){
             c = Ext.applyIf(config[i], this.defaults);
+            // if no id, create one using column's ordinal position
+            if(typeof c.id == 'undefined'){
+                c.id = i;
+            }
             if(!c.isColumn){
-                var cls = Ext.grid.Column.types[c.xtype || 'gridcolumn'];
-                c = new cls(c);
+                var Cls = Ext.grid.Column.types[c.xtype || 'gridcolumn'];
+                c = new Cls(c);
                 config[i] = c;
             }
             this.lookup[c.id] = c;
@@ -313,7 +317,7 @@ var columns = grid.getColumnModel().getColumnsBy(function(c){
      * @return {Boolean}
      */
     isSortable : function(col){
-        return this.config[col].sortable;
+        return !!this.config[col].sortable;
     },
 
     /**
@@ -520,22 +524,24 @@ var grid = new Ext.grid.GridPanel({
         this.config[col].editable = editable;
     },
 
-
     /**
-     * Returns true if the column is hidden.
+     * Returns <tt>true</tt> if the column is <code>{@link Ext.grid.Column#hidden hidden}</code>,
+     * <tt>false</tt> otherwise.
      * @param {Number} colIndex The column index
      * @return {Boolean}
      */
     isHidden : function(colIndex){
-        return this.config[colIndex].hidden;
+        return !!this.config[colIndex].hidden; // ensure returns boolean
     },
 
-
     /**
-     * Returns true if the column width cannot be changed
+     * Returns <tt>true</tt> if the column is <code>{@link Ext.grid.Column#fixed fixed}</code>,
+     * <tt>false</tt> otherwise.
+     * @param {Number} colIndex The column index
+     * @return {Boolean}
      */
     isFixed : function(colIndex){
-        return this.config[colIndex].fixed;
+        return !!this.config[colIndex].fixed;
     },
 
     /**

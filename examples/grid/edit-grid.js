@@ -1,19 +1,23 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 Ext.onReady(function(){
-    Ext.QuickTips.init();
 
+    /**
+     * Handler specified for the 'Available' column renderer
+     * @param {Object} value
+     */
     function formatDate(value){
         return value ? value.dateFormat('M d, Y') : '';
     }
+
     // shorthand alias
     var fm = Ext.form;
 
-    // custom column plugin example
+    // the check column is created using a custom plugin
     var checkColumn = new Ext.grid.CheckColumn({
        header: 'Indoor?',
        dataIndex: 'indoor',
@@ -23,68 +27,74 @@ Ext.onReady(function(){
     // the column model has information about grid columns
     // dataIndex maps the column to the specific data field in
     // the data store (created below)
-    var cm = new Ext.grid.ColumnModel([{
-           id: 'common',
-           header: 'Common Name',
-           dataIndex: 'common',
-           width: 220,
-           // use shorthand alias defined above
-           editor: new fm.TextField({
-               allowBlank: false
-           })
-        },{
-           header: 'Light',
-           dataIndex: 'light',
-           width: 130,
-           editor: new fm.ComboBox({
-               typeAhead: true,
-               triggerAction: 'all',
-               transform:'light',
-               lazyRender: true,
-               listClass: 'x-combo-list-small'
-            })
-        },{
-           header: 'Price',
-           dataIndex: 'price',
-           width: 70,
-           align: 'right',
-           renderer: 'usMoney',
-           editor: new fm.NumberField({
-               allowBlank: false,
-               allowNegative: false,
-               maxValue: 100000
-           })
-        },{
-           header: 'Available',
-           dataIndex: 'availDate',
-           width: 95,
-           renderer: formatDate,
-           editor: new fm.DateField({
-                format: 'm/d/y',
-                minValue: '01/01/06',
-                disabledDays: [0, 6],
-                disabledDaysText: 'Plants are not available on the weekends'
-            })
+    var cm = new Ext.grid.ColumnModel({
+        // specify any defaults for each column
+        defaults: {
+            sortable: true // columns are not sortable by default           
         },
-        checkColumn
-    ]);
-
-    // by default columns are sortable
-    cm.defaultSortable = true;
+        columns: [
+            {
+                id: 'common',
+                header: 'Common Name',
+                dataIndex: 'common',
+                width: 220,
+                // use shorthand alias defined above
+                editor: new fm.TextField({
+                    allowBlank: false
+                })
+            }, {
+                header: 'Light',
+                dataIndex: 'light',
+                width: 130,
+                editor: new fm.ComboBox({
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    // transform the data already specified in html
+                    transform: 'light',
+                    lazyRender: true,
+                    listClass: 'x-combo-list-small'
+                })
+            }, {
+                header: 'Price',
+                dataIndex: 'price',
+                width: 70,
+                align: 'right',
+                renderer: 'usMoney',
+                editor: new fm.NumberField({
+                    allowBlank: false,
+                    allowNegative: false,
+                    maxValue: 100000
+                })
+            }, {
+                header: 'Available',
+                dataIndex: 'availDate',
+                width: 95,
+                renderer: formatDate,
+                editor: new fm.DateField({
+                    format: 'm/d/y',
+                    minValue: '01/01/06',
+                    disabledDays: [0, 6],
+                    disabledDaysText: 'Plants are not available on the weekends'
+                })
+            },
+            checkColumn // the plugin instance
+        ]
+    });
 
     // create the Data Store
     var store = new Ext.data.Store({
+        // destroy the store if the grid is destroyed
+        autoDestroy: true,
+        
         // load remote data using HTTP
         url: 'plants.xml',
 
         // specify a XmlReader (coincides with the XML format of the returned data)
-        reader: new Ext.data.XmlReader(
-            {
-                // records will have a 'plant' tag
-                record: 'plant'
-            },
+        reader: new Ext.data.XmlReader({
+            // records will have a 'plant' tag
+            record: 'plant',
             // use an Array of field definition objects to implicitly create a Record constructor
-            [
+            fields: [
                 // the 'name' below matches the tag name to read, except 'availDate'
                 // which is mapped to the tag 'availability'
                 {name: 'common', type: 'string'},
@@ -95,7 +105,7 @@ Ext.onReady(function(){
                 {name: 'availDate', mapping: 'availability', type: 'date', dateFormat: 'm/d/Y'},
                 {name: 'indoor', type: 'bool'}
             ]
-        ),
+        }),
 
         sortInfo: {field:'common', direction:'ASC'}
     });
@@ -107,9 +117,10 @@ Ext.onReady(function(){
         renderTo: 'editor-grid',
         width: 600,
         height: 300,
-        autoExpandColumn: 'common',
+        autoExpandColumn: 'common', // column with this id will be expanded
         title: 'Edit Plants?',
         frame: true,
+        // specify the check column plugin on the grid so the plugin is initialized
         plugins: checkColumn,
         clicksToEdit: 1,
         tbar: [{
@@ -131,6 +142,17 @@ Ext.onReady(function(){
         }]
     });
 
-    // trigger the data store load
-    store.load();
+    // manually trigger the data store load
+    store.load({
+        // store loading is asynchronous, use a load listener or callback to handle results
+        callback: function(){
+            Ext.Msg.show({
+                title: 'Store Load Callback',
+                msg: 'store was loaded, data available for processing',
+                modal: false,
+                icon: Ext.Msg.INFO,
+                buttons: Ext.Msg.OK
+            });
+        }
+    });
 });

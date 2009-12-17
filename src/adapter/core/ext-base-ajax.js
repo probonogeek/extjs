@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -35,7 +35,7 @@
 
             if (pub.headers) {
 				setTheHeaders(conn, pub.headers);
-                pub.headers = null;                
+                delete pub.headers;                
             }
         }    
         
@@ -45,8 +45,8 @@
 	            tId : tId,
 	            status : isAbort ? -1 : 0,
 	            statusText : isAbort ? 'transaction aborted' : 'communication failure',
-                    isAbort: true,
-                    isTimeout: true,
+                isAbort: isAbort,
+                isTimeout: isTimeout,
 	            argument : callbackArg
             };
         }  
@@ -292,8 +292,8 @@
 				            Ext.each(element.options, function(opt) {
 					            if (opt.selected) {
 						            data += String.format("{0}={1}&", 						            					  
-						            					 encoder(name),						            					 
-						            					  (opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttributeNode('value').specified) ? opt.value : opt.text);
+						            					 encoder(name),
+                                                         encoder((opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttribute('value') !== null) ? opt.value : opt.text));
                                 }								
                             });
 		                } else if(!/file|undefined|reset|button/i.test(type)) {

@@ -6,7 +6,7 @@
 class Model {
     public $id, $attributes;
     static function create($params) {
-        $obj = new self($params);
+        $obj = new self(get_object_vars($params));
         $obj->save();
         return $obj;
     }
@@ -24,13 +24,15 @@ class Model {
     static function update($id, $params) {
         global $dbh;
         $rec = self::find($id);
+
         if ($rec == null) {
             return $rec;
         }
         $rs = $dbh->rs();
+
         foreach ($rs as $idx => $row) {
             if ($row['id'] == $id) {
-                $rec->attributes = array_merge($rec->attributes, $params);
+                $rec->attributes = array_merge($rec->attributes, get_object_vars($params));
                 $dbh->update($idx, $rec->attributes);
                 break;
             }
@@ -55,7 +57,7 @@ class Model {
     }
 
     public function __construct($params) {
-        $this->id = $params["id"] || null;
+        $this->id = isset($params['id']) ? $params['id'] : null;
         $this->attributes = $params;
     }
     public function save() {

@@ -2,16 +2,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title>File Upload Field Example</title>
+
+    <!-- ** CSS ** -->
+    <!-- base library -->
     <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
-    <script type="text/javascript" src="../../adapter/ext/ext-base.js"> </script>
-    <script type="text/javascript" src="../../ext-all-debug.js"> </script>
 
-    <link rel="stylesheet" type="text/css" href="file-upload.css"/>
-    <script type="text/javascript" src="../ux/FileUploadField.js"></script>
-    <script type="text/javascript" src="file-upload.js"></script>
+    <!-- overrides to base library -->
 
+    <!-- page specific -->
     <link rel="stylesheet" type="text/css" href="../shared/examples.css" />
-    <style type="text/css">
+    <link rel="stylesheet" type="text/css" href="../ux/fileuploadfield/css/fileuploadfield.css"/>
+
+    <style type=text/css>
         .upload-icon {
             background: url('../shared/icons/fam/image_add.png') no-repeat 0 0 !important;
         }
@@ -23,10 +25,26 @@
             float: left;
         }
     </style>
+
+    <!-- ** Javascript ** -->
+    <!-- ExtJS library: base/adapter -->
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+
+    <!-- ExtJS library: all widgets -->
+    <script type="text/javascript" src="../../ext-all.js"></script>
+
+    <!-- overrides to base library -->
+    <script type="text/javascript" src="../ux/fileuploadfield/FileUploadField.js"></script>
+
+    <!-- page specific -->
+    <script type="text/javascript" src="file-upload.js"></script>
+
 </head>
 <body>
     <h1>File Upload Field</h1>
-    <p>The js is not minified so it is readable. See <a href="file-upload.js">file-input.js</a>.</p>
+    <p>This example utilizes a custom extension to implement a file upload field.
+    The js is not minified so it is readable. See <a href="file-upload.js">file-input.js</a> and
+    <a href="../ux/fileuploadfield/FileUploadField.js">FileUploadField.js</a>.</p>
 
     <p>
         <b>Basic FileUpload</b><br />

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -187,7 +187,7 @@ Ext.layout.ToolbarLayout = Ext.extend(Ext.layout.ContainerLayout, {
     clearMenu : function(){
         var m = this.moreMenu;
         if(m && m.items){
-            this.moreMenu.items.each(function(item){
+            m.items.each(function(item){
                 delete item.menu;
             });
         }
@@ -230,6 +230,7 @@ Ext.layout.ToolbarLayout = Ext.extend(Ext.layout.ContainerLayout, {
                     scope: this
                 }
             });
+            this.moreMenu.ownerCt = this.container;
             this.more = new Ext.Button({
                 iconCls: 'x-toolbar-more-icon',
                 cls: 'x-toolbar-more',
@@ -367,6 +368,15 @@ Ext.extend(T, Ext.Container, {
 
     defaultType: 'button',
 
+    /**
+     * @cfg {String/Object} layout
+     * This class assigns a default layout (<code>layout:'<b>toolbar</b>'</code>).
+     * Developers <i>may</i> override this configuration option if another layout
+     * is required (the constructor must be passed a configuration object in this
+     * case instead of an array).
+     * See {@link Ext.Container#layout} for additional information.
+     */
+
     trackMenus : true,
     internalDefaults: {removeMode: 'container', hideParent: true},
     toolbarCls: 'x-toolbar',
@@ -392,12 +402,14 @@ Ext.extend(T, Ext.Container, {
                 };
             }
             this.el = ct.createChild(Ext.apply({ id: this.id },this.autoCreate), position);
+            Ext.Toolbar.superclass.onRender.apply(this, arguments);
         }
     },
 
     /**
-     * Adds element(s) to the toolbar -- this function takes a variable number of
-     * arguments of mixed type and adds them to the toolbar.
+     * <p>Adds element(s) to the toolbar -- this function takes a variable number of
+     * arguments of mixed type and adds them to the toolbar.</p>
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Mixed} arg1 The following types of arguments are all valid:<br />
      * <ul>
      * <li>{@link Ext.Button} config: A valid button config object (equivalent to {@link #addButton})</li>
@@ -464,6 +476,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds a separator
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @return {Ext.Toolbar.Item} The separator {@link Ext.Toolbar.Item item}
      */
     addSeparator : function(){
@@ -472,6 +485,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds a spacer element
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @return {Ext.Toolbar.Spacer} The spacer item
      */
     addSpacer : function(){
@@ -480,6 +494,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Forces subsequent additions into the float:right toolbar
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      */
     addFill : function(){
         this.add(new T.Fill());
@@ -487,6 +502,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds any standard HTML element to the toolbar
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Mixed} el The element or id of the element to add
      * @return {Ext.Toolbar.Item} The element's item
      */
@@ -496,15 +512,17 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds any Toolbar.Item or subclass
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Ext.Toolbar.Item} item
      * @return {Ext.Toolbar.Item} The item
      */
     addItem : function(item){
-        return Ext.Toolbar.superclass.add.apply(this, arguments);
+        return this.add.apply(this, arguments);
     },
 
     /**
      * Adds a button (or buttons). See {@link Ext.Button} for more info on the config.
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Object/Array} config A button config or array of configs
      * @return {Ext.Button/Array}
      */
@@ -521,6 +539,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds text to the toolbar
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {String} text The text to add
      * @return {Ext.Toolbar.Item} The element's item
      */
@@ -530,6 +549,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Adds a new element to the toolbar from the passed {@link Ext.DomHelper} config
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Object} config
      * @return {Ext.Toolbar.Item} The element's item
      */
@@ -540,6 +560,7 @@ Ext.extend(T, Ext.Container, {
     /**
      * Adds a dynamically rendered Ext.form field (TextField, ComboBox, etc). Note: the field should not have
      * been rendered yet. For a field that has already been rendered, use {@link #addElement}.
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Ext.form.Field} field
      * @return {Ext.Toolbar.Item}
      */
@@ -549,6 +570,7 @@ Ext.extend(T, Ext.Container, {
 
     /**
      * Inserts any {@link Ext.Toolbar.Item}/{@link Ext.Button} at the specified index.
+     * <br><p><b>Note</b>: See the notes within {@link Ext.Container#add}.</p>
      * @param {Number} index The index where the item is to be inserted
      * @param {Object/Ext.Toolbar.Item/Ext.Button/Array} item The button, or button config object to be
      * inserted, or an array of buttons/configs.
@@ -750,23 +772,29 @@ new Ext.Panel({
  * @xtype tbtext
  */
 T.TextItem = Ext.extend(T.Item, {
+    /**
+     * @cfg {String} text The text to be used as innerHTML (html tags are accepted)
+     */ 
+
     constructor: function(config){
-        if (Ext.isString(config)) {
-            config = { autoEl: {cls: 'xtb-text', html: config }};
-        } else {
-            config.autoEl = {cls: 'xtb-text', html: config.text || ''};
-        }
-        T.TextItem.superclass.constructor.call(this, config);
+        T.TextItem.superclass.constructor.call(this, Ext.isString(config) ? {text: config} : config);
     },
+    
+    // private
+    onRender : function(ct, position) {
+        this.autoEl = {cls: 'xtb-text', html: this.text || ''};
+        T.TextItem.superclass.onRender.call(this, ct, position);
+    },
+    
     /**
      * Updates this item's text, setting the text to be used as innerHTML.
      * @param {String} t The text to display (html accepted).
      */
     setText : function(t) {
-        if (this.rendered) {
-            this.el.dom.innerHTML = t;
-        } else {
-            this.autoEl.html = t;
+        if(this.rendered){
+            this.el.update(t);
+        }else{
+            this.text = t;
         }
     }
 });
@@ -895,10 +923,14 @@ Ext.reg('buttongroup', Ext.ButtonGroup);
 Ext.QuickTips.init(); // to display button quicktips
 
 var myStore = new Ext.data.Store({
+    reader: new Ext.data.JsonReader({
+        {@link Ext.data.JsonReader#totalProperty totalProperty}: 'results', 
+        ...
+    }),
     ...
 });
 
-var myPageSize = 25;  // server script should only send back 25 items
+var myPageSize = 25;  // server script should only send back 25 items at a time
 
 var grid = new Ext.grid.GridPanel({
     ...
@@ -919,20 +951,43 @@ var grid = new Ext.grid.GridPanel({
  * <pre><code>
 store.load({
     params: {
-        start: 0,          // specify params for the first page load if using paging
+        // specify params for the first page load if using paging
+        start: 0,          
         limit: myPageSize,
+        // other params
         foo:   'bar'
     }
 });
  * </code></pre>
+ * 
+ * <p>If using {@link Ext.data.Store#autoLoad store's autoLoad} configuration:</p>
+ * <pre><code>
+var myStore = new Ext.data.Store({
+    {@link Ext.data.Store#autoLoad autoLoad}: {params:{start: 0, limit: 25}},
+    ...
+});
+ * </code></pre>
+ * 
+ * <p>The packet sent back from the server would have this form:</p>
+ * <pre><code>
+{
+    "success": true,
+    "results": 2000, 
+    "rows": [ // <b>*Note:</b> this must be an Array 
+        { "id":  1, "name": "Bill", "occupation": "Gardener" },
+        { "id":  2, "name":  "Ben", "occupation": "Horticulturalist" },
+        ...
+        { "id": 25, "name":  "Sue", "occupation": "Botanist" }
+    ]
+}
+ * </code></pre>
  * <p><u>Paging with Local Data</u></p>
  * <p>Paging can also be accomplished with local data using extensions:</p>
  * <div class="mdetail-params"><ul>
- * <li><a href="http://extjs.com/forum/showthread.php?t=57386">Ext.ux.data.PagingStore</a></li>
+ * <li><a href="http://extjs.com/forum/showthread.php?t=71532">Ext.ux.data.PagingStore</a></li>
  * <li>Paging Memory Proxy (examples/ux/PagingMemoryProxy.js)</li>
  * </ul></div>
- * @constructor
- * Create a new PagingToolbar
+ * @constructor Create a new PagingToolbar
  * @param {Object} config The config object
  * @xtype paging
  */
@@ -1017,10 +1072,13 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     refreshText : 'Refresh',
 
     /**
-     * @deprecated
-     * <b>The defaults for these should be set in the data store.</b>
-     * Object mapping of parameter names used for load calls, initially set to:
+     * <p><b>Deprecated</b>. <code>paramNames</code> should be set in the <b>data store</b>
+     * (see {@link Ext.data.Store#paramNames}).</p>
+     * <br><p>Object mapping of parameter names used for load calls, initially set to:</p>
      * <pre>{start: 'start', limit: 'limit'}</pre>
+     * @type Object
+     * @property paramNames
+     * @deprecated
      */
 
     /**
@@ -1086,7 +1144,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
             tooltip: this.refreshText,
             overflowText: this.refreshText,
             iconCls: 'x-tbar-loading',
-            handler: this.refresh,
+            handler: this.doRefresh,
             scope: this
         })];
 
@@ -1136,7 +1194,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
         );
         this.on('afterlayout', this.onFirstLayout, this, {single: true});
         this.cursor = 0;
-        this.bindStore(this.store);
+        this.bindStore(this.store, true);
     },
 
     // private
@@ -1262,6 +1320,12 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     },
 
     // private
+    getParams : function(){
+        //retain backwards compat, allow params on the toolbar itself, if they exist.
+        return this.paramNames || this.store.paramNames;
+    },
+
+    // private
     beforeLoad : function(){
         if(this.rendered && this.refresh){
             this.refresh.disable();
@@ -1312,7 +1376,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     /**
      * Refresh the current page, has the same effect as clicking the 'refresh' button.
      */
-    refresh : function(){
+    doRefresh : function(){
         this.doLoad(this.cursor);
     },
 
@@ -1324,11 +1388,15 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     bindStore : function(store, initial){
         var doLoad;
         if(!initial && this.store){
-            this.store.un('beforeload', this.beforeLoad, this);
-            this.store.un('load', this.onLoad, this);
-            this.store.un('exception', this.onLoadError, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un('beforeload', this.beforeLoad, this);
+                this.store.un('load', this.onLoad, this);
+                this.store.un('exception', this.onLoadError, this);
+            }
+            if(!store){
+                this.store = null;
             }
         }
         if(store){
@@ -1339,7 +1407,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
                 load: this.onLoad,
                 exception: this.onLoadError
             });
-            doLoad = store.getCount() > 0;
+            doLoad = true;
         }
         this.store = store;
         if(doLoad){

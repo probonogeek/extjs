@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -138,9 +138,10 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      */
     /**
      * @cfg {Number} scrollOffset The amount of space to reserve for the scrollbar (defaults to
-     * <tt>19</tt> pixels)
+     * <tt>undefined</tt>). If an explicit value isn't specified, this will be automatically
+     * calculated.
      */
-    scrollOffset : 19,
+    scrollOffset : undefined,
     /**
      * @cfg {Boolean/Object} columnResize
      * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.ColumnResizer}
@@ -188,6 +189,11 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      * The template to be used for the header row.  See {@link #tpl} for more details.
      */
 
+    /*
+     * IE has issues when setting percentage based widths to 100%. Default to 99.
+     */
+    maxWidth: Ext.isIE ? 99 : 100,
+    
     initComponent : function(){
         if(this.columnResize){
             this.colResizer = new Ext.ListView.ColumnResizer(this.colResizer);
@@ -225,9 +231,13 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
-        var cs = this.columns, allocatedWidth = 0, colsWithWidth = 0, len = cs.length;
+        var cs = this.columns, 
+            allocatedWidth = 0, 
+            colsWithWidth = 0, 
+            len = cs.length, 
+            columns = [];
         for(var i = 0; i < len; i++){
-            var c = cs[i];
+            var c = Ext.apply({}, cs[i]);
             if(!c.tpl){
                 c.tpl = new Ext.XTemplate('{' + c.dataIndex + '}');
             }else if(Ext.isString(c.tpl)){
@@ -239,12 +249,14 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 allocatedWidth += c.width;
                 colsWithWidth++;
             }
+            columns.push(c);
         }
+        cs = this.columns = columns;
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
-            if(allocatedWidth < 100){
-                var perCol = ((100-allocatedWidth) / remaining);
+            if(allocatedWidth < this.maxWidth){
+                var perCol = ((this.maxWidth-allocatedWidth) / remaining);
                 for(var j = 0; j < len; j++){
                     var c = cs[j];
                     if(!Ext.isNumber(c.width)){
@@ -257,6 +269,9 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     },
 
     onRender : function(){
+        this.autoEl = {
+            cls: 'x-list-wrap'  
+        };
         Ext.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
@@ -310,7 +325,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
         }
         var bdp = bd.parentNode;
         if(Ext.isNumber(w)){
-            var sw = w - this.scrollOffset;
+            var sw = w - Ext.num(this.scrollOffset, Ext.getScrollBarWidth());
             if(this.reserveScrollOffset || ((bdp.offsetWidth - bdp.clientWidth) > 10)){
                 bd.style.width = sw + 'px';
                 hd.style.width = sw + 'px';
@@ -325,7 +340,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 }, 10);
             }
         }
-        if(Ext.isNumber(h == 'number')){
+        if(Ext.isNumber(h)){
             bdp.style.height = (h - hd.parentNode.offsetHeight) + 'px';
         }
     },

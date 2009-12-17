@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -44,29 +44,15 @@ Ext.Element.addMethods(function(){
         return a.charAt(1).toUpperCase();
     }
     
-    // private (needs to be called => addStyles.call(this, sides, styles))
-    function addStyles(sides, styles){
-        var val = 0;    
-        
-        Ext.each(sides.match(/\w/g), function(s) {
-            if (s = parseInt(this.getStyle(styles[s]), 10)) {
-                val += MATH.abs(s);      
-            }
-        },
-        this);
-        return val;
-    }
-
     function chkCache(prop) {
         return propCache[prop] || (propCache[prop] = prop == 'float' ? propFloat : prop.replace(camelRe, camelFn));
-
     }
             
-    return {    
+    return {
         // private  ==> used by Fx  
         adjustWidth : function(width) {
             var me = this;
-            var isNum = (typeof width == "number");
+            var isNum = Ext.isNumber(width);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -76,7 +62,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx 
         adjustHeight : function(height) {
             var me = this;
-            var isNum = (typeof height == "number");
+            var isNum = Ext.isNumber(height);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));               
             }
@@ -118,7 +104,7 @@ Ext.Element.addMethods(function(){
          */
         removeClass : function(className){
             var me = this;
-            if (me.dom.className) {
+            if (me.dom && me.dom.className) {
                 Ext.each(className, function(v) {               
                     me.dom.className = me.dom.className.replace(
                         classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), 
@@ -170,11 +156,18 @@ Ext.Element.addMethods(function(){
                 function(prop){
                     var el = this.dom,
                         v,                  
-                        cs;
+                        cs,
+                        out;
                     if(el == document) return null;
                     prop = chkCache(prop);
-                    return (v = el.style[prop]) ? v : 
+                    out = (v = el.style[prop]) ? v : 
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
+                    
+                    // Webkit returns rgb values for transparent.
+                    if(Ext.isWebKit && out == 'rgba(0, 0, 0, 0)'){
+                        out = 'transparent';
+                    }
+                    return out;
                 } :
                 function(prop){      
                     var el = this.dom, 
@@ -197,7 +190,7 @@ Ext.Element.addMethods(function(){
                     return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
                 };
         }(),
-        
+
         /**
          * Return the CSS color for the specified CSS attribute. rgb, 3 digit (like #fff) and valid values
          * are convert to standard 6 digit hex color.
@@ -208,7 +201,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = prefix || '#',
+                color = Ext.isDefined(prefix) ? prefix : '#',
                 h;
                 
             if(!v || /transparent|inherit/.test(v)){
@@ -301,7 +294,9 @@ Ext.Element.addMethods(function(){
         getHeight : function(contentHeight){
             var me = this,
                 dom = me.dom,
-                h = MATH.max(dom.offsetHeight, dom.clientHeight) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                h = MATH.max(dom.offsetHeight, hidden ? 0 : dom.clientHeight) || 0;
+                
             h = !contentHeight ? h : h - me.getBorderWidth("tb") - me.getPadding("tb");
             return h < 0 ? 0 : h;
         },
@@ -314,7 +309,8 @@ Ext.Element.addMethods(function(){
         getWidth : function(contentWidth){
             var me = this,
                 dom = me.dom,
-                w = MATH.max(dom.offsetWidth, dom.clientWidth) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                w = MATH.max(dom.offsetWidth, hidden ? 0 : dom.clientWidth) || 0;
             w = !contentWidth ? w : w - me.getBorderWidth("lr") - me.getPadding("lr");
             return w < 0 ? 0 : w;
         },
@@ -373,7 +369,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The width of the sides passed added together
          */
         getBorderWidth : function(side){
-            return addStyles.call(this, side, borders);
+            return this.addStyles(side, borders);
         },
     
         /**
@@ -383,7 +379,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The padding of the sides passed added together
          */
         getPadding : function(side){
-            return addStyles.call(this, side, paddings);
+            return this.addStyles(side, paddings);
         },
     
         /**
@@ -431,8 +427,20 @@ Ext.fly('elId').setHeight(150, {
             }
             return me;
         },
-        
-        addStyles : addStyles,
+
+        // private
+        addStyles : function(sides, styles){
+            var val = 0;
+
+            Ext.each(sides.match(/\w/g), function(s) {
+                if (s = parseInt(this.getStyle(styles[s]), 10)) {
+                    val += MATH.abs(s);
+                }
+            },
+            this);
+            return val;
+        },
+
         margins : margins
     }
 }()         

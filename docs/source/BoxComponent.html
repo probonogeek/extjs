@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.BoxComponent"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.BoxComponent"></div>/**
  * @class Ext.BoxComponent
  * @extends Ext.Component
  * <p>Base class for any {@link Ext.Component Component} that is to be sized as a box, using width and height.</p>
@@ -35,6 +41,14 @@ var myImage = new Ext.BoxComponent({
  */
 Ext.BoxComponent = Ext.extend(Ext.Component, {
 
+    // tabTip config is used when a BoxComponent is a child of a TabPanel
+    <div id="cfg-Ext.BoxComponent-tabTip"></div>/**
+     * @cfg {String} tabTip
+     * <p><b>Note</b>: this config is only used when this BoxComponent is a child item of a TabPanel.</p>
+     * A string to be used as innerHTML (html tags are accepted) to show in a tooltip when mousing over
+     * the associated tab selector element. {@link Ext.QuickTips}.init()
+     * must be called in order for the tips to render.
+     */
     // Configs below are used for all Components when rendered by BorderLayout.
     <div id="cfg-Ext.BoxComponent-region"></div>/**
      * @cfg {String} region <p><b>Note</b>: this config is only used when this BoxComponent is rendered
@@ -434,19 +448,14 @@ var myPanel = new Ext.Panel({
     },
 
     // private
-    onRender : function(ct, position){
-        Ext.BoxComponent.superclass.onRender.call(this, ct, position);
+    afterRender : function(){
+        Ext.BoxComponent.superclass.afterRender.call(this);
         if(this.resizeEl){
             this.resizeEl = Ext.get(this.resizeEl);
         }
         if(this.positionEl){
             this.positionEl = Ext.get(this.positionEl);
         }
-    },
-
-    // private
-    afterRender : function(){
-        Ext.BoxComponent.superclass.afterRender.call(this);
         this.boxReady = true;
         this.setSize(this.width, this.height);
         if(this.x || this.y){
@@ -517,6 +526,6 @@ Ext.reg('box', Ext.BoxComponent);
 Ext.Spacer = Ext.extend(Ext.BoxComponent, {
     autoEl:'div'
 });
-Ext.reg('spacer', Ext.Spacer);</pre>    
+Ext.reg('spacer', Ext.Spacer);</pre>
 </body>
 </html>

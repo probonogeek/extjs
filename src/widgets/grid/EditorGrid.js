@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -151,16 +151,17 @@ grid.on('validateedit', function(e) {
     initEvents : function(){
         Ext.grid.EditorGridPanel.superclass.initEvents.call(this);
 
-        this.on("bodyscroll", this.stopEditing, this, [true]);
-        this.on("columnresize", this.stopEditing, this, [true]);
+        this.getGridEl().on('mousewheel', this.stopEditing.createDelegate(this, [true]), this);
+        this.on('columnresize', this.stopEditing, this, [true]);
 
         if(this.clicksToEdit == 1){
             this.on("cellclick", this.onCellDblClick, this);
         }else {
-            if(this.clicksToEdit == 'auto' && this.view.mainBody){
-                this.view.mainBody.on("mousedown", this.onAutoEditClick, this);
+            var view = this.getView();
+            if(this.clicksToEdit == 'auto' && view.mainBody){
+                view.mainBody.on('mousedown', this.onAutoEditClick, this);
             }
-            this.on("celldblclick", this.onCellDblClick, this);
+            this.on('celldblclick', this.onCellDblClick, this);
         }
     },
 
@@ -195,7 +196,7 @@ grid.on('validateedit', function(e) {
     onEditComplete : function(ed, value, startValue){
         this.editing = false;
         this.activeEditor = null;
-        ed.un("specialkey", this.selModel.onEditorKey, this.selModel);
+        
 		var r = ed.record;
         var field = this.colModel.getDataIndex(ed.col);
         value = this.postEditValue(value, startValue, r, field);
@@ -246,22 +247,35 @@ grid.on('validateedit', function(e) {
                     return;
                 }
                 if(!ed.rendered){
-                    ed.render(this.view.getEditorParent(ed));
+                    ed.parentEl = this.view.getEditorParent(ed);
+                    ed.on({
+                        scope: this,
+                        render: {
+                            fn: function(c){
+                                c.field.focus(false, true);
+                            },
+                            single: true,
+                            scope: this
+                        },
+                        specialkey: function(field, e){
+                            this.getSelectionModel().onEditorKey(field, e);
+                        },
+                        complete: this.onEditComplete,
+                        canceledit: this.stopEditing.createDelegate(this, [true])
+                    });
                 }
-                (function(){ // complex but required for focus issues in safari, ie and opera
-                    ed.row = row;
-                    ed.col = col;
-                    ed.record = r;
-                    ed.on("complete", this.onEditComplete, this, {single: true});
-                    ed.on("specialkey", this.selModel.onEditorKey, this.selModel);
-                    /**
-                     * The currently active editor or null
-                      * @type Ext.Editor
-                     */
-                    this.activeEditor = ed;
-                    var v = this.preEditValue(r, field);
-                    ed.startEdit(this.view.getCell(row, col).firstChild, v === undefined ? '' : v);
-                }).defer(50, this);
+                Ext.apply(ed, {
+                    row     : row,
+                    col     : col,
+                    record  : r
+                });
+                this.lastEdit = {
+                    row: row,
+                    col: col
+                };
+                this.activeEditor = ed;
+                var v = this.preEditValue(r, field);
+                ed.startEdit(this.view.getCell(row, col).firstChild, Ext.isDefined(v) ? v : '');
             }
         }
     },
@@ -269,12 +283,12 @@ grid.on('validateedit', function(e) {
     // private
     preEditValue : function(r, field){
         var value = r.data[field];
-        return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlDecode(value) : value;
+        return this.autoEncode && Ext.isString(value) ? Ext.util.Format.htmlDecode(value) : value;
     },
 
     // private
 	postEditValue : function(value, originalValue, r, field){
-		return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlEncode(value) : value;
+		return this.autoEncode && Ext.isString(value) ? Ext.util.Format.htmlEncode(value) : value;
 	},
 
     /**
@@ -282,10 +296,15 @@ grid.on('validateedit', function(e) {
      * @param {Boolean} cancel (optional) True to cancel any changes
      */
     stopEditing : function(cancel){
-        if(this.activeEditor){
-            this.activeEditor[cancel === true ? 'cancelEdit' : 'completeEdit']();
+        if(this.editing){
+            var ae = this.activeEditor;
+            if(ae){
+                ae[cancel === true ? 'cancelEdit' : 'completeEdit']();
+                this.view.focusCell(ae.row, ae.col);
+            }
+            this.activeEditor = null;
         }
-        this.activeEditor = null;
+        this.editing = false;
     }
 });
 Ext.reg('editorgrid', Ext.grid.EditorGridPanel);

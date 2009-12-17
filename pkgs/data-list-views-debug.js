@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -317,16 +317,18 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     // private
     onUpdate : function(ds, record){
         var index = this.store.indexOf(record);
-        var sel = this.isSelected(index);
-        var original = this.all.elements[index];
-        var node = this.bufferRender([record], index)[0];
+        if(index > -1){
+            var sel = this.isSelected(index);
+            var original = this.all.elements[index];
+            var node = this.bufferRender([record], index)[0];
 
-        this.all.replaceElement(index, node, true);
-        if(sel){
-            this.selected.replaceElement(original, node);
-            this.all.item(index).addClass(this.selectedClass);
+            this.all.replaceElement(index, node, true);
+            if(sel){
+                this.selected.replaceElement(original, node);
+                this.all.item(index).addClass(this.selectedClass);
+            }
+            this.updateIndexes(index, index);
         }
-        this.updateIndexes(index, index);
     },
 
     // private
@@ -388,14 +390,18 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
      */
     bindStore : function(store, initial){
         if(!initial && this.store){
-            this.store.un("beforeload", this.onBeforeLoad, this);
-            this.store.un("datachanged", this.refresh, this);
-            this.store.un("add", this.onAdd, this);
-            this.store.un("remove", this.onRemove, this);
-            this.store.un("update", this.onUpdate, this);
-            this.store.un("clear", this.refresh, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un("beforeload", this.onBeforeLoad, this);
+                this.store.un("datachanged", this.refresh, this);
+                this.store.un("add", this.onAdd, this);
+                this.store.un("remove", this.onRemove, this);
+                this.store.un("update", this.onUpdate, this);
+                this.store.un("clear", this.refresh, this);
+            }
+            if(!store){
+                this.store = null;
             }
         }
         if(store){
@@ -880,9 +886,10 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      */
     /**
      * @cfg {Number} scrollOffset The amount of space to reserve for the scrollbar (defaults to
-     * <tt>19</tt> pixels)
+     * <tt>undefined</tt>). If an explicit value isn't specified, this will be automatically
+     * calculated.
      */
-    scrollOffset : 19,
+    scrollOffset : undefined,
     /**
      * @cfg {Boolean/Object} columnResize
      * Specify <tt>true</tt> or specify a configuration object for {@link Ext.ListView.ColumnResizer}
@@ -930,6 +937,11 @@ Ext.ListView = Ext.extend(Ext.DataView, {
      * The template to be used for the header row.  See {@link #tpl} for more details.
      */
 
+    /*
+     * IE has issues when setting percentage based widths to 100%. Default to 99.
+     */
+    maxWidth: Ext.isIE ? 99 : 100,
+    
     initComponent : function(){
         if(this.columnResize){
             this.colResizer = new Ext.ListView.ColumnResizer(this.colResizer);
@@ -967,9 +979,13 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
-        var cs = this.columns, allocatedWidth = 0, colsWithWidth = 0, len = cs.length;
+        var cs = this.columns, 
+            allocatedWidth = 0, 
+            colsWithWidth = 0, 
+            len = cs.length, 
+            columns = [];
         for(var i = 0; i < len; i++){
-            var c = cs[i];
+            var c = Ext.apply({}, cs[i]);
             if(!c.tpl){
                 c.tpl = new Ext.XTemplate('{' + c.dataIndex + '}');
             }else if(Ext.isString(c.tpl)){
@@ -981,12 +997,14 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 allocatedWidth += c.width;
                 colsWithWidth++;
             }
+            columns.push(c);
         }
+        cs = this.columns = columns;
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
-            if(allocatedWidth < 100){
-                var perCol = ((100-allocatedWidth) / remaining);
+            if(allocatedWidth < this.maxWidth){
+                var perCol = ((this.maxWidth-allocatedWidth) / remaining);
                 for(var j = 0; j < len; j++){
                     var c = cs[j];
                     if(!Ext.isNumber(c.width)){
@@ -999,6 +1017,9 @@ Ext.ListView = Ext.extend(Ext.DataView, {
     },
 
     onRender : function(){
+        this.autoEl = {
+            cls: 'x-list-wrap'  
+        };
         Ext.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
@@ -1052,7 +1073,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
         }
         var bdp = bd.parentNode;
         if(Ext.isNumber(w)){
-            var sw = w - this.scrollOffset;
+            var sw = w - Ext.num(this.scrollOffset, Ext.getScrollBarWidth());
             if(this.reserveScrollOffset || ((bdp.offsetWidth - bdp.clientWidth) > 10)){
                 bd.style.width = sw + 'px';
                 hd.style.width = sw + 'px';
@@ -1067,7 +1088,7 @@ Ext.ListView = Ext.extend(Ext.DataView, {
                 }, 10);
             }
         }
-        if(Ext.isNumber(h == 'number')){
+        if(Ext.isNumber(h)){
             bdp.style.height = (h - hd.parentNode.offsetHeight) + 'px';
         }
     },
@@ -1133,13 +1154,13 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
     },
 
     handleHdMove : function(e, t){
-        var hw = 5;
-        var x = e.getPageX();
-        var hd = e.getTarget('em', 3, true);
+        var hw = 5,
+            x = e.getPageX(),
+            hd = e.getTarget('em', 3, true);
         if(hd){
-            var r = hd.getRegion();
-            var ss = hd.dom.style;
-            var pn = hd.dom.parentNode;
+            var r = hd.getRegion(),
+                ss = hd.dom.style,
+                pn = hd.dom.parentNode;
 
             if(x - r.left <= hw && pn != pn.parentNode.firstChild){
                 this.activeHd = Ext.get(pn.previousSibling.firstChild);
@@ -1164,8 +1185,8 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
         this.proxy = this.view.el.createChild({cls:'x-list-resizer'});
         this.proxy.setHeight(this.view.el.getHeight());
 
-        var x = this.tracker.getXY()[0];
-        var w = this.view.innerHd.getWidth();
+        var x = this.tracker.getXY()[0],
+            w = this.view.innerHd.getWidth();
 
         this.hdX = this.dragHd.getX();
         this.hdIndex = this.view.findHeaderIndex(this.dragHd);
@@ -1186,18 +1207,20 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
         var nw = this.proxy.getWidth();
         this.proxy.remove();
 
-        var index = this.hdIndex;
-        var vw = this.view, cs = vw.columns, len = cs.length;
-        var w = this.view.innerHd.getWidth(), minPct = this.minPct * 100;
-
-        var pct = Math.ceil((nw*100) / w);
-        var diff = cs[index].width - pct;
-        var each = Math.floor(diff / (len-1-index));
-        var mod = diff - (each * (len-1-index));
+        var index = this.hdIndex,
+            vw = this.view, 
+            cs = vw.columns, 
+            len = cs.length,
+            w = this.view.innerHd.getWidth(), 
+            minPct = this.minPct * 100;
+            pct = Math.ceil((nw * vw.maxWidth) / w),
+            diff = cs[index].width - pct,
+            each = Math.floor(diff / (len-1-index)),
+            mod = diff - (each * (len-1-index));
 
         for(var i = index+1; i < len; i++){
-            var cw = cs[i].width + each;
-            var ncw = Math.max(minPct, cw);
+            var cw = cs[i].width + each,
+                ncw = Math.max(minPct, cw);
             if(cw != ncw){
                 mod += cw - ncw;
             }
@@ -1206,8 +1229,8 @@ Ext.ListView.ColumnResizer = Ext.extend(Ext.util.Observable, {
         cs[index].width = pct;
         cs[index+1].width += mod;
         delete this.dragHd;
-        this.view.setHdWidths();
-        this.view.refresh();
+        vw.setHdWidths();
+        vw.refresh();
         setTimeout(function(){
             vw.disableHeaders = false;
         }, 100);

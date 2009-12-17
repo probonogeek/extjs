@@ -24,12 +24,29 @@ class Request {
             fclose($httpContent);
             $params = array();
             parse_str($raw, $params);
-            $this->id = (isset($params['id'])) ? $params['id'] : null;
-            $this->params = (isset($params['data'])) ? json_decode(stripslashes($params['data']), true) : null;
+
+            if (isset($params['data'])) {
+                $this->params =  json_decode(stripslashes($params['data']));
+            } else {
+                $params = json_decode(stripslashes($raw));
+                $this->params = $params->data;
+            }
         } else {
             // grab JSON data if there...
-            $this->params = (isset($_REQUEST['data'])) ? json_decode(stripslashes($_REQUEST['data']), true) : null;
-            $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null;
+            $this->params = (isset($_REQUEST['data'])) ? json_decode(stripslashes($_REQUEST['data'])) : null;
+
+            if (isset($_REQUEST['data'])) {
+                $this->params =  json_decode(stripslashes($_REQUEST['data']));
+            } else {
+                $raw  = '';
+                $httpContent = fopen('php://input', 'r');
+                while ($kb = fread($httpContent, 1024)) {
+                    $raw .= $kb;
+                }
+                $params = json_decode(stripslashes($raw));
+                $this->params = $params->data;
+            }
+
         }
         // Quickndirty PATH_INFO parser
         if (isset($_SERVER["PATH_INFO"])){

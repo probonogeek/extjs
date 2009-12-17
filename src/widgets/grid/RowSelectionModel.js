@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -29,7 +29,7 @@ Ext.grid.RowSelectionModel = function(config){
          * Fires when the selection changes
          * @param {SelectionModel} this
          */
-        "selectionchange",
+        'selectionchange',
         /**
          * @event beforerowselect
          * Fires before a row is selected, return false to cancel the selection.
@@ -38,7 +38,7 @@ Ext.grid.RowSelectionModel = function(config){
          * @param {Boolean} keepExisting False if other selections will be cleared
          * @param {Record} record The record to be selected
          */
-        "beforerowselect",
+        'beforerowselect',
         /**
          * @event rowselect
          * Fires when a row is selected.
@@ -46,7 +46,7 @@ Ext.grid.RowSelectionModel = function(config){
          * @param {Number} rowIndex The selected index
          * @param {Ext.data.Record} r The selected record
          */
-        "rowselect",
+        'rowselect',
         /**
          * @event rowdeselect
          * Fires when a row is deselected.  To prevent deselection
@@ -55,7 +55,7 @@ Ext.grid.RowSelectionModel = function(config){
          * @param {Number} rowIndex
          * @param {Record} record
          */
-        "rowdeselect"
+        'rowdeselect'
     );
 
     Ext.grid.RowSelectionModel.superclass.constructor.call(this);
@@ -78,18 +78,11 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
     initEvents : function(){
 
         if(!this.grid.enableDragDrop && !this.grid.enableDrag){
-            this.grid.on("rowmousedown", this.handleMouseDown, this);
-        }else{ // allow click to work like normal
-            this.grid.on("rowclick", function(grid, rowIndex, e) {
-                if(e.button === 0 && !e.shiftKey && !e.ctrlKey) {
-                    this.selectRow(rowIndex, false);
-                    grid.view.focusRow(rowIndex);
-                }
-            }, this);
+            this.grid.on('rowmousedown', this.handleMouseDown, this);
         }
 
         this.rowNav = new Ext.KeyNav(this.grid.getGridEl(), {
-            "up" : function(e){
+            'up' : function(e){
                 if(!e.shiftKey || this.singleSelect){
                     this.selectPrevious(false);
                 }else if(this.last !== false && this.lastActive !== false){
@@ -103,7 +96,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
                     this.selectFirstRow();
                 }
             },
-            "down" : function(e){
+            'down' : function(e){
                 if(!e.shiftKey || this.singleSelect){
                     this.selectNext(false);
                 }else if(this.last !== false && this.lastActive !== false){
@@ -120,10 +113,12 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
             scope: this
         });
 
-        var view = this.grid.view;
-        view.on("refresh", this.onRefresh, this);
-        view.on("rowupdated", this.onRowUpdated, this);
-        view.on("rowremoved", this.onRemove, this);
+        this.grid.getView().on({
+            scope: this,
+            refresh: this.onRefresh,
+            rowupdated: this.onRowUpdated,
+            rowremoved: this.onRemove
+        });
     },
 
     // private
@@ -138,7 +133,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
             }
         }
         if(s.length != this.selections.getCount()){
-            this.fireEvent("selectionchange", this);
+            this.fireEvent('selectionchange', this);
         }
     },
 
@@ -325,7 +320,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
      * @return {Boolean}
      */
     isSelected : function(index){
-        var r = typeof index == "number" ? this.grid.store.getAt(index) : index;
+        var r = Ext.isNumber(index) ? this.grid.store.getAt(index) : index;
         return (r && this.selections.key(r.id) ? true : false);
     },
 
@@ -434,7 +429,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
             return;
         }
         var r = this.grid.store.getAt(index);
-        if(r && this.fireEvent("beforerowselect", this, index, keepExisting, r) !== false){
+        if(r && this.fireEvent('beforerowselect', this, index, keepExisting, r) !== false){
             if(!keepExisting || this.singleSelect){
                 this.clearSelections();
             }
@@ -443,8 +438,8 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
             if(!preventViewNotify){
                 this.grid.getView().onRowSelect(index);
             }
-            this.fireEvent("rowselect", this, index, r);
-            this.fireEvent("selectionchange", this);
+            this.fireEvent('rowselect', this, index, r);
+            this.fireEvent('selectionchange', this);
         }
     },
 
@@ -473,8 +468,8 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
             if(!preventViewNotify){
                 this.grid.getView().onRowDeselect(index);
             }
-            this.fireEvent("rowdeselect", this, index, r);
-            this.fireEvent("selectionchange", this);
+            this.fireEvent('rowdeselect', this, index, r);
+            this.fireEvent('selectionchange', this);
         }
     },
 
@@ -492,7 +487,12 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
 
     // private
     onEditorKey : function(field, e){
-        var k = e.getKey(), newCell, g = this.grid, ed = g.activeEditor;
+        var k = e.getKey(), 
+            newCell, 
+            g = this.grid, 
+            last = g.lastEdit,
+            ed = g.activeEditor,
+            ae, last, r, c;
         var shift = e.shiftKey;
         if(k == e.TAB){
             e.stopEvent();
@@ -503,24 +503,34 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
                 newCell = g.walkCells(ed.row, ed.col+1, 1, this.acceptsNav, this);
             }
         }else if(k == e.ENTER){
-            e.stopEvent();
-            ed.completeEdit();
             if(this.moveEditorOnEnter !== false){
                 if(shift){
-                    newCell = g.walkCells(ed.row - 1, ed.col, -1, this.acceptsNav, this);
+                    newCell = g.walkCells(last.row - 1, last.col, -1, this.acceptsNav, this);
                 }else{
-                    newCell = g.walkCells(ed.row + 1, ed.col, 1, this.acceptsNav, this);
+                    newCell = g.walkCells(last.row + 1, last.col, 1, this.acceptsNav, this);
                 }
             }
-        }else if(k == e.ESC){
-            ed.cancelEdit();
         }
         if(newCell){
-            g.startEditing(newCell[0], newCell[1]);
+            r = newCell[0];
+            c = newCell[1];
+
+            if(last.row != r){
+                this.selectRow(r); // *** highlight newly-selected cell and update selection
+            }
+
+            if(g.isEditor && g.editing){ // *** handle tabbing while editorgrid is in edit mode
+                ae = g.activeEditor;
+                if(ae && ae.field.triggerBlur){
+                    // *** if activeEditor is a TriggerField, explicitly call its triggerBlur() method
+                    ae.field.triggerBlur();
+                }
+            }
+            g.startEditing(r, c);
         }
     },
     
-    destroy: function(){
+    destroy : function(){
         if(this.rowNav){
             this.rowNav.disable();
             this.rowNav = null;

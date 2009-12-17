@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -90,10 +90,12 @@ Ext.form.CheckboxGroup = Ext.extend(Ext.form.Field, {
     onRender : function(ct, position){
         if(!this.el){
             var panelCfg = {
+                id: this.id,
                 cls: this.groupCls,
                 layout: 'column',
                 border: false,
-                renderTo: ct
+                renderTo: ct,
+                bufferResize: false // Default this to false, since it doesn't really have a proper ownerCt.
             };
             var colCfg = {
                 defaultType: this.defaultType,
@@ -197,12 +199,16 @@ Ext.form.CheckboxGroup = Ext.extend(Ext.form.Field, {
         Ext.form.CheckboxGroup.superclass.onRender.call(this, ct, position);
     },
     
+    initValue : function(){
+        if(this.value){
+            this.setValue.apply(this, this.buffered ? this.value : [this.value]);
+            delete this.buffered;
+            delete this.value;
+        }
+    },
+    
     afterRender : function(){
         Ext.form.CheckboxGroup.superclass.afterRender.call(this);
-        if(this.values){
-            this.setValue.apply(this, this.values);
-            delete this.values;
-        }
         this.eachItem(function(item){
             item.on('check', this.fireChecked, this);
             item.inGroup = true;
@@ -244,6 +250,23 @@ Ext.form.CheckboxGroup = Ext.extend(Ext.form.Field, {
             }
         }
         return true;
+    },
+    
+    // private
+    isDirty: function(){
+        //override the behaviour to check sub items.
+        if (this.disabled || !this.rendered) {
+            return false;
+        }
+
+        var dirty = false;
+        this.eachItem(function(item){
+            if(item.isDirty()){
+                dirty = true;
+                return false;
+            }
+        });
+        return dirty;
     },
     
     // private
@@ -305,38 +328,43 @@ myCheckboxGroup.setValue('cb-col-1,cb-col-3');
      * @param {Boolean} value (optional) The value to set the item.
      * @return {Ext.form.CheckboxGroup} this
      */
-    setValue : function(id, value){
+    setValue: function(){
         if(this.rendered){
-            if(arguments.length == 1){
-                if(Ext.isArray(id)){
-                    //an array of boolean values
-                    Ext.each(id, function(val, idx){
-                        var item = this.items.itemAt(idx);
-                        if(item){
-                            item.setValue(val);
-                        }
-                    }, this);
-                }else if(Ext.isObject(id)){
-                    //set of name/value pairs
-                    for(var i in id){
-                        var f = this.getBox(i);
-                        if(f){
-                            f.setValue(id[i]);
-                        }
-                    }
-                }else{
-                    this.setValueForItem(id);
-                }
-            }else{
-                var f = this.getBox(id);
-                if(f){
-                    f.setValue(value);
-                }
-            }
+            this.onSetValue.apply(this, arguments);
         }else{
-            this.values = arguments;
+            this.buffered = true;
+            this.value = arguments;
         }
         return this;
+    },
+    
+    onSetValue: function(id, value){
+        if(arguments.length == 1){
+            if(Ext.isArray(id)){
+                // an array of boolean values
+                Ext.each(id, function(val, idx){
+                    var item = this.items.itemAt(idx);
+                    if(item){
+                        item.setValue(val);
+                    }
+                }, this);
+            }else if(Ext.isObject(id)){
+                // set of name/value pairs
+                for(var i in id){
+                    var f = this.getBox(i);
+                    if(f){
+                        f.setValue(id[i]);
+                    }
+                }
+            }else{
+                this.setValueForItem(id);
+            }
+        }else{
+            var f = this.getBox(id);
+            if(f){
+                f.setValue(value);
+            }
+        }
     },
     
     // private
@@ -392,16 +420,7 @@ myCheckboxGroup.setValue('cb-col-1,cb-col-3');
      * @cfg {String} name
      * @hide
      */
-    /**
-     * @method initValue
-     * @hide
-     */
-    initValue : Ext.emptyFn,
-    /**
-     * @method getValue
-     * @hide
-     */
-    getValue : Ext.emptyFn,
+
     /**
      * @method getRawValue
      * @hide

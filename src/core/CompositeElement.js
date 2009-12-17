@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -37,7 +37,7 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
         });
         return this;
     },
-    
+
     /**
     * Adds elements to this composite.
     * @param {String/Array} els A string CSS selector, an array of elements or an element
@@ -50,13 +50,13 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
         if(typeof els == "string"){
             els = Ext.Element.selectorFunction(els, root);
         }
-        var yels = this.elements;        
+        var yels = this.elements;
 	    Ext.each(els, function(e) {
         	yels.push(Ext.get(e));
         });
         return this;
-    },    
-    
+    },
+
     /**
      * Returns the Element object at the specified index
      * @param {Number} index
@@ -70,12 +70,12 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
     indexOf : function(el){
         return this.elements.indexOf(Ext.get(el));
     },
-        
+
     filter : function(selector){
 		var me = this,
 			out = [];
-			
-		Ext.each(me.elements, function(el) {	
+
+		Ext.each(me.elements, function(el) {
 			if(el.is(selector)){
 				out.push(Ext.get(el));
 			}
@@ -83,16 +83,31 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
 		me.elements = out;
 		return me;
 	},
-	
-	/**
-    * Calls the passed function passing (el, this, index) for each element in this composite.
-    * @param {Function} fn The function to call
-    * @param {Object} scope (optional) The <i>this</i> object (defaults to the element)
-    * @return {CompositeElement} this
-    */
-    each : function(fn, scope){        
-        Ext.each(this.elements, function(e,i) {
-	        return fn.call(scope || e, e, this, i);
+
+    /**
+     * Iterates each <code>element</code> in this <code>composite</code>
+     * calling the supplied function using {@link Ext#each}.
+     * @param {Function} fn The function to be called with each
+     * <code>element</code>. If the supplied function returns <tt>false</tt>,
+     * iteration stops. This function is called with the following arguments:
+     * <div class="mdetail-params"><ul>
+     * <li><code>element</code> : <i>Object</i>
+     * <div class="sub-desc">The element at the current <code>index</code>
+     * in the <code>composite</code></div></li>
+     * <li><code>composite</code> : <i>Object</i>
+     * <div class="sub-desc">This composite.</div></li>
+     * <li><code>index</code> : <i>Number</i>
+     * <div class="sub-desc">The current index within the <code>composite</code>
+     * </div></li>
+     * </ul></div>
+     * @param {Object} scope (optional) The scope to call the specified function.
+     * Defaults to the <code>element</code> at the current <code>index</code>
+     * within the composite.
+     * @return {CompositeElement} this
+     */
+    each : function(fn, scope){
+        Ext.each(this.elements, function(e, i){
+            return fn.call(scope || e, e, this, i);
         }, this);
         return this;
     }

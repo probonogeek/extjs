@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -43,7 +43,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         
         this.on('beforeadd', function(gtp, item, index){
             this.initGroup(item, index);
-        });		     
+        });          
     },
     
     initEvents : function() {
@@ -52,7 +52,6 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         
     onRender: function(ct, position){
         Ext.TabPanel.superclass.onRender.call(this, ct, position);
-
         if(this.plain){
             var pos = this.tabPosition == 'top' ? 'header' : 'footer';
             this[pos].addClass('x-tab-panel-'+pos+'-plain');
@@ -66,11 +65,11 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         var beforeEl = (this.tabPosition=='bottom' ? this.stripWrap : null);
         this.strip = new Ext.Element(this.stripWrap.dom.firstChild);
 
-		this.header.addClass('x-grouptabs-panel-header');
-		this.bwrap.addClass('x-grouptabs-bwrap');
+        this.header.addClass('x-grouptabs-panel-header');
+        this.bwrap.addClass('x-grouptabs-bwrap');
         this.body.addClass('x-tab-panel-body-'+this.tabPosition + ' x-grouptabs-panel-body');
 
-        if (!this.itemTpl) {
+        if (!this.groupTpl) {
             var tt = new Ext.Template(
                 '<li class="{cls}" id="{id}">', 
                 '<a class="x-grouptabs-expand" onclick="return false;"></a>', 
@@ -80,9 +79,8 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
             );
             tt.disableFormats = true;
             tt.compile();
-            Ext.ux.GroupTabPanel.prototype.itemTpl = tt;
+            Ext.ux.GroupTabPanel.prototype.groupTpl = tt;
         }
-
         this.items.each(this.initGroup, this);
     },
     
@@ -108,8 +106,8 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         
     // private
     findTargets: function(e){
-        var item = null;
-        var itemEl = e.getTarget('li', this.strip);
+        var item = null,
+            itemEl = e.getTarget('li', this.strip);
         if (itemEl) {
             item = this.findById(itemEl.id.split(this.idDelimiter)[1]);
             if (item.disabled) {
@@ -160,7 +158,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
             groupEl = this.getGroupEl(groupEl);
         }        
         Ext.fly(groupEl).toggleClass('x-grouptabs-expanded');
-		this.syncTabJoint();
+        this.syncTabJoint();
     },    
     
     syncTabJoint: function(groupEl){
@@ -171,7 +169,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         groupEl = groupEl || this.getGroupEl(this.activeGroup);
         if(groupEl) {
             this.tabJoint.setHeight(Ext.fly(groupEl).getHeight() - 2); 
-			
+            
             var y = Ext.isGecko2 ? 0 : 1;
             if (this.tabPosition == 'left'){
                 this.tabJoint.alignTo(groupEl, 'tl-tr', [-2,y]);
@@ -202,18 +200,17 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
     },
     
     initGroup: function(group, index){
-        var before = this.strip.dom.childNodes[index];        
-        var p = this.getTemplateArgs(group);
+        var before = this.strip.dom.childNodes[index],   
+            p = this.getTemplateArgs(group);
         if (index === 0) {
             p.cls += ' x-tab-first';
         }
         p.cls += ' x-grouptabs-main';
         p.text = group.getMainItem().title;
         
-        var el = before ? this.itemTpl.insertBefore(before, p) : this.itemTpl.append(this.strip, p);
-        
-        var tl = this.createCorner(el, 'top-' + this.tabPosition);
-        var bl = this.createCorner(el, 'bottom-' + this.tabPosition);
+        var el = before ? this.groupTpl.insertBefore(before, p) : this.groupTpl.append(this.strip, p),
+            tl = this.createCorner(el, 'top-' + this.tabPosition),
+            bl = this.createCorner(el, 'bottom-' + this.tabPosition);
 
         if (group.expanded) {
             this.expandGroup(el);
@@ -226,8 +223,11 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
             tl.setTop('-5px');
         }
 
-        this.mon(group, 'changemainitem', this.onGroupChangeMainItem, this);
-        this.mon(group, 'beforetabchange', this.onGroupBeforeTabChange, this);
+        this.mon(group, {
+            scope: this,
+            changemainitem: this.onGroupChangeMainItem,
+            beforetabchange: this.onGroupBeforeTabChange
+        });
     },
     
     setActiveGroup : function(group) {
@@ -245,7 +245,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
                 if(oldEl){
                     Ext.fly(oldEl).removeClass('x-grouptabs-strip-active');
                 }
-                this.activeGroup.fireEvent('deactivate', this.activeTab);
+                this.activeGroup.fireEvent('deactivate', this.activeGroup);
             }
 
             var groupEl = this.getGroupEl(group);

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -50,14 +50,8 @@ var store = new Ext.data.Store({
  * using {@link Ext.data.Record#create}.
  */
 Ext.data.DataWriter = function(config){
-    /**
-     * This DataWriter's configured metadata as passed to the constructor.
-     * @type Mixed
-     * @property meta
-     */
     Ext.apply(this, config);
 };
-
 Ext.data.DataWriter.prototype = {
 
     /**
@@ -82,7 +76,18 @@ Ext.data.DataWriter.prototype = {
      * @param {Record/Record[]} rs The recordset write.
      */
     write : function(action, params, rs) {
-        this.render(action, rs, params, this[action](rs));
+        var data    = [],
+        renderer    = action + 'Record';
+        // TODO implement @cfg listful here
+        if (Ext.isArray(rs)) {
+            Ext.each(rs, function(rec){
+                data.push(this[renderer](rec));
+            }, this);
+        }
+        else if (rs instanceof Ext.data.Record) {
+            data = this[renderer](rs);
+        }
+        this.render(action, rs, params, data);
     },
 
     /**
@@ -96,56 +101,10 @@ Ext.data.DataWriter.prototype = {
     render : Ext.emptyFn,
 
     /**
-     * update
-     * @param {Object} p Params-hash to apply result to.
-     * @param {Record/Record[]} rs Record(s) to write
-     * @private
-     */
-    update : function(rs) {
-        var params = {};
-        if (Ext.isArray(rs)) {
-            var data = [],
-                ids = [];
-            Ext.each(rs, function(val){
-                ids.push(val.id);
-                data.push(this.updateRecord(val));
-            }, this);
-            params[this.meta.idProperty] = ids;
-            params[this.meta.root] = data;
-        }
-        else if (rs instanceof Ext.data.Record) {
-            params[this.meta.idProperty] = rs.id;
-            params[this.meta.root] = this.updateRecord(rs);
-        }
-        return params;
-    },
-
-    /**
-     * @cfg {Function} saveRecord Abstract method that should be implemented in all subclasses
-     * (e.g.: {@link Ext.data.JsonWriter#saveRecord JsonWriter.saveRecord}
+     * @cfg {Function} updateRecord Abstract method that should be implemented in all subclasses
+     * (e.g.: {@link Ext.data.JsonWriter#updateRecord JsonWriter.updateRecord}
      */
     updateRecord : Ext.emptyFn,
-
-    /**
-     * create
-     * @param {Object} p Params-hash to apply result to.
-     * @param {Record/Record[]} rs Record(s) to write
-     * @private
-     */
-    create : function(rs) {
-        var params = {};
-        if (Ext.isArray(rs)) {
-            var data = [];
-            Ext.each(rs, function(val){
-                data.push(this.createRecord(val));
-            }, this);
-            params[this.meta.root] = data;
-        }
-        else if (rs instanceof Ext.data.Record) {
-            params[this.meta.root] = this.createRecord(rs);
-        }
-        return params;
-    },
 
     /**
      * @cfg {Function} createRecord Abstract method that should be implemented in all subclasses
@@ -154,34 +113,13 @@ Ext.data.DataWriter.prototype = {
     createRecord : Ext.emptyFn,
 
     /**
-     * destroy
-     * @param {Object} p Params-hash to apply result to.
-     * @param {Record/Record[]} rs Record(s) to write
-     * @private
-     */
-    destroy : function(rs) {
-        var params = {};
-        if (Ext.isArray(rs)) {
-            var data = [],
-                ids = [];
-            Ext.each(rs, function(val){
-                data.push(this.destroyRecord(val));
-            }, this);
-            params[this.meta.root] = data;
-        } else if (rs instanceof Ext.data.Record) {
-            params[this.meta.root] = this.destroyRecord(rs);
-        }
-        return params;
-    },
-
-    /**
      * @cfg {Function} destroyRecord Abstract method that should be implemented in all subclasses
      * (e.g.: {@link Ext.data.JsonWriter#destroyRecord JsonWriter.destroyRecord})
      */
     destroyRecord : Ext.emptyFn,
 
     /**
-     * Converts a Record to a hash
+     * Converts a Record to a hash.
      * @param {Record}
      * @private
      */
@@ -195,7 +133,16 @@ Ext.data.DataWriter.prototype = {
                 data[m.mapping ? m.mapping : m.name] = value;
             }
         });
-        data[this.meta.idProperty] = rec.id;
+        // we don't want to write Ext auto-generated id to hash.  Careful not to remove it on Models not having auto-increment pk though.
+        // We can tell its not auto-increment if the user defined a DataReader field for it *and* that field's value is non-empty.
+        // we could also do a RegExp here for the Ext.data.Record AUTO_ID prefix.
+        if (rec.phantom) {
+            if (rec.fields.containsKey(this.meta.idProperty) && Ext.isEmpty(rec.data[this.meta.idProperty])) {
+                delete data[this.meta.idProperty];
+            }
+        } else {
+            data[this.meta.idProperty] = rec.id
+        }
         return data;
     }
 };

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,28 +18,13 @@ if(typeof YAHOO == "undefined"){
         version = YAHOO.env.getVersion('yahoo').version.split('.'),
         mouseEnterSupported = parseInt(version[0]) >= 3,
         mouseCache = {},
-        isXUL = Ext.isGecko ? function(node){
-            return Object.prototype.toString.call(node) == '[object XULElement]';
-        } : function(){
-        }, isTextNode = Ext.isGecko ? function(node){
-            try{
-                return node.nodeType == 3;
-            }catch (e){
-                return false;
-            }
-        } : function(node){
-            return node.nodeType == 3;
-        }, elContains = function(parent, child){
+        elContains = function(parent, child){
             if(parent && parent.firstChild){
                 while(child){
                     if(child === parent){
                         return true;
                     }
-                    try{
-                        child = child.parentNode;
-                    }catch (e){
-                        return false;
-                    }
+                    child = child.parentNode;
                     if(child && (child.nodeType != 1)){
                         child = null;
                     }
@@ -47,8 +32,7 @@ if(typeof YAHOO == "undefined"){
             }
             return false;
         }, checkRelatedTarget = function(e){
-            var related = Ext.lib.Event.getRelatedTarget(e);
-            return !(isXUL(related) || elContains(e.currentTarget, related));
+            return !elContains(e.currentTarget, Ext.lib.Event.getRelatedTarget(e));
         };
 
 Ext.lib.Dom = {

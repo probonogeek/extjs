@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.0.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 .pkg h3 {
     padding-left:34px;
     font:normal 11px verdana,helvetica,tahoma,sans-serif;
@@ -30,10 +24,10 @@ h3.collapser-collapsed {
     padding-left:34px;
     -moz-outline:none;
     outline:none;
-	 white-space: nowrap;
+     white-space: nowrap;
 }
 #classes a:hover{
-	text-decoration: underline;
+    text-decoration: underline;
 }
 #classes a.ex{
     background: #fff url(example.gif) no-repeat 16px -1px;

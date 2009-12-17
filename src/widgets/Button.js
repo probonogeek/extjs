@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -16,7 +16,6 @@
  * <li><code>b</code> : Button<div class="sub-desc">This Button.</div></li>
  * <li><code>e</code> : EventObject<div class="sub-desc">The click event.</div></li>
  * </ul></div>
- * @cfg {Object} scope The scope (<tt><b>this</b></tt> reference) in which the handler is executed. Defaults to this Button.
  * @cfg {Number} minWidth The minimum width for this button (used to give a set of buttons a common width).
  * See also {@link Ext.Panel}.<tt>{@link Ext.Panel#minButtonWidth minButtonWidth}</tt>.
  * @cfg {String/Object} tooltip The tooltip for the button - can be a string to be used as innerHTML (html tags are accepted) or QuickTips config object
@@ -47,12 +46,6 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * @type Boolean
      */
     pressed : false,
-    /**
-     * The Button's owner {@link Ext.Panel} (defaults to undefined, and is set automatically when
-     * the Button is added to a container).  Read-only.
-     * @type Ext.Panel
-     * @property ownerCt
-     */
 
     /**
      * @cfg {Number} tabIndex Set a DOM tabIndex for this button (defaults to undefined)
@@ -67,7 +60,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * @cfg {Boolean} enableToggle
      * True to enable pressed/not pressed toggling (defaults to false)
      */
-    enableToggle: false,
+    enableToggle : false,
     /**
      * @cfg {Function} toggleHandler
      * Function called when a Button with {@link #enableToggle} set to true is clicked. Two arguments are passed:<ul class="mdetail-params">
@@ -101,11 +94,12 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
     type : 'button',
 
     // private
-    menuClassTarget: 'tr:nth(2)',
+    menuClassTarget : 'tr:nth(2)',
 
     /**
      * @cfg {String} clickEvent
-     * The type of event to map to the button's event handler (defaults to 'click')
+     * The DOM event that will fire the handler of the button. This can be any valid event name (dblclick, contextmenu). 
+     * Defaults to <tt>'click'</tt>.
      */
     clickEvent : 'click',
 
@@ -127,7 +121,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * DOM structure created.</p>
      * <p>When a custom {@link #template} is used, you  must ensure that this selector results in the selection of
      * a focussable element.</p>
-     * <p>Defaults to <b><tt>"button:first-child"</tt></b>.</p>
+     * <p>Defaults to <b><tt>'button:first-child'</tt></b>.</p>
      */
     buttonSelector : 'button:first-child',
 
@@ -141,7 +135,13 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * </ul>
      * <p>Defaults to <b><tt>'small'</tt></b>.</p>
      */
-    scale: 'small',
+    scale : 'small',
+
+    /**
+     * @cfg {Object} scope The scope (<tt><b>this</b></tt> reference) in which the
+     * <code>{@link #handler}</code> and <code>{@link #toggleHandler}</code> is
+     * executed. Defaults to this Button.
+     */
 
     /**
      * @cfg {String} iconAlign
@@ -333,7 +333,12 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
         this.el = btn;
 
         if(this.id){
-            this.el.dom.id = this.el.id = this.id;
+            var d = this.el.dom,
+                c = Ext.Element.cache;
+                
+            delete c[d.id];
+            d.id = this.el.id = this.id;
+            c[d.id] = this.el;
         }
         if(this.icon){
             btnEl.setStyle('background-image', 'url(' +this.icon +')');
@@ -351,7 +356,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
                 mouseover: this.onMouseOver,
                 mousedown: this.onMouseDown
             });
-            
+
             // new functionality for monitoring on the document level
             //this.mon(btn, 'mouseout', this.onMouseOut, this);
         }
@@ -368,7 +373,6 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
             var repeater = new Ext.util.ClickRepeater(btn, Ext.isObject(this.repeat) ? this.repeat : {});
             this.mon(repeater, 'click', this.onClick, this);
         }
-        
         this.mon(btn, this.clickEvent, this.onClick, this);
     },
 
@@ -418,16 +422,16 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
         }
         return this;
     },
-    
+
     // private
-    clearTip: function(){
+    clearTip : function(){
         if(Ext.isObject(this.tooltip)){
             Ext.QuickTips.unregister(this.btnEl);
         }
     },
-    
+
     // private
-    beforeDestroy: function(){
+    beforeDestroy : function(){
         if(this.rendered){
             this.clearTip();
         }
@@ -466,7 +470,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
     /**
      * Assigns this Button's click handler
      * @param {Function} handler The function to call when the button is clicked
-     * @param {Object} scope (optional) Scope for the function passed in
+     * @param {Object} scope (optional) Scope for the function passed in. Defaults to this Button.
      * @return {Ext.Button} this
      */
     setHandler : function(handler, scope){
@@ -506,7 +510,9 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
     toggle : function(state, suppressEvent){
         state = state === undefined ? !this.pressed : !!state;
         if(state != this.pressed){
-            this.el[state ? 'addClass' : 'removeClass']('x-btn-pressed');
+            if(this.rendered){
+                this.el[state ? 'addClass' : 'removeClass']('x-btn-pressed');
+            }
             this.pressed = state;
             if(!suppressEvent){
                 this.fireEvent('toggle', this, state);
@@ -534,7 +540,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
     onEnable : function(){
         this.onDisableChange(false);
     },
-    
+
     onDisableChange : function(disabled){
         if(this.el){
             if(!Ext.isIE6 || !this.text){

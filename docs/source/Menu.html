@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.MenuLayout"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.layout.MenuLayout"></div>/**
  * @class Ext.layout.MenuLayout
  * @extends Ext.layout.ContainerLayout
  * <p>Layout manager used by {@link Ext.menu.Menu}. Generally this class should not need to be used directly.</p>
@@ -15,6 +21,9 @@
 
     setContainer : function(ct){
         this.monitorResize = !ct.floating;
+        // This event is only fired by the menu in IE, used so we don't couple
+        // the menu with the layout.
+        ct.on('autosize', this.doAutoSize, this);
         Ext.layout.MenuLayout.superclass.setContainer.call(this, ct);
     },
 
@@ -41,13 +50,14 @@
                 this.itemTpl.append(target, a, true));
 
 //          Link the containing <li> to the item.
-            c.positionEl.menuItemId = c.itemId || c.id;
+            c.positionEl.menuItemId = c.getItemId();
 
 //          If rendering a regular Component, and it needs an icon,
 //          move the Component rightwards.
             if (!a.isMenuItem && a.needsIcon) {
                 c.positionEl.addClass('x-menu-list-item-indent');
             }
+            this.configureItem(c, position);
         }else if(c && !this.isValidParent(c, target)){
             if(Ext.isNumber(position)){
                 position = target.dom.childNodes[position];
@@ -64,7 +74,7 @@
             icon: c.icon || Ext.BLANK_IMAGE_URL,
             iconCls: 'x-menu-item-icon ' + (c.iconCls || ''),
             itemId: 'x-menu-el-' + c.id,
-            itemCls: 'x-menu-list-item ' + (this.extraCls || '')
+            itemCls: 'x-menu-list-item '
         };
     },
 
@@ -171,6 +181,12 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      * configuration. Defaults to <tt>[0, 0]</tt>.
      */
     defaultOffsets : [0, 0],
+    
+    <div id="cfg-Ext.menu.Menu-plain"></div>/**
+     * @cfg {Boolean} plain
+     * True to remove the incised line down the left side of the menu. Defaults to <tt>false</tt>.
+     */
+    plain : false,
 
     <div id="cfg-Ext.menu.Menu-floating"></div>/**
      * @cfg {Boolean} floating
@@ -323,7 +339,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
         if(t){
             if(t.isFormField){
                 this.setActiveItem(t);
-            }else{
+            }else if(t instanceof Ext.menu.BaseItem){
                 if(t.menu && this.ignoreParentClicks){
                     t.expandMenu();
                     e.preventDefault();
@@ -429,7 +445,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
 
     <div id="method-Ext.menu.Menu-show"></div>/**
      * If <code>{@link #floating}=true</code>, shows this menu relative to
-     * another element, otherwise uses {@link Ext.Component#show}.
+     * another element using {@link #showat}, otherwise uses {@link Ext.Component#show}.
      * @param {Mixed} element The element to align to
      * @param {String} position (optional) The {@link Ext.Element#alignTo} anchor position to use in aligning to
      * the element (defaults to this.defaultAlign)
@@ -442,39 +458,48 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
                 this.render();
                 this.doLayout(false, true);
             }
-            if(this.fireEvent('beforeshow', this) !== false){
-                this.showAt(this.el.getAlignToXY(el, pos || this.defaultAlign, this.defaultOffsets), parentMenu, false);
-            }
+            this.showAt(this.el.getAlignToXY(el, pos || this.defaultAlign, this.defaultOffsets), parentMenu);
         }else{
             Ext.menu.Menu.superclass.show.call(this);
         }
     },
 
     <div id="method-Ext.menu.Menu-showAt"></div>/**
-     * Displays this menu at a specific xy position
+     * Displays this menu at a specific xy position and fires the 'show' event if a
+     * handler for the 'beforeshow' event does not return false cancelling the operation.
      * @param {Array} xyPosition Contains X & Y [x, y] values for the position at which to show the menu (coordinates are page-based)
      * @param {Ext.menu.Menu} parentMenu (optional) This menu's parent menu, if applicable (defaults to undefined)
      */
-    showAt : function(xy, parentMenu, /* private: */_e){
-        this.parentMenu = parentMenu;
-        if(!this.el){
-            this.render();
-        }
-        this.el.setXY(xy);
-        if(this.enableScrolling){
-            this.constrainScroll(xy[1]);
-        }
-        this.el.show();
-        Ext.menu.Menu.superclass.onShow.call(this);
-        if(Ext.isIE){
-            this.layout.doAutoSize();
-            if(!Ext.isIE8){
-                this.el.repaint();
+    showAt : function(xy, parentMenu){
+        if(this.fireEvent('beforeshow', this) !== false){
+            this.parentMenu = parentMenu;
+            if(!this.el){
+                this.render();
             }
+            if(this.enableScrolling){
+                // set the position so we can figure out the constrain value.
+                this.el.setXY(xy);
+                //constrain the value, keep the y coordinate the same
+                this.constrainScroll(xy[1]);
+                xy = [this.el.adjustForConstraints(xy)[0], xy[1]];
+            }else{
+                //constrain to the viewport.
+                xy = this.el.adjustForConstraints(xy);
+            }
+            this.el.setXY(xy);
+            this.el.show();
+            Ext.menu.Menu.superclass.onShow.call(this);
+            if(Ext.isIE){
+                // internal event, used so we don't couple the layout to the menu
+                this.fireEvent('autosize', this);
+                if(!Ext.isIE8){
+                    this.el.repaint();
+                }
+            }
+            this.hidden = false;
+            this.focus();
+            this.fireEvent('show', this);
         }
-        this.hidden = false;
-        this.focus();
-        this.fireEvent('show', this);
     },
 
     constrainScroll : function(y){
@@ -566,8 +591,13 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
         if(this.el && this.floating){
             this.el.hide();
         }
-        if(this.deepHide === true && this.parentMenu){
-            this.parentMenu.hide(true);
+        var pm = this.parentMenu;
+        if(this.deepHide === true && pm){
+            if(pm.floating){
+                pm.hide(true);
+            }else{
+                pm.deactivateActive();
+            }
         }
     },
 
@@ -671,6 +701,11 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
         if(s){
             Ext.destroy(s.topRepeater, s.bottomRepeater, s.top, s.bottom);
         }
+        Ext.destroy(
+            this.el,
+            this.focusEl,
+            this.ul
+        );
     }
 });
 
@@ -742,6 +777,7 @@ Ext.menu.MenuNav = Ext.extend(Ext.KeyNav, function(){
             }
         }
     };
-}());</pre>    
+}());
+</pre>
 </body>
 </html>

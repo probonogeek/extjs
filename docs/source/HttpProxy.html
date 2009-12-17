@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.HttpProxy"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.HttpProxy"></div>/**
  * @class Ext.data.HttpProxy
  * @extends Ext.data.DataProxy
  * <p>An implementation of {@link Ext.data.DataProxy} that processes data requests within the same
@@ -39,13 +45,13 @@ Ext.data.HttpProxy = function(conn){
 
     // nullify the connection url.  The url param has been copied to 'this' above.  The connection
     // url will be set during each execution of doRequest when buildUrl is called.  This makes it easier for users to override the
-    // connection url during beforeaction events (ie: beforeload, beforesave, etc).  The connection url will be nullified
-    // after each request as well.  Url is always re-defined during doRequest.
+    // connection url during beforeaction events (ie: beforeload, beforewrite, etc).
+    // Url is always re-defined during doRequest.
     this.conn.url = null;
 
     this.useAjax = !conn || !conn.events;
 
-    //private.  A hash containing active requests, keyed on action [Ext.data.Api.actions.create|read|update|destroy]
+    // A hash containing active requests, keyed on action [Ext.data.Api.actions.create|read|update|destroy]
     var actions = Ext.data.Api.actions;
     this.activeRequest = {};
     for (var verb in actions) {
@@ -54,40 +60,6 @@ Ext.data.HttpProxy = function(conn){
 };
 
 Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
-    <div id="cfg-Ext.data.HttpProxy-restful"></div>/**
-     * @cfg {Boolean} restful
-     * <p>If set to <tt>true</tt>, a {@link Ext.data.Record#phantom non-phantom} record's
-     * {@link Ext.data.Record#id id} will be appended to the url (defaults to <tt>false</tt>).</p><br>
-     * <p>The url is built based upon the action being executed <tt>[load|create|save|destroy]</tt>
-     * using the commensurate <tt>{@link #api}</tt> property, or if undefined default to the
-     * configured {@link Ext.data.Store}.{@link Ext.data.Store#url url}.</p><br>
-     * <p>Some MVC (e.g., Ruby on Rails, Merb and Django) support this style of segment based urls
-     * where the segments in the URL follow the Model-View-Controller approach.</p><pre><code>
-     * someSite.com/controller/action/id
-     * </code></pre>
-     * Where the segments in the url are typically:<div class="mdetail-params"><ul>
-     * <li>The first segment : represents the controller class that should be invoked.</li>
-     * <li>The second segment : represents the class function, or method, that should be called.</li>
-     * <li>The third segment : represents the ID (a variable typically passed to the method).</li>
-     * </ul></div></p>
-     * <p>For example:</p>
-     * <pre><code>
-api: {
-    load :    '/controller/load',
-    create :  '/controller/new',  // Server MUST return idProperty of new record
-    save :    '/controller/update',
-    destroy : '/controller/destroy_action'
-}
-
-// Alternatively, one can use the object-form to specify each API-action
-api: {
-    load: {url: 'read.php', method: 'GET'},
-    create: 'create.php',
-    destroy: 'destroy.php',
-    save: 'update.php'
-}
-     */
-
     <div id="method-Ext.data.HttpProxy-getConnection"></div>/**
      * Return the {@link Ext.data.Connection} object being used by this Proxy.
      * @return {Connection} The Connection object. This object may be used to subscribe to events on
@@ -111,6 +83,7 @@ api: {
         this.conn.url = url;
         if (makePermanent === true) {
             this.url = url;
+            this.api = null;
             Ext.data.Api.prepare(this);
         }
     },
@@ -144,10 +117,14 @@ api: {
             callback : this.createCallback(action, rs),
             scope: this
         };
-        // Sample the request data:  If it's an object, then it hasn't been json-encoded yet.
-        // Transmit data using jsonData config of Ext.Ajax.request
-        if (typeof(params[reader.meta.root]) === 'object') {
-            o.jsonData = params;
+
+        // If possible, transmit data using jsonData || xmlData on Ext.Ajax.request (An installed DataWriter would have written it there.).
+        // Use std HTTP params otherwise.
+        // TODO wrap into 1 Ext.apply now?
+        if (params.jsonData) {
+            o.jsonData = params.jsonData;
+        } else if (params.xmlData) {
+            o.xmlData = params.xmlData;
         } else {
             o.params = params || {};
         }
@@ -157,7 +134,7 @@ api: {
         if (this.conn.url === null) {
             this.conn.url = this.buildUrl(action, rs);
         }
-        else if (this.restful === true && rs instanceof Ext.data.Record && !rs.phantom) {
+        else if (this.restful === true && rs instanceof Ext.data.Record && !rs.phantom) { // <-- user must have intervened with #setApi or #setUrl
             this.conn.url += '/' + rs.id;
         }
         if(this.useAjax){
@@ -166,7 +143,10 @@ api: {
 
             // If a currently running request is found for this action, abort it.
             if (this.activeRequest[action]) {
+                ////
                 // Disabled aborting activeRequest while implementing REST.  activeRequest[action] will have to become an array
+                // TODO ideas anyone?
+                //
                 //Ext.Ajax.abort(this.activeRequest[action]);
             }
             this.activeRequest[action] = Ext.Ajax.request(o);
@@ -190,6 +170,7 @@ api: {
             if (!success) {
                 if (action === Ext.data.Api.actions.read) {
                     // @deprecated: fire loadexception for backwards compat.
+                    // TODO remove in 3.1
                     this.fireEvent('loadexception', this, o, response);
                 }
                 this.fireEvent('exception', this, 'response', action, o, response);
@@ -209,6 +190,9 @@ api: {
      * @param {String} action Action name as per {@link Ext.data.Api.actions#read}.
      * @param {Object} o The request transaction object
      * @param {Object} res The server response
+     * @fires loadexception (deprecated)
+     * @fires exception
+     * @fires load
      * @private
      */
     onRead : function(action, o, response) {
@@ -217,13 +201,16 @@ api: {
             result = o.reader.read(response);
         }catch(e){
             // @deprecated: fire old loadexception for backwards-compat.
+            // TODO remove in 3.1
             this.fireEvent('loadexception', this, o, response, e);
+
             this.fireEvent('exception', this, 'response', action, o, response, e);
             o.request.callback.call(o.request.scope, null, o.request.arg, false);
             return;
         }
         if (result.success === false) {
             // @deprecated: fire old loadexception for backwards-compat.
+            // TODO remove in 3.1
             this.fireEvent('loadexception', this, o, response);
 
             // Get DataReader read-back a response-object to pass along to exception event
@@ -233,6 +220,9 @@ api: {
         else {
             this.fireEvent('load', this, o, o.request.arg);
         }
+        // TODO refactor onRead, onWrite to be more generalized now that we're dealing with Ext.data.Response instance
+        // the calls to request.callback(...) in each will have to be made identical.
+        // NOTE reader.readResponse does not currently return Ext.data.Response
         o.request.callback.call(o.request.scope, result, o.request.arg, result.success);
     },
     /**
@@ -240,6 +230,8 @@ api: {
      * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
      * @param {Object} trans The request transaction object
      * @param {Object} res The server response
+     * @fires exception
+     * @fires write
      * @private
      */
     onWrite : function(action, o, response, rs) {
@@ -252,12 +244,15 @@ api: {
             o.request.callback.call(o.request.scope, null, o.request.arg, false);
             return;
         }
-        if (res[reader.meta.successProperty] === false) {
+        if (res.success === false) {
             this.fireEvent('exception', this, 'remote', action, o, res, rs);
         } else {
-            this.fireEvent('write', this, action, res[reader.meta.root], res, rs, o.request.arg);
+            this.fireEvent('write', this, action, res.data, res, rs, o.request.arg);
         }
-        o.request.callback.call(o.request.scope, res[reader.meta.root], res, res[reader.meta.successProperty]);
+        // TODO refactor onRead, onWrite to be more generalized now that we're dealing with Ext.data.Response instance
+        // the calls to request.callback(...) in each will have to be made similar.
+        // NOTE reader.readResponse does not currently return Ext.data.Response
+        o.request.callback.call(o.request.scope, res.data, res, res.success);
     },
 
     // inherit docs
@@ -274,6 +269,6 @@ api: {
         }
         Ext.data.HttpProxy.superclass.destroy.call(this);
     }
-});</pre>    
+});</pre>
 </body>
 </html>

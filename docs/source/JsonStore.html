@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.JsonStore"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.JsonStore"></div>/**
  * @class Ext.data.JsonStore
  * @extends Ext.data.Store
  * <p>Small helper class to make creating {@link Ext.data.Store}s from JSON data easier.
@@ -18,7 +24,7 @@ var store = new Ext.data.JsonStore({
     storeId: 'myStore',
     // reader configs
     root: 'images',
-    idProperty: 'name',  
+    idProperty: 'name',
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date'}]
 });
  * </code></pre></p>
@@ -31,7 +37,7 @@ var store = new Ext.data.JsonStore({
 }
  * </code></pre>
  * An object literal of this form could also be used as the {@link #data} config option.</p>
- * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of 
+ * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of
  * <b>{@link Ext.data.JsonReader JsonReader}</b>.</p>
  * @constructor
  * @param {Object} config
@@ -47,6 +53,6 @@ Ext.data.JsonStore = Ext.extend(Ext.data.Store, {
         }));
     }
 });
-Ext.reg('jsonstore', Ext.data.JsonStore);</pre>    
+Ext.reg('jsonstore', Ext.data.JsonStore);</pre>
 </body>
 </html>

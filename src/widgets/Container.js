@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -94,7 +94,6 @@ myTabPanel.{@link Ext.TabPanel#setActiveTab setActiveTab}(myNewGrid);
  * Component which can be added directly to a Container. If the wrapping Panel
  * has no <tt><b>{@link #layout}</b></tt> configuration, then the overnested
  * GridPanel will not be sized as expected.<p>
-</code></pre>
  *
  * <p><u><b>Adding via remote configuration</b></u></p>
  *
@@ -180,11 +179,12 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
      */
     /**
      * @cfg {String/Object} layout
-     * When creating complex UIs, it is important to remember that sizing and
-     * positioning of child items is the responsibility of the Container's
-     * layout manager. If you expect child items to be sized in response to
-     * user interactions, <b>you must specify a layout manager</b> which
-     * creates and manages the type of layout you have in mind.  For example:<pre><code>
+     * <p><b>*Important</b>: In order for child items to be correctly sized and
+     * positioned, typically a layout manager <b>must</b> be specified through
+     * the <code>layout</code> configuration option.</p>
+     * <br><p>The sizing and positioning of child {@link items} is the responsibility of
+     * the Container's layout manager which creates and manages the type of layout
+     * you have in mind.  For example:</p><pre><code>
 new Ext.Window({
     width:300, height: 300,
     layout: 'fit', // explicitly set layout manager: override the default (layout:'auto')
@@ -193,13 +193,17 @@ new Ext.Window({
     }]
 }).show();
      * </code></pre>
-     * <p>Omitting the {@link #layout} config means that the
-     * {@link Ext.layout.ContainerLayout default layout manager} will be used which does
-     * nothing but render child components sequentially into the Container (no sizing or
-     * positioning will be performed in this situation).</p>
-     * <p>The layout manager class for this container may be specified as either as an
-     * Object or as a String:</p>
-     * <div><ul class="mdetail-params">
+     * <p>If the {@link #layout} configuration is not explicitly specified for
+     * a general purpose container (e.g. Container or Panel) the
+     * {@link Ext.layout.ContainerLayout default layout manager} will be used
+     * which does nothing but render child components sequentially into the
+     * Container (no sizing or positioning will be performed in this situation).
+     * Some container classes implicitly specify a default layout
+     * (e.g. FormPanel specifies <code>layout:'form'</code>). Other specific
+     * purpose classes internally specify/manage their internal layout (e.g.
+     * GridPanel, TabPanel, TreePanel, Toolbar, Menu, etc.).</p>
+     * <br><p><b><code>layout</code></b> may be specified as either as an Object or
+     * as a String:</p><div><ul class="mdetail-params">
      *
      * <li><u>Specify as an Object</u></li>
      * <div><ul class="mdetail-params">
@@ -268,12 +272,12 @@ layoutConfig: {
      */
     /**
      * @cfg {Boolean/Number} bufferResize
-     * When set to true (100 milliseconds) or a number of milliseconds, the layout assigned for this container will buffer
+     * When set to true (50 milliseconds) or a number of milliseconds, the layout assigned for this container will buffer
      * the frequency it calculates and does a re-layout of components. This is useful for heavy containers or containers
-     * with a large quantity of sub-components for which frequent layout calls would be expensive.
+     * with a large quantity of sub-components for which frequent layout calls would be expensive. Defaults to <tt>50</tt>.
      */
-    bufferResize: 100,
-    
+    bufferResize: 50,
+
     /**
      * @cfg {String/Number} activeItem
      * A string component id or the numeric index of the component that should be initially activated within the
@@ -284,7 +288,7 @@ layoutConfig: {
      */
     /**
      * @cfg {Object/Array} items
-     * <pre><b>** IMPORTANT</b>: be sure to specify a <b><code>{@link #layout}</code> ! **</b></pre>
+     * <pre><b>** IMPORTANT</b>: be sure to <b>{@link #layout specify a <code>layout</code>} if needed ! **</b></pre>
      * <p>A single item, or an array of child Components to be added to this container,
      * for example:</p>
      * <pre><code>
@@ -371,6 +375,18 @@ items: [
      */
     defaultType : 'panel',
 
+    /** @cfg {String} resizeEvent
+     * The event to listen to for resizing in layouts. Defaults to <tt>'resize'</tt>.
+     */
+    resizeEvent: 'resize',
+    
+    /**
+     * @cfg {Array} bubbleEvents
+     * <p>An array of events that, when fired, should be bubbled to any parent container.
+     * Defaults to <tt>['add', 'remove']</tt>.
+     */
+    bubbleEvents: ['add', 'remove'],
+
     // private
     initComponent : function(){
         Ext.Container.superclass.initComponent.call(this);
@@ -419,7 +435,7 @@ items: [
             'remove'
         );
 
-		this.enableBubble('add', 'remove');
+        this.enableBubble(this.bubbleEvents);
 
         /**
          * The collection of components in this container as a {@link Ext.util.MixedCollection}
@@ -429,11 +445,7 @@ items: [
         var items = this.items;
         if(items){
             delete this.items;
-            if(Ext.isArray(items) && items.length > 0){
-                this.add.apply(this, items);
-            }else{
-                this.add(items);
-            }
+            this.add(items);
         }
     },
 
@@ -455,24 +467,24 @@ items: [
         layout.setContainer(this);
     },
 
-    // private
-    render : function(){
-        Ext.Container.superclass.render.apply(this, arguments);
-        if(this.layout){
-            if(Ext.isObject(this.layout) && !this.layout.layout){
-                this.layoutConfig = this.layout;
-                this.layout = this.layoutConfig.type;
-            }
-            if(typeof this.layout == 'string'){
-                this.layout = new Ext.Container.LAYOUTS[this.layout.toLowerCase()](this.layoutConfig);
-            }
-            this.setLayout(this.layout);
+    afterRender: function(){
+        Ext.Container.superclass.afterRender.call(this);
+        if(!this.layout){
+            this.layout = 'auto';
+        }
+        if(Ext.isObject(this.layout) && !this.layout.layout){
+            this.layoutConfig = this.layout;
+            this.layout = this.layoutConfig.type;
+        }
+        if(Ext.isString(this.layout)){
+            this.layout = new Ext.Container.LAYOUTS[this.layout.toLowerCase()](this.layoutConfig);
+        }
+        this.setLayout(this.layout);
 
-            if(this.activeItem !== undefined){
-                var item = this.activeItem;
-                delete this.activeItem;
-                this.layout.setActiveItem(item);
-            }
+        if(this.activeItem !== undefined){
+            var item = this.activeItem;
+            delete this.activeItem;
+            this.layout.setActiveItem(item);
         }
         if(!this.ownerCt){
             // force a layout if no ownerCt is set
@@ -546,9 +558,14 @@ tb.{@link #doLayout}();             // refresh the layout
         if(this.fireEvent('beforeadd', this, c, pos) !== false && this.onBeforeAdd(c) !== false){
             this.items.add(c);
             c.ownerCt = this;
+            this.onAdd(c);
             this.fireEvent('add', this, c, pos);
         }
         return c;
+    },
+
+    onAdd : function(c){
+        // Empty template method
     },
 
     /**
@@ -579,14 +596,14 @@ tb.{@link #doLayout}();             // refresh the layout
             return;
         }
         var c = this.lookupComponent(this.applyDefaults(comp));
-
-        if(c.ownerCt == this && this.items.indexOf(c) < index){
-            --index;
-        }
-
+        index = Math.min(index, this.items.length);
         if(this.fireEvent('beforeadd', this, c, index) !== false && this.onBeforeAdd(c) !== false){
+            if(c.ownerCt == this){
+                this.items.remove(c);
+            }
             this.items.insert(index, c);
             c.ownerCt = this;
+            this.onAdd(c);
             this.fireEvent('add', this, c, index);
         }
         return c;
@@ -595,7 +612,7 @@ tb.{@link #doLayout}();             // refresh the layout
     // private
     applyDefaults : function(c){
         if(this.defaults){
-            if(typeof c == 'string'){
+            if(Ext.isString(c)){
                 c = Ext.ComponentMgr.get(c);
                 Ext.apply(c, this.defaults);
             }else if(!c.events){
@@ -629,17 +646,22 @@ tb.{@link #doLayout}();             // refresh the layout
         this.initItems();
         var c = this.getComponent(comp);
         if(c && this.fireEvent('beforeremove', this, c) !== false){
-            this.items.remove(c);
             delete c.ownerCt;
+            if(this.layout && this.rendered){
+                this.layout.onRemove(c);
+            }
+            this.onRemove(c);
+            this.items.remove(c);
             if(autoDestroy === true || (autoDestroy !== false && this.autoDestroy)){
                 c.destroy();
-            }
-            if(this.layout && this.layout.activeItem == c){
-                delete this.layout.activeItem;
             }
             this.fireEvent('remove', this, c);
         }
         return c;
+    },
+
+    onRemove: function(c){
+        // Empty template method
     },
 
     /**
@@ -679,14 +701,14 @@ tb.{@link #doLayout}();             // refresh the layout
      */
     getComponent : function(comp){
         if(Ext.isObject(comp)){
-            return comp;
+            comp = comp.getItemId();
         }
         return this.items.get(comp);
     },
 
     // private
     lookupComponent : function(comp){
-        if(typeof comp == 'string'){
+        if(Ext.isString(comp)){
             return Ext.ComponentMgr.get(comp);
         }else if(!comp.events){
             return this.createComponent(comp);
@@ -699,6 +721,13 @@ tb.{@link #doLayout}();             // refresh the layout
         return Ext.create(config, this.defaultType);
     },
 
+    // private
+    canLayout: function() {
+        var el = this.getVisibilityEl();
+        return el && !el.isStyle("display", "none");
+    },
+
+
     /**
      * Force this container's layout to be recalculated. A call to this function is required after adding a new component
      * to an already rendered container, or possibly after changing sizing/position properties of child components.
@@ -708,12 +737,12 @@ tb.{@link #doLayout}();             // refresh the layout
      * @return {Ext.Container} this
      */
     doLayout: function(shallow, force){
-        var rendered = this.rendered,
-            forceLayout = this.forceLayout;
+        var rendered = this.rendered;
+        forceLayout = force || this.forceLayout;
 
-        if(!this.isVisible() || this.collapsed){
+        if(!this.canLayout() || this.collapsed){
             this.deferLayout = this.deferLayout || !shallow;
-            if(!(force || forceLayout)){
+            if(!forceLayout){
                 return;
             }
             shallow = shallow && !this.deferLayout;
@@ -728,19 +757,49 @@ tb.{@link #doLayout}();             // refresh the layout
             for(var i = 0, len = cs.length; i < len; i++){
                 var c = cs[i];
                 if(c.doLayout){
-                    c.forceLayout = forceLayout;
-                    c.doLayout();
+                    c.doLayout(false, forceLayout);
                 }
             }
         }
         if(rendered){
-            this.onLayout(shallow, force);
+            this.onLayout(shallow, forceLayout);
         }
+        // Initial layout completed
+        this.hasLayout = true;
         delete this.forceLayout;
     },
 
     //private
     onLayout : Ext.emptyFn,
+
+    // private
+    shouldBufferLayout: function(){
+        /*
+         * Returns true if the container should buffer a layout.
+         * This is true only if the container has previously been laid out
+         * and has a parent container that is pending a layout.
+         */
+        var hl = this.hasLayout;
+        if(this.ownerCt){
+            // Only ever buffer if we've laid out the first time and we have one pending.
+            return hl ? !this.hasLayoutPending() : false;
+        }
+        // Never buffer initial layout
+        return hl;
+    },
+
+    // private
+    hasLayoutPending: function(){
+        // Traverse hierarchy to see if any parent container has a pending layout.
+        var pending = false;
+        this.ownerCt.bubble(function(c){
+            if(c.layoutPending){
+                pending = true;
+                return false;
+            }
+        });
+        return pending;
+    },
 
     onShow : function(){
         Ext.Container.superclass.onShow.call(this);

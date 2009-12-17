@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,6 +18,8 @@ var TreeTest = function(){
                 enableDD:true,
                 containerScroll: true,
                 border: false,
+                width: 250,
+                height: 300,
                 dropConfig: {appendOnly:true}
             });
             
@@ -39,17 +41,19 @@ var TreeTest = function(){
             
             //-------------------------------------------------------------
             
-            // YUI tree            
+            // ExtJS tree            
             var tree2 = new Tree.TreePanel({
                 animate:true,
                 autoScroll:true,
                 //rootVisible: false,
                 loader: new Ext.tree.TreeLoader({
                     dataUrl:'get-nodes.php',
-                    baseParams: {lib:'yui'} // custom http params
+                    baseParams: {path:'extjs'} // custom http params
                 }),
                 containerScroll: true,
                 border: false,
+                width: 250,
+                height: 300,
                 enableDD:true,
                 dropConfig: {appendOnly:true}
             });
@@ -59,9 +63,9 @@ var TreeTest = function(){
             
             // add the root node
             var root2 = new Tree.AsyncTreeNode({
-                text: 'My Files', 
+                text: 'Extensions', 
                 draggable:false, 
-                id:'yui'
+                id:'ux'
             });
             tree2.setRootNode(root2);
             tree2.render('tree2');

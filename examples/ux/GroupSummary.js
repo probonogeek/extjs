@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -32,10 +32,7 @@ summaryRenderer: function(v, params, data){
     },
     init : function(grid){
         this.grid = grid;
-        this.cm = grid.getColumnModel();
-        this.view = grid.getView();
-
-        var v = this.view;
+        var v = this.view = grid.getView();
         v.doGroupEnd = this.doGroupEnd.createDelegate(this);
 
         v.afterMethod('onColumnWidthUpdated', this.doWidth, this);
@@ -82,9 +79,8 @@ summaryRenderer: function(v, params, data){
 
     renderSummary : function(o, cs){
         cs = cs || this.view.getColumnData();
-        var cfg = this.cm.config;
-
-        var buf = [], c, p = {}, cf, last = cs.length-1;
+        var cfg = this.grid.getColumnModel().config,
+            buf = [], c, p = {}, cf, last = cs.length-1;
         for(var i = 0, len = cs.length; i < len; i++){
             c = cs[i];
             cf = cfg[i];
@@ -112,7 +108,7 @@ summaryRenderer: function(v, params, data){
      * @param {Object} cs
      */
     calculate : function(rs, cs){
-        var data = {}, r, c, cfg = this.cm.config, cf;
+        var data = {}, r, c, cfg = this.grid.getColumnModel().config, cf;
         for(var j = 0, jlen = rs.length; j < jlen; j++){
             r = rs[j];
             for(var i = 0, len = cs.length; i < len; i++){
@@ -180,21 +176,21 @@ summaryRenderer: function(v, params, data){
     },
 
     refreshSummaryById : function(gid){
-        var g = document.getElementById(gid);
+        var g = Ext.getDom(gid);
         if(!g){
             return false;
         }
         var rs = [];
-        this.grid.store.each(function(r){
+        this.grid.getStore().each(function(r){
             if(r._groupId == gid){
                 rs[rs.length] = r;
             }
         });
-        var cs = this.view.getColumnData();
-        var data = this.calculate(rs, cs);
-        var markup = this.renderSummary({data: data}, cs);
-
-        var existing = this.getSummaryNode(gid);
+        var cs = this.view.getColumnData(),
+            data = this.calculate(rs, cs),
+            markup = this.renderSummary({data: data}, cs),
+            existing = this.getSummaryNode(gid);
+            
         if(existing){
             g.removeChild(existing);
         }
@@ -224,8 +220,8 @@ grid.on('afteredit', function(){
      * @param {String} msg Text to use as innerHTML for the summary row.
      */
     showSummaryMsg : function(groupValue, msg){
-        var gid = this.view.getGroupId(groupValue);
-        var node = this.getSummaryNode(gid);
+        var gid = this.view.getGroupId(groupValue),
+             node = this.getSummaryNode(gid);
         if(node){
             node.innerHTML = '<div class="x-grid3-summary-msg">' + msg + '</div>';
         }
@@ -317,9 +313,9 @@ Ext.ux.grid.HybridSummary = Ext.extend(Ext.ux.grid.GroupSummary, {
      * @param {Object} cs
      */
     calculate : function(rs, cs){
-        var gcol = this.view.getGroupField();
-        var gvalue = rs[0].data[gcol];
-        var gdata = this.getSummaryData(gvalue);
+        var gcol = this.view.getGroupField(),
+            gvalue = rs[0].data[gcol],
+            gdata = this.getSummaryData(gvalue);
         return gdata || Ext.ux.grid.HybridSummary.superclass.calculate.call(this, rs, cs);
     },
 
@@ -341,7 +337,7 @@ grid.on('afteredit', function(){
      * @param {Boolean} skipRefresh (Optional) Defaults to false
      */
     updateSummaryData : function(groupValue, data, skipRefresh){
-        var json = this.grid.store.reader.jsonData;
+        var json = this.grid.getStore().reader.jsonData;
         if(!json.summaryData){
             json.summaryData = {};
         }
@@ -357,7 +353,7 @@ grid.on('afteredit', function(){
      * @return {Object} summaryData
      */
     getSummaryData : function(groupValue){
-        var json = this.grid.store.reader.jsonData;
+        var json = this.grid.getStore().reader.jsonData;
         if(json && json.summaryData){
             return json.summaryData[groupValue];
         }

@@ -1,9 +1,10 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
+
 /**
  * @class Ext.data.Api
  * @extends Object
@@ -184,9 +185,85 @@ new Ext.data.HttpProxy({
             for (var verb in this.restActions) {
                 proxy.api[this.actions[verb]].method = this.restActions[verb];
             }
+            // TODO: perhaps move this interceptor elsewhere?  like into DataProxy, perhaps?  Placed here
+            // to satisfy initial 3.0 final release of REST features.
+            proxy.onWrite = proxy.onWrite.createInterceptor(function(action, o, response, rs) {
+                var reader = o.reader;
+                var res = new Ext.data.Response({
+                    action: action,
+                    raw: response
+                });
+
+                switch (response.status) {
+                    case 200:   // standard 200 response, send control back to HttpProxy#onWrite
+                        return true;
+                        break;
+                    case 201:   // entity created but no response returned
+                        //res[reader.meta.successProperty] = true;
+                        res.success = true;
+                        break;
+                    case 204:  // no-content.  Create a fake response.
+                        //res[reader.meta.successProperty] = true;
+                        //res[reader.meta.root] = null;
+                        res.success = true;
+                        res.data = null;
+                        break;
+                    default:
+                        return true;
+                        break;
+                }
+                /*
+                if (res[reader.meta.successProperty] === true) {
+                    this.fireEvent("write", this, action, res[reader.meta.root], res, rs, o.request.arg);
+                } else {
+                    this.fireEvent('exception', this, 'remote', action, o, res, rs);
+                }
+                */
+                if (res.success === true) {
+                    this.fireEvent("write", this, action, res.data, res, rs, o.request.arg);
+                } else {
+                    this.fireEvent('exception', this, 'remote', action, o, res, rs);
+                }
+                o.request.callback.call(o.request.scope, res.data, res, res.success);
+
+                return false;   // <-- false to prevent intercepted function from running.
+            }, proxy);
         }
     };
 })();
+
+/**
+ * Ext.data.Response
+ * Experimental.  Do not use directly.
+ */
+Ext.data.Response = function(params, response) {
+    Ext.apply(this, params, {
+        raw: response
+    });
+};
+Ext.data.Response.prototype = {
+    message : null,
+    success : false,
+    status : null,
+    root : null,
+    raw : null,
+
+    getMessage : function() {
+        return this.message;
+    },
+    getSuccess : function() {
+        return this.success;
+    },
+    getStatus : function() {
+        return this.status
+    },
+    getRoot : function() {
+        return this.root;
+    },
+    getRawResponse : function() {
+        return this.raw;
+    }
+};
 
 /**
  * @class Ext.data.Api.Error
@@ -208,3 +285,5 @@ Ext.apply(Ext.data.Api.Error.prototype, {
         'execute': 'Attempted to execute an unknown action.  Valid API actions are defined in Ext.data.Api.actions"'
     }
 });
+
+

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -9,40 +9,129 @@
  * @extends Ext.data.DataWriter
  * DataWriter extension for writing an array or single {@link Ext.data.Record} object(s) in preparation for executing a remote CRUD action via XML.
  */
-Ext.data.XmlWriter = Ext.extend(Ext.data.DataWriter, {
+Ext.data.XmlWriter = function(params) {
+    Ext.data.XmlWriter.superclass.constructor.apply(this, arguments);
+    this.tpl = new Ext.XTemplate(this.tpl).compile();
+};
+Ext.extend(Ext.data.XmlWriter, Ext.data.DataWriter, {
+    /**
+     * @cfg {String} root [records] The name of the root element when writing <b>multiple</b> records to the server.  Each
+     * xml-record written to the server will be wrapped in an element named after {@link Ext.data.XmlReader#record} property.
+     * eg:
+<code><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;user>&lt;first>Barney&lt;/first>&lt;/user>
+</code></pre>
+     * However, when <b>multiple</b> records are written in a batch-operation, these records must be wrapped in a containing
+     * Element.
+     * eg:
+<code><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+    &lt;records>
+        &lt;first>Barney&lt;/first>&lt;/user>
+        &lt;records>&lt;first>Barney&lt;/first>&lt;/user>
+    &lt;/records>
+</code></pre>
+     * Defaults to <tt>records</tt>
+     */
+    root: 'records',
+    /**
+     * @cfg {String} xmlVersion [1.0] The <tt>version</tt> written to header of xml documents.
+<code><pre>&lt;?xml version="1.0" encoding="ISO-8859-15"?></pre></code>
+     */
+    xmlVersion : '1.0',
+    /**
+     * @cfg {String} xmlEncoding [ISO-8859-15] The <tt>encoding</tt> written to header of xml documents.
+<code><pre>&lt;?xml version="1.0" encoding="ISO-8859-15"?></pre></code>
+     */
+    xmlEncoding: 'ISO-8859-15',
+    /**
+     * @cfg {String} tpl The xml template.  Defaults to
+<code><pre>
+&lt;?xml version="{version}" encoding="{encoding}"?>
+    &lt;tpl if="{[values.nodes.length>1]}">&lt;{root}}>',
+    &lt;tpl for="records">
+        &lt;{parent.record}>
+        &lt;tpl for="fields">
+            &lt;{name}>{value}&lt;/{name}>
+        &lt;/tpl>
+        &lt;/{parent.record}>
+    &lt;/tpl>
+    &lt;tpl if="{[values.records.length>1]}">&lt;/{root}}>&lt;/tpl>
+</pre></code>
+     */
+    // Break up encoding here in case it's being included by some kind of page that will parse it (eg. PHP)
+    tpl: '<tpl for="."><' + '?xml version="{version}" encoding="{encoding}"?' + '><tpl if="documentRoot"><{documentRoot}><tpl for="baseParams"><tpl for="."><{name}>{value}</{name}</tpl></tpl></tpl><tpl if="records.length&gt;1"><{root}></tpl><tpl for="records"><{parent.record}><tpl for="."><{name}>{value}</{name}></tpl></{parent.record}></tpl><tpl if="records.length&gt;1"></{root}></tpl><tpl if="documentRoot"></{documentRoot}></tpl></tpl>',
+
     /**
      * Final action of a write event.  Apply the written data-object to params.
      * @param {String} action [Ext.data.Api.create|read|update|destroy]
-     * @param {Record[]} rs
+     * @param {Ext.data.Record/Ext.data.Record[]} rs
      * @param {Object} http params
-     * @param {Object} data object populated according to DataReader meta-data "root" and "idProperty"
+     * @param {Object/Object[]} rendered data.
      */
     render : function(action, rs, params, data) {
-        // no impl.
+        params.xmlData = this.tpl.applyTemplate({
+            version: this.xmlVersion,
+            encoding: this.xmlEncoding,
+            record: this.meta.record,
+            root: this.root,
+            records: (Ext.isArray(rs)) ? data : [data]
+        });
     },
+
+    /**
+     * Converts an Ext.data.Record to xml
+     * @param {Ext.data.Record} rec
+     * @return {String} rendered xml-element
+     * @private
+     */
+    toXml : function(data) {
+        var fields = [];
+        Ext.iterate(data, function(k, v) {
+            fields.push({
+                name: k,
+                value: v
+            });
+        },this);
+        return {
+            fields: fields
+        };
+    },
+
     /**
      * createRecord
      * @param {Ext.data.Record} rec
+     * @return {String} xml element
+     * @private
      */
     createRecord : function(rec) {
-        // no impl
+        return this.toXml(this.toHash(rec));
     },
+
     /**
      * updateRecord
      * @param {Ext.data.Record} rec
+     * @return {String} xml element
+     * @private
      */
     updateRecord : function(rec) {
-        // no impl.
+        return this.toXml(this.toHash(rec));
 
     },
     /**
      * destroyRecord
      * @param {Ext.data.Record} rec
+     * @return {String} xml element
      */
     destroyRecord : function(rec) {
-        // no impl
+        var data = {};
+        data[this.meta.idProperty] = rec.id;
+        return this.toXml(data);
     }
-});/**
+});
+
+/**
  * @class Ext.data.XmlReader
  * @extends Ext.data.DataReader
  * <p>Data reader class to create an Array of {@link Ext.data.Record} objects from an XML document
@@ -56,9 +145,10 @@ var Employee = Ext.data.Record.create([
    {name: 'occupation'}                 // This field will use "occupation" as the mapping.
 ]);
 var myReader = new Ext.data.XmlReader({
-   totalRecords: "results", // The element which contains the total dataset size (optional)
+   totalProperty: "results", // The element which contains the total dataset size (optional)
    record: "row",           // The repeated element which contains row information
-   id: "id"                 // The element within the row that provides an ID for the record (optional)
+   idProperty: "id"         // The element within the row that provides an ID for the record (optional)
+   messageProperty: "msg"   // The element within the response that provides a user-feedback message (optional)
 }, Employee);
 </code></pre>
  * <p>
@@ -79,11 +169,12 @@ var myReader = new Ext.data.XmlReader({
  &lt;/row>
 &lt;/dataset>
 </code></pre>
- * @cfg {String} totalRecords The DomQuery path from which to retrieve the total number of records
+ * @cfg {String} totalProperty The DomQuery path from which to retrieve the total number of records
  * in the dataset. This is only needed if the whole dataset is not passed in one go, but is being
  * paged from the remote server.
  * @cfg {String} record The DomQuery path to the repeated element which contains record information.
- * @cfg {String} success The DomQuery path to the success attribute used by forms.
+ * @cfg {String} record The DomQuery path to the repeated element which contains record information.
+ * @cfg {String} successProperty The DomQuery path to the success attribute used by forms.
  * @cfg {String} idPath The DomQuery path relative from the record element to the element that contains
  * a record identifier value.
  * @constructor
@@ -94,6 +185,10 @@ var myReader = new Ext.data.XmlReader({
  */
 Ext.data.XmlReader = function(meta, recordType){
     meta = meta || {};
+
+    // backwards compat, convert idPath to idProperty
+    meta.idProperty = meta.idProperty || meta.idPath;
+
     Ext.data.XmlReader.superclass.constructor.call(this, meta, recordType || meta.fields);
 };
 Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
@@ -124,36 +219,22 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
          * @type XMLDocument
          */
         this.xmlData = doc;
-        var root = doc.documentElement || doc;
-        var q = Ext.DomQuery;
-        var recordType = this.recordType, fields = recordType.prototype.fields;
-        var sid = this.meta.idPath || this.meta.id;
-        var totalRecords = 0, success = true;
-        if(this.meta.totalRecords){
-            totalRecords = q.selectNumber(this.meta.totalRecords, root, 0);
+
+        var root    = doc.documentElement || doc,
+            q       = Ext.DomQuery,
+            totalRecords = 0,
+            success = true;
+
+        if(this.meta.totalProperty){
+            totalRecords = this.getTotal(root, 0);
+        }
+        if(this.meta.successProperty){
+            success = this.getSuccess(root);
         }
 
-        if(this.meta.success){
-            var sv = q.selectValue(this.meta.success, root, true);
-            success = sv !== false && sv !== 'false';
-        }
-        var records = [];
-        var ns = q.select(this.meta.record, root);
-        for(var i = 0, len = ns.length; i < len; i++) {
-            var n = ns[i];
-            var values = {};
-            var id = sid ? q.selectValue(sid, n) : undefined;
-            for(var j = 0, jlen = fields.length; j < jlen; j++){
-                var f = fields.items[j];
-                var v = q.selectValue(Ext.value(f.mapping, f.name, true), n, f.defaultValue);
-                v = f.convert(v, n);
-                values[f.name] = v;
-            }
-            var record = new recordType(values, id);
-            record.node = n;
-            records[records.length] = record;
-        }
+        var records = this.extractData(q.select(this.meta.record, root), true); // <-- true to return Ext.data.Record[]
 
+        // TODO return Ext.data.Response instance.  @see #readResponse
         return {
             success : success,
             records : records,
@@ -161,8 +242,167 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
         };
     },
 
-    // TODO: implement readResponse for XmlReader
-    readResponse : Ext.emptyFn
+    /**
+     * Decode a json response from server.
+     * @param {String} action [{@link Ext.data.Api#actions} create|read|update|destroy]
+     * @param {Ext.data.Response} response Returns an instance of {@link Ext.data.Response}
+     */
+    readResponse : function(action, response) {
+        var q   = Ext.DomQuery,
+        doc     = response.responseXML;
+
+        var res = new Ext.data.Response({
+            action: action,
+            success : this.getSuccess(doc),
+            message: this.getMessage(doc),
+            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc)),
+            raw: doc
+        });
+
+        if (Ext.isEmpty(res.success)) {
+            throw new Ext.data.DataReader.Error('successProperty-response', this.meta.successProperty);
+        }
+
+        if (action === Ext.data.Api.actions.create) {
+            var def = Ext.isDefined(res.data);
+            if (def && Ext.isEmpty(res.data)) {
+                throw new Ext.data.JsonReader.Error('root-empty', this.meta.root);
+            }
+            else if (!def) {
+                throw new Ext.data.JsonReader.Error('root-undefined-response', this.meta.root);
+            }
+        }
+        return res;
+    },
+
+    getSuccess : function() {
+        return true;
+    },
+
+    /**
+     * build response-data extractor functions.
+     * @private
+     * @ignore
+     */
+    buildExtractors : function() {
+        if(this.ef){
+            return;
+        }
+        var s       = this.meta,
+            Record  = this.recordType,
+            f       = Record.prototype.fields,
+            fi      = f.items,
+            fl      = f.length;
+
+        if(s.totalProperty) {
+            this.getTotal = this.createAccessor(s.totalProperty);
+        }
+        if(s.successProperty) {
+            this.getSuccess = this.createAccessor(s.successProperty);
+        }
+        if (s.messageProperty) {
+            this.getMessage = this.createAccessor(s.messageProperty);
+        }
+        this.getRoot = function(res) {
+            return (!Ext.isEmpty(res[this.meta.record])) ? res[this.meta.record] : res[this.meta.root];
+        }
+        if (s.idPath || s.idProperty) {
+            var g = this.createAccessor(s.idPath || s.idProperty);
+            this.getId = function(rec) {
+                var id = g(rec) || rec.id;
+                return (id === undefined || id === '') ? null : id;
+            };
+        } else {
+            this.getId = function(){return null;};
+        }
+        var ef = [];
+        for(var i = 0; i < fl; i++){
+            f = fi[i];
+            var map = (f.mapping !== undefined && f.mapping !== null) ? f.mapping : f.name;
+            ef.push(this.createAccessor(map));
+        }
+        this.ef = ef;
+    },
+
+    /**
+     * Creates a function to return some particular key of data from a response.
+     * @param {String} key
+     * @return {Function}
+     * @private
+     * @ignore
+     */
+    createAccessor : function(){
+        var q = Ext.DomQuery;
+        return function(key) {
+            switch(key) {
+                case this.meta.totalProperty:
+                    return function(root, def){
+                        return q.selectNumber(key, root, def);
+                    }
+                    break;
+                case this.meta.successProperty:
+                    return function(root, def) {
+                        var sv = q.selectValue(key, root, true);
+                        var success = sv !== false && sv !== 'false';
+                        return success;
+                    }
+                    break;
+                default:
+                    return function(root, def) {
+                        return q.selectValue(key, root, def);
+                    }
+                    break;
+            }
+        };
+    }(),
+
+    /**
+     * Extracts rows of record-data from server.  iterates and calls #extractValues
+     * TODO I don't care much for method-names of #extractData, #extractValues.
+     * @param {Array} root
+     * @param {Boolean} returnRecords When true, will return instances of Ext.data.Record; otherwise just hashes.
+     * @private
+     * @ignore
+     */
+    extractData : function(root, returnRecords) {
+        var Record  = this.recordType,
+        records     = [],
+        f           = Record.prototype.fields,
+        fi          = f.items,
+        fl          = f.length;
+        if (returnRecords === true) {
+            for (var i = 0, len = root.length; i < len; i++) {
+                var data = root[i],
+                    record = new Record(this.extractValues(data, fi, fl), this.getId(data));
+                    
+                record.node = data;
+                records.push(record);
+            }
+        } else {
+            for (var i = 0, len = root.length; i < len; i++) {
+                records.push(this.extractValues(root[i], fi, fl));
+            }
+        }
+        return records;
+    },
+
+    /**
+     * extracts values and type-casts a row of data from server, extracted by #extractData
+     * @param {Hash} data
+     * @param {Ext.data.Field[]} items
+     * @param {Number} len
+     * @private
+     * @ignore
+     */
+    extractValues : function(data, items, len) {
+        var f, values = {};
+        for(var j = 0; j < len; j++){
+            f = items[j];
+            var v = this.ef[j](data);
+            values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue, data);
+        }
+        return values;
+    }
 });/**
  * @class Ext.data.XmlStore
  * @extends Ext.data.Store

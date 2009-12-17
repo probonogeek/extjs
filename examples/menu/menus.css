@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -32,4 +32,14 @@
     font:bold 10px tahoma,arial,verdana,sans-serif;
     display:block;
     padding:3px;
+}
+
+.user {
+    background-image:url(../shared/icons/fam/user.gif) !important
+}
+.edit {
+    background-image:url(../desktop/images/im32x32.gif) !important;
+}
+.add {
+    background-image:url(../button/images/add.gif) !important;
 }

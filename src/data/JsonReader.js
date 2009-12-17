@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -7,90 +7,101 @@
 /**
  * @class Ext.data.JsonReader
  * @extends Ext.data.DataReader
- * <p>Data reader class to create an Array of {@link Ext.data.Record} objects from a JSON response
- * based on mappings in a provided {@link Ext.data.Record} constructor.</p>
+ * <p>Data reader class to create an Array of {@link Ext.data.Record} objects
+ * from a JSON packet based on mappings in a provided {@link Ext.data.Record}
+ * constructor.</p>
  * <p>Example code:</p>
  * <pre><code>
-var Employee = Ext.data.Record.create([
-    {name: 'firstname'},                  // map the Record's "firstname" field to the row object's key of the same name
-    {name: 'job', mapping: 'occupation'}  // map the Record's "job" field to the row object's "occupation" key
-]);
-var myReader = new Ext.data.JsonReader(
-    {                             // The metadata property, with configuration options:
-        totalProperty: "results", //   the property which contains the total dataset size (optional)
-        root: "rows",             //   the property which contains an Array of record data objects
-        idProperty: "id"          //   the property within each row object that provides an ID for the record (optional)
-    },
-    Employee  // {@link Ext.data.Record} constructor that provides mapping for JSON object
-);
+var myReader = new Ext.data.JsonReader({
+    // metadata configuration options:
+    {@link #idProperty}: 'id'
+    {@link #root}: 'rows',
+    {@link #totalProperty}: 'results',
+    {@link Ext.data.DataReader#messageProperty}: "msg"  // The element within the response that provides a user-feedback message (optional)
+
+    // the fields config option will internally create an {@link Ext.data.Record}
+    // constructor that provides mapping for reading the record data objects
+    {@link Ext.data.DataReader#fields fields}: [
+        // map Record&#39;s 'firstname' field to data object&#39;s key of same name
+        {name: 'name'},
+        // map Record&#39;s 'job' field to data object&#39;s 'occupation' key
+        {name: 'job', mapping: 'occupation'}
+    ]
+});
 </code></pre>
  * <p>This would consume a JSON data object of the form:</p><pre><code>
 {
-    results: 2,  // Reader's configured totalProperty
-    rows: [      // Reader's configured root
-        { id: 1, firstname: 'Bill', occupation: 'Gardener' },         // a row object
-        { id: 2, firstname: 'Ben' , occupation: 'Horticulturalist' }  // another row object
+    results: 2000, // Reader&#39;s configured {@link #totalProperty}
+    rows: [        // Reader&#39;s configured {@link #root}
+        // record data objects:
+        { {@link #idProperty id}: 1, firstname: 'Bill', occupation: 'Gardener' },
+        { {@link #idProperty id}: 2, firstname: 'Ben' , occupation: 'Horticulturalist' },
+        ...
     ]
 }
 </code></pre>
  * <p><b><u>Automatic configuration using metaData</u></b></p>
- * <p>It is possible to change a JsonReader's metadata at any time by including a <b><tt>metaData</tt></b>
- * property in the JSON data object. If the JSON data object has a <b><tt>metaData</tt></b> property, a
- * {@link Ext.data.Store Store} object using this Reader will reconfigure itself to use the newly provided
- * field definition and fire its {@link Ext.data.Store#metachange metachange} event. The metachange event
- * handler may interrogate the <b><tt>metaData</tt></b> property to perform any configuration required.
- * Note that reconfiguring a Store potentially invalidates objects which may refer to Fields or Records
- * which no longer exist.</p>
- * <p>The <b><tt>metaData</tt></b> property in the JSON data object may contain:</p>
- * <div class="mdetail-params"><ul>
- * <li>any of the configuration options for this class</li>
- * <li>a <b><tt>{@link Ext.data.Record#fields fields}</tt></b> property which the JsonReader will
- * use as an argument to the {@link Ext.data.Record#create data Record create method} in order to
- * configure the layout of the Records it will produce.</li>
- * <li>a <b><tt>{@link Ext.data.Store#sortInfo sortInfo}</tt></b> property which the JsonReader will
- * use to set the {@link Ext.data.Store}'s {@link Ext.data.Store#sortInfo sortInfo} property</li>
- * <li>any user-defined properties needed</li>
- * </ul></div>
- * <p>To use this facility to send the same data as the example above (without having to code the creation
- * of the Record constructor), you would create the JsonReader like this:</p><pre><code>
+ * <p>It is possible to change a JsonReader's metadata at any time by including
+ * a <b><tt>metaData</tt></b> property in the JSON data object. If the JSON data
+ * object has a <b><tt>metaData</tt></b> property, a {@link Ext.data.Store Store}
+ * object using this Reader will reconfigure itself to use the newly provided
+ * field definition and fire its {@link Ext.data.Store#metachange metachange}
+ * event. The metachange event handler may interrogate the <b><tt>metaData</tt></b>
+ * property to perform any configuration required.</p>
+ * <p>Note that reconfiguring a Store potentially invalidates objects which may
+ * refer to Fields or Records which no longer exist.</p>
+ * <p>To use this facility you would create the JsonReader like this:</p><pre><code>
 var myReader = new Ext.data.JsonReader();
 </code></pre>
- * <p>The first data packet from the server would configure the reader by containing a
- * <b><tt>metaData</tt></b> property <b>and</b> the data. For example, the JSON data object might take
- * the form:</p>
-<pre><code>
+ * <p>The first data packet from the server would configure the reader by
+ * containing a <b><tt>metaData</tt></b> property <b>and</b> the data. For
+ * example, the JSON data object might take the form:</p><pre><code>
 {
     metaData: {
-        idProperty: 'id',
-        root: 'rows',
-        totalProperty: 'results',
-        fields: [
-            {name: 'name'},
-            {name: 'job', mapping: 'occupation'}
+        "{@link #idProperty}": "id",
+        "{@link #root}": "rows",
+        "{@link #totalProperty}": "results"
+        "{@link #successProperty}": "success",
+        "{@link Ext.data.DataReader#fields fields}": [
+            {"name": "name"},
+            {"name": "job", "mapping": "occupation"}
         ],
-        sortInfo: {field: 'name', direction:'ASC'}, // used by store to set its sortInfo
-        foo: 'bar' // custom property
+        // used by store to set its sortInfo
+        "sortInfo":{
+           "field": "name",
+           "direction": "ASC"
+        },
+        // {@link Ext.PagingToolbar paging data} (if applicable)
+        "start": 0,
+        "limit": 2,
+        // custom property
+        "foo": "bar"
     },
-    results: 2,
-    rows: [ // an Array
-        { 'id': 1, 'name': 'Bill', occupation: 'Gardener' },
-        { 'id': 2, 'name': 'Ben', occupation: 'Horticulturalist' }
+    // Reader&#39;s configured {@link #successProperty}
+    "success": true,
+    // Reader&#39;s configured {@link #totalProperty}
+    "results": 2000,
+    // Reader&#39;s configured {@link #root}
+    // (this data simulates 2 results {@link Ext.PagingToolbar per page})
+    "rows": [ // <b>*Note:</b> this must be an Array
+        { "id": 1, "name": "Bill", "occupation": "Gardener" },
+        { "id": 2, "name":  "Ben", "occupation": "Horticulturalist" }
     ]
 }
-</code></pre>
- * @cfg {String} totalProperty [total] Name of the property from which to retrieve the total number of records
- * in the dataset. This is only needed if the whole dataset is not passed in one go, but is being
- * paged from the remote server.  Defaults to <tt>total</tt>.
- * @cfg {String} successProperty [success] Name of the property from which to
- * retrieve the success attribute. Defaults to <tt>success</tt>.  See
- * {@link Ext.data.DataProxy}.{@link Ext.data.DataProxy#exception exception}
- * for additional information.
- * @cfg {String} root [undefined] <b>Required</b>.  The name of the property
- * which contains the Array of row objects.  Defaults to <tt>undefined</tt>.
- * An exception will be thrown if the root property is undefined. The data packet
- * value for this property should be an empty array to clear the data or show
- * no data.
- * @cfg {String} idProperty [id] Name of the property within a row object that contains a record identifier value.  Defaults to <tt>id</tt>
+ * </code></pre>
+ * <p>The <b><tt>metaData</tt></b> property in the JSON data object should contain:</p>
+ * <div class="mdetail-params"><ul>
+ * <li>any of the configuration options for this class</li>
+ * <li>a <b><tt>{@link Ext.data.Record#fields fields}</tt></b> property which
+ * the JsonReader will use as an argument to the
+ * {@link Ext.data.Record#create data Record create method} in order to
+ * configure the layout of the Records it will produce.</li>
+ * <li>a <b><tt>{@link Ext.data.Store#sortInfo sortInfo}</tt></b> property
+ * which the JsonReader will use to set the {@link Ext.data.Store}'s
+ * {@link Ext.data.Store#sortInfo sortInfo} property</li>
+ * <li>any custom properties needed</li>
+ * </ul></div>
+ *
  * @constructor
  * Create a new JsonReader
  * @param {Object} meta Metadata configuration options.
@@ -101,8 +112,29 @@ var myReader = new Ext.data.JsonReader();
  */
 Ext.data.JsonReader = function(meta, recordType){
     meta = meta || {};
-
-    // default idProperty, successProperty & totalProperty -> "id", "success", "total"
+    /**
+     * @cfg {String} idProperty [id] Name of the property within a row object
+     * that contains a record identifier value.  Defaults to <tt>id</tt>
+     */
+    /**
+     * @cfg {String} successProperty [success] Name of the property from which to
+     * retrieve the success attribute. Defaults to <tt>success</tt>.  See
+     * {@link Ext.data.DataProxy}.{@link Ext.data.DataProxy#exception exception}
+     * for additional information.
+     */
+    /**
+     * @cfg {String} totalProperty [total] Name of the property from which to
+     * retrieve the total number of records in the dataset. This is only needed
+     * if the whole dataset is not passed in one go, but is being paged from
+     * the remote server.  Defaults to <tt>total</tt>.
+     */
+    /**
+     * @cfg {String} root [undefined] <b>Required</b>.  The name of the property
+     * which contains the Array of row objects.  Defaults to <tt>undefined</tt>.
+     * An exception will be thrown if the root property is undefined. The data
+     * packet value for this property should be an empty array to clear the data
+     * or show no data.
+     */
     Ext.applyIf(meta, {
         idProperty: 'id',
         successProperty: 'success',
@@ -128,39 +160,50 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         var json = response.responseText;
         var o = Ext.decode(json);
         if(!o) {
-            throw {message: "JsonReader.read: Json object not found"};
+            throw {message: 'JsonReader.read: Json object not found'};
         }
         return this.readRecords(o);
     },
 
-    // private function a store will implement
-    onMetaChange : function(meta, recordType, o){
-
-    },
-
     /**
-     * @ignore
+     * Decode a json response from server.
+     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
+     * @param {Object} response
+     * TODO: refactor code between JsonReader#readRecords, #readResponse into 1 method.
+     * there's ugly duplication going on due to maintaining backwards compat. with 2.0.  It's time to do this.
      */
-    simpleAccess: function(obj, subsc) {
-        return obj[subsc];
-    },
+    readResponse : function(action, response) {
+        var o = (response.responseText !== undefined) ? Ext.decode(response.responseText) : response;
+        if(!o) {
+            throw new Ext.data.JsonReader.Error('response');
+        }
 
-    /**
-     * @ignore
-     */
-    getJsonAccessor: function(){
-        var re = /[\[\.]/;
-        return function(expr) {
-            try {
-                return(re.test(expr)) ?
-                new Function("obj", "return obj." + expr) :
-                function(obj){
-                    return obj[expr];
-                };
-            } catch(e){}
-            return Ext.emptyFn;
-        };
-    }(),
+        var root = this.getRoot(o);
+        if (action === Ext.data.Api.actions.create) {
+            var def = Ext.isDefined(root);
+            if (def && Ext.isEmpty(root)) {
+                throw new Ext.data.JsonReader.Error('root-empty', this.meta.root);
+            }
+            else if (!def) {
+                throw new Ext.data.JsonReader.Error('root-undefined-response', this.meta.root);
+            }
+        }
+
+        // instantiate response object
+        var res = new Ext.data.Response({
+            action: action,
+            success: this.getSuccess(o),
+            data: this.extractData(root),
+            message: this.getMessage(o),
+            raw: o
+        });
+
+        // blow up if no successProperty
+        if (Ext.isEmpty(res.success)) {
+            throw new Ext.data.JsonReader.Error('successProperty-response', this.meta.successProperty);
+        }
+        return res;
+    },
 
     /**
      * Create a data block containing Ext.data.Records from a JSON object.
@@ -178,16 +221,11 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
          */
         this.jsonData = o;
         if(o.metaData){
-            delete this.ef;
-            this.meta = o.metaData;
-            this.recordType = Ext.data.Record.create(o.metaData.fields);
-            this.onMetaChange(this.meta, this.recordType, o);
+            this.onMetaChange(o.metaData);
         }
         var s = this.meta, Record = this.recordType,
             f = Record.prototype.fields, fi = f.items, fl = f.length, v;
 
-        // Generate extraction functions for the totalProperty, the root, the id, and for each field
-        this.buildExtractors();
         var root = this.getRoot(o), c = root.length, totalRecords = c, success = true;
         if(s.totalProperty){
             v = parseInt(this.getTotal(o), 10);
@@ -202,16 +240,10 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
             }
         }
 
-        var records = [];
-        for(var i = 0; i < c; i++){
-            var n = root[i];
-            var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
-            record.json = n;
-            records[i] = record;
-        }
+        // TODO return Ext.data.Response instance instead.  @see #readResponse
         return {
             success : success,
-            records : records,
+            records : this.extractData(root, true), // <-- true to return [Ext.data.Record]
             totalRecords : totalRecords
         };
     },
@@ -225,17 +257,20 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
             f = Record.prototype.fields, fi = f.items, fl = f.length;
 
         if(s.totalProperty) {
-            this.getTotal = this.getJsonAccessor(s.totalProperty);
+            this.getTotal = this.createAccessor(s.totalProperty);
         }
         if(s.successProperty) {
-            this.getSuccess = this.getJsonAccessor(s.successProperty);
+            this.getSuccess = this.createAccessor(s.successProperty);
         }
-        this.getRoot = s.root ? this.getJsonAccessor(s.root) : function(p){return p;};
+        if (s.messageProperty) {
+            this.getMessage = this.createAccessor(s.messageProperty);
+        }
+        this.getRoot = s.root ? this.createAccessor(s.root) : function(p){return p;};
         if (s.id || s.idProperty) {
-            var g = this.getJsonAccessor(s.id || s.idProperty);
+            var g = this.createAccessor(s.id || s.idProperty);
             this.getId = function(rec) {
                 var r = g(rec);
-                return (r === undefined || r === "") ? null : r;
+                return (r === undefined || r === '') ? null : r;
             };
         } else {
             this.getId = function(){return null;};
@@ -244,13 +279,78 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         for(var i = 0; i < fl; i++){
             f = fi[i];
             var map = (f.mapping !== undefined && f.mapping !== null) ? f.mapping : f.name;
-            ef.push(this.getJsonAccessor(map));
+            ef.push(this.createAccessor(map));
         }
         this.ef = ef;
     },
 
-    // private extractValues
-    extractValues: function(data, items, len) {
+    /**
+     * @ignore
+     * TODO This isn't used anywhere??  Don't we want to use this where possible instead of complex #createAccessor?
+     */
+    simpleAccess : function(obj, subsc) {
+        return obj[subsc];
+    },
+
+    /**
+     * @ignore
+     */
+    createAccessor : function(){
+        var re = /[\[\.]/;
+        return function(expr) {
+            try {
+                return(re.test(expr)) ?
+                new Function('obj', 'return obj.' + expr) :
+                function(obj){
+                    return obj[expr];
+                };
+            } catch(e){}
+            return Ext.emptyFn;
+        };
+    }(),
+
+    /**
+     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
+     * @param {Object[]/Object} data-root from server response
+     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
+     * @private
+     */
+    extractData : function(root, returnRecords) {
+        var rs = undefined;
+        if (this.isData(root)) {
+            root = [root];
+        }
+        if (Ext.isArray(root)) {
+            var f       = this.recordType.prototype.fields,
+                fi      = f.items,
+                fl      = f.length,
+                rs      = [];
+            if (returnRecords === true) {
+                var Record = this.recordType;
+                for (var i = 0; i < root.length; i++) {
+                    var n = root[i];
+                    var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
+                    record.json = n;
+                    rs.push(record);
+                }
+            }
+            else {
+                for (var i = 0; i < root.length; i++) {
+                    rs.push(this.extractValues(root[i], fi, fl));
+                }
+            }
+        }
+        return rs;
+    },
+
+    /**
+     * type-casts a single row of raw-data from server
+     * @param {Object} data
+     * @param {Array} items
+     * @param {Integer} len
+     * @private
+     */
+    extractValues : function(data, items, len) {
         var f, values = {};
         for(var j = 0; j < len; j++){
             f = items[j];
@@ -258,33 +358,6 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
             values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue, data);
         }
         return values;
-    },
-
-    /**
-     * Decode a json response from server.
-     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
-     * @param {Object} response
-     */
-    readResponse : function(action, response) {
-        var o = (response.responseText !== undefined) ? Ext.decode(response.responseText) : response;
-        if(!o) {
-            throw new Ext.data.JsonReader.Error('response');
-        }
-        if (Ext.isEmpty(o[this.meta.successProperty])) {
-            throw new Ext.data.JsonReader.Error('successProperty-response', this.meta.successProperty);
-        }
-        // TODO, separate empty and undefined exceptions.
-        if ((action === Ext.data.Api.actions.create || action === Ext.data.Api.actions.update)) {
-            if (Ext.isEmpty(o[this.meta.root])) {
-                throw new Ext.data.JsonReader.Error('root-emtpy', this.meta.root);
-            }
-            else if (o[this.meta.root] === undefined) {
-                throw new Ext.data.JsonReader.Error('root-undefined-response', this.meta.root);
-            }
-        }
-        // make sure extraction functions are defined.
-        this.ef = this.buildExtractors();
-        return o;
     }
 });
 
@@ -301,11 +374,10 @@ Ext.data.JsonReader.Error = Ext.extend(Ext.Error, {
 });
 Ext.apply(Ext.data.JsonReader.Error.prototype, {
     lang: {
-        'response': "An error occurred while json-decoding your server response",
+        'response': 'An error occurred while json-decoding your server response',
         'successProperty-response': 'Could not locate your "successProperty" in your server response.  Please review your JsonReader config to ensure the config-property "successProperty" matches the property in your server-response.  See the JsonReader docs.',
-        'root-undefined-response': 'Could not locate your "root" property in your server response.  Please review your JsonReader config to ensure the config-property "root" matches the property your server-response.  See the JsonReader docs.',
         'root-undefined-config': 'Your JsonReader was configured without a "root" property.  Please review your JsonReader config and make sure to define the root property.  See the JsonReader docs.',
         'idProperty-undefined' : 'Your JsonReader was configured without an "idProperty"  Please review your JsonReader configuration and ensure the "idProperty" is set (e.g.: "id").  See the JsonReader docs.',
-        'root-emtpy': 'Data was expected to be returned by the server in the "root" property of the response.  Please review your JsonReader configuration to ensure the "root" property matches that returned in the server-response.  See JsonReader docs.'
+        'root-empty': 'Data was expected to be returned by the server in the "root" property of the response.  Please review your JsonReader configuration to ensure the "root" property matches that returned in the server-response.  See JsonReader docs.'
     }
 });

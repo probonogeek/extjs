@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -19,17 +19,6 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
 	    Ext.each(els, function(e) {
         	yels.push(Ext.get(e));
         });
-        return this;
-    },
-    
-    /**
-    * Clears this composite and adds the elements returned by the passed selector.
-    * @param {String/Array} els A string CSS selector, an array of elements or an element
-    * @return {CompositeElement} this
-    */
-    fill : function(els){
-        this.elements = [];
-        this.add(els);
         return this;
     },
     
@@ -56,22 +45,6 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
      */
     contains : function(el){
         return this.indexOf(el) != -1;
-    },
-
-    /**
-    * Filters this composite to only elements that match the passed selector.
-    * @param {String} selector A string CSS selector
-    * @return {CompositeElement} this
-    */
-    filter : function(selector){
-        var els = [];
-        this.each(function(el){
-            if(el.is(selector)){
-                els[els.length] = el.dom;
-            }
-        });
-        this.fill(els);
-        return this;
     },
     
     /**

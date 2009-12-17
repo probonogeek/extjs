@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -404,10 +404,10 @@ Ext.override(Ext.Container, {
     
     getFocusItems: function(){
         return this.items &&
-        this.items.filterBy(function(o){
-            return o.isFocusable;
-        }) ||
-        null;
+            this.items.filterBy(function(o){
+                return o.isFocusable;
+            }) ||
+            null;
     },
     
     getEnterItem: function(){
@@ -416,10 +416,9 @@ Ext.override(Ext.Container, {
         if (length === 1) {
             return ci.first().getEnterItem && ci.first().getEnterItem() || ci.first();
         }
-        else 
-            if (length > 1) {
-                return ci.first();
-            }
+        else if (length > 1) {
+            return ci.first();
+        }
     },
     
     getNextFocus: function(current){
@@ -458,7 +457,7 @@ Ext.override(Ext.Panel, {
     getFocusItems: function(){
         // items gets all the items inside the body
         var items = Ext.Panel.superclass.getFocusItems.call(this), bodyFocus = null;
-        
+
         if (!items) {
             items = new Ext.util.MixedCollection();
             this.bodyFocus = this.bodyFocus || new Ext.a11y.FocusItem(this.body, this.enableTabbing);
@@ -608,8 +607,11 @@ Ext.override(Ext.Toolbar, {
         });
     },
     
-    addItem: function(item){
-        Ext.Toolbar.superclass.add.apply(this, arguments);
+    add: function(){
+        var item = Ext.Toolbar.superclass.add.apply(this, arguments);
+        if(!item || !item.events) {
+            return item;
+        }
         if (item.rendered && item.fi !== undefined) {
             item.fi.setRelayTo(this.el);
             this.relayEvents(item.fi, ['focus']);

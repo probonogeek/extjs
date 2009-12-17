@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -25,7 +25,7 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-   Ext.form.Field.prototype.invalidText = "مقدار فیلد صحیح نیست";
+   Ext.form.Field.prototype.invalidText = "مقدار �?یلد صحیح نیست";
 }
 
 if(Ext.LoadMask){
@@ -34,7 +34,7 @@ if(Ext.LoadMask){
 
 Date.monthNames = [
    "ژانویه",
-   "فوریه",
+   "�?وریه",
    "مارس",
    "آپریل",
    "می",
@@ -111,12 +111,12 @@ if(Ext.DatePicker){
 
 if(Ext.PagingToolbar){
    Ext.apply(Ext.PagingToolbar.prototype, {
-      beforePageText : "صفحه",
+      beforePageText : "ص�?حه",
       afterPageText  : "از {0}",
-      firstText      : "صفحه اول",
-      prevText       : "صفحه قبل",
-      nextText       : "صفحه بعد",
-      lastText       : "صفحه آخر",
+      firstText      : "ص�?حه اول",
+      prevText       : "ص�?حه قبل",
+      nextText       : "ص�?حه بعد",
+      lastText       : "ص�?حه آخر",
       refreshText    : "بازخوانی",
       displayMsg     : "نمایش {0} - {1} of {2}",
       emptyMsg       : 'داده ای برای نمایش وجود ندارد'
@@ -125,9 +125,9 @@ if(Ext.PagingToolbar){
 
 if(Ext.form.TextField){
    Ext.apply(Ext.form.TextField.prototype, {
-      minLengthText : "حداقل طول این فیلد برابر است با {0}",
-      maxLengthText : "حداکثر طول این فیلد برابر است با {0}",
-      blankText     : "این فیلد باید مقداری داشته باشد",
+      minLengthText : "حداقل طول این �?یلد برابر است با {0}",
+      maxLengthText : "حداکثر طول این �?یلد برابر است با {0}",
+      blankText     : "این �?یلد باید مقداری داشته باشد",
       regexText     : "",
       emptyText     : null
    });
@@ -135,19 +135,19 @@ if(Ext.form.TextField){
 
 if(Ext.form.NumberField){
    Ext.apply(Ext.form.NumberField.prototype, {
-      minText : "حداقل مقدار این فیلد برابر است با {0}",
-      maxText : "حداکثر مقدار این فیلد برابر است با {0}",
+      minText : "حداقل مقدار این �?یلد برابر است با {0}",
+      maxText : "حداکثر مقدار این �?یلد برابر است با {0}",
       nanText : "{0} یک عدد نیست"
    });
 }
 
 if(Ext.form.DateField){
    Ext.apply(Ext.form.DateField.prototype, {
-      disabledDaysText  : "غیرفعال",
-      disabledDatesText : "غیرفعال",
+      disabledDaysText  : "غیر�?عال",
+      disabledDatesText : "غیر�?عال",
       minText           : "تاریخ باید پس از {0} باشد",
       maxText           : "تاریخ باید پس از {0} باشد",
-      invalidText       : "{0} تاریخ صحیحی نیست - فرمت صحیح {1}",
+      invalidText       : "{0} تاریخ صحیحی نیست - �?رمت صحیح {1}",
       format            : "y/m/d"
    });
 }
@@ -161,16 +161,16 @@ if(Ext.form.ComboBox){
 
 if(Ext.form.VTypes){
    Ext.apply(Ext.form.VTypes, {
-      emailText    : 'مقدار این فیلد باید یک ایمیل با این فرمت باشد "user@example.com"',
-      urlText      : 'مقدار این آدرس باید یک آدرس سایت با این فرمت باشد "http:/'+'/www.example.com"',
-      alphaText    : 'مقدار این فیلد باید فقط از حروف الفبا و _ تشکیل شده باشد ',
-      alphanumText : 'مقدار این فیلد باید فقط از حروف الفبا، اعداد و _ تشکیل شده باشد'
+      emailText    : 'مقدار این �?یلد باید یک ایمیل با این �?رمت باشد "user@example.com"',
+      urlText      : 'مقدار این آدرس باید یک آدرس سایت با این �?رمت باشد "http:/'+'/www.example.com"',
+      alphaText    : 'مقدار این �?یلد باید �?قط از حرو�? ال�?با و _ تشکیل شده باشد ',
+      alphanumText : 'مقدار این �?یلد باید �?قط از حرو�? ال�?با، اعداد و _ تشکیل شده باشد'
    });
 }
 
 if(Ext.form.HtmlEditor){
   Ext.apply(Ext.form.HtmlEditor.prototype, {
-    createLinkText : 'لطفا آدرس لینک را وارد کنید:',
+    createLinkText : 'لط�?ا آدرس لینک را وارد کنید:',
     buttonTips : {
       bold : {
         title: 'تیره (Ctrl+B)',
@@ -188,8 +188,8 @@ if(Ext.form.HtmlEditor){
         cls: 'x-html-editor-tip'
       },
       increasefontsize : {
-        title: 'افزایش اندازه',
-        text: 'اندازه فونت را افزایش می دهد.',
+        title: 'ا�?زایش اندازه',
+        text: 'اندازه �?ونت را ا�?زایش می دهد.',
         cls: 'x-html-editor-tip'
       },
       decreasefontsize : {
@@ -199,7 +199,7 @@ if(Ext.form.HtmlEditor){
       },
       backcolor : {
         title: 'رنگ زمینه متن',
-        text: 'برای تغییر رنگ زمینه متن استفاده می شود.',
+        text: 'برای تغییر رنگ زمینه متن است�?اده می شود.',
         cls: 'x-html-editor-tip'
       },
       forecolor : {
@@ -214,7 +214,7 @@ if(Ext.form.HtmlEditor){
       },
       justifycenter : {
         title: 'متن در وسط ',
-        text: 'نمایش متن در قسمت وسط صفحه و رعابت سمت چپ و راست.',
+        text: 'نمایش متن در قسمت وسط ص�?حه و رعابت سمت چپ و راست.',
         cls: 'x-html-editor-tip'
       },
       justifyright : {
@@ -239,7 +239,7 @@ if(Ext.form.HtmlEditor){
       },
       sourceedit : {
         title: 'ویرایش سورس',
-        text: 'رفتن به حالت ویرایش سورس.',
+        text: 'ر�?تن به حالت ویرایش سورس.',
         cls: 'x-html-editor-tip'
       }
     }
@@ -248,9 +248,9 @@ if(Ext.form.HtmlEditor){
 
 if(Ext.grid.GridView){
    Ext.apply(Ext.grid.GridView.prototype, {
-      sortAscText  : "مرتب سازی افزایشی",
+      sortAscText  : "مرتب سازی ا�?زایشی",
       sortDescText : "مرتب سازی کاهشی",
-      lockText     : "قفل ستون ها",
+      lockText     : "ق�?ل ستون ها",
       unlockText   : "بازکردن ستون ها",
       columnsText  : "ستون ها"
    });

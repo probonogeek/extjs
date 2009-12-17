@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -132,7 +132,7 @@ El.prototype = {
             }
         }
         if(o.style){
-            Ext.DomHelper.applyStyles(el, o.style);
+            DH.applyStyles(el, o.style);
         }
         return this;
     },
@@ -141,6 +141,13 @@ El.prototype = {
     /**
      * @event click
      * Fires when a mouse click is detected within the element.
+     * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
+     * @param {HtmlElement} t The target of the event.
+     * @param {Object} o The options configuration passed to the {@link #addListener} call.
+     */
+    /**
+     * @event contextmenu
+     * Fires when a right click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
@@ -444,11 +451,11 @@ El.prototype = {
 
     /**
      * Appends an event handler to this element.  The shorthand version {@link #on} is equivalent.
-     * @param {String} eventName The type of event to handle
+     * @param {String} eventName The name of event to handle.
      * @param {Function} fn The handler function the event invokes. This function is passed
      * the following parameters:<ul>
      * <li><b>evt</b> : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
-     * <li><b>el</b> : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
+     * <li><b>el</b> : HtmlElement<div class="sub-desc">The DOM element which was the target of the event.
      * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
      * <li><b>o</b> : Object<div class="sub-desc">The options object from the addListener call.</div></li>
      * </ul>
@@ -562,10 +569,10 @@ el.removeListener('click', this.handlerFn);
 // or
 el.un('click', this.handlerFn);
 </code></pre>
-     * @param {String} eventName the type of event to remove
-     * @param {Function} fn the method the event invokes
-     * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
-     * to this Element.
+     * @param {String} eventName The name of the event from which to remove the handler.
+     * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+     * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+     * then this must refer to the same object.
      * @return {Ext.Element} this
      */
     removeListener : function(eventName, fn, scope){
@@ -629,16 +636,19 @@ el.un('click', this.handlerFn);
             dom = me.dom;
         
         me.removeAllListeners();
-        delete El.cache[dom.id];
-        delete El.dataCache[dom.id]
-        Ext.removeNode(dom);
+        if (dom) {
+            delete me.dom;
+            delete El.cache[dom.id];
+            delete El.dataCache[dom.id];
+            Ext.removeNode(dom);
+        }
     },
 
     /**
      * Sets up event handlers to call the passed functions when the mouse is moved into and out of the Element.
      * @param {Function} overFn The function to call when the mouse enters the Element.
      * @param {Function} outFn The function to call when the mouse leaves the Element.
-     * @param {Object} scope (optional) The scope (<tt>this</tt> reference) in which the functions are executed. Defaults to the Element's DOM element.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the functions are executed. Defaults to the Element's DOM element.
      * @param {Object} options (optional) Options for the listener. See {@link Ext.util.Observable#addListener the <tt>options</tt> parameter}.
      * @return {Ext.Element} this
      */
@@ -694,7 +704,9 @@ el.un('click', this.handlerFn);
     * @return {Ext.Element} this
      */
     update : function(html) {
-        this.dom.innerHTML = html;
+        if (this.dom) {
+            this.dom.innerHTML = html;
+        }
         return this;
     }
 };
@@ -707,9 +719,9 @@ El.addMethods = function(o){
 
 /**
  * Appends an event handler (shorthand for {@link #addListener}).
- * @param {String} eventName The type of event to handle
- * @param {Function} fn The handler function the event invokes
- * @param {Object} scope (optional) The scope (this element) of the handler function
+ * @param {String} eventName The name of event to handle.
+ * @param {Function} fn The handler function the event invokes.
+ * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function is executed.
  * @param {Object} options (optional) An object containing standard {@link #addListener} options
  * @member Ext.Element
  * @method on
@@ -718,10 +730,10 @@ ep.on = ep.addListener;
 
 /**
  * Removes an event handler from this element (see {@link #removeListener} for additional notes).
- * @param {String} eventName the type of event to remove
- * @param {Function} fn the method the event invokes
- * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
- * to this Element.
+ * @param {String} eventName The name of the event from which to remove the handler.
+ * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+ * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+ * then this must refer to the same object.
  * @return {Ext.Element} this
  * @member Ext.Element
  * @method un
@@ -814,7 +826,7 @@ El.data = function(el, key, value){
     if(arguments.length == 2){
         return c[key];    
     }else{
-        c[key] = value;
+        return (c[key] = value);
     }
 };
 

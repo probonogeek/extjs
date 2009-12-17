@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.menu.BaseItem"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.menu.BaseItem"></div>/**
  * @class Ext.menu.BaseItem
  * @extends Ext.Component
  * The base class for all items that render into menus.  BaseItem provides default rendering, activated state
@@ -147,8 +153,13 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
 
     // private
     handleClick : function(e){
+        var pm = this.parentMenu;
         if(this.hideOnClick){
-            this.parentMenu.hide.defer(this.clickHideDelay, this.parentMenu, [true]);
+            if(pm.floating){
+                pm.hide.defer(this.clickHideDelay, pm, [true]);
+            }else{
+                pm.deactivateActive();
+            }
         }
     },
 
@@ -158,6 +169,6 @@ Ext.extend(Ext.menu.BaseItem, Ext.Component, {
     // private. Do nothing
     hideMenu : Ext.emptyFn
 });
-Ext.reg('menubaseitem', Ext.menu.BaseItem);</pre>    
+Ext.reg('menubaseitem', Ext.menu.BaseItem);</pre>
 </body>
 </html>

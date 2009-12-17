@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -67,6 +67,9 @@ var recId = 100; // provide unique id for the record
 var r = new myStore.recordType(defaultData, ++recId); // create new record
 myStore.{@link #insert}(0, r); // insert a new record into the store (also see {@link #add})
  * </code></pre>
+ * <p><u>Writing Data</u></p>
+ * <p>And <b>new in Ext version 3</b>, use the new {@link Ext.data.DataWriter DataWriter} to create an automated, <a href="http://extjs.com/deploy/dev/examples/writer/writer.html">Writable Store</a>
+ * along with <a href="http://extjs.com/deploy/dev/examples/restful/restful.html">RESTful features.</a>
  * @constructor
  * Creates a new Store.
  * @param {Object} config A config object containing the objects needed for the Store to access data,
@@ -95,7 +98,7 @@ Ext.data.Store = function(config){
     }
 
     Ext.apply(this, config);
-    
+
     this.paramNames = Ext.applyIf(this.paramNames || {}, this.defaultParamNames);
 
     if(this.url && !this.proxy){
@@ -113,7 +116,8 @@ Ext.data.Store = function(config){
             this.recordType = this.reader.recordType;
         }
         if(this.reader.onMetaChange){
-            this.reader.onMetaChange = this.onMetaChange.createDelegate(this);
+            //this.reader.onMetaChange = this.onMetaChange.createDelegate(this);
+            this.reader.onMetaChange = this.reader.onMetaChange.createSequence(this.onMetaChange, this);
         }
         if (this.writer) { // writer passed
             this.writer.meta = this.reader.meta;
@@ -245,6 +249,7 @@ var grid = new Ext.grid.EditorGridPanel({
          * @event clear
          * Fires when the data cache has been cleared.
          * @param {Store} this
+         * @param {Record[]} The records that were cleared.
          */
         'clear',
         /**
@@ -286,7 +291,7 @@ var grid = new Ext.grid.EditorGridPanel({
         'loadexception',
         /**
          * @event beforewrite
-         * @param {DataProxy} this
+         * @param {Ext.data.Store} store
          * @param {String} action [Ext.data.Api.actions.create|update|destroy]
          * @param {Record/Array[Record]} rs
          * @param {Object} options The loading options that were specified. Edit <code>options.params</code> to add Http parameters to the request.  (see {@link #save} for details)
@@ -296,9 +301,8 @@ var grid = new Ext.grid.EditorGridPanel({
         /**
          * @event write
          * Fires if the server returns 200 after an Ext.data.Api.actions CRUD action.
-         * Success or failure of the action is available in the <code>result['successProperty']</code> property.
-         * The server-code might set the <code>successProperty</code> to <tt>false</tt> if a database validation
-         * failed, for example.
+         * Success of the action is determined in the <code>result['successProperty']</code>property (<b>NOTE</b> for RESTful stores,
+         * a simple 20x response is sufficient for the actions "destroy" and "update".  The "create" action should should return 200 along with a database pk).
          * @param {Ext.data.Store} store
          * @param {String} action [Ext.data.Api.actions.create|update|destroy]
          * @param {Object} result The 'data' picked-out out of the response for convenience.
@@ -317,7 +321,8 @@ var grid = new Ext.grid.EditorGridPanel({
             scope: this,
             add: this.createRecords,
             remove: this.destroyRecord,
-            update: this.updateRecord
+            update: this.updateRecord,
+            clear: this.onClear
         });
     }
 
@@ -495,7 +500,7 @@ sortInfo: {
      * internally be set to <tt>false</tt>.</p>
      */
     restful: false,
-    
+
     /**
      * @cfg {Object} paramNames
      * <p>An object containing properties which specify the names of the paging and
@@ -515,7 +520,7 @@ sortInfo: {
      * the parameter names to use in its {@link #load requests}.
      */
     paramNames : undefined,
-    
+
     /**
      * @cfg {Object} defaultParamNames
      * Provides the default values for the {@link #paramNames} property. To globally modify the parameters
@@ -532,13 +537,17 @@ sortInfo: {
      * Destroys the store.
      */
     destroy : function(){
-        if(this.storeId){
-            Ext.StoreMgr.unregister(this);
+        if(!this.isDestroyed){
+            if(this.storeId){
+                Ext.StoreMgr.unregister(this);
+            }
+            this.clearData();
+            this.data = null;
+            Ext.destroy(this.proxy);
+            this.reader = this.writer = null;
+            this.purgeListeners();
+            this.isDestroyed = true;
         }
-        this.data = null;
-        Ext.destroy(this.proxy);
-        this.reader = this.writer = null;
-        this.purgeListeners();
     },
 
     /**
@@ -581,6 +590,7 @@ sortInfo: {
     remove : function(record){
         var index = this.data.indexOf(record);
         if(index > -1){
+            record.join(null);
             this.data.removeAt(index);
             if(this.pruneModifiedRecords){
                 this.modified.remove(record);
@@ -604,14 +614,25 @@ sortInfo: {
      * Remove all Records from the Store and fires the {@link #clear} event.
      */
     removeAll : function(){
-        this.data.clear();
+        var items = [];
+        this.each(function(rec){
+            items.push(rec);
+        });
+        this.clearData();
         if(this.snapshot){
             this.snapshot.clear();
         }
         if(this.pruneModifiedRecords){
             this.modified = [];
         }
-        this.fireEvent('clear', this);
+        this.fireEvent('clear', this, items);
+    },
+
+    // private
+    onClear: function(store, records){
+        Ext.each(records, function(rec, index){
+            this.destroyRecord(this, rec, index);
+        }, this);
     },
 
     /**
@@ -681,6 +702,14 @@ sortInfo: {
         delete o.callback;
         delete o.scope;
         this.lastOptions = o;
+    },
+
+    // private
+    clearData: function(){
+        this.data.each(function(rec) {
+            rec.join(null);
+        });
+        this.data.clear();
     },
 
     /**
@@ -814,10 +843,12 @@ sortInfo: {
         var doRequest = true;
 
         if (action === 'read') {
+            Ext.applyIf(options.params, this.baseParams);
             doRequest = this.fireEvent('beforeload', this, options);
         }
         else {
-            // if Writer is configured as listful, force single-recoord rs to be [{}} instead of {}
+            // if Writer is configured as listful, force single-record rs to be [{}] instead of {}
+            // TODO Move listful rendering into DataWriter where the @cfg is defined.  Should be easy now.
             if (this.writer.listful === true && this.restful !== true) {
                 rs = (Ext.isArray(rs)) ? rs : [rs];
             }
@@ -834,10 +865,11 @@ sortInfo: {
             // Send request to proxy.
             var params = Ext.apply({}, options.params, this.baseParams);
             if (this.writer && this.proxy.url && !this.proxy.restful && !Ext.data.Api.hasUniqueUrl(this.proxy, action)) {
-                params.xaction = action;
+                params.xaction = action;    // <-- really old, probaby unecessary.
             }
-            // Note:  Up until this point we've been dealing with 'action' as a key from Ext.data.Api.actions.  We'll flip it now
-            // and send the value into DataProxy#request, since it's the value which maps to the DataProxy#api
+            // Note:  Up until this point we've been dealing with 'action' as a key from Ext.data.Api.actions.
+            // We'll flip it now and send the value into DataProxy#request, since it's the value which maps to
+            // the user's configured DataProxy#api
             this.proxy.request(Ext.data.Api.actions[action], rs, params, this.reader, this.createCallback(action, rs), this, options);
         }
         return doRequest;
@@ -920,7 +952,7 @@ sortInfo: {
         var actions = Ext.data.Api.actions;
         return (action == 'read') ? this.loadRecords : function(data, response, success) {
             // calls: onCreateRecords | onUpdateRecords | onDestroyRecords
-            this['on' + Ext.util.Format.capitalize(action) + 'Records'](success, rs, data);
+            this['on' + Ext.util.Format.capitalize(action) + 'Records'](success, rs, [].concat(data));
             // If success === false here, exception will have been called in DataProxy
             if (success === true) {
                 this.fireEvent('write', this, action, data, response, rs);
@@ -930,6 +962,7 @@ sortInfo: {
 
     // Clears records from modified array after an exception event.
     // NOTE:  records are left marked dirty.  Do we want to commit them even though they were not updated/realized?
+    // TODO remove this method?
     clearModified : function(rs) {
         if (Ext.isArray(rs)) {
             for (var n=rs.length-1;n>=0;n--) {
@@ -990,7 +1023,7 @@ sortInfo: {
     // @protected onDestroyRecords proxy callback for destroy action
     onDestroyRecords : function(success, rs, data) {
         // splice each rec out of this.removed
-        rs = (rs instanceof Ext.data.Record) ? [rs] : rs;
+        rs = (rs instanceof Ext.data.Record) ? [rs] : [].concat(rs);
         for (var i=0,len=rs.length;i<len;i++) {
             this.removed.splice(this.removed.indexOf(rs[i]), 1);
         }
@@ -1045,7 +1078,7 @@ sortInfo: {
                 this.data = this.snapshot;
                 delete this.snapshot;
             }
-            this.data.clear();
+            this.clearData();
             this.data.addAll(r);
             this.totalLength = t;
             this.applySort();
@@ -1432,17 +1465,26 @@ sortInfo: {
         for(var i = 0, len = m.length; i < len; i++){
             m[i].reject();
         }
+        var m = this.removed.slice(0).reverse();
+        this.removed = [];
+        for(var i = 0, len = m.length; i < len; i++){
+            this.insert(m[i].lastIndex||0, m[i]);
+            m[i].reject();
+        }
     },
 
     // private
-    onMetaChange : function(meta, rtype, o){
-        this.recordType = rtype;
-        this.fields = rtype.prototype.fields;
+    onMetaChange : function(meta){
+        this.recordType = this.reader.recordType;
+        this.fields = this.recordType.prototype.fields;
         delete this.snapshot;
-        if(meta.sortInfo){
-            this.sortInfo = meta.sortInfo;
+        if(this.reader.meta.sortInfo){
+            this.sortInfo = this.reader.meta.sortInfo;
         }else if(this.sortInfo  && !this.fields.get(this.sortInfo.field)){
             delete this.sortInfo;
+        }
+        if(this.writer){
+            this.writer.meta = this.reader.meta;
         }
         this.modified = [];
         this.fireEvent('metachange', this, this.reader.meta);

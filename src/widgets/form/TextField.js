@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,44 +11,10 @@
  * or as the base class for more sophisticated input controls (like {@link Ext.form.TextArea}
  * and {@link Ext.form.ComboBox}).</p>
  * <p><b><u>Validation</u></b></p>
- * <p>Field validation is processed in a particular order.  If validation fails at any particular
- * step the validation routine halts.</p>
+ * <p>The validation procedure is described in the documentation for {@link #validateValue}.</p>
+ * <p><b><u>Alter Validation Behavior</u></b></p>
+ * <p>Validation behavior for each field can be configured:</p>
  * <div class="mdetail-params"><ul>
- * <li><b>1. Field specific validator</b>
- * <div class="sub-desc">
- * <p>If a field is configured with a <code>{@link Ext.form.TextField#validator validator}</code> function,
- * it will be passed the current field value.  The <code>{@link Ext.form.TextField#validator validator}</code>
- * function is expected to return boolean <tt>true</tt> if the value is valid or return a string to
- * represent the invalid message if invalid.</p>
- * </div></li>
- * <li><b>2. Built in Validation</b>
- * <div class="sub-desc">
- * <p>Basic validation is affected with the following configuration properties:</p>
- * <pre>
- * <u>Validation</u>    <u>Invalid Message</u>
- * <code>{@link Ext.form.TextField#allowBlank allowBlank}    {@link Ext.form.TextField#emptyText emptyText}</code>
- * <code>{@link Ext.form.TextField#minLength minLength}     {@link Ext.form.TextField#minLengthText minLengthText}</code>
- * <code>{@link Ext.form.TextField#maxLength maxLength}     {@link Ext.form.TextField#maxLengthText maxLengthText}</code>
- * </pre>
- * </div></li>
- * <li><b>3. Preconfigured Validation Types (VTypes)</b>
- * <div class="sub-desc">
- * <p>Using VTypes offers a convenient way to reuse validation. If a field is configured with a
- * <code>{@link Ext.form.TextField#vtype vtype}</code>, the corresponding {@link Ext.form.VTypes VTypes}
- * validation function will be used for validation.  If invalid, either the field's
- * <code>{@link Ext.form.TextField#vtypeText vtypeText}</code> or the VTypes vtype Text property will be
- * used for the invalid message.  Keystrokes on the field will be filtered according to the VTypes
- * vtype Mask property.</p>
- * </div></li>
- * <li><b>4. Field specific regex test</b>
- * <div class="sub-desc">
- * <p>Each field may also specify a <code>{@link Ext.form.TextField#regex regex}</code> test.
- * The invalid message for this test is configured with
- * <code>{@link Ext.form.TextField#regexText regexText}</code>.</p>
- * </div></li>
- * <li><b>Alter Validation Behavior</b>
- * <div class="sub-desc">
- * <p>Validation behavior for each field can be configured:</p><ul>
  * <li><code>{@link Ext.form.TextField#invalidText invalidText}</code> : the default validation message to
  * show if any validation step above does not provide a message when invalid</li>
  * <li><code>{@link Ext.form.TextField#maskRe maskRe}</code> : filter out keystrokes before any validation occurs</li>
@@ -58,12 +24,11 @@
  * <li><code>{@link Ext.form.Field#validateOnBlur validateOnBlur}</code>,
  * <code>{@link Ext.form.Field#validationDelay validationDelay}</code>, and
  * <code>{@link Ext.form.Field#validationEvent validationEvent}</code> : modify how/when validation is triggered</li>
- * </ul>
- * </div></li>
  * </ul></div>
- * @constructor
- * Creates a new TextField
+ * 
+ * @constructor Creates a new TextField
  * @param {Object} config Configuration options
+ * 
  * @xtype textfield
  */
 Ext.form.TextField = Ext.extend(Ext.form.Field,  {
@@ -151,11 +116,22 @@ var myField = new Ext.form.NumberField({
      */
     blankText : 'This field is required',
     /**
-     * @cfg {Function} validator A custom validation function to be called during field validation
+     * @cfg {Function} validator
+     * <p>A custom validation function to be called during field validation ({@link #validateValue})
      * (defaults to <tt>null</tt>). If specified, this function will be called first, allowing the
-     * developer to override the default validation process. This function will be passed the current
-     * field value and expected to return boolean <tt>true</tt> if the value is valid or a string
-     * error message if invalid.
+     * developer to override the default validation process.</p>
+     * <br><p>This function will be passed the following Parameters:</p>
+     * <div class="mdetail-params"><ul>
+     * <li><code>value</code>: <i>Mixed</i>
+     * <div class="sub-desc">The current field value</div></li>
+     * </ul></div>
+     * <br><p>This function is to Return:</p>
+     * <div class="mdetail-params"><ul>
+     * <li><code>true</code>: <i>Boolean</i>
+     * <div class="sub-desc"><code>true</code> if the value is valid</div></li>
+     * <li><code>msg</code>: <i>String</i>
+     * <div class="sub-desc">An error message if the value is invalid</div></li>
+     * </ul></div>
      */
     validator : null,
     /**
@@ -234,22 +210,13 @@ var myField = new Ext.form.NumberField({
             this.validationTask = new Ext.util.DelayedTask(this.validate, this);
             this.mon(this.el, 'keyup', this.filterValidation, this);
         }
-        else if(this.validationEvent !== false){
+        else if(this.validationEvent !== false && this.validationEvent != 'blur'){
         	this.mon(this.el, this.validationEvent, this.validate, this, {buffer: this.validationDelay});
         }
-        if(this.selectOnFocus || this.emptyText){
-            this.on('focus', this.preFocus, this);
-            
-            this.mon(this.el, 'mousedown', function(){
-                if(!this.hasFocus){
-                    this.el.on('mouseup', function(e){
-                        e.preventDefault();
-                    }, this, {single:true});
-                }
-            }, this);
+        if(this.selectOnFocus || this.emptyText){            
+            this.mon(this.el, 'mousedown', this.onMouseDown, this);
             
             if(this.emptyText){
-                this.on('blur', this.postBlur, this);
                 this.applyEmptyText();
             }
         }
@@ -261,9 +228,18 @@ var myField = new Ext.form.NumberField({
 			this.mon(this.el, 'click', this.autoSize, this);
         }
         if(this.enableKeyEvents){
-        	this.mon(this.el, 'keyup', this.onKeyUp, this);
-        	this.mon(this.el, 'keydown', this.onKeyDown, this);
-        	this.mon(this.el, 'keypress', this.onKeyPress, this);
+            this.mon(this.el, {
+                scope: this,
+                keyup: this.onKeyUp,
+                keydown: this.onKeyDown,
+                keypress: this.onKeyPress
+            });
+        }
+    },
+    
+    onMouseDown: function(e){
+        if(!this.hasFocus){
+            this.mon(this.el, 'mouseup', Ext.emptyFn, this, { single: true, preventDefault: true });
         }
     },
 
@@ -349,9 +325,7 @@ var myField = new Ext.form.NumberField({
             el.removeClass(this.emptyClass);
         }
         if(this.selectOnFocus){
-            (function(){
-                el.dom.select();
-            }).defer(this.inEditor && Ext.isIE ? 50 : 0);    
+            el.dom.select();
         }
     },
 
@@ -383,8 +357,70 @@ var myField = new Ext.form.NumberField({
     },
 
     /**
-     * Validates a value according to the field's validation rules and marks the field as invalid
-     * if the validation fails
+     * <p>Validates a value according to the field's validation rules and marks the field as invalid
+     * if the validation fails. Validation rules are processed in the following order:</p>
+     * <div class="mdetail-params"><ul>
+     * 
+     * <li><b>1. Field specific validator</b>
+     * <div class="sub-desc">
+     * <p>A validator offers a way to customize and reuse a validation specification.
+     * If a field is configured with a <code>{@link #validator}</code>
+     * function, it will be passed the current field value.  The <code>{@link #validator}</code>
+     * function is expected to return either:
+     * <div class="mdetail-params"><ul>
+     * <li>Boolean <tt>true</tt> if the value is valid (validation continues).</li>
+     * <li>a String to represent the invalid message if invalid (validation halts).</li>
+     * </ul></div>
+     * </div></li>
+     * 
+     * <li><b>2. Basic Validation</b>
+     * <div class="sub-desc">
+     * <p>If the <code>{@link #validator}</code> has not halted validation,
+     * basic validation proceeds as follows:</p>
+     * 
+     * <div class="mdetail-params"><ul>
+     * 
+     * <li><code>{@link #allowBlank}</code> : (Invalid message =
+     * <code>{@link #emptyText}</code>)<div class="sub-desc">
+     * Depending on the configuration of <code>{@link #allowBlank}</code>, a
+     * blank field will cause validation to halt at this step and return
+     * Boolean true or false accordingly.  
+     * </div></li>
+     * 
+     * <li><code>{@link #minLength}</code> : (Invalid message =
+     * <code>{@link #minLengthText}</code>)<div class="sub-desc">
+     * If the passed value does not satisfy the <code>{@link #minLength}</code>
+     * specified, validation halts.
+     * </div></li>
+     * 
+     * <li><code>{@link #maxLength}</code> : (Invalid message =
+     * <code>{@link #maxLengthText}</code>)<div class="sub-desc">
+     * If the passed value does not satisfy the <code>{@link #maxLength}</code>
+     * specified, validation halts.
+     * </div></li>
+     * 
+     * </ul></div>
+     * </div></li>
+     * 
+     * <li><b>3. Preconfigured Validation Types (VTypes)</b>
+     * <div class="sub-desc">
+     * <p>If none of the prior validation steps halts validation, a field
+     * configured with a <code>{@link #vtype}</code> will utilize the
+     * corresponding {@link Ext.form.VTypes VTypes} validation function.
+     * If invalid, either the field's <code>{@link #vtypeText}</code> or
+     * the VTypes vtype Text property will be used for the invalid message.
+     * Keystrokes on the field will be filtered according to the VTypes
+     * vtype Mask property.</p>
+     * </div></li>
+     * 
+     * <li><b>4. Field specific regex test</b>
+     * <div class="sub-desc">
+     * <p>If none of the prior validation steps halts validation, a field's
+     * configured <code>{@link #regex}</code> test will be processed.
+     * The invalid message for this test is configured with
+     * <code>{@link #regexText}</code>.</p>
+     * </div></li>
+     * 
      * @param {Mixed} value The value to validate
      * @return {Boolean} True if the value is valid, else false
      */

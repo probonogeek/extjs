@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.tree.TreePanel"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.tree.TreePanel"></div>/**
  * @class Ext.tree.TreePanel
  * @extends Ext.Panel
  * <p>The TreePanel provides tree-structured UI representation of tree-structured data.</p>
@@ -124,6 +130,13 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
     enableDD : false,
     hlDrop : Ext.enableFx,
     pathSeparator: "/",
+    
+    /**
+     * @cfg {Array} bubbleEvents
+     * <p>An array of events that, when fired, should be bubbled to any parent container.
+     * Defaults to <tt>['add', 'remove']</tt>.
+     */
+    bubbleEvents: [],
 
     initComponent : function(){
         Ext.tree.TreePanel.superclass.initComponent.call(this);
@@ -308,6 +321,13 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
             * @param {Boolean} checked
             */
             "checkchange",
+            /**
+            * @event beforedblclick
+            * Fires before double click processing on a node. Return false to cancel the default action.
+            * @param {Node} node The node
+            * @param {Ext.EventObject} e The event object
+            */
+            "beforedblclick",
             /**
             * @event dblclick
             * Fires when a node is double clicked
@@ -638,9 +658,9 @@ new Ext.tree.TreePanel({
      */
     selectPath : function(path, attr, callback){
         attr = attr || "id";
-        var keys = path.split(this.pathSeparator);
-        var v = keys.pop();
-        if(keys.length > 0){
+        var keys = path.split(this.pathSeparator),
+            v = keys.pop();
+        if(keys.length > 1){
             var f = function(success, node){
                 if(success && node){
                     var n = node.findChild(attr, v);
@@ -916,6 +936,6 @@ new Ext.tree.TreePanel({
 
 Ext.tree.TreePanel.nodeTypes = {};
 
-Ext.reg('treepanel', Ext.tree.TreePanel);</pre>    
+Ext.reg('treepanel', Ext.tree.TreePanel);</pre>
 </body>
 </html>

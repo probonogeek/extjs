@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -23,10 +23,14 @@
 Ext.QuickTips.init(); // to display button quicktips
 
 var myStore = new Ext.data.Store({
+    reader: new Ext.data.JsonReader({
+        {@link Ext.data.JsonReader#totalProperty totalProperty}: 'results', 
+        ...
+    }),
     ...
 });
 
-var myPageSize = 25;  // server script should only send back 25 items
+var myPageSize = 25;  // server script should only send back 25 items at a time
 
 var grid = new Ext.grid.GridPanel({
     ...
@@ -47,20 +51,43 @@ var grid = new Ext.grid.GridPanel({
  * <pre><code>
 store.load({
     params: {
-        start: 0,          // specify params for the first page load if using paging
+        // specify params for the first page load if using paging
+        start: 0,          
         limit: myPageSize,
+        // other params
         foo:   'bar'
     }
 });
  * </code></pre>
+ * 
+ * <p>If using {@link Ext.data.Store#autoLoad store's autoLoad} configuration:</p>
+ * <pre><code>
+var myStore = new Ext.data.Store({
+    {@link Ext.data.Store#autoLoad autoLoad}: {params:{start: 0, limit: 25}},
+    ...
+});
+ * </code></pre>
+ * 
+ * <p>The packet sent back from the server would have this form:</p>
+ * <pre><code>
+{
+    "success": true,
+    "results": 2000, 
+    "rows": [ // <b>*Note:</b> this must be an Array 
+        { "id":  1, "name": "Bill", "occupation": "Gardener" },
+        { "id":  2, "name":  "Ben", "occupation": "Horticulturalist" },
+        ...
+        { "id": 25, "name":  "Sue", "occupation": "Botanist" }
+    ]
+}
+ * </code></pre>
  * <p><u>Paging with Local Data</u></p>
  * <p>Paging can also be accomplished with local data using extensions:</p>
  * <div class="mdetail-params"><ul>
- * <li><a href="http://extjs.com/forum/showthread.php?t=57386">Ext.ux.data.PagingStore</a></li>
+ * <li><a href="http://extjs.com/forum/showthread.php?t=71532">Ext.ux.data.PagingStore</a></li>
  * <li>Paging Memory Proxy (examples/ux/PagingMemoryProxy.js)</li>
  * </ul></div>
- * @constructor
- * Create a new PagingToolbar
+ * @constructor Create a new PagingToolbar
  * @param {Object} config The config object
  * @xtype paging
  */
@@ -145,10 +172,13 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     refreshText : 'Refresh',
 
     /**
-     * @deprecated
-     * <b>The defaults for these should be set in the data store.</b>
-     * Object mapping of parameter names used for load calls, initially set to:
+     * <p><b>Deprecated</b>. <code>paramNames</code> should be set in the <b>data store</b>
+     * (see {@link Ext.data.Store#paramNames}).</p>
+     * <br><p>Object mapping of parameter names used for load calls, initially set to:</p>
      * <pre>{start: 'start', limit: 'limit'}</pre>
+     * @type Object
+     * @property paramNames
+     * @deprecated
      */
 
     /**
@@ -214,7 +244,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
             tooltip: this.refreshText,
             overflowText: this.refreshText,
             iconCls: 'x-tbar-loading',
-            handler: this.refresh,
+            handler: this.doRefresh,
             scope: this
         })];
 
@@ -264,7 +294,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
         );
         this.on('afterlayout', this.onFirstLayout, this, {single: true});
         this.cursor = 0;
-        this.bindStore(this.store);
+        this.bindStore(this.store, true);
     },
 
     // private
@@ -390,6 +420,12 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     },
 
     // private
+    getParams : function(){
+        //retain backwards compat, allow params on the toolbar itself, if they exist.
+        return this.paramNames || this.store.paramNames;
+    },
+
+    // private
     beforeLoad : function(){
         if(this.rendered && this.refresh){
             this.refresh.disable();
@@ -440,7 +476,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     /**
      * Refresh the current page, has the same effect as clicking the 'refresh' button.
      */
-    refresh : function(){
+    doRefresh : function(){
         this.doLoad(this.cursor);
     },
 
@@ -452,11 +488,15 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     bindStore : function(store, initial){
         var doLoad;
         if(!initial && this.store){
-            this.store.un('beforeload', this.beforeLoad, this);
-            this.store.un('load', this.onLoad, this);
-            this.store.un('exception', this.onLoadError, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un('beforeload', this.beforeLoad, this);
+                this.store.un('load', this.onLoad, this);
+                this.store.un('exception', this.onLoadError, this);
+            }
+            if(!store){
+                this.store = null;
             }
         }
         if(store){
@@ -467,7 +507,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
                 load: this.onLoad,
                 exception: this.onLoadError
             });
-            doLoad = store.getCount() > 0;
+            doLoad = true;
         }
         this.store = store;
         if(doLoad){

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -157,6 +157,13 @@ Ext.ux.grid.BufferView = Ext.extend(Ext.grid.GridView, {
 			this.doUpdate();
 		}
 	},
+    
+    onRemove : function(ds, record, index, isUpdate){
+        Ext.ux.grid.BufferView.superclass.onRemove.apply(this, arguments);
+        if(isUpdate !== true){
+            this.update();
+        }
+    },
 
 	doUpdate: function(){
 		if (this.getVisibleRowCount() > 0) {

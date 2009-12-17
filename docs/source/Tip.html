@@ -5,9 +5,16 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.Tip"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.Tip"></div>/**
  * @class Ext.Tip
  * @extends Ext.Panel
+ * @xtype tip
  * This is the base class for {@link Ext.QuickTip} and {@link Ext.Tooltip} that provides the basic layout and
  * positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned
  * tips that are displayed programmatically, or it can be extended to provide custom tip implementations.
@@ -136,6 +143,8 @@ tip.showBy('my-el', 'tl-tr');
     }
 });
 
+Ext.reg('tip', Ext.Tip);
+
 // private - custom Tip DD implementation
 Ext.Tip.DD = function(tip, config){
     Ext.apply(this, config);
@@ -155,6 +164,6 @@ Ext.extend(Ext.Tip.DD, Ext.dd.DD, {
     endDrag : function(e){
         this.tip.el.enableShadow(true);
     }
-});</pre>    
+});</pre>
 </body>
 </html>

@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.Updater"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.Updater"></div>/**
  * @class Ext.Updater
  * @extends Ext.util.Observable
  * Provides AJAX-style update capabilities for Element objects.  Updater can be used to {@link #update}
@@ -492,7 +498,7 @@ Ext.Updater.defaults = {
     * Blank page URL to use with SSL file uploads (defaults to {@link Ext#SSL_SECURE_URL} if set, or "javascript:false").
     * @type String
     */
-    sslBlankUrl : (Ext.SSL_SECURE_URL || "javascript:false")      
+    sslBlankUrl : Ext.SSL_SECURE_URL      
 };
 
 
@@ -534,6 +540,6 @@ Ext.Updater.BasicRenderer.prototype = {
      render : function(el, response, updateManager, callback){	     
         el.update(response.responseText, updateManager.loadScripts, callback);
     }
-};</pre>    
+};</pre>
 </body>
 </html>

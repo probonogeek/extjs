@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.tree.TreeLoader"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.tree.TreeLoader"></div>/**
  * @class Ext.tree.TreeLoader
  * @extends Ext.util.Observable
  * A TreeLoader provides for lazy loading of an {@link Ext.tree.TreeNode}'s child
@@ -162,7 +168,7 @@ paramOrder: 'param1|param2|param'
             }
         }
         if(this.doPreload(node)){ // preloaded json children
-            this.runCallback(callback, scope || node, []);
+            this.runCallback(callback, scope || node, [node]);
         }else if(this.directFn || this.dataUrl || this.url){
             this.requestData(node, callback, scope || node);
         }
@@ -272,7 +278,7 @@ paramOrder: 'param1|param2|param'
     * Example:<pre><code>
 new Ext.tree.TreePanel({
     ...
-    new Ext.tree.TreeLoader({
+    loader: new Ext.tree.TreeLoader({
         url: 'dataUrl',
         createNode: function(attr) {
 //          Allow consolidation consignments to have
@@ -281,7 +287,7 @@ new Ext.tree.TreePanel({
                 attr.iconCls = 'x-consol',
                 attr.allowDrop = true;
             }
-            return Ext.tree.TreeLoader.prototype.call(this, attr);
+            return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
         }
     }),
     ...
@@ -294,7 +300,7 @@ new Ext.tree.TreePanel({
         if(this.baseAttrs){
             Ext.applyIf(attr, this.baseAttrs);
         }
-        if(this.applyLoader !== false){
+        if(this.applyLoader !== false && !attr.loader){
             attr.loader = this;
         }
         if(typeof attr.uiProvider == 'string'){
@@ -340,6 +346,6 @@ new Ext.tree.TreePanel({
         this.fireEvent("loadexception", this, a.node, response);
         this.runCallback(a.callback, a.scope || a.node, [a.node]);
     }
-});</pre>    
+});</pre>
 </body>
 </html>

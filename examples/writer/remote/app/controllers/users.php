@@ -46,29 +46,33 @@ class Users extends ApplicationController {
      */
     public function update() {
         $res = new Response();
-        if (is_array($this->id)) {
+
+        if (!get_class($this->params)) {
             $res->data = array();
-            foreach ($this->id as $idx => $id) {
-                if ($rec = User::update($id, $this->params[$idx])) {
+            foreach ($this->params as $data) {
+                if ($rec = User::update($data->id, $data)) {
                     array_push($res->data, $rec->to_hash());
                 }
             }
             $res->success = true;
             $res->message = "Updated " . count($res->data) . " records";
         } else {
-            if ($rec = User::update($this->id, $this->params)) {
+            if ($rec = User::update($this->params->id, $this->params)) {
                 $res->data = $rec->to_hash();
-                $res->success = true;
-                $res->message = "Updated record";
+
+                // SIMULATE ERROR:  All records having odd-numbered ID have error.
+                if ($rec->id % 2) {
+                    $res->success = false;
+                    $res->message = "SIMULATED ERROR:  Lorem ipsum dolor sit amet, placerat consectetuer, nec lacus imperdiet velit dui interdum vestibulum, sagittis lectus morbi, urna aliquet minus natoque commodo egestas non, libero libero arcu sed sed.";
+                } else {
+                    $res->success = true;
+                    $res->message = "Updated record";
+                }
             } else {
-                $res->message = "Failed to updated record";
+                $res->message = "Failed to updated record " . $this->params->id;
                 $res->success = false;
             }
-            // SIMULATE ERROR:  All records having odd-numbered ID have error.
-            if ($this->id % 2) {
-                $res->success = false;
-                $res->message = "SIMULATED ERROR:  Lorem ipsum dolor sit amet, placerat consectetuer, nec lacus imperdiet velit dui interdum vestibulum, sagittis lectus morbi, urna aliquet minus natoque commodo egestas non, libero libero arcu sed sed.";
-            }
+
         }
         return $res->to_json();
     }

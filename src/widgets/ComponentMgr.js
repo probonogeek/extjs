@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,12 +11,12 @@
  * {@link Ext.Component#id id} (see {@link #get}, or the convenience method {@link Ext#getCmp Ext.getCmp}).</p>
  * <p>This object also provides a registry of available Component <i>classes</i>
  * indexed by a mnemonic code known as the Component's {@link Ext.Component#xtype xtype}.
- * The <tt>{@link Ext.Component#xtype xtype}</tt> provides a way to avoid instantiating child Components
+ * The <code>{@link Ext.Component#xtype xtype}</code> provides a way to avoid instantiating child Components
  * when creating a full, nested config object for a complete Ext page.</p>
  * <p>A child Component may be specified simply as a <i>config object</i>
- * as long as the correct <tt>{@link Ext.Component#xtype xtype}</tt> is specified so that if and when the Component
+ * as long as the correct <code>{@link Ext.Component#xtype xtype}</code> is specified so that if and when the Component
  * needs rendering, the correct type can be looked up for lazy instantiation.</p>
- * <p>For a list of all available <tt>{@link Ext.Component#xtype xtypes}</tt>, see {@link Ext.Component}.</p>
+ * <p>For a list of all available <code>{@link Ext.Component#xtype xtypes}</code>, see {@link Ext.Component}.</p>
  * @singleton
  */
 Ext.ComponentMgr = function(){
@@ -45,7 +45,7 @@ Ext.ComponentMgr = function(){
          * Returns a component by {@link Ext.Component#id id}.
          * For additional details see {@link Ext.util.MixedCollection#get}.
          * @param {String} id The component {@link Ext.Component#id id}
-         * @return Ext.Component The Component, <tt>undefined</tt> if not found, or <tt>null</tt> if a
+         * @return Ext.Component The Component, <code>undefined</code> if not found, or <code>null</code> if a
          * Class was found.
          */
         get : function(id){
@@ -103,7 +103,7 @@ Ext.ComponentMgr = function(){
          * config object's {@link Ext.component#xtype xtype} to determine the class to instantiate.
          * @param {Object} config A configuration object for the Component you wish to create.
          * @param {Constructor} defaultType The constructor to provide the default Component type if
-         * the config object does not contain a <tt>xtype</tt>. (Optional if the config contains a <tt>xtype</tt>).
+         * the config object does not contain a <code>xtype</code>. (Optional if the config contains a <code>xtype</code>).
          * @return {Ext.Component} The newly instantiated Component.
          */
         create : function(config, defaultType){
@@ -129,7 +129,7 @@ Ext.ComponentMgr = function(){
          * config object's {@link Ext.component#ptype ptype} to determine the class to instantiate.
          * @param {Object} config A configuration object for the Plugin you wish to create.
          * @param {Constructor} defaultType The constructor to provide the default Plugin type if
-         * the config object does not contain a <tt>ptype</tt>. (Optional if the config contains a <tt>ptype</tt>).
+         * the config object does not contain a <code>ptype</code>. (Optional if the config contains a <code>ptype</code>).
          * @return {Ext.Component} The newly instantiated Plugin.
          */
         createPlugin : function(config, defaultType){
@@ -156,4 +156,15 @@ Ext.reg = Ext.ComponentMgr.registerType; // this will be called a lot internally
  * @method preg
  */
 Ext.preg = Ext.ComponentMgr.registerPlugin;
+/**
+ * Shorthand for {@link Ext.ComponentMgr#create}
+ * Creates a new Component from the specified config object using the
+ * config object's {@link Ext.component#xtype xtype} to determine the class to instantiate.
+ * @param {Object} config A configuration object for the Component you wish to create.
+ * @param {Constructor} defaultType The constructor to provide the default Component type if
+ * the config object does not contain a <code>xtype</code>. (Optional if the config contains a <code>xtype</code>).
+ * @return {Ext.Component} The newly instantiated Component.
+ * @member Ext
+ * @method create
+ */
 Ext.create = Ext.ComponentMgr.create;

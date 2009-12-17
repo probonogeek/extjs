@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,6 +8,39 @@
  * @class Ext.Template
  */
 Ext.apply(Ext.Template.prototype, {
+    /**
+     * @cfg {Boolean} disableFormats Specify <tt>true</tt> to disable format
+     * functions in the template. If the template does not contain
+     * {@link Ext.util.Format format functions}, setting <code>disableFormats</code>
+     * to true will reduce <code>{@link #apply}</code> time. Defaults to <tt>false</tt>.
+     * <pre><code>
+var t = new Ext.Template(
+    '&lt;div name="{id}"&gt;',
+        '&lt;span class="{cls}"&gt;{name} {value}&lt;/span&gt;',
+    '&lt;/div&gt;',
+    {
+        compiled: true,      // {@link #compile} immediately
+        disableFormats: true // reduce <code>{@link #apply}</code> time since no formatting
+    }    
+);
+     * </code></pre>
+     * For a list of available format functions, see {@link Ext.util.Format}.
+     */
+    disableFormats : false,				
+    /**
+     * See <code>{@link #disableFormats}</code>.
+     * @type Boolean
+     * @property disableFormats
+     */
+
+    /**
+     * The regular expression used to match template variables
+     * @type RegExp
+     * @property
+     * @hide repeat doc
+     */
+    re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g,
+
     /**
      * Returns an HTML fragment of this template with the specified values applied.
      * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
@@ -50,21 +83,6 @@ Ext.apply(Ext.Template.prototype, {
         return me.html.replace(me.re, fn);
     },
 		
-    /**
-     * <tt>true</tt> to disable format functions (defaults to <tt>false</tt>)
-     * @type Boolean
-     * @property
-     */
-    disableFormats : false,				
-	
-    /**
-     * The regular expression used to match template variables
-     * @type RegExp
-     * @property
-     * @hide repeat doc
-     */
-    re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g,
-    
     /**
      * Compiles the template into an internal function, eliminating the RegEx overhead.
      * @return {Ext.Template} this

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,14 +11,16 @@
  */
 Ext.data.JsonWriter = function(config) {
     Ext.data.JsonWriter.superclass.constructor.call(this, config);
+
     // careful to respect "returnJson", renamed to "encode"
+    // TODO: remove after v3 final release
     if (this.returnJson != undefined) {
         this.encode = this.returnJson;
     }
 }
 Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
     /**
-     * @cfg {Boolean} returnJson <b>Deprecated.  Use {@link Ext.data.JsonWriter#encode} instead.
+     * @cfg {Boolean} returnJson <b>Deprecated</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
      */
     returnJson : undefined,
     /**
@@ -28,7 +30,8 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * its own json-encoding.  In addition, if you're using {@link Ext.data.HttpProxy}, setting to <tt>false</tt>
      * will cause HttpProxy to transmit data using the <b>jsonData</b> configuration-params of {@link Ext.Ajax#request}
      * instead of <b>params</b>.  When using a {@link Ext.data.Store#restful} Store, some serverside frameworks are
-     * tuned to expect data through the jsonData mechanism.  In those cases, one will want to set <b>encode: <tt>false</tt></b>
+     * tuned to expect data through the jsonData mechanism.  In those cases, one will want to set <b>encode: <tt>false</tt></b>, as in
+     * let the lower-level connection object (eg: Ext.Ajax) do the encoding.
      */
     encode : true,
 
@@ -40,36 +43,37 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * @param {Object} data object populated according to DataReader meta-data "root" and "idProperty"
      */
     render : function(action, rs, params, data) {
-        Ext.apply(params, data);
-
-        if (this.encode === true) { // <-- @deprecated returnJson
-            if (Ext.isArray(rs) && data[this.meta.idProperty]) {
-                params[this.meta.idProperty] = Ext.encode(params[this.meta.idProperty]);
-            }
-            params[this.meta.root] = Ext.encode(params[this.meta.root]);
+        if (this.encode === true) {
+            params[this.meta.root] = Ext.encode(data);
+        } else {
+            params.jsonData = {};
+            params.jsonData[this.meta.root] = data;
         }
     },
     /**
-     * createRecord
+     * Implements abstract Ext.data.DataWriter#createRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     createRecord : function(rec) {
-        return this.toHash(rec);
+       return this.toHash(rec);
     },
     /**
-     * updateRecord
+     * Implements abstract Ext.data.DataWriter#updateRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     updateRecord : function(rec) {
         return this.toHash(rec);
 
     },
     /**
-     * destroyRecord
+     * Implements abstract Ext.data.DataWriter#destroyRecord
      * @protected
      * @param {Ext.data.Record} rec
+     * @return {Object}
      */
     destroyRecord : function(rec) {
         return rec.id;

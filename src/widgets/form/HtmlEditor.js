@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -102,7 +102,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     /**
      * @cfg {String} defaultValue A default value to be put into the editor to resolve focus issues (defaults to &#8203; (Zero-width space), &nbsp; (Non-breaking space) in Opera and IE6).
      */
-    defaultValue: (Ext.isOpera || Ext.isIE6) ? '&nbsp;' : '&#8203;',
+    defaultValue: (Ext.isOpera || Ext.isIE6) ? '&#160;' : '&#8203;',
 
     // private properties
     actionMode: 'wrap',
@@ -402,13 +402,14 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             var sz = this.el.getSize();
             this.setSize(sz.width, this.height || sz.height);
         }
+        this.resizeEl = this.positionEl = this.wrap;
     },
 
     createIFrame: function(){
         var iframe = document.createElement('iframe');
         iframe.name = Ext.id();
         iframe.frameBorder = '0';
-        iframe.src = Ext.isIE ? Ext.SSL_SECURE_URL : "javascript:;";
+        iframe.src = Ext.SSL_SECURE_URL;
         this.wrap.dom.appendChild(iframe);
 
         this.iframe = iframe;
@@ -462,7 +463,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             this.fontSelect.dom.disabled = disabled;
         }
         this.tb.items.each(function(item){
-            if(item.itemId != 'sourceedit'){
+            if(item.getItemId() != 'sourceedit'){
                 item.setDisabled(disabled);
             }
         });
@@ -472,15 +473,15 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     onResize : function(w, h){
         Ext.form.HtmlEditor.superclass.onResize.apply(this, arguments);
         if(this.el && this.iframe){
-            if(typeof w == 'number'){
+            if(Ext.isNumber(w)){
                 var aw = w - this.wrap.getFrameWidth('lr');
-                this.el.setWidth(this.adjustWidth('textarea', aw));
+                this.el.setWidth(aw);
                 this.tb.setWidth(aw);
                 this.iframe.style.width = Math.max(aw, 0) + 'px';
             }
-            if(typeof h == 'number'){
+            if(Ext.isNumber(h)){
                 var ah = h - this.wrap.getFrameWidth('tb') - this.tb.el.getHeight();
-                this.el.setHeight(this.adjustWidth('textarea', ah));
+                this.el.setHeight(ah);
                 this.iframe.style.height = Math.max(ah, 0) + 'px';
                 if(this.doc){
                     this.getEditorBody().style.height = Math.max((ah - (this.iframePad*2)), 0) + 'px';
@@ -538,19 +539,6 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         }
     },
 
-    // private (for BoxComponent)
-    adjustSize : Ext.BoxComponent.prototype.adjustSize,
-
-    // private (for BoxComponent)
-    getResizeEl : function(){
-        return this.wrap;
-    },
-
-    // private (for BoxComponent)
-    getPositionEl : function(){
-        return this.wrap;
-    },
-
     // private
     initEvents : function(){
         this.originalValue = this.getValue();
@@ -581,15 +569,19 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @param {String} html The HTML to be cleaned
      * @return {String} The cleaned HTML
      */
-    cleanHtml : function(html){
+    cleanHtml: function(html) {
         html = String(html);
-        if(html.length > 5){
-            if(Ext.isWebKit){ // strip safari nonsense
-                html = html.replace(/\sclass="(?:Apple-style-span|khtml-block-placeholder)"/gi, '');
-            }
+        if(Ext.isWebKit){ // strip safari nonsense
+            html = html.replace(/\sclass="(?:Apple-style-span|khtml-block-placeholder)"/gi, '');
         }
-        if(html == this.defaultValue){
-            html = '';
+        
+        /*
+         * Neat little hack. Strips out all the non-digit characters from the default
+         * value and compares it to the character code of the first character in the string
+         * because it can cause encoding issues when posted to the server.
+         */
+        if(html.charCodeAt(0) == this.defaultValue.replace(/\D/g, '')){
+            html = html.substring(1);
         }
         return html;
     },
@@ -754,7 +746,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
     // private
     adjustFont: function(btn){
-        var adjust = btn.itemId == 'increasefontsize' ? 1 : -1;
+        var adjust = btn.getItemId() == 'increasefontsize' ? 1 : -1;
 
         var v = parseInt(this.doc.queryCommandValue('FontSize') || 2, 10);
         if((Ext.isSafari && !Ext.isSafari2) || Ext.isChrome || Ext.isAir){
@@ -830,7 +822,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
     // private
     relayBtnCmd : function(btn){
-        this.relayCmd(btn.itemId);
+        this.relayCmd(btn.getItemId());
     },
 
     /**
@@ -904,12 +896,9 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 this.syncValue();
                 this.deferFocus();
             }
-        }else if(Ext.isGecko || Ext.isOpera){
+        }else{
             this.win.focus();
             this.execCmd('InsertHTML', text);
-            this.deferFocus();
-        }else if(Ext.isWebKit){
-            this.execCmd('InsertText', text);
             this.deferFocus();
         }
     },
@@ -956,6 +945,10 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 if(k == e.TAB){
                     e.stopEvent();
                     this.execCmd('InsertText','\t');
+                    this.deferFocus();
+                }else if(k == e.ENTER){
+                    e.stopEvent();
+                    this.execCmd('InsertHtml','<br /><br />');
                     this.deferFocus();
                 }
              };

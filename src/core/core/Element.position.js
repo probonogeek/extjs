@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,10 +18,6 @@ var D = Ext.lib.Dom,
         RELATIVE = "relative",
         AUTO = "auto",
         ZINDEX = "z-index";
-
-function animTest(args, animate, i) {
-	return this.preanim && !!animate ? this.preanim(args, i) : false	
-}
 
 Ext.Element.addMethods({
 	/**
@@ -66,7 +62,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setX : function(x, animate){	    
-	    return this.setXY([x, this.getY()], animTest.call(this, arguments, animate, 1));
+	    return this.setXY([x, this.getY()], this.animTest(arguments, animate, 1));
     },
 
     /**
@@ -76,7 +72,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setY : function(y, animate){	    
-	    return this.setXY([this.getX(), y], animTest.call(this, arguments, animate, 1));
+	    return this.setXY([this.getX(), y], this.animTest(arguments, animate, 1));
     },
 
     /**
@@ -145,7 +141,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setLocation : function(x, y, animate){
-        return this.setXY([x, y], animTest.call(this, arguments, animate, 2));
+        return this.setXY([x, y], this.animTest(arguments, animate, 2));
     },
 
     /**
@@ -157,7 +153,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     moveTo : function(x, y, animate){
-        return this.setXY([x, y], animTest.call(this, arguments, animate, 2));        
+        return this.setXY([x, y], this.animTest(arguments, animate, 2));        
     },    
     
     /**
@@ -298,6 +294,8 @@ Ext.Element.addMethods({
         return {left: (x - o[0] + l), top: (y - o[1] + t)}; 
     },
     
-    animTest : animTest
+    animTest : function(args, animate, i) {
+        return !!animate && this.preanim ? this.preanim(args, i) : false;
+    }
 });
 })();

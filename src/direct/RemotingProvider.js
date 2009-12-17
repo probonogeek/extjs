@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -102,9 +102,15 @@ TestAction.multiply(
     
     /**
      * @cfg {Number} maxRetries
-     * Number of times to re-attempt delivery on failure of a call.
+     * Number of times to re-attempt delivery on failure of a call. Defaults to <tt>1</tt>.
      */
     maxRetries: 1,
+    
+    /**
+     * @cfg {Number} timeout
+     * The timeout to use for each request. Defaults to <tt>undefined</tt>.
+     */
+    timeout: undefined,
 
     constructor : function(config){
         Ext.direct.RemotingProvider.superclass.constructor.call(this, config);
@@ -117,7 +123,7 @@ TestAction.multiply(
              * @param {Ext.direct.RemotingProvider} provider
              * @param {Ext.Direct.Transaction} transaction
              */            
-            'beforecall',
+            'beforecall',            
             /**
              * @event call
              * Fires immediately after the request to the server-side is sent. This does
@@ -127,7 +133,7 @@ TestAction.multiply(
              */            
             'call'
         );
-        this.namespace = (typeof this.namespace === 'string') ? Ext.ns(this.namespace) : this.namespace || window;
+        this.namespace = (Ext.isString(this.namespace)) ? Ext.ns(this.namespace) : this.namespace || window;
         this.transactions = {};
         this.callBuffer = [];
     },
@@ -136,8 +142,8 @@ TestAction.multiply(
     initAPI : function(){
         var o = this.actions;
         for(var c in o){
-            var cls = this.namespace[c] || (this.namespace[c] = {});
-            var ms = o[c];
+            var cls = this.namespace[c] || (this.namespace[c] = {}),
+                ms = o[c];
             for(var i = 0, len = ms.length; i < len; i++){
                 var m = ms[i];
                 cls[m.name] = this.createMethod(c, m);
@@ -171,8 +177,8 @@ TestAction.multiply(
         if(success){
             var events = this.getEvents(xhr);
             for(var i = 0, len = events.length; i < len; i++){
-                var e = events[i];
-                var t = this.getTransaction(e);
+                var e = events[i],
+                    t = this.getTransaction(e);
                 this.fireEvent('data', this, e);
                 if(t){
                     this.doCallback(t, e, true);
@@ -218,11 +224,10 @@ TestAction.multiply(
             url: this.url,
             callback: this.onData,
             scope: this,
-            ts: data
-        };
+            ts: data,
+            timeout: this.timeout
+        }, callData;
 
-        // send only needed data
-        var callData;
         if(Ext.isArray(data)){
             callData = [];
             for(var i = 0, len = data.length; i < len; i++){
@@ -234,7 +239,7 @@ TestAction.multiply(
 
         if(this.enableUrlEncode){
             var params = {};
-            params[typeof this.enableUrlEncode == 'string' ? this.enableUrlEncode : 'data'] = Ext.encode(callData);
+            params[Ext.isString(this.enableUrlEncode) ? this.enableUrlEncode : 'data'] = Ext.encode(callData);
             o.params = params;
         }else{
             o.jsonData = callData;
@@ -260,7 +265,7 @@ TestAction.multiply(
             if(!this.callTask){
                 this.callTask = new Ext.util.DelayedTask(this.combineAndSend, this);
             }
-            this.callTask.delay(typeof this.enableBuffer == 'number' ? this.enableBuffer : 10);
+            this.callTask.delay(Ext.isNumber(this.enableBuffer) ? this.enableBuffer : 10);
         }else{
             this.combineAndSend();
         }
@@ -359,8 +364,8 @@ TestAction.multiply(
     doCallback: function(t, e){
         var fn = e.status ? 'success' : 'failure';
         if(t && t.cb){
-            var hs = t.cb;
-            var result = e.result || e.data;
+            var hs = t.cb,
+                result = Ext.isDefined(e.result) ? e.result : e.data;
             if(Ext.isFunction(hs)){
                 hs(result, e);
             } else{

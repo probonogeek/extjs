@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -7,6 +7,7 @@
 /**
  * @class Ext.Tip
  * @extends Ext.Panel
+ * @xtype tip
  * This is the base class for {@link Ext.QuickTip} and {@link Ext.Tooltip} that provides the basic layout and
  * positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned
  * tips that are displayed programmatically, or it can be extended to provide custom tip implementations.
@@ -135,6 +136,8 @@ tip.showBy('my-el', 'tl-tr');
     }
 });
 
+Ext.reg('tip', Ext.Tip);
+
 // private - custom Tip DD implementation
 Ext.Tip.DD = function(tip, config){
     Ext.apply(this, config);
@@ -158,69 +161,85 @@ Ext.extend(Ext.Tip.DD, Ext.dd.DD, {
  * @class Ext.ToolTip
  * @extends Ext.Tip
  * A standard tooltip implementation for providing additional information when hovering over a target element.
+ * @xtype tooltip
  * @constructor
  * Create a new Tooltip
  * @param {Object} config The configuration options
  */
 Ext.ToolTip = Ext.extend(Ext.Tip, {
     /**
-     * When a Tooltip is configured with the {@link #delegate} option to cause selected child elements of the {@link #target}
-     * Element to each trigger a seperate show event, this property is set to the DOM element which triggered the show.
+     * When a Tooltip is configured with the <code>{@link #delegate}</code>
+     * option to cause selected child elements of the <code>{@link #target}</code>
+     * Element to each trigger a seperate show event, this property is set to
+     * the DOM element which triggered the show.
      * @type DOMElement
      * @property triggerElement
      */
     /**
-     * @cfg {Mixed} target The target HTMLElement, Ext.Element or id to monitor for mouseover events to trigger
-     * showing this ToolTip.
+     * @cfg {Mixed} target The target HTMLElement, Ext.Element or id to monitor
+     * for mouseover events to trigger showing this ToolTip.
      */
     /**
-     * @cfg {Boolean} autoHide True to automatically hide the tooltip after the mouse exits the target element
-     * or after the {@link #dismissDelay} has expired if set (defaults to true).  If {@link closable} = true a close
-     * tool button will be rendered into the tooltip header.
+     * @cfg {Boolean} autoHide True to automatically hide the tooltip after the
+     * mouse exits the target element or after the <code>{@link #dismissDelay}</code>
+     * has expired if set (defaults to true).  If <code>{@link closable} = true</code>
+     * a close tool button will be rendered into the tooltip header.
      */
     /**
-     * @cfg {Number} showDelay Delay in milliseconds before the tooltip displays after the mouse enters the
-     * target element (defaults to 500)
+     * @cfg {Number} showDelay Delay in milliseconds before the tooltip displays
+     * after the mouse enters the target element (defaults to 500)
      */
-    showDelay: 500,
+    showDelay : 500,
     /**
-     * @cfg {Number} hideDelay Delay in milliseconds after the mouse exits the target element but before the
-     * tooltip actually hides (defaults to 200).  Set to 0 for the tooltip to hide immediately.
+     * @cfg {Number} hideDelay Delay in milliseconds after the mouse exits the
+     * target element but before the tooltip actually hides (defaults to 200).
+     * Set to 0 for the tooltip to hide immediately.
      */
-    hideDelay: 200,
+    hideDelay : 200,
     /**
-     * @cfg {Number} dismissDelay Delay in milliseconds before the tooltip automatically hides (defaults to 5000).
-     * To disable automatic hiding, set dismissDelay = 0.
+     * @cfg {Number} dismissDelay Delay in milliseconds before the tooltip
+     * automatically hides (defaults to 5000). To disable automatic hiding, set
+     * dismissDelay = 0.
      */
-    dismissDelay: 5000,
+    dismissDelay : 5000,
     /**
-     * @cfg {Array} mouseOffset An XY offset from the mouse position where the tooltip should be shown (defaults to [15,18]).
+     * @cfg {Array} mouseOffset An XY offset from the mouse position where the
+     * tooltip should be shown (defaults to [15,18]).
      */
     /**
-     * @cfg {Boolean} trackMouse True to have the tooltip follow the mouse as it moves over the target element (defaults to false).
+     * @cfg {Boolean} trackMouse True to have the tooltip follow the mouse as it
+     * moves over the target element (defaults to false).
      */
     trackMouse : false,
     /**
-     * @cfg {Boolean} anchorToTarget True to anchor the tooltip to the target element, false to
-     * anchor it relative to the mouse coordinates (defaults to true).  When anchorToTarget is
-     * true, use {@link #defaultAlign} to control tooltip alignment to the target element.  When
-     * anchorToTarget is false, use {@link #anchorPosition} instead to control alignment.
+     * @cfg {Boolean} anchorToTarget True to anchor the tooltip to the target
+     * element, false to anchor it relative to the mouse coordinates (defaults
+     * to true).  When <code>anchorToTarget</code> is true, use
+     * <code>{@link #defaultAlign}</code> to control tooltip alignment to the
+     * target element.  When <code>anchorToTarget</code> is false, use
+     * <code>{@link #anchorPosition}</code> instead to control alignment.
      */
-    anchorToTarget: true,
+    anchorToTarget : true,
     /**
-     * @cfg {Number} anchorOffset A numeric pixel value used to offset the default position of the
-     * anchor arrow (defaults to 0).  When the anchor position is on the top or bottom of the tooltip,
-     * anchorOffset will be used as a horizontal offset.  Likewise, when the anchor position is on the
-     * left or right side, anchorOffset will be used as a vertical offset.
+     * @cfg {Number} anchorOffset A numeric pixel value used to offset the
+     * default position of the anchor arrow (defaults to 0).  When the anchor
+     * position is on the top or bottom of the tooltip, <code>anchorOffset</code>
+     * will be used as a horizontal offset.  Likewise, when the anchor position
+     * is on the left or right side, <code>anchorOffset</code> will be used as
+     * a vertical offset.
      */
-    anchorOffset: 0,
+    anchorOffset : 0,
     /**
-     * @cfg {String} delegate <p>Optional. A {@link Ext.DomQuery DomQuery} selector which allows selection of individual elements
-     * within the {@link #target} element to trigger showing and hiding the ToolTip as the mouse moves within the target.</p>
-     * <p>When specified, the child element of the target which caused a show event is placed into the {@link #triggerElement} property
+     * @cfg {String} delegate <p>Optional. A {@link Ext.DomQuery DomQuery}
+     * selector which allows selection of individual elements within the
+     * <code>{@link #target}</code> element to trigger showing and hiding the
+     * ToolTip as the mouse moves within the target.</p>
+     * <p>When specified, the child element of the target which caused a show
+     * event is placed into the <code>{@link #triggerElement}</code> property
      * before the ToolTip is shown.</p>
-     * <p>This may be useful when a Component has regular, repeating elements in it, each of which need a Tooltip which contains
-     * information specific to that element. For example:</p><pre><code>
+     * <p>This may be useful when a Component has regular, repeating elements
+     * in it, each of which need a Tooltip which contains information specific
+     * to that element. For example:</p><pre><code>
 var myGrid = new Ext.grid.gridPanel(gridConfig);
 myGrid.on('render', function(grid) {
     var store = grid.getStore();  // Capture the Store.
@@ -229,24 +248,27 @@ myGrid.on('render', function(grid) {
         target: view.mainBody,    // The overall target element.
         delegate: '.x-grid3-row', // Each grid row causes its own seperate show and hide.
         trackMouse: true,         // Moving within the row should not hide the tip.
-        renderTo: document.body,  // Render immediately so that tip.body can be referenced prior to the first show.
-        listeners: {              // Change content dynamically depending on which element triggered the show.
+        renderTo: document.body,  // Render immediately so that tip.body can be
+                                  //  referenced prior to the first show.
+        listeners: {              // Change content dynamically depending on which element
+                                  //  triggered the show.
             beforeshow: function updateTipBody(tip) {
                 var rowIndex = view.findRowIndex(tip.triggerElement);
-                tip.body.dom.innerHTML = "Over Record ID " + store.getAt(rowIndex).id;
+                tip.body.dom.innerHTML = 'Over Record ID ' + store.getAt(rowIndex).id;
             }
         }
     });
-});</code></pre>
+});
+     *</code></pre>
      */
 
     // private
-    targetCounter: 0,
+    targetCounter : 0,
 
-    constrainPosition: false,
+    constrainPosition : false,
 
     // private
-    initComponent: function(){
+    initComponent : function(){
         Ext.ToolTip.superclass.initComponent.call(this);
         this.lastActive = new Date();
         this.initTarget(this.target);
@@ -276,10 +298,10 @@ myGrid.on('render', function(grid) {
         var t;
         if((t = Ext.get(target))){
             if(this.target){
-                this.target = Ext.get(this.target);
-                this.target.un('mouseover', this.onTargetOver, this);
-                this.target.un('mouseout', this.onTargetOut, this);
-                this.target.un('mousemove', this.onMouseMove, this);
+                var tg = Ext.get(this.target);
+                this.mun(tg, 'mouseover', this.onTargetOver, this);
+                this.mun(tg, 'mouseout', this.onTargetOut, this);
+                this.mun(tg, 'mousemove', this.onMouseMove, this);
             }
             this.mon(t, {
                 mouseover: this.onTargetOver,
@@ -315,6 +337,9 @@ myGrid.on('render', function(grid) {
 
     // private
     getTargetXY : function(){
+        if(this.delegate){
+            this.anchorTarget = this.triggerElement;
+        }
         if(this.anchor){
             this.targetCounter++;
             var offsets = this.getOffsets();
@@ -392,7 +417,7 @@ myGrid.on('render', function(grid) {
         }else{
             var m = this.defaultAlign.match(/^([a-z]+)-([a-z]+)(\?)?$/);
             if(!m){
-               throw "AnchorTip.defaultAlign is invalid";
+               throw 'AnchorTip.defaultAlign is invalid';
             }
             this.tipAnchor = m[1].charAt(0);
         }
@@ -416,7 +441,7 @@ myGrid.on('render', function(grid) {
     },
 
     // private
-    getOffsets: function(){
+    getOffsets : function(){
         var offsets, ap = this.getAnchorPosition().charAt(0);
         if(this.anchorToTarget && !this.trackMouse){
             switch(ap){
@@ -545,6 +570,10 @@ myGrid.on('render', function(grid) {
         if(this.dismissDelay && this.autoHide !== false){
             this.dismissTimer = this.hide.defer(this.dismissDelay, this);
         }
+        if(this.anchor && !this.anchorEl.isVisible()){
+            this.syncAnchor();
+            this.anchorEl.show();
+        }
     },
 
     // private
@@ -639,9 +668,12 @@ myGrid.on('render', function(grid) {
         Ext.getDoc().un('mousedown', this.onDocMouseDown, this);
         Ext.ToolTip.superclass.onDestroy.call(this);
     }
-});/**
+});
+
+Ext.reg('tooltip', Ext.ToolTip);/**
  * @class Ext.QuickTip
  * @extends Ext.ToolTip
+ * @xtype quicktip
  * A specialized tooltip class for tooltips that can be specified in markup and automatically managed by the global
  * {@link Ext.QuickTips} instance.  See the QuickTips class header for additional usage details and examples.
  * @constructor
@@ -732,6 +764,23 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
     },
 
     // private
+    getTipCfg: function(e) {
+        var t = e.getTarget(), 
+            ttp, 
+            cfg;
+        if(this.interceptTitles && t.title){
+            ttp = t.title;
+            t.qtip = ttp;
+            t.removeAttribute("title");
+            e.preventDefault();
+        }else{
+            cfg = this.tagConfig;
+            ttp = t.qtip || Ext.fly(t).getAttribute(cfg.attribute, cfg.namespace);
+        }
+        return ttp;
+    },
+
+    // private
     onTargetOver : function(e){
         if(this.disabled){
             return;
@@ -741,7 +790,7 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
         if(!t || t.nodeType !== 1 || t == document || t == document.body){
             return;
         }
-        if(this.activeTarget && t == this.activeTarget.el){
+        if(this.activeTarget && ((t == this.activeTarget.el) || Ext.fly(this.activeTarget.el).contains(t))){
             this.clearTimer('hide');
             this.show();
             return;
@@ -756,18 +805,8 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
             this.delayShow();
             return;
         }
-        
-        var ttp, et = Ext.fly(t), cfg = this.tagConfig;
-        var ns = cfg.namespace;
-        if(this.interceptTitles && t.title){
-            ttp = t.title;
-            t.qtip = ttp;
-            t.removeAttribute("title");
-            e.preventDefault();
-        } else{
-            ttp = t.qtip || et.getAttribute(cfg.attribute, ns);
-        }
-        if(ttp){
+        var ttp, et = Ext.fly(t), cfg = this.tagConfig, ns = cfg.namespace;
+        if(ttp = this.getTipCfg(e)){
             var autoHide = et.getAttribute(cfg.hide, ns);
             this.activeTarget = {
                 el: t,
@@ -789,6 +828,12 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
 
     // private
     onTargetOut : function(e){
+
+        // If moving within the current target, and it does not have a new tip, ignore the mouseout
+        if (this.activeTarget && e.within(this.activeTarget.el) && !this.getTipCfg(e)) {
+            return;
+        }
+
         this.clearTimer('show');
         if(this.autoHide !== false){
             this.delayHide();
@@ -839,7 +884,8 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
         delete this.activeTarget;
         Ext.QuickTip.superclass.hide.call(this);
     }
-});/**
+});
+Ext.reg('quicktip', Ext.QuickTip);/**
  * @class Ext.QuickTips
  * <p>Provides attractive and customizable tooltips for any element. The QuickTips
  * singleton is used to configure and manage tooltips globally for multiple elements

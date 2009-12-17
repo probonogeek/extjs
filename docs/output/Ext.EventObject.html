@@ -1,4 +1,4 @@
-<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.EventObject-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.EventObject-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.EventObject-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="bookmark" href="../docs/?class=Ext.EventObject"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><h1>Class <a href="source/EventManager.html#cls-Ext.EventObject">Ext.EventObject</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">EventManager.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/EventManager.html#cls-Ext.EventObject">EventObject</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">Just as <a href="output/Ext.Element.html" ext:cls="Ext.Element">Ext.Element</a> wraps around a native DOM node, Ext.EventObject 
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.EventObject-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.EventObject-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.EventObject-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="bookmark" href="../docs/?class=Ext.EventObject"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><h1>Class <a href="source/EventManager.html#cls-Ext.EventObject">Ext.EventObject</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">EventManager.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/EventManager.html#cls-Ext.EventObject">EventObject</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr><tr><td class="hd-info"></td></tr></table><div class="description">Just as <a href="output/Ext.Element.html" ext:cls="Ext.Element">Ext.Element</a> wraps around a native DOM node, Ext.EventObject 
 wraps the browser's native event-object normalizing cross-browser differences,
 such as which mouse button is clicked, keys pressed, mechanisms to stop
 event-propagation along with a method to prevent default actions from taking place.
@@ -42,15 +42,15 @@ Ext.EventManager.addListener(<em>"myDiv"</em>, <em>'click'</em>, handleClick);</
     :
                                         Boolean<div class="mdesc"><div class="short">Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false...</div><div class="long">Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
 Example usage:<pre><code><i>// Handle click on any child of an element</i>
-		Ext.getBody().on(<em>'click'</em>, <b>function</b>(e){
-			<b>if</b>(e.within(<em>'some-el'</em>)){
-				alert(<em>'Clicked on a child of some-el!'</em>);
-			}
-		});
-		
-		<i>// Handle click directly on an element, ignoring clicks on child nodes</i>
-		Ext.getBody().on(<em>'click'</em>, <b>function</b>(e,t){
-			<b>if</b>((t.id == <em>'some-el'</em>) && !e.within(t, true)){
-				alert(<em>'Clicked directly on some-el!'</em>);
-			}
-		});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>el</code> : Mixed<div class="sub-desc">The id, DOM element or Ext.Element to check</div></li><li><code>related</code> : Boolean<div class="sub-desc">(optional) true to test if the related target is within el instead of the target</div></li><li><code>allowEl</code> : Boolean<div class="sub-desc">{optional} true to also check if the passed element is the target or related target</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">EventObject</td></tr></tbody></table><a id="Ext.EventObject-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>
+        Ext.getBody().on(<em>'click'</em>, <b>function</b>(e){
+            <b>if</b>(e.within(<em>'some-el'</em>)){
+                alert(<em>'Clicked on a child of some-el!'</em>);
+            }
+        });
+        
+        <i>// Handle click directly on an element, ignoring clicks on child nodes</i>
+        Ext.getBody().on(<em>'click'</em>, <b>function</b>(e,t){
+            <b>if</b>((t.id == <em>'some-el'</em>) && !e.within(t, true)){
+                alert(<em>'Clicked directly on some-el!'</em>);
+            }
+        });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>el</code> : Mixed<div class="sub-desc">The id, DOM element or Ext.Element to check</div></li><li><code>related</code> : Boolean<div class="sub-desc">(optional) true to test if the related target is within el instead of the target</div></li><li><code>allowEl</code> : Boolean<div class="sub-desc">{optional} true to also check if the passed element is the target or related target</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">EventObject</td></tr></tbody></table><a id="Ext.EventObject-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>

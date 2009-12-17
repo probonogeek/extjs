@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -317,16 +317,18 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     // private
     onUpdate : function(ds, record){
         var index = this.store.indexOf(record);
-        var sel = this.isSelected(index);
-        var original = this.all.elements[index];
-        var node = this.bufferRender([record], index)[0];
+        if(index > -1){
+            var sel = this.isSelected(index);
+            var original = this.all.elements[index];
+            var node = this.bufferRender([record], index)[0];
 
-        this.all.replaceElement(index, node, true);
-        if(sel){
-            this.selected.replaceElement(original, node);
-            this.all.item(index).addClass(this.selectedClass);
+            this.all.replaceElement(index, node, true);
+            if(sel){
+                this.selected.replaceElement(original, node);
+                this.all.item(index).addClass(this.selectedClass);
+            }
+            this.updateIndexes(index, index);
         }
-        this.updateIndexes(index, index);
     },
 
     // private
@@ -388,14 +390,18 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
      */
     bindStore : function(store, initial){
         if(!initial && this.store){
-            this.store.un("beforeload", this.onBeforeLoad, this);
-            this.store.un("datachanged", this.refresh, this);
-            this.store.un("add", this.onAdd, this);
-            this.store.un("remove", this.onRemove, this);
-            this.store.un("update", this.onUpdate, this);
-            this.store.un("clear", this.refresh, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un("beforeload", this.onBeforeLoad, this);
+                this.store.un("datachanged", this.refresh, this);
+                this.store.un("add", this.onAdd, this);
+                this.store.un("remove", this.onRemove, this);
+                this.store.un("update", this.onUpdate, this);
+                this.store.un("clear", this.refresh, this);
+            }
+            if(!store){
+                this.store = null;
             }
         }
         if(store){

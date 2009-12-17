@@ -1,0 +1,348 @@
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.ux.grid.GridFilters-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.ux.grid.GridFilters-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.ux.grid.GridFilters-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.ux.grid.GridFilters-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.ux.grid.GridFilters"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">GridFilters</pre></div><h1>Class <a href="source/GridFilters.html#cls-Ext.ux.grid.GridFilters">Ext.ux.grid.GridFilters</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.ux.grid</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">GridFilters.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/GridFilters.html#cls-Ext.ux.grid.GridFilters">GridFilters</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr><tr><td class="hd-info"></td></tr></table><div class="description"><p>GridFilter is a plugin (<code>ptype=<em>'gridfilters'</em></code>) for grids that
+allow for a slightly more robust representation of filtering than what is
+provided by the default store.</p>
+<p>Filtering is adjusted by the user using the grid's column header menu
+(this menu can be disabled through configuration). Through this menu users
+can configure, enable, and disable filters for each column.</p>
+<p><b><u>Features:</u></b></p>
+<div class="mdetail-params"><ul>
+<li><b>Filtering implementations</b> :
+<div class="sub-desc">
+Default filtering for Strings, Numeric Ranges, Date Ranges, Lists (which can
+be backed by a Ext.data.Store), and Boolean. Additional custom filter types
+and menus are easily created by extending Ext.ux.grid.filter.Filter.
+</div></li>
+<li><b>Graphical indicators</b> :
+<div class="sub-desc">
+Columns that are filtered have <a href="output/Ext.ux.grid.GridFilters.html#Ext.ux.grid.GridFilters-filterCls" ext:member="filterCls" ext:cls="Ext.ux.grid.GridFilters">a configurable css class</a>
+applied to the column headers.
+</div></li>
+<li><b>Paging</b> :
+<div class="sub-desc">
+If specified as a plugin to the grid's configured PagingToolbar, the current page
+will be reset to page 1 whenever you update the filters.
+</div></li>
+<li><b>Automatic Reconfiguration</b> :
+<div class="sub-desc">
+Filters automatically reconfigure when the grid 'reconfigure' event fires.
+</div></li>
+<li><b>Stateful</b> :
+Filter information will be persisted across page loads by specifying a
+<code>stateId</code> in the Grid configuration.
+<div class="sub-desc">
+The filter collection binds to the
+<code><a href="output/Ext.grid.GridPanel.html#Ext.grid.GridPanel-beforestaterestore" ext:member="beforestaterestore" ext:cls="Ext.grid.GridPanel">beforestaterestore</a></code>
+and <code><a href="output/Ext.grid.GridPanel.html#Ext.grid.GridPanel-beforestatesave" ext:member="beforestatesave" ext:cls="Ext.grid.GridPanel">beforestatesave</a></code>
+events in order to be stateful. 
+</div></li>
+<li><b>Grid Changes</b> :
+<div class="sub-desc"><ul>
+<li>A <code>filters</code> <i>property</i> is added to the grid pointing to
+this plugin.</li>
+<li>A <code>filterupdate</code> <i>event</i> is added to the grid and is
+fired upon onStateChange completion.</li>
+</ul></div></li>
+<li><b>Server side code examples</b> :
+<div class="sub-desc"><ul>
+<li><a href="http://www.vinylfox.com/extjs/grid-filter-php-backend-code.php">PHP</a> - (Thanks VinylFox)</li>
+<li><a href="http://extjs.com/forum/showthread.php?p=77326#post77326">Ruby on Rails</a> - (Thanks Zyclops)</li>
+<li><a href="http://extjs.com/forum/showthread.php?p=176596#post176596">Ruby on Rails</a> - (Thanks Rotomaul)</li>
+<li><a href="http://www.debatablybeta.com/posts/using-extjss-grid-filtering-with-django/">Python</a> - (Thanks Matt)</li>
+<li><a href="http://mcantrell.wordpress.com/2008/08/22/extjs-grids-and-grails/">Grails</a> - (Thanks Mike)</li>
+</ul></div></li>
+</ul></div>
+<p><b><u>Example usage:</u></b></p>
+<pre><code><b>var</b> store = <b>new</b> Ext.data.GroupingStore({
+    ...
+});
+ 
+<b>var</b> filters = <b>new</b> Ext.ux.grid.GridFilters({
+    autoReload: false, <i>//don&#39;t reload automatically</i>
+    local: true, <i>//only filter locally</i>
+    <i>// filters may be configured through the plugin,</i>
+    <i>// or <b>in</b> the column definition within the column model configuration</i>
+    filters: [{
+        type: <em>'numeric'</em>,
+        dataIndex: <em>'id'</em>
+    }, {
+        type: <em>'string'</em>,
+        dataIndex: <em>'name'</em>
+    }, {
+        type: <em>'numeric'</em>,
+        dataIndex: <em>'price'</em>
+    }, {
+        type: <em>'date'</em>,
+        dataIndex: <em>'dateAdded'</em>
+    }, {
+        type: <em>'list'</em>,
+        dataIndex: <em>'size'</em>,
+        options: [<em>'extra small'</em>, <em>'small'</em>, <em>'medium'</em>, <em>'large'</em>, <em>'extra large'</em>],
+        phpMode: true
+    }, {
+        type: <em>'boolean'</em>,
+        dataIndex: <em>'visible'</em>
+    }]
+});
+<b>var</b> cm = <b>new</b> Ext.grid.ColumnModel([{
+    ...
+}]);
+ 
+<b>var</b> grid = <b>new</b> Ext.grid.GridPanel({
+     ds: store,
+     cm: cm,
+     view: <b>new</b> Ext.grid.GroupingView(),
+     plugins: [filters],
+     height: 400,
+     width: 700,
+     bbar: <b>new</b> Ext.PagingToolbar({
+         store: store,
+         pageSize: 15,
+         plugins: [filters] <i>//reset page to page 1 <b>if</b> filters change</i>
+     })
+ });
+
+store.load({params: {start: 0, limit: 15}});
+
+<i>// a filters property is added to the grid</i>
+grid.filters</code></pre></div><div class="hr"></div><a id="Ext.ux.grid.GridFilters-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-autoReload"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-autoReload">autoReload</a></b> : Boolean<div class="mdesc"><div class="short">Defaults to true, reloading the datasource when a filter change happens.&#13;
+Set this to false to prevent the datastore ...</div><div class="long">Defaults to true, reloading the datasource when a filter change happens.
+Set this to false to prevent the datastore from being reloaded if there
+are changes to the filters.  See <code><a href="output/updateBuffer.html" ext:cls="updateBuffer">updateBuffer</a></code>.</div></div></td><td class="msource">GridFilters</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-encode"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-encode">encode</a></b> : Boolean<div class="mdesc"><div class="short">Specify true for buildQuery to use Ext.util.JSON.encode to&#13;
+encode the filter query parameter sent with a remote requ...</div><div class="long">Specify true for <a href="output/Ext.ux.grid.GridFilters.html#Ext.ux.grid.GridFilters-buildQuery" ext:member="buildQuery" ext:cls="Ext.ux.grid.GridFilters">buildQuery</a> to use Ext.util.JSON.encode to
+encode the filter query parameter sent with a remote request.
+Defaults to false.</div></div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-filterCls"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-filterCls">filterCls</a></b> : String<div class="mdesc">The css class to be applied to column headers with active filters.
+Defaults to <tt>'ux-filterd-column'</tt>.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-filters"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-filters">filters</a></b> : Array<div class="mdesc"><div class="short">An Array of filters config objects. Refer to each filter type class for&#13;
+configuration details specific to each filte...</div><div class="long">An Array of filters config objects. Refer to each filter type class for
+configuration details specific to each filter type. Filters for Strings,
+Numeric Ranges, Date Ranges, Lists, and Boolean are the standard filters
+available.</div></div></td><td class="msource">GridFilters</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-listeners"></a><b><a href="source/Observable.html#cfg-Ext.util.Observable-listeners">listeners</a></b> : Object<div class="mdesc"><div class="short">A config object containing one or more event handlers to be added to this
+object during initialization.  This should ...</div><div class="long"><p>A config object containing one or more event handlers to be added to this
+object during initialization.  This should be a valid listeners config object as specified in the
+<a href="output/Ext.util.Observable.html#Ext.util.Observable-addListener" ext:member="addListener" ext:cls="Ext.util.Observable">addListener</a> example for attaching multiple handlers at once.</p>
+<br><p><b><u>DOM events from ExtJs <a href="output/Ext.Component.html" ext:cls="Ext.Component">Components</a></u></b></p>
+<br><p>While <i>some</i> ExtJs Component classes export selected DOM events (e.g. "click", "mouseover" etc), this
+is usually only done when extra value can be added. For example the <a href="output/Ext.DataView.html" ext:cls="Ext.DataView">DataView</a>'s
+<b><code><a href="output/Ext.DataView.html#Ext.DataView-click" ext:member="click" ext:cls="Ext.DataView">click</a></code></b> event passing the node clicked on. To access DOM
+events directly from a Component's HTMLElement, listeners must be added to the <i><a href="output/Ext.Component.html#Ext.Component-getEl" ext:member="getEl" ext:cls="Ext.Component">Element</a></i> after the Component
+has been rendered. A plugin can simplify this step:<pre><code><i>// Plugin is configured <b>with</b> a listeners config object.</i>
+<i>// The Component is appended to the argument list of all handler functions.</i>
+Ext.DomObserver = Ext.extend(Object, {
+    constructor: <b>function</b>(config) {
+        this.listeners = config.listeners ? config.listeners : config;
+    },
+
+    <i>// Component passes itself into plugin&#39;s init method</i>
+    init: <b>function</b>(c) {
+        <b>var</b> p, l = this.listeners;
+        <b>for</b> (p <b>in</b> l) {
+            <b>if</b> (Ext.isFunction(l[p])) {
+                l[p] = this.createHandler(l[p], c);
+            } <b>else</b> {
+                l[p].fn = this.createHandler(l[p].fn, c);
+            }
+        }
+
+        <i>// Add the listeners to the Element immediately following the render call</i>
+        c.render = c.render.<a href="output/Function.html#Function-createSequence" ext:member="createSequence" ext:cls="Function">createSequence</a>(<b>function</b>() {
+            <b>var</b> e = c.getEl();
+            <b>if</b> (e) {
+                e.on(l);
+            }
+        });
+    },
+
+    createHandler: <b>function</b>(fn, c) {
+        <b>return</b> <b>function</b>(e) {
+            fn.call(this, e, c);
+        };
+    }
+});
+
+<b>var</b> combo = <b>new</b> Ext.form.ComboBox({
+
+    <i>// Collapse combo when its element is clicked on</i>
+    plugins: [ <b>new</b> Ext.DomObserver({
+        click: <b>function</b>(evt, comp) {
+            comp.collapse();
+        }
+    })],
+    store: myStore,
+    typeAhead: true,
+    mode: <em>'local'</em>,
+    triggerAction: <em>'all'</em>
+});</code></pre></p></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#listeners" ext:member="#listeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-local"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-local">local</a></b> : Boolean<div class="mdesc"><tt>true</tt> to use Ext.data.Store filter functions (local filtering)
+instead of the default (<tt>false</tt>) server side filtering.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-menuFilterText"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-menuFilterText">menuFilterText</a></b> : String<div class="mdesc">defaults to <tt>'Filters'</tt>.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-paramPrefix"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-paramPrefix">paramPrefix</a></b> : String<div class="mdesc">The url parameter prefix for the filters.
+Defaults to <tt>'filter'</tt>.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-showMenu"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-showMenu">showMenu</a></b> : Boolean<div class="mdesc">Defaults to true, including a filter submenu in the default header menu.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-stateId"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-stateId">stateId</a></b> : String<div class="mdesc">Name of the value to be used to store state information.</div></td><td class="msource">GridFilters</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-updateBuffer"></a><b><a href="source/GridFilters.html#cfg-Ext.ux.grid.GridFilters-updateBuffer">updateBuffer</a></b> : Integer<div class="mdesc">Number of milliseconds to defer store updates since the last filter change.</div></td><td class="msource">GridFilters</td></tr></tbody></table><a id="Ext.ux.grid.GridFilters-props"></a><h2>Public Properties</h2><div class="no-members">This class has no public properties.</div><a id="Ext.ux.grid.GridFilters-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addEvents">addEvents</a></b>(&nbsp;<code>Object|String&nbsp;o</code>,&nbsp;<code>string&nbsp;Optional.</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Adds the specified events to the list of events which this Observable may fire.</div><div class="long">Adds the specified events to the list of events which this Observable may fire.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : Object|String<div class="sub-desc">Either an object with event names as properties with a value of <code>true</code>
+or the first event name string if multiple event names are being passed as separate parameters.</div></li><li><code>Optional.</code> : string<div class="sub-desc">Event name if multiple event names are being passed as separate parameters.
+Usage:<pre><code>this.addEvents(<em>'storeloaded'</em>, <em>'storecleared'</em>);</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addEvents" ext:member="#addEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-addFilter"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-addFilter">addFilter</a></b>(&nbsp;<code>Object/Ext.ux.grid.filter.Filter&nbsp;config</code>&nbsp;)
+    :
+                                        Ext.ux.grid.filter.Filter<div class="mdesc"><div class="short">Adds a filter to the collection and observes it for state change.</div><div class="long">Adds a filter to the collection and observes it for state change.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>config</code> : Object/Ext.ux.grid.filter.Filter<div class="sub-desc">A filter configuration or a filter object.</div></li></ul><strong>Returns:</strong><ul><li><code>Ext.ux.grid.filter.Filter</code><div class="sub-desc">The existing or newly created filter object.</div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-addFilters"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-addFilters">addFilters</a></b>(&nbsp;<code>Array/Ext.grid.ColumnModel&nbsp;filters</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Adds filters to the collection.</div><div class="long">Adds filters to the collection.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>filters</code> : Array/Ext.grid.ColumnModel<div class="sub-desc">Either an Array of
+filter configuration objects or an Ext.grid.ColumnModel.  The columns
+of a passed Ext.grid.ColumnModel will be examined for a <code>filter</code>
+property and, if present, will be used as the filter configuration object.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addListener">addListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Appends an event handler to this object.</div><div class="long">Appends an event handler to this object.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to listen for.</div></li><li><code>handler</code> : Function<div class="sub-desc">The method the event invokes.</div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></div></li><li><code>options</code> : Object<div class="sub-desc">(optional) An object containing handler configuration.
+properties. This may contain any of the following properties:<ul>
+<li><b>scope</b> : Object<div class="sub-desc">The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></div></li>
+<li><b>delay</b> : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</div></li>
+<li><b>single</b> : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+<li><b>buffer</b> : Number<div class="sub-desc">Causes the handler to be scheduled to run in an <a href="output/Ext.util.DelayedTask.html" ext:cls="Ext.util.DelayedTask">Ext.util.DelayedTask</a> delayed
+by the specified number of milliseconds. If the event fires again within that time, the original
+handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+<li><b>target</b> : Observable<div class="sub-desc">Only call the handler if the event was fired on the target Observable, <i>not</i>
+if the event was bubbled up from a child Observable.</div></li>
+</ul><br>
+<p>
+<b>Combining Options</b><br>
+Using the options argument, it is possible to combine different types of listeners:<br>
+<br>
+A delayed, one-time listener.
+<pre><code>myDataView.on(<em>'click'</em>, this.onClick, this, {
+single: true,
+delay: 100
+});</code></pre>
+<p>
+<b>Attaching multiple handlers in 1 call</b><br>
+The method also allows for a single argument to be passed which is a config object containing properties
+which specify multiple handlers.
+<p>
+<pre><code>myGridPanel.on({
+<em>'click'</em> : {
+    fn: this.onClick,
+    scope: this,
+    delay: 100
+},
+<em>'mouseover'</em> : {
+    fn: this.onMouseOver,
+    scope: this
+},
+<em>'mouseout'</em> : {
+    fn: this.onMouseOut,
+    scope: this
+}
+});</code></pre>
+<p>
+Or a shorthand syntax:<br>
+<pre><code>myGridPanel.on({
+<em>'click'</em> : this.onClick,
+<em>'mouseover'</em> : this.onMouseOver,
+<em>'mouseout'</em> : this.onMouseOut,
+ scope: this
+});</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addListener" ext:member="#addListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-bindStore"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-bindStore">bindStore</a></b>(&nbsp;<code>Store&nbsp;store</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Changes the data store bound to this view and refreshes it.</div><div class="long">Changes the data store bound to this view and refreshes it.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>store</code> : Store<div class="sub-desc">The store to bind to this view</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-buildQuery"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-buildQuery">buildQuery</a></b>(&nbsp;<code>Array&nbsp;filters</code>&nbsp;)
+    :
+                                        Object<div class="mdesc"><div class="short">Function to take the active filters data and build it into a query.&#13;
+The format of the query depends on the encode&#13;
+c...</div><div class="long">Function to take the active filters data and build it into a query.
+The format of the query depends on the <code><a href="output/Ext.ux.grid.GridFilters.html#Ext.ux.grid.GridFilters-encode" ext:member="encode" ext:cls="Ext.ux.grid.GridFilters">encode</a></code>
+configuration:
+<div class="mdetail-params"><ul>
+<li><b><tt>false</tt></b> : <i>Default</i>
+<div class="sub-desc">
+Flatten into query string of the form (assuming <code><a href="output/Ext.ux.grid.GridFilters.html#Ext.ux.grid.GridFilters-paramPrefix" ext:member="paramPrefix" ext:cls="Ext.ux.grid.GridFilters">paramPrefix</a>=<em>'filters'</em></code>:
+<pre><code>filters[0][field]=<em>"someDataIndex"</em>&
+filters[0][data][comparison]=<em>"someValue1"</em>&
+filters[0][data][type]=<em>"someValue2"</em>&
+filters[0][data][value]=<em>"someValue3"</em>&</code></pre>
+</div></li>
+<li><b><tt>true</tt></b> : 
+<div class="sub-desc">
+JSON encode the filter data
+<pre><code>filters[0][field]=<em>"someDataIndex"</em>&
+filters[0][data][comparison]=<em>"someValue1"</em>&
+filters[0][data][type]=<em>"someValue2"</em>&
+filters[0][data][value]=<em>"someValue3"</em>&</code></pre>
+</div></li>
+</ul></div>
+Override this method to customize the format of the filter query for remote requests.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>filters</code> : Array<div class="sub-desc">A collection of objects representing active filters and their configuration.
+Each element will take the form of {field: dataIndex, data: filterConf}. dataIndex is not assured
+to be unique as any one filter may be a composite of more basic filters for the same dataIndex.</div></li></ul><strong>Returns:</strong><ul><li><code>Object</code><div class="sub-desc">Query keys and values</div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-cleanParams"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-cleanParams">cleanParams</a></b>(&nbsp;<code>Object&nbsp;p</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Removes filter related query parameters from the provided object.</div><div class="long">Removes filter related query parameters from the provided object.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>p</code> : Object<div class="sub-desc">Query parameters that may contain filter related fields.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-clearFilters"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-clearFilters">clearFilters</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">Turns all filters off. This does not clear the configuration information&#13;
+(see removeAll).</div><div class="long">Turns all filters off. This does not clear the configuration information
+(see <a href="output/Ext.ux.grid.GridFilters.html#Ext.ux.grid.GridFilters-removeAll" ext:member="removeAll" ext:cls="Ext.ux.grid.GridFilters">removeAll</a>).<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>Object&nbsp;events</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
+this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+<code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+<p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
+implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
+access the required target more quickly.</p>
+<p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
+<i>//  Add functionality to Field<em>'s initComponent to enable the change event to bubble</i>
+    initComponent: Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
+        this.enableBubble('</em>change<em>');
+    }),
+
+<i>//  We know that we want Field'</em>s events to bubble directly to the FormPanel.</i>
+    getBubbleTarget: <b>function</b>() {
+        <b>if</b> (!this.formPanel) {
+            this.formPanel = this.findParentByType(<em>'form'</em>);
+        }
+        <b>return</b> this.formPanel;
+    }
+});
+
+<b>var</b> myForm = <b>new</b> Ext.formPanel({
+    title: <em>'User Details'</em>,
+    items: [{
+        ...
+    }],
+    listeners: {
+        change: <b>function</b>() {
+<i>//          Title goes red <b>if</b> form has been modified.</i>
+            myForm.header.setStyle(<em>"color"</em>, <em>"red"</em>);
+        }
+    }
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc">The event name to bubble, or an Array of event names.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-fireEvent"></a><b><a href="source/Observable.html#method-Ext.util.Observable-fireEvent">fireEvent</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Object...&nbsp;args</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">Fires the specified event with the passed parameters (minus the event name).
+An event may be set to bubble up an Obse...</div><div class="long"><p>Fires the specified event with the passed parameters (minus the event name).</p>
+<p>An event may be set to bubble up an Observable parent hierarchy (See <a href="output/Ext.Component.html#Ext.Component-getBubbleTarget" ext:member="getBubbleTarget" ext:cls="Ext.Component">Ext.Component.getBubbleTarget</a>)
+by calling <a href="output/Ext.util.Observable.html#Ext.util.Observable-enableBubble" ext:member="enableBubble" ext:cls="Ext.util.Observable">enableBubble</a>.</p><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to fire.</div></li><li><code>args</code> : Object...<div class="sub-desc">Variable number of parameters are passed to handlers.</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">returns false if any of the handlers return false otherwise it returns true.</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#fireEvent" ext:member="#fireEvent" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-getFilter"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-getFilter">getFilter</a></b>(&nbsp;<code>String&nbsp;dataIndex</code>&nbsp;)
+    :
+                                        Ext.ux.grid.filter.Filter<div class="mdesc"><div class="short">Returns a filter for the given dataIndex, if one exists.</div><div class="long">Returns a filter for the given dataIndex, if one exists.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>dataIndex</code> : String<div class="sub-desc">The dataIndex of the desired filter object.</div></li></ul><strong>Returns:</strong><ul><li><code>Ext.ux.grid.filter.Filter</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-getFilterClass"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-getFilterClass">getFilterClass</a></b>(&nbsp;<code>String&nbsp;type</code>&nbsp;)
+    :
+                                        Class<div class="mdesc"><div class="short">Function for locating filter classes, overwrite this with your favorite&#13;
+loader to provide dynamic filter loading.</div><div class="long">Function for locating filter classes, overwrite this with your favorite
+loader to provide dynamic filter loading.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>type</code> : String<div class="sub-desc">The type of filter to load ('Filter' is automatically
+appended to the passed type; eg, 'string' becomes 'StringFilter').</div></li></ul><strong>Returns:</strong><ul><li><code>Class</code><div class="sub-desc">The Ext.ux.grid.filter.Class</div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-getFilterData"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-getFilterData">getFilterData</a></b>()
+    :
+                                        Array<div class="mdesc"><div class="short">Returns an Array of the currently active filters.</div><div class="long">Returns an Array of the currently active filters.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Array</code><div class="sub-desc">filters Array of the currently active filters.</div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-hasListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-hasListener">hasListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">Checks to see if this object has any listeners for a specified event</div><div class="long">Checks to see if this object has any listeners for a specified event<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to check for</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if the event is being listened for, else false</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#hasListener" ext:member="#hasListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-on"></a><b><a href="source/Observable.html#method-Ext.util.Observable-on">on</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Appends an event handler to this object (shorthand for addListener.)</div><div class="long">Appends an event handler to this object (shorthand for <a href="output/Ext.util.Observable.html#Ext.util.Observable-addListener" ext:member="addListener" ext:cls="Ext.util.Observable">addListener</a>.)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The type of event to listen for</div></li><li><code>handler</code> : Function<div class="sub-desc">The method the event invokes</div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></div></li><li><code>options</code> : Object<div class="sub-desc">(optional) An object containing handler configuration.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#on" ext:member="#on" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-purgeListeners"></a><b><a href="source/Observable.html#method-Ext.util.Observable-purgeListeners">purgeListeners</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">Removes all listeners for this object</div><div class="long">Removes all listeners for this object<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#purgeListeners" ext:member="#purgeListeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-relayEvents"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-relayEvents">relayEvents</a></b>(&nbsp;<code>Object&nbsp;o</code>,&nbsp;<code>Array&nbsp;events</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Relays selected events from the specified Observable as if the events were fired by this.</div><div class="long">Relays selected events from the specified Observable as if the events were fired by <tt><b>this</b></tt>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : Object<div class="sub-desc">The Observable whose events this object is to relay.</div></li><li><code>events</code> : Array<div class="sub-desc">Array of event names to relay.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#relayEvents" ext:member="#relayEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-removeAll"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-removeAll">removeAll</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">Remove all filters, permanently destroying them.</div><div class="long">Remove all filters, permanently destroying them.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-removeListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-removeListener">removeListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Removes an event handler.</div><div class="long">Removes an event handler.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The type of event the handler was associated with.</div></li><li><code>handler</code> : Function<div class="sub-desc">The handler to remove. <b>This must be a reference to the function passed into the <a href="output/Ext.util.Observable.html#Ext.util.Observable-addListener" ext:member="addListener" ext:cls="Ext.util.Observable">addListener</a> call.</b></div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope originally specified for the handler.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#removeListener" ext:member="#removeListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-resumeEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-resumeEvents">resumeEvents</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">Resume firing events. (see suspendEvents)
+If events were suspended using the queueSuspended parameter, then all
+event...</div><div class="long">Resume firing events. (see <a href="output/Ext.util.Observable.html#Ext.util.Observable-suspendEvents" ext:member="suspendEvents" ext:cls="Ext.util.Observable">suspendEvents</a>)
+If events were suspended using the <tt><b>queueSuspended</b></tt> parameter, then all
+events fired during event suspension will be sent to any listeners now.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#resumeEvents" ext:member="#resumeEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-saveState"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-saveState">saveState</a></b>(&nbsp;<code>Object&nbsp;grid</code>,&nbsp;<code>Object&nbsp;state</code>&nbsp;)
+    :
+                                        Boolean<div class="mdesc"><div class="short">Saves the state of all active filters</div><div class="long">Saves the state of all active filters<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>grid</code> : Object<div class="sub-desc"></div></li><li><code>state</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">GridFilters</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-suspendEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-suspendEvents">suspendEvents</a></b>(&nbsp;<code>Boolean&nbsp;queueSuspended</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Suspend the firing of all events. (see resumeEvents)</div><div class="long">Suspend the firing of all events. (see <a href="output/Ext.util.Observable.html#Ext.util.Observable-resumeEvents" ext:member="resumeEvents" ext:cls="Ext.util.Observable">resumeEvents</a>)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>queueSuspended</code> : Boolean<div class="sub-desc">Pass as true to queue up suspended events to be fired
+after the <a href="output/Ext.util.Observable.html#Ext.util.Observable-resumeEvents" ext:member="resumeEvents" ext:cls="Ext.util.Observable">resumeEvents</a> call instead of discarding all suspended events;</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#suspendEvents" ext:member="#suspendEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-un"></a><b><a href="source/Observable.html#method-Ext.util.Observable-un">un</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">Removes an event handler (shorthand for removeListener.)</div><div class="long">Removes an event handler (shorthand for <a href="output/Ext.util.Observable.html#Ext.util.Observable-removeListener" ext:member="removeListener" ext:cls="Ext.util.Observable">removeListener</a>.)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The type of event the handler was associated with.</div></li><li><code>handler</code> : Function<div class="sub-desc">The handler to remove. <b>This must be a reference to the function passed into the <a href="output/Ext.util.Observable.html#Ext.util.Observable-addListener" ext:member="addListener" ext:cls="Ext.util.Observable">addListener</a> call.</b></div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope originally specified for the handler.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#un" ext:member="#un" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.ux.grid.GridFilters-updateColumnHeadings"></a><b><a href="source/GridFilters.html#method-Ext.ux.grid.GridFilters-updateColumnHeadings">updateColumnHeadings</a></b>()
+    :
+                                        void<div class="mdesc"><div class="short">Update the styles for the header row based on the active filters</div><div class="long">Update the styles for the header row based on the active filters<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GridFilters</td></tr></tbody></table><a id="Ext.ux.grid.GridFilters-events"></a><h2>Public Events</h2><div class="no-members">This class has no public events.</div></div>

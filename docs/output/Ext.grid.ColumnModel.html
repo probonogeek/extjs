@@ -1,4 +1,4 @@
-<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.grid.ColumnModel-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.grid.ColumnModel"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">ColumnModel</pre></div><h1>Class <a href="source/ColumnModel.html#cls-Ext.grid.ColumnModel">Ext.grid.ColumnModel</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.grid</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">ColumnModel.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/ColumnModel.html#cls-Ext.grid.ColumnModel">ColumnModel</a></td></tr><tr><td class="label">Subclasses:</td><td class="hd-info"><a href="output/Ext.grid.PropertyColumnModel.html" ext:cls="Ext.grid.PropertyColumnModel">PropertyColumnModel</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description"><p>After the data has been read into the client side cache (<b><a href="output/Ext.data.Store.html" ext:cls="Ext.data.Store">Store</a></b>),
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.grid.ColumnModel-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.grid.ColumnModel-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.grid.ColumnModel"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">ColumnModel</pre></div><h1>Class <a href="source/ColumnModel.html#cls-Ext.grid.ColumnModel">Ext.grid.ColumnModel</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.grid</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">ColumnModel.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/ColumnModel.html#cls-Ext.grid.ColumnModel">ColumnModel</a></td></tr><tr><td class="label">Subclasses:</td><td class="hd-info"><a href="output/Ext.grid.PropertyColumnModel.html" ext:cls="Ext.grid.PropertyColumnModel">PropertyColumnModel</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr><tr><td class="hd-info"></td></tr></table><div class="description"><p>After the data has been read into the client side cache (<b><a href="output/Ext.data.Store.html" ext:cls="Ext.data.Store">Store</a></b>),
 the ColumnModel is used to configure how and what parts of that data will be displayed in the
 vertical slices (columns) of the grid. The Ext.grid.ColumnModel Class is the default implementation
 of a ColumnModel used by implentations of <a href="output/Ext.grid.GridPanel.html" ext:cls="Ext.grid.GridPanel">GridPanel</a>.</p>
@@ -22,7 +22,7 @@ objects to define the initial layout / display of the columns in the Grid. The o
 <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a> column configuration object within the specified Array defines the initial
 order of the column display.  A Column's display may be initially hidden using the
 <tt><a href="output/Ext.grid.Column.html#Ext.grid.Column-hidden" ext:member="hidden" ext:cls="Ext.grid.Column">hidden</a></tt></b> config property (and then shown using the column
-header menu).  Field's that are not included in the ColumnModel will not be displayable at all.</p>
+header menu).  Fields that are not included in the ColumnModel will not be displayable at all.</p>
 <p>How each column in the grid correlates (maps) to the <a href="output/Ext.data.Record.html" ext:cls="Ext.data.Record">Ext.data.Record</a> field in the
 <a href="output/Ext.data.Store.html" ext:cls="Ext.data.Store">Store</a> the column draws its data from is configured through the
 <b><tt><a href="output/Ext.grid.Column.html#Ext.grid.Column-dataIndex" ext:member="dataIndex" ext:cls="Ext.grid.Column">dataIndex</a></tt></b>.  If the
@@ -138,9 +138,11 @@ of this ColumnModel.  See Ext.grid.Column for th...</div><div class="long">An Ar
 of this ColumnModel.  See <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a> for the configuration properties that may
 be specified.</div></div></td><td class="msource">ColumnModel</td></tr></tbody></table><a id="Ext.grid.ColumnModel-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-ColumnModel"></a><b><a href="source/ColumnModel.html#cls-Ext.grid.ColumnModel">ColumnModel</a></b>(&nbsp;<code>Mixed&nbsp;config</code>&nbsp;)
     <div class="mdesc"><div class="short"></div><div class="long"><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>config</code> : Mixed<div class="sub-desc">Specify either an Array of <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a> configuration objects or specify
-a configuration Object (see introductory section discussion utilizing Initialization Method 2 above).</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addEvents">addEvents</a></b>(&nbsp;<code>Object&nbsp;object</code>&nbsp;)
+a configuration Object (see introductory section discussion utilizing Initialization Method 2 above).</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addEvents">addEvents</a></b>(&nbsp;<code>Object|String&nbsp;o</code>,&nbsp;<code>string&nbsp;Optional.</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Used to define events on this Observable</div><div class="long">Used to define events on this Observable<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>object</code> : Object<div class="sub-desc">The object with the events defined</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addEvents" ext:member="#addEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addListener">addListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
+                                        void<div class="mdesc"><div class="short">Adds the specified events to the list of events which this Observable may fire.</div><div class="long">Adds the specified events to the list of events which this Observable may fire.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : Object|String<div class="sub-desc">Either an object with event names as properties with a value of <code>true</code>
+or the first event name string if multiple event names are being passed as separate parameters.</div></li><li><code>Optional.</code> : string<div class="sub-desc">Event name if multiple event names are being passed as separate parameters.
+Usage:<pre><code>this.addEvents(<em>'storeloaded'</em>, <em>'storecleared'</em>);</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addEvents" ext:member="#addEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addListener">addListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">Appends an event handler to this object.</div><div class="long">Appends an event handler to this object.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to listen for.</div></li><li><code>handler</code> : Function<div class="sub-desc">The method the event invokes.</div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
 <b>If omitted, defaults to the object which fired the event.</b></div></li><li><code>options</code> : Object<div class="sub-desc">(optional) An object containing handler configuration.
@@ -161,8 +163,8 @@ Using the options argument, it is possible to combine different types of listene
 <br>
 A delayed, one-time listener.
 <pre><code>myDataView.on(<em>'click'</em>, this.onClick, this, {
-    single: true,
-    delay: 100
+single: true,
+delay: 100
 });</code></pre>
 <p>
 <b>Attaching multiple handlers in 1 call</b><br>
@@ -170,32 +172,64 @@ The method also allows for a single argument to be passed which is a config obje
 which specify multiple handlers.
 <p>
 <pre><code>myGridPanel.on({
-    <em>'click'</em> : {
-        fn: this.onClick,
-        scope: this,
-        delay: 100
-    },
-    <em>'mouseover'</em> : {
-        fn: this.onMouseOver,
-        scope: this
-    },
-    <em>'mouseout'</em> : {
-        fn: this.onMouseOut,
-        scope: this
-    }
+<em>'click'</em> : {
+    fn: this.onClick,
+    scope: this,
+    delay: 100
+},
+<em>'mouseover'</em> : {
+    fn: this.onMouseOver,
+    scope: this
+},
+<em>'mouseout'</em> : {
+    fn: this.onMouseOut,
+    scope: this
+}
 });</code></pre>
 <p>
 Or a shorthand syntax:<br>
 <pre><code>myGridPanel.on({
-    <em>'click'</em> : this.onClick,
-    <em>'mouseover'</em> : this.onMouseOver,
-    <em>'mouseout'</em> : this.onMouseOut,
-     scope: this
+<em>'click'</em> : this.onClick,
+<em>'mouseover'</em> : this.onMouseOver,
+<em>'mouseout'</em> : this.onMouseOut,
+ scope: this
 });</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addListener" ext:member="#addListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-destroy"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-destroy">destroy</a></b>()
     :
                                         void<div class="mdesc"><div class="short">Destroys this column model by purging any event listeners, and removing any editors.</div><div class="long">Destroys this column model by purging any event listeners, and removing any editors.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>Object&nbsp;events</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Used to enable bubbling of events</div><div class="long">Used to enable bubbling of events<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-findColumnIndex"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-findColumnIndex">findColumnIndex</a></b>(&nbsp;<code>String&nbsp;col</code>&nbsp;)
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
+this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+<code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+<p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
+implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
+access the required target more quickly.</p>
+<p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
+<i>//  Add functionality to Field<em>'s initComponent to enable the change event to bubble</i>
+    initComponent: Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
+        this.enableBubble('</em>change<em>');
+    }),
+
+<i>//  We know that we want Field'</em>s events to bubble directly to the FormPanel.</i>
+    getBubbleTarget: <b>function</b>() {
+        <b>if</b> (!this.formPanel) {
+            this.formPanel = this.findParentByType(<em>'form'</em>);
+        }
+        <b>return</b> this.formPanel;
+    }
+});
+
+<b>var</b> myForm = <b>new</b> Ext.formPanel({
+    title: <em>'User Details'</em>,
+    items: [{
+        ...
+    }],
+    listeners: {
+        change: <b>function</b>() {
+<i>//          Title goes red <b>if</b> form has been modified.</i>
+            myForm.header.setStyle(<em>"color"</em>, <em>"red"</em>);
+        }
+    }
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc">The event name to bubble, or an Array of event names.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-findColumnIndex"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-findColumnIndex">findColumnIndex</a></b>(&nbsp;<code>String&nbsp;col</code>&nbsp;)
     :
                                         Number<div class="mdesc"><div class="short">Finds the index of the first matching column for the given dataIndex.</div><div class="long">Finds the index of the first matching column for the given dataIndex.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>col</code> : String<div class="sub-desc">The dataIndex to find</div></li></ul><strong>Returns:</strong><ul><li><code>Number</code><div class="sub-desc">The column index, or -1 if no match was found</div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-fireEvent"></a><b><a href="source/Observable.html#method-Ext.util.Observable-fireEvent">fireEvent</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Object...&nbsp;args</code>&nbsp;)
     :
@@ -260,11 +294,15 @@ var colModel = new Ext.grid.ColumnModel(...</div><div class="long">Returns true 
   store: store,
   colModel: colModel,
   ...
-});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>colIndex</code> : Number<div class="sub-desc">The column index</div></li><li><code>rowIndex</code> : Number<div class="sub-desc">The row index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isFixed"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isFixed">isFixed</a></b>()
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>colIndex</code> : Number<div class="sub-desc">The column index</div></li><li><code>rowIndex</code> : Number<div class="sub-desc">The row index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isFixed"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isFixed">isFixed</a></b>(&nbsp;<code>Number&nbsp;colIndex</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Returns true if the column width cannot be changed</div><div class="long">Returns true if the column width cannot be changed<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isHidden"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isHidden">isHidden</a></b>(&nbsp;<code>Number&nbsp;colIndex</code>&nbsp;)
+                                        Boolean<div class="mdesc"><div class="short">Returns true if the column is fixed,
+false otherwise.</div><div class="long">Returns <tt>true</tt> if the column is <code><a href="output/Ext.grid.Column.html#Ext.grid.Column-fixed" ext:member="fixed" ext:cls="Ext.grid.Column">fixed</a></code>,
+<tt>false</tt> otherwise.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>colIndex</code> : Number<div class="sub-desc">The column index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isHidden"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isHidden">isHidden</a></b>(&nbsp;<code>Number&nbsp;colIndex</code>&nbsp;)
     :
-                                        Boolean<div class="mdesc"><div class="short">Returns true if the column is hidden.</div><div class="long">Returns true if the column is hidden.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>colIndex</code> : Number<div class="sub-desc">The column index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isMenuDisabled"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isMenuDisabled">isMenuDisabled</a></b>(&nbsp;<code>Number&nbsp;col</code>&nbsp;)
+                                        Boolean<div class="mdesc"><div class="short">Returns true if the column is hidden,
+false otherwise.</div><div class="long">Returns <tt>true</tt> if the column is <code><a href="output/Ext.grid.Column.html#Ext.grid.Column-hidden" ext:member="hidden" ext:cls="Ext.grid.Column">hidden</a></code>,
+<tt>false</tt> otherwise.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>colIndex</code> : Number<div class="sub-desc">The column index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isMenuDisabled"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isMenuDisabled">isMenuDisabled</a></b>(&nbsp;<code>Number&nbsp;col</code>&nbsp;)
     :
                                         Boolean<div class="mdesc"><div class="short">Returns true if the specified column menu is disabled.</div><div class="long">Returns true if the specified column menu is disabled.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>col</code> : Number<div class="sub-desc">The column index</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource">ColumnModel</td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.ColumnModel-isResizable"></a><b><a href="source/ColumnModel.html#method-Ext.grid.ColumnModel-isResizable">isResizable</a></b>()
     :

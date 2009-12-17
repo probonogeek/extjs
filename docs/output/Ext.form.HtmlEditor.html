@@ -1,4 +1,4 @@
-<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.form.HtmlEditor-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.form.HtmlEditor"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.Component.html" ext:member="" ext:cls="Ext.Component">Component</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.BoxComponent.html" ext:member="" ext:cls="Ext.BoxComponent">BoxComponent</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.form.Field.html" ext:member="" ext:cls="Ext.form.Field">Field</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif">HtmlEditor</pre></div><h1>Class <a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">Ext.form.HtmlEditor</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.form</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">HtmlEditor.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">HtmlEditor</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.form.Field.html" ext:cls="Ext.form.Field" ext:member="">Field</a></td></tr><tr><td class="label">xtype:</td><td class="hd-info">htmleditor</td></tr></table><div class="description">Provides a lightweight HTML Editor component. Some toolbar features are not supported by Safari and will be 
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.form.HtmlEditor-props"><img src="resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-methods"><img src="resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-events"><img src="resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.form.HtmlEditor-configs"><img src="resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.form.HtmlEditor"><img src="resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.Component.html" ext:member="" ext:cls="Ext.Component">Component</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.BoxComponent.html" ext:member="" ext:cls="Ext.BoxComponent">BoxComponent</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.form.Field.html" ext:member="" ext:cls="Ext.form.Field">Field</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif">HtmlEditor</pre></div><h1>Class <a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">Ext.form.HtmlEditor</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.form</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">HtmlEditor.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">HtmlEditor</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.form.Field.html" ext:cls="Ext.form.Field" ext:member="">Field</a></td></tr><tr><td class="hd-info"></td></tr><tr><td class="label">xtype:</td><td class="hd-info">htmleditor</td></tr></table><div class="description">Provides a lightweight HTML Editor component. Some toolbar features are not supported by Safari and will be 
 automatically hidden when needed.  These are noted in the config options where appropriate.
 <br><br>The editor's toolbar buttons have tooltips defined in the <a href="output/Ext.form.HtmlEditor.html#Ext.form.HtmlEditor-buttonTips" ext:member="buttonTips" ext:cls="Ext.form.HtmlEditor">buttonTips</a> property, but they are not 
 enabled by default unless the global <a href="output/Ext.QuickTips.html" ext:cls="Ext.QuickTips">Ext.QuickTips</a> singleton is <a href="output/Ext.QuickTips.html#Ext.QuickTips-init" ext:member="init" ext:cls="Ext.QuickTips">initialized</a>.
@@ -36,7 +36,36 @@ based layout manager, for example:<div class="mdetail-params"><ul>
 <li><a href="output/Ext.form.FormPanel.html" ext:cls="Ext.form.FormPanel">Ext.form.FormPanel</a></li>
 <li>specifying <code>layout: <em>'anchor'</em> <i>// or <em>'form'</em>, or <em>'absolute'</em></i></code></li>
 </ul></div></p>
-<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#anchor" ext:member="#anchor" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoShow"></a><b><a href="source/Component.html#cfg-Ext.Component-autoShow">autoShow</a></b> : Boolean<div class="mdesc"><div class="short">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
+<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#anchor" ext:member="#anchor" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoEl"></a><b><a href="source/Component.html#cfg-Ext.Component-autoEl">autoEl</a></b> : Mixed<div class="mdesc"><div class="short">A tag name or DomHelper spec used to create the Element which will
+encapsulate this Component.
+You do not normally ne...</div><div class="long"><p>A tag name or <a href="output/Ext.DomHelper.html" ext:cls="Ext.DomHelper">DomHelper</a> spec used to create the <a href="output/Ext.Component.html#Ext.Component-getEl" ext:member="getEl" ext:cls="Ext.Component">Element</a> which will
+encapsulate this Component.</p>
+<p>You do not normally need to specify this. For the base classes <a href="output/Ext.Component.html" ext:cls="Ext.Component">Ext.Component</a>, <a href="output/Ext.BoxComponent.html" ext:cls="Ext.BoxComponent">Ext.BoxComponent</a>,
+and <a href="output/Ext.Container.html" ext:cls="Ext.Container">Ext.Container</a>, this defaults to <b><tt>'div'</tt></b>. The more complex Ext classes use a more complex
+DOM structure created by their own onRender methods.</p>
+<p>This is intended to allow the developer to create application-specific utility Components encapsulated by
+different DOM elements. Example usage:</p><pre><code>{
+    xtype: <em>'box'</em>,
+    autoEl: {
+        tag: <em>'img'</em>,
+        src: <em>'http:<i>//www.example.com/example.jpg'</em></i>
+    }
+}, {
+    xtype: <em>'box'</em>,
+    autoEl: {
+        tag: <em>'blockquote'</em>,
+        html: <em>'autoEl is cool!'</em>
+    }
+}, {
+    xtype: <em>'container'</em>,
+    autoEl: <em>'ul'</em>,
+    cls: <em>'ux-unordered-list'</em>,
+    items: {
+        xtype: <em>'box'</em>,
+        autoEl: <em>'li'</em>,
+        html: <em>'First list item'</em>
+    }
+}</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#autoEl" ext:member="#autoEl" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoShow"></a><b><a href="source/Component.html#cfg-Ext.Component-autoShow">autoShow</a></b> : Boolean<div class="mdesc"><div class="short">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
 them on render...</div><div class="long">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
 them on render (defaults to false).</div></div></td><td class="msource"><a href="output/Ext.Component.html#autoShow" ext:member="#autoShow" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-clearCls"></a><b><a href="source/Component.html#cfg-Ext.Component-clearCls">clearCls</a></b> : String<div class="mdesc"><div class="short">The CSS class used to to apply to the special clearing div rendered
 directly after each form field wrapper to provide...</div><div class="long"><p>The CSS class used to to apply to the special clearing div rendered
@@ -108,8 +137,11 @@ rules to style the specific instance of this component uniquely, and also to sel
 sub-elements using this component's id as the parent.</p>
 <p><b>Note</b>: to avoid complications imposed by a unique <tt>id</tt> also see
 <code><a href="output/Ext.Component.html#Ext.Component-itemId" ext:member="itemId" ext:cls="Ext.Component">itemId</a></code> and <code><a href="output/Ext.Component.html#Ext.Component-ref" ext:member="ref" ext:cls="Ext.Component">ref</a></code>.</p>
-<p><b>Note</b>: to access the container of an item see <code><a href="output/Ext.Component.html#Ext.Component-ownerCt" ext:member="ownerCt" ext:cls="Ext.Component">ownerCt</a></code>.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#id" ext:member="#id" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-itemCls"></a><b><a href="source/Component.html#cfg-Ext.Component-itemCls">itemCls</a></b> : String<div class="mdesc"><div class="short">An additional CSS class to apply to the div wrapping the form item
-element of this field.  If supplied, itemCls at th...</div><div class="long"><p>An additional CSS class to apply to the div wrapping the form item
+<p><b>Note</b>: to access the container of an item see <code><a href="output/Ext.Component.html#Ext.Component-ownerCt" ext:member="ownerCt" ext:cls="Ext.Component">ownerCt</a></code>.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#id" ext:member="#id" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-itemCls"></a><b><a href="source/Component.html#cfg-Ext.Component-itemCls">itemCls</a></b> : String<div class="mdesc"><div class="short">Note: this config is only used when this Component is rendered by a Container which
+has been configured to use the Fo...</div><div class="long"><p><b>Note</b>: this config is only used when this Component is rendered by a Container which
+has been configured to use the <b><a href="output/Ext.layout.FormLayout.html" ext:cls="Ext.layout.FormLayout">FormLayout</a></b> layout manager (e.g.
+<a href="output/Ext.form.FormPanel.html" ext:cls="Ext.form.FormPanel">Ext.form.FormPanel</a> or specifying <tt>layout:'form'</tt>).</p><br>
+<p>An additional CSS class to apply to the div wrapping the form item
 element of this field.  If supplied, <tt>itemCls</tt> at the <b>field</b> level will override
 the default <tt>itemCls</tt> supplied at the <b>container</b> level. The value specified for
 <tt>itemCls</tt> will be added to the default class (<tt>'x-form-item'</tt>).</p>
@@ -118,22 +150,22 @@ the default <tt>itemCls</tt> supplied at the <b>container</b> level. The value s
 you to write standard CSS rules that can apply to the field, the label (if specified), or
 any other element within the markup for the field.</p>
 <br><p><b>Note</b>: see the note for <tt><a href="output/Ext.Component.html#Ext.Component-fieldLabel" ext:member="fieldLabel" ext:cls="Ext.Component">fieldLabel</a></tt>.</p><br>
-Example use:<pre><code><i>// Apply a style to the field<em>'s <b>label</b>:</i>
+Example use:<pre><code><i>// Apply a style to the field&#39;s <b>label</b>:</i>
 &lt;style>
     .required .x-form-item-<b>label</b> {font-weight:bold;color:red;}
 &lt;/style>
 
 <b>new</b> Ext.FormPanel({
-	height: 100,
-	renderTo: Ext.getBody(),
-	items: [{
-		xtype: '</em>textfield<em>',
-		fieldLabel: '</em>Name<em>',
-		itemCls: '</em>required<em>' <i>//this <b>label</b> will be styled</i>
-	},{
-		xtype: '</em>textfield<em>',
-		fieldLabel: '</em>Favorite Color<em>'
-	}]
+    height: 100,
+    renderTo: Ext.getBody(),
+    items: [{
+        xtype: <em>'textfield'</em>,
+        fieldLabel: <em>'Name'</em>,
+        itemCls: <em>'required'</em> <i>//this <b>label</b> will be styled</i>
+    },{
+        xtype: <em>'textfield'</em>,
+        fieldLabel: <em>'Favorite Color'</em>
+    }]
 });</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#itemCls" ext:member="#itemCls" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-itemId"></a><b><a href="source/Component.html#cfg-Ext.Component-itemId">itemId</a></b> : String<div class="mdesc"><div class="short">An itemId can be used as an alternative way to get a reference to a component
 when no object reference is available. ...</div><div class="long"><p>An <tt>itemId</tt> can be used as an alternative way to get a reference to a component
 when no object reference is available.  Instead of using an <code><a href="output/Ext.Component.html#Ext.Component-id" ext:member="id" ext:cls="Ext.Component">id</a></code> with
@@ -283,8 +315,8 @@ right and left are set to the second.</li>
 to the second, and the bottom is set to the third.</li>
 <li>If there are four values, they apply to the top, right, bottom, and left, respectively.</li>
 </ul></div></p>
-<p>Defaults to:</p><pre><code>{top:0, right:0, bottom:0, left:0}</code></pre></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#margins" ext:member="#margins" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-name"></a><b><a href="source/Field.html#cfg-Ext.form.Field-name">name</a></b> : String<div class="mdesc"><div class="short">The field's HTML name attribute (defaults to "").
-Note: this property must be set if this field is to be automaticall...</div><div class="long">The field's HTML name attribute (defaults to "").
+<p>Defaults to:</p><pre><code>{top:0, right:0, bottom:0, left:0}</code></pre></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#margins" ext:member="#margins" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-name"></a><b><a href="source/Field.html#cfg-Ext.form.Field-name">name</a></b> : String<div class="mdesc"><div class="short">The field's HTML name attribute (defaults to '').
+Note: this property must be set if this field is to be automaticall...</div><div class="long">The field's HTML name attribute (defaults to '').
 <b>Note</b>: this property must be set if this field is to be automatically included with
 <a href="output/Ext.form.BasicForm.html#Ext.form.BasicForm-submit" ext:member="submit" ext:cls="Ext.form.BasicForm">form submit()</a>.</div></div></td><td class="msource"><a href="output/Ext.form.Field.html#name" ext:member="#name" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-overCls"></a><b><a href="source/Component.html#cfg-Ext.Component-overCls">overCls</a></b> : String<div class="mdesc"><div class="short">An optional extra CSS class that will be added to this component's Element when the mouse moves
 over the Element, and...</div><div class="long">An optional extra CSS class that will be added to this component's Element when the mouse moves
@@ -294,7 +326,8 @@ requirement for a ...</div><div class="long">An object or array of objects that 
 requirement for a valid plugin is that it contain an init method that accepts a reference of type Ext.Component.
 When a component is created, if any plugins are available, the component will call the init method on each
 plugin, passing a reference to itself.  Each plugin can then call methods or respond to events on the
-component as needed to provide its functionality.</div></div></td><td class="msource"><a href="output/Ext.Component.html#plugins" ext:member="#plugins" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-ptype"></a><b><a href="source/Component.html#cfg-Ext.Component-ptype">ptype</a></b> : String<div class="mdesc"><div class="short">The registered ptype to create. This config option is not used when passing
+component as needed to provide its functionality.</div></div></td><td class="msource"><a href="output/Ext.Component.html#plugins" ext:member="#plugins" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-preventMark"></a><b><a href="source/Field.html#cfg-Ext.form.Field-preventMark">preventMark</a></b> : Boolean<div class="mdesc"><tt>true</tt> to disable <a href="output/Ext.form.Field.html#Ext.form.Field-markInvalid" ext:member="markInvalid" ext:cls="Ext.form.Field">marking the field invalid</a>.
+Defaults to <tt>false</tt>.</div></td><td class="msource"><a href="output/Ext.form.Field.html#preventMark" ext:member="#preventMark" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-ptype"></a><b><a href="source/Component.html#cfg-Ext.Component-ptype">ptype</a></b> : String<div class="mdesc"><div class="short">The registered ptype to create. This config option is not used when passing
 a config object into a constructor. This ...</div><div class="long">The registered <tt>ptype</tt> to create. This config option is not used when passing
 a config object into a constructor. This config option is used only when
 lazy instantiation is being used, and a Plugin is being
@@ -389,7 +422,11 @@ properties into the object, but a developer may override this to support
 more behaviour.</p>
 <p>You can perform extra processing on state save and restore by attaching
 handlers to the <a href="output/Ext.Component.html#Ext.Component-beforestaterestore" ext:member="beforestaterestore" ext:cls="Ext.Component">beforestaterestore</a>, <a href="output/Ext.Component.html#Ext.Component-staterestore" ext:member="staterestore" ext:cls="Ext.Component">staterestore</a>,
-<a href="output/Ext.Component.html#Ext.Component-beforestatesave" ext:member="beforestatesave" ext:cls="Ext.Component">beforestatesave</a> and <a href="output/Ext.Component.html#Ext.Component-statesave" ext:member="statesave" ext:cls="Ext.Component">statesave</a> events.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#stateful" ext:member="#stateful" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-value"></a><b><a href="source/Field.html#cfg-Ext.form.Field-value">value</a></b> : Mixed<div class="mdesc">A value to initialize this field with (defaults to undefined).</div></td><td class="msource"><a href="output/Ext.form.Field.html#value" ext:member="#value" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-width"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-width">width</a></b> : Number<div class="mdesc"><div class="short">The width of this component in pixels (defaults to auto).
+<a href="output/Ext.Component.html#Ext.Component-beforestatesave" ext:member="beforestatesave" ext:cls="Ext.Component">beforestatesave</a> and <a href="output/Ext.Component.html#Ext.Component-statesave" ext:member="statesave" ext:cls="Ext.Component">statesave</a> events.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#stateful" ext:member="#stateful" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-tabTip"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-tabTip">tabTip</a></b> : String<div class="mdesc"><div class="short">Note: this config is only used when this BoxComponent is a child item of a TabPanel.
+A string to be used as innerHTML...</div><div class="long"><p><b>Note</b>: this config is only used when this BoxComponent is a child item of a TabPanel.</p>
+A string to be used as innerHTML (html tags are accepted) to show in a tooltip when mousing over
+the associated tab selector element. <a href="output/Ext.QuickTips.html" ext:cls="Ext.QuickTips">Ext.QuickTips</a>.init()
+must be called in order for the tips to render.</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#tabTip" ext:member="#tabTip" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-value"></a><b><a href="source/Field.html#cfg-Ext.form.Field-value">value</a></b> : Mixed<div class="mdesc">A value to initialize this field with (defaults to undefined).</div></td><td class="msource"><a href="output/Ext.form.Field.html#value" ext:member="#value" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-width"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-width">width</a></b> : Number<div class="mdesc"><div class="short">The width of this component in pixels (defaults to auto).
 Note to express this dimension as a percentage or offset se...</div><div class="long">The width of this component in pixels (defaults to auto).
 <b>Note</b> to express this dimension as a percentage or offset see <a href="output/Ext.Component.html#Ext.Component-anchor" ext:member="anchor" ext:cls="Ext.Component">Ext.Component.anchor</a>.</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#width" ext:member="#width" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-x"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-x">x</a></b> : Number<div class="mdesc">The local x (left) coordinate for this component if contained within a positioning container.</div></td><td class="msource"><a href="output/Ext.BoxComponent.html#x" ext:member="#x" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-xtype"></a><b><a href="source/Component.html#cfg-Ext.Component-xtype">xtype</a></b> : String<div class="mdesc"><div class="short">The registered xtype to create. This config option is not used when passing
 a config object into a constructor. This ...</div><div class="long">The registered <tt>xtype</tt> to create. This config option is not used when passing
@@ -437,15 +474,17 @@ config for a suggestion, or use a render listener directly:</p><pre><code><b>new
 <p>See also <tt><a href="output/Ext.Component.html#Ext.Component-getEl" ext:member="getEl" ext:cls="Ext.Component">getEl</a></p></div></div></td><td class="msource"><a href="output/Ext.Component.html#el" ext:member="#el" ext:cls="Ext.Component">Component</a></td></tr><tr class="property-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-hidden"></a><b><a href="source/Component.html#prop-Ext.Component-hidden">hidden</a></b> : Boolean<div class="mdesc">True if this component is hidden. Read-only.</div></td><td class="msource"><a href="output/Ext.Component.html#hidden" ext:member="#hidden" ext:cls="Ext.Component">Component</a></td></tr><tr class="property-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-initialConfig"></a><b><a href="source/Component.html#prop-Ext.Component-initialConfig">initialConfig</a></b> : Object<div class="mdesc">This Component's initial configuration specification. Read-only.</div></td><td class="msource"><a href="output/Ext.Component.html#initialConfig" ext:member="#initialConfig" ext:cls="Ext.Component">Component</a></td></tr><tr class="property-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-originalValue"></a><b><a href="source/Field.html#prop-Ext.form.Field-originalValue">originalValue</a></b> : mixed<div class="mdesc"><div class="short">The original value of the field as configured in the value configuration, or
 as loaded by the last form load operatio...</div><div class="long">The original value of the field as configured in the <a href="output/Ext.form.Field.html#Ext.form.Field-value" ext:member="value" ext:cls="Ext.form.Field">value</a> configuration, or
 as loaded by the last form load operation if the form's <a href="output/Ext.form.BasicForm.html#Ext.form.BasicForm-trackResetOnLoad" ext:member="trackResetOnLoad" ext:cls="Ext.form.BasicForm">trackResetOnLoad</a>
-setting is <code>true</code>.</div></div></td><td class="msource"><a href="output/Ext.form.Field.html#originalValue" ext:member="#originalValue" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="property-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-ownerCt"></a><b><a href="source/Component.html#prop-Ext.Component-ownerCt">ownerCt</a></b> : Ext.Container<div class="mdesc"><div class="short">The component's owner Ext.Container (defaults to undefined, and is set automatically when
-the component is added to a...</div><div class="long">The component's owner <a href="output/Ext.Container.html" ext:cls="Ext.Container">Ext.Container</a> (defaults to undefined, and is set automatically when
-the component is added to a container).  Read-only.
-<p><b>Note</b>: to access items within the container see <tt><a href="output/Ext.Component.html#Ext.Component-itemId" ext:member="itemId" ext:cls="Ext.Component">itemId</a></tt>.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#ownerCt" ext:member="#ownerCt" ext:cls="Ext.Component">Component</a></td></tr><tr class="property-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-rendered"></a><b><a href="source/Component.html#prop-Ext.Component-rendered">rendered</a></b> : Boolean<div class="mdesc">True if this component has been rendered. Read-only.</div></td><td class="msource"><a href="output/Ext.Component.html#rendered" ext:member="#rendered" ext:cls="Ext.Component">Component</a></td></tr></tbody></table><a id="Ext.form.HtmlEditor-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-HtmlEditor"></a><b><a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">HtmlEditor</a></b>(&nbsp;<code>Object&nbsp;config</code>&nbsp;)
+setting is <code>true</code>.</div></div></td><td class="msource"><a href="output/Ext.form.Field.html#originalValue" ext:member="#originalValue" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="property-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-ownerCt"></a><b><a href="source/Component.html#prop-Ext.Component-ownerCt">ownerCt</a></b> : Ext.Container<div class="mdesc"><div class="short">This Component's owner Container (defaults to undefined, and is set automatically when
+this Component is added to a C...</div><div class="long">This Component's owner <a href="output/Ext.Container.html" ext:cls="Ext.Container">Container</a> (defaults to undefined, and is set automatically when
+this Component is added to a Container).  Read-only.
+<p><b>Note</b>: to access items within the Container see <tt><a href="output/Ext.Component.html#Ext.Component-itemId" ext:member="itemId" ext:cls="Ext.Component">itemId</a></tt>.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#ownerCt" ext:member="#ownerCt" ext:cls="Ext.Component">Component</a></td></tr><tr class="property-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-rendered"></a><b><a href="source/Component.html#prop-Ext.Component-rendered">rendered</a></b> : Boolean<div class="mdesc">True if this component has been rendered. Read-only.</div></td><td class="msource"><a href="output/Ext.Component.html#rendered" ext:member="#rendered" ext:cls="Ext.Component">Component</a></td></tr></tbody></table><a id="Ext.form.HtmlEditor-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-HtmlEditor"></a><b><a href="source/HtmlEditor.html#cls-Ext.form.HtmlEditor">HtmlEditor</a></b>(&nbsp;<code>Object&nbsp;config</code>&nbsp;)
     <div class="mdesc"><div class="short">Create a new HtmlEditor</div><div class="long">Create a new HtmlEditor<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>config</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div><table><tr><td class="label">xtype:</td><td class="hd-info">htmleditor</td></tr></table></div></div></td><td class="msource">HtmlEditor</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-addClass"></a><b><a href="source/Component.html#method-Ext.Component-addClass">addClass</a></b>(&nbsp;<code>string&nbsp;cls</code>&nbsp;)
     :
-                                        Ext.Component<div class="mdesc"><div class="short">Adds a CSS class to the component's underlying element.</div><div class="long">Adds a CSS class to the component's underlying element.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>cls</code> : string<div class="sub-desc">The CSS class name to add</div></li></ul><strong>Returns:</strong><ul><li><code>Ext.Component</code><div class="sub-desc">this</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#addClass" ext:member="#addClass" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addEvents">addEvents</a></b>(&nbsp;<code>Object&nbsp;object</code>&nbsp;)
+                                        Ext.Component<div class="mdesc"><div class="short">Adds a CSS class to the component's underlying element.</div><div class="long">Adds a CSS class to the component's underlying element.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>cls</code> : string<div class="sub-desc">The CSS class name to add</div></li></ul><strong>Returns:</strong><ul><li><code>Ext.Component</code><div class="sub-desc">this</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#addClass" ext:member="#addClass" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addEvents"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addEvents">addEvents</a></b>(&nbsp;<code>Object|String&nbsp;o</code>,&nbsp;<code>string&nbsp;Optional.</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Used to define events on this Observable</div><div class="long">Used to define events on this Observable<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>object</code> : Object<div class="sub-desc">The object with the events defined</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addEvents" ext:member="#addEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addListener">addListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
+                                        void<div class="mdesc"><div class="short">Adds the specified events to the list of events which this Observable may fire.</div><div class="long">Adds the specified events to the list of events which this Observable may fire.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>o</code> : Object|String<div class="sub-desc">Either an object with event names as properties with a value of <code>true</code>
+or the first event name string if multiple event names are being passed as separate parameters.</div></li><li><code>Optional.</code> : string<div class="sub-desc">Event name if multiple event names are being passed as separate parameters.
+Usage:<pre><code>this.addEvents(<em>'storeloaded'</em>, <em>'storecleared'</em>);</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addEvents" ext:member="#addEvents" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-addListener"></a><b><a href="source/Observable.html#method-Ext.util.Observable-addListener">addListener</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">Appends an event handler to this object.</div><div class="long">Appends an event handler to this object.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to listen for.</div></li><li><code>handler</code> : Function<div class="sub-desc">The method the event invokes.</div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
 <b>If omitted, defaults to the object which fired the event.</b></div></li><li><code>options</code> : Object<div class="sub-desc">(optional) An object containing handler configuration.
@@ -466,8 +505,8 @@ Using the options argument, it is possible to combine different types of listene
 <br>
 A delayed, one-time listener.
 <pre><code>myDataView.on(<em>'click'</em>, this.onClick, this, {
-    single: true,
-    delay: 100
+single: true,
+delay: 100
 });</code></pre>
 <p>
 <b>Attaching multiple handlers in 1 call</b><br>
@@ -475,27 +514,27 @@ The method also allows for a single argument to be passed which is a config obje
 which specify multiple handlers.
 <p>
 <pre><code>myGridPanel.on({
-    <em>'click'</em> : {
-        fn: this.onClick,
-        scope: this,
-        delay: 100
-    },
-    <em>'mouseover'</em> : {
-        fn: this.onMouseOver,
-        scope: this
-    },
-    <em>'mouseout'</em> : {
-        fn: this.onMouseOut,
-        scope: this
-    }
+<em>'click'</em> : {
+    fn: this.onClick,
+    scope: this,
+    delay: 100
+},
+<em>'mouseover'</em> : {
+    fn: this.onMouseOver,
+    scope: this
+},
+<em>'mouseout'</em> : {
+    fn: this.onMouseOut,
+    scope: this
+}
 });</code></pre>
 <p>
 Or a shorthand syntax:<br>
 <pre><code>myGridPanel.on({
-    <em>'click'</em> : this.onClick,
-    <em>'mouseover'</em> : this.onMouseOver,
-    <em>'mouseout'</em> : this.onMouseOut,
-     scope: this
+<em>'click'</em> : this.onClick,
+<em>'mouseover'</em> : this.onMouseOver,
+<em>'mouseout'</em> : this.onMouseOut,
+ scope: this
 });</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addListener" ext:member="#addListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-cleanHtml"></a><b><a href="source/HtmlEditor.html#method-Ext.form.HtmlEditor-cleanHtml">cleanHtml</a></b>(&nbsp;<code>String&nbsp;html</code>&nbsp;)
     :
                                         String<div class="mdesc"><div class="short">Protected method that will not generally be called directly. If you need/want&#13;
@@ -511,7 +550,39 @@ removing the component from its <a href="output/Ext.Container.html" ext:cls="Ext
 <a href="output/Ext.ComponentMgr.html" ext:cls="Ext.ComponentMgr">Ext.ComponentMgr</a>.  Destruction is generally handled automatically by the framework and this method
 should usually not need to be called directly.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#destroy" ext:member="#destroy" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>Object&nbsp;events</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Used to enable bubbling of events</div><div class="long">Used to enable bubbling of events<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-execCmd"></a><b><a href="source/HtmlEditor.html#method-Ext.form.HtmlEditor-execCmd">execCmd</a></b>(&nbsp;<code>String&nbsp;cmd</code>,&nbsp;<span title="Optional" class="optional">[<code>String/Boolean&nbsp;value</code>]</span>&nbsp;)
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
+this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+<code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+<p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
+implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
+access the required target more quickly.</p>
+<p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
+<i>//  Add functionality to Field<em>'s initComponent to enable the change event to bubble</i>
+    initComponent: Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
+        this.enableBubble('</em>change<em>');
+    }),
+
+<i>//  We know that we want Field'</em>s events to bubble directly to the FormPanel.</i>
+    getBubbleTarget: <b>function</b>() {
+        <b>if</b> (!this.formPanel) {
+            this.formPanel = this.findParentByType(<em>'form'</em>);
+        }
+        <b>return</b> this.formPanel;
+    }
+});
+
+<b>var</b> myForm = <b>new</b> Ext.formPanel({
+    title: <em>'User Details'</em>,
+    items: [{
+        ...
+    }],
+    listeners: {
+        change: <b>function</b>() {
+<i>//          Title goes red <b>if</b> form has been modified.</i>
+            myForm.header.setStyle(<em>"color"</em>, <em>"red"</em>);
+        }
+    }
+});</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>events</code> : Object<div class="sub-desc">The event name to bubble, or an Array of event names.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#enableBubble" ext:member="#enableBubble" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-execCmd"></a><b><a href="source/HtmlEditor.html#method-Ext.form.HtmlEditor-execCmd">execCmd</a></b>(&nbsp;<code>String&nbsp;cmd</code>,&nbsp;<span title="Optional" class="optional">[<code>String/Boolean&nbsp;value</code>]</span>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">Executes a Midas editor command directly on the editor document.&#13;
 For visual commands, you should use relayCmd instea...</div><div class="long">Executes a Midas editor command directly on the editor document.
@@ -634,7 +705,11 @@ then the <i>original value</i> is updated when the values are loaded by
 <a href="output/Ext.form.BasicForm.html" ext:cls="Ext.form.BasicForm">Ext.form.BasicForm</a>.<a href="output/Ext.form.BasicForm.html#Ext.form.BasicForm-setValues" ext:member="setValues" ext:cls="Ext.form.BasicForm">setValues</a>.</p><div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if this field has been changed from its original value (and
 is not disabled), false otherwise.</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.form.Field.html#isDirty" ext:member="#isDirty" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-isValid"></a><b><a href="source/Field.html#method-Ext.form.Field-isValid">isValid</a></b>(&nbsp;<code>Boolean&nbsp;preventMark</code>&nbsp;)
     :
-                                        Boolean<div class="mdesc"><div class="short">Returns whether or not the field value is currently valid</div><div class="long">Returns whether or not the field value is currently valid<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>preventMark</code> : Boolean<div class="sub-desc">True to disable marking the field invalid</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if the value is valid, else false</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.form.Field.html#isValid" ext:member="#isValid" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-isVisible"></a><b><a href="source/Component.html#method-Ext.Component-isVisible">isVisible</a></b>()
+                                        Boolean<div class="mdesc"><div class="short">Returns whether or not the field value is currently valid by
+validating the processed value
+of the field. Note: disab...</div><div class="long">Returns whether or not the field value is currently valid by
+<a href="output/Ext.form.Field.html#Ext.form.Field-validateValue" ext:member="validateValue" ext:cls="Ext.form.Field">validating</a> the <a href="output/Ext.form.Field.html#Ext.form.Field-processValue" ext:member="processValue" ext:cls="Ext.form.Field">processed value</a>
+of the field. <b>Note</b>: <a href="output/Ext.form.Field.html#Ext.form.Field-disabled" ext:member="disabled" ext:cls="Ext.form.Field">disabled</a> fields are ignored.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>preventMark</code> : Boolean<div class="sub-desc">True to disable marking the field invalid</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if the value is valid, else false</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.form.Field.html#isValid" ext:member="#isValid" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-isVisible"></a><b><a href="source/Component.html#method-Ext.Component-isVisible">isVisible</a></b>()
     :
                                         Boolean<div class="mdesc"><div class="short">Returns true if this component is visible.</div><div class="long">Returns true if this component is visible.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if this component is visible, false otherwise.</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#isVisible" ext:member="#isVisible" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-isXType"></a><b><a href="source/Component.html#method-Ext.Component-isXType">isXType</a></b>(&nbsp;<code>String&nbsp;xtype</code>,&nbsp;<span title="Optional" class="optional">[<code>Boolean&nbsp;shallow</code>]</span>&nbsp;)
     :
@@ -656,7 +731,13 @@ the default), or true to check whether this Component is directly of the specifi
                                         void<div class="mdesc"><div class="short">Appends an event handler to this object (shorthand for addListener.)</div><div class="long">Appends an event handler to this object (shorthand for <a href="output/Ext.util.Observable.html#Ext.util.Observable-addListener" ext:member="addListener" ext:cls="Ext.util.Observable">addListener</a>.)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The type of event to listen for</div></li><li><code>handler</code> : Function<div class="sub-desc">The method the event invokes</div></li><li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
 <b>If omitted, defaults to the object which fired the event.</b></div></li><li><code>options</code> : Object<div class="sub-desc">(optional) An object containing handler configuration.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#on" ext:member="#on" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-previousSibling"></a><b><a href="source/Component.html#method-Ext.Component-previousSibling">previousSibling</a></b>()
     :
-                                        Ext.Component<div class="mdesc"><div class="short">Returns the previous component in the owning container</div><div class="long">Returns the previous component in the owning container<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Ext.Component</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#previousSibling" ext:member="#previousSibling" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-purgeListeners"></a><b><a href="source/Observable.html#method-Ext.util.Observable-purgeListeners">purgeListeners</a></b>()
+                                        Ext.Component<div class="mdesc"><div class="short">Returns the previous component in the owning container</div><div class="long">Returns the previous component in the owning container<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li><code>Ext.Component</code><div class="sub-desc"></div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.Component.html#previousSibling" ext:member="#previousSibling" ext:cls="Ext.Component">Component</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-processValue"></a><b><a href="source/Field.html#method-Ext.form.Field-processValue">processValue</a></b>(&nbsp;<code>Mixed&nbsp;value</code>&nbsp;)
+    :
+                                        void<div class="mdesc"><div class="short">This method should only be overridden if necessary to prepare raw values
+for validation (see validate and isValid).  ...</div><div class="long">This method should only be overridden if necessary to prepare raw values
+for validation (see <a href="output/Ext.form.Field.html#Ext.form.Field-validate" ext:member="validate" ext:cls="Ext.form.Field">validate</a> and <a href="output/Ext.form.Field.html#Ext.form.Field-isValid" ext:member="isValid" ext:cls="Ext.form.Field">isValid</a>).  This method
+is expected to return the processed value for the field which will
+be used for validation (see validateValue method).<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>value</code> : Mixed<div class="sub-desc"></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.form.Field.html#processValue" ext:member="#processValue" ext:cls="Ext.form.Field">Field</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-purgeListeners"></a><b><a href="source/Observable.html#method-Ext.util.Observable-purgeListeners">purgeListeners</a></b>()
     :
                                         void<div class="mdesc"><div class="short">Removes all listeners for this object</div><div class="long">Removes all listeners for this object<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#purgeListeners" ext:member="#purgeListeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-pushValue"></a><b><a href="source/HtmlEditor.html#method-Ext.form.HtmlEditor-pushValue">pushValue</a></b>()
     :

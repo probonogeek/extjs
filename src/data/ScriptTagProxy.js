@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -202,23 +202,23 @@ Ext.extend(Ext.data.ScriptTagProxy, Ext.data.DataProxy, {
      * @param {Object} res The server response
      * @private
      */
-    onWrite : function(action, trans, res, rs) {
+    onWrite : function(action, trans, response, rs) {
         var reader = trans.reader;
         try {
             // though we already have a response object here in STP, run through readResponse to catch any meta-data exceptions.
-            reader.readResponse(action, res);
+            var res = reader.readResponse(action, response);
         } catch (e) {
             this.fireEvent('exception', this, 'response', action, trans, res, e);
             trans.callback.call(trans.scope||window, null, res, false);
             return;
         }
-        if(!res[reader.meta.successProperty] === true){
+        if(!res.success === true){
             this.fireEvent('exception', this, 'remote', action, trans, res, rs);
             trans.callback.call(trans.scope||window, null, res, false);
             return;
         }
-        this.fireEvent("write", this, action, res[reader.meta.root], res, rs, trans.arg );
-        trans.callback.call(trans.scope||window, res[reader.meta.root], res, true);
+        this.fireEvent("write", this, action, res.data, res, rs, trans.arg );
+        trans.callback.call(trans.scope||window, res.data, res, true);
     },
 
     // private

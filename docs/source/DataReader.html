@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.DataReader"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.DataReader"></div>/**
  * @class Ext.data.DataReader
  * Abstract base class for reading structured data from a data source and converting
  * it into an object containing {@link Ext.data.Record} objects and metadata for use
@@ -35,16 +41,48 @@ Ext.data.DataReader = function(meta, recordType){
     this.recordType = Ext.isArray(recordType) ?
         Ext.data.Record.create(recordType) : recordType;
 
-    // make sure extraction functions are defined.
-    this.buildExtractors();
+    // if recordType defined make sure extraction functions are defined
+    if (this.recordType){
+        this.buildExtractors();
+    }
 };
 
 Ext.data.DataReader.prototype = {
-
+    <div id="cfg-Ext.data.DataReader-messageProperty"></div>/**
+     * @cfg {String} messageProperty [undefined] Optional name of a property within a server-response that represents a user-feedback message.
+     */
+    <div id="prop-Ext.data.DataReader-getTotal"></div>/**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getTotal: Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-getRoot"></div>/**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getRoot: Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-getMessage"></div>/**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getMessage: Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-getSuccess"></div>/**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getSuccess: Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-getId"></div>/**
+     * Abstract method created in extension's buildExtractors impl.
+     */
+    getId: Ext.emptyFn,
     <div id="prop-Ext.data.DataReader-buildExtractors"></div>/**
-     * Abstract method, overridden in {@link Ext.data.JsonReader}
+     * Abstract method, overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
      */
     buildExtractors : Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-extractData"></div>/**
+     * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
+     */
+    extractData : Ext.emptyFn,
+    <div id="prop-Ext.data.DataReader-extractValues"></div>/**
+     * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
+     */
+    extractValues : Ext.emptyFn,
 
     <div id="method-Ext.data.DataReader-realize"></div>/**
      * Used for un-phantoming a record after a successful database insert.  Sets the records pk along with new data from server.
@@ -79,11 +117,10 @@ Ext.data.DataReader.prototype = {
                 //rs.commit();
                 throw new Ext.data.DataReader.Error('realize', rs);
             }
-            var values = this.extractValues(data, rs.fields.items, rs.fields.items.length);
             rs.phantom = false; // <-- That's what it's all about
             rs._phid = rs.id;  // <-- copy phantom-id -> _phid, so we can remap in Store#onCreateRecords
-            rs.id = data[this.meta.idProperty];
-            rs.data = values;
+            rs.id = this.getId(data);
+            rs.data = data;
             rs.commit();
         }
     },
@@ -115,7 +152,7 @@ Ext.data.DataReader.prototype = {
                 data = data.shift();
             }
             if (this.isData(data)) {
-                rs.data = this.extractValues(Ext.apply(rs.data, data), rs.fields.items, rs.fields.items.length);
+                rs.data = Ext.apply(rs.data, data);
             }
             rs.commit();
         }
@@ -128,7 +165,15 @@ Ext.data.DataReader.prototype = {
      * @return {Boolean}
      */
     isData : function(data) {
-        return (data && Ext.isObject(data) && !Ext.isEmpty(data[this.meta.idProperty])) ? true : false;
+        return (data && Ext.isObject(data) && !Ext.isEmpty(this.getId(data))) ? true : false;
+    },
+
+    // private function a store will createSequence upon
+    onMetaChange : function(meta){
+        delete this.ef;
+        this.meta = meta;
+        this.recordType = Ext.data.Record.create(meta.fields);
+        this.buildExtractors();
     }
 };
 
@@ -153,6 +198,40 @@ Ext.apply(Ext.data.DataReader.Error.prototype, {
 });
 
 
-</pre>    
+<div id="method-Ext.data.DataReader.Error-Response"></div>/**
+ * Ext.data.Response
+ * A generic response class to normalize response-handling internally to the framework.
+ * TODO move to own file, add to jsb.
+ */
+Ext.data.Response = function(params) {
+    Ext.apply(this, params);
+};
+Ext.data.Response.prototype = {
+    <div id="prop-Ext.data.DataReader.Error-{String}"></div>/**
+     * @property {String} action {@link Ext.data.Api#actions}
+     */
+    action: undefined,
+    <div id="prop-Ext.data.DataReader.Error-{Boolean}"></div>/**
+     * @property {Boolean} success
+     */
+    success : undefined,
+    <div id="prop-Ext.data.DataReader.Error-{String}"></div>/**
+     * @property {String} message
+     */
+    message : undefined,
+    <div id="prop-Ext.data.DataReader.Error-{Array/Object}"></div>/**
+     * @property {Array/Object} data
+     */
+    data: undefined,
+    <div id="prop-Ext.data.DataReader.Error-{Object}"></div>/**
+     * @property {Object} raw The raw response returned from server-code
+     */
+    raw: undefined,
+    <div id="prop-Ext.data.DataReader.Error-{Ext.data.Record/Ext.data.Record[]}"></div>/**
+     * @property {Ext.data.Record/Ext.data.Record[]} record(s) related to the Request action
+     */
+    records: undefined
+}
+</pre>
 </body>
 </html>

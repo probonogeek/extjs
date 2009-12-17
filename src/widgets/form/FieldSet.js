@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -235,14 +235,6 @@ Ext.form.FieldSet = Ext.extend(Ext.Panel, {
      */
     /**
      * @cfg {Object/Array} tbar
-     * @hide
-     */
-    /**
-     * @cfg {String} tabTip
-     * @hide
-     */
-    /**
-     * @cfg {Boolean} titleCollapse
      * @hide
      */
     /**

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -81,8 +81,8 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
      * @param {Boolean} suppressEvent True to prevent the button's change event from firing (defaults to false)
      */
     setActiveItem : function(item, suppressEvent){
-        if(typeof item != 'object'){
-            item = this.menu.items.get(item);
+        if(!Ext.isObject(item)){
+            item = this.menu.getComponent(item);
         }
         if(item){
             if(!this.rendered){
@@ -139,18 +139,19 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
 
         this.menu = {cls:'x-cycle-menu', items:[]};
         var checked;
-        for(var i = 0, len = this.itemCount; i < len; i++){
-            var item = this.items[i];
-            item.group = item.group || this.id;
-            item.itemIndex = i;
-            item.checkHandler = this.checkHandler;
-            item.scope = this;
-            item.checked = item.checked || false;
+        Ext.each(this.items, function(item, i){
+            Ext.apply(item, {
+                group: item.group || this.id,
+                itemIndex: i,
+                checkHandler: this.checkHandler,
+                scope: this,
+                checked: item.checked || false
+            });
             this.menu.items.push(item);
             if(item.checked){
                 checked = item;
             }
-        }
+        }, this);
         this.setActiveItem(checked, true);
         Ext.CycleButton.superclass.initComponent.call(this);
 
@@ -170,13 +171,18 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
      * the active item will be set to the first item in the menu.
      */
     toggleSelected : function(){
-        this.menu.render();
+        var m = this.menu;
+        m.render();
+        // layout if we haven't before so the items are active
+        if(!m.hasLayout){
+            m.doLayout();
+        }
         
         var nextIdx, checkItem;
         for (var i = 1; i < this.itemCount; i++) {
             nextIdx = (this.activeItem.itemIndex + i) % this.itemCount;
             // check the potential item
-            checkItem = this.menu.items.itemAt(nextIdx);
+            checkItem = m.items.itemAt(nextIdx);
             // if its not disabled then check it.
             if (!checkItem.disabled) {
                 checkItem.setChecked(true);

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -358,8 +358,8 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
         }
         if(result.errors){
             this.form.markInvalid(result.errors);
-            this.failureType = Ext.form.Action.SERVER_INVALID;
         }
+        this.failureType = Ext.form.Action.SERVER_INVALID;
         this.form.afterAction(this, false);
     },
 
@@ -422,7 +422,7 @@ myFormPanel.{@link Ext.form.FormPanel#getForm getForm}().{@link Ext.form.BasicFo
     params: {
         consignmentRef: myConsignmentRef
     },
-    failure: function(form, action() {
+    failure: function(form, action) {
         Ext.Msg.alert("Load failed", action.result.errorMessage);
     }
 });
@@ -497,62 +497,90 @@ Ext.extend(Ext.form.Action.Load, Ext.form.Action, {
 /**
  * @class Ext.form.Action.DirectLoad
  * @extends Ext.form.Action.Load
- * Provides Ext.direct support for loading form data. This example illustrates usage
- * of Ext.Direct to load a submit a form through Ext.Direct.
+ * <p>Provides Ext.direct support for loading form data.</p>
+ * <p>This example illustrates usage of Ext.Direct to <b>load</b> a form through Ext.Direct.</p>
  * <pre><code>
 var myFormPanel = new Ext.form.FormPanel({
     // configs for FormPanel
     title: 'Basic Information',
-    border: false,
+    renderTo: document.body,
+    width: 300, height: 160,
     padding: 10,
-    buttons:[{
-        text: 'Submit',
-        handler: function(){
-            basicInfo.getForm().submit({
-                params: {
-                    uid: 5
-                }
-            });
-        }
-    }],
-    
+
     // configs apply to child items
     defaults: {anchor: '100%'},
     defaultType: 'textfield',
-    items: [
-        // form fields go here
-    ],
-    
+    items: [{
+        fieldLabel: 'Name',
+        name: 'name'
+    },{
+        fieldLabel: 'Email',
+        name: 'email'
+    },{
+        fieldLabel: 'Company',
+        name: 'company'
+    }],
+
     // configs for BasicForm
     api: {
+        // The server-side method to call for load() requests
         load: Profile.getBasicInfo,
         // The server-side must mark the submit handler as a 'formHandler'
         submit: Profile.updateBasicInfo
-    },    
-    paramOrder: ['uid']
+    },
+    // specify the order for the passed params
+    paramOrder: ['uid', 'foo']
 });
 
 // load the form
 myFormPanel.getForm().load({
+    // pass 2 arguments to server side getBasicInfo method (len=2)
     params: {
-        uid: 5
+        foo: 'bar',
+        uid: 34
     }
 });
  * </code></pre>
+ * The data packet sent to the server will resemble something like:
+ * <pre><code>
+[
+    {
+        "action":"Profile","method":"getBasicInfo","type":"rpc","tid":2,
+        "data":[34,"bar"] // note the order of the params
+    }
+]
+ * </code></pre>
+ * The form will process a data packet returned by the server that is similar
+ * to the following format:
+ * <pre><code>
+[
+    {
+        "action":"Profile","method":"getBasicInfo","type":"rpc","tid":2,
+        "result":{
+            "success":true,
+            "data":{
+                "name":"Fred Flintstone",
+                "company":"Slate Rock and Gravel",
+                "email":"fred.flintstone@slaterg.com"
+            }
+        }
+    }
+]
+ * </code></pre>
  */
 Ext.form.Action.DirectLoad = Ext.extend(Ext.form.Action.Load, {
-    constructor: function(form, opts) {        
+    constructor: function(form, opts) {
         Ext.form.Action.DirectLoad.superclass.constructor.call(this, form, opts);
     },
-    type: 'directload',
-    
+    type : 'directload',
+
     run : function(){
         var args = this.getParams();
-        args.push(this.success, this);                
+        args.push(this.success, this);
         this.form.api.load.apply(window, args);
     },
-    
-    getParams: function() {
+
+    getParams : function() {
         var buf = [], o = {};
         var bp = this.form.baseParams;
         var p = this.options.params;
@@ -570,23 +598,114 @@ Ext.form.Action.DirectLoad = Ext.extend(Ext.form.Action.Load, {
     // Direct actions have already been processed and therefore
     // we can directly set the result; Direct Actions do not have
     // a this.response property.
-    processResponse: function(result) {
+    processResponse : function(result) {
         this.result = result;
-        return result;          
+        return result;
+    },
+    
+    success : function(response, trans){
+        if(trans.type == Ext.Direct.exceptions.SERVER){
+            response = {};
+        }
+        Ext.form.Action.DirectLoad.superclass.success.call(this, response);
     }
 });
 
 /**
  * @class Ext.form.Action.DirectSubmit
  * @extends Ext.form.Action.Submit
- * Provides Ext.direct support for submitting form data.
- * See {@link Ext.form.Action.DirectLoad}.
+ * <p>Provides Ext.direct support for submitting form data.</p>
+ * <p>This example illustrates usage of Ext.Direct to <b>submit</b> a form through Ext.Direct.</p>
+ * <pre><code>
+var myFormPanel = new Ext.form.FormPanel({
+    // configs for FormPanel
+    title: 'Basic Information',
+    renderTo: document.body,
+    width: 300, height: 160,
+    padding: 10,
+    buttons:[{
+        text: 'Submit',
+        handler: function(){
+            myFormPanel.getForm().submit({
+                params: {
+                    foo: 'bar',
+                    uid: 34
+                }
+            });
+        }
+    }],
+
+    // configs apply to child items
+    defaults: {anchor: '100%'},
+    defaultType: 'textfield',
+    items: [{
+        fieldLabel: 'Name',
+        name: 'name'
+    },{
+        fieldLabel: 'Email',
+        name: 'email'
+    },{
+        fieldLabel: 'Company',
+        name: 'company'
+    }],
+
+    // configs for BasicForm
+    api: {
+        // The server-side method to call for load() requests
+        load: Profile.getBasicInfo,
+        // The server-side must mark the submit handler as a 'formHandler'
+        submit: Profile.updateBasicInfo
+    },
+    // specify the order for the passed params
+    paramOrder: ['uid', 'foo']
+});
+ * </code></pre>
+ * The data packet sent to the server will resemble something like:
+ * <pre><code>
+{
+    "action":"Profile","method":"updateBasicInfo","type":"rpc","tid":"6",
+    "result":{
+        "success":true,
+        "id":{
+            "extAction":"Profile","extMethod":"updateBasicInfo",
+            "extType":"rpc","extTID":"6","extUpload":"false",
+            "name":"Aaron Conran","email":"aaron@extjs.com","company":"Ext JS, LLC"
+        }
+    }
+}
+ * </code></pre>
+ * The form will process a data packet returned by the server that is similar
+ * to the following:
+ * <pre><code>
+// sample success packet (batched requests)
+[
+    {
+        "action":"Profile","method":"updateBasicInfo","type":"rpc","tid":3,
+        "result":{
+            "success":true
+        }
+    }
+]
+
+// sample failure packet (one request)
+{
+        "action":"Profile","method":"updateBasicInfo","type":"rpc","tid":"6",
+        "result":{
+            "errors":{
+                "email":"already taken"
+            },
+            "success":false,
+            "foo":"bar"
+        }
+}
+ * </code></pre>
+ * Also see the discussion in {@link Ext.form.Action.DirectLoad}.
  */
 Ext.form.Action.DirectSubmit = Ext.extend(Ext.form.Action.Submit, {
-    constructor: function(form, opts) {
+    constructor : function(form, opts) {
         Ext.form.Action.DirectSubmit.superclass.constructor.call(this, form, opts);
     },
-    type: 'directsubmit',
+    type : 'directsubmit',
     // override of Submit
     run : function(){
         var o = this.options;
@@ -600,27 +719,33 @@ Ext.form.Action.DirectSubmit = Ext.extend(Ext.form.Action.Submit, {
             this.form.afterAction(this, false);
         }
     },
-    
-    getParams: function() {
+
+    getParams : function() {
         var o = {};
         var bp = this.form.baseParams;
         var p = this.options.params;
         Ext.apply(o, p, bp);
         return o;
-    },    
+    },
     // Direct actions have already been processed and therefore
     // we can directly set the result; Direct Actions do not have
     // a this.response property.
-    processResponse: function(result) {
+    processResponse : function(result) {
         this.result = result;
-        return result;          
+        return result;
+    },
+    
+    success : function(response, trans){
+        if(trans.type == Ext.Direct.exceptions.SERVER){
+            response = {};
+        }
+        Ext.form.Action.DirectSubmit.superclass.success.call(this, response);
     }
 });
-
 
 Ext.form.Action.ACTION_TYPES = {
     'load' : Ext.form.Action.Load,
     'submit' : Ext.form.Action.Submit,
-    'directload': Ext.form.Action.DirectLoad,
-    'directsubmit': Ext.form.Action.DirectSubmit
+    'directload' : Ext.form.Action.DirectLoad,
+    'directsubmit' : Ext.form.Action.DirectSubmit
 };

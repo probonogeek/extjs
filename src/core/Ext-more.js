@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -17,7 +17,9 @@ Ext.ns("Ext.grid", "Ext.dd", "Ext.tree", "Ext.form", "Ext.menu",
      */
 
 Ext.apply(Ext, function(){
-    var E = Ext, idSeed = 0;
+    var E = Ext, 
+        idSeed = 0,
+        scrollWidth = null;
 
     return {
         /**
@@ -33,7 +35,7 @@ Ext.apply(Ext, function(){
          * For other browsers it uses an inline data URL.
          * @type String
          */
-        BLANK_IMAGE_URL : Ext.isIE6 || Ext.isIE7 ?
+        BLANK_IMAGE_URL : Ext.isIE6 || Ext.isIE7 || Ext.isAir ?
                             'http:/' + '/extjs.com/s.gif' :
                             'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
 
@@ -50,22 +52,13 @@ Ext.apply(Ext, function(){
         },
 
         /**
-         * Returns true if the passed object is a JavaScript date object, otherwise false.
-         * @param {Object} object The object to test
-         * @return {Boolean}
-         */
-        isDate : function(v){
-            return Object.prototype.toString.apply(v) === '[object Date]';
-        },
-
-        /**
          * Utility method for validating that a value is numeric, returning the specified default value if it is not.
          * @param {Mixed} value Should be a number, but any type will be handled appropriately
          * @param {Number} defaultValue The value to return if the original value is non-numeric
          * @return {Number} Value, if numeric, else defaultValue
          */
         num : function(v, defaultValue){
-            v = Number(v === null || typeof v == 'boolean'? NaN : v);
+            v = Number(Ext.isEmpty(v) || Ext.isBoolean(v) ? NaN : v);
             return isNaN(v)? defaultValue : v;
         },
 
@@ -92,7 +85,7 @@ Ext.apply(Ext, function(){
          * @return {String}
          */
         escapeRe : function(s) {
-            return s.replace(/([.*+?^${}()|[\]\/\\])/g, "\\$1");
+            return s.replace(/([-.*+?^${}()|[\]\/\\])/g, "\\$1");
         },
 
         sequence : function(o, name, fn, scope){
@@ -139,6 +132,31 @@ Ext.addBehaviors({
                 cache = null;
             }
         },
+        
+        /**
+         * Utility method for getting the width of the browser scrollbar. This can differ depending on
+         * operating system settings, such as the theme or font size.
+         * @param {Boolean} force (optional) true to force a recalculation of the value.
+         * @return {Number} The width of the scrollbar.
+         */
+        getScrollBarWidth: function(force){
+            if(!Ext.isReady){
+                return 0;
+            }
+            
+            if(force === true || scrollWidth === null){
+                    // Append our div, do our calculation and then remove it
+                var div = Ext.getBody().createChild('<div class="x-hide-offsets" style="width:100px;height:50px;overflow:hidden;"><div style="height:200px;"></div></div>'),
+                    child = div.child('div', true);
+                var w1 = child.offsetWidth;
+                div.setStyle('overflow', (Ext.isWebKit || Ext.isGecko) ? 'auto' : 'scroll');
+                var w2 = child.offsetWidth;
+                div.remove();
+                // Need to add 2 to ensure we leave enough space
+                scrollWidth = w1 - w2 + 2;
+            }
+            return scrollWidth;
+        },
 
 
         // deprecated
@@ -175,7 +193,7 @@ ImageComponent = Ext.extend(Ext.BoxComponent, {
          * @return {Object} The modified object.
         */
         copyTo : function(dest, source, names){
-            if(typeof names == 'string'){
+            if(Ext.isString(names)){
                 names = names.split(/[,;\s]/);
             }
             Ext.each(names, function(name){
@@ -377,7 +395,7 @@ Ext.invoke(Ext.query("p"), "getAttribute", "id");
             var ret = [],
                 args = Array.prototype.slice.call(arguments, 2);
             Ext.each(arr, function(v,i) {
-                if (v && typeof v[methodName] == "function") {
+                if (v && Ext.isFunction(v[methodName])) {
                     ret.push(v[methodName].apply(v, args));
                 } else {
                     ret.push(undefined);
@@ -501,7 +519,7 @@ Ext.zip(
                     case RegExp: return 'regexp';
                     case Date: return 'date';
                 }
-                if(typeof o.length == 'number' && typeof o.item == 'function') {
+                if(Ext.isNumber(o.length) && Ext.isFunction(o.item)) {
                     return 'nodelist';
                 }
             }
@@ -548,7 +566,8 @@ var sayGoodbye = sayHi.createSequence(function(name){
 sayGoodbye('Fred'); // both alerts show
 </code></pre>
      * @param {Function} fcn The function to sequence
-     * @param {Object} scope (optional) The scope of the passed fcn (Defaults to scope of original function or window)
+     * @param {Object} scope (optional) The scope (<code><b>this</b></code> reference) in which the passed function is executed.
+     * <b>If omitted, defaults to the scope in which the original function is called or the browser window.</b>
      * @return {Function} The new function
      */
     createSequence : function(fcn, scope){

@@ -51,11 +51,9 @@
                }, {
                     region:'center',
                     margins: '5 5 5 0',
-                    layout:{
-                        type:'vbox',
-                        align:'stretch'
-                    },
+                    layout: 'anchor',
                     items:[{
+                        anchor: '100%',
                         baseCls:'x-plain',
                         layout: {
                             type:'hbox',
@@ -239,6 +237,7 @@
                             }
                         }]
                     },{
+                        anchor: '100%',
                         baseCls:'x-plain',
                         layout: {
                             type:'hbox',

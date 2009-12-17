@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -14,8 +14,8 @@ Ext.util.Cookies = {
      * Create a cookie with the specified name and value. Additional settings
      * for the cookie may be optionally specified (for example: expiration,
      * access restriction, SSL).
-     * @param {Object} name
-     * @param {Object} value
+     * @param {String} name The name of the cookie to set. 
+     * @param {Mixed} value The value to set for the cookie.
      * @param {Object} expires (Optional) Specify an expiration date the
      * cookie is to persist until.  Note that the specified Date object will
      * be converted to Greenwich Mean Time (GMT). 
@@ -50,7 +50,7 @@ Ext.util.Cookies = {
      * <pre><code>
      * var validStatus = Ext.util.Cookies.get("valid");
      * </code></pre>
-     * @param {Object} name The name of the cookie to get
+     * @param {String} name The name of the cookie to get
      * @return {Mixed} Returns the cookie value for the specified name;
      * null if the cookie name does not exist.
      */
@@ -75,8 +75,8 @@ Ext.util.Cookies = {
 
     /**
      * Removes a cookie with the provided name from the browser
-     * if found.
-     * @param {Object} name The name of the cookie to remove
+     * if found by setting its expiration date to sometime in the past. 
+     * @param {String} name The name of the cookie to remove
      */
     clear : function(name){
         if(Ext.util.Cookies.get(name)){

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -14,7 +14,7 @@
 Ext.grid.Column = function(config){
     Ext.apply(this, config);
 
-    if(typeof this.renderer == 'string'){
+    if(Ext.isString(this.renderer)){
         this.renderer = Ext.util.Format[this.renderer];
     } else if(Ext.isObject(this.renderer)){
         this.scope = this.renderer.scope;
@@ -22,15 +22,10 @@ Ext.grid.Column = function(config){
     }
     this.renderer = this.renderer.createDelegate(this.scope || config);
 
-    if(this.id === undefined){
-        this.id = ++Ext.grid.Column.AUTO_ID;
-    }
     if(this.editor){
         this.editor = Ext.create(this.editor, 'textfield');
     }
 };
-
-Ext.grid.Column.AUTO_ID = 0;
 
 Ext.grid.Column.prototype = {
     /**
@@ -116,8 +111,8 @@ Ext.grid.Column.prototype = {
      */
     /**
      * @cfg {Boolean} sortable Optional. <tt>true</tt> if sorting is to be allowed on this column.
-     * Defaults to the value of the {@link #defaultSortable} property.
-     * Whether local/remote sorting is used is specified in {@link Ext.data.Store#remoteSort}.
+     * Defaults to the value of the <code>{@link Ext.grid.ColumnModel#defaultSortable}</code> property.
+     * Whether local/remote sorting is used is specified in <code>{@link Ext.data.Store#remoteSort}</code>.
      */
     /**
      * @cfg {Boolean} fixed Optional. <tt>true</tt> if the column width cannot be changed.  Defaults to <tt>false</tt>.
@@ -129,7 +124,10 @@ Ext.grid.Column.prototype = {
      * @cfg {Boolean} menuDisabled Optional. <tt>true</tt> to disable the column menu. Defaults to <tt>false</tt>.
      */
     /**
-     * @cfg {Boolean} hidden Optional. <tt>true</tt> to hide the column. Defaults to <tt>false</tt>.
+     * @cfg {Boolean} hidden
+     * Optional. <tt>true</tt> to initially hide this column. Defaults to <tt>false</tt>.
+     * A hidden column {@link Ext.grid.GridPanel#enableColumnHide may be shown via the header row menu}.
+     * If a column is never to be shown, simply do not include this column in the Column Model at all. 
      */
     /**
      * @cfg {String} tooltip Optional. A text string to use as the column header's tooltip.  If Quicktips
@@ -226,8 +224,15 @@ var grid = new Ext.grid.GridPanel({
      * if editing is supported by the grid. See <tt>{@link #editable}</tt> also.
      */
 
-    // private. Used by ColumnModel to avoid reprocessing
+    /**
+     * @private
+     * @cfg {Boolean} isColumn
+     * Used by ColumnModel setConfig method to avoid reprocessing a Column
+     * if <code>isColumn</code> is not set ColumnModel will recreate a new Ext.grid.Column
+     * Defaults to true.
+     */
     isColumn : true,
+
     /**
      * Optional. A function which returns displayable data when passed the following parameters:
      * <div class="mdetail-params"><ul>
@@ -247,7 +252,7 @@ var grid = new Ext.grid.GridPanel({
      * @type Function
      */
     renderer : function(value){
-        if(typeof value == 'string' && value.length < 1){
+        if(Ext.isString(value) && value.length < 1){
             return '&#160;';
         }
         return value;
@@ -283,8 +288,8 @@ var grid = new Ext.grid.GridPanel({
 /**
  * @class Ext.grid.BooleanColumn
  * @extends Ext.grid.Column
- * <p>A Column definition class which renders boolean data fields.  See the {@link Ext.grid.ColumnModel#xtype xtype}
- * config option of {@link Ext.grid.ColumnModel} for more details.</p>
+ * <p>A Column definition class which renders boolean data fields.  See the {@link Ext.grid.Column#xtype xtype}
+ * config option of {@link Ext.grid.Column} for more details.</p>
  */
 Ext.grid.BooleanColumn = Ext.extend(Ext.grid.Column, {
     /**
@@ -323,7 +328,7 @@ Ext.grid.BooleanColumn = Ext.extend(Ext.grid.Column, {
  * @class Ext.grid.NumberColumn
  * @extends Ext.grid.Column
  * <p>A Column definition class which renders a numeric data field according to a {@link #format} string.  See the
- * {@link Ext.grid.ColumnModel#xtype xtype} config option of {@link Ext.grid.ColumnModel} for more details.</p>
+ * {@link Ext.grid.Column#xtype xtype} config option of {@link Ext.grid.Column} for more details.</p>
  */
 Ext.grid.NumberColumn = Ext.extend(Ext.grid.Column, {
     /**
@@ -342,7 +347,7 @@ Ext.grid.NumberColumn = Ext.extend(Ext.grid.Column, {
  * @class Ext.grid.DateColumn
  * @extends Ext.grid.Column
  * <p>A Column definition class which renders a passed date according to the default locale, or a configured
- * {@link #format}. See the {@link Ext.grid.ColumnModel#xtype xtype} config option of {@link Ext.grid.ColumnModel}
+ * {@link #format}. See the {@link Ext.grid.Column#xtype xtype} config option of {@link Ext.grid.Column}
  * for more details.</p>
  */
 Ext.grid.DateColumn = Ext.extend(Ext.grid.Column, {
@@ -363,7 +368,7 @@ Ext.grid.DateColumn = Ext.extend(Ext.grid.Column, {
  * @extends Ext.grid.Column
  * <p>A Column definition class which renders a value by processing a {@link Ext.data.Record Record}'s
  * {@link Ext.data.Record#data data} using a {@link #tpl configured} {@link Ext.XTemplate XTemplate}.
- * See the {@link Ext.grid.ColumnModel#xtype xtype} config option of {@link Ext.grid.ColumnModel} for more
+ * See the {@link Ext.grid.Column#xtype xtype} config option of {@link Ext.grid.Column} for more
  * details.</p>
  */
 Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
@@ -374,7 +379,7 @@ Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
      */
     constructor: function(cfg){
         Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = typeof Ext.isObject(this.tpl) ? this.tpl : new Ext.XTemplate(this.tpl);
+        var tpl = Ext.isObject(this.tpl) ? this.tpl : new Ext.XTemplate(this.tpl);
         this.renderer = function(value, p, r){
             return tpl.apply(r.data);
         };

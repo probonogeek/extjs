@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -31,35 +31,39 @@ Ext.util.JSON = new (function(){
             return eval("(" + json + ')');    
         },
         doEncode = function(o){
-            if(typeof o == "undefined" || o === null){
+            if(!Ext.isDefined(o) || o === null){
                 return "null";
             }else if(Ext.isArray(o)){
                 return encodeArray(o);
-            }else if(Object.prototype.toString.apply(o) === '[object Date]'){
+            }else if(Ext.isDate(o)){
                 return Ext.util.JSON.encodeDate(o);
-            }else if(typeof o == "string"){
+            }else if(Ext.isString(o)){
                 return encodeString(o);
             }else if(typeof o == "number"){
+                //don't use isNumber here, since finite checks happen inside isNumber
                 return isFinite(o) ? String(o) : "null";
-            }else if(typeof o == "boolean"){
+            }else if(Ext.isBoolean(o)){
                 return String(o);
             }else {
                 var a = ["{"], b, i, v;
                 for (i in o) {
-                    if(!useHasOwn || o.hasOwnProperty(i)) {
-                        v = o[i];
-                        switch (typeof v) {
-                        case "undefined":
-                        case "function":
-                        case "unknown":
-                            break;
-                        default:
-                            if(b){
-                                a.push(',');
+                    // don't encode DOM objects
+                    if(!o.getElementsByTagName){
+                        if(!useHasOwn || o.hasOwnProperty(i)) {
+                            v = o[i];
+                            switch (typeof v) {
+                            case "undefined":
+                            case "function":
+                            case "unknown":
+                                break;
+                            default:
+                                if(b){
+                                    a.push(',');
+                                }
+                                a.push(doEncode(i), ":",
+                                        v === null ? "null" : doEncode(v));
+                                b = true;
                             }
-                            a.push(doEncode(i), ":",
-                                    v === null ? "null" : doEncode(v));
-                            b = true;
                         }
                     }
                 }

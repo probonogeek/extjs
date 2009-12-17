@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -69,13 +69,13 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
 
         var root = this.getRoot(o);
 
-        for(var i = 0; i < root.length; i++) {
-            var n = root[i];
-            var values = {};
-            var id = ((sid || sid === 0) && n[sid] !== undefined && n[sid] !== "" ? n[sid] : null);
+        for(var i = 0, len = root.length; i < len; i++) {
+            var n = root[i],
+                values = {},
+                id = ((sid || sid === 0) && n[sid] !== undefined && n[sid] !== "" ? n[sid] : null);
             for(var j = 0, jlen = fields.length; j < jlen; j++) {
-                var f = fields.items[j];
-                var k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
+                var f = fields.items[j],
+                    k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
                 v = n[k] !== undefined ? n[k] : f.defaultValue;
                 v = f.convert(v, n);
                 values[f.name] = v;

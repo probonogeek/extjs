@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -65,7 +65,7 @@ function(){
 	                }
                 }
             });
-            pub.applyStyles(el, o.style);
+            Ext.DomHelper.applyStyles(el, o.style);
 
             if ((cn = o.children || o.cn)) {
                 createDom(cn, el);
@@ -92,33 +92,6 @@ function(){
 
 		/** True to force the use of DOM instead of html fragments @type Boolean */
 	    useDom : false,
-
-	    /**
-	     * Applies a style specification to an element.
-	     * @param {String/HTMLElement} el The element to apply styles to
-	     * @param {String/Object/Function} styles A style specification string e.g. 'width:100px', or object in the form {width:'100px'}, or
-	     * a function which returns such a specification.
-	     */
-	    applyStyles : function(el, styles){
-		    if(styles){
-				var i = 0,
-	    			len,
-	    			style;
-
-	    		el = Ext.fly(el);
-				if(Ext.isFunction(styles)){
-   					styles = styles.call();
-				}
-				if(Ext.isString(styles)){
-					styles = styles.trim().split(/\s*(?::|;)\s*/);
-					for(len = styles.length; i < len;){
-						el.setStyle(styles[i++], styles[i++]);
-					}
-				}else if (Ext.isObject(styles)){
-					el.setStyle(styles);
-				}
-			}
-	    },
 
 	    /**
 	     * Creates new DOM element(s) and inserts them before el.

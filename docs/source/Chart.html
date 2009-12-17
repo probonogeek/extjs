@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.chart.Chart"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.chart.Chart"></div>/**
  * @class Ext.chart.Chart
  * @extends Ext.FlashComponent
  * The Ext.chart package provides the capability to visualize data with flash based charting.
@@ -144,13 +150,14 @@
      */
     bindStore : function(store, initial){
         if(!initial && this.store){
-            this.store.un("datachanged", this.refresh, this);
-            this.store.un("add", this.delayRefresh, this);
-            this.store.un("remove", this.delayRefresh, this);
-            this.store.un("update", this.delayRefresh, this);
-            this.store.un("clear", this.refresh, this);
             if(store !== this.store && this.store.autoDestroy){
                 this.store.destroy();
+            }else{
+                this.store.un("datachanged", this.refresh, this);
+                this.store.un("add", this.delayRefresh, this);
+                this.store.un("remove", this.delayRefresh, this);
+                this.store.un("update", this.delayRefresh, this);
+                this.store.un("clear", this.refresh, this);
             }
         }
         if(store){
@@ -175,7 +182,7 @@
         this.swf.setType(this.type);
 
         if(this.chartStyle){
-            this.setStyles(Ext.apply(this.extraStyle || {}, this.chartStyle));
+            this.setStyles(Ext.apply({}, this.extraStyle, this.chartStyle));
         }
 
         if(this.categoryNames){
@@ -257,7 +264,11 @@
     
     onDestroy: function(){
         Ext.chart.Chart.superclass.onDestroy.call(this);
-        delete window[this.tipFnName];
+        this.bindStore(null);
+        var tip = this.tipFnName;
+        if(!Ext.isEmpty(tip)){
+            delete window[tip];
+        }
     }
 });
 Ext.reg('chart', Ext.chart.Chart);
@@ -719,6 +730,6 @@ Ext.chart.PieSeries = Ext.extend(Ext.chart.Series, {
     type: "pie",
     dataField: null,
     categoryField: null
-});</pre>    
+});</pre>
 </body>
 </html>

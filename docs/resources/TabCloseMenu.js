@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.0.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 // Very simple plugin for adding a close context menu to tabs
 Ext.ux.TabCloseMenu = function(){
     var tabs, menu, ctxItem;

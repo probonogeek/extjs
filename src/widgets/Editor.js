@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -36,8 +36,8 @@ Ext.extend(Ext.Editor, Ext.Component, {
      */
     /**
      * @cfg {Boolean/String} autoSize
-     * True for the editor to automatically adopt the size of the element being edited, "width" to adopt the width only,
-     * or "height" to adopt the height only (defaults to false)
+     * True for the editor to automatically adopt the size of the underlying field, "width" to adopt the width only,
+     * or "height" to adopt the height only, "none" to always use the field dimensions. (defaults to false)
      */
     /**
      * @cfg {Boolean} revertInvalid
@@ -78,13 +78,13 @@ Ext.extend(Ext.Editor, Ext.Component, {
      */
     swallowKeys : true,
     /**
-     * @cfg {Boolean} completeOnEnter True to complete the edit when the enter key is pressed (defaults to false)
+     * @cfg {Boolean} completeOnEnter True to complete the edit when the enter key is pressed. Defaults to <tt>true</tt>.
      */
-    completeOnEnter : false,
+    completeOnEnter : true,
     /**
-     * @cfg {Boolean} cancelOnEsc True to cancel the edit when the escape key is pressed (defaults to false)
+     * @cfg {Boolean} cancelOnEsc True to cancel the edit when the escape key is pressed. Defaults to <tt>true</tt>.
      */
-    cancelOnEsc : false,
+    cancelOnEsc : true,
     /**
      * @cfg {Boolean} updateEl True to update the innerHTML of the bound element when the update completes (defaults to false)
      */
@@ -166,35 +166,41 @@ Ext.extend(Ext.Editor, Ext.Component, {
             this.field.msgTarget = 'qtip';
         }
         this.field.inEditor = true;
-        this.field.render(this.el);
-        if(Ext.isGecko){
-            this.field.el.dom.setAttribute('autocomplete', 'off');
-        }
-        this.mon(this.field, "specialkey", this.onSpecialKey, this);
-        if(this.swallowKeys){
-            this.field.el.swallowEvent(['keydown','keypress']);
-        }
-        this.field.show();
-        this.mon(this.field, "blur", this.onBlur, this);
+        this.mon(this.field, {
+            scope: this,
+            blur: this.onBlur,
+            specialkey: this.onSpecialKey
+        });
         if(this.field.grow){
-        	this.mon(this.field, "autosize", this.el.sync,  this.el, {delay:1});
+            this.mon(this.field, "autosize", this.el.sync,  this.el, {delay:1});
+        }
+        this.field.render(this.el).show();
+        this.field.getEl().dom.name = '';
+        if(this.swallowKeys){
+            this.field.el.swallowEvent([
+                'keypress', // *** Opera
+                'keydown'   // *** all other browsers
+            ]);
         }
     },
 
     // private
     onSpecialKey : function(field, e){
-        var key = e.getKey();
-        if(this.completeOnEnter && key == e.ENTER){
+        var key = e.getKey(),
+            complete = this.completeOnEnter && key == e.ENTER,
+            cancel = this.cancelOnEsc && key == e.ESC;
+        if(complete || cancel){
             e.stopEvent();
-            this.completeEdit();
-        }else if(this.cancelOnEsc && key == e.ESC){
-            this.cancelEdit();
-        }else{
-            this.fireEvent('specialkey', field, e);
+            if(complete){
+                this.completeEdit();
+            }else{
+                this.cancelEdit();
+            }
+            if(field.triggerBlur){
+                field.triggerBlur(); 
+            }
         }
-        if(this.field.triggerBlur && (key == e.ENTER || key == e.ESC || key == e.TAB)){
-            this.field.triggerBlur();
-        }
+        this.fireEvent('specialkey', field, e);
     },
 
     /**
@@ -212,30 +218,34 @@ Ext.extend(Ext.Editor, Ext.Component, {
         if(!this.rendered){
             this.render(this.parentEl || document.body);
         }
-        if(this.fireEvent("beforestartedit", this, this.boundEl, v) === false){
-            return;
+        if(this.fireEvent("beforestartedit", this, this.boundEl, v) !== false){
+            this.startValue = v;
+            this.field.setValue(v);
+            this.doAutoSize();
+            this.el.alignTo(this.boundEl, this.alignment);
+            this.editing = true;
+            this.show();
         }
-        this.startValue = v;
-        this.field.setValue(v);
-        this.doAutoSize();
-        this.el.alignTo(this.boundEl, this.alignment);
-        this.editing = true;
-        this.show();
     },
 
     // private
     doAutoSize : function(){
         if(this.autoSize){
-            var sz = this.boundEl.getSize();
+            var sz = this.boundEl.getSize(),
+                fs = this.field.getSize();
+
             switch(this.autoSize){
                 case "width":
-                    this.setSize(sz.width,  "");
-                break;
+                    this.setSize(sz.width, fs.height);
+                    break;
                 case "height":
-                    this.setSize("",  sz.height);
-                break;
+                    this.setSize(fs.width, sz.height);
+                    break;
+                case "none":
+                    this.setSize(fs.width, fs.height);
+                    break;
                 default:
-                    this.setSize(sz.width,  sz.height);
+                    this.setSize(sz.width, sz.height);
             }
         }
     },
@@ -299,20 +309,8 @@ Ext.extend(Ext.Editor, Ext.Component, {
         if(this.hideEl !== false){
             this.boundEl.hide();
         }
-        this.field.show();
-        if(Ext.isIE && !this.fixIEFocus){ // IE has problems with focusing the first time
-            this.fixIEFocus = true;
-            this.deferredFocus.defer(50, this);
-        }else{
-            this.field.focus();
-        }
+        this.field.show().focus(false, true);
         this.fireEvent("startedit", this.boundEl, this.startValue);
-    },
-
-    deferredFocus : function(){
-        if(this.editing){
-            this.field.focus();
-        }
     },
 
     /**

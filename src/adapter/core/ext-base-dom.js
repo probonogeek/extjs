@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,6 +8,7 @@
 	var doc = document,
 		isCSS1 = doc.compatMode == "CSS1Compat",
 		MAX = Math.max,		
+        ROUND = Math.round,
 		PARSEINT = parseInt;
 		
 	Ext.lib.Dom = {
@@ -85,7 +86,7 @@
 	            if (el.getBoundingClientRect) {
 	                b = el.getBoundingClientRect();
 	                scroll = fly(document).getScroll();
-	                ret = [b.left + scroll.left, b.top + scroll.top];
+	                ret = [ROUND(b.left + scroll.left), ROUND(b.top + scroll.top)];
 	            } else {  
 		            p = el;		
 		            hasAbsolute = fly(el).isStyle("position", "absolute");

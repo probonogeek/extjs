@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.Tree"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.Tree"></div>/**
  * @class Ext.data.Tree
  * @extends Ext.util.Observable
  * Represents a tree data structure and bubbles all the events for its nodes. The nodes
@@ -614,7 +620,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             if(t){
                 t.unregisterNode(this);
             }
-            this.id = id;
+            this.id = this.attributes.id = id;
             if(t){
                 t.registerNode(this);
             }
@@ -783,6 +789,6 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     toString : function(){
         return "[Node"+(this.id?" "+this.id:"")+"]";
     }
-});</pre>    
+});</pre>
 </body>
 </html>

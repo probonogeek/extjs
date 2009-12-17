@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -93,7 +93,7 @@ Ext.layout.ContainerLayout.prototype = {
             c.render(target, position);
             this.configureItem(c, position);
         }else if(c && !this.isValidParent(c, target)){
-            if(typeof position == 'number'){
+            if(Ext.isNumber(position)){
                 position = target.dom.childNodes[position];
             }
             target.dom.insertBefore(c.getDomPositionEl().dom, position || null);
@@ -111,47 +111,60 @@ Ext.layout.ContainerLayout.prototype = {
         if (this.renderHidden && c != this.activeItem) {
             c.hide();
         }
-        if(c.doLayout){
-            c.doLayout(false, this.forceLayout);
+        if(c.doLayout && this.forceLayout){
+            c.doLayout(false, true);
+        }
+    },
+    
+    onRemove: function(c){
+         if(this.activeItem == c){
+            delete this.activeItem;
+         }
+         if(c.rendered && this.extraCls){
+            var t = c.getPositionEl ? c.getPositionEl() : c;
+            t.removeClass(this.extraCls);
         }
     },
 
     // private
     onResize: function(){
-        if(this.container.collapsed){
+        var ct = this.container,
+            b;
+            
+        if(ct.collapsed){
             return;
         }
-        var b = this.container.bufferResize;
-        if(b){
-            if(!this.resizeTask){
-                this.resizeTask = new Ext.util.DelayedTask(this.runLayout, this);
-                this.resizeBuffer = typeof b == 'number' ? b : 100;
+        if(b = ct.bufferResize){
+            // Only allow if we should buffer the layout
+            if(ct.shouldBufferLayout()){
+                if(!this.resizeTask){
+                    this.resizeTask = new Ext.util.DelayedTask(this.runLayout, this);
+                    this.resizeBuffer = Ext.isNumber(b) ? b : 50;
+                }
+                ct.layoutPending = true;
+                this.resizeTask.delay(this.resizeBuffer);
             }
-            this.resizeTask.delay(this.resizeBuffer);
         }else{
-            this.runLayout();
+            ct.doLayout();
         }
     },
     
     // private
     runLayout: function(){
-        this.layout();
-        this.container.onLayout();
+        var ct = this.container;
+        ct.doLayout();
+        delete ct.layoutPending;
     },
 
     // private
     setContainer : function(ct){
         if(this.monitorResize && ct != this.container){
-            if(this.container){
-                this.container.un('resize', this.onResize, this);
-                this.container.un('bodyresize', this.onResize, this);
+            var old = this.container;
+            if(old){
+                old.un(old.resizeEvent, this.onResize, this);
             }
             if(ct){
-                ct.on({
-                    scope: this,
-                    resize: this.onResize,
-                    bodyresize: this.onResize
-                });
+                ct.on(ct.resizeEvent, this.onResize, this);
             }
         }
         this.container = ct;
@@ -159,7 +172,7 @@ Ext.layout.ContainerLayout.prototype = {
 
     // private
     parseMargins : function(v){
-        if(typeof v == 'number'){
+        if(Ext.isNumber(v)){
             v = v.toString();
         }
         var ms = v.split(' ');
@@ -185,7 +198,7 @@ Ext.layout.ContainerLayout.prototype = {
     },
 
     /**
-     * The {@link Template Ext.Template} used by Field rendering layout classes (such as
+     * The {@link Ext.Template Ext.Template} used by Field rendering layout classes (such as
      * {@link Ext.layout.FormLayout}) to create the DOM structure of a fully wrapped,
      * labeled and styled form Field. A default Template is supplied, but this may be
      * overriden to create custom field structures. The template processes values returned from

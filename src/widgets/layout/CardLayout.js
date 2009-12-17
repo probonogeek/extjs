@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -106,10 +106,11 @@ Ext.layout.CardLayout = Ext.extend(Ext.layout.FitLayout, {
             if(this.activeItem){
                 this.activeItem.hide();
             }
+            var layout = item.doLayout && (this.layoutOnCardChange || !item.rendered);
             this.activeItem = item;
             item.show();
-            this.container.doLayout();
-            if(this.layoutOnCardChange && item.doLayout){
+            this.layout();
+            if(layout){
                 item.doLayout();
             }
         }

@@ -1,18 +1,9 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
-/*
- * Ext JS Library 2.2
- * Copyright(c) 2006-2008, Ext JS, LLC.
- * licensing@extjs.com
- *
- * http://extjs.com/license
- */
-
-
 Ext.onReady(function(){
 
     // This is a shared function that simulates a load action on a StatusBar.
@@ -36,7 +27,7 @@ Ext.onReady(function(){
     new Ext.Panel({
         title: 'Basic StatusBar',
         renderTo: 'basic',
-        width: 350,
+        width: 550,
         height: 100,
         bodyStyle: 'padding:10px;',
         items:[{
@@ -46,11 +37,48 @@ Ext.onReady(function(){
             handler: loadFn.createCallback('basic-button', 'basic-statusbar')
         }],
         bbar: new Ext.ux.StatusBar({
-            defaultText: 'Default status',
             id: 'basic-statusbar',
-	        items: [{
-	            text: 'A Button'
-	        }, '-', 'Plain Text', ' ', ' ']
+
+            // defaults to use when the status is cleared:
+            defaultText: 'Default status text',
+            //defaultIconCls: 'default-icon',
+        
+            // values to set initially:
+            text: 'Ready',
+            iconCls: 'x-status-valid',
+
+            // any standard Toolbar items:
+            items: [
+                {
+                    text: 'Show Warning & Clear',
+                    handler: function (){
+                        var sb = Ext.getCmp('basic-statusbar');
+                        sb.setStatus({
+                            text: 'Oops!',
+                            iconCls: 'x-status-error',
+                            clear: true // auto-clear after a set interval
+                        });
+                    }
+                },
+                {
+                    text: 'Show Busy',
+                    handler: function (){
+                        var sb = Ext.getCmp('basic-statusbar');
+                        // Set the status bar to show that something is processing:
+                        sb.showBusy();
+                    }
+                },
+                {
+                    text: 'Clear status',
+                    handler: function (){
+                        var sb = Ext.getCmp('basic-statusbar');
+                        // once completed
+                        sb.clearStatus(); 
+                    }
+                },
+                '-',
+                'Plain Text'
+            ]
         })
     });
 
@@ -60,7 +88,7 @@ Ext.onReady(function(){
     new Ext.Panel({
         title: 'Right-aligned StatusBar',
         renderTo: 'right-aligned',
-        width: 350,
+        width: 550,
         height: 100,
         bodyStyle: 'padding:10px;',
         items:[{

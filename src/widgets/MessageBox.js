@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -36,9 +36,9 @@ Ext.Msg.show({
  * @singleton
  */
 Ext.MessageBox = function(){
-    var dlg, opt, mask, waitTimer;
-    var bodyEl, msgEl, textboxEl, textareaEl, progressBar, pp, iconEl, spacerEl;
-    var buttons, activeTextEl, bwidth, iconCls = '';
+    var dlg, opt, mask, waitTimer,
+        bodyEl, msgEl, textboxEl, textareaEl, progressBar, pp, iconEl, spacerEl,
+        buttons, activeTextEl, bwidth, bufferIcon = '', iconCls = '';
 
     // private
     var handleButton = function(button){
@@ -80,10 +80,10 @@ Ext.MessageBox = function(){
         }
         dlg.footer.dom.style.display = '';
         for(var k in buttons){
-            if(typeof buttons[k] != "function"){
+            if(!Ext.isFunction(buttons[k])){
                 if(b[k]){
                     buttons[k].show();
-                    buttons[k].setText(typeof b[k] == "string" ? b[k] : Ext.MessageBox.buttonText[k]);
+                    buttons[k].setText(Ext.isString(b[k]) ? b[k] : Ext.MessageBox.buttonText[k]);
                     width += buttons[k].el.getWidth()+15;
                 }else{
                     buttons[k].hide();
@@ -330,8 +330,7 @@ Ext.Msg.show({
                 if(opt.multiline){
                     textboxEl.hide();
                     textareaEl.show();
-                    textareaEl.setHeight(typeof opt.multiline == "number" ?
-                        opt.multiline : this.defaultTextHeight);
+                    textareaEl.setHeight(Ext.isNumber(opt.multiline) ? opt.multiline : this.defaultTextHeight);
                     activeTextEl = textareaEl;
                 }else{
                     textboxEl.show();
@@ -359,33 +358,35 @@ Ext.Msg.show({
             if(opt.iconCls){
               d.setIconClass(opt.iconCls);
             }
-            this.setIcon(opt.icon);
+            this.setIcon(Ext.isDefined(opt.icon) ? opt.icon : bufferIcon);
+            bwidth = updateButtons(opt.buttons);
+            progressBar.setVisible(opt.progress === true || opt.wait === true);
+            this.updateProgress(0, opt.progressText);
+            this.updateText(opt.msg);
             if(opt.cls){
                 d.el.addClass(opt.cls);
             }
             d.proxyDrag = opt.proxyDrag === true;
             d.modal = opt.modal !== false;
             d.mask = opt.modal !== false ? mask : false;
-            
-            d.on('show', function(){
-                //workaround for window internally enabling keymap in afterShow
-                d.keyMap.setDisabled(allowClose !== true);
-                d.doLayout();
-                this.setIcon(opt.icon);
-                bwidth = updateButtons(opt.buttons);
-                progressBar.setVisible(opt.progress === true || opt.wait === true);
-                this.updateProgress(0, opt.progressText);
-                this.updateText(opt.msg);
-                if(opt.wait === true){
-                    progressBar.wait(opt.waitConfig);
-                }
-
-            }, this, {single:true});
             if(!d.isVisible()){
                 // force it to the end of the z-index stack so it gets a cursor in FF
                 document.body.appendChild(dlg.el.dom);
                 d.setAnimateTarget(opt.animEl);
                 d.show(opt.animEl);
+            }
+
+            //workaround for window internally enabling keymap in afterShow
+            d.on('show', function(){
+                if(allowClose === true){
+                    d.keyMap.enable();
+                }else{
+                    d.keyMap.disable();
+                }
+            }, this, {single:true});
+
+            if(opt.wait === true){
+                progressBar.wait(opt.waitConfig);
             }
             return this;
         },
@@ -393,8 +394,8 @@ Ext.Msg.show({
         /**
          * Adds the specified icon to the dialog.  By default, the class 'ext-mb-icon' is applied for default
          * styling, and the class passed in is expected to supply the background image url. Pass in empty string ('')
-         * to clear any existing icon.  The following built-in icon classes are supported, but you can also pass
-         * in a custom class name:
+         * to clear any existing icon. This method must be called before the MessageBox is shown.
+         * The following built-in icon classes are supported, but you can also pass in a custom class name:
          * <pre>
 Ext.MessageBox.INFO
 Ext.MessageBox.WARNING
@@ -405,6 +406,11 @@ Ext.MessageBox.ERROR
          * @return {Ext.MessageBox} this
          */
         setIcon : function(icon){
+            if(!dlg){
+                bufferIcon = icon;
+                return;
+            }
+            bufferIcon = undefined;
             if(icon && icon != ''){
                 iconEl.removeClass('x-hidden');
                 iconEl.replaceClass(iconCls, icon);
@@ -594,10 +600,10 @@ Ext.MessageBox.ERROR
          */
         maxWidth : 600,
         /**
-         * The minimum width in pixels of the message box (defaults to 110)
+         * The minimum width in pixels of the message box (defaults to 100)
          * @type Number
          */
-        minWidth : 110,
+        minWidth : 100,
         /**
          * The minimum width in pixels of the message box if it is a progress-style dialog.  This is useful
          * for setting a different minimum width than text-only dialogs may need (defaults to 250)

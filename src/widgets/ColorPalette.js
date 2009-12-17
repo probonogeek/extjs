@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -35,7 +35,7 @@ Ext.ColorPalette = function(config){
     );
 
     if(this.handler){
-        this.on("select", this.handler, this.scope, true);
+        this.on('select', this.handler, this.scope, true);
     }
 };
 Ext.extend(Ext.ColorPalette, Ext.Component, {
@@ -44,18 +44,18 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
 	 */
     /**
      * @cfg {String} itemCls
-     * The CSS class to apply to the containing element (defaults to "x-color-palette")
+     * The CSS class to apply to the containing element (defaults to 'x-color-palette')
      */
-    itemCls : "x-color-palette",
+    itemCls : 'x-color-palette',
     /**
      * @cfg {String} value
      * The initial color to highlight (should be a valid 6-digit color hex code without the # symbol).  Note that
      * the hex codes are case-sensitive.
      */
     value : null,
-    clickEvent:'click',
+    clickEvent :'click',
     // private
-    ctype: "Ext.ColorPalette",
+    ctype : 'Ext.ColorPalette',
 
     /**
      * @cfg {Boolean} allowReselect If set to true then reselecting a color that is already selected fires the {@link #select} event
@@ -70,30 +70,44 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
      * <p>You can override individual colors if needed:</p>
      * <pre><code>
 var cp = new Ext.ColorPalette();
-cp.colors[0] = "FF0000";  // change the first box to red
+cp.colors[0] = 'FF0000';  // change the first box to red
 </code></pre>
 
 Or you can provide a custom array of your own for complete control:
 <pre><code>
 var cp = new Ext.ColorPalette();
-cp.colors = ["000000", "993300", "333300"];
+cp.colors = ['000000', '993300', '333300'];
 </code></pre>
      * @type Array
      */
     colors : [
-        "000000", "993300", "333300", "003300", "003366", "000080", "333399", "333333",
-        "800000", "FF6600", "808000", "008000", "008080", "0000FF", "666699", "808080",
-        "FF0000", "FF9900", "99CC00", "339966", "33CCCC", "3366FF", "800080", "969696",
-        "FF00FF", "FFCC00", "FFFF00", "00FF00", "00FFFF", "00CCFF", "993366", "C0C0C0",
-        "FF99CC", "FFCC99", "FFFF99", "CCFFCC", "CCFFFF", "99CCFF", "CC99FF", "FFFFFF"
+        '000000', '993300', '333300', '003300', '003366', '000080', '333399', '333333',
+        '800000', 'FF6600', '808000', '008000', '008080', '0000FF', '666699', '808080',
+        'FF0000', 'FF9900', '99CC00', '339966', '33CCCC', '3366FF', '800080', '969696',
+        'FF00FF', 'FFCC00', 'FFFF00', '00FF00', '00FFFF', '00CCFF', '993366', 'C0C0C0',
+        'FF99CC', 'FFCC99', 'FFFF99', 'CCFFCC', 'CCFFFF', '99CCFF', 'CC99FF', 'FFFFFF'
     ],
+
+    /**
+     * @cfg {Function} handler
+     * Optional. A function that will handle the select event of this palette.
+     * The handler is passed the following parameters:<div class="mdetail-params"><ul>
+     * <li><code>palette</code> : ColorPalette<div class="sub-desc">The {@link #palette Ext.ColorPalette}.</div></li>
+     * <li><code>color</code> : String<div class="sub-desc">The 6-digit color hex code (without the # symbol).</div></li>
+     * </ul></div>
+     */
+    /**
+     * @cfg {Object} scope
+     * The scope (<tt><b>this</b></tt> reference) in which the <code>{@link #handler}</code>
+     * function will be called.  Defaults to this ColorPalette instance.
+     */
 
     // private
     onRender : function(container, position){
         var t = this.tpl || new Ext.XTemplate(
             '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
         );
-        var el = document.createElement("div");
+        var el = document.createElement('div');
         el.id = this.getId();
         el.className = this.itemCls;
         t.overwrite(el, this.colors);
@@ -129,15 +143,15 @@ cp.colors = ["000000", "993300", "333300"];
      * @param {String} color A valid 6-digit color hex code (# will be stripped if included)
      */
     select : function(color){
-        color = color.replace("#", "");
+        color = color.replace('#', '');
         if(color != this.value || this.allowReselect){
             var el = this.el;
             if(this.value){
-                el.child("a.color-"+this.value).removeClass("x-color-palette-sel");
+                el.child('a.color-'+this.value).removeClass('x-color-palette-sel');
             }
-            el.child("a.color-"+color).addClass("x-color-palette-sel");
+            el.child('a.color-'+color).addClass('x-color-palette-sel');
             this.value = color;
-            this.fireEvent("select", this, color);
+            this.fireEvent('select', this, color);
         }
     }
 

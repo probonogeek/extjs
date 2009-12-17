@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.ArrayReader"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.ArrayReader"></div>/**
  * @class Ext.data.ArrayReader
  * @extends Ext.data.JsonReader
  * <p>Data reader class to create an Array of {@link Ext.data.Record} objects from an Array.
@@ -70,13 +76,13 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
 
         var root = this.getRoot(o);
 
-        for(var i = 0; i < root.length; i++) {
-            var n = root[i];
-            var values = {};
-            var id = ((sid || sid === 0) && n[sid] !== undefined && n[sid] !== "" ? n[sid] : null);
+        for(var i = 0, len = root.length; i < len; i++) {
+            var n = root[i],
+                values = {},
+                id = ((sid || sid === 0) && n[sid] !== undefined && n[sid] !== "" ? n[sid] : null);
             for(var j = 0, jlen = fields.length; j < jlen; j++) {
-                var f = fields.items[j];
-                var k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
+                var f = fields.items[j],
+                    k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
                 v = n[k] !== undefined ? n[k] : f.defaultValue;
                 v = f.convert(v, n);
                 values[f.name] = v;
@@ -100,6 +106,6 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
             totalRecords : totalRecords
         };
     }
-});</pre>    
+});</pre>
 </body>
 </html>

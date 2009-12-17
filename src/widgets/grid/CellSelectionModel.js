@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -60,15 +60,17 @@ Ext.extend(Ext.grid.CellSelectionModel, Ext.grid.AbstractSelectionModel,  {
 
     /** @ignore */
     initEvents : function(){
-        this.grid.on("cellmousedown", this.handleMouseDown, this);
-        this.grid.getGridEl().on(Ext.EventManager.useKeydown ? "keydown" : "keypress", this.handleKeyDown, this);
-        var view = this.grid.view;
-        view.on("refresh", this.onViewChange, this);
-        view.on("rowupdated", this.onRowUpdated, this);
-        view.on("beforerowremoved", this.clearSelections, this);
-        view.on("beforerowsinserted", this.clearSelections, this);
+        this.grid.on('cellmousedown', this.handleMouseDown, this);
+        this.grid.on(Ext.EventManager.useKeydown ? 'keydown' : 'keypress', this.handleKeyDown, this);
+        this.grid.getView().on({
+            scope: this,
+            refresh: this.onViewChange,
+            rowupdated: this.onRowUpdated,
+            beforerowremoved: this.clearSelections,
+            beforerowsinserted: this.clearSelections
+        });
         if(this.grid.isEditor){
-            this.grid.on("beforeedit", this.beforeEdit,  this);
+            this.grid.on('beforeedit', this.beforeEdit,  this);
         }
     },
 
@@ -179,84 +181,106 @@ var data = record.get(fieldName);
     isSelectable : function(rowIndex, colIndex, cm){
         return !cm.isHidden(colIndex);
     },
+    
+    // private
+    onEditorKey: function(field, e){
+        if(e.getKey() == e.TAB){
+            this.handleKeyDown(e);
+        }
+    },
 
     /** @ignore */
     handleKeyDown : function(e){
         if(!e.isNavKeyPress()){
             return;
         }
-        var g = this.grid, s = this.selection;
+        
+        var k = e.getKey(),
+            g = this.grid,
+            s = this.selection,
+            sm = this,
+            walk = function(row, col, step){
+                return g.walkCells(
+                    row,
+                    col,
+                    step,
+                    g.isEditor && g.editing ? sm.acceptsNav : sm.isSelectable, // *** handle tabbing while editorgrid is in edit mode
+                    sm
+                );
+            },
+            cell, newCell, r, c, ae;
+
+        switch(k){
+            case e.ESC:
+            case e.PAGE_UP:
+            case e.PAGE_DOWN:
+                // do nothing
+                break;
+            default:
+                // *** call e.stopEvent() only for non ESC, PAGE UP/DOWN KEYS
+                e.stopEvent();
+                break;
+        }
+
         if(!s){
-            e.stopEvent();
-            var cell = g.walkCells(0, 0, 1, this.isSelectable,  this);
+            cell = walk(0, 0, 1); // *** use private walk() function defined above
             if(cell){
                 this.select(cell[0], cell[1]);
             }
             return;
         }
-        var sm = this;
-        var walk = function(row, col, step){
-            return g.walkCells(row, col, step, sm.isSelectable,  sm);
-        };
-        var k = e.getKey(), r = s.cell[0], c = s.cell[1];
-        var newCell;
 
+        cell = s.cell;  // currently selected cell
+        r = cell[0];    // current row
+        c = cell[1];    // current column
+        
         switch(k){
-             case e.TAB:
-                 if(e.shiftKey){
-                     newCell = walk(r, c-1, -1);
-                 }else{
-                     newCell = walk(r, c+1, 1);
-                 }
-             break;
-             case e.DOWN:
-                 newCell = walk(r+1, c, 1);
-             break;
-             case e.UP:
-                 newCell = walk(r-1, c, -1);
-             break;
-             case e.RIGHT:
-                 newCell = walk(r, c+1, 1);
-             break;
-             case e.LEFT:
-                 newCell = walk(r, c-1, -1);
-             break;
-             case e.ENTER:
-                 if(g.isEditor && !g.editing){
+            case e.TAB:
+                if(e.shiftKey){
+                    newCell = walk(r, c - 1, -1);
+                }else{
+                    newCell = walk(r, c + 1, 1);
+                }
+                break;
+            case e.DOWN:
+                newCell = walk(r + 1, c, 1);
+                break;
+            case e.UP:
+                newCell = walk(r - 1, c, -1);
+                break;
+            case e.RIGHT:
+                newCell = walk(r, c + 1, 1);
+                break;
+            case e.LEFT:
+                newCell = walk(r, c - 1, -1);
+                break;
+            case e.ENTER:
+                if (g.isEditor && !g.editing) {
                     g.startEditing(r, c);
-                    e.stopEvent();
                     return;
                 }
-             break;
+                break;
         }
+
         if(newCell){
-            this.select(newCell[0], newCell[1]);
-            e.stopEvent();
+            // *** reassign r & c variables to newly-selected cell's row and column
+            r = newCell[0];
+            c = newCell[1];
+
+            this.select(r, c); // *** highlight newly-selected cell and update selection
+
+            if(g.isEditor && g.editing){ // *** handle tabbing while editorgrid is in edit mode
+                ae = g.activeEditor;
+                if(ae && ae.field.triggerBlur){
+                    // *** if activeEditor is a TriggerField, explicitly call its triggerBlur() method
+                    ae.field.triggerBlur();
+                }
+                g.startEditing(r, c);
+            }
         }
     },
 
     acceptsNav : function(row, col, cm){
         return !cm.isHidden(col) && cm.isCellEditable(col, row);
-    },
-
-    onEditorKey : function(field, e){
-        var k = e.getKey(), newCell, g = this.grid, ed = g.activeEditor;
-        if(k == e.TAB){
-            if(e.shiftKey){
-                newCell = g.walkCells(ed.row, ed.col-1, -1, this.acceptsNav, this);
-            }else{
-                newCell = g.walkCells(ed.row, ed.col+1, 1, this.acceptsNav, this);
-            }
-            e.stopEvent();
-        }else if(k == e.ENTER){
-            ed.completeEdit();
-            e.stopEvent();
-        }else if(k == e.ESC){
-        	e.stopEvent();
-            ed.cancelEdit();
-        }
-        if(newCell){
-            g.startEditing(newCell[0], newCell[1]);
-        }
     }
 });

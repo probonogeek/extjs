@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -134,15 +134,15 @@ Ext.DomHelper.useDom = true; // force it to use DOM; reduces performance
  */
 Ext.DomHelper = function(){
     var tempTableEl = null,
-    	emptyTags = /^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i,
-    	tableRe = /^table|tbody|tr|td$/i,
-    	pub,
-    	// kill repeat to save bytes
-    	afterbegin = "afterbegin",
-    	afterend = "afterend",
-    	beforebegin = "beforebegin",
-    	beforeend = "beforeend",
-    	ts = '<table>',
+        emptyTags = /^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i,
+        tableRe = /^table|tbody|tr|td$/i,
+        pub,
+        // kill repeat to save bytes
+        afterbegin = 'afterbegin',
+        afterend = 'afterend',
+        beforebegin = 'beforebegin',
+        beforeend = 'beforeend',
+        ts = '<table>',
         te = '</table>',
         tbs = ts+'<tbody>',
         tbe = '</tbody>'+te,
@@ -157,46 +157,46 @@ Ext.DomHelper = function(){
 
     // build as innerHTML where available
     function createHtml(o){
-	    var b = "",
-	    	attr,
-	    	val,
-	    	key,
-	    	keyVal,
-	    	cn;
+        var b = '',
+            attr,
+            val,
+            key,
+            keyVal,
+            cn;
 
-        if(typeof o == 'string'){
+        if(Ext.isString(o)){
             b = o;
         } else if (Ext.isArray(o)) {
-	        Ext.each(o, function(v) {
+            Ext.each(o, function(v) {
                 b += createHtml(v);
             });
         } else {
-	        b += "<" + (o.tag = o.tag || "div");
+            b += '<' + (o.tag = o.tag || 'div');
             Ext.iterate(o, function(attr, val){
                 if(!/tag|children|cn|html$/i.test(attr)){
                     if (Ext.isObject(val)) {
-                        b += " " + attr + "='";
+                        b += ' ' + attr + '="';
                         Ext.iterate(val, function(key, keyVal){
-                            b += key + ":" + keyVal + ";";
+                            b += key + ':' + keyVal + ';';
                         });
-                        b += "'";
+                        b += '"';
                     }else{
-                        b += " " + ({cls : "class", htmlFor : "for"}[attr] || attr) + "='" + val + "'";
+                        b += ' ' + ({cls : 'class', htmlFor : 'for'}[attr] || attr) + '="' + val + '"';
                     }
                 }
             });
-	        // Now either just close the tag or try to add children and close the tag.
-	        if (emptyTags.test(o.tag)) {
-	            b += "/>";
-	        } else {
-	            b += ">";
-	            if ((cn = o.children || o.cn)) {
-	                b += createHtml(cn);
-	            } else if(o.html){
-	                b += o.html;
-	            }
-	            b += "</" + o.tag + ">";
-        	}
+            // Now either just close the tag or try to add children and close the tag.
+            if (emptyTags.test(o.tag)) {
+                b += '/>';
+            } else {
+                b += '>';
+                if ((cn = o.children || o.cn)) {
+                    b += createHtml(cn);
+                } else if(o.html){
+                    b += o.html;
+                }
+                b += '</' + o.tag + '>';
+            }
         }
         return b;
     }
@@ -204,9 +204,20 @@ Ext.DomHelper = function(){
     function ieTable(depth, s, h, e){
         tempTableEl.innerHTML = [s, h, e].join('');
         var i = -1,
-        	el = tempTableEl;
+            el = tempTableEl,
+            ns;
         while(++i < depth){
             el = el.firstChild;
+        }
+//      If the result is multiple siblings, then encapsulate them into one fragment.
+        if(ns = el.nextSibling){
+            var df = document.createDocumentFragment();
+            while(el){
+                ns = el.nextSibling;
+                df.appendChild(el);
+                el = ns;
+            }
+            el = df;
         }
         return el;
     }
@@ -216,30 +227,30 @@ Ext.DomHelper = function(){
      * Nasty code for IE's broken table implementation
      */
     function insertIntoTable(tag, where, el, html) {
-	    var node,
-        	before;
+        var node,
+            before;
 
         tempTableEl = tempTableEl || document.createElement('div');
 
-  	    if(tag == 'td' && (where == afterbegin || where == beforeend) ||
-  	       !/td|tr|tbody/i.test(tag) && (where == beforebegin || where == afterend)) {
+        if(tag == 'td' && (where == afterbegin || where == beforeend) ||
+           !/td|tr|tbody/i.test(tag) && (where == beforebegin || where == afterend)) {
             return;
         }
         before = where == beforebegin ? el :
-		 		 where == afterend ? el.nextSibling :
-				 where == afterbegin ? el.firstChild : null;
+                 where == afterend ? el.nextSibling :
+                 where == afterbegin ? el.firstChild : null;
 
         if (where == beforebegin || where == afterend) {
-        	el = el.parentNode;
-    	}
+            el = el.parentNode;
+        }
 
-        if (tag == 'td' || (tag == "tr" && (where == beforeend || where == afterbegin))) {
-	        node = ieTable(4, trs, html, tre);
-        } else if ((tag == "tbody" && (where == beforeend || where == afterbegin)) ||
-        		   (tag == "tr" && (where == beforebegin || where == afterend))) {
-	        node = ieTable(3, tbs, html, tbe);
+        if (tag == 'td' || (tag == 'tr' && (where == beforeend || where == afterbegin))) {
+            node = ieTable(4, trs, html, tre);
+        } else if ((tag == 'tbody' && (where == beforeend || where == afterbegin)) ||
+                   (tag == 'tr' && (where == beforebegin || where == afterend))) {
+            node = ieTable(3, tbs, html, tbe);
         } else {
-	     	node = ieTable(2, ts, html, te);
+            node = ieTable(2, ts, html, te);
         }
         el.insertBefore(node, before);
         return node;
@@ -247,132 +258,159 @@ Ext.DomHelper = function(){
 
 
     pub = {
-	    /**
-	     * Returns the markup for the passed Element(s) config.
-	     * @param {Object} o The DOM object spec (and children)
-	     * @return {String}
-	     */
-	    markup : function(o){
-	        return createHtml(o);
-	    },
+        /**
+         * Returns the markup for the passed Element(s) config.
+         * @param {Object} o The DOM object spec (and children)
+         * @return {String}
+         */
+        markup : function(o){
+            return createHtml(o);
+        },
+        
+        /**
+         * Applies a style specification to an element.
+         * @param {String/HTMLElement} el The element to apply styles to
+         * @param {String/Object/Function} styles A style specification string e.g. 'width:100px', or object in the form {width:'100px'}, or
+         * a function which returns such a specification.
+         */
+        applyStyles : function(el, styles){
+            if(styles){
+                var i = 0,
+                    len,
+                    style;
 
-	    /**
-	     * Inserts an HTML fragment into the DOM.
-	     * @param {String} where Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.
-	     * @param {HTMLElement} el The context element
-	     * @param {String} html The HTML fragmenet
-	     * @return {HTMLElement} The new node
-	     */
-	    insertHtml : function(where, el, html){
-	        var hash = {},
-	        	hashVal,
- 	        	setStart,
-	        	range,
-	        	frag,
-	        	rangeEl,
-	        	rs;
+                el = Ext.fly(el);
+                if(Ext.isFunction(styles)){
+                    styles = styles.call();
+                }
+                if(Ext.isString(styles)){
+                    styles = styles.trim().split(/\s*(?::|;)\s*/);
+                    for(len = styles.length; i < len;){
+                        el.setStyle(styles[i++], styles[i++]);
+                    }
+                }else if (Ext.isObject(styles)){
+                    el.setStyle(styles);
+                }
+            }
+        },
 
-	        where = where.toLowerCase();
-	        // add these here because they are used in both branches of the condition.
-	        hash[beforebegin] = ['BeforeBegin', 'previousSibling'];
-	        hash[afterend] = ['AfterEnd', 'nextSibling'];
+        /**
+         * Inserts an HTML fragment into the DOM.
+         * @param {String} where Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.
+         * @param {HTMLElement} el The context element
+         * @param {String} html The HTML fragment
+         * @return {HTMLElement} The new node
+         */
+        insertHtml : function(where, el, html){
+            var hash = {},
+                hashVal,
+                setStart,
+                range,
+                frag,
+                rangeEl,
+                rs;
 
-	        if (el.insertAdjacentHTML) {
-	            if(tableRe.test(el.tagName) && (rs = insertIntoTable(el.tagName.toLowerCase(), where, el, html))){
-	            	return rs;
-	            }
-	            // add these two to the hash.
-	            hash[afterbegin] = ['AfterBegin', 'firstChild'];
-	            hash[beforeend] = ['BeforeEnd', 'lastChild'];
-	            if ((hashVal = hash[where])) {
-		        	el.insertAdjacentHTML(hashVal[0], html);
-	            	return el[hashVal[1]];
-	            }
-	        } else {
-		        range = el.ownerDocument.createRange();
-		        setStart = "setStart" + (/end/i.test(where) ? "After" : "Before");
-		        if (hash[where]) {
-			     	range[setStart](el);
-			     	frag = range.createContextualFragment(html);
-			     	el.parentNode.insertBefore(frag, where == beforebegin ? el : el.nextSibling);
-			     	return el[(where == beforebegin ? "previous" : "next") + "Sibling"];
-		        } else {
-			        rangeEl = (where == afterbegin ? "first" : "last") + "Child";
-			        if (el.firstChild) {
-				        range[setStart](el[rangeEl]);
-				        frag = range.createContextualFragment(html);
+            where = where.toLowerCase();
+            // add these here because they are used in both branches of the condition.
+            hash[beforebegin] = ['BeforeBegin', 'previousSibling'];
+            hash[afterend] = ['AfterEnd', 'nextSibling'];
+
+            if (el.insertAdjacentHTML) {
+                if(tableRe.test(el.tagName) && (rs = insertIntoTable(el.tagName.toLowerCase(), where, el, html))){
+                    return rs;
+                }
+                // add these two to the hash.
+                hash[afterbegin] = ['AfterBegin', 'firstChild'];
+                hash[beforeend] = ['BeforeEnd', 'lastChild'];
+                if ((hashVal = hash[where])) {
+                    el.insertAdjacentHTML(hashVal[0], html);
+                    return el[hashVal[1]];
+                }
+            } else {
+                range = el.ownerDocument.createRange();
+                setStart = 'setStart' + (/end/i.test(where) ? 'After' : 'Before');
+                if (hash[where]) {
+                    range[setStart](el);
+                    frag = range.createContextualFragment(html);
+                    el.parentNode.insertBefore(frag, where == beforebegin ? el : el.nextSibling);
+                    return el[(where == beforebegin ? 'previous' : 'next') + 'Sibling'];
+                } else {
+                    rangeEl = (where == afterbegin ? 'first' : 'last') + 'Child';
+                    if (el.firstChild) {
+                        range[setStart](el[rangeEl]);
+                        frag = range.createContextualFragment(html);
                         if(where == afterbegin){
                             el.insertBefore(frag, el.firstChild);
                         }else{
                             el.appendChild(frag);
                         }
-			        } else {
-		 	            el.innerHTML = html;
-	 	            }
-	 	            return el[rangeEl];
-		        }
-	        }
-	        throw 'Illegal insertion point -> "' + where + '"';
-	    },
+                    } else {
+                        el.innerHTML = html;
+                    }
+                    return el[rangeEl];
+                }
+            }
+            throw 'Illegal insertion point -> "' + where + '"';
+        },
 
-	    /**
-	     * Creates new DOM element(s) and inserts them before el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
-	     */
-	    insertBefore : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, beforebegin);
-	    },
+        /**
+         * Creates new DOM element(s) and inserts them before el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
+         */
+        insertBefore : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, beforebegin);
+        },
 
-	    /**
-	     * Creates new DOM element(s) and inserts them after el.
-	     * @param {Mixed} el The context element
-	     * @param {Object} o The DOM object spec (and children)
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
-	     */
-	    insertAfter : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, afterend, "nextSibling");
-	    },
+        /**
+         * Creates new DOM element(s) and inserts them after el.
+         * @param {Mixed} el The context element
+         * @param {Object} o The DOM object spec (and children)
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
+         */
+        insertAfter : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, afterend, 'nextSibling');
+        },
 
-	    /**
-	     * Creates new DOM element(s) and inserts them as the first child of el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
-	     */
-	    insertFirst : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, afterbegin, "firstChild");
-	    },
+        /**
+         * Creates new DOM element(s) and inserts them as the first child of el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
+         */
+        insertFirst : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, afterbegin, 'firstChild');
+        },
 
-	    /**
-	     * Creates new DOM element(s) and appends them to el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
-	     */
-	    append : function(el, o, returnElement){
-		    return doInsert(el, o, returnElement, beforeend, "", true);
-	    },
+        /**
+         * Creates new DOM element(s) and appends them to el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
+         */
+        append : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, beforeend, '', true);
+        },
 
-	    /**
-	     * Creates new DOM element(s) and overwrites the contents of el with them.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
-	     */
-	    overwrite : function(el, o, returnElement){
-	        el = Ext.getDom(el);
-	        el.innerHTML = createHtml(o);
-	        return returnElement ? Ext.get(el.firstChild) : el.firstChild;
-	    },
+        /**
+         * Creates new DOM element(s) and overwrites the contents of el with them.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
+         */
+        overwrite : function(el, o, returnElement){
+            el = Ext.getDom(el);
+            el.innerHTML = createHtml(o);
+            return returnElement ? Ext.get(el.firstChild) : el.firstChild;
+        },
 
-	    createHtml : createHtml
+        createHtml : createHtml
     };
     return pub;
 }();/**
@@ -436,7 +474,7 @@ function(){
 	                }
                 }
             });
-            pub.applyStyles(el, o.style);
+            Ext.DomHelper.applyStyles(el, o.style);
 
             if ((cn = o.children || o.cn)) {
                 createDom(cn, el);
@@ -463,33 +501,6 @@ function(){
 
 		/** True to force the use of DOM instead of html fragments @type Boolean */
 	    useDom : false,
-
-	    /**
-	     * Applies a style specification to an element.
-	     * @param {String/HTMLElement} el The element to apply styles to
-	     * @param {String/Object/Function} styles A style specification string e.g. 'width:100px', or object in the form {width:'100px'}, or
-	     * a function which returns such a specification.
-	     */
-	    applyStyles : function(el, styles){
-		    if(styles){
-				var i = 0,
-	    			len,
-	    			style;
-
-	    		el = Ext.fly(el);
-				if(Ext.isFunction(styles)){
-   					styles = styles.call();
-				}
-				if(Ext.isString(styles)){
-					styles = styles.trim().split(/\s*(?::|;)\s*/);
-					for(len = styles.length; i < len;){
-						el.setStyle(styles[i++], styles[i++]);
-					}
-				}else if (Ext.isObject(styles)){
-					el.setStyle(styles);
-				}
-			}
-	    },
 
 	    /**
 	     * Creates new DOM element(s) and inserts them before el.
@@ -549,19 +560,58 @@ function(){
 	return pub;
 }());/**
  * @class Ext.Template
- * Represents an HTML fragment template. Templates can be precompiled for greater performance.
- * For a list of available format functions, see {@link Ext.util.Format}.<br />
- * Usage:
+ * <p>Represents an HTML fragment template. Templates may be {@link #compile precompiled}
+ * for greater performance.</p>
+ * <p>For example usage {@link #Template see the constructor}.</p>
+ * 
+ * @constructor
+ * An instance of this class may be created by passing to the constructor either
+ * a single argument, or multiple arguments:
+ * <div class="mdetail-params"><ul>
+ * <li><b>single argument</b> : String/Array
+ * <div class="sub-desc">
+ * The single argument may be either a String or an Array:<ul>
+ * <li><tt>String</tt> : </li><pre><code>
+var t = new Ext.Template("&lt;div>Hello {0}.&lt;/div>");
+t.{@link #append}('some-element', ['foo']);
+ * </code></pre>
+ * <li><tt>Array</tt> : </li>
+ * An Array will be combined with <code>join('')</code>.
 <pre><code>
-var t = new Ext.Template(
+var t = new Ext.Template([
     '&lt;div name="{id}"&gt;',
         '&lt;span class="{cls}"&gt;{name:trim} {value:ellipsis(10)}&lt;/span&gt;',
-    '&lt;/div&gt;'
-);
-t.append('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'});
+    '&lt;/div&gt;',
+]);
+t.{@link #compile}();
+t.{@link #append}('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'});
 </code></pre>
- * @constructor
- * @param {String/Array} html The HTML fragment or an array of fragments to join("") or multiple arguments to join("")
+ * </ul></div></li>
+ * <li><b>multiple arguments</b> : String, Object, Array, ...
+ * <div class="sub-desc">
+ * Multiple arguments will be combined with <code>join('')</code>.
+ * <pre><code>
+var t = new Ext.Template(
+    '&lt;div name="{id}"&gt;',
+        '&lt;span class="{cls}"&gt;{name} {value}&lt;/span&gt;',
+    '&lt;/div&gt;',
+    // a configuration object:
+    {
+        compiled: true,      // {@link #compile} immediately
+        disableFormats: true // See Notes below.
+    } 
+);
+ * </code></pre>
+ * <p><b>Notes</b>:</p>
+ * <div class="mdetail-params"><ul>
+ * <li>Formatting and <code>disableFormats</code> are not applicable for Ext Core.</li>
+ * <li>For a list of available format functions, see {@link Ext.util.Format}.</li>
+ * <li><code>disableFormats</code> reduces <code>{@link #apply}</code> time
+ * when no formatting is required.</li>
+ * </ul></div>
+ * </div></li>
+ * </ul></div>
+ * @param {Mixed} config
  */
 Ext.Template = function(html){
     var me = this,
@@ -583,14 +633,35 @@ Ext.Template = function(html){
 
     /**@private*/
     me.html = html;
+    /**
+     * @cfg {Boolean} compiled Specify <tt>true</tt> to compile the template
+     * immediately (see <code>{@link #compile}</code>).
+     * Defaults to <tt>false</tt>.
+     */
     if (me.compiled) {
         me.compile();
     }
 };
 Ext.Template.prototype = {
     /**
-     * Returns an HTML fragment of this template with the specified values applied.
-     * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
+     * @cfg {RegExp} re The regular expression used to match template variables.
+     * Defaults to:<pre><code>
+     * re : /\{([\w-]+)\}/g                                     // for Ext Core
+     * re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g      // for Ext JS
+     * </code></pre>
+     */
+    re : /\{([\w-]+)\}/g,
+    /**
+     * See <code>{@link #re}</code>.
+     * @type RegExp
+     * @property re
+     */
+
+    /**
+     * Returns an HTML fragment of this template with the specified <code>values</code> applied.
+     * @param {Object/Array} values
+     * The template values. Can be an array if the params are numeric (i.e. <code>{0}</code>)
+     * or an object (i.e. <code>{foo: 'bar'}</code>).
      * @return {String} The HTML fragment
      */
     applyTemplate : function(values){
@@ -615,13 +686,6 @@ Ext.Template.prototype = {
         me.compiled = null;
         return compile ? me.compile() : me;
     },
-
-    /**
-    * The regular expression used to match template variables
-    * @type RegExp
-    * @property
-    */
-    re : /\{([\w-]+)\}/g,
 
     /**
      * Compiles the template into an internal function, eliminating the RegEx overhead.
@@ -676,10 +740,14 @@ Ext.Template.prototype = {
     },
 
     /**
-     * Applies the supplied values to the template and appends the new node(s) to el.
+     * Applies the supplied <code>values</code> to the template and appends
+     * the new node(s) to the specified <code>el</code>.
+     * <p>For example usage {@link #Template see the constructor}.</p>
      * @param {Mixed} el The context element
-     * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
-     * @param {Boolean} returnElement (optional) true to return a Ext.Element (defaults to undefined)
+     * @param {Object/Array} values
+     * The template values. Can be an array if the params are numeric (i.e. <code>{0}</code>)
+     * or an object (i.e. <code>{foo: 'bar'}</code>).
+     * @param {Boolean} returnElement (optional) true to return an Ext.Element (defaults to undefined)
      * @return {HTMLElement/Ext.Element} The new node or Element
      */
     append : function(el, values, returnElement){
@@ -707,8 +775,10 @@ Ext.Template.prototype = {
 };
 /**
  * Alias for {@link #applyTemplate}
- * Returns an HTML fragment of this template with the specified values applied.
- * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
+ * Returns an HTML fragment of this template with the specified <code>values</code> applied.
+ * @param {Object/Array} values
+ * The template values. Can be an array if the params are numeric (i.e. <code>{0}</code>)
+ * or an object (i.e. <code>{foo: 'bar'}</code>).
  * @return {String} The HTML fragment
  * @member Ext.Template
  * @method apply
@@ -729,6 +799,39 @@ Ext.Template.from = function(el, config){
  * @class Ext.Template
  */
 Ext.apply(Ext.Template.prototype, {
+    /**
+     * @cfg {Boolean} disableFormats Specify <tt>true</tt> to disable format
+     * functions in the template. If the template does not contain
+     * {@link Ext.util.Format format functions}, setting <code>disableFormats</code>
+     * to true will reduce <code>{@link #apply}</code> time. Defaults to <tt>false</tt>.
+     * <pre><code>
+var t = new Ext.Template(
+    '&lt;div name="{id}"&gt;',
+        '&lt;span class="{cls}"&gt;{name} {value}&lt;/span&gt;',
+    '&lt;/div&gt;',
+    {
+        compiled: true,      // {@link #compile} immediately
+        disableFormats: true // reduce <code>{@link #apply}</code> time since no formatting
+    }    
+);
+     * </code></pre>
+     * For a list of available format functions, see {@link Ext.util.Format}.
+     */
+    disableFormats : false,				
+    /**
+     * See <code>{@link #disableFormats}</code>.
+     * @type Boolean
+     * @property disableFormats
+     */
+
+    /**
+     * The regular expression used to match template variables
+     * @type RegExp
+     * @property
+     * @hide repeat doc
+     */
+    re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g,
+
     /**
      * Returns an HTML fragment of this template with the specified values applied.
      * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
@@ -771,21 +874,6 @@ Ext.apply(Ext.Template.prototype, {
         return me.html.replace(me.re, fn);
     },
 		
-    /**
-     * <tt>true</tt> to disable format functions (defaults to <tt>false</tt>)
-     * @type Boolean
-     * @property
-     */
-    disableFormats : false,				
-	
-    /**
-     * The regular expression used to match template variables
-     * @type RegExp
-     * @property
-     * @hide repeat doc
-     */
-    re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g,
-    
     /**
      * Compiles the template into an internal function, eliminating the RegEx overhead.
      * @return {Ext.Template} this
@@ -1457,8 +1545,29 @@ Ext.DomQuery = function(){
         },
 
         /**
-         * Collection of "pseudo class" processors. Each processor is passed the current nodeset (array)
-         * and the argument (if any) supplied in the selector.
+         * <p>Object hash of "pseudo class" filter functions which are used when filtering selections. Each function is passed
+         * two parameters:</p><div class="mdetail-params"><ul>
+         * <li><b>c</b> : Array<div class="sub-desc">An Array of DOM elements to filter.</div></li>
+         * <li><b>v</b> : String<div class="sub-desc">The argument (if any) supplied in the selector.</div></li>
+         * </ul></div>
+         * <p>A filter function returns an Array of DOM elements which conform to the pseudo class.</p>
+         * <p>In addition to the provided pseudo classes listed above such as <code>first-child</code> and <code>nth-child</code>,
+         * developers may add additional, custom psuedo class filters to select elements according to application-specific requirements.</p>
+         * <p>For example, to filter <code>&lt;a></code> elements to only return links to <i>external</i> resources:</p>
+         * <code><pre>
+Ext.DomQuery.pseudos.external = function(c, v){
+    var r = [], ri = -1;
+    for(var i = 0, ci; ci = c[i]; i++){
+//      Include in result set only if it's a link to an external resource
+        if(ci.hostname != location.hostname){
+            r[++ri] = ci;
+        }
+    }
+    return r;
+};</pre></code>
+         * Then external links could be gathered with the following statement:<code><pre>
+var externalLinks = Ext.select("a:external");
+</code></pre>
          */
         pseudos : {
             "first-child" : function(c){
@@ -1765,216 +1874,221 @@ var combo = new Ext.form.ComboBox({
     me.events = e || {};
 };
 
-EXTUTIL.Observable.prototype = function(){
-    var filterOptRe = /^(?:scope|delay|buffer|single)$/, toLower = function(s){
-        return s.toLowerCase();
-    };
+EXTUTIL.Observable.prototype = {
+    // private
+    filterOptRe : /^(?:scope|delay|buffer|single)$/,
 
-    return {
-        /**
-         * <p>Fires the specified event with the passed parameters (minus the event name).</p>
-         * <p>An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget})
-         * by calling {@link #enableBubble}.</p>
-         * @param {String} eventName The name of the event to fire.
-         * @param {Object...} args Variable number of parameters are passed to handlers.
-         * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
-         */
-
-        fireEvent : function(){
-            var a = TOARRAY(arguments),
-                ename = toLower(a[0]),
-                me = this,
-                ret = TRUE,
-                ce = me.events[ename],
-                q,
-                c;
-            if (me.eventsSuspended === TRUE) {
-                if (q = me.suspendedEventsQueue) {
-                    q.push(a);
-                }
+    /**
+     * <p>Fires the specified event with the passed parameters (minus the event name).</p>
+     * <p>An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget})
+     * by calling {@link #enableBubble}.</p>
+     * @param {String} eventName The name of the event to fire.
+     * @param {Object...} args Variable number of parameters are passed to handlers.
+     * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
+     */
+    fireEvent : function(){
+        var a = TOARRAY(arguments),
+            ename = a[0].toLowerCase(),
+            me = this,
+            ret = TRUE,
+            ce = me.events[ename],
+            q,
+            c;
+        if (me.eventsSuspended === TRUE) {
+            if (q = me.eventQueue) {
+                q.push(a);
             }
-            else if(ISOBJECT(ce) && ce.bubble){
-                if(ce.fire.apply(ce, a.slice(1)) === FALSE) {
-                    return FALSE;
-                }
-                c = me.getBubbleTarget && me.getBubbleTarget();
-                if(c && c.enableBubble) {
+        }
+        else if(ISOBJECT(ce) && ce.bubble){
+            if(ce.fire.apply(ce, a.slice(1)) === FALSE) {
+                return FALSE;
+            }
+            c = me.getBubbleTarget && me.getBubbleTarget();
+            if(c && c.enableBubble) {
+                if(!c.events[ename] || !Ext.isObject(c.events[ename]) || !c.events[ename].bubble) {
                     c.enableBubble(ename);
-                    return c.fireEvent.apply(c, a);
                 }
+                return c.fireEvent.apply(c, a);
             }
-            else {
-                if (ISOBJECT(ce)) {
-                    a.shift();
-                    ret = ce.fire.apply(ce, a);
-                }
+        }
+        else {
+            if (ISOBJECT(ce)) {
+                a.shift();
+                ret = ce.fire.apply(ce, a);
             }
-            return ret;
-        },
+        }
+        return ret;
+    },
 
-        /**
-         * Appends an event handler to this object.
-         * @param {String}   eventName The name of the event to listen for.
-         * @param {Function} handler The method the event invokes.
-         * @param {Object}   scope (optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
-         * <b>If omitted, defaults to the object which fired the event.</b>
-         * @param {Object}   options (optional) An object containing handler configuration.
-         * properties. This may contain any of the following properties:<ul>
-         * <li><b>scope</b> : Object<div class="sub-desc">The scope (<code><b>this</b></code> reference) in which the handler function is executed.
-         * <b>If omitted, defaults to the object which fired the event.</b></div></li>
-         * <li><b>delay</b> : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</div></li>
-         * <li><b>single</b> : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
-         * <li><b>buffer</b> : Number<div class="sub-desc">Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
-         * by the specified number of milliseconds. If the event fires again within that time, the original
-         * handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
-         * <li><b>target</b> : Observable<div class="sub-desc">Only call the handler if the event was fired on the target Observable, <i>not</i>
-         * if the event was bubbled up from a child Observable.</div></li>
-         * </ul><br>
-         * <p>
-         * <b>Combining Options</b><br>
-         * Using the options argument, it is possible to combine different types of listeners:<br>
-         * <br>
-         * A delayed, one-time listener.
-         * <pre><code>
+    /**
+     * Appends an event handler to this object.
+     * @param {String}   eventName The name of the event to listen for.
+     * @param {Function} handler The method the event invokes.
+     * @param {Object}   scope (optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+     * <b>If omitted, defaults to the object which fired the event.</b>
+     * @param {Object}   options (optional) An object containing handler configuration.
+     * properties. This may contain any of the following properties:<ul>
+     * <li><b>scope</b> : Object<div class="sub-desc">The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+     * <b>If omitted, defaults to the object which fired the event.</b></div></li>
+     * <li><b>delay</b> : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</div></li>
+     * <li><b>single</b> : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+     * <li><b>buffer</b> : Number<div class="sub-desc">Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
+     * by the specified number of milliseconds. If the event fires again within that time, the original
+     * handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+     * <li><b>target</b> : Observable<div class="sub-desc">Only call the handler if the event was fired on the target Observable, <i>not</i>
+     * if the event was bubbled up from a child Observable.</div></li>
+     * </ul><br>
+     * <p>
+     * <b>Combining Options</b><br>
+     * Using the options argument, it is possible to combine different types of listeners:<br>
+     * <br>
+     * A delayed, one-time listener.
+     * <pre><code>
 myDataView.on('click', this.onClick, this, {
-    single: true,
-    delay: 100
-});</code></pre>
-         * <p>
-         * <b>Attaching multiple handlers in 1 call</b><br>
-         * The method also allows for a single argument to be passed which is a config object containing properties
-         * which specify multiple handlers.
-         * <p>
-         * <pre><code>
-myGridPanel.on({
-    'click' : {
-        fn: this.onClick,
-        scope: this,
-        delay: 100
-    },
-    'mouseover' : {
-        fn: this.onMouseOver,
-        scope: this
-    },
-    'mouseout' : {
-        fn: this.onMouseOut,
-        scope: this
-    }
+single: true,
+delay: 100
 });</code></pre>
      * <p>
-     * Or a shorthand syntax:<br>
+     * <b>Attaching multiple handlers in 1 call</b><br>
+     * The method also allows for a single argument to be passed which is a config object containing properties
+     * which specify multiple handlers.
+     * <p>
      * <pre><code>
 myGridPanel.on({
-    'click' : this.onClick,
-    'mouseover' : this.onMouseOver,
-    'mouseout' : this.onMouseOut,
-     scope: this
+'click' : {
+    fn: this.onClick,
+    scope: this,
+    delay: 100
+},
+'mouseover' : {
+    fn: this.onMouseOver,
+    scope: this
+},
+'mouseout' : {
+    fn: this.onMouseOut,
+    scope: this
+}
 });</code></pre>
-         */
-        addListener : function(eventName, fn, scope, o){
-            var me = this,
-                e,
-                oe,
-                isF,
-            ce;
-            if (ISOBJECT(eventName)) {
-                o = eventName;
-                for (e in o){
-                    oe = o[e];
-                    if (!filterOptRe.test(e)) {
-                        me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
-                    }
-                }
-            } else {
-                eventName = toLower(eventName);
-                ce = me.events[eventName] || TRUE;
-                if (typeof ce == "boolean") {
-                    me.events[eventName] = ce = new EXTUTIL.Event(me, eventName);
-                }
-                ce.addListener(fn, scope, ISOBJECT(o) ? o : {});
-            }
-        },
-
-        /**
-         * Removes an event handler.
-         * @param {String}   eventName The type of event the handler was associated with.
-         * @param {Function} handler   The handler to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
-         * @param {Object}   scope     (optional) The scope originally specified for the handler.
-         */
-        removeListener : function(eventName, fn, scope){
-            var ce = this.events[toLower(eventName)];
-            if (ISOBJECT(ce)) {
-                ce.removeListener(fn, scope);
-            }
-        },
-
-        /**
-         * Removes all listeners for this object
-         */
-        purgeListeners : function(){
-            var events = this.events,
-                evt,
-                key;
-            for(key in events){
-                evt = events[key];
-                if(ISOBJECT(evt)){
-                    evt.clearListeners();
+ * <p>
+ * Or a shorthand syntax:<br>
+ * <pre><code>
+myGridPanel.on({
+'click' : this.onClick,
+'mouseover' : this.onMouseOver,
+'mouseout' : this.onMouseOut,
+ scope: this
+});</code></pre>
+     */
+    addListener : function(eventName, fn, scope, o){
+        var me = this,
+            e,
+            oe,
+            isF,
+        ce;
+        if (ISOBJECT(eventName)) {
+            o = eventName;
+            for (e in o){
+                oe = o[e];
+                if (!me.filterOptRe.test(e)) {
+                    me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
                 }
             }
-        },
-
-        /**
-         * Used to define events on this Observable
-         * @param {Object} object The object with the events defined
-         */
-        addEvents : function(o){
-            var me = this;
-            me.events = me.events || {};
-            if (typeof o == 'string') {
-                EACH(arguments, function(a) {
-                    me.events[a] = me.events[a] || TRUE;
-                });
-            } else {
-                Ext.applyIf(me.events, o);
+        } else {
+            eventName = eventName.toLowerCase();
+            ce = me.events[eventName] || TRUE;
+            if (Ext.isBoolean(ce)) {
+                me.events[eventName] = ce = new EXTUTIL.Event(me, eventName);
             }
-        },
-
-        /**
-         * Checks to see if this object has any listeners for a specified event
-         * @param {String} eventName The name of the event to check for
-         * @return {Boolean} True if the event is being listened for, else false
-         */
-        hasListener : function(eventName){
-            var e = this.events[eventName];
-            return ISOBJECT(e) && e.listeners.length > 0;
-        },
-
-        /**
-         * Suspend the firing of all events. (see {@link #resumeEvents})
-         * @param {Boolean} queueSuspended Pass as true to queue up suspended events to be fired
-         * after the {@link #resumeEvents} call instead of discarding all suspended events;
-         */
-        suspendEvents : function(queueSuspended){
-            this.eventsSuspended = TRUE;
-            if (queueSuspended){
-                this.suspendedEventsQueue = [];
-            }
-        },
-
-        /**
-         * Resume firing events. (see {@link #suspendEvents})
-         * If events were suspended using the <tt><b>queueSuspended</b></tt> parameter, then all
-         * events fired during event suspension will be sent to any listeners now.
-         */
-        resumeEvents : function(){
-            var me = this;
-            me.eventsSuspended = !delete me.suspendedEventQueue;
-            EACH(me.suspendedEventsQueue, function(e) {
-                me.fireEvent.apply(me, e);
-            });
+            ce.addListener(fn, scope, ISOBJECT(o) ? o : {});
         }
+    },
+
+    /**
+     * Removes an event handler.
+     * @param {String}   eventName The type of event the handler was associated with.
+     * @param {Function} handler   The handler to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+     * @param {Object}   scope     (optional) The scope originally specified for the handler.
+     */
+    removeListener : function(eventName, fn, scope){
+        var ce = this.events[eventName.toLowerCase()];
+        if (ISOBJECT(ce)) {
+            ce.removeListener(fn, scope);
+        }
+    },
+
+    /**
+     * Removes all listeners for this object
+     */
+    purgeListeners : function(){
+        var events = this.events,
+            evt,
+            key;
+        for(key in events){
+            evt = events[key];
+            if(ISOBJECT(evt)){
+                evt.clearListeners();
+            }
+        }
+    },
+
+    /**
+     * Adds the specified events to the list of events which this Observable may fire.
+     * @param {Object|String} o Either an object with event names as properties with a value of <code>true</code>
+     * or the first event name string if multiple event names are being passed as separate parameters.
+     * @param {string} Optional. Event name if multiple event names are being passed as separate parameters.
+     * Usage:<pre><code>
+this.addEvents('storeloaded', 'storecleared');
+</code></pre>
+     */
+    addEvents : function(o){
+        var me = this;
+        me.events = me.events || {};
+        if (Ext.isString(o)) {
+            EACH(arguments, function(a) {
+                me.events[a] = me.events[a] || TRUE;
+            });
+        } else {
+            Ext.applyIf(me.events, o);
+        }
+    },
+
+    /**
+     * Checks to see if this object has any listeners for a specified event
+     * @param {String} eventName The name of the event to check for
+     * @return {Boolean} True if the event is being listened for, else false
+     */
+    hasListener : function(eventName){
+        var e = this.events[eventName];
+        return ISOBJECT(e) && e.listeners.length > 0;
+    },
+
+    /**
+     * Suspend the firing of all events. (see {@link #resumeEvents})
+     * @param {Boolean} queueSuspended Pass as true to queue up suspended events to be fired
+     * after the {@link #resumeEvents} call instead of discarding all suspended events;
+     */
+    suspendEvents : function(queueSuspended){
+        this.eventsSuspended = TRUE;
+        if(queueSuspended && !this.eventQueue){
+            this.eventQueue = [];
+        }
+    },
+
+    /**
+     * Resume firing events. (see {@link #suspendEvents})
+     * If events were suspended using the <tt><b>queueSuspended</b></tt> parameter, then all
+     * events fired during event suspension will be sent to any listeners now.
+     */
+    resumeEvents : function(){
+        var me = this,
+            queued = me.eventQueue || [];
+        me.eventsSuspended = FALSE;
+        delete me.eventQueue;
+        EACH(queued, function(e) {
+            me.fireEvent.apply(me, e);
+        });
     }
-}();
+};
 
 var OBSERVABLE = EXTUTIL.Observable.prototype;
 /**
@@ -2247,21 +2361,56 @@ Ext.apply(Ext.util.Observable.prototype, function(){
         },
         
         /**
-         * Used to enable bubbling of events
-         * @param {Object} events
+         * <p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+         * <code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+         * <p>This is commonly used by Ext.Components to bubble events to owner Containers. See {@link Ext.Component.getBubbleTarget}. The default
+         * implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
+         * access the required target more quickly.</p>
+         * <p>Example:</p><pre><code>
+Ext.override(Ext.form.Field, {
+//  Add functionality to Field's initComponent to enable the change event to bubble
+    initComponent: Ext.form.Field.prototype.initComponent.createSequence(function() {
+        this.enableBubble('change');
+    }),
+
+//  We know that we want Field's events to bubble directly to the FormPanel.
+    getBubbleTarget: function() {
+        if (!this.formPanel) {
+            this.formPanel = this.findParentByType('form');
+        }
+        return this.formPanel;
+    }
+});
+
+var myForm = new Ext.formPanel({
+    title: 'User Details',
+    items: [{
+        ...
+    }],
+    listeners: {
+        change: function() {
+//          Title goes red if form has been modified.
+            myForm.header.setStyle("color", "red");
+        }
+    }
+});
+</code></pre>
+         * @param {Object} events The event name to bubble, or an Array of event names.
          */
         enableBubble: function(events){
             var me = this;
-            events = Ext.isArray(events) ? events : Ext.toArray(arguments);
-            Ext.each(events, function(ename){
-                ename = ename.toLowerCase();
-                var ce = me.events[ename] || true;
-                if (typeof ce == "boolean") {
-                    ce = new Ext.util.Event(me, ename);
-                    me.events[ename] = ce;
-                }
-                ce.bubble = true;
-            });
+            if(!Ext.isEmpty(events)){
+                events = Ext.isArray(events) ? events : Ext.toArray(arguments);
+                Ext.each(events, function(ename){
+                    ename = ename.toLowerCase();
+                    var ce = me.events[ename] || true;
+                    if (Ext.isBoolean(ce)) {
+                        ce = new Ext.util.Event(me, ename);
+                        me.events[ename] = ce;
+                    }
+                    ce.bubble = true;
+                });
+            }
         }
     };
 }());
@@ -2309,21 +2458,21 @@ Ext.util.Observable.observeClass = function(c){
  */
 Ext.EventManager = function(){
     var docReadyEvent, 
-    	docReadyProcId, 
-    	docReadyState = false,    	
-    	E = Ext.lib.Event,
-    	D = Ext.lib.Dom,
-    	DOC = document,
-    	WINDOW = window,
-    	IEDEFERED = "ie-deferred-loader",
-    	DOMCONTENTLOADED = "DOMContentLoaded",
-    	elHash = {},
-    	propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
+        docReadyProcId, 
+        docReadyState = false,        
+        E = Ext.lib.Event,
+        D = Ext.lib.Dom,
+        DOC = document,
+        WINDOW = window,
+        IEDEFERED = "ie-deferred-loader",
+        DOMCONTENTLOADED = "DOMContentLoaded",
+        elHash = {},
+        propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
-    function addListener(el, ename, fn, wrap, scope){	    
+    function addListener(el, ename, fn, wrap, scope){        
         var id = Ext.id(el),
-        	es = elHash[id] = elHash[id] || {};     	
+            es = elHash[id] = elHash[id] || {};         
        
         (es[ename] = es[ename] || []).push([fn, wrap, scope]);
         E.on(el, ename, wrap);
@@ -2331,10 +2480,10 @@ Ext.EventManager = function(){
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
         if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
-        	var args = ["DOMMouseScroll", wrap, false];
-        	el.addEventListener.apply(el, args);
+            var args = ["DOMMouseScroll", wrap, false];
+            el.addEventListener.apply(el, args);
             E.on(window, 'unload', function(){
-	            el.removeEventListener.apply(el, args);                
+                el.removeEventListener.apply(el, args);                
             });
         }
         if(ename == "mousedown" && el == document){ // fix stopped mousedowns on the document
@@ -2366,8 +2515,8 @@ Ext.EventManager = function(){
     };
 
     function initDocReady(){
-	    var COMPLETE = "complete";
-	    	
+        var COMPLETE = "complete";
+            
         docReadyEvent = new Ext.util.Event();
         if (Ext.isGecko || Ext.isOpera) {
             DOC.addEventListener(DOMCONTENTLOADED, fireDocReady, false);
@@ -2391,7 +2540,7 @@ Ext.EventManager = function(){
 
     function createTargeted(h, o){
         return function(){
-	        var args = Ext.toArray(arguments);
+            var args = Ext.toArray(arguments);
             if(o.target == Ext.EventObject.setEvent(args[0]).target){
                 h.apply(this, args);
             }
@@ -2425,8 +2574,8 @@ Ext.EventManager = function(){
 
     function listen(element, ename, opt, fn, scope){
         var o = !Ext.isObject(opt) ? {} : opt,
-        	el = Ext.getDom(element);
-        	
+            el = Ext.getDom(element);
+            
         fn = fn || o.fn; 
         scope = scope || o.scope;
         
@@ -2480,112 +2629,115 @@ Ext.EventManager = function(){
     };
 
     var pub = {
-	    /**
-	     * Appends an event handler to an element.  The shorthand version {@link #on} is equivalent.  Typically you will
-	     * use {@link Ext.Element#addListener} directly on an Element in favor of calling this version.
-	     * @param {String/HTMLElement} el The html element or id to assign the event handler to
-	     * @param {String} eventName The type of event to listen for
-	     * @param {Function} handler The handler function the event invokes This function is passed
-	     * the following parameters:<ul>
-	     * <li>evt : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
-	     * <li>t : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
-	     * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
-	     * <li>o : Object<div class="sub-desc">The options object from the addListener call.</div></li>
-	     * </ul>
-	     * @param {Object} scope (optional) The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.
-	     * @param {Object} options (optional) An object containing handler configuration properties.
-	     * This may contain any of the following properties:<ul>
-	     * <li>scope : Object<div class="sub-desc">The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.</div></li>
-	     * <li>delegate : String<div class="sub-desc">A simple selector to filter the target or look for a descendant of the target</div></li>
-	     * <li>stopEvent : Boolean<div class="sub-desc">True to stop the event. That is stop propagation, and prevent the default action.</div></li>
-	     * <li>preventDefault : Boolean<div class="sub-desc">True to prevent the default action</div></li>
-	     * <li>stopPropagation : Boolean<div class="sub-desc">True to prevent event propagation</div></li>
-	     * <li>normalized : Boolean<div class="sub-desc">False to pass a browser event to the handler function instead of an Ext.EventObject</div></li>
-	     * <li>delay : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after te event fires.</div></li>
-	     * <li>single : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
-	     * <li>buffer : Number<div class="sub-desc">Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
-	     * by the specified number of milliseconds. If the event fires again within that time, the original
-	     * handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
-	     * <li>target : Element<div class="sub-desc">Only call the handler if the event was fired on the target Element, <i>not</i> if the event was bubbled up from a child node.</div></li>
-	     * </ul><br>
-	     * <p>See {@link Ext.Element#addListener} for examples of how to use these options.</p>
-	     */
-		addListener : function(element, eventName, fn, scope, options){		     		     		     
+        /**
+         * Appends an event handler to an element.  The shorthand version {@link #on} is equivalent.  Typically you will
+         * use {@link Ext.Element#addListener} directly on an Element in favor of calling this version.
+         * @param {String/HTMLElement} el The html element or id to assign the event handler to.
+         * @param {String} eventName The name of the event to listen for.
+         * @param {Function} handler The handler function the event invokes. This function is passed
+         * the following parameters:<ul>
+         * <li>evt : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
+         * <li>t : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
+         * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
+         * <li>o : Object<div class="sub-desc">The options object from the addListener call.</div></li>
+         * </ul>
+         * @param {Object} scope (optional) The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.
+         * @param {Object} options (optional) An object containing handler configuration properties.
+         * This may contain any of the following properties:<ul>
+         * <li>scope : Object<div class="sub-desc">The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.</div></li>
+         * <li>delegate : String<div class="sub-desc">A simple selector to filter the target or look for a descendant of the target</div></li>
+         * <li>stopEvent : Boolean<div class="sub-desc">True to stop the event. That is stop propagation, and prevent the default action.</div></li>
+         * <li>preventDefault : Boolean<div class="sub-desc">True to prevent the default action</div></li>
+         * <li>stopPropagation : Boolean<div class="sub-desc">True to prevent event propagation</div></li>
+         * <li>normalized : Boolean<div class="sub-desc">False to pass a browser event to the handler function instead of an Ext.EventObject</div></li>
+         * <li>delay : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after te event fires.</div></li>
+         * <li>single : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+         * <li>buffer : Number<div class="sub-desc">Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
+         * by the specified number of milliseconds. If the event fires again within that time, the original
+         * handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+         * <li>target : Element<div class="sub-desc">Only call the handler if the event was fired on the target Element, <i>not</i> if the event was bubbled up from a child node.</div></li>
+         * </ul><br>
+         * <p>See {@link Ext.Element#addListener} for examples of how to use these options.</p>
+         */
+        addListener : function(element, eventName, fn, scope, options){                                       
             if(Ext.isObject(eventName)){                
-	            var o = eventName, e, val;
+                var o = eventName, e, val;
                 for(e in o){
-	                val = o[e];
-                    if(!propRe.test(e)){                            		         
-	                    if(Ext.isFunction(val)){
-	                        // shared options
-	                        listen(element, e, o, val, o.scope);
-	                    }else{
-	                        // individual options
-	                        listen(element, e, val);
-	                    }
+                    val = o[e];
+                    if(!propRe.test(e)){                                             
+                        if(Ext.isFunction(val)){
+                            // shared options
+                            listen(element, e, o, val, o.scope);
+                        }else{
+                            // individual options
+                            listen(element, e, val);
+                        }
                     }
                 }
             } else {
-            	listen(element, eventName, options, fn, scope);
-        	}
+                listen(element, eventName, options, fn, scope);
+            }
         },
         
         /**
          * Removes an event handler from an element.  The shorthand version {@link #un} is equivalent.  Typically
          * you will use {@link Ext.Element#removeListener} directly on an Element in favor of calling this version.
-         * @param {String/HTMLElement} el The id or html element from which to remove the event
-         * @param {String} eventName The type of event
-         * @param {Function} fn The handler function to remove
+         * @param {String/HTMLElement} el The id or html element from which to remove the listener.
+         * @param {String} eventName The name of the event.
+         * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+         * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+         * then this must refer to the same object.
          */
         removeListener : function(element, eventName, fn, scope){            
             var el = Ext.getDom(element),
                 id = Ext.id(el),
-        	    wrap;      
-	        
-	        Ext.each((elHash[id] || {})[eventName], function (v,i,a) {
-			    if (Ext.isArray(v) && v[0] == fn && (!scope || v[2] == scope)) {		        			        
-			        E.un(el, eventName, wrap = v[1]);
-			        a.splice(i,1);
-			        return false;			        
-		        }
-	        });	
+                wrap;      
+            
+            Ext.each((elHash[id] || {})[eventName], function (v,i,a) {
+                if (Ext.isArray(v) && v[0] == fn && (!scope || v[2] == scope)) {                                    
+                    E.un(el, eventName, wrap = v[1]);
+                    a.splice(i,1);
+                    return false;                    
+                }
+            });    
 
             // jQuery workaround that should be removed from Ext Core
-	        if(eventName == "mousewheel" && el.addEventListener && wrap){
-	            el.removeEventListener("DOMMouseScroll", wrap, false);
-	        }
-            	        
-	        if(eventName == "mousedown" && el == DOC && wrap){ // fix stopped mousedowns on the document
-	            Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
-	        }
+            if(eventName == "mousewheel" && el.addEventListener && wrap){
+                el.removeEventListener("DOMMouseScroll", wrap, false);
+            }
+                        
+            if(eventName == "mousedown" && el == DOC && wrap){ // fix stopped mousedowns on the document
+                Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
+            }
         },
         
         /**
          * Removes all event handers from an element.  Typically you will use {@link Ext.Element#removeAllListeners}
          * directly on an Element in favor of calling this version.
-         * @param {String/HTMLElement} el The id or html element from which to remove the event
+         * @param {String/HTMLElement} el The id or html element from which to remove all event handlers.
          */
         removeAll : function(el){
-	        var id = Ext.id(el = Ext.getDom(el)), 
-				es = elHash[id], 				
-				ename;
-	       
-	        for(ename in es){
-	            if(es.hasOwnProperty(ename)){	                    
-	                Ext.each(es[ename], function(v) {
-	                    E.un(el, ename, v.wrap);                    
-	                });
-	            }            
-	        }
-	        elHash[id] = null;       
+            var id = Ext.id(el = Ext.getDom(el)), 
+                es = elHash[id],                 
+                ename;
+           
+            for(ename in es){
+                if(es.hasOwnProperty(ename)){                        
+                    Ext.each(es[ename], function(v) {
+                        E.un(el, ename, v.wrap);                    
+                    });
+                }            
+            }
+            elHash[id] = null;       
         },
 
         /**
-         * Fires when the document is ready (before onload and before images are loaded). Can be
+         * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
          * accessed shorthanded as Ext.onReady().
-         * @param {Function} fn The method the event invokes
-         * @param {Object} scope (optional) An object that becomes the scope of the handler
-         * @param {boolean} options (optional) An object containing standard {@link #addListener} options
+         * @param {Function} fn The method the event invokes.
+         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+         * @param {boolean} options (optional) Options object as passed to {@link Ext.Element#addListener}. It is recommended that the options
+         * <code>{single: true}</code> be used so that the handler is removed on first invocation.
          */
         onDocumentReady : function(fn, scope, options){
             if(docReadyState){ // if it already fired
@@ -2595,8 +2747,8 @@ Ext.EventManager = function(){
             } else {
                 if(!docReadyEvent) initDocReady();
                 options = options || {};
-	            options.delay = options.delay || 1;	            
-	            docReadyEvent.addListener(fn, scope, options);
+                options.delay = options.delay || 1;                
+                docReadyEvent.addListener(fn, scope, options);
             }
         },
         
@@ -2605,10 +2757,9 @@ Ext.EventManager = function(){
      /**
      * Appends an event handler to an element.  Shorthand for {@link #addListener}.
      * @param {String/HTMLElement} el The html element or id to assign the event handler to
-     * @param {String} eventName The type of event to listen for
-     * @param {Function} handler The handler function the event invokes
-     * @param {Object} scope (optional) The scope in which to execute the handler
-     * function (the handler function's "this" context)
+     * @param {String} eventName The name of the event to listen for.
+     * @param {Function} handler The handler function the event invokes.
+     * @param {Object} scope (optional) (<code>this</code> reference) in which the handler function executes. <b>Defaults to the Element</b>.
      * @param {Object} options (optional) An object containing standard {@link #addListener} options
      * @member Ext.EventManager
      * @method on
@@ -2616,10 +2767,11 @@ Ext.EventManager = function(){
     pub.on = pub.addListener;
     /**
      * Removes an event handler from an element.  Shorthand for {@link #removeListener}.
-     * @param {String/HTMLElement} el The id or html element from which to remove the event
-     * @param {String} eventName The type of event
-     * @param {Function} fn The handler function to remove
-     * @return {Boolean} True if a listener was actually removed, else false
+     * @param {String/HTMLElement} el The id or html element from which to remove the listener.
+     * @param {String} eventName The name of the event.
+     * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #on} call.</b>
+     * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+     * then this must refer to the same object.
      * @member Ext.EventManager
      * @method un
      */
@@ -2629,10 +2781,11 @@ Ext.EventManager = function(){
     return pub;
 }();
 /**
-  * Fires when the document is ready (before onload and before images are loaded).  Shorthand of {@link Ext.EventManager#onDocumentReady}.
-  * @param {Function} fn The method the event invokes
-  * @param {Object} scope An object that becomes the scope of the handler
-  * @param {boolean} options (optional) An object containing standard {@link #addListener} options
+  * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Shorthand of {@link Ext.EventManager#onDocumentReady}.
+  * @param {Function} fn The method the event invokes.
+  * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+  * @param {boolean} options (optional) Options object as passed to {@link Ext.Element#addListener}. It is recommended that the options
+  * <code>{single: true}</code> be used so that the handler is removed on first invocation.
   * @member Ext
   * @method onReady
  */
@@ -2707,21 +2860,21 @@ Ext.EventManager.addListener("myDiv", 'click', handleClick);
  */
 Ext.EventObject = function(){
     var E = Ext.lib.Event,
-    	// safari keypress events for special keys return bad keycodes
-    	safariKeys = {
-	        3 : 13, // enter
-	        63234 : 37, // left
-	        63235 : 39, // right
-	        63232 : 38, // up
-	        63233 : 40, // down
-	        63276 : 33, // page up
-	        63277 : 34, // page down
-	        63272 : 46, // delete
-	        63273 : 36, // home
-	        63275 : 35  // end
-    	},
-    	// normalize button clicks
-    	btnMap = Ext.isIE ? {1:0,4:1,2:2} :
+        // safari keypress events for special keys return bad keycodes
+        safariKeys = {
+            3 : 13, // enter
+            63234 : 37, // left
+            63235 : 39, // right
+            63232 : 38, // up
+            63233 : 40, // down
+            63276 : 33, // page up
+            63277 : 34, // page down
+            63272 : 46, // delete
+            63273 : 36, // home
+            63275 : 35  // end
+        },
+        // normalize button clicks
+        btnMap = Ext.isIE ? {1:0,4:1,2:2} :
                 (Ext.isWebKit ? {1:0,2:1,3:2} : {0:0,1:1,2:2});
 
     Ext.EventObjectImpl = function(e){
@@ -2733,7 +2886,7 @@ Ext.EventObject = function(){
     Ext.EventObjectImpl.prototype = {
            /** @private */
         setEvent : function(e){
-	        var me = this;
+            var me = this;
             if(e == me || (e && e.browserEvent)){ // already wrapped
                 return e;
             }
@@ -2773,7 +2926,7 @@ Ext.EventObject = function(){
          * Stop the event (preventDefault and stopPropagation)
          */
         stopEvent : function(){
-	        var me = this;
+            var me = this;
             if(me.browserEvent){
                 if(me.browserEvent.type == 'mousedown'){
                     Ext.EventManager.stoppedMouseDownEvent.fire(me);
@@ -2795,7 +2948,7 @@ Ext.EventObject = function(){
          * Cancels bubbling of the event.
          */
         stopPropagation : function(){
-	        var me = this;
+            var me = this;
             if(me.browserEvent){
                 if(me.browserEvent.type == 'mousedown'){
                     Ext.EventManager.stoppedMouseDownEvent.fire(me);
@@ -2819,11 +2972,11 @@ Ext.EventObject = function(){
         getKey : function(){
             return this.normalizeKey(this.keyCode || this.charCode)
         },
-		
-		// private
-		normalizeKey: function(k){
-			return Ext.isSafari ? (safariKeys[k] || k) : k; 
-		},
+        
+        // private
+        normalizeKey: function(k){
+            return Ext.isSafari ? (safariKeys[k] || k) : k; 
+        },
 
         /**
          * Gets the x coordinate of the event.
@@ -2883,37 +3036,37 @@ Ext.EventObject = function(){
             }
             return delta;
         },
-		
-		/**
-		* Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
-		* Example usage:<pre><code>
-		// Handle click on any child of an element
-		Ext.getBody().on('click', function(e){
-			if(e.within('some-el')){
-				alert('Clicked on a child of some-el!');
-			}
-		});
-		
-		// Handle click directly on an element, ignoring clicks on child nodes
-		Ext.getBody().on('click', function(e,t){
-			if((t.id == 'some-el') && !e.within(t, true)){
-				alert('Clicked directly on some-el!');
-			}
-		});
-		</code></pre>
-		 * @param {Mixed} el The id, DOM element or Ext.Element to check
-		 * @param {Boolean} related (optional) true to test if the related target is within el instead of the target
-		 * @param {Boolean} allowEl {optional} true to also check if the passed element is the target or related target
-		 * @return {Boolean}
-		 */
-		within : function(el, related, allowEl){
+        
+        /**
+        * Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
+        * Example usage:<pre><code>
+        // Handle click on any child of an element
+        Ext.getBody().on('click', function(e){
+            if(e.within('some-el')){
+                alert('Clicked on a child of some-el!');
+            }
+        });
+        
+        // Handle click directly on an element, ignoring clicks on child nodes
+        Ext.getBody().on('click', function(e,t){
+            if((t.id == 'some-el') && !e.within(t, true)){
+                alert('Clicked directly on some-el!');
+            }
+        });
+        </code></pre>
+         * @param {Mixed} el The id, DOM element or Ext.Element to check
+         * @param {Boolean} related (optional) true to test if the related target is within el instead of the target
+         * @param {Boolean} allowEl {optional} true to also check if the passed element is the target or related target
+         * @return {Boolean}
+         */
+        within : function(el, related, allowEl){
             if(el){
-			    var t = this[related ? "getRelatedTarget" : "getTarget"]();
-			    return t && ((allowEl ? (t == Ext.getDom(el)) : false) || Ext.fly(el).contains(t));
+                var t = this[related ? "getRelatedTarget" : "getTarget"]();
+                return t && ((allowEl ? (t == Ext.getDom(el)) : false) || Ext.fly(el).contains(t));
             }
             return false;
-		}
-	 };
+        }
+     };
 
     return new Ext.EventObjectImpl();
 }();/**
@@ -2932,8 +3085,8 @@ Ext.apply(Ext.EventManager, function(){
         // note 1: IE fires ONLY the keydown event on specialkey autorepeat
         // note 2: Safari < 3.1, Gecko (Mac/Linux) & Opera fire only the keypress event on specialkey autorepeat
         // (research done by @Jan Wolter at http://unixpapa.com/js/key.html)
-        useKeydown = Ext.isSafari ? 
-                    Ext.num(navigator.userAgent.toLowerCase().match(/version\/(\d+\.\d)/)[1] || 2) >= 3.1 :
+        useKeydown = Ext.isWebKit ? 
+                    Ext.num(navigator.userAgent.match(/AppleWebKit\/(\d+)/)[1]) >= 525 :
                     !((Ext.isGecko && !Ext.isWindows) || Ext.isOpera);
       	
 	return { 
@@ -3371,7 +3524,7 @@ El.prototype = {
             }
         }
         if(o.style){
-            Ext.DomHelper.applyStyles(el, o.style);
+            DH.applyStyles(el, o.style);
         }
         return this;
     },
@@ -3380,6 +3533,13 @@ El.prototype = {
     /**
      * @event click
      * Fires when a mouse click is detected within the element.
+     * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
+     * @param {HtmlElement} t The target of the event.
+     * @param {Object} o The options configuration passed to the {@link #addListener} call.
+     */
+    /**
+     * @event contextmenu
+     * Fires when a right click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
@@ -3683,11 +3843,11 @@ El.prototype = {
 
     /**
      * Appends an event handler to this element.  The shorthand version {@link #on} is equivalent.
-     * @param {String} eventName The type of event to handle
+     * @param {String} eventName The name of event to handle.
      * @param {Function} fn The handler function the event invokes. This function is passed
      * the following parameters:<ul>
      * <li><b>evt</b> : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
-     * <li><b>el</b> : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
+     * <li><b>el</b> : HtmlElement<div class="sub-desc">The DOM element which was the target of the event.
      * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
      * <li><b>o</b> : Object<div class="sub-desc">The options object from the addListener call.</div></li>
      * </ul>
@@ -3801,10 +3961,10 @@ el.removeListener('click', this.handlerFn);
 // or
 el.un('click', this.handlerFn);
 </code></pre>
-     * @param {String} eventName the type of event to remove
-     * @param {Function} fn the method the event invokes
-     * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
-     * to this Element.
+     * @param {String} eventName The name of the event from which to remove the handler.
+     * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+     * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+     * then this must refer to the same object.
      * @return {Ext.Element} this
      */
     removeListener : function(eventName, fn, scope){
@@ -3868,16 +4028,19 @@ el.un('click', this.handlerFn);
             dom = me.dom;
         
         me.removeAllListeners();
-        delete El.cache[dom.id];
-        delete El.dataCache[dom.id]
-        Ext.removeNode(dom);
+        if (dom) {
+            delete me.dom;
+            delete El.cache[dom.id];
+            delete El.dataCache[dom.id];
+            Ext.removeNode(dom);
+        }
     },
 
     /**
      * Sets up event handlers to call the passed functions when the mouse is moved into and out of the Element.
      * @param {Function} overFn The function to call when the mouse enters the Element.
      * @param {Function} outFn The function to call when the mouse leaves the Element.
-     * @param {Object} scope (optional) The scope (<tt>this</tt> reference) in which the functions are executed. Defaults to the Element's DOM element.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the functions are executed. Defaults to the Element's DOM element.
      * @param {Object} options (optional) Options for the listener. See {@link Ext.util.Observable#addListener the <tt>options</tt> parameter}.
      * @return {Ext.Element} this
      */
@@ -3933,7 +4096,9 @@ el.un('click', this.handlerFn);
     * @return {Ext.Element} this
      */
     update : function(html) {
-        this.dom.innerHTML = html;
+        if (this.dom) {
+            this.dom.innerHTML = html;
+        }
         return this;
     }
 };
@@ -3946,9 +4111,9 @@ El.addMethods = function(o){
 
 /**
  * Appends an event handler (shorthand for {@link #addListener}).
- * @param {String} eventName The type of event to handle
- * @param {Function} fn The handler function the event invokes
- * @param {Object} scope (optional) The scope (this element) of the handler function
+ * @param {String} eventName The name of event to handle.
+ * @param {Function} fn The handler function the event invokes.
+ * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function is executed.
  * @param {Object} options (optional) An object containing standard {@link #addListener} options
  * @member Ext.Element
  * @method on
@@ -3957,10 +4122,10 @@ ep.on = ep.addListener;
 
 /**
  * Removes an event handler from this element (see {@link #removeListener} for additional notes).
- * @param {String} eventName the type of event to remove
- * @param {Function} fn the method the event invokes
- * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
- * to this Element.
+ * @param {String} eventName The name of the event from which to remove the handler.
+ * @param {Function} fn The handler function to remove. <b>This must be a reference to the function passed into the {@link #addListener} call.</b>
+ * @param {Object} scope If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+ * then this must refer to the same object.
  * @return {Ext.Element} this
  * @member Ext.Element
  * @method un
@@ -4053,7 +4218,7 @@ El.data = function(el, key, value){
     if(arguments.length == 2){
         return c[key];    
     }else{
-        c[key] = value;
+        return (c[key] = value);
     }
 };
 
@@ -4907,10 +5072,7 @@ Ext.Element.addMethods(
 function() {
 	var GETDOM = Ext.getDom,
 		GET = Ext.get,
-		DH = Ext.DomHelper,
-        isEl = function(el){
-            return  (el.nodeType || el.dom || typeof el == 'string');  
-        };
+		DH = Ext.DomHelper;
 	
 	return {
 	    /**
@@ -4959,14 +5121,14 @@ function() {
 	     */
 	    insertFirst: function(el, returnDom){
             el = el || {};
-            if(isEl(el)){ // element
+            if(el.nodeType || el.dom || typeof el == 'string'){ // element
                 el = GETDOM(el);
                 this.dom.insertBefore(el, this.dom.firstChild);
                 return !returnDom ? GET(el) : el;
             }else{ // dh config
                 return this.createChild(el, this.dom.firstChild, returnDom);
             }
-    },
+        },
 	
 	    /**
 	     * Replaces the passed element with this element
@@ -4988,7 +5150,7 @@ function() {
 	    replaceWith: function(el){
 		    var me = this,
 		    	Element = Ext.Element;
-            if(isEl(el)){
+            if(el.nodeType || el.dom || typeof el == 'string'){
                 el = GETDOM(el);
                 me.dom.parentNode.insertBefore(el, me.dom);
             }else{
@@ -5125,29 +5287,15 @@ Ext.Element.addMethods(function(){
         return a.charAt(1).toUpperCase();
     }
     
-    // private (needs to be called => addStyles.call(this, sides, styles))
-    function addStyles(sides, styles){
-        var val = 0;    
-        
-        Ext.each(sides.match(/\w/g), function(s) {
-            if (s = parseInt(this.getStyle(styles[s]), 10)) {
-                val += MATH.abs(s);      
-            }
-        },
-        this);
-        return val;
-    }
-
     function chkCache(prop) {
         return propCache[prop] || (propCache[prop] = prop == 'float' ? propFloat : prop.replace(camelRe, camelFn));
-
     }
             
-    return {    
+    return {
         // private  ==> used by Fx  
         adjustWidth : function(width) {
             var me = this;
-            var isNum = (typeof width == "number");
+            var isNum = Ext.isNumber(width);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -5157,7 +5305,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx 
         adjustHeight : function(height) {
             var me = this;
-            var isNum = (typeof height == "number");
+            var isNum = Ext.isNumber(height);
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));               
             }
@@ -5199,7 +5347,7 @@ Ext.Element.addMethods(function(){
          */
         removeClass : function(className){
             var me = this;
-            if (me.dom.className) {
+            if (me.dom && me.dom.className) {
                 Ext.each(className, function(v) {               
                     me.dom.className = me.dom.className.replace(
                         classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), 
@@ -5251,11 +5399,18 @@ Ext.Element.addMethods(function(){
                 function(prop){
                     var el = this.dom,
                         v,                  
-                        cs;
+                        cs,
+                        out;
                     if(el == document) return null;
                     prop = chkCache(prop);
-                    return (v = el.style[prop]) ? v : 
+                    out = (v = el.style[prop]) ? v : 
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
+                    
+                    // Webkit returns rgb values for transparent.
+                    if(Ext.isWebKit && out == 'rgba(0, 0, 0, 0)'){
+                        out = 'transparent';
+                    }
+                    return out;
                 } :
                 function(prop){      
                     var el = this.dom, 
@@ -5278,7 +5433,7 @@ Ext.Element.addMethods(function(){
                     return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
                 };
         }(),
-        
+
         /**
          * Return the CSS color for the specified CSS attribute. rgb, 3 digit (like #fff) and valid values
          * are convert to standard 6 digit hex color.
@@ -5289,7 +5444,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = prefix || '#',
+                color = Ext.isDefined(prefix) ? prefix : '#',
                 h;
                 
             if(!v || /transparent|inherit/.test(v)){
@@ -5382,7 +5537,9 @@ Ext.Element.addMethods(function(){
         getHeight : function(contentHeight){
             var me = this,
                 dom = me.dom,
-                h = MATH.max(dom.offsetHeight, dom.clientHeight) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                h = MATH.max(dom.offsetHeight, hidden ? 0 : dom.clientHeight) || 0;
+                
             h = !contentHeight ? h : h - me.getBorderWidth("tb") - me.getPadding("tb");
             return h < 0 ? 0 : h;
         },
@@ -5395,7 +5552,8 @@ Ext.Element.addMethods(function(){
         getWidth : function(contentWidth){
             var me = this,
                 dom = me.dom,
-                w = MATH.max(dom.offsetWidth, dom.clientWidth) || 0;
+                hidden = Ext.isIE && me.isStyle('display', 'none'),
+                w = MATH.max(dom.offsetWidth, hidden ? 0 : dom.clientWidth) || 0;
             w = !contentWidth ? w : w - me.getBorderWidth("lr") - me.getPadding("lr");
             return w < 0 ? 0 : w;
         },
@@ -5454,7 +5612,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The width of the sides passed added together
          */
         getBorderWidth : function(side){
-            return addStyles.call(this, side, borders);
+            return this.addStyles(side, borders);
         },
     
         /**
@@ -5464,7 +5622,7 @@ Ext.fly('elId').setHeight(150, {
          * @return {Number} The padding of the sides passed added together
          */
         getPadding : function(side){
-            return addStyles.call(this, side, paddings);
+            return this.addStyles(side, paddings);
         },
     
         /**
@@ -5512,12 +5670,25 @@ Ext.fly('elId').setHeight(150, {
             }
             return me;
         },
-        
-        addStyles : addStyles,
+
+        // private
+        addStyles : function(sides, styles){
+            var val = 0;
+
+            Ext.each(sides.match(/\w/g), function(s) {
+                if (s = parseInt(this.getStyle(styles[s]), 10)) {
+                    val += MATH.abs(s);
+                }
+            },
+            this);
+            return val;
+        },
+
         margins : margins
     }
 }()         
-);/**
+);
+/**
  * @class Ext.Element
  */
 
@@ -5843,10 +6014,6 @@ var D = Ext.lib.Dom,
         AUTO = "auto",
         ZINDEX = "z-index";
 
-function animTest(args, animate, i) {
-	return this.preanim && !!animate ? this.preanim(args, i) : false	
-}
-
 Ext.Element.addMethods({
 	/**
       * Gets the current X position of the element based on page coordinates.  Element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
@@ -5890,7 +6057,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setX : function(x, animate){	    
-	    return this.setXY([x, this.getY()], animTest.call(this, arguments, animate, 1));
+	    return this.setXY([x, this.getY()], this.animTest(arguments, animate, 1));
     },
 
     /**
@@ -5900,7 +6067,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setY : function(y, animate){	    
-	    return this.setXY([this.getX(), y], animTest.call(this, arguments, animate, 1));
+	    return this.setXY([this.getX(), y], this.animTest(arguments, animate, 1));
     },
 
     /**
@@ -5969,7 +6136,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     setLocation : function(x, y, animate){
-        return this.setXY([x, y], animTest.call(this, arguments, animate, 2));
+        return this.setXY([x, y], this.animTest(arguments, animate, 2));
     },
 
     /**
@@ -5981,7 +6148,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} this
      */
     moveTo : function(x, y, animate){
-        return this.setXY([x, y], animTest.call(this, arguments, animate, 2));        
+        return this.setXY([x, y], this.animTest(arguments, animate, 2));        
     },    
     
     /**
@@ -6122,7 +6289,9 @@ Ext.Element.addMethods({
         return {left: (x - o[0] + l), top: (y - o[1] + t)}; 
     },
     
-    animTest : animTest
+    animTest : function(args, animate, i) {
+        return !!animate && this.preanim ? this.preanim(args, i) : false;
+    }
 });
 })();/**
  * @class Ext.Element
@@ -6345,15 +6514,15 @@ Ext.Element.addMethods({
      * @return {Element} this
      */
     scrollTo : function(side, value, animate){
-        var tester = /top/i,
-        	prop = "scroll" + (tester.test(side) ? "Top" : "Left"),
-        	me = this,
-        	dom = me.dom;
+        var top = /top/i.test(side), //check if we're scrolling top or left
+            prop = 'scroll' + (top ? 'Left' : 'Top'), // if scrolling top, we need to grab scrollLeft, if left, scrollTop
+            me = this,
+            dom = me.dom;
         if (!animate || !me.anim) {
             dom[prop] = value;
         } else {
-            me.anim({scroll: {to: tester.test(prop) ? [dom[prop], value] : [value, dom[prop]]}},
-            		 me.preanim(arguments, 2), 'scroll');
+            me.anim({scroll: {to: top ? [dom[prop], value] : [value, dom[prop]]}},
+                     me.preanim(arguments, 2), 'scroll');
         }
         return me;
     },
@@ -6487,7 +6656,7 @@ Ext.Element.addMethods(function(){
         /**
          * Sets the element's visibility mode. When setVisible() is called it
          * will use this to determine whether to set the visibility or the display property.
-         * @param visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
+         * @param {Number} visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
          * @return {Ext.Element} this
          */
         setVisibilityMode : function(visMode){  
@@ -6890,9 +7059,7 @@ function(){
 	        	shim;
 	        el.frameBorder = '0';
 	        el.className = 'ext-shim';
-	        if(Ext.isIE && Ext.isSecure){
-	            el.src = Ext.SSL_SECURE_URL;
-	        }
+	        el.src = Ext.SSL_SECURE_URL;
 	        shim = Ext.get(this.dom.parentNode.insertBefore(el, this.dom));
 	        shim.autoBoxAdjust = false;
 	        return shim;
@@ -7031,7 +7198,7 @@ br     The bottom right corner
  * The callback is intended for any additional code that should run once a particular effect has completed. The Element
  * being operated upon is passed as the first parameter.
  * 
- * @cfg {Object} scope The scope of the <tt>{@link #callback}</tt> function
+ * @cfg {Object} scope The scope (<code>this</code> reference) in which the <tt>{@link #callback}</tt> function is executed. Defaults to the browser window.
  * 
  * @cfg {String} easing A valid Ext.lib.Easing value for the effect:</p><div class="mdetail-params"><ul>
  * <li><b><tt>backBoth</tt></b></li>
@@ -7505,9 +7672,9 @@ el.frame("C3DAF9", 1, {
             active;
 
         me.queueFx(o, function(){
-            color = color || "#C3DAF9"
+            color = color || '#C3DAF9'
             if(color.length == 6){
-                color = "#" + color;
+                color = '#' + color;
             }            
             count = count || 1;
             fly(dom).show();
@@ -7517,10 +7684,9 @@ el.frame("C3DAF9", 1, {
                 queue = function(){
                     proxy = fly(document.body || document.documentElement).createChild({
                         style:{
-                            visbility: HIDDEN,
                             position : ABSOLUTE,
-                            "z-index": 35000, // yee haw
-                            border : "0px solid " + color
+                            'z-index': 35000, // yee haw
+                            border : '0px solid ' + color
                         }
                     });
                     return proxy.queueFx({}, animFn);
@@ -7939,7 +8105,7 @@ el.ghost('b', {
 
     /* @private */
     queueFx : function(o, fn){
-        var me = this;
+        var me = fly(this.dom);
         if(!me.hasFxBlock()){
             Ext.applyIf(o, me.fxDefaults);
             if(!o.concurrent){
@@ -7988,7 +8154,8 @@ el.ghost('b', {
         fly(dom).clearPositioning();
         fly(dom).setPositioning(pos);
         if(!o.wrap){
-            wrap.parentNode.insertBefore(dom, wrap);
+            var pn = fly(wrap).dom.parentNode;
+            pn.insertBefore(dom, wrap); 
             fly(wrap).remove();
         }
     },
@@ -8002,8 +8169,7 @@ el.ghost('b', {
     /* @private */
     afterFx : function(o){
         var dom = this.dom,
-            id = dom.id,
-            notConcurrent = !o.concurrent;
+            id = dom.id;
         if(o.afterStyle){
             fly(dom).setStyle(o.afterStyle);            
         }
@@ -8013,13 +8179,11 @@ el.ghost('b', {
         if(o.remove == TRUE){
             fly(dom).remove();
         }
-        if(notConcurrent){
-            getQueue(id).shift();
-        }
         if(o.callback){
             o.callback.call(o.scope, fly(dom));
         }
-        if(notConcurrent){
+        if(!o.concurrent){
+            getQueue(id).shift();
             fly(dom).nextFx();
         }
     },
@@ -8047,45 +8211,78 @@ Ext.Fx.resize = Ext.Fx.scale;
 //When included, Ext.Fx is automatically applied to Element so that all basic
 //effects are available directly via the Element API
 Ext.Element.addMethods(Ext.Fx);
-})();/**
+})();
+/**
  * @class Ext.CompositeElementLite
- * Flyweight composite class. Reuses the same Ext.Element for element operations.
- <pre><code>
- var els = Ext.select("#some-el div.some-class");
- // or select directly from an existing element
- var el = Ext.get('some-el');
- el.select('div.some-class');
+ * <p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter
+ * members, or to perform collective actions upon the whole set.</p>
+ * <p>Although they are not listed, this class supports all of the methods of {@link Ext.Element} and
+ * {@link Ext.Fx}. The methods from these classes will be performed on all the elements in this collection.</p>
+ * Example:<pre><code>
+var els = Ext.select("#some-el div.some-class");
+// or select directly from an existing element
+var el = Ext.get('some-el');
+el.select('div.some-class');
 
- els.setWidth(100); // all elements become 100 width
- els.hide(true); // all elements fade out and hide
- // or
- els.setWidth(100).hide(true);
- </code></pre><br><br>
- * <b>NOTE: Although they are not listed, this class supports all of the set/update methods of Ext.Element. All Ext.Element
- * actions will be performed on all the elements in this collection.</b>
+els.setWidth(100); // all elements become 100 width
+els.hide(true); // all elements fade out and hide
+// or
+els.setWidth(100).hide(true);
+</code>
  */
 Ext.CompositeElementLite = function(els, root){
+    /**
+     * <p>The Array of DOM elements which this CompositeElement encapsulates. Read-only.</p>
+     * <p>This will not <i>usually</i> be accessed in developers' code, but developers wishing
+     * to augment the capabilities of the CompositeElementLite class may use it when adding
+     * methods to the class.</p>
+     * <p>For example to add the <code>nextAll</code> method to the class to <b>add</b> all
+     * following siblings of selected elements, the code would be</p><code><pre>
+Ext.override(Ext.CompositeElementLite, {
+    nextAll: function() {
+        var els = this.elements, i, l = els.length, n, r = [], ri = -1;
+
+//      Loop through all elements in this Composite, accumulating
+//      an Array of all siblings.
+        for (i = 0; i < l; i++) {
+            for (n = els[i].nextSibling; n; n = n.nextSibling) {
+                r[++ri] = n;
+            }
+        }
+
+//      Add all found siblings to this Composite
+        return this.add(r);
+    }
+});</pre></code>
+     * @type Array
+     * @property elements
+     */
     this.elements = [];
     this.add(els, root);
     this.el = new Ext.Element.Flyweight();
 };
 
 Ext.CompositeElementLite.prototype = {
-	isComposite: true,	
-	/**
-     * Returns the number of elements in this composite
+    isComposite: true,    
+    /**
+     * Returns the number of elements in this Composite.
      * @return Number
      */
     getCount : function(){
         return this.elements.length;
     },    
-	add : function(els){
+    /**
+     * Adds elements to this Composite object.
+     * @param {Mixed} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
+     * @return {CompositeElement} This Composite object.
+     */
+    add : function(els){
         if(els){
             if (Ext.isArray(els)) {
                 this.elements = this.elements.concat(els);
             } else {
-                var yels = this.elements;                	                
-	            Ext.each(els, function(e) {
+                var yels = this.elements;                                    
+                Ext.each(els, function(e) {
                     yels.push(e);
                 });
             }
@@ -8094,10 +8291,10 @@ Ext.CompositeElementLite.prototype = {
     },
     invoke : function(fn, args){
         var els = this.elements,
-        	el = this.el;        
-	    Ext.each(els, function(e) {    
+            el = this.el;        
+        Ext.each(els, function(e) {    
             el.dom = e;
-        	Ext.Element.prototype[fn].apply(el, args);
+            Ext.Element.prototype[fn].apply(el, args);
         });
         return this;
     },
@@ -8107,7 +8304,7 @@ Ext.CompositeElementLite.prototype = {
      * @return {Ext.Element}
      */
     item : function(index){
-	    var me = this;
+        var me = this;
         if(!me.elements[index]){
             return null;
         }
@@ -8118,26 +8315,67 @@ Ext.CompositeElementLite.prototype = {
     // fixes scope with flyweight
     addListener : function(eventName, handler, scope, opt){
         Ext.each(this.elements, function(e) {
-	        Ext.EventManager.on(e, eventName, handler, scope || e, opt);
+            Ext.EventManager.on(e, eventName, handler, scope || e, opt);
         });
         return this;
     },
     /**
-    * Calls the passed function passing (el, this, index) for each element in this composite. <b>The element
-    * passed is the flyweight (shared) Ext.Element instance, so if you require a
-    * a reference to the dom node, use el.dom.</b>
-    * @param {Function} fn The function to call
-    * @param {Object} scope (optional) The <i>this</i> object (defaults to the element)
-    * @return {CompositeElement} this
-    */
+     * <p>Calls the passed function for each element in this composite.</p>
+     * @param {Function} fn The function to call. The function is passed the following parameters:<ul>
+     * <li><b>el</b> : Element<div class="sub-desc">The current Element in the iteration.
+     * <b>This is the flyweight (shared) Ext.Element instance, so if you require a
+     * a reference to the dom node, use el.dom.</b></div></li>
+     * <li><b>c</b> : Composite<div class="sub-desc">This Composite object.</div></li>
+     * <li><b>idx</b> : Number<div class="sub-desc">The zero-based index in the iteration.</div></li>
+     * </ul>
+     * @param {Object} scope (optional) The scope (<i>this</i> reference) in which the function is executed. (defaults to the Element)
+     * @return {CompositeElement} this
+     */
     each : function(fn, scope){       
         var me = this,
-        	el = me.el;
+            el = me.el;
        
-	    Ext.each(me.elements, function(e,i) {    
+        Ext.each(me.elements, function(e,i) {    
             el.dom = e;
-        	return fn.call(scope || el, el, me, i);
+            return fn.call(scope || el, el, me, i);
         });
+        return me;
+    },
+    
+    /**
+    * Clears this Composite and adds the elements passed.
+    * @param {Mixed} els Either an array of DOM elements, or another Composite from which to fill this Composite.
+    * @return {CompositeElement} this
+    */
+    fill : function(els){
+        var me = this;
+        me.elements = [];
+        me.add(els);
+        return me;
+    },
+    
+    /**
+     * Filters this composite to only elements that match the passed selector.
+     * @param {String/Function} selector A string CSS selector or a comparison function.
+     * The comparison function will be called with the following arguments:<ul>
+     * <li><code>el</code> : Ext.Element<div class="sub-desc">The current DOM element.</div></li>
+     * <li><code>index</code> : Number<div class="sub-desc">The current index within the collection.</div></li>
+     * </ul>
+     * @return {CompositeElement} this
+     */
+    filter : function(selector){
+        var els = [],
+            me = this,
+            fn = Ext.isFunction(selector) ? selector
+                : function(el){
+                    return el.is(selector);
+                }
+        me.each(function(el, self, i){
+            if(fn(el, i) !== false){
+                els[els.length] = el.dom;
+            }
+        });
+        me.fill(els);
         return me;
     },
     
@@ -8160,7 +8398,7 @@ Ext.CompositeElementLite.prototype = {
     */    
     replaceElement : function(el, replacement, domReplace){
         var index = !isNaN(el) ? el : this.indexOf(el),
-        	d;
+            d;
         if(index > -1){
             replacement = Ext.getDom(replacement);
             if(domReplace){
@@ -8185,16 +8423,16 @@ Ext.CompositeElementLite.prototype.on = Ext.CompositeElementLite.prototype.addLi
 
 (function(){
 var fnName,
-	ElProto = Ext.Element.prototype,
-	CelProto = Ext.CompositeElementLite.prototype;
-	
+    ElProto = Ext.Element.prototype,
+    CelProto = Ext.CompositeElementLite.prototype;
+    
 for(fnName in ElProto){
     if(Ext.isFunction(ElProto[fnName])){
-	    (function(fnName){ 
-		    CelProto[fnName] = CelProto[fnName] || function(){
-		    	return this.invoke(fnName, arguments);
-	    	};
-    	}).call(CelProto, fnName);
+        (function(fnName){ 
+            CelProto[fnName] = CelProto[fnName] || function(){
+                return this.invoke(fnName, arguments);
+            };
+        }).call(CelProto, fnName);
         
     }
 }
@@ -8256,17 +8494,6 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
     },
     
     /**
-    * Clears this composite and adds the elements returned by the passed selector.
-    * @param {String/Array} els A string CSS selector, an array of elements or an element
-    * @return {CompositeElement} this
-    */
-    fill : function(els){
-        this.elements = [];
-        this.add(els);
-        return this;
-    },
-    
-    /**
      * Returns the first Element
      * @return {Ext.Element}
      */
@@ -8289,22 +8516,6 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
      */
     contains : function(el){
         return this.indexOf(el) != -1;
-    },
-
-    /**
-    * Filters this composite to only elements that match the passed selector.
-    * @param {String} selector A string CSS selector
-    * @return {CompositeElement} this
-    */
-    filter : function(selector){
-        var els = [];
-        this.each(function(el){
-            if(el.is(selector)){
-                els[els.length] = el.dom;
-            }
-        });
-        this.fill(els);
-        return this;
     },
     
     /**
@@ -8366,7 +8577,7 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
         });
         return this;
     },
-    
+
     /**
     * Adds elements to this composite.
     * @param {String/Array} els A string CSS selector, an array of elements or an element
@@ -8379,13 +8590,13 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
         if(typeof els == "string"){
             els = Ext.Element.selectorFunction(els, root);
         }
-        var yels = this.elements;        
+        var yels = this.elements;
 	    Ext.each(els, function(e) {
         	yels.push(Ext.get(e));
         });
         return this;
-    },    
-    
+    },
+
     /**
      * Returns the Element object at the specified index
      * @param {Number} index
@@ -8399,12 +8610,12 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
     indexOf : function(el){
         return this.elements.indexOf(Ext.get(el));
     },
-        
+
     filter : function(selector){
 		var me = this,
 			out = [];
-			
-		Ext.each(me.elements, function(el) {	
+
+		Ext.each(me.elements, function(el) {
 			if(el.is(selector)){
 				out.push(Ext.get(el));
 			}
@@ -8412,16 +8623,31 @@ Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
 		me.elements = out;
 		return me;
 	},
-	
-	/**
-    * Calls the passed function passing (el, this, index) for each element in this composite.
-    * @param {Function} fn The function to call
-    * @param {Object} scope (optional) The <i>this</i> object (defaults to the element)
-    * @return {CompositeElement} this
-    */
-    each : function(fn, scope){        
-        Ext.each(this.elements, function(e,i) {
-	        return fn.call(scope || e, e, this, i);
+
+    /**
+     * Iterates each <code>element</code> in this <code>composite</code>
+     * calling the supplied function using {@link Ext#each}.
+     * @param {Function} fn The function to be called with each
+     * <code>element</code>. If the supplied function returns <tt>false</tt>,
+     * iteration stops. This function is called with the following arguments:
+     * <div class="mdetail-params"><ul>
+     * <li><code>element</code> : <i>Object</i>
+     * <div class="sub-desc">The element at the current <code>index</code>
+     * in the <code>composite</code></div></li>
+     * <li><code>composite</code> : <i>Object</i>
+     * <div class="sub-desc">This composite.</div></li>
+     * <li><code>index</code> : <i>Number</i>
+     * <div class="sub-desc">The current index within the <code>composite</code>
+     * </div></li>
+     * </ul></div>
+     * @param {Object} scope (optional) The scope to call the specified function.
+     * Defaults to the <code>element</code> at the current <code>index</code>
+     * within the composite.
+     * @return {CompositeElement} this
+     */
+    each : function(fn, scope){
+        Ext.each(this.elements, function(e, i){
+            return fn.call(scope || e, e, this, i);
         }, this);
         return this;
     }
@@ -8539,136 +8765,6 @@ Ext.select = Ext.Element.select;(function(){
         );
         Ext.data.Connection.superclass.constructor.call(this);
     };
-
-    // private
-    function handleResponse(response){
-        this.transId = false;
-        var options = response.argument.options;
-        response.argument = options ? options.argument : null;
-        this.fireEvent(REQUESTCOMPLETE, this, response, options);
-        if(options.success){
-            options.success.call(options.scope, response, options);
-        }
-        if(options.callback){
-            options.callback.call(options.scope, options, true, response);
-        }
-    }
-
-    // private
-    function handleFailure(response, e){
-        this.transId = false;
-        var options = response.argument.options;
-        response.argument = options ? options.argument : null;
-        this.fireEvent(REQUESTEXCEPTION, this, response, options, e);
-        if(options.failure){
-            options.failure.call(options.scope, response, options);
-        }
-        if(options.callback){
-            options.callback.call(options.scope, options, false, response);
-        }
-    }
-
-    // private
-    function doFormUpload(o, ps, url){
-        var id = Ext.id(),
-            doc = document,
-            frame = doc.createElement('iframe'),
-            form = Ext.getDom(o.form),
-            hiddens = [],
-            hd,
-            encoding = 'multipart/form-data',
-            buf = {
-                target: form.target,
-                method: form.method,
-                encoding: form.encoding,
-                enctype: form.enctype,
-                action: form.action
-            };
-            
-        Ext.apply(frame, {
-            id: id,
-            name: id,
-            className: 'x-hidden',
-            src: Ext.SSL_SECURE_URL // for IE
-        });     
-        doc.body.appendChild(frame);
-        
-        // This is required so that IE doesn't pop the response up in a new window.
-        if(Ext.isIE){
-           document.frames[id].name = id;
-        }
-        
-        Ext.apply(form, {
-            target: id,
-            method: POST,
-            enctype: encoding,
-            encoding: encoding,
-            action: url || buf.action
-        });
-        
-        // add dynamic params            
-        ps = Ext.urlDecode(ps, false);
-        for(var k in ps){
-            if(ps.hasOwnProperty(k)){
-                hd = doc.createElement('input');
-                hd.type = 'hidden';                    
-                hd.value = ps[hd.name = k];
-                form.appendChild(hd);
-                hiddens.push(hd);
-            }
-        }        
-
-        function cb(){
-            var me = this,
-                // bogus response object
-                r = {responseText : '',
-                     responseXML : null,
-                     argument : o.argument},
-                doc,
-                firstChild;
-
-            try{ 
-                doc = frame.contentWindow.document || frame.contentDocument || WINDOW.frames[id].document;
-                if(doc){
-                    if(doc.body){
-                        if(/textarea/i.test((firstChild = doc.body.firstChild || {}).tagName)){ // json response wrapped in textarea                        
-                            r.responseText = firstChild.value;
-                        }else{
-                            r.responseText = doc.body.innerHTML;
-                        }
-                    }
-                    //in IE the document may still have a body even if returns XML.
-                    r.responseXML = doc.XMLDocument || doc;
-                }
-            }
-            catch(e) {}
-
-            Ext.EventManager.removeListener(frame, LOAD, cb, me);
-
-            me.fireEvent(REQUESTCOMPLETE, me, r, o);
-            
-            function runCallback(fn, scope, args){
-                if(Ext.isFunction(fn)){
-                    fn.apply(scope, args);
-                }
-            }
-
-            runCallback(o.success, o.scope, [r, o]);
-            runCallback(o.callback, o.scope, [o, true, r]);
-
-            if(!me.debugUploads){
-                setTimeout(function(){Ext.removeNode(frame);}, 100);
-            }
-        }
-
-        Ext.EventManager.on(frame, LOAD, cb, this);
-        form.submit();
-        
-        Ext.apply(form, buf);
-        Ext.each(hiddens, function(h) {
-            Ext.removeNode(h);
-        });
-    }
 
     Ext.extend(Ext.data.Connection, Ext.util.Observable, {
         /**
@@ -8827,8 +8923,8 @@ Ext.Ajax.request({
                 var p = o.params,
                     url = o.url || me.url,                
                     method,
-                    cb = {success: handleResponse,
-                          failure: handleFailure,
+                    cb = {success: me.handleResponse,
+                          failure: me.handleFailure,
                           scope: me,
                           argument: {options: o},
                           timeout : o.timeout || me.timeout
@@ -8850,7 +8946,7 @@ Ext.Ajax.request({
                 if((form = Ext.getDom(o.form))){
                     url = url || form.action;
                      if(o.isUpload || /multipart\/form-data/i.test(form.getAttribute("enctype"))) { 
-                         return doFormUpload.call(me, o, p, url);
+                         return me.doFormUpload.call(me, o, p, url);
                      }
                     serForm = Ext.lib.Ajax.serializeForm(form);                    
                     p = p ? (p + '&' + serForm) : serForm;
@@ -8896,6 +8992,136 @@ Ext.Ajax.request({
             if(transId || this.isLoading()){
                 Ext.lib.Ajax.abort(transId || this.transId);
             }
+        },
+
+        // private
+        handleResponse : function(response){
+            this.transId = false;
+            var options = response.argument.options;
+            response.argument = options ? options.argument : null;
+            this.fireEvent(REQUESTCOMPLETE, this, response, options);
+            if(options.success){
+                options.success.call(options.scope, response, options);
+            }
+            if(options.callback){
+                options.callback.call(options.scope, options, true, response);
+            }
+        },
+
+        // private
+        handleFailure : function(response, e){
+            this.transId = false;
+            var options = response.argument.options;
+            response.argument = options ? options.argument : null;
+            this.fireEvent(REQUESTEXCEPTION, this, response, options, e);
+            if(options.failure){
+                options.failure.call(options.scope, response, options);
+            }
+            if(options.callback){
+                options.callback.call(options.scope, options, false, response);
+            }
+        },
+
+        // private
+        doFormUpload : function(o, ps, url){
+            var id = Ext.id(),
+                doc = document,
+                frame = doc.createElement('iframe'),
+                form = Ext.getDom(o.form),
+                hiddens = [],
+                hd,
+                encoding = 'multipart/form-data',
+                buf = {
+                    target: form.target,
+                    method: form.method,
+                    encoding: form.encoding,
+                    enctype: form.enctype,
+                    action: form.action
+                };
+
+            Ext.fly(frame).set({
+                id: id,
+                name: id,
+                cls: 'x-hidden',
+                src: Ext.SSL_SECURE_URL // for IE
+            });
+            doc.body.appendChild(frame);
+
+            // This is required so that IE doesn't pop the response up in a new window.
+            if(Ext.isIE){
+               document.frames[id].name = id;
+            }
+
+            Ext.fly(form).set({
+                target: id,
+                method: POST,
+                enctype: encoding,
+                encoding: encoding,
+                action: url || buf.action
+            });
+
+            // add dynamic params
+            Ext.iterate(Ext.urlDecode(ps, false), function(k, v){
+                hd = doc.createElement('input');
+                Ext.fly(hd).set({
+                    type: 'hidden',
+                    value: v,
+                    name: k
+                });
+                form.appendChild(hd);
+                hiddens.push(hd);
+            });
+
+            function cb(){
+                var me = this,
+                    // bogus response object
+                    r = {responseText : '',
+                         responseXML : null,
+                         argument : o.argument},
+                    doc,
+                    firstChild;
+
+                try{
+                    doc = frame.contentWindow.document || frame.contentDocument || WINDOW.frames[id].document;
+                    if(doc){
+                        if(doc.body){
+                            if(/textarea/i.test((firstChild = doc.body.firstChild || {}).tagName)){ // json response wrapped in textarea
+                                r.responseText = firstChild.value;
+                            }else{
+                                r.responseText = doc.body.innerHTML;
+                            }
+                        }
+                        //in IE the document may still have a body even if returns XML.
+                        r.responseXML = doc.XMLDocument || doc;
+                    }
+                }
+                catch(e) {}
+
+                Ext.EventManager.removeListener(frame, LOAD, cb, me);
+
+                me.fireEvent(REQUESTCOMPLETE, me, r, o);
+
+                function runCallback(fn, scope, args){
+                    if(Ext.isFunction(fn)){
+                        fn.apply(scope, args);
+                    }
+                }
+
+                runCallback(o.success, o.scope, [r, o]);
+                runCallback(o.callback, o.scope, [o, true, r]);
+
+                if(!me.debugUploads){
+                    setTimeout(function(){Ext.removeNode(frame);}, 100);
+                }
+            }
+
+            Ext.EventManager.on(frame, LOAD, cb, this);
+            form.submit();
+
+            Ext.fly(form).set(buf);
+            Ext.each(hiddens, function(h) {
+                Ext.removeNode(h);
+            });
         }
     });
 })();
@@ -9518,7 +9744,7 @@ Ext.Updater.defaults = {
     * Blank page URL to use with SSL file uploads (defaults to {@link Ext#SSL_SECURE_URL} if set, or "javascript:false").
     * @type String
     */
-    sslBlankUrl : (Ext.SSL_SECURE_URL || "javascript:false")      
+    sslBlankUrl : Ext.SSL_SECURE_URL      
 };
 
 
@@ -10350,15 +10576,15 @@ dt = Date.parseDate("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
         a: {
             g:1,
             c:"if (results[{0}] == 'am') {\n"
-                + "if (h == 12) { h = 0; }\n"
-                + "} else { if (h < 12) { h += 12; }}",
+                + "if (!h || h == 12) { h = 0; }\n"
+                + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
             s:"(am|pm)"
         },
         A: {
             g:1,
             c:"if (results[{0}] == 'AM') {\n"
-                + "if (h == 12) { h = 0; }\n"
-                + "} else { if (h < 12) { h += 12; }}",
+                + "if (!h || h == 12) { h = 0; }\n"
+                + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
             s:"(AM|PM)"
         },
         g: function() {
@@ -10534,12 +10760,12 @@ Ext.apply(Date.prototype, {
      * @return {Number} 0 to 364 (365 in leap years).
      */
     getDayOfYear: function() {
-        var i = 0,
-            num = 0,
+        var num = 0,
             d = this.clone(),
-            m = this.getMonth();
+            m = this.getMonth(),
+            i;
 
-        for (i = 0, d.setMonth(0); i < m; d.setMonth(++i)) {
+        for (i = 0, d.setDate(1), d.setMonth(0); i < m; d.setMonth(++i)) {
             num += d.getDaysInMonth();
         }
         return num + this.getDate() - 1;
@@ -10894,9 +11120,10 @@ Ext.get('myInputField').on('keypress', function(){
  * option <tt>buffer</tt> for {@link Ext.util.Observable#addListener addListener/on} will
  * also setup a delayed task for you to buffer events.</p> 
  * @constructor The parameters to this constructor serve as defaults and are not required.
- * @param {Function} fn (optional) The default function to timeout
- * @param {Object} scope (optional) The default scope of that timeout
- * @param {Array} args (optional) The default Array of arguments
+ * @param {Function} fn (optional) The default function to call.
+ * @param {Object} scope The default scope (The <code><b>this</b></code> reference) in which the
+ * function is called. If not specified, <code>this</code> will refer to the browser window.
+ * @param {Array} args (optional) The default Array of arguments.
  */
 Ext.util.DelayedTask = function(fn, scope, args){
     var me = this,
@@ -10911,7 +11138,8 @@ Ext.util.DelayedTask = function(fn, scope, args){
      * Cancels any pending timeout and queues a new one
      * @param {Number} delay The milliseconds to delay
      * @param {Function} newFn (optional) Overrides function passed to constructor
-     * @param {Object} newScope (optional) Overrides scope passed to constructor
+     * @param {Object} newScope (optional) Overrides scope passed to constructor. Remember that if no scope
+     * is specified, <code>this</code> will refer to the browser window.
      * @param {Array} newArgs (optional) Overrides args passed to constructor
      */
     me.delay = function(delay, newFn, newScope, newArgs){
@@ -10936,8 +11164,9 @@ Ext.util.DelayedTask = function(fn, scope, args){
  * @extends Ext.util.Observable
  * A Collection class that maintains both numeric indexes and keys and exposes events.
  * @constructor
- * @param {Boolean} allowFunctions True if the addAll function should add function references to the
- * collection (defaults to false)
+ * @param {Boolean} allowFunctions Specify <tt>true</tt> if the {@link #addAll}
+ * function should add function references to the collection. Defaults to
+ * <tt>false</tt>.
  * @param {Function} keyFn A function that can accept an item of the type(s) stored in this MixedCollection
  * and return the key value for that item.  This is used when available to look up the key on items that
  * were passed without an explicit key parameter to a MixedCollection method.  Passing this parameter is
@@ -10953,7 +11182,7 @@ Ext.util.MixedCollection = function(allowFunctions, keyFn){
          * @event clear
          * Fires when the collection is cleared.
          */
-        "clear",
+        'clear',
         /**
          * @event add
          * Fires when an item is added to the collection.
@@ -10961,7 +11190,7 @@ Ext.util.MixedCollection = function(allowFunctions, keyFn){
          * @param {Object} o The item added.
          * @param {String} key The key associated with the added item.
          */
-        "add",
+        'add',
         /**
          * @event replace
          * Fires when an item is replaced in the collection.
@@ -10969,15 +11198,15 @@ Ext.util.MixedCollection = function(allowFunctions, keyFn){
          * @param {Object} old The item being replaced.
          * @param {Object} new The new item.
          */
-        "replace",
+        'replace',
         /**
          * @event remove
          * Fires when an item is removed from the collection.
          * @param {Object} o The item being removed.
          * @param {String} key (optional) The key associated with the removed item.
          */
-        "remove",
-        "sort"
+        'remove',
+        'sort'
     );
     this.allowFunctions = allowFunctions === true;
     if(keyFn){
@@ -10987,19 +11216,25 @@ Ext.util.MixedCollection = function(allowFunctions, keyFn){
 };
 
 Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
+
+    /**
+     * @cfg {Boolean} allowFunctions Specify <tt>true</tt> if the {@link #addAll}
+     * function should add function references to the collection. Defaults to
+     * <tt>false</tt>.
+     */
     allowFunctions : false,
 
-/**
- * Adds an item to the collection. Fires the {@link #add} event when complete.
- * @param {String} key <p>The key to associate with the item, or the new item.</p>
- * <p>If you supplied a {@link #getKey} implementation for this MixedCollection, or if the key
- * of your stored items is in a property called <tt><b>id</b></tt>, then the MixedCollection
- * will be able to <i>derive</i> the key for the new item. In this case just pass the new item in
- * this parameter.</p>
- * @param {Object} o The item to add.
- * @return {Object} The item added.
- */
-    add: function(key, o){
+    /**
+     * Adds an item to the collection. Fires the {@link #add} event when complete.
+     * @param {String} key <p>The key to associate with the item, or the new item.</p>
+     * <p>If a {@link #getKey} implementation was specified for this MixedCollection,
+     * or if the key of the stored items is in a property called <tt><b>id</b></tt>,
+     * the MixedCollection will be able to <i>derive</i> the key for the new item.
+     * In this case just pass the new item in this parameter.</p>
+     * @param {Object} o The item to add.
+     * @return {Object} The item added.
+     */
+    add : function(key, o){
         if(arguments.length == 1){
             o = arguments[0];
             key = this.getKey(o);
@@ -11018,11 +11253,10 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
         return o;
     },
 
-/**
-  * MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
-  * simply returns <tt style="font-weight:bold;">item.id</tt> but you can provide your own implementation
-  * to return a different value as in the following examples:
-<pre><code>
+    /**
+      * MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
+      * simply returns <b><code>item.id</code></b> but you can provide your own implementation
+      * to return a different value as in the following examples:<pre><code>
 // normal way
 var mc = new Ext.util.MixedCollection();
 mc.add(someEl.dom.id, someEl);
@@ -11043,46 +11277,48 @@ var mc = new Ext.util.MixedCollection(false, function(el){
 });
 mc.add(someEl);
 mc.add(otherEl);
-</code></pre>
- * @param {Object} item The item for which to find the key.
- * @return {Object} The key for the passed item.
- */
+     * </code></pre>
+     * @param {Object} item The item for which to find the key.
+     * @return {Object} The key for the passed item.
+     */
     getKey : function(o){
          return o.id;
     },
 
-/**
- * Replaces an item in the collection. Fires the {@link #replace} event when complete.
- * @param {String} key <p>The key associated with the item to replace, or the replacement item.</p>
- * <p>If you supplied a {@link #getKey} implementation for this MixedCollection, or if the key
- * of your stored items is in a property called <tt><b>id</b></tt>, then the MixedCollection
- * will be able to <i>derive</i> the key of the replacement item. If you want to replace an item
- * with one having the same key value, then just pass the replacement item in this parameter.</p>
- * @param o {Object} o (optional) If the first parameter passed was a key, the item to associate
- * with that key.
- * @return {Object}  The new item.
- */
+    /**
+     * Replaces an item in the collection. Fires the {@link #replace} event when complete.
+     * @param {String} key <p>The key associated with the item to replace, or the replacement item.</p>
+     * <p>If you supplied a {@link #getKey} implementation for this MixedCollection, or if the key
+     * of your stored items is in a property called <tt><b>id</b></tt>, then the MixedCollection
+     * will be able to <i>derive</i> the key of the replacement item. If you want to replace an item
+     * with one having the same key value, then just pass the replacement item in this parameter.</p>
+     * @param o {Object} o (optional) If the first parameter passed was a key, the item to associate
+     * with that key.
+     * @return {Object}  The new item.
+     */
     replace : function(key, o){
         if(arguments.length == 1){
             o = arguments[0];
             key = this.getKey(o);
         }
         var old = this.map[key];
-        if(typeof key == "undefined" || key === null || typeof old == "undefined"){
+        if(typeof key == 'undefined' || key === null || typeof old == 'undefined'){
              return this.add(key, o);
         }
         var index = this.indexOfKey(key);
         this.items[index] = o;
         this.map[key] = o;
-        this.fireEvent("replace", key, old, o);
+        this.fireEvent('replace', key, old, o);
         return o;
     },
 
-/**
- * Adds all elements of an Array or an Object to the collection.
- * @param {Object/Array} objs An Object containing properties which will be added to the collection, or
- * an Array of values, each of which are added to the collection.
- */
+    /**
+     * Adds all elements of an Array or an Object to the collection.
+     * @param {Object/Array} objs An Object containing properties which will be added
+     * to the collection, or an Array of values, each of which are added to the collection.
+     * Functions references will be added to the collection if <code>{@link #allowFunctions}</code>
+     * has been set to <tt>true</tt>.
+     */
     addAll : function(objs){
         if(arguments.length > 1 || Ext.isArray(objs)){
             var args = arguments.length > 1 ? arguments : objs;
@@ -11091,24 +11327,24 @@ mc.add(otherEl);
             }
         }else{
             for(var key in objs){
-                if(this.allowFunctions || typeof objs[key] != "function"){
+                if(this.allowFunctions || typeof objs[key] != 'function'){
                     this.add(key, objs[key]);
                 }
             }
         }
     },
 
-/**
- * Executes the specified function once for every item in the collection, passing the following arguments:
- * <div class="mdetail-params"><ul>
- * <li><b>item</b> : Mixed<p class="sub-desc">The collection item</p></li>
- * <li><b>index</b> : Number<p class="sub-desc">The item's index</p></li>
- * <li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
- * </ul></div>
- * The function should return a boolean value. Returning false from the function will stop the iteration.
- * @param {Function} fn The function to execute for each item.
- * @param {Object} scope (optional) The scope in which to execute the function.
- */
+    /**
+     * Executes the specified function once for every item in the collection, passing the following arguments:
+     * <div class="mdetail-params"><ul>
+     * <li><b>item</b> : Mixed<p class="sub-desc">The collection item</p></li>
+     * <li><b>index</b> : Number<p class="sub-desc">The item's index</p></li>
+     * <li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
+     * </ul></div>
+     * The function should return a boolean value. Returning false from the function will stop the iteration.
+     * @param {Function} fn The function to execute for each item.
+     * @param {Object} scope (optional) The scope in which to execute the function.
+     */
     each : function(fn, scope){
         var items = [].concat(this.items); // each safe for removal
         for(var i = 0, len = items.length; i < len; i++){
@@ -11118,12 +11354,12 @@ mc.add(otherEl);
         }
     },
 
-/**
- * Executes the specified function once for every key in the collection, passing each
- * key, and its associated item as the first two parameters.
- * @param {Function} fn The function to execute for each item.
- * @param {Object} scope (optional) The scope in which to execute the function.
- */
+    /**
+     * Executes the specified function once for every key in the collection, passing each
+     * key, and its associated item as the first two parameters.
+     * @param {Function} fn The function to execute for each item.
+     * @param {Object} scope (optional) The scope in which to execute the function.
+     */
     eachKey : function(fn, scope){
         for(var i = 0, len = this.keys.length; i < len; i++){
             fn.call(scope || window, this.keys[i], this.items[i], i, len);
@@ -11146,13 +11382,13 @@ mc.add(otherEl);
         return null;
     },
 
-/**
- * Inserts an item at the specified index in the collection. Fires the {@link #add} event when complete.
- * @param {Number} index The index to insert the item at.
- * @param {String} key The key to associate with the new item, or the item itself.
- * @param {Object} o (optional) If the second parameter was a key, the new item.
- * @return {Object} The item inserted.
- */
+    /**
+     * Inserts an item at the specified index in the collection. Fires the {@link #add} event when complete.
+     * @param {Number} index The index to insert the item at.
+     * @param {String} key The key to associate with the new item, or the item itself.
+     * @param {Object} o (optional) If the second parameter was a key, the new item.
+     * @return {Object} The item inserted.
+     */
     insert : function(index, key, o){
         if(arguments.length == 2){
             o = arguments[1];
@@ -11168,160 +11404,167 @@ mc.add(otherEl);
         }
         this.length++;
         this.items.splice(index, 0, o);
-        if(typeof key != "undefined" && key !== null){
+        if(typeof key != 'undefined' && key !== null){
             this.map[key] = o;
         }
         this.keys.splice(index, 0, key);
-        this.fireEvent("add", index, o, key);
+        this.fireEvent('add', index, o, key);
         return o;
     },
 
-/**
- * Remove an item from the collection.
- * @param {Object} o The item to remove.
- * @return {Object} The item removed or false if no item was removed.
- */
+    /**
+     * Remove an item from the collection.
+     * @param {Object} o The item to remove.
+     * @return {Object} The item removed or false if no item was removed.
+     */
     remove : function(o){
         return this.removeAt(this.indexOf(o));
     },
 
-/**
- * Remove an item from a specified index in the collection. Fires the {@link #remove} event when complete.
- * @param {Number} index The index within the collection of the item to remove.
- * @return {Object} The item removed or false if no item was removed.
- */
+    /**
+     * Remove an item from a specified index in the collection. Fires the {@link #remove} event when complete.
+     * @param {Number} index The index within the collection of the item to remove.
+     * @return {Object} The item removed or false if no item was removed.
+     */
     removeAt : function(index){
         if(index < this.length && index >= 0){
             this.length--;
             var o = this.items[index];
             this.items.splice(index, 1);
             var key = this.keys[index];
-            if(typeof key != "undefined"){
+            if(typeof key != 'undefined'){
                 delete this.map[key];
             }
             this.keys.splice(index, 1);
-            this.fireEvent("remove", o, key);
+            this.fireEvent('remove', o, key);
             return o;
         }
         return false;
     },
 
-/**
- * Removed an item associated with the passed key fom the collection.
- * @param {String} key The key of the item to remove.
- * @return {Object} The item removed or false if no item was removed.
- */
+    /**
+     * Removed an item associated with the passed key fom the collection.
+     * @param {String} key The key of the item to remove.
+     * @return {Object} The item removed or false if no item was removed.
+     */
     removeKey : function(key){
         return this.removeAt(this.indexOfKey(key));
     },
 
-/**
- * Returns the number of items in the collection.
- * @return {Number} the number of items in the collection.
- */
+    /**
+     * Returns the number of items in the collection.
+     * @return {Number} the number of items in the collection.
+     */
     getCount : function(){
         return this.length;
     },
-
-/**
- * Returns index within the collection of the passed Object.
- * @param {Object} o The item to find the index of.
- * @return {Number} index of the item. Returns -1 if not found.
- */
+    
+    /**
+     * Returns index within the collection of the passed Object.
+     * @param {Object} o The item to find the index of.
+     * @return {Number} index of the item. Returns -1 if not found.
+     */
     indexOf : function(o){
         return this.items.indexOf(o);
     },
 
-/**
- * Returns index within the collection of the passed key.
- * @param {String} key The key to find the index of.
- * @return {Number} index of the key.
- */
+    /**
+     * Returns index within the collection of the passed key.
+     * @param {String} key The key to find the index of.
+     * @return {Number} index of the key.
+     */
     indexOfKey : function(key){
         return this.keys.indexOf(key);
     },
 
-/**
- * Returns the item associated with the passed key OR index. Key has priority over index.  This is the equivalent
- * of calling {@link #key} first, then if nothing matched calling {@link #itemAt}.
- * @param {String/Number} key The key or index of the item.
- * @return {Object} If the item is found, returns the item.  If the item was not found, returns <tt>undefined</tt>.
- * If an item was found, but is a Class, returns <tt>null</tt>.
- */
+    /**
+     * Returns the item associated with the passed key OR index.
+     * Key has priority over index.  This is the equivalent
+     * of calling {@link #key} first, then if nothing matched calling {@link #itemAt}.
+     * @param {String/Number} key The key or index of the item.
+     * @return {Object} If the item is found, returns the item.  If the item was not found, returns <tt>undefined</tt>.
+     * If an item was found, but is a Class, returns <tt>null</tt>.
+     */
     item : function(key){
         var mk = this.map[key],
             item = mk !== undefined ? mk : (typeof key == 'number') ? this.items[key] : undefined;
         return !Ext.isFunction(item) || this.allowFunctions ? item : null; // for prototype!
     },
 
-/**
- * Returns the item at the specified index.
- * @param {Number} index The index of the item.
- * @return {Object} The item at the specified index.
- */
+    /**
+     * Returns the item at the specified index.
+     * @param {Number} index The index of the item.
+     * @return {Object} The item at the specified index.
+     */
     itemAt : function(index){
         return this.items[index];
     },
 
-/**
- * Returns the item associated with the passed key.
- * @param {String/Number} key The key of the item.
- * @return {Object} The item associated with the passed key.
- */
+    /**
+     * Returns the item associated with the passed key.
+     * @param {String/Number} key The key of the item.
+     * @return {Object} The item associated with the passed key.
+     */
     key : function(key){
         return this.map[key];
     },
 
-/**
- * Returns true if the collection contains the passed Object as an item.
- * @param {Object} o  The Object to look for in the collection.
- * @return {Boolean} True if the collection contains the Object as an item.
- */
+    /**
+     * Returns true if the collection contains the passed Object as an item.
+     * @param {Object} o  The Object to look for in the collection.
+     * @return {Boolean} True if the collection contains the Object as an item.
+     */
     contains : function(o){
         return this.indexOf(o) != -1;
     },
 
-/**
- * Returns true if the collection contains the passed Object as a key.
- * @param {String} key The key to look for in the collection.
- * @return {Boolean} True if the collection contains the Object as a key.
- */
+    /**
+     * Returns true if the collection contains the passed Object as a key.
+     * @param {String} key The key to look for in the collection.
+     * @return {Boolean} True if the collection contains the Object as a key.
+     */
     containsKey : function(key){
-        return typeof this.map[key] != "undefined";
+        return typeof this.map[key] != 'undefined';
     },
 
-/**
- * Removes all items from the collection.  Fires the {@link #clear} event when complete.
- */
+    /**
+     * Removes all items from the collection.  Fires the {@link #clear} event when complete.
+     */
     clear : function(){
         this.length = 0;
         this.items = [];
         this.keys = [];
         this.map = {};
-        this.fireEvent("clear");
+        this.fireEvent('clear');
     },
 
-/**
- * Returns the first item in the collection.
- * @return {Object} the first item in the collection..
- */
+    /**
+     * Returns the first item in the collection.
+     * @return {Object} the first item in the collection..
+     */
     first : function(){
         return this.items[0];
     },
 
-/**
- * Returns the last item in the collection.
- * @return {Object} the last item in the collection..
- */
+    /**
+     * Returns the last item in the collection.
+     * @return {Object} the last item in the collection..
+     */
     last : function(){
         return this.items[this.length-1];
     },
 
-    // private
+    /**
+     * @private
+     * @param {String} property Property to sort by ('key', 'value', or 'index')
+     * @param {String} dir (optional) Direction to sort 'ASC' or 'DESC'. Defaults to 'ASC'.
+     * @param {Function} fn (optional) Comparison function that defines the sort order.
+     * Defaults to sorting by numeric value.  
+     */
     _sort : function(property, dir, fn){
         var i,
             len,
-            dsc = String(dir).toUpperCase() == "DESC" ? -1 : 1,
+            dsc = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
             c = [], k = this.keys, items = this.items;
             
         fn = fn || function(a, b){
@@ -11341,25 +11584,27 @@ mc.add(otherEl);
             items[i] = c[i].value;
             k[i] = c[i].key;
         }
-        this.fireEvent("sort", this);
+        this.fireEvent('sort', this);
     },
 
     /**
-     * Sorts this collection with the passed comparison function
-     * @param {String} direction (optional) "ASC" or "DESC"
-     * @param {Function} fn (optional) comparison function
+     * Sorts this collection by <b>item</b> value with the passed comparison function.
+     * @param {String} direction (optional) 'ASC' or 'DESC'. Defaults to 'ASC'.
+     * @param {Function} fn (optional) Comparison function that defines the sort order.
+     * Defaults to sorting by numeric value.  
      */
     sort : function(dir, fn){
-        this._sort("value", dir, fn);
+        this._sort('value', dir, fn);
     },
 
     /**
-     * Sorts this collection by keys
-     * @param {String} direction (optional) "ASC" or "DESC"
-     * @param {Function} fn (optional) a comparison function (defaults to case insensitive string)
+     * Sorts this collection by <b>key</b>s.
+     * @param {String} direction (optional) 'ASC' or 'DESC'. Defaults to 'ASC'.
+     * @param {Function} fn (optional) Comparison function that defines the sort order.
+     * Defaults to sorting by case insensitive string.  
      */
     keySort : function(dir, fn){
-        this._sort("key", dir, fn || function(a, b){
+        this._sort('key', dir, fn || function(a, b){
             var v1 = String(a).toUpperCase(), v2 = String(b).toUpperCase();
             return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
         });
@@ -11367,8 +11612,8 @@ mc.add(otherEl);
 
     /**
      * Returns a range of items in this collection
-     * @param {Number} startIndex (optional) defaults to 0
-     * @param {Number} endIndex (optional) default to the last item
+     * @param {Number} startIndex (optional) The starting index. Defaults to 0.
+     * @param {Number} endIndex (optional) The ending index. Defaults to the last item.
      * @return {Array} An array of items
      */
     getRange : function(start, end){
@@ -11377,7 +11622,7 @@ mc.add(otherEl);
             return [];
         }
         start = start || 0;
-        end = Math.min(typeof end == "undefined" ? this.length-1 : end, this.length-1);
+        end = Math.min(typeof end == 'undefined' ? this.length-1 : end, this.length-1);
         var i, r = [];
         if(start <= end){
             for(i = start; i <= end; i++) {
@@ -11494,11 +11739,13 @@ mc.add(otherEl);
 });
 /**
  * This method calls {@link #item item()}.
- * Returns the item associated with the passed key OR index. Key has priority over index.  This is the equivalent
- * of calling {@link #key} first, then if nothing matched calling {@link #itemAt}.
+ * Returns the item associated with the passed key OR index. Key has priority
+ * over index.  This is the equivalent of calling {@link #key} first, then if
+ * nothing matched calling {@link #itemAt}.
  * @param {String/Number} key The key or index of the item.
- * @return {Object} If the item is found, returns the item.  If the item was not found, returns <tt>undefined</tt>.
- * If an item was found, but is a Class, returns <tt>null</tt>.
+ * @return {Object} If the item is found, returns the item.  If the item was
+ * not found, returns <tt>undefined</tt>. If an item was found, but is a Class,
+ * returns <tt>null</tt>.
  */
 Ext.util.MixedCollection.prototype.get = Ext.util.MixedCollection.prototype.item;/**
  * @class Ext.util.JSON
@@ -11527,35 +11774,39 @@ Ext.util.JSON = new (function(){
             return eval("(" + json + ')');    
         },
         doEncode = function(o){
-            if(typeof o == "undefined" || o === null){
+            if(!Ext.isDefined(o) || o === null){
                 return "null";
             }else if(Ext.isArray(o)){
                 return encodeArray(o);
-            }else if(Object.prototype.toString.apply(o) === '[object Date]'){
+            }else if(Ext.isDate(o)){
                 return Ext.util.JSON.encodeDate(o);
-            }else if(typeof o == "string"){
+            }else if(Ext.isString(o)){
                 return encodeString(o);
             }else if(typeof o == "number"){
+                //don't use isNumber here, since finite checks happen inside isNumber
                 return isFinite(o) ? String(o) : "null";
-            }else if(typeof o == "boolean"){
+            }else if(Ext.isBoolean(o)){
                 return String(o);
             }else {
                 var a = ["{"], b, i, v;
                 for (i in o) {
-                    if(!useHasOwn || o.hasOwnProperty(i)) {
-                        v = o[i];
-                        switch (typeof v) {
-                        case "undefined":
-                        case "function":
-                        case "unknown":
-                            break;
-                        default:
-                            if(b){
-                                a.push(',');
+                    // don't encode DOM objects
+                    if(!o.getElementsByTagName){
+                        if(!useHasOwn || o.hasOwnProperty(i)) {
+                            v = o[i];
+                            switch (typeof v) {
+                            case "undefined":
+                            case "function":
+                            case "unknown":
+                                break;
+                            default:
+                                if(b){
+                                    a.push(',');
+                                }
+                                a.push(doEncode(i), ":",
+                                        v === null ? "null" : doEncode(v));
+                                b = true;
                             }
-                            a.push(doEncode(i), ":",
-                                    v === null ? "null" : doEncode(v));
-                            b = true;
                         }
                     }
                 }
@@ -12020,12 +12271,38 @@ Ext.util.Format = function(){
 }();/**
  * @class Ext.XTemplate
  * @extends Ext.Template
- * <p>A template class that supports advanced functionality like autofilling arrays, conditional processing with
- * basic comparison operators, sub-templates, basic math function support, special built-in template variables,
- * inline code execution and more.  XTemplate also provides the templating mechanism built into {@link Ext.DataView}.</p>
- * <p>XTemplate supports many special tags and built-in operators that aren't defined as part of the API, but are
- * supported in the templates that can be created.  The following examples demonstrate all of the supported features.
- * This is the data object used for reference in each code example:</p>
+ * <p>A template class that supports advanced functionality like:<div class="mdetail-params"><ul>
+ * <li>Autofilling arrays using templates and sub-templates</li>
+ * <li>Conditional processing with basic comparison operators</li>
+ * <li>Basic math function support</li>
+ * <li>Execute arbitrary inline code with special built-in template variables</li>
+ * <li>Custom member functions</li>
+ * <li>Many special tags and built-in operators that aren't defined as part of
+ * the API, but are supported in the templates that can be created</li>
+ * </ul></div></p>
+ * <p>XTemplate provides the templating mechanism built into:<div class="mdetail-params"><ul>
+ * <li>{@link Ext.DataView}</li>
+ * <li>{@link Ext.ListView}</li>
+ * <li>{@link Ext.form.ComboBox}</li>
+ * <li>{@link Ext.grid.TemplateColumn}</li>
+ * <li>{@link Ext.grid.GroupingView}</li>
+ * <li>{@link Ext.menu.Item}</li>
+ * <li>{@link Ext.layout.MenuLayout}</li>
+ * <li>{@link Ext.ColorPalette}</li>
+ * </ul></div></p>
+ * 
+ * <p>For example usage {@link #XTemplate see the constructor}.</p>  
+ *   
+ * @constructor
+ * The {@link Ext.Template#Template Ext.Template constructor} describes
+ * the acceptable parameters to pass to the constructor. The following
+ * examples demonstrate all of the supported features.</p>
+ * 
+ * <div class="mdetail-params"><ul>
+ * 
+ * <li><b><u>Sample Data</u></b> 
+ * <div class="sub-desc">
+ * <p>This is the data object used for reference in each code example:</p>
  * <pre><code>
 var data = {
     name: 'Jack Slocum',
@@ -12049,51 +12326,127 @@ var data = {
     }]
 };
  * </code></pre>
- * <p><b>Auto filling of arrays</b><br/>The <tt>tpl</tt> tag and the <tt>for</tt> operator are used
- * to process the provided data object. If <tt>for="."</tt> is specified, the data object provided
- * is examined. If the variable in <tt>for</tt> is an array, it will auto-fill, repeating the template
- * block inside the <tt>tpl</tt> tag for each item in the array:</p>
+ * </div>
+ * </li>
+ * 
+ * 
+ * <li><b><u>Auto filling of arrays</u></b> 
+ * <div class="sub-desc">
+ * <p>The <b><tt>tpl</tt></b> tag and the <b><tt>for</tt></b> operator are used
+ * to process the provided data object:
+ * <ul>
+ * <li>If the value specified in <tt>for</tt> is an array, it will auto-fill,
+ * repeating the template block inside the <tt>tpl</tt> tag for each item in the
+ * array.</li>
+ * <li>If <tt>for="."</tt> is specified, the data object provided is examined.</li>
+ * <li>While processing an array, the special variable <tt>{#}</tt>
+ * will provide the current array index + 1 (starts at 1, not 0).</li>
+ * </ul>
+ * </p>
+ * <pre><code>
+&lt;tpl <b>for</b>=".">...&lt;/tpl>       // loop through array at root node
+&lt;tpl <b>for</b>="foo">...&lt;/tpl>     // loop through array at foo node
+&lt;tpl <b>for</b>="foo.bar">...&lt;/tpl> // loop through array at foo.bar node
+ * </code></pre>
+ * Using the sample data above:
  * <pre><code>
 var tpl = new Ext.XTemplate(
     '&lt;p>Kids: ',
-    '&lt;tpl for=".">',
-        '&lt;p>{name}&lt;/p>',
+    '&lt;tpl <b>for</b>=".">',       // process the data.kids node
+        '&lt;p>{#}. {name}&lt;/p>',  // use current array index to autonumber
     '&lt;/tpl>&lt;/p>'
 );
 tpl.overwrite(panel.body, data.kids); // pass the kids property of the data object
  * </code></pre>
- * <p><b>Scope switching</b><br/>The <tt>for</tt> property can be leveraged to access specified members
- * of the provided data object to populate the template:</p>
+ * <p>An example illustrating how the <b><tt>for</tt></b> property can be leveraged
+ * to access specified members of the provided data object to populate the template:</p>
  * <pre><code>
 var tpl = new Ext.XTemplate(
     '&lt;p>Name: {name}&lt;/p>',
     '&lt;p>Title: {title}&lt;/p>',
     '&lt;p>Company: {company}&lt;/p>',
     '&lt;p>Kids: ',
-    '&lt;tpl <b>for="kids"</b>>', // interrogate the kids property within the data
+    '&lt;tpl <b>for="kids"</b>>',     // interrogate the kids property within the data
         '&lt;p>{name}&lt;/p>',
     '&lt;/tpl>&lt;/p>'
 );
+tpl.overwrite(panel.body, data);  // pass the root node of the data object
+ * </code></pre>
+ * <p>Flat arrays that contain values (and not objects) can be auto-rendered
+ * using the special <b><tt>{.}</tt></b> variable inside a loop.  This variable
+ * will represent the value of the array at the current index:</p>
+ * <pre><code>
+var tpl = new Ext.XTemplate(
+    '&lt;p>{name}\&#39;s favorite beverages:&lt;/p>',
+    '&lt;tpl for="drinks">',
+       '&lt;div> - {.}&lt;/div>',
+    '&lt;/tpl>'
+);
 tpl.overwrite(panel.body, data);
  * </code></pre>
- * <p><b>Access to parent object from within sub-template scope</b><br/>When processing a sub-template, for example while
- * looping through a child array, you can access the parent object's members via the <tt>parent</tt> object:</p>
+ * <p>When processing a sub-template, for example while looping through a child array,
+ * you can access the parent object's members via the <b><tt>parent</tt></b> object:</p>
  * <pre><code>
 var tpl = new Ext.XTemplate(
     '&lt;p>Name: {name}&lt;/p>',
     '&lt;p>Kids: ',
     '&lt;tpl for="kids">',
-        '&lt;tpl if="age &amp;gt; 1">',  // <-- Note that the &gt; is encoded
+        '&lt;tpl if="age > 1">',
             '&lt;p>{name}&lt;/p>',
-            '&lt;p>Dad: {parent.name}&lt;/p>',
+            '&lt;p>Dad: {<b>parent</b>.name}&lt;/p>',
         '&lt;/tpl>',
     '&lt;/tpl>&lt;/p>'
 );
 tpl.overwrite(panel.body, data);
-</code></pre>
- * <p><b>Array item index and basic math support</b> <br/>While processing an array, the special variable <tt>{#}</tt>
- * will provide the current array index + 1 (starts at 1, not 0). Templates also support the basic math operators
- * + - * and / that can be applied directly on numeric data values:</p>
+ * </code></pre>
+ * </div>
+ * </li>
+ * 
+ * 
+ * <li><b><u>Conditional processing with basic comparison operators</u></b> 
+ * <div class="sub-desc">
+ * <p>The <b><tt>tpl</tt></b> tag and the <b><tt>if</tt></b> operator are used
+ * to provide conditional checks for deciding whether or not to render specific
+ * parts of the template. Notes:<div class="sub-desc"><ul>
+ * <li>Double quotes must be encoded if used within the conditional</li>
+ * <li>There is no <tt>else</tt> operator &mdash; if needed, two opposite
+ * <tt>if</tt> statements should be used.</li>
+ * </ul></div>
+ * <pre><code>
+&lt;tpl if="age &gt; 1 &amp;&amp; age &lt; 10">Child&lt;/tpl>
+&lt;tpl if="age >= 10 && age < 18">Teenager&lt;/tpl>
+&lt;tpl <b>if</b>="this.isGirl(name)">...&lt;/tpl>
+&lt;tpl <b>if</b>="id==\'download\'">...&lt;/tpl>
+&lt;tpl <b>if</b>="needsIcon">&lt;img src="{icon}" class="{iconCls}"/>&lt;/tpl>
+// no good:
+&lt;tpl if="name == "Jack"">Hello&lt;/tpl>
+// encode &#34; if it is part of the condition, e.g.
+&lt;tpl if="name == &#38;quot;Jack&#38;quot;">Hello&lt;/tpl>
+ * </code></pre>
+ * Using the sample data above:
+ * <pre><code>
+var tpl = new Ext.XTemplate(
+    '&lt;p>Name: {name}&lt;/p>',
+    '&lt;p>Kids: ',
+    '&lt;tpl for="kids">',
+        '&lt;tpl if="age > 1">',
+            '&lt;p>{name}&lt;/p>',
+        '&lt;/tpl>',
+    '&lt;/tpl>&lt;/p>'
+);
+tpl.overwrite(panel.body, data);
+ * </code></pre>
+ * </div>
+ * </li>
+ * 
+ * 
+ * <li><b><u>Basic math support</u></b> 
+ * <div class="sub-desc">
+ * <p>The following basic math operators may be applied directly on numeric
+ * data values:</p><pre>
+ * + - * /
+ * </pre>
+ * For example:
  * <pre><code>
 var tpl = new Ext.XTemplate(
     '&lt;p>Name: {name}&lt;/p>',
@@ -12108,45 +12461,26 @@ var tpl = new Ext.XTemplate(
 );
 tpl.overwrite(panel.body, data);
 </code></pre>
- * <p><b>Auto-rendering of flat arrays</b> <br/>Flat arrays that contain values (and not objects) can be auto-rendered
- * using the special <tt>{.}</tt> variable inside a loop.  This variable will represent the value of
- * the array at the current index:</p>
- * <pre><code>
-var tpl = new Ext.XTemplate(
-    '&lt;p>{name}\'s favorite beverages:&lt;/p>',
-    '&lt;tpl for="drinks">',
-       '&lt;div> - {.}&lt;/div>',
-    '&lt;/tpl>'
-);
-tpl.overwrite(panel.body, data);
-</code></pre>
- * <p><b>Basic conditional logic</b> <br/>Using the <tt>tpl</tt> tag and the <tt>if</tt>
- * operator you can provide conditional checks for deciding whether or not to render specific parts of the template.
- * Note that there is no <tt>else</tt> operator &mdash; if needed, you should use two opposite <tt>if</tt> statements.
- * Properly-encoded attributes are required as seen in the following example:</p>
- * <pre><code>
-var tpl = new Ext.XTemplate(
-    '&lt;p>Name: {name}&lt;/p>',
-    '&lt;p>Kids: ',
-    '&lt;tpl for="kids">',
-        '&lt;tpl if="age &amp;gt; 1">',  // <-- Note that the &gt; is encoded
-            '&lt;p>{name}&lt;/p>',
-        '&lt;/tpl>',
-    '&lt;/tpl>&lt;/p>'
-);
-tpl.overwrite(panel.body, data);
-</code></pre>
- * <p><b>Ability to execute arbitrary inline code</b> <br/>In an XTemplate, anything between {[ ... ]}  is considered
- * code to be executed in the scope of the template. There are some special variables available in that code:
+ * </div>
+ * </li>
+ *
+ * 
+ * <li><b><u>Execute arbitrary inline code with special built-in template variables</u></b> 
+ * <div class="sub-desc">
+ * <p>Anything between <code>{[ ... ]}</code> is considered code to be executed
+ * in the scope of the template. There are some special variables available in that code:
  * <ul>
- * <li><b><tt>values</tt></b>: The values in the current scope. If you are using scope changing sub-templates, you
- * can change what <tt>values</tt> is.</li>
+ * <li><b><tt>values</tt></b>: The values in the current scope. If you are using
+ * scope changing sub-templates, you can change what <tt>values</tt> is.</li>
  * <li><b><tt>parent</tt></b>: The scope (values) of the ancestor template.</li>
- * <li><b><tt>xindex</tt></b>: If you are in a looping template, the index of the loop you are in (1-based).</li>
- * <li><b><tt>xcount</tt></b>: If you are in a looping template, the total length of the array you are looping.</li>
+ * <li><b><tt>xindex</tt></b>: If you are in a looping template, the index of the
+ * loop you are in (1-based).</li>
+ * <li><b><tt>xcount</tt></b>: If you are in a looping template, the total length
+ * of the array you are looping.</li>
  * <li><b><tt>fm</tt></b>: An alias for <tt>Ext.util.Format</tt>.</li>
  * </ul>
- * This example demonstrates basic row striping using an inline code block and the <tt>xindex</tt> variable:</p>
+ * This example demonstrates basic row striping using an inline code block and the
+ * <tt>xindex</tt> variable:</p>
  * <pre><code>
 var tpl = new Ext.XTemplate(
     '&lt;p>Name: {name}&lt;/p>',
@@ -12159,8 +12493,13 @@ var tpl = new Ext.XTemplate(
     '&lt;/tpl>&lt;/p>'
 );
 tpl.overwrite(panel.body, data);
-</code></pre>
- * <p><b>Template member functions</b> <br/>One or more member functions can be defined directly on the config
+ * </code></pre>
+ * </div>
+ * </li>
+ * 
+ * <li><b><u>Template member functions</u></b> 
+ * <div class="sub-desc">
+ * <p>One or more member functions can be specified in a configuration
  * object passed into the XTemplate constructor for more complex processing:</p>
  * <pre><code>
 var tpl = new Ext.XTemplate(
@@ -12170,25 +12509,35 @@ var tpl = new Ext.XTemplate(
         '&lt;tpl if="this.isGirl(name)">',
             '&lt;p>Girl: {name} - {age}&lt;/p>',
         '&lt;/tpl>',
+        // use opposite if statement to simulate 'else' processing:
         '&lt;tpl if="this.isGirl(name) == false">',
             '&lt;p>Boy: {name} - {age}&lt;/p>',
         '&lt;/tpl>',
         '&lt;tpl if="this.isBaby(age)">',
             '&lt;p>{name} is a baby!&lt;/p>',
         '&lt;/tpl>',
-    '&lt;/tpl>&lt;/p>', {
-     isGirl: function(name){
-         return name == 'Sara Grace';
-     },
-     isBaby: function(age){
-        return age < 1;
-     }
-});
+    '&lt;/tpl>&lt;/p>',
+    {
+        // XTemplate configuration:
+        compiled: true,
+        disableFormats: true,
+        // member functions:
+        isGirl: function(name){
+            return name == 'Sara Grace';
+        },
+        isBaby: function(age){
+            return age < 1;
+        }
+    }
+);
 tpl.overwrite(panel.body, data);
-</code></pre>
- * @constructor
- * @param {String/Array/Object} parts The HTML fragment or an array of fragments to join(""), or multiple arguments
- * to join("") that can also include a config object
+ * </code></pre>
+ * </div>
+ * </li>
+ * 
+ * </ul></div>
+ * 
+ * @param {Mixed} config
  */
 Ext.XTemplate = function(){
     Ext.XTemplate.superclass.constructor.apply(this, arguments);
@@ -12323,7 +12672,8 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
         }
 
         function codeFn(m, code){
-            return "'"+ sep +'('+code+')'+sep+"'";
+            // Single quotes get escaped when the template is compiled, however we want to undo this when running code.
+            return "'" + sep + '(' + code.replace(/\\'/g, "'") + ')' + sep + "'";
         }
 
         // branched to use + in gecko and [].join() in others
@@ -12476,7 +12826,7 @@ Ext.util.CSS = function(){
        try{// try catch for cross domain access issue
            var ssRules = ss.cssRules || ss.rules;
            for(var j = ssRules.length-1; j >= 0; --j){
-               rules[ssRules[j].selectorText] = ssRules[j];
+               rules[ssRules[j].selectorText.toLowerCase()] = ssRules[j];
            }
        }catch(e){}
    },
@@ -12508,11 +12858,11 @@ Ext.util.CSS = function(){
    getRule : function(selector, refreshCache){
    		var rs = this.getRules(refreshCache);
    		if(!Ext.isArray(selector)){
-   		    return rs[selector];
+   		    return rs[selector.toLowerCase()];
    		}
    		for(var i = 0; i < selector.length; i++){
 			if(rs[selector[i]]){
-				return rs[selector[i]];
+				return rs[selector[i].toLowerCase()];
 			}
 		}
 		return null;
@@ -12792,15 +13142,6 @@ Ext.KeyNav.prototype = {
     forceKeyDown : false,
 
     // private
-    prepareEvent : function(e){
-        var k = e.getKey();
-        var h = this.keyToHandler[k];
-        if(Ext.isSafari2 && h && k >= 37 && k <= 40){
-            e.stopEvent();
-        }
-    },
-
-    // private
     relay : function(e){
         var k = e.getKey();
         var h = this.keyToHandler[k];
@@ -12845,38 +13186,46 @@ Ext.KeyNav.prototype = {
         27 : "esc",
         9  : "tab"
     },
+    
+    stopKeyUp: function(e) {
+        var k = e.getKey();
+
+        if (k >= 37 && k <= 40) {
+            // *** bugfix - safari 2.x fires 2 keyup events on cursor keys
+            // *** (note: this bugfix sacrifices the "keyup" event originating from keyNav elements in Safari 2)
+            e.stopEvent();
+        }
+    },
 
 	/**
 	 * Enable this KeyNav
 	 */
-	enable: function(){
-		if(this.disabled){
-            // ie won't do special keys on keypress, no one else will repeat keys with keydown
-            // the EventObject will normalize Safari automatically
-            if(this.isKeydown()){
-                this.el.on("keydown", this.relay,  this);
-            }else{
-                this.el.on("keydown", this.prepareEvent,  this);
-                this.el.on("keypress", this.relay,  this);
+	enable: function() {
+        if (this.disabled) {
+            if (Ext.isSafari2) {
+                // call stopKeyUp() on "keyup" event
+                this.el.on('keyup', this.stopKeyUp, this);
             }
-		    this.disabled = false;
-		}
-	},
+
+            this.el.on(this.isKeydown()? 'keydown' : 'keypress', this.relay, this);
+            this.disabled = false;
+        }
+    },
 
 	/**
 	 * Disable this KeyNav
 	 */
-	disable: function(){
-		if(!this.disabled){
-		    if(this.isKeydown()){
-                this.el.un("keydown", this.relay, this);
-            }else{
-                this.el.un("keydown", this.prepareEvent, this);
-                this.el.un("keypress", this.relay, this);
+	disable: function() {
+        if (!this.disabled) {
+            if (Ext.isSafari2) {
+                // remove "keyup" event handler
+                this.el.un('keyup', this.stopKeyUp, this);
             }
-		    this.disabled = true;
-		}
-	},
+
+            this.el.un(this.isKeydown()? 'keydown' : 'keypress', this.relay, this);
+            this.disabled = true;
+        }
+    },
     
     /**
      * Convenience function for setting disabled/enabled by boolean.
@@ -13261,8 +13610,8 @@ Ext.util.Cookies = {
      * Create a cookie with the specified name and value. Additional settings
      * for the cookie may be optionally specified (for example: expiration,
      * access restriction, SSL).
-     * @param {Object} name
-     * @param {Object} value
+     * @param {String} name The name of the cookie to set. 
+     * @param {Mixed} value The value to set for the cookie.
      * @param {Object} expires (Optional) Specify an expiration date the
      * cookie is to persist until.  Note that the specified Date object will
      * be converted to Greenwich Mean Time (GMT). 
@@ -13297,7 +13646,7 @@ Ext.util.Cookies = {
      * <pre><code>
      * var validStatus = Ext.util.Cookies.get("valid");
      * </code></pre>
-     * @param {Object} name The name of the cookie to get
+     * @param {String} name The name of the cookie to get
      * @return {Mixed} Returns the cookie value for the specified name;
      * null if the cookie name does not exist.
      */
@@ -13322,8 +13671,8 @@ Ext.util.Cookies = {
 
     /**
      * Removes a cookie with the provided name from the browser
-     * if found.
-     * @param {Object} name The name of the cookie to remove
+     * if found by setting its expiration date to sometime in the past. 
+     * @param {String} name The name of the cookie to remove
      */
     clear : function(name){
         if(Ext.util.Cookies.get(name)){

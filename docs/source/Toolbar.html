@@ -5,7 +5,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.ToolbarLayout"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.0.3
+ * Copyright(c) 2006-2009 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.layout.ToolbarLayout"></div>/**
  * @class Ext.layout.ToolbarLayout
  * @extends Ext.layout.ContainerLayout
  * Layout manager implicitly used by Ext.Toolbar.
@@ -188,7 +194,7 @@ Ext.layout.ToolbarLayout = Ext.extend(Ext.layout.ContainerLayout, {
     clearMenu : function(){
         var m = this.moreMenu;
         if(m && m.items){
-            this.moreMenu.items.each(function(item){
+            m.items.each(function(item){
                 delete item.menu;
             });
         }
@@ -231,6 +237,7 @@ Ext.layout.ToolbarLayout = Ext.extend(Ext.layout.ContainerLayout, {
                     scope: this
                 }
             });
+            this.moreMenu.ownerCt = this.container;
             this.more = new Ext.Button({
                 iconCls: 'x-toolbar-more-icon',
                 cls: 'x-toolbar-more',
@@ -402,6 +409,7 @@ Ext.extend(T, Ext.Container, {
                 };
             }
             this.el = ct.createChild(Ext.apply({ id: this.id },this.autoCreate), position);
+            Ext.Toolbar.superclass.onRender.apply(this, arguments);
         }
     },
 
@@ -516,7 +524,7 @@ Ext.extend(T, Ext.Container, {
      * @return {Ext.Toolbar.Item} The item
      */
     addItem : function(item){
-        return Ext.Toolbar.superclass.add.apply(this, arguments);
+        return this.add.apply(this, arguments);
     },
 
     <div id="method-Ext.Toolbar-addButton"></div>/**
@@ -771,23 +779,29 @@ new Ext.Panel({
  * @xtype tbtext
  */
 T.TextItem = Ext.extend(T.Item, {
+    <div id="cfg-Ext.Toolbar.TextItem-text"></div>/**
+     * @cfg {String} text The text to be used as innerHTML (html tags are accepted)
+     */ 
+
     constructor: function(config){
-        if (Ext.isString(config)) {
-            config = { autoEl: {cls: 'xtb-text', html: config }};
-        } else {
-            config.autoEl = {cls: 'xtb-text', html: config.text || ''};
-        }
-        T.TextItem.superclass.constructor.call(this, config);
+        T.TextItem.superclass.constructor.call(this, Ext.isString(config) ? {text: config} : config);
     },
+    
+    // private
+    onRender : function(ct, position) {
+        this.autoEl = {cls: 'xtb-text', html: this.text || ''};
+        T.TextItem.superclass.onRender.call(this, ct, position);
+    },
+    
     <div id="method-Ext.Toolbar.TextItem-setText"></div>/**
      * Updates this item's text, setting the text to be used as innerHTML.
      * @param {String} t The text to display (html accepted).
      */
     setText : function(t) {
-        if (this.rendered) {
-            this.el.dom.innerHTML = t;
-        } else {
-            this.autoEl.html = t;
+        if(this.rendered){
+            this.el.update(t);
+        }else{
+            this.text = t;
         }
     }
 });
@@ -800,6 +814,6 @@ Ext.reg('tbbutton', T.Button);
 Ext.reg('tbsplit', T.SplitButton);
 
 })();
-</pre>    
+</pre>
 </body>
 </html>

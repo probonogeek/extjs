@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.0.0
+ * Ext JS Library 3.0.3
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -42,8 +42,20 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
     defaultMargins : {left:0,top:0,right:0,bottom:0},
     /**
      * @cfg {String} padding
-     * Defaults to <tt>'0'</tt>. Sets the padding to be applied to all child items managed by this
-     * container's layout. 
+     * <p>Sets the padding to be applied to all child items managed by this layout.</p> 
+     * <p>This property must be specified as a string containing
+     * space-separated, numeric padding values. The order of the sides associated
+     * with each value matches the way CSS processes padding values:</p>
+     * <div class="mdetail-params"><ul>
+     * <li>If there is only one value, it applies to all sides.</li>
+     * <li>If there are two values, the top and bottom borders are set to the
+     * first value and the right and left are set to the second.</li>
+     * <li>If there are three values, the top is set to the first value, the left
+     * and right are set to the second, and the bottom is set to the third.</li>
+     * <li>If there are four values, they apply to the top, right, bottom, and
+     * left, respectively.</li>
+     * </ul></div>
+     * <p>Defaults to: <code>"0"</code></p>
      */
     padding : '0',
     // documented in subclasses
@@ -55,6 +67,13 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
     extraCls : 'x-box-item',
     ctCls : 'x-box-layout-ct',
     innerCls : 'x-box-inner',
+    
+    constructor : function(config){
+        Ext.layout.BoxLayout.superclass.constructor.call(this, config);
+        if(Ext.isString(this.defaultMargins)){
+            this.defaultMargins = this.parseMargins(this.defaultMargins);
+        }
+    },
 
     // private
     isValidParent : function(c, target){
@@ -78,7 +97,7 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     renderItem : function(c){
-        if(typeof c.margins == 'string'){
+        if(Ext.isString(c.margins)){
             c.margins = this.parseMargins(c.margins);
         }else if(!c.margins){
             c.margins = this.defaultMargins;
@@ -109,7 +128,9 @@ Ext.layout.BoxLayout = Ext.extend(Ext.layout.ContainerLayout, {
 /**
  * @class Ext.layout.VBoxLayout
  * @extends Ext.layout.BoxLayout
- * A layout that arranges items vertically
+ * <p>A layout that arranges items vertically down a Container. This layout optionally divides available vertical
+ * space between child items containing a numeric <code>flex</code> configuration.</p>
+ * This layout may also be used to set the widths of child items by configuring it with the {@link #align} option.
  */
 Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
     /**
@@ -157,8 +178,8 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
         
         var cs = this.getItems(ct), cm, ch, margin,
             size = this.getTargetSize(target),
-            w = size.width - target.getPadding('lr') - this.scrollOffset,
-            h = size.height - target.getPadding('tb'),
+            w = size.width - target.getPadding('lr'),
+            h = size.height - target.getPadding('tb') - this.scrollOffset,
             l = this.padding.left, t = this.padding.top,
             isStart = this.pack == 'start',
             isRestore = ['stretch', 'stretchmax'].indexOf(this.align) == -1,
@@ -264,7 +285,9 @@ Ext.Container.LAYOUTS.vbox = Ext.layout.VBoxLayout;
 /**
  * @class Ext.layout.HBoxLayout
  * @extends Ext.layout.BoxLayout
- * A layout that arranges items horizontally
+ * <p>A layout that arranges items horizontally across a Container. This layout optionally divides available horizontal
+ * space between child items containing a numeric <code>flex</code> configuration.</p>
+ * This layout may also be used to set the heights of child items by configuring it with the {@link #align} option.
  */
 Ext.layout.HBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
     /**

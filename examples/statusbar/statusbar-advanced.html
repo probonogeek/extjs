@@ -3,13 +3,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title>Advanced Ext.ux.StatusBar Example</title>
     <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
-    <script type="text/javascript" src="../../adapter/ext/ext-base.js"> </script>
-    <script type="text/javascript" src="../../ext-all.js"> </script>
-    <script type="text/javascript" src="../ux/StatusBar.js"> </script>
-
-    <link rel="stylesheet" type="text/css" href="../ux/css/StatusBar.css" />
-    <script type="text/javascript" src="ValidationStatus.js"> </script>
-    <script type="text/javascript" src="statusbar-advanced.js"> </script>
+    <link rel="stylesheet" type="text/css" href="../ux/statusbar/css/statusbar.css" />
 
     <link rel="stylesheet" type="text/css" href="../shared/examples.css" />
 
@@ -25,14 +19,22 @@
             padding:3px;
         }
     </style>
+
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"> </script>
+    <script type="text/javascript" src="../../ext-all.js"> </script>
+
+    <script type="text/javascript" src="../ux/statusbar/StatusBar.js"> </script>
+    <script type="text/javascript" src="../ux/statusbar/ValidationStatus.js"> </script>
+
+    <script type="text/javascript" src="statusbar-advanced.js"> </script>
 </head>
 <body>
     <h1>Advanced StatusBar Example</h1>
-    <p>This is an advanced example of customizing a Ext.ux.StatusBar via a plugin.</p>
+    <p>This is an advanced example of customizing the <a href="../ux/statusbar/StatusBar.js">Ext.ux.StatusBar</a> component via a plugin.</p>
     <p>Note that the js is not minified so it is readable. See <a href="statusbar-advanced.js">statusbar-advanced.js</a>.</p>
 
     <h2>Customizing the StatusBar</h2>
-    <p>The <a href="ValidationStatus.js">ValidationStatus</a> plugin hooks into the StatusBar and automatically
+    <p>The <a href="../ux/statusbar/ValidationStatus.js">ValidationStatus</a> plugin hooks into the StatusBar and automatically
     monitors the validation status of any fields in the associated FormPanel.  Items of interest:</p>
     <ul class="list">
         <li>The StatusBar syncs in real-time with the valid state of the form as you type</li>

@@ -158,6 +158,13 @@ Ext.ux.grid.BufferView = Ext.extend(Ext.grid.GridView, {
 			this.doUpdate();
 		}
 	},
+    
+    onRemove : function(ds, record, index, isUpdate){
+        Ext.ux.grid.BufferView.superclass.onRemove.apply(this, arguments);
+        if(isUpdate !== true){
+            this.update();
+        }
+    },
 
 	doUpdate: function(){
 		if (this.getVisibleRowCount() > 0) {
@@ -211,6 +218,6 @@ Ext.ux.grid.BufferView = Ext.extend(Ext.grid.GridView, {
 		this.update();
 	}
 });
-</pre>    
+</pre>
 </body>
 </html>
