@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -190,11 +190,11 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     onAdd : function(){
-        if(this.enableGrouping && !this.ignoreAdd){
+        if(this.canGroup() && !this.ignoreAdd){
             var ss = this.getScrollState();
             this.refresh();
             this.restoreScroll(ss);
-        }else if(!this.enableGrouping){
+        }else if(!this.canGroup()){
             Ext.grid.GroupingView.superclass.onAdd.apply(this, arguments);
         }
     },
@@ -228,7 +228,7 @@ var grid = new Ext.grid.GridPanel({
         }
         if((item = items.get('showGroups'))){
             item.setDisabled(disabled);
-        item.setChecked(this.enableGrouping, true);
+            item.setChecked(this.enableGrouping, true);
         }
     },
 
@@ -249,7 +249,7 @@ var grid = new Ext.grid.GridPanel({
                 this.hmenu.add({
                     itemId:'showGroups',
                     text: this.showGroupsText,
-            checked: true,
+                    checked: true,
                     checkHandler: this.onShowGroupsClick,
                     scope: this
                 });
@@ -277,10 +277,11 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     onGroupByClick : function(){
-    this.enableGrouping = true;
+        this.enableGrouping = true;
         this.grid.store.groupBy(this.cm.getDataIndex(this.hdCtxIndex));
+        this.grid.fireEvent('groupchange', this, this.grid.store.getGroupState());
         this.beforeMenuShow(); // Make sure the checkboxes get properly set when changing groups
-    this.refresh();
+        this.refresh();
     },
 
     // private
@@ -290,6 +291,7 @@ var grid = new Ext.grid.GridPanel({
             this.onGroupByClick();
         }else{
             this.grid.store.clearGrouping();
+            this.grid.fireEvent('groupchange', this, null);
         }
     },
 
@@ -299,7 +301,7 @@ var grid = new Ext.grid.GridPanel({
      * @param {Boolean} expanded (optional)
      */
     toggleRowIndex : function(rowIndex, expanded){
-        if(!this.enableGrouping){
+        if(!this.canGroup()){
             return;
         }
         var row = this.getRow(rowIndex);
@@ -373,6 +375,9 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     afterRender : function(){
+        if(!this.ds || !this.cm){
+            return;
+        }
         Ext.grid.GroupingView.superclass.afterRender.call(this);
         if(this.grid.deferRowRender){
             this.updateGroupWidths();
@@ -411,17 +416,16 @@ var grid = new Ext.grid.GridPanel({
         if(rs.length < 1){
             return '';
         }
-        var groupField = this.getGroupField(),
-            colIndex = this.cm.findColumnIndex(groupField),
-            g;
 
-        this.enableGrouping = (this.enableGrouping === false) ? false : !!groupField;
-
-        if(!this.enableGrouping || this.isUpdating){
+        if(!this.canGroup() || this.isUpdating){
             return Ext.grid.GroupingView.superclass.doRender.apply(
                     this, arguments);
         }
-        var gstyle = 'width:' + this.getTotalWidth() + ';',
+
+        var groupField = this.getGroupField(),
+            colIndex = this.cm.findColumnIndex(groupField),
+            g,
+            gstyle = 'width:' + this.getTotalWidth() + ';',
             cfg = this.cm.config[colIndex],
             groupRenderer = cfg.groupRenderer || cfg.renderer,
             prefix = this.showGroupName ? (cfg.groupName || cfg.header)+': ' : '',
@@ -488,6 +492,11 @@ var grid = new Ext.grid.GridPanel({
     },
 
     // private
+    canGroup  : function(){
+        return this.enableGrouping && !!this.getGroupField();
+    },
+
+    // private
     getPrefix: function(field){
         return this.grid.getGridEl().id + '-gp-' + field + '-';
     },
@@ -504,7 +513,7 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     getRows : function(){
-        if(!this.enableGrouping){
+        if(!this.canGroup()){
             return Ext.grid.GroupingView.superclass.getRows.call(this);
         }
         var r = [];
@@ -520,7 +529,7 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     updateGroupWidths : function(){
-        if(!this.enableGrouping || !this.hasRows()){
+        if(!this.canGroup() || !this.hasRows()){
             return;
         }
         var tw = Math.max(this.cm.getTotalWidth(), this.el.dom.offsetWidth-this.getScrollOffset()) +'px';

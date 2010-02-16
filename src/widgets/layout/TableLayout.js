@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -72,7 +72,9 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     monitorResize:false,
-    
+
+    type: 'table',
+
     targetCls: 'x-table-layout-ct',
 
     /**
@@ -84,16 +86,16 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
     layout: 'table',
     layoutConfig: {
         tableAttrs: {
-        	style: {
-        		width: '100%'
-        	}
+            style: {
+                width: '100%'
+            }
         },
         columns: 3
     }
 }</code></pre>
      */
     tableAttrs:null,
-    
+
     // private
     setContainer : function(ct){
         Ext.layout.TableLayout.superclass.setContainer.call(this, ct);
@@ -102,12 +104,14 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
         this.currentColumn = 0;
         this.cells = [];
     },
-
+    
     // private
     onLayout : function(ct, target){
         var cs = ct.items.items, len = cs.length, c, i;
 
         if(!this.table){
+            target.addClass('x-table-layout-ct');
+
             this.table = target.createChild(
                 Ext.apply({tag:'table', cls:'x-table-layout', cellspacing: 0, cn: {tag: 'tbody'}}, this.tableAttrs), null, true);
         }
@@ -154,7 +158,7 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
         this.getRow(curRow).appendChild(td);
         return td;
     },
-    
+
     // private
     getNextNonSpan: function(colIndex, rowIndex){
         var cols = this.columns;
@@ -171,6 +175,11 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     // private
     renderItem : function(c, position, target){
+        // Ensure we have our inner table to get cells to render into.
+        if(!this.table){
+            this.table = target.createChild(
+                Ext.apply({tag:'table', cls:'x-table-layout', cellspacing: 0, cn: {tag: 'tbody'}}, this.tableAttrs), null, true);
+        }
         if(c && !c.rendered){
             c.render(this.getNextCell(c));
             this.configureItem(c, position);

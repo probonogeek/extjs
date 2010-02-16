@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -824,7 +824,7 @@ El.get = function(el){
 };
 
 El.addToCache = function(el, id){
-    id = id || el.id;    
+    id = id || el.id;
     EC[id] = {
         el:  el,
         data: {},
@@ -978,9 +978,4 @@ if(Ext.isIE || Ext.isGecko){
     noBoxAdjust['button'] = 1;
 }
 
-
-Ext.EventManager.on(window, 'unload', function(){
-    delete EC;
-    delete El._flyweights;
-});
 })();

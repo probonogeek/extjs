@@ -10,7 +10,7 @@
 // for old browsers
 window.undefined = window.undefined;
 
-<div id="cls-Ext"></div>/**
+/**
  * @class Ext
  * Ext core utilities and functions.
  * @singleton
@@ -21,7 +21,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.1.0'
+    version : '3.1.1'
 };
 
 <div id="method-Ext-apply"></div>/**
@@ -55,7 +55,7 @@ Ext.apply = function(o, c, defaults){
         DOC = document,
         isStrict = DOC.compatMode == "CSS1Compat",
         isOpera = check(/opera/),
-        isChrome = check(/chrome/),
+        isChrome = check(/\bchrome\b/),
         isWebKit = check(/webkit/),
         isSafari = !isChrome && check(/safari/),
         isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
@@ -163,7 +163,11 @@ Ext.apply = function(o, c, defaults){
          * @return {String} The generated Id.
          */
         id : function(el, prefix){
-            return (el = Ext.getDom(el) || {}).id = el.id || (prefix || "ext-gen") + (++idSeed);
+            el = Ext.getDom(el, true) || {};
+            if (!el.id) {
+                el.id = (prefix || "ext-gen") + (++idSeed);
+            }
+            return el.id;
         },
 
         <div id="method-Ext-extend"></div>/**
@@ -406,7 +410,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             }
             //NodeList has an item and length property
             //IXMLDOMNodeList has nextNode method, needs to be checked first.
-            return ((v.nextNode || v.item) && Ext.isNumber(v.length));
+            return ((typeof v.nextNode != 'undefined' || v.item) && Ext.isNumber(v.length));
         },
 
         <div id="method-Ext-each"></div>/**
@@ -486,6 +490,8 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
 
         <div id="method-Ext-getDom"></div>/**
          * Return the dom node for the passed String (id), dom node, or Ext.Element.
+         * Optional 'strict' flag is needed for IE since it can return 'name' and
+         * 'id' elements by using getElementById.
          * Here are some examples:
          * <pre><code>
 // gets dom node based on id
@@ -505,11 +511,29 @@ function(el){
          * @param {Mixed} el
          * @return HTMLElement
          */
-        getDom : function(el){
+        getDom : function(el, strict){
             if(!el || !DOC){
                 return null;
             }
-            return el.dom ? el.dom : (Ext.isString(el) ? DOC.getElementById(el) : el);
+            if (el.dom){
+                return el.dom;
+            } else {
+                if (Ext.isString(el)) {
+                    var e = DOC.getElementById(el);
+                    // IE returns elements with the 'name' and 'id' attribute.
+                    // we do a strict check to return the element with only the id attribute
+                    if (e && isIE && strict) {
+                        if (el == e.getAttribute('id')) {
+                            return e;
+                        } else {
+                            return null;
+                        }
+                    }
+                    return e;
+                } else {
+                    return el;
+                }
+            }
         },
 
         <div id="method-Ext-getBody"></div>/**
@@ -774,7 +798,7 @@ Ext.ns("Ext.util", "Ext.lib", "Ext.data");
 
 Ext.elCache = {};
 
-<div id="cls-Function"></div>/**
+/**
  * @class Function
  * These functions are available on every Function object (any JavaScript function).
  */
@@ -936,7 +960,7 @@ sayHi.defer(2000, this, ['Fred']);
     }
 });
 
-<div id="cls-String"></div>/**
+/**
  * @class String
  * These functions are available on every String object.
  */

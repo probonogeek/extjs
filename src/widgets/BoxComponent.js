@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -34,6 +34,26 @@ var myImage = new Ext.BoxComponent({
  */
 Ext.BoxComponent = Ext.extend(Ext.Component, {
 
+    // Configs below are used for all Components when rendered by BoxLayout.
+    /**
+     * @cfg {Number} flex
+     * <p><b>Note</b>: this config is only used when this Component is rendered
+     * by a Container which has been configured to use a <b>{@link Ext.layout.BoxLayout BoxLayout}.</b>
+     * Each child Component with a <code>flex</code> property will be flexed either vertically (by a VBoxLayout)
+     * or horizontally (by an HBoxLayout) according to the item's <b>relative</b> <code>flex</code> value
+     * compared to the sum of all Components with <code>flex</flex> value specified. Any child items that have
+     * either a <code>flex = 0</code> or <code>flex = undefined</code> will not be 'flexed' (the initial size will not be changed).
+     */
+    // Configs below are used for all Components when rendered by AnchorLayout.
+    /**
+     * @cfg {String} anchor <p><b>Note</b>: this config is only used when this Component is rendered
+     * by a Container which has been configured to use an <b>{@link Ext.layout.AnchorLayout AnchorLayout} (or subclass thereof).</b>
+     * based layout manager, for example:<div class="mdetail-params"><ul>
+     * <li>{@link Ext.form.FormPanel}</li>
+     * <li>specifying <code>layout: 'anchor' // or 'form', or 'absolute'</code></li>
+     * </ul></div></p>
+     * <p>See {@link Ext.layout.AnchorLayout}.{@link Ext.layout.AnchorLayout#anchor anchor} also.</p>
+     */
     // tabTip config is used when a BoxComponent is a child of a TabPanel
     /**
      * @cfg {String} tabTip
@@ -298,6 +318,7 @@ var myPanel = new Ext.Panel({
                 rz.setWidth(aw);
             }
             this.onResize(aw, ah, w, h);
+            this.fireEvent('resize', this, aw, ah, w, h);
         }
         return this;
     },
@@ -496,7 +517,7 @@ var myPanel = new Ext.Panel({
             this.positionEl = Ext.get(this.positionEl);
         }
         this.boxReady = true;
-        this.setAutoScroll(this.autoScroll);
+        Ext.isDefined(this.autoScroll) && this.setAutoScroll(this.autoScroll);
         this.setSize(this.width, this.height);
         if(this.x || this.y){
             this.setPosition(this.x, this.y);
@@ -524,7 +545,6 @@ var myPanel = new Ext.Panel({
      * @param {Number} rawHeight The height that was originally specified
      */
     onResize : function(adjWidth, adjHeight, rawWidth, rawHeight){
-        this.fireEvent('resize', this, adjWidth, adjHeight, rawWidth, rawHeight);
     },
 
     /* // protected

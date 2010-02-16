@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -180,6 +180,17 @@ a.x-menu-item {
 
 .x-date-menu {
    padding:0 !important;
+}
+
+/*
+ * fixes separator visibility problem in IE 6
+ */
+.ext-strict .ext-ie6 .x-menu-sep-li {
+    padding: 3px 4px;
+}
+.ext-strict .ext-ie6 .x-menu-sep {
+    margin: 0;
+    height: 1px;
 }
 
 /*

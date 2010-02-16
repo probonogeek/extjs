@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -19,7 +19,7 @@ Ext.onReady(function(){
             Ext.example.msg('Color Selected', 'You chose {0}.', color);
         }
     });
-    
+
     var store = new Ext.data.ArrayStore({
         fields: ['abbr', 'state'],
         data : Ext.exampledata.states // from states.js
@@ -201,7 +201,7 @@ Ext.onReady(function(){
         cls: 'x-btn-icon',
         tooltip: '<b>Quick Tips</b><br/>Icon only button with tooltip'
     }, '-');
-    
+
     var scrollMenu = new Ext.menu.Menu();
     for (var i = 0; i < 50; ++i){
         scrollMenu.add({

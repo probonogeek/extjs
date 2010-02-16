@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -92,19 +92,21 @@ anchor: '-50 75%'
 
     // private
     monitorResize:true,
+    type: 'anchor',
 
-    // private
-    // deprecate
-    getAnchorViewSize : function(ct, target){
-        return target.dom == document.body ?
-                   target.getViewSize(true) : target.getStyleSize();
+    getLayoutTargetSize : function() {
+        var target = this.container.getLayoutTarget();
+        if (!target) {
+            return {};
+        }
+        // Style Sized (scrollbars not included)
+        return target.getStyleSize();
     },
 
     // private
     onLayout : function(ct, target){
         Ext.layout.AnchorLayout.superclass.onLayout.call(this, ct, target);
-
-        var size = target.getViewSize(true);
+        var size = this.getLayoutTargetSize();
 
         var w = size.width, h = size.height;
 
@@ -126,7 +128,7 @@ anchor: '-50 75%'
             ah = ct.initialConfig.height;
         }
 
-        var cs = ct.items.items, len = cs.length, i, c, a, cw, ch, el, vs;
+        var cs = this.getRenderedItems(ct), len = cs.length, i, c, a, cw, ch, el, vs;
         for(i = 0; i < len; i++){
             c = cs[i];
             el = c.getPositionEl();

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -196,12 +196,6 @@ Ext.Window = Ext.extend(Ext.Panel, {
      */
     hidden : true,
 
-    /**
-    * @cfg {Boolean} monitorResize @hide
-    * This is automatically managed based on the value of constrain and constrainToHeader
-    */
-    monitorResize : true,
-
     // The following configs are set to provide the basic functionality of a window.
     // Changing them would require additional code to handle correctly and should
     // usually only be done in subclasses that can provide custom behavior.  Changing them
@@ -311,7 +305,8 @@ Ext.Window = Ext.extend(Ext.Panel, {
                 minHeight:this.minHeight,
                 handles: this.resizeHandles || 'all',
                 pinned: true,
-                resizeElement : this.resizerAction
+                resizeElement : this.resizerAction,
+                handleCls: 'x-window-handle'
             });
             this.resizer.window = this;
             this.mon(this.resizer, 'beforeresize', this.beforeResize, this);
@@ -345,7 +340,8 @@ Ext.Window = Ext.extend(Ext.Panel, {
     },
 
    // private
-    onEsc : function(){
+    onEsc : function(k, e){
+        e.stopEvent();
         this[this.closeAction]();
     },
 
@@ -437,6 +433,7 @@ Ext.Window = Ext.extend(Ext.Panel, {
         this.focus();
         this.updateHandles();
         this.saveState();
+        this.doLayout();
     },
 
     /**
@@ -527,6 +524,9 @@ Ext.Window = Ext.extend(Ext.Panel, {
 
     // private
     afterShow : function(isAnim){
+        if (this.isDestroyed){
+            return false;
+        }
         this.proxy.hide();
         this.el.setStyle('display', 'block');
         this.el.show();
@@ -888,7 +888,6 @@ Ext.Window = Ext.extend(Ext.Panel, {
           Ext.EventManager.on(window, 'scroll', this.doAnchor, this,
               {buffer: tm == 'number' ? monitorScroll : 50});
       }
-      this.doAnchor();
       return this;
     },
 

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -91,9 +91,32 @@ Ext.grid.PropertyStore = Ext.extend(Ext.util.Observable, {
     },
 
     // private
-    setValue : function(prop, value){
-        this.source[prop] = value;
-        this.store.getById(prop).set('value', value);
+    setValue : function(prop, value, create){
+        var r = this.getRec(prop);
+        if(r){
+            r.set('value', value);
+            this.source[prop] = value;
+        }else if(create){
+            // only create if specified.
+            this.source[prop] = value;
+            r = new Ext.grid.PropertyRecord({name: prop, value: value}, prop);
+            this.store.add(r);
+
+        }
+    },
+    
+    // private
+    remove : function(prop){
+        var r = this.getRec(prop);
+        if(r){
+            this.store.remove(r);
+            delete this.source[prop];
+        }
+    },
+    
+    // private
+    getRec : function(prop){
+        return this.store.getById(prop);
     },
 
     // protected - should only be called by the grid.  Use grid.getSource instead.
@@ -115,6 +138,8 @@ Ext.grid.PropertyColumnModel = Ext.extend(Ext.grid.ColumnModel, {
     nameText : 'Name',
     valueText : 'Value',
     dateFormat : 'm/j/Y',
+    trueText: 'true',
+    falseText: 'false',
     
     constructor : function(grid, store){
         var g = Ext.grid,
@@ -129,8 +154,8 @@ Ext.grid.PropertyColumnModel = Ext.extend(Ext.grid.ColumnModel, {
 	
 	    var bfield = new f.Field({
 	        autoCreate: {tag: 'select', children: [
-	            {tag: 'option', value: 'true', html: 'true'},
-	            {tag: 'option', value: 'false', html: 'false'}
+	            {tag: 'option', value: 'true', html: this.trueText},
+	            {tag: 'option', value: 'false', html: this.falseText}
 	        ]},
 	        getValue : function(){
 	            return this.el.dom.value == 'true';
@@ -155,7 +180,7 @@ Ext.grid.PropertyColumnModel = Ext.extend(Ext.grid.ColumnModel, {
 
     // private
     renderBool : function(bVal){
-        return bVal ? 'true' : 'false';
+        return this[bVal ? 'trueText' : 'falseText'];
     },
 
     // private
@@ -175,7 +200,11 @@ Ext.grid.PropertyColumnModel = Ext.extend(Ext.grid.ColumnModel, {
     },
 
     // private
-    renderCell : function(val){
+    renderCell : function(val, meta, rec){
+        var renderer = this.grid.customRenderers[rec.get('name')];
+        if(renderer){
+            return renderer.apply(this, arguments);
+        }
         var rv = val;
         if(Ext.isDate(val)){
             rv = this.renderDate(val);
@@ -269,6 +298,33 @@ var grid = new Ext.grid.PropertyGrid({
 });
 </code></pre>
     */
+    /**
+    * @cfg {Object} source A data object to use as the data source of the grid (see {@link #setSource} for details).
+    */
+    /**
+    * @cfg {Object} customRenderers An object containing name/value pairs of custom renderer type definitions that allow
+    * the grid to support custom rendering of fields.  By default, the grid supports strongly-typed rendering
+    * of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and
+    * associated with the type of the value.  The name of the renderer type should correspond with the name of the property
+    * that it will render.  Example usage:
+    * <pre><code>
+var grid = new Ext.grid.PropertyGrid({
+    ...
+    customRenderers: {
+        Available: function(v){
+            if(v){
+                return '<span style="color: green;">Yes</span>';
+            }else{
+                return '<span style="color: red;">No</span>';
+            }
+        }
+    },
+    source: {
+        Available: true
+    }
+});
+</code></pre>
+    */
 
     // private config overrides
     enableColumnMove:false,
@@ -282,6 +338,7 @@ var grid = new Ext.grid.PropertyGrid({
 
     // private
     initComponent : function(){
+        this.customRenderers = this.customRenderers || {};
         this.customEditors = this.customEditors || {};
         this.lastEditRow = null;
         var store = new Ext.grid.PropertyStore(this);
@@ -366,6 +423,24 @@ grid.setSource({
      */
     getSource : function(){
         return this.propStore.getSource();
+    },
+    
+    /**
+     * Sets the value of a property.
+     * @param {String} prop The name of the property to set
+     * @param {Mixed} value The value to test
+     * @param {Boolean} create (Optional) True to create the property if it doesn't already exist. Defaults to <tt>false</tt>.
+     */
+    setProperty : function(prop, value, create){
+        this.propStore.setValue(prop, value, create);    
+    },
+    
+    /**
+     * Removes a property from the grid.
+     * @param {String} prop The name of the property to remove
+     */
+    removeProperty : function(prop){
+        this.propStore.remove(prop);
     }
 
     /**

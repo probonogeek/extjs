@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -58,7 +58,7 @@ Ext.apply(Ext, function(){
          * @return {Number} Value, if numeric, else defaultValue
          */
         num : function(v, defaultValue){
-            v = Number(Ext.isEmpty(v) || Ext.isBoolean(v) ? NaN : v);
+            v = Number(Ext.isEmpty(v) || Ext.isArray(v) || Ext.isBoolean(v) || (Ext.isString(v) && v.trim().length == 0) ? NaN : v);
             return isNaN(v) ? defaultValue : v;
         },
 
@@ -332,7 +332,7 @@ ImageComponent = Ext.extend(Ext.BoxComponent, {
          * @return {Number} The mean.
          */
         mean : function(arr){
-           return Ext.sum(arr) / arr.length;
+           return arr.length > 0 ? Ext.sum(arr) / arr.length : undefined;
         },
 
         /**

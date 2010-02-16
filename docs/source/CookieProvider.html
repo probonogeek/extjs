@@ -60,15 +60,13 @@ Ext.extend(Ext.state.CookieProvider, Ext.state.Provider, {
 
     // private
     readCookies : function(){
-        var cookies = {},
-            c = document.cookie + ";",
-            re = /\s?(.*?)=(.*?);/g,
-    	    matches,
-            name, value;
-            
+        var cookies = {};
+        var c = document.cookie + ";";
+        var re = /\s?(.*?)=(.*?);/g;
+    	var matches;
     	while((matches = re.exec(c)) != null){
-            name = matches[1];
-            value = matches[2];
+            var name = matches[1];
+            var value = matches[2];
             if(name && name.substring(0,3) == "ys-"){
                 cookies[name.substr(3)] = this.decodeValue(value);
             }

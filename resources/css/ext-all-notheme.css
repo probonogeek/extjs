@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -97,6 +97,7 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
     zoom: 1;
     background-color: transparent;
     -moz-outline: none;
+    outline: none;
 }
 
 .x-item-disabled {
@@ -637,9 +638,20 @@ ul.x-tab-strip li.x-tab-edge {
 /*
  * Horrible hack for IE8 in quirks mode
  */
-.ext-border-box .ext-ie8 .x-tab-strip .x-tab-right{
+.ext-ie8 ul.x-tab-strip li {
+    position: relative;
+}
+.ext-ie8 .x-tab-strip .x-tab-right{
+    margin-bottom: 0 !important;
     top: 1px;
 }
+.ext-ie8 ul.x-tab-strip-top {
+    padding-top: 0;
+}
+.ext-ie8 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
+    top:4px;
+}
+
 
 .x-tab-strip-top .x-tab-strip-active .x-tab-right span.x-tab-strip-text {
     padding-bottom:5px;
@@ -700,14 +712,15 @@ ul.x-tab-strip li.x-tab-edge {
 }
 
 .x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
-	background: no-repeat bottom left;
-}
-
-.x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
 	background: no-repeat bottom right;
 }
 
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
+	background: no-repeat bottom left;
+}
+
 .x-tab-strip-bottom .x-tab-left {
+    margin-right: 3px;
     padding:0 10px;
 }
 
@@ -1343,7 +1356,7 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
     margin-left:-3px;
 }
 
-/* IE legend positioing bug */
+/* IE legend positioning bug */
 .ext-ie .x-fieldset-noborder legend {
     position: relative;
     margin-bottom:23px;
@@ -1355,11 +1368,13 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
         
 .ext-gecko .x-window-body .x-form-item {
     -moz-outline: none;
+    outline: none;
     overflow: auto;
 }
 
 .ext-gecko .x-form-item {
     -moz-outline: none;
+    outline: none;
 }
 
 .x-hide-label label.x-form-item-label {
@@ -2090,6 +2105,7 @@ div.x-toolbar-no-items {
 
 .x-grid3-hd-row td, .x-grid3-row td, .x-grid3-summary-row td{
     -moz-outline: none;
+    outline: none;
 	-moz-user-focus: normal;
 }
 
@@ -2502,10 +2518,18 @@ a.x-grid3-hd-btn:hover {
 }
 
 .x-grid3-hd-checker {
+    background-position:2px 1px;
+}
+
+.ext-border-box .x-grid3-hd-checker {
     background-position:2px 3px;
 }
 
 .x-grid3-hd-checker-on .x-grid3-hd-checker {
+    background-position:-23px 1px;
+}
+
+.ext-border-box .x-grid3-hd-checker-on .x-grid3-hd-checker {
     background-position:-23px 3px;
 }
 
@@ -3156,7 +3180,7 @@ td.x-date-mp-sep {
 	top: 0;
     left:0;
     visibility: hidden;
-	z-index: 20000;
+	z-index: 20002;
     border:0 none;
 }
 
@@ -3476,6 +3500,17 @@ a.x-menu-item {
 }
 
 /*
+ * fixes separator visibility problem in IE 6
+ */
+.ext-strict .ext-ie6 .x-menu-sep-li {
+    padding: 3px 4px;
+}
+.ext-strict .ext-ie6 .x-menu-sep {
+    margin: 0;
+    height: 1px;
+}
+
+/*
  * Ugly mess to remove the white border under the picker
  */
 .ext-ie .x-date-menu{
@@ -3517,8 +3552,7 @@ a.x-menu-item {
 
 .x-menu-list-item-indent{
     padding-left: 27px;
-}
-/*
+}/*
  Creates rounded, raised boxes like on the Ext website - the markup isn't pretty:
   <div class="x-box-blue">
         <div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>
@@ -4196,7 +4230,7 @@ a.x-menu-item {
     zoom:1;
 }
 
-.x-window .x-resizable-handle {
+.x-window .x-window-handle {
     opacity:0;
     -moz-opacity:0;
     filter:alpha(opacity=0);
@@ -4357,7 +4391,7 @@ a.x-menu-item {
     overflow:hidden;
 }
 
-.x-window-maximized .x-resizable-handle {
+.x-window-maximized .x-window-handle {
     display:none;
 }
 

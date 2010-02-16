@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -100,7 +100,7 @@
 }
 
 .ext-webkit .x-small-editor .x-form-field {
-    font:normal 12px arial, tahoma, helvetica, sans-serif;
+    font:normal 11px arial, tahoma, helvetica, sans-serif;
 }
 
 .x-form-invalid-icon {

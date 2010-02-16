@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -39,14 +39,16 @@
  * @constructor
  * @param {Object} config
  */
-Ext.data.DirectStore = function(c){
-    // each transaction upon a singe record will generatie a distinct Direct transaction since Direct queues them into one Ajax request.
-    c.batchTransactions = false;
-
-    Ext.data.DirectStore.superclass.constructor.call(this, Ext.apply(c, {
-        proxy: (typeof(c.proxy) == 'undefined') ? new Ext.data.DirectProxy(Ext.copyTo({}, c, 'paramOrder,paramsAsHash,directFn,api')) : c.proxy,
-        reader: (typeof(c.reader) == 'undefined' && typeof(c.fields) == 'object') ? new Ext.data.JsonReader(Ext.copyTo({}, c, 'totalProperty,root,idProperty'), c.fields) : c.reader
-    }));
-};
-Ext.extend(Ext.data.DirectStore, Ext.data.Store, {});
+Ext.data.DirectStore = Ext.extend(Ext.data.Store, {
+    constructor : function(config){
+        // each transaction upon a singe record will generate a distinct Direct transaction since Direct queues them into one Ajax request.
+        var c = Ext.apply({}, {
+            batchTransactions: false
+        }, config);
+        Ext.data.DirectStore.superclass.constructor.call(this, Ext.apply(c, {
+            proxy: Ext.isDefined(c.proxy) ? c.proxy : new Ext.data.DirectProxy(Ext.copyTo({}, c, 'paramOrder,paramsAsHash,directFn,api')),
+            reader: (!Ext.isDefined(c.reader) && c.fields) ? new Ext.data.JsonReader(Ext.copyTo({}, c, 'totalProperty,root,idProperty'), c.fields) : c.reader
+        }));
+    }
+});
 Ext.reg('directstore', Ext.data.DirectStore);

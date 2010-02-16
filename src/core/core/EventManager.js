@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -68,7 +68,7 @@ Ext.EventManager = function(){
      };
 
     /// There is some jquery work around stuff here that isn't needed in Ext Core.
-    function addListener(el, ename, fn, wrap, scope){
+    function addListener(el, ename, fn, task, wrap, scope){
         el = Ext.getDom(el);
         var id = getId(el),
             es = Ext.elCache[id].events,
@@ -76,18 +76,29 @@ Ext.EventManager = function(){
 
         wfn = E.on(el, ename, wrap);
         es[ename] = es[ename] || [];
-        es[ename].push([fn, wrap, scope, wfn]);
+
+        /* 0 = Original Function,
+           1 = Event Manager Wrapped Function,
+           2 = Scope,
+           3 = Adapter Wrapped Function,
+           4 = Buffered Task
+        */
+        es[ename].push([fn, wrap, scope, wfn, task]);
 
         // this is a workaround for jQuery and should somehow be removed from Ext Core in the future
         // without breaking ExtJS.
-        if(ename == "mousewheel" && el.addEventListener){ // workaround for jQuery
+
+        // workaround for jQuery
+        if(el.addEventListener && ename == "mousewheel"){
             var args = ["DOMMouseScroll", wrap, false];
             el.addEventListener.apply(el, args);
             Ext.EventManager.addListener(WINDOW, 'unload', function(){
                 el.removeEventListener.apply(el, args);
             });
         }
-        if(ename == "mousedown" && el == document){ // fix stopped mousedowns on the document
+
+        // fix stopped mousedowns on the document
+        if(el == DOC && ename == "mousedown"){
             Ext.EventManager.stoppedMouseDownEvent.addListener(wrap);
         }
     };
@@ -148,13 +159,11 @@ Ext.EventManager = function(){
         };
     };
 
-    function createBuffered(h, o, fn){
-        fn.task = new Ext.util.DelayedTask(h);
-        var w = function(e){
+    function createBuffered(h, o, task){
+        return function(e){
             // create new event object impl so new events don't wipe out properties
-            fn.task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
+            task.delay(o.buffer, h, null, [new Ext.EventObjectImpl(e)]);
         };
-        return w;
     };
 
     function createSingle(h, el, ename, fn, scope){
@@ -177,7 +186,7 @@ Ext.EventManager = function(){
 
     function listen(element, ename, opt, fn, scope){
         var o = !Ext.isObject(opt) ? {} : opt,
-            el = Ext.getDom(element);
+            el = Ext.getDom(element), task;
 
         fn = fn || o.fn;
         scope = scope || o.scope;
@@ -224,10 +233,11 @@ Ext.EventManager = function(){
             h = createSingle(h, el, ename, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o, fn);
+            task = new Ext.util.DelayedTask(h);
+            h = createBuffered(h, o, task);
         }
 
-        addListener(el, ename, fn, h, scope);
+        addListener(el, ename, fn, task, h, scope);
         return h;
     };
 
@@ -295,13 +305,19 @@ Ext.EventManager = function(){
             el = Ext.getDom(el);
             var id = getId(el),
                 f = el && (Ext.elCache[id].events)[eventName] || [],
-                wrap, i, l, k, wf;
+                wrap, i, l, k, len, fnc;
 
             for (i = 0, len = f.length; i < len; i++) {
-                if (Ext.isArray(f[i]) && f[i][0] == fn && (!scope || f[i][2] == scope)) {
-                    if(fn.task) {
-                        fn.task.cancel();
-                        delete fn.task;
+
+                /* 0 = Original Function,
+                   1 = Event Manager Wrapped Function,
+                   2 = Scope,
+                   3 = Adapter Wrapped Function,
+                   4 = Buffered Task
+                */
+                if (Ext.isArray(fnc = f[i]) && fnc[0] == fn && (!scope || fnc[2] == scope)) {
+                    if(fnc[4]) {
+                        fnc[4].cancel();
                     }
                     k = fn.tasks && fn.tasks.length;
                     if(k) {
@@ -310,12 +326,20 @@ Ext.EventManager = function(){
                         }
                         delete fn.tasks;
                     }
-                    wf = wrap = f[i][1];
-                    if (E.extAdapter) {
-                        wf = f[i][3];
+                    wrap = fnc[1];
+                    E.un(el, eventName, E.extAdapter ? fnc[3] : wrap);
+
+                    // jQuery workaround that should be removed from Ext Core
+                    if(wrap && el.addEventListener && eventName == "mousewheel"){
+                        el.removeEventListener("DOMMouseScroll", wrap, false);
                     }
-                    E.un(el, eventName, wf);
-                    f.splice(i,1);
+
+                    // fix stopped mousedowns on the document
+                    if(wrap && el == DOC && eventName == "mousedown"){
+                        Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
+                    }
+
+                    f.splice(i, 1);
                     if (f.length === 0) {
                         delete Ext.elCache[id].events[eventName];
                     }
@@ -325,15 +349,6 @@ Ext.EventManager = function(){
                     Ext.elCache[id].events = {};
                     return false;
                 }
-            }
-
-            // jQuery workaround that should be removed from Ext Core
-            if(eventName == "mousewheel" && el.addEventListener && wrap){
-                el.removeEventListener("DOMMouseScroll", wrap, false);
-            }
-
-            if(eventName == "mousedown" && el == DOC && wrap){ // fix stopped mousedowns on the document
-                Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
             }
         },
 
@@ -347,24 +362,40 @@ Ext.EventManager = function(){
             var id = getId(el),
                 ec = Ext.elCache[id] || {},
                 es = ec.events || {},
-                f, i, len, ename, fn, k;
+                f, i, len, ename, fn, k, wrap;
 
             for(ename in es){
                 if(es.hasOwnProperty(ename)){
                     f = es[ename];
+                    /* 0 = Original Function,
+                       1 = Event Manager Wrapped Function,
+                       2 = Scope,
+                       3 = Adapter Wrapped Function,
+                       4 = Buffered Task
+                    */
                     for (i = 0, len = f.length; i < len; i++) {
-                        fn = f[i][0];
-                        if(fn.task) {
-                            fn.task.cancel();
-                            delete fn.task;
+                        fn = f[i];
+                        if(fn[4]) {
+                            fn[4].cancel();
                         }
-                        if(fn.tasks && (k = fn.tasks.length)) {
+                        if(fn[0].tasks && (k = fn[0].tasks.length)) {
                             while(k--) {
-                                fn.tasks[k].cancel();
+                                fn[0].tasks[k].cancel();
                             }
                             delete fn.tasks;
                         }
-                        E.un(el, ename, E.extAdapter ? f[i][3] : f[i][1]);
+                        wrap =  fn[1];
+                        E.un(el, ename, E.extAdapter ? fn[3] : wrap);
+
+                        // jQuery workaround that should be removed from Ext Core
+                        if(el.addEventListener && wrap && ename == "mousewheel"){
+                            el.removeEventListener("DOMMouseScroll", wrap, false);
+                        }
+
+                        // fix stopped mousedowns on the document
+                        if(wrap && el == DOC &&  ename == "mousedown"){
+                            Ext.EventManager.stoppedMouseDownEvent.removeListener(wrap);
+                        }
                     }
                 }
             }
@@ -414,6 +445,8 @@ Ext.EventManager = function(){
             for (el in Ext.elCache) {
                 Ext.EventManager.removeAll(el);
             }
+            delete Ext.elCache;
+            delete Ext.Element._flyweights;
         },
         /**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
@@ -752,4 +785,3 @@ Ext.EventObject = function(){
 
     return new Ext.EventObjectImpl();
 }();
-

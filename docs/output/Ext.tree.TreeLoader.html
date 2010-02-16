@@ -90,16 +90,15 @@ Ext.DomObserver = Ext.extend(Object, {
     triggerAction: <em>'all'</em>
 });</code></pre></p></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#listeners" ext:member="#listeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.tree.TreeLoader-nodeParameter"></a><b><a href="source/TreeLoader.html#cfg-Ext.tree.TreeLoader-nodeParameter">nodeParameter</a></b> : String<div class="mdesc">The name of the parameter sent to the server which contains
 the identifier of the node. Defaults to <tt>'node'</tt>.</div></td><td class="msource">TreeLoader</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.tree.TreeLoader-paramOrder"></a><b><a href="source/TreeLoader.html#cfg-Ext.tree.TreeLoader-paramOrder">paramOrder</a></b> : Array/String<div class="mdesc"><div class="short">Defaults to undefined. Only used when using directFn.&#13;
-A list of params to be executed&#13;
-server side.  Specify the par...</div><div class="long">Defaults to <tt>undefined</tt>. Only used when using directFn.
-A list of params to be executed
-server side.  Specify the params in the order in which they must be executed on the server-side
+Specifies the params in the order in which they must be passed...</div><div class="long">Defaults to <tt>undefined</tt>. Only used when using directFn.
+Specifies the params in the order in which they must be passed to the server-side Direct method
 as either (1) an Array of String values, or (2) a String of params delimited by either whitespace,
 comma, or pipe. For example,
-any of the following would be acceptable:<pre><code>paramOrder: [<em>'param1'</em>,<em>'param2'</em>,<em>'param3'</em>]
-paramOrder: <em>'param1 param2 param3'</em>
-paramOrder: <em>'param1,param2,param3'</em>
-paramOrder: <em>'param1|param2|param'</em></code></pre></div></div></td><td class="msource">TreeLoader</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.tree.TreeLoader-paramsAsHash"></a><b><a href="source/TreeLoader.html#cfg-Ext.tree.TreeLoader-paramsAsHash">paramsAsHash</a></b> : Boolean<div class="mdesc"><div class="short">Only used when using directFn.&#13;
+any of the following would be acceptable:<pre><code>nodeParameter: <em>'node'</em>,
+paramOrder: [<em>'param1'</em>,<em>'param2'</em>,<em>'param3'</em>]
+paramOrder: <em>'node param1 param2 param3'</em>
+paramOrder: <em>'param1,node,param2,param3'</em>
+paramOrder: <em>'param1|param2|param|node'</em></code></pre></div></div></td><td class="msource">TreeLoader</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.tree.TreeLoader-paramsAsHash"></a><b><a href="source/TreeLoader.html#cfg-Ext.tree.TreeLoader-paramsAsHash">paramsAsHash</a></b> : Boolean<div class="mdesc"><div class="short">Only used when using directFn.&#13;
 Send parameters as a collection of named arguments (defaults to false). Providing a&#13;
 ...</div><div class="long">Only used when using directFn.
 Send parameters as a collection of named arguments (defaults to <tt>false</tt>). Providing a
@@ -232,7 +231,7 @@ by calling <a href="output/Ext.util.Observable.html#Ext.util.Observable-enableBu
                                         void<div class="mdesc"><div class="short">Load an Ext.tree.TreeNode from the URL specified in the constructor.&#13;
 This is called automatically when a node is exp...</div><div class="long">Load an <a href="output/Ext.tree.TreeNode.html" ext:cls="Ext.tree.TreeNode">Ext.tree.TreeNode</a> from the URL specified in the constructor.
 This is called automatically when a node is expanded, but may be used to reload
-a node (or append new children if the <a href="output/Ext.tree.TreeLoader.html#Ext.tree.TreeLoader-clearOnLoad" ext:member="clearOnLoad" ext:cls="Ext.tree.TreeLoader">clearOnLoad</a> option is false.)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>node</code> : Ext.tree.TreeNode<div class="sub-desc"></div></li><li><code>callback</code> : Function<div class="sub-desc">Function to call after the node has been loaded. The 
+a node (or append new children if the <a href="output/Ext.tree.TreeLoader.html#Ext.tree.TreeLoader-clearOnLoad" ext:member="clearOnLoad" ext:cls="Ext.tree.TreeLoader">clearOnLoad</a> option is false.)<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>node</code> : Ext.tree.TreeNode<div class="sub-desc"></div></li><li><code>callback</code> : Function<div class="sub-desc">Function to call after the node has been loaded. The
 function is passed the TreeNode which was requested to be loaded.</div></li><li><code>scope</code> : (Object)<div class="sub-desc">The cope (<code>this</code> reference) in which the callback is executed.
 defaults to the loaded TreeNode.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">TreeLoader</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-on"></a><b><a href="source/Observable.html#method-Ext.util.Observable-on">on</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
     :

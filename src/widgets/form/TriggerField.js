@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -83,8 +83,6 @@ Ext.form.TriggerField = Ext.extend(Ext.form.TextField,  {
 
     actionMode: 'wrap',
 
-    removeMode: 'container',
-
     defaultTriggerWidth: 17,
 
     // private
@@ -125,7 +123,6 @@ Ext.form.TriggerField = Ext.extend(Ext.form.TextField,  {
             this.wrap.setWidth(this.el.getWidth()+this.trigger.getWidth());
         }
         this.resizeEl = this.positionEl = this.wrap;
-        this.updateEditState();
     },
 
     updateEditState: function(){
@@ -188,6 +185,7 @@ Ext.form.TriggerField = Ext.extend(Ext.form.TextField,  {
 
     afterRender : function(){
         Ext.form.TriggerField.superclass.afterRender.call(this);
+        this.updateEditState();
     },
 
     // private

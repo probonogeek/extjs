@@ -117,7 +117,7 @@ Ext.form.FieldSet = Ext.extend(Ext.Panel, {
             this.el = document.createElement('fieldset');
             this.el.id = this.id;
             if (this.title || this.header || this.checkboxToggle) {
-                this.el.appendChild(document.createElement('legend')).className = 'x-fieldset-header';
+                this.el.appendChild(document.createElement('legend')).className = this.baseCls + '-header';
             }
         }
 

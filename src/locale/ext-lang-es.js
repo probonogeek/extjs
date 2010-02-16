@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /*
  * Spanish/Latin American Translation by genius551v 04-08-2007
  * Revised by efege, 2007-04-15.

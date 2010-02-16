@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -515,7 +515,7 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
     margin-left:-3px;
 }
 
-/* IE legend positioing bug */
+/* IE legend positioning bug */
 .ext-ie .x-fieldset-noborder legend {
     position: relative;
     margin-bottom:23px;
@@ -527,11 +527,13 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
         
 .ext-gecko .x-window-body .x-form-item {
     -moz-outline: none;
+    outline: none;
     overflow: auto;
 }
 
 .ext-gecko .x-form-item {
     -moz-outline: none;
+    outline: none;
 }
 
 .x-hide-label label.x-form-item-label {

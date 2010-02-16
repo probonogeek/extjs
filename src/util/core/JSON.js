@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -116,6 +116,18 @@ Ext.util.JSON = new (function(){
                 return a.join("");
         };
 
+    /**
+     * <p>Encodes a Date. This returns the actual string which is inserted into the JSON string as the literal expression.
+     * <b>The returned value includes enclosing double quotation marks.</b></p>
+     * <p>The default return format is "yyyy-mm-ddThh:mm:ss".</p>
+     * <p>To override this:</p><pre><code>
+Ext.util.JSON.encodeDate = function(d) {
+    return d.format('"Y-m-d"');
+};
+</code></pre>
+     * @param {Date} d The Date to encode
+     * @return {String} The string literal to use in a JSON string.
+     */
     this.encodeDate = function(o){
         return '"' + o.getFullYear() + "-" +
                 pad(o.getMonth() + 1) + "-" +

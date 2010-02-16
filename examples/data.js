@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -15,20 +15,10 @@ Ext.samples.samplesCatalog = [{
         icon: 'feeds.gif',
         desc: 'RSS feed reader example application that features a swappable reader panel layout.'
     },{
-        text: 'Simple Tasks',
-        url:  'http://extjs.com/blog/2008/02/24/tasks2/',
-        icon: 'air.gif',
-        desc: 'Complete personal task management application example that runs on <a href="http://labs.adobe.com/technologies/air/" target="_blank">Adobe AIR</a>.'
-    },{
-        text: 'Simple Tasks',
-        url:  'tasks/tasks.html',
-        icon: 'tasks.gif',
-        desc: 'Personal task management application example that uses <a href="http://gears.google.com" target="_blank">Google Gears</a> for data storage.'
-    },{
-        text: 'Image Viewer',
-        url:  'organizer/organizer.html',
-        icon: 'organizer.gif',
-        desc: 'DataView and TreePanel example that demonstrates dragging data items from a DataView into a TreePanel.'
+        text: 'Web Desktop',
+        url:  'desktop/desktop.html',
+        icon: 'desktop.gif',
+        desc: 'Demonstrates how one could build a desktop in the browser using Ext components including a module plugin system.'
     }/*,{
         text: 'Image Organizer',
         url:  'image-organizer/index.html',
@@ -48,10 +38,23 @@ Ext.samples.samplesCatalog = [{
         desc: 'Ext JS online forums browser application.',
         status: 'modified'
     },{
-        text: 'Web Desktop',
-        url:  'desktop/desktop.html',
-        icon: 'desktop.gif',
-        desc: 'Demonstrates how one could build a desktop in the browser using Ext components including a module plugin system.'
+        text: 'Image Viewer',
+        url:  'organizer/organizer.html',
+        icon: 'organizer.gif',
+        desc: 'DataView and TreePanel example that demonstrates dragging data items from a DataView into a TreePanel.'
+    }]
+},{
+    title: 'Offline Support',
+    samples: [{
+        text: 'Simple Tasks',
+        url:  'tasks/tasks.html',
+        icon: 'tasks.gif',
+        desc: 'Personal task management application example that uses <a href="http://gears.google.com" target="_blank">Google Gears</a> for data storage.'
+    },{
+        text: 'Simple Tasks',
+        url:  'http://extjs.com/blog/2008/02/24/tasks2/',
+        icon: 'air.gif',
+        desc: 'Complete personal task management application example that runs on <a href="http://labs.adobe.com/technologies/air/" target="_blank">Adobe AIR</a>.'
     }]
 },{
     title: 'Accessibility',
@@ -59,7 +62,7 @@ Ext.samples.samplesCatalog = [{
         text: 'Key Feed Viewer',
         url:  'key-feed-viewer/view.html',
         icon: 'keyboard.gif',
-        desc: 'Keyboard navigation within a complex layout',
+        desc: 'Keyboard navigation within a complex layout.',
         status: 'experimental'
     },{
         text: 'ARIA Tree',
@@ -67,6 +70,17 @@ Ext.samples.samplesCatalog = [{
         icon: 'acc-tree.gif',
         desc: 'Demonstrating ARIA with a TreePanel',
         status: 'experimental'
+    },{
+        text: 'Custom Search Fields',
+        url: 'form/custom-access.html',
+        icon: 'form-custom-access.gif',
+        desc: 'A TriggerField search extension combined with an XTemplate for custom results rendering. Uses the Accessibility theme.'
+    },{
+        text: 'Binding a Grid to a Form',
+        url:  'form/form-grid-access.html',
+        icon: 'form-grid-binding-access.gif',
+        desc: 'A grid embedded within a FormPanel that uses the Accessibility theme.'
+
     }]
 },{
     title: 'Grids',

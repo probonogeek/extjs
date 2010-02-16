@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -75,6 +75,18 @@ Ext.ComponentMgr = function(){
         all : all,
         
         /**
+         * The xtypes that have been registered with the component manager.
+         * @type {Object}
+         */
+        types : types,
+        
+        /**
+         * The ptypes that have been registered with the component manager.
+         * @type {Object}
+         */
+        ptypes: ptypes,
+        
+        /**
          * Checks if a Component type is registered.
          * @param {Ext.Component} xtype The mnemonic string by which the Component class may be looked up
          * @return {Boolean} Whether the type is registered.
@@ -82,6 +94,15 @@ Ext.ComponentMgr = function(){
         isRegistered : function(xtype){
             return types[xtype] !== undefined;    
         },
+        
+        /**
+         * Checks if a Plugin type is registered.
+         * @param {Ext.Component} ptype The mnemonic string by which the Plugin class may be looked up
+         * @return {Boolean} Whether the type is registered.
+         */
+        isPluginRegistered : function(ptype){
+            return ptypes[ptype] !== undefined;    
+        },        
 
         /**
          * <p>Registers a new Component constructor, keyed by a new

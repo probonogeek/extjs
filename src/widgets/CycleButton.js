@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -97,7 +97,7 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
             }
             this.activeItem = item;
             if(!item.checked){
-                item.setChecked(true, true);
+                item.setChecked(true, false);
             }
             if(this.forceIcon){
                 this.setIconClass(this.forceIcon);
@@ -138,7 +138,7 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
         this.itemCount = this.items.length;
 
         this.menu = {cls:'x-cycle-menu', items:[]};
-        var checked;
+        var checked = 0;
         Ext.each(this.items, function(item, i){
             Ext.apply(item, {
                 group: item.group || this.id,
@@ -149,13 +149,12 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
             });
             this.menu.items.push(item);
             if(item.checked){
-                checked = item;
+                checked = i;
             }
         }, this);
-        this.setActiveItem(checked, true);
         Ext.CycleButton.superclass.initComponent.call(this);
-
         this.on('click', this.toggleSelected, this);
+        this.setActiveItem(checked, true);
     },
 
     // private

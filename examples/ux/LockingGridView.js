@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -301,7 +301,7 @@ Ext.ux.grid.LockingGridView = Ext.extend(Ext.grid.GridView, {
             if(!skipStripe){
                 row.className = row.className.replace(this.rowClsRe, ' ');
                 lrow.className = lrow.className.replace(this.rowClsRe, ' ');
-                if ((idx + 1) % 2 === 0){
+                if ((i + 1) % 2 === 0){
                     row.className += ' x-grid3-row-alt';
                     lrow.className += ' x-grid3-row-alt';
                 }

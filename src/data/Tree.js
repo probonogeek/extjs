@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -541,6 +541,20 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      */
     remove : function(destroy){
         this.parentNode.removeChild(this, destroy);
+        return this;
+    },
+    
+    /**
+     * Removes all child nodes from this node.
+     * @param {Boolean} destroy <tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.
+     * @return {Node} this
+     */
+    removeAll : function(destroy){
+        var cn = this.childNodes,
+            n;
+        while((n = cn[0])){
+            this.removeChild(n, destroy);
+        }
         return this;
     },
 

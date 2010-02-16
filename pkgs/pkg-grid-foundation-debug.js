@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -217,14 +217,14 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
      * @cfg {Array} stateEvents
      * An array of events that, when fired, should trigger this component to save its state.
      * Defaults to:<pre><code>
-     * stateEvents: ['columnmove', 'columnresize', 'sortchange']
+     * stateEvents: ['columnmove', 'columnresize', 'sortchange', 'groupchange']
      * </code></pre>
      * <p>These can be any types of events supported by this component, including browser or
      * custom events (e.g., <tt>['click', 'customerchange']</tt>).</p>
      * <p>See {@link Ext.Component#stateful} for an explanation of saving and restoring
      * Component state.</p>
      */
-    stateEvents : ['columnmove', 'columnresize', 'sortchange'],
+    stateEvents : ['columnmove', 'columnresize', 'sortchange', 'groupchange'],
     /**
      * @cfg {Object} view The {@link Ext.grid.GridView} used by the grid. This can be set
      * before a call to {@link Ext.Component#render render()}.
@@ -581,6 +581,13 @@ function(grid, rowIndex, columnIndex, e) {
              */
             'sortchange',
             /**
+             * @event groupchange
+             * Fires when the grid's grouping changes (only applies for grids with a {@link Ext.grid.GroupingView GroupingView})
+             * @param {Grid} this
+             * @param {String} groupField A string with the grouping field, null if the store is not grouped.
+             */
+            'groupchange',
+            /**
              * @event reconfigure
              * Fires when the grid is reconfigured with a new store and/or column model.
              * @param {Grid} this
@@ -638,23 +645,40 @@ function(grid, rowIndex, columnIndex, e) {
 
     applyState : function(state){
         var cm = this.colModel,
-            cs = state.columns;
+            cs = state.columns,
+            store = this.store,
+            s,
+            c,
+            oldIndex;
+            
         if(cs){
             for(var i = 0, len = cs.length; i < len; i++){
-                var s = cs[i],
-                    c = cm.getColumnById(s.id);
+                s = cs[i];
+                c = cm.getColumnById(s.id);
                 if(c){
                     c.hidden = s.hidden;
                     c.width = s.width;
-                    var oldIndex = cm.getIndexById(s.id);
+                    oldIndex = cm.getIndexById(s.id);
                     if(oldIndex != i){
                         cm.moveColumn(oldIndex, i);
                     }
                 }
             }
         }
-        if(state.sort && this.store){
-            this.store[this.store.remoteSort ? 'setDefaultSort' : 'sort'](state.sort.field, state.sort.direction);
+        if(store){
+            s = state.sort;
+            if(s){
+                store[store.remoteSort ? 'setDefaultSort' : 'sort'](s.field, s.direction);
+            }
+            s = state.group;
+            if(store.groupBy){
+                if(s){
+                    store.groupBy(s);
+                }else{
+                    store.clearGrouping();
+                }
+            }
+
         }
         var o = Ext.apply({}, state);
         delete o.columns;
@@ -663,7 +687,11 @@ function(grid, rowIndex, columnIndex, e) {
     },
 
     getState : function(){
-        var o = {columns: []};
+        var o = {columns: []},
+            store = this.store,
+            ss,
+            gs;
+            
         for(var i = 0, c; (c = this.colModel.config[i]); i++){
             o.columns[i] = {
                 id: c.id,
@@ -673,10 +701,16 @@ function(grid, rowIndex, columnIndex, e) {
                 o.columns[i].hidden = true;
             }
         }
-        if(this.store){
-            var ss = this.store.getSortState();
+        if(store){
+            ss = store.getSortState();
             if(ss){
                 o.sort = ss;
+            }
+            if(store.getGroupState){
+                gs = store.getGroupState();
+                if(gs){
+                    o.group = gs;
+                }
             }
         }
         return o;
@@ -3487,10 +3521,7 @@ Ext.grid.ColumnModel = Ext.extend(Ext.util.Observable, {
         if(!initial){ // cleanup
             delete this.totalWidth;
             for(i = 0, len = this.config.length; i < len; i++){
-                c = this.config[i];
-                if(c.editor){
-                    c.editor.destroy();
-                }
+                this.config[i].destroy();
             }
         }
 
@@ -3506,7 +3537,7 @@ Ext.grid.ColumnModel = Ext.extend(Ext.util.Observable, {
         for(i = 0, len = config.length; i < len; i++){
             c = Ext.applyIf(config[i], this.defaults);
             // if no id, create one using column's ordinal position
-            if(typeof c.id == 'undefined'){
+            if(Ext.isEmpty(c.id)){
                 c.id = i;
             }
             if(!c.isColumn){
@@ -3795,7 +3826,11 @@ var grid = new Ext.grid.GridPanel({
      * @return {Boolean}
      */
     isCellEditable : function(colIndex, rowIndex){
-        return (this.config[colIndex].editable || (typeof this.config[colIndex].editable == "undefined" && this.config[colIndex].editor)) ? true : false;
+        var c = this.config[colIndex],
+            ed = c.editable;
+            
+        //force boolean
+        return !!(ed || (!Ext.isDefined(ed) && c.editor));
     },
 
     /**
@@ -3868,16 +3903,15 @@ myGrid.getColumnModel().setHidden(0, true); // hide column 0 (0 = the first colu
      * @param {Object} editor The editor object
      */
     setEditor : function(col, editor){
-        Ext.destroy(this.config[col].editor);
-        this.config[col].editor = editor;
+        this.config[col].setEditor(editor);
     },
 
     /**
      * Destroys this column model by purging any event listeners, and removing any editors.
      */
     destroy : function(){
-        for(var i = 0, c = this.config, len = c.length; i < len; i++){
-            Ext.destroy(c[i].editor);
+        for(var i = 0, len = this.config.length; i < len; i++){
+            this.config[i].destroy();
         }
         this.purgeListeners();
     }
@@ -4686,7 +4720,7 @@ var grid = new Ext.grid.GridPanel({
     
     constructor : function(config){
         Ext.apply(this, config);
-
+        
         if(Ext.isString(this.renderer)){
             this.renderer = Ext.util.Format[this.renderer];
         }else if(Ext.isObject(this.renderer)){
@@ -4696,10 +4730,10 @@ var grid = new Ext.grid.GridPanel({
         if(!this.scope){
             this.scope = this;
         }
-
-        if(this.editor){
-            this.editor = Ext.create(this.editor, 'textfield');
-        }
+        
+        var ed = this.editor;
+        delete this.editor;
+        this.setEditor(ed);
     },
 
     /**
@@ -4731,6 +4765,32 @@ var grid = new Ext.grid.GridPanel({
     getEditor: function(rowIndex){
         return this.editable !== false ? this.editor : null;
     },
+    
+    /**
+     * Sets a new editor for this column.
+     * @param {Ext.Editor/Ext.form.Field} editor The editor to set
+     */
+    setEditor : function(editor){
+        if(this.editor){
+            this.editor.destroy();
+        }
+        this.editor = null;
+        if(editor){
+            //not an instance, create it
+            if(!editor.isXType){
+                editor = Ext.create(editor, 'textfield');
+            }
+            //check if it's wrapped in an editor
+            if(!editor.startEdit){
+                editor = new Ext.grid.GridEditor(editor);
+            }
+            this.editor = editor;
+        }
+    },
+    
+    destroy : function(){
+        this.setEditor(null);
+    },
 
     /**
      * Returns the {@link Ext.Editor editor} defined for this column that was created to wrap the {@link Ext.form.Field Field}
@@ -4739,18 +4799,7 @@ var grid = new Ext.grid.GridPanel({
      * @return {Ext.Editor}
      */
     getCellEditor: function(rowIndex){
-        var editor = this.getEditor(rowIndex);
-        if(editor){
-            if(!editor.startEdit){
-                if(!editor.gridEditor){
-                    editor.gridEditor = new Ext.grid.GridEditor(editor);
-                }
-                return editor.gridEditor;
-            }else if(editor.startEdit){
-                return editor;
-            }
-        }
-        return null;
+        return this.getEditor(rowIndex);
     }
 });
 

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -200,12 +200,14 @@
             var me = this,
             	val,
             	floor = Math.floor,
-				i, len = start.length, v;            
+				i, 
+                len,
+                v;            
 
             if(colorRE.test(attr)){
                 val = [];
 				
-				for(i=0; i<len; i++) {
+				for(i = 0, len = start.length; i < len; i++) {
 					v = start[i];
 					val[i] = superclass.doMethod.call(me, attr, v, end[i]);
 				}

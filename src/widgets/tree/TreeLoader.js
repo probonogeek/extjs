@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -120,15 +120,15 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
 
     /**
      * @cfg {Array/String} paramOrder Defaults to <tt>undefined</tt>. Only used when using directFn.
-     * A list of params to be executed
-     * server side.  Specify the params in the order in which they must be executed on the server-side
+     * Specifies the params in the order in which they must be passed to the server-side Direct method
      * as either (1) an Array of String values, or (2) a String of params delimited by either whitespace,
      * comma, or pipe. For example,
      * any of the following would be acceptable:<pre><code>
+nodeParameter: 'node',
 paramOrder: ['param1','param2','param3']
-paramOrder: 'param1 param2 param3'
-paramOrder: 'param1,param2,param3'
-paramOrder: 'param1|param2|param'
+paramOrder: 'node param1 param2 param3'
+paramOrder: 'param1,node,param2,param3'
+paramOrder: 'param1|param2|param|node'
      </code></pre>
      */
     paramOrder: undefined,
@@ -139,7 +139,7 @@ paramOrder: 'param1|param2|param'
      * <tt>{@link #paramOrder}</tt> nullifies this configuration.
      */
     paramsAsHash: false,
-    
+
     /**
      * @cfg {String} nodeParameter The name of the parameter sent to the server which contains
      * the identifier of the node. Defaults to <tt>'node'</tt>.
@@ -157,7 +157,7 @@ paramOrder: 'param1|param2|param'
      * This is called automatically when a node is expanded, but may be used to reload
      * a node (or append new children if the {@link #clearOnLoad} option is false.)
      * @param {Ext.tree.TreeNode} node
-     * @param {Function} callback Function to call after the node has been loaded. The 
+     * @param {Function} callback Function to call after the node has been loaded. The
      * function is passed the TreeNode which was requested to be loaded.
      * @param (Object) scope The cope (<code>this</code> reference) in which the callback is executed.
      * defaults to the loaded TreeNode.
@@ -194,23 +194,29 @@ paramOrder: 'param1|param2|param'
     },
 
     getParams: function(node){
-        var buf = [], bp = this.baseParams;
+        var bp = Ext.apply({}, this.baseParams),
+            np = this.nodeParameter,
+            po = this.paramOrder;
+
+        np && (bp[ np ] = node.id);
+
         if(this.directFn){
-            buf.push(node.id);
-            if(bp){
-                if(this.paramOrder){
-                    for(var i = 0, len = this.paramOrder.length; i < len; i++){
-                        buf.push(bp[this.paramOrder[i]]);
-                    }
-                }else if(this.paramsAsHash){
-                    buf.push(bp);
+            var buf = [node.id];
+            if(po){
+                // reset 'buf' if the nodeParameter was included in paramOrder
+                if(np && po.indexOf(np) > -1){
+                    buf = [];
                 }
+
+                for(var i = 0, len = po.length; i < len; i++){
+                    buf.push(bp[ po[i] ]);
+                }
+            }else if(this.paramsAsHash){
+                buf = [bp];
             }
             return buf;
         }else{
-            var o = Ext.apply({}, bp);
-            o[this.nodeParameter] = node.id;
-            return o;
+            return bp;
         }
     },
 
@@ -343,8 +349,9 @@ new Ext.tree.TreePanel({
         this.fireEvent("loadexception", this, a.node, response);
         this.runCallback(a.callback, a.scope || a.node, [a.node]);
     },
-    
+
     destroy : function(){
+        this.abort();
         this.purgeListeners();
     }
 });

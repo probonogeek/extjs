@@ -16,10 +16,9 @@
  * @singleton
  */
 Ext.History = (function () {
-    var iframe, hiddenField,
-        ready = false,
-        currentToken,
-        ignoreNext = false;
+    var iframe, hiddenField;
+    var ready = false;
+    var currentToken;
 
     function getHash() {
         var href = top.location.href, i = href.indexOf("#");
@@ -32,10 +31,7 @@ Ext.History = (function () {
 
     function handleStateChange(token) {
         currentToken = token;
-        if(!(token == ignoreNext)){
-            Ext.History.fireEvent('change', token);
-        }
-        ignoreNext = false;
+        Ext.History.fireEvent('change', token);
     }
 
     function updateIFrame (token) {
@@ -57,18 +53,20 @@ Ext.History = (function () {
             return;
         }
 
-        var doc = iframe.contentWindow.document,
-            elem = doc.getElementById("state"),
-            token = elem ? elem.innerText : null,
-            hash = getHash();
+        var doc = iframe.contentWindow.document;
+        var elem = doc.getElementById("state");
+        var token = elem ? elem.innerText : null;
+
+        var hash = getHash();
 
         setInterval(function () {
 
             doc = iframe.contentWindow.document;
             elem = doc.getElementById("state");
 
-            var newtoken = elem ? elem.innerText : null,
-                newHash = getHash();
+            var newtoken = elem ? elem.innerText : null;
+
+            var newHash = getHash();
 
             if (newtoken !== token) {
                 token = newtoken;
@@ -180,14 +178,11 @@ tabPanel.on('tabchange', function(tabPanel, tab){
          * it will not save a new history step. Set to false if the same state can be saved more than once
          * at the same history stack location (defaults to true).
          */
-        add: function (token, preventDup, suppressEvent) {
+        add: function (token, preventDup) {
             if(preventDup !== false){
                 if(this.getToken() == token){
                     return true;
                 }
-            }
-            if(suppressEvent){
-                ignoreNext = token;
             }
             if (Ext.isIE) {
                 return updateIFrame(token);

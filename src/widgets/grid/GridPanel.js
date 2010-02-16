@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -217,14 +217,14 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
      * @cfg {Array} stateEvents
      * An array of events that, when fired, should trigger this component to save its state.
      * Defaults to:<pre><code>
-     * stateEvents: ['columnmove', 'columnresize', 'sortchange']
+     * stateEvents: ['columnmove', 'columnresize', 'sortchange', 'groupchange']
      * </code></pre>
      * <p>These can be any types of events supported by this component, including browser or
      * custom events (e.g., <tt>['click', 'customerchange']</tt>).</p>
      * <p>See {@link Ext.Component#stateful} for an explanation of saving and restoring
      * Component state.</p>
      */
-    stateEvents : ['columnmove', 'columnresize', 'sortchange'],
+    stateEvents : ['columnmove', 'columnresize', 'sortchange', 'groupchange'],
     /**
      * @cfg {Object} view The {@link Ext.grid.GridView} used by the grid. This can be set
      * before a call to {@link Ext.Component#render render()}.
@@ -581,6 +581,13 @@ function(grid, rowIndex, columnIndex, e) {
              */
             'sortchange',
             /**
+             * @event groupchange
+             * Fires when the grid's grouping changes (only applies for grids with a {@link Ext.grid.GroupingView GroupingView})
+             * @param {Grid} this
+             * @param {String} groupField A string with the grouping field, null if the store is not grouped.
+             */
+            'groupchange',
+            /**
              * @event reconfigure
              * Fires when the grid is reconfigured with a new store and/or column model.
              * @param {Grid} this
@@ -638,23 +645,40 @@ function(grid, rowIndex, columnIndex, e) {
 
     applyState : function(state){
         var cm = this.colModel,
-            cs = state.columns;
+            cs = state.columns,
+            store = this.store,
+            s,
+            c,
+            oldIndex;
+            
         if(cs){
             for(var i = 0, len = cs.length; i < len; i++){
-                var s = cs[i],
-                    c = cm.getColumnById(s.id);
+                s = cs[i];
+                c = cm.getColumnById(s.id);
                 if(c){
                     c.hidden = s.hidden;
                     c.width = s.width;
-                    var oldIndex = cm.getIndexById(s.id);
+                    oldIndex = cm.getIndexById(s.id);
                     if(oldIndex != i){
                         cm.moveColumn(oldIndex, i);
                     }
                 }
             }
         }
-        if(state.sort && this.store){
-            this.store[this.store.remoteSort ? 'setDefaultSort' : 'sort'](state.sort.field, state.sort.direction);
+        if(store){
+            s = state.sort;
+            if(s){
+                store[store.remoteSort ? 'setDefaultSort' : 'sort'](s.field, s.direction);
+            }
+            s = state.group;
+            if(store.groupBy){
+                if(s){
+                    store.groupBy(s);
+                }else{
+                    store.clearGrouping();
+                }
+            }
+
         }
         var o = Ext.apply({}, state);
         delete o.columns;
@@ -663,7 +687,11 @@ function(grid, rowIndex, columnIndex, e) {
     },
 
     getState : function(){
-        var o = {columns: []};
+        var o = {columns: []},
+            store = this.store,
+            ss,
+            gs;
+            
         for(var i = 0, c; (c = this.colModel.config[i]); i++){
             o.columns[i] = {
                 id: c.id,
@@ -673,10 +701,16 @@ function(grid, rowIndex, columnIndex, e) {
                 o.columns[i].hidden = true;
             }
         }
-        if(this.store){
-            var ss = this.store.getSortState();
+        if(store){
+            ss = store.getSortState();
             if(ss){
                 o.sort = ss;
+            }
+            if(store.getGroupState){
+                gs = store.getGroupState();
+                if(gs){
+                    o.group = gs;
+                }
             }
         }
         return o;

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -58,6 +58,7 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
             recordType = this.recordType,
             fields = recordType.prototype.fields,
             records = [],
+            success = true,
             v;
 
         var root = this.getRoot(o);
@@ -86,8 +87,15 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
                 totalRecords = v;
             }
         }
+        if(s.successProperty){
+            v = this.getSuccess(o);
+            if(v === false || v === 'false'){
+                success = false;
+            }
+        }
 
         return {
+            success : success,
             records : records,
             totalRecords : totalRecords
         };

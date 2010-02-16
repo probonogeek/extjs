@@ -68,6 +68,8 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     monitorResize:true,
 
+    type: 'column',
+
     extraCls: 'x-column',
 
     scrollOffset : 0,
@@ -77,22 +79,36 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
     targetCls: 'x-column-layout-ct',
 
     isValidParent : function(c, target){
-        return c.getPositionEl().dom.parentNode == this.innerCt.dom;
+        return this.innerCt && c.getPositionEl().dom.parentNode == this.innerCt.dom;
     },
 
-    // private
-    onLayout : function(ct, target){
-        var cs = ct.items.items, len = cs.length, c, i;
+    getLayoutTargetSize : function() {
+        var target = this.container.getLayoutTarget(), ret;
+        if (target) {
+            ret = target.getViewSize();
+            ret.width -= target.getPadding('lr');
+            ret.height -= target.getPadding('tb');
+        }
+        return ret;
+    },
 
+    renderAll : function(ct, target) {
         if(!this.innerCt){
             // the innerCt prevents wrapping and shuffling while
             // the container is resizing
             this.innerCt = target.createChild({cls:'x-column-inner'});
             this.innerCt.createChild({cls:'x-clear'});
         }
-        this.renderAll(ct, this.innerCt);
+        Ext.layout.ColumnLayout.superclass.renderAll.call(this, ct, this.innerCt);
+    },
 
-        var size = target.getViewSize(true);
+    // private
+    onLayout : function(ct, target){
+        var cs = ct.items.items, len = cs.length, c, i;
+
+        this.renderAll(ct, target);
+
+        var size = this.getLayoutTargetSize();
 
         if(size.width < 1 && size.height < 1){ // display none?
             return;
@@ -110,7 +126,7 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
         for(i = 0; i < len; i++){
             c = cs[i];
             if(!c.columnWidth){
-                pw -= (c.getSize().width + c.getPositionEl().getMargins('lr'));
+                pw -= (c.getWidth() + c.getPositionEl().getMargins('lr'));
             }
         }
 
@@ -122,6 +138,19 @@ Ext.layout.ColumnLayout = Ext.extend(Ext.layout.ContainerLayout, {
                 c.setSize(Math.floor(c.columnWidth * pw) - c.getPositionEl().getMargins('lr'));
             }
         }
+
+        // Browsers differ as to when they account for scrollbars.  We need to re-measure to see if the scrollbar
+        // spaces were accounted for properly.  If not, re-layout.
+        if (Ext.isIE) {
+            if (i = target.getStyle('overflow') && i != 'hidden' && !this.adjustmentPass) {
+                var ts = this.getLayoutTargetSize();
+                if (ts.width != size.width){
+                    this.adjustmentPass = true;
+                    this.onLayout(ct, target);
+                }
+            }
+        }
+        delete this.adjustmentPass;
     }
 
     <div id="prop-Ext.layout.ColumnLayout-activeItem"></div>/**

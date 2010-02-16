@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -436,7 +436,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
         if(this.rendered){
             this.clearTip();
         }
-        if(this.menu && this.menu.autoDestroy) {
+        if(this.menu && this.destroyMenu !== false) {
             Ext.destroy(this.menu);
         }
         Ext.destroy(this.repeater);
@@ -451,6 +451,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
             delete this.btnEl;
             Ext.ButtonToggleMgr.unregister(this);
         }
+        Ext.Button.superclass.onDestroy.call(this);
     },
 
     // private
@@ -581,6 +582,10 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
             if(this.tooltip){
                 Ext.QuickTips.getQuickTip().cancelShow(this.btnEl);
             }
+            if(this.menu.isVisible()){
+                this.menu.hide();
+            }
+            this.menu.ownerCt = this;
             this.menu.show(this.el, this.menuAlign);
         }
         return this;
@@ -590,7 +595,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * Hide this button's menu (if it has one)
      */
     hideMenu : function(){
-        if(this.menu){
+        if(this.hasVisibleMenu()){
             this.menu.hide();
         }
         return this;
@@ -601,7 +606,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      * @return {Boolean}
      */
     hasVisibleMenu : function(){
-        return this.menu && this.menu.isVisible();
+        return this.menu && this.menu.ownerCt == this && this.menu.isVisible();
     },
 
     // private
@@ -616,7 +621,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
             if(this.enableToggle && (this.allowDepress !== false || !this.pressed)){
                 this.toggle();
             }
-            if(this.menu && !this.menu.isVisible() && !this.ignoreNextClick){
+            if(this.menu && !this.hasVisibleMenu() && !this.ignoreNextClick){
                 this.showMenu();
             }
             this.fireEvent('click', this, e);
@@ -716,17 +721,21 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
     },
     // private
     onMenuShow : function(e){
-        this.menu.ownerCt = this;
-        this.ignoreNextClick = 0;
-        this.el.addClass('x-btn-menu-active');
-        this.fireEvent('menushow', this, this.menu);
+        if(this.menu.ownerCt == this){
+            this.menu.ownerCt = this;
+            this.ignoreNextClick = 0;
+            this.el.addClass('x-btn-menu-active');
+            this.fireEvent('menushow', this, this.menu);
+        }
     },
     // private
     onMenuHide : function(e){
-        this.el.removeClass('x-btn-menu-active');
-        this.ignoreNextClick = this.restoreClick.defer(250, this);
-        this.fireEvent('menuhide', this, this.menu);
-        delete this.menu.ownerCt;
+        if(this.menu.ownerCt == this){
+            this.el.removeClass('x-btn-menu-active');
+            this.ignoreNextClick = this.restoreClick.defer(250, this);
+            this.fireEvent('menuhide', this, this.menu);
+            delete this.menu.ownerCt;
+        }
     },
 
     // private
@@ -736,6 +745,21 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
 
     /**
      * @cfg {String} autoEl @hide
+     */
+    /**
+     * @cfg {String/Object} html @hide
+     */
+    /**
+     * @cfg {String} contentEl  @hide
+     */
+    /**
+     * @cfg {Mixed} data  @hide
+     */
+    /**
+     * @cfg {Mixed} tpl  @hide
+     */
+    /**
+     * @cfg {String} tplWriteMode  @hide
      */
 });
 Ext.reg('button', Ext.Button);

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -57,11 +57,12 @@ Ext.layout.AbsoluteLayout = Ext.extend(Ext.layout.AnchorLayout, {
 
     extraCls: 'x-abs-layout-item',
 
+    type: 'anchor',
+
     onLayout : function(ct, target){
         target.position();
         this.paddingLeft = target.getPadding('l');
         this.paddingTop = target.getPadding('t');
-
         Ext.layout.AbsoluteLayout.superclass.onLayout.call(this, ct, target);
     },
 

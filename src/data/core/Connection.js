@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -13,7 +13,7 @@
         POST = 'POST',
         GET = 'GET',
         WINDOW = window;
-    
+
     /**
      * @class Ext.data.Connection
      * @extends Ext.util.Observable
@@ -46,7 +46,7 @@
      * @constructor
      * @param {Object} config a configuration object.
      */
-    Ext.data.Connection = function(config){    
+    Ext.data.Connection = function(config){
         Ext.apply(this, config);
         this.addEvents(
             /**
@@ -110,20 +110,20 @@
          * @type Boolean
          */
         autoAbort:false,
-    
+
         /**
          * @cfg {Boolean} disableCaching (Optional) True to add a unique cache-buster param to GET requests. (defaults to true)
          * @type Boolean
          */
         disableCaching: true,
-        
+
         /**
          * @cfg {String} disableCachingParam (Optional) Change the parameter which is sent went disabling caching
          * through a cache buster. Defaults to '_dc'
          * @type String
          */
         disableCachingParam: '_dc',
-        
+
         /**
          * <p>Sends an HTTP request to a remote server.</p>
          * <p><b>Important:</b> Ajax server requests are asynchronous, and this call will
@@ -161,8 +161,8 @@ Ext.Ajax.request({
          * parameters:<ul>
          * <li><b>options</b> : Object<div class="sub-desc">The parameter to the request call.</div></li>
          * <li><b>success</b> : Boolean<div class="sub-desc">True if the request succeeded.</div></li>
-         * <li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data. 
-         * See <a href="http://www.w3.org/TR/XMLHttpRequest/">http://www.w3.org/TR/XMLHttpRequest/</a> for details about 
+         * <li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data.
+         * See <a href="http://www.w3.org/TR/XMLHttpRequest/">http://www.w3.org/TR/XMLHttpRequest/</a> for details about
          * accessing elements of the response.</div></li>
          * </ul></div></li>
          * <li><a id="request-option-success"></a><b>success</b> : Function (Optional)<div class="sub-desc">The function
@@ -184,7 +184,7 @@ Ext.Ajax.request({
          * <li><b>timeout</b> : Number (Optional)<div class="sub-desc">The timeout in milliseconds to be used for this request. Defaults to 30 seconds.</div></li>
          * <li><b>form</b> : Element/HTMLElement/String (Optional)<div class="sub-desc">The <tt>&lt;form&gt;</tt>
          * Element or the id of the <tt>&lt;form&gt;</tt> to pull parameters from.</div></li>
-         * <li><a id="request-option-isUpload"></a><b>isUpload</b> : Boolean (Optional)<div class="sub-desc"><b>Only meaningful when used 
+         * <li><a id="request-option-isUpload"></a><b>isUpload</b> : Boolean (Optional)<div class="sub-desc"><b>Only meaningful when used
          * with the <tt>form</tt> option</b>.
          * <p>True if the form object is a file upload (will be set automatically if the form was
          * configured with <b><tt>enctype</tt></b> "multipart/form-data").</p>
@@ -229,15 +229,15 @@ Ext.Ajax.request({
                         me.indicatorText = '<div class="loading-indicator">'+o.indicatorText+"</div>";
                     }
                     if(me.indicatorText) {
-                        Ext.getDom(o.el).innerHTML = me.indicatorText;                        
+                        Ext.getDom(o.el).innerHTML = me.indicatorText;
                     }
                     o.success = (Ext.isFunction(o.success) ? o.success : function(){}).createInterceptor(function(response) {
                         Ext.getDom(o.el).innerHTML = response.responseText;
                     });
                 }
-                
+
                 var p = o.params,
-                    url = o.url || me.url,                
+                    url = o.url || me.url,
                     method,
                     cb = {success: me.handleResponse,
                           failure: me.handleFailure,
@@ -245,61 +245,61 @@ Ext.Ajax.request({
                           argument: {options: o},
                           timeout : o.timeout || me.timeout
                     },
-                    form,                    
-                    serForm;                    
-                  
-                     
+                    form,
+                    serForm;
+
+
                 if (Ext.isFunction(p)) {
                     p = p.call(o.scope||WINDOW, o);
                 }
-                                                           
-                p = Ext.urlEncode(me.extraParams, Ext.isObject(p) ? Ext.urlEncode(p) : p);    
-                
+
+                p = Ext.urlEncode(me.extraParams, Ext.isObject(p) ? Ext.urlEncode(p) : p);
+
                 if (Ext.isFunction(url)) {
                     url = url.call(o.scope || WINDOW, o);
                 }
-    
+
                 if((form = Ext.getDom(o.form))){
                     url = url || form.action;
-                     if(o.isUpload || /multipart\/form-data/i.test(form.getAttribute("enctype"))) { 
+                     if(o.isUpload || /multipart\/form-data/i.test(form.getAttribute("enctype"))) {
                          return me.doFormUpload.call(me, o, p, url);
                      }
-                    serForm = Ext.lib.Ajax.serializeForm(form);                    
+                    serForm = Ext.lib.Ajax.serializeForm(form);
                     p = p ? (p + '&' + serForm) : serForm;
                 }
-                
+
                 method = o.method || me.method || ((p || o.xmlData || o.jsonData) ? POST : GET);
-                
+
                 if(method === GET && (me.disableCaching && o.disableCaching !== false) || o.disableCaching === true){
                     var dcp = o.disableCachingParam || me.disableCachingParam;
                     url = Ext.urlAppend(url, dcp + '=' + (new Date().getTime()));
                 }
-                
+
                 o.headers = Ext.apply(o.headers || {}, me.defaultHeaders || {});
-                
+
                 if(o.autoAbort === true || me.autoAbort) {
                     me.abort();
                 }
-                 
+
                 if((method == GET || o.xmlData || o.jsonData) && p){
-                    url = Ext.urlAppend(url, p);  
+                    url = Ext.urlAppend(url, p);
                     p = '';
                 }
                 return (me.transId = Ext.lib.Ajax.request(method, url, cb, p, o));
-            }else{                
+            }else{
                 return o.callback ? o.callback.apply(o.scope, [o,UNDEFINED,UNDEFINED]) : null;
             }
         },
-    
+
         /**
          * Determine whether this object has a request outstanding.
          * @param {Number} transactionId (Optional) defaults to the last transaction
          * @return {Boolean} True if there is an outstanding request.
          */
         isLoading : function(transId){
-            return transId ? Ext.lib.Ajax.isCallInProgress(transId) : !! this.transId;            
+            return transId ? Ext.lib.Ajax.isCallInProgress(transId) : !! this.transId;
         },
-    
+
         /**
          * Aborts any outstanding request.
          * @param {Number} transactionId (Optional) defaults to the last transaction
@@ -358,15 +358,22 @@ Ext.Ajax.request({
             Ext.fly(frame).set({
                 id: id,
                 name: id,
-                cls: 'x-hidden',
-                src: Ext.SSL_SECURE_URL // for IE
+                cls: 'x-hidden'
+
             });
+
             doc.body.appendChild(frame);
+
+            //Reset the Frame to neutral domain
+            Ext.fly(frame).set({
+               src : Ext.SSL_SECURE_URL
+            });
 
             // This is required so that IE doesn't pop the response up in a new window.
             if(Ext.isIE){
                document.frames[id].name = id;
             }
+
 
             Ext.fly(form).set({
                 target: id,
@@ -459,7 +466,7 @@ Ext.Ajax.request({
 Ext.Ajax.defaultHeaders = {
     'Powered-By': 'Ext'
 };
- * </code></pre> 
+ * </code></pre>
  * </p>
  * <p>Common <b>Events</b> you may want to set are:<div class="mdetail-params"><ul>
  * <li><b><tt>{@link Ext.data.Connection#beforerequest beforerequest}</tt></b><p class="sub-desc"></p></li>
@@ -471,7 +478,7 @@ Ext.Ajax.defaultHeaders = {
 Ext.Ajax.on('beforerequest', this.showSpinner, this);
 Ext.Ajax.on('requestcomplete', this.hideSpinner, this);
 Ext.Ajax.on('requestexception', this.hideSpinner, this);
- * </code></pre> 
+ * </code></pre>
  * </p>
  * <p>An example request:</p>
  * <pre><code>
@@ -491,7 +498,7 @@ Ext.Ajax.{@link Ext.data.Connection#request request}({
     form: 'some-form',
     params: 'foo=bar'
 });
- * </code></pre> 
+ * </code></pre>
  * </p>
  * @singleton
  */

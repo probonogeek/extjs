@@ -6,7 +6,7 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext"></div>/**
  * @class Ext
  */
 
@@ -60,7 +60,7 @@ Ext.apply(Ext, function(){
          * @return {Number} Value, if numeric, else defaultValue
          */
         num : function(v, defaultValue){
-            v = Number(Ext.isEmpty(v) || Ext.isBoolean(v) ? NaN : v);
+            v = Number(Ext.isEmpty(v) || Ext.isArray(v) || Ext.isBoolean(v) || (Ext.isString(v) && v.trim().length == 0) ? NaN : v);
             return isNaN(v) ? defaultValue : v;
         },
 
@@ -334,7 +334,7 @@ ImageComponent = Ext.extend(Ext.BoxComponent, {
          * @return {Number} The mean.
          */
         mean : function(arr){
-           return Ext.sum(arr) / arr.length;
+           return arr.length > 0 ? Ext.sum(arr) / arr.length : undefined;
         },
 
         <div id="method-Ext-sum"></div>/**
@@ -545,7 +545,7 @@ Ext.zip(
     };
 }());
 
-/**
+<div id="cls-Function"></div>/**
  * @class Function
  * These functions are available on every Function object (any JavaScript function).
  */
@@ -585,7 +585,7 @@ sayGoodbye('Fred'); // both alerts show
 });
 
 
-/**
+<div id="cls-String"></div>/**
  * @class String
  * These functions are available as static methods on the JavaScript String object.
  */

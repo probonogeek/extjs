@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -251,6 +251,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         }
         if(this.activeGroup != group && this.fireEvent('beforegroupchange', this, group, this.activeGroup) !== false){
             if(this.activeGroup){
+                this.activeGroup.activeTab = null;
                 var oldEl = this.getGroupEl(this.activeGroup);
                 if(oldEl){
                     Ext.fly(oldEl).removeClass('x-grouptabs-strip-active');

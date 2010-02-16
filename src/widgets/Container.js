@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -276,6 +276,7 @@ layoutConfig: {
      * the frequency it calculates and does a re-layout of components. This is useful for heavy containers or containers
      * with a large quantity of sub-components for which frequent layout calls would be expensive. Defaults to <code>50</code>.
      */
+    // Deprecated - will be removed in 3.2.x
     bufferResize: 50,
 
     /**
@@ -473,7 +474,9 @@ items: [
     },
 
     afterRender: function(){
-        this.layoutDone = false;
+        // Render this Container, this should be done before setLayout is called which
+        // will hook onResize
+        Ext.Container.superclass.afterRender.call(this);
         if(!this.layout){
             this.layout = 'auto';
         }
@@ -486,21 +489,20 @@ items: [
         }
         this.setLayout(this.layout);
 
-        // BoxComponent's afterRender will set the size.
-        // This will will trigger a layout if the layout is configured to monitor resize
-        Ext.Container.superclass.afterRender.call(this);
-
-        if(Ext.isDefined(this.activeItem)){
+        // If a CardLayout, the active item set
+        if(this.activeItem !== undefined){
             var item = this.activeItem;
             delete this.activeItem;
             this.layout.setActiveItem(item);
         }
 
-        // If we have no ownerCt and the BoxComponent's sizing did not trigger a layout, force a layout
-        if(!this.ownerCt && !this.layoutDone){
+        // If we have no ownerCt, render and size all children
+        if(!this.ownerCt){
             this.doLayout(false, true);
         }
 
+        // This is a manually configured flag set by users in conjunction with renderTo.
+        // Not to be confused with the flag by the same name used in Layouts.
         if(this.monitorResize === true){
             Ext.EventManager.onWindowResize(this.doLayout, this, [false]);
         }
@@ -580,7 +582,7 @@ tb.{@link #doLayout}();             // refresh the layout
     onAdd : function(c){
         // Empty template method
     },
-    
+
     // private
     onAdded : function(container, pos) {
         //overridden here so we can cascade down, not worth creating a template method.
@@ -688,14 +690,20 @@ tb.{@link #doLayout}();             // refresh the layout
 
     // private
     doRemove: function(c, autoDestroy){
-        if(this.layout && this.rendered){
-            this.layout.onRemove(c);
+        var l = this.layout,
+            hasLayout = l && this.rendered;
+
+        if(hasLayout){
+            l.onRemove(c);
         }
         this.items.remove(c);
         c.onRemoved();
         this.onRemove(c);
         if(autoDestroy === true || (autoDestroy !== false && this.autoDestroy)){
             c.destroy();
+        }
+        if(hasLayout){
+            l.afterRemove(c);
         }
     },
 
@@ -766,9 +774,11 @@ tb.{@link #doLayout}();             // refresh the layout
     * We can only lay out if there is a view area in which to layout.
     * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
     */
-    canLayout: function() {
-        var el = this.getLayoutTarget(), vs;
-        return !!(el && (vs = el.dom.offsetWidth || el.dom.offsetHeight));
+
+    // private
+    canLayout : function() {
+        var el = this.getVisibilityEl();
+        return el && el.dom && !el.isStyle("display", "none");
     },
 
     /**
@@ -779,13 +789,12 @@ tb.{@link #doLayout}();             // refresh the layout
      * @param {Boolean} force (optional) True to force a layout to occur, even if the item is hidden.
      * @return {Ext.Container} this
      */
-    doLayout: function(shallow, force){
-        var rendered = this.rendered,
-            forceLayout = force || this.forceLayout,
-            cs, i, len, c;
 
-        this.layoutDone = true;
-        if(!this.canLayout() || this.collapsed){
+    doLayout : function(shallow, force){
+        var rendered = this.rendered,
+            forceLayout = force || this.forceLayout;
+
+        if(this.collapsed || !this.canLayout()){
             this.deferLayout = this.deferLayout || !shallow;
             if(!forceLayout){
                 return;
@@ -794,26 +803,16 @@ tb.{@link #doLayout}();             // refresh the layout
         } else {
             delete this.deferLayout;
         }
-
-        cs = (shallow !== true && this.items) ? this.items.items : [];
-
-//      Inhibit child Containers from relaying on resize since we are about to to explicitly call doLayout on them all!
-        for(i = 0, len = cs.length; i < len; i++){
-            if ((c = cs[i]).layout) {
-                c.suspendLayoutResize = true;
-            }
-        }
-
-//      Tell the layout manager to ensure all child items are rendered, and sized according to their rules.
-//      Will not cause the child items to relayout.
         if(rendered && this.layout){
             this.layout.layout();
         }
-
-//      Explicitly lay out all child items
-        for(i = 0; i < len; i++){
-            if((c = cs[i]).doLayout){
-                c.doLayout(false, forceLayout);
+        if(shallow !== true && this.items){
+            var cs = this.items.items;
+            for(var i = 0, len = cs.length; i < len; i++){
+                var c = cs[i];
+                if(c.doLayout){
+                    c.doLayout(false, forceLayout);
+                }
             }
         }
         if(rendered){
@@ -822,39 +821,45 @@ tb.{@link #doLayout}();             // refresh the layout
         // Initial layout completed
         this.hasLayout = true;
         delete this.forceLayout;
-
-//      Re-enable child layouts relaying on resize.
-        for(i = 0; i < len; i++){
-            if ((c = cs[i]).layout) {
-                delete c.suspendLayoutResize;
-            }
-        }
     },
 
-    //private
     onLayout : Ext.emptyFn,
 
-    onResize: function(adjWidth, adjHeight, rawWidth, rawHeight){
-        Ext.Container.superclass.onResize.apply(this, arguments);
-        if ((this.rendered && this.layout && this.layout.monitorResize) && !this.suspendLayoutResize) {
-            this.layout.onResize();
+    // private
+    shouldBufferLayout: function(){
+        /*
+         * Returns true if the container should buffer a layout.
+         * This is true only if the container has previously been laid out
+         * and has a parent container that is pending a layout.
+         */
+        var hl = this.hasLayout;
+        if(this.ownerCt){
+            // Only ever buffer if we've laid out the first time and we have one pending.
+            return hl ? !this.hasLayoutPending() : false;
         }
+        // Never buffer initial layout
+        return hl;
     },
 
     // private
     hasLayoutPending: function(){
         // Traverse hierarchy to see if any parent container has a pending layout.
-        var pending = this.layoutPending;
+        var pending = false;
         this.ownerCt.bubble(function(c){
-            return !(pending = c.layoutPending);
+            if(c.layoutPending){
+                pending = true;
+                return false;
+            }
         });
         return pending;
-
     },
 
     onShow : function(){
+        // removes css classes that were added to hide
         Ext.Container.superclass.onShow.call(this);
+        // If we were sized during the time we were hidden, layout.
         if(Ext.isDefined(this.deferLayout)){
+            delete this.deferLayout;
             this.doLayout(true);
         }
     },

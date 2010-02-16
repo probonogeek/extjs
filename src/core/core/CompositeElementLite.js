@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -107,9 +107,10 @@ Ext.CompositeElementLite.prototype = {
         var me = this,
             els = me.elements,
             len = els.length, 
-            e;
+            e, 
+            i;
             
-        for(i = 0; i<len; i++) {
+        for(i = 0; i < len; i++) {
             e = els[i];
             if(e){
                 Ext.Element.prototype[fn].apply(me.getElement(e), args);
@@ -169,7 +170,7 @@ Ext.CompositeElementLite.prototype = {
             e = els[i];
             if(e){
                 e = this.getElement(e);
-                if(fn.call(scope || e, e, me, i)){
+                if(fn.call(scope || e, e, me, i) === false){
                     break;
                 }
             }

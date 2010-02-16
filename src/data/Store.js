@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -266,13 +266,7 @@ sortInfo: {
         this.data.getKey = function(o){
             return o.id;
         };
-        /**
-         * See the <code>{@link #baseParams corresponding configuration option}</code>
-         * for a description of this property.
-         * To modify this property see <code>{@link #setBaseParam}</code>.
-         * @property
-         */
-        this.baseParams = {};
+
 
         // temporary removed-records cache
         this.removed = [];
@@ -283,6 +277,14 @@ sortInfo: {
         }
 
         Ext.apply(this, config);
+
+        /**
+         * See the <code>{@link #baseParams corresponding configuration option}</code>
+         * for a description of this property.
+         * To modify this property see <code>{@link #setBaseParam}</code>.
+         * @property
+         */
+        this.baseParams = Ext.isObject(this.baseParams) ? this.baseParams : {};
 
         this.paramNames = Ext.applyIf(this.paramNames || {}, this.defaultParamNames);
 
@@ -569,8 +571,8 @@ sortInfo: {
      * @private
      */
     buildWriter : function(config) {
-        var klass = undefined;
-        type = (config.format || 'json').toLowerCase();
+        var klass = undefined,
+            type = (config.format || 'json').toLowerCase();
         switch (type) {
             case 'json':
                 klass = Ext.data.JsonWriter;
@@ -909,8 +911,8 @@ sortInfo: {
         var doRequest = true;
 
         if (action === 'read') {
-            Ext.applyIf(options.params, this.baseParams);
             doRequest = this.fireEvent('beforeload', this, options);
+            Ext.applyIf(options.params, this.baseParams);
         }
         else {
             // if Writer is configured as listful, force single-record rs to be [{}] instead of {}

@@ -6,7 +6,7 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/**
+    <pre class="prettyprint lang-js"><div id="cls-Ext.CompositeElementLite"></div>/**
  * @class Ext.CompositeElementLite
  * <p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter
  * members, or to perform collective actions upon the whole set.</p>
@@ -109,9 +109,10 @@ Ext.CompositeElementLite.prototype = {
         var me = this,
             els = me.elements,
             len = els.length, 
-            e;
+            e, 
+            i;
             
-        for(i = 0; i<len; i++) {
+        for(i = 0; i < len; i++) {
             e = els[i];
             if(e){
                 Ext.Element.prototype[fn].apply(me.getElement(e), args);
@@ -171,7 +172,7 @@ Ext.CompositeElementLite.prototype = {
             e = els[i];
             if(e){
                 e = this.getElement(e);
-                if(fn.call(scope || e, e, me, i)){
+                if(fn.call(scope || e, e, me, i) === false){
                     break;
                 }
             }

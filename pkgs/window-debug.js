@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -196,12 +196,6 @@ Ext.Window = Ext.extend(Ext.Panel, {
      */
     hidden : true,
 
-    /**
-    * @cfg {Boolean} monitorResize @hide
-    * This is automatically managed based on the value of constrain and constrainToHeader
-    */
-    monitorResize : true,
-
     // The following configs are set to provide the basic functionality of a window.
     // Changing them would require additional code to handle correctly and should
     // usually only be done in subclasses that can provide custom behavior.  Changing them
@@ -311,7 +305,8 @@ Ext.Window = Ext.extend(Ext.Panel, {
                 minHeight:this.minHeight,
                 handles: this.resizeHandles || 'all',
                 pinned: true,
-                resizeElement : this.resizerAction
+                resizeElement : this.resizerAction,
+                handleCls: 'x-window-handle'
             });
             this.resizer.window = this;
             this.mon(this.resizer, 'beforeresize', this.beforeResize, this);
@@ -345,7 +340,8 @@ Ext.Window = Ext.extend(Ext.Panel, {
     },
 
    // private
-    onEsc : function(){
+    onEsc : function(k, e){
+        e.stopEvent();
         this[this.closeAction]();
     },
 
@@ -437,6 +433,7 @@ Ext.Window = Ext.extend(Ext.Panel, {
         this.focus();
         this.updateHandles();
         this.saveState();
+        this.doLayout();
     },
 
     /**
@@ -527,6 +524,9 @@ Ext.Window = Ext.extend(Ext.Panel, {
 
     // private
     afterShow : function(isAnim){
+        if (this.isDestroyed){
+            return false;
+        }
         this.proxy.hide();
         this.el.setStyle('display', 'block');
         this.el.show();
@@ -888,7 +888,6 @@ Ext.Window = Ext.extend(Ext.Panel, {
           Ext.EventManager.on(window, 'scroll', this.doAnchor, this,
               {buffer: tm == 'number' ? monitorScroll : 50});
       }
-      this.doAnchor();
       return this;
     },
 
@@ -1363,17 +1362,19 @@ Ext.MessageBox = function(){
             }
             msgEl.update(text || '&#160;');
 
-            var iw = iconCls != '' ? (iconEl.getWidth() + iconEl.getMargins('lr')) : 0;
-            var mw = msgEl.getWidth() + msgEl.getMargins('lr');
-            var fw = dlg.getFrameWidth('lr');
-            var bw = dlg.body.getFrameWidth('lr');
+            var iw = iconCls != '' ? (iconEl.getWidth() + iconEl.getMargins('lr')) : 0,
+                mw = msgEl.getWidth() + msgEl.getMargins('lr'),
+                fw = dlg.getFrameWidth('lr'),
+                bw = dlg.body.getFrameWidth('lr'),
+                w;
+                
             if (Ext.isIE && iw > 0){
                 //3 pixels get subtracted in the icon CSS for an IE margin issue,
                 //so we have to add it back here for the overall width to be consistent
                 iw += 3;
             }
-            var w = Math.max(Math.min(opt.width || iw+mw+fw+bw, this.maxWidth),
-                        Math.max(opt.minWidth || this.minWidth, bwidth || 0));
+            w = Math.max(Math.min(opt.width || iw+mw+fw+bw, opt.maxWidth || this.maxWidth),
+                    Math.max(opt.minWidth || this.minWidth, bwidth || 0));
 
             if(opt.prompt === true){
                 activeTextEl.setWidth(w-iw-fw-bw);
@@ -1671,7 +1672,8 @@ Ext.MessageBox.ERROR
                 msg : msg,
                 buttons: this.OK,
                 fn: fn,
-                scope : scope
+                scope : scope,
+                minWidth: this.minWidth
             });
             return this;
         },
@@ -1694,7 +1696,8 @@ Ext.MessageBox.ERROR
                 buttons: this.YESNO,
                 fn: fn,
                 scope : scope,
-                icon: this.QUESTION
+                icon: this.QUESTION,
+                minWidth: this.minWidth
             });
             return this;
         },
@@ -1719,7 +1722,7 @@ Ext.MessageBox.ERROR
                 msg : msg,
                 buttons: this.OKCANCEL,
                 fn: fn,
-                minWidth:250,
+                minWidth: this.minPromptWidth,
                 scope : scope,
                 prompt:true,
                 multiline: multiline,
@@ -1791,10 +1794,16 @@ Ext.MessageBox.ERROR
         minWidth : 100,
         /**
          * The minimum width in pixels of the message box if it is a progress-style dialog.  This is useful
-         * for setting a different minimum width than text-only dialogs may need (defaults to 250)
+         * for setting a different minimum width than text-only dialogs may need (defaults to 250).
          * @type Number
          */
         minProgressWidth : 250,
+        /**
+         * The minimum width in pixels of the message box if it is a prompt dialog.  This is useful
+         * for setting a different minimum width than text-only dialogs may need (defaults to 250).
+         * @type Number
+         */
+        minPromptWidth: 250,
         /**
          * An object containing the default button text strings that can be overriden for localized language support.
          * Supported properties are: ok, cancel, yes and no.  Generally you should include a locale-specific

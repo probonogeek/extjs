@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -351,7 +351,7 @@ myGrid.on('render', function(grid) {
                 bd = document.body,
                 scrollX = (de.scrollLeft || bd.scrollLeft || 0) + 5,
                 scrollY = (de.scrollTop || bd.scrollTop || 0) + 5,
-                axy = [xy[0] + offsets[0], xy[1] + offsets[1]]
+                axy = [xy[0] + offsets[0], xy[1] + offsets[1]],
                 sz = this.getSize();
                 
             this.anchorEl.removeClass(this.anchorCls);

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -371,27 +371,27 @@ function createTargeted(h, o, scope){
     };
 };
 
-function createBuffered(h, o, fn, scope){
-    fn.task = new EXTUTIL.DelayedTask();
+function createBuffered(h, o, l, scope){
+    l.task = new EXTUTIL.DelayedTask();
     return function(){
-        fn.task.delay(o.buffer, h, scope, TOARRAY(arguments));
+        l.task.delay(o.buffer, h, scope, TOARRAY(arguments));
     };
-}
+};
 
 function createSingle(h, e, fn, scope){
     return function(){
         e.removeListener(fn, scope);
         return h.apply(scope, arguments);
     };
-}
+};
 
-function createDelayed(h, o, fn, scope){
+function createDelayed(h, o, l, scope){
     return function(){
         var task = new EXTUTIL.DelayedTask();
-        if(!fn.tasks) {
-            fn.tasks = [];
+        if(!l.tasks) {
+            l.tasks = [];
         }
-        fn.tasks.push(task);
+        l.tasks.push(task);
         task.delay(o.delay || 10, h, scope, TOARRAY(arguments));
     };
 };
@@ -427,13 +427,13 @@ EXTUTIL.Event.prototype = {
             h = createTargeted(h, o, scope);
         }
         if(o.delay){
-            h = createDelayed(h, o, fn, scope);
+            h = createDelayed(h, o, l, scope);
         }
         if(o.single){
             h = createSingle(h, this, fn, scope);
         }
         if(o.buffer){
-            h = createBuffered(h, o, fn, scope);
+            h = createBuffered(h, o, l, scope);
         }
         l.fireFn = h;
         return l;
@@ -470,13 +470,11 @@ EXTUTIL.Event.prototype = {
             if (me.firing) {
                 me.listeners = me.listeners.slice(0);
             }
-            l = me.listeners[index].fn;
-            // Cancel buffered tasks
+            l = me.listeners[index];
             if(l.task) {
                 l.task.cancel();
                 delete l.task;
             }
-            // Cancel delayed tasks
             k = l.tasks && l.tasks.length;
             if(k) {
                 while(k--) {

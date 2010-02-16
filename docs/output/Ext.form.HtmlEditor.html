@@ -29,43 +29,14 @@ Ext.QuickTips.init();  <i>// enable tooltips</i>
         enableColors: false,
         enableAlignments: false
     }
-});</code></pre></div><div class="hr"></div><a id="Ext.form.HtmlEditor-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-anchor"></a><b><a href="source/Component.html#cfg-Ext.Component-anchor">anchor</a></b> : String<div class="mdesc"><div class="short">Note: this config is only used when this Component is rendered
+});</code></pre></div><div class="hr"></div><a id="Ext.form.HtmlEditor-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-anchor"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-anchor">anchor</a></b> : String<div class="mdesc"><div class="short">Note: this config is only used when this Component is rendered
 by a Container which has been configured to use an Anc...</div><div class="long"><p><b>Note</b>: this config is only used when this Component is rendered
-by a Container which has been configured to use an <b><a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">AnchorLayout</a></b>
+by a Container which has been configured to use an <b><a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">AnchorLayout</a> (or subclass thereof).</b>
 based layout manager, for example:<div class="mdetail-params"><ul>
 <li><a href="output/Ext.form.FormPanel.html" ext:cls="Ext.form.FormPanel">Ext.form.FormPanel</a></li>
 <li>specifying <code>layout: <em>'anchor'</em> <i>// or <em>'form'</em>, or <em>'absolute'</em></i></code></li>
 </ul></div></p>
-<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.Component.html#anchor" ext:member="#anchor" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoEl"></a><b><a href="source/Component.html#cfg-Ext.Component-autoEl">autoEl</a></b> : Mixed<div class="mdesc"><div class="short">A tag name or DomHelper spec used to create the Element which will
-encapsulate this Component.
-You do not normally ne...</div><div class="long"><p>A tag name or <a href="output/Ext.DomHelper.html" ext:cls="Ext.DomHelper">DomHelper</a> spec used to create the <a href="output/Ext.Component.html#Ext.Component-getEl" ext:member="getEl" ext:cls="Ext.Component">Element</a> which will
-encapsulate this Component.</p>
-<p>You do not normally need to specify this. For the base classes <a href="output/Ext.Component.html" ext:cls="Ext.Component">Ext.Component</a>, <a href="output/Ext.BoxComponent.html" ext:cls="Ext.BoxComponent">Ext.BoxComponent</a>,
-and <a href="output/Ext.Container.html" ext:cls="Ext.Container">Ext.Container</a>, this defaults to <b><tt>'div'</tt></b>. The more complex Ext classes use a more complex
-DOM structure created by their own onRender methods.</p>
-<p>This is intended to allow the developer to create application-specific utility Components encapsulated by
-different DOM elements. Example usage:</p><pre><code>{
-    xtype: <em>'box'</em>,
-    autoEl: {
-        tag: <em>'img'</em>,
-        src: <em>'http:<i>//www.example.com/example.jpg'</em></i>
-    }
-}, {
-    xtype: <em>'box'</em>,
-    autoEl: {
-        tag: <em>'blockquote'</em>,
-        html: <em>'autoEl is cool!'</em>
-    }
-}, {
-    xtype: <em>'container'</em>,
-    autoEl: <em>'ul'</em>,
-    cls: <em>'ux-unordered-list'</em>,
-    items: {
-        xtype: <em>'box'</em>,
-        autoEl: <em>'li'</em>,
-        html: <em>'First list item'</em>
-    }
-}</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#autoEl" ext:member="#autoEl" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-autoScroll"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-autoScroll">autoScroll</a></b> : Boolean<div class="mdesc"><div class="short">true to use overflow:'auto' on the components layout element and show scroll bars automatically when
+<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#anchor" ext:member="#anchor" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-autoScroll"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-autoScroll">autoScroll</a></b> : Boolean<div class="mdesc"><div class="short">true to use overflow:'auto' on the components layout element and show scroll bars automatically when
 necessary, false...</div><div class="long"><code>true</code> to use overflow:'auto' on the components layout element and show scroll bars automatically when
 necessary, <code>false</code> to clip any overflowing content (defaults to <code>false</code>).</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#autoScroll" ext:member="#autoScroll" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoShow"></a><b><a href="source/Component.html#cfg-Ext.Component-autoShow">autoShow</a></b> : Boolean<div class="mdesc"><div class="short">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
 them on render...</div><div class="long">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
@@ -125,7 +96,13 @@ Example use:<pre><code><b>new</b> Ext.FormPanel({
         xtype: <em>'textfield'</em>,
         fieldLabel: <em>'Name'</em>
     }]
-});</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#fieldLabel" ext:member="#fieldLabel" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-fontFamilies"></a><b><a href="source/HtmlEditor.html#cfg-Ext.form.HtmlEditor-fontFamilies">fontFamilies</a></b> : Array<div class="mdesc">An array of available font families</div></td><td class="msource">HtmlEditor</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-height"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-height">height</a></b> : Number<div class="mdesc"><div class="short">The height of this component in pixels (defaults to auto).
+});</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#fieldLabel" ext:member="#fieldLabel" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-flex"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-flex">flex</a></b> : Number<div class="mdesc"><div class="short">Note: this config is only used when this Component is rendered
+by a Container which has been configured to use a BoxL...</div><div class="long"><p><b>Note</b>: this config is only used when this Component is rendered
+by a Container which has been configured to use a <b><a href="output/Ext.layout.BoxLayout.html" ext:cls="Ext.layout.BoxLayout">BoxLayout</a>.</b>
+Each child Component with a <code>flex</code> property will be flexed either vertically (by a VBoxLayout)
+or horizontally (by an HBoxLayout) according to the item's <b>relative</b> <code>flex</code> value
+compared to the sum of all Components with <code>flex</flex> value specified. Any child items that have
+either a <code>flex = 0</code> or <code>flex = undefined</code> will not be 'flexed' (the initial size will not be changed).</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#flex" ext:member="#flex" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.HtmlEditor-fontFamilies"></a><b><a href="source/HtmlEditor.html#cfg-Ext.form.HtmlEditor-fontFamilies">fontFamilies</a></b> : Array<div class="mdesc">An array of available font families</div></td><td class="msource">HtmlEditor</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-height"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-height">height</a></b> : Number<div class="mdesc"><div class="short">The height of this component in pixels (defaults to auto).
 Note to express this dimension as a percentage or offset s...</div><div class="long">The height of this component in pixels (defaults to auto).
 <b>Note</b> to express this dimension as a percentage or offset see <a href="output/Ext.Component.html#Ext.Component-anchor" ext:member="anchor" ext:cls="Ext.Component">Ext.Component.anchor</a>.</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#height" ext:member="#height" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-hidden"></a><b><a href="source/Component.html#cfg-Ext.Component-hidden">hidden</a></b> : Boolean<div class="mdesc">Render this component hidden (default is false). If <tt>true</tt>, the
 <a href="output/Ext.Component.html#Ext.Component-hide" ext:member="hide" ext:cls="Ext.Component">hide</a> method will be called internally.</div></td><td class="msource"><a href="output/Ext.Component.html#hidden" ext:member="#hidden" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-hideLabel"></a><b><a href="source/Component.html#cfg-Ext.Component-hideLabel">hideLabel</a></b> : Boolean<div class="mdesc"><div class="short">true to completely hide the label element
@@ -344,9 +321,9 @@ right and left are set to the second.</li>
 to the second, and the bottom is set to the third.</li>
 <li>If there are four values, they apply to the top, right, bottom, and left, respectively.</li>
 </ul></div></p>
-<p>Defaults to:</p><pre><code>{top:0, right:0, bottom:0, left:0}</code></pre></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#margins" ext:member="#margins" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-msgTarget<p>The"></a><b><a href="source/Field.html#cfg-Ext.form.Field-msgTarget<p>The">msgTarget&lt;p&gt;The</a></b> : String<div class="mdesc"><div class="short">location where the message text set through markInvalid should display. 
+<p>Defaults to:</p><pre><code>{top:0, right:0, bottom:0, left:0}</code></pre></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#margins" ext:member="#margins" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.form.Field-msgTarget<p>The"></a><b><a href="source/Field.html#cfg-Ext.form.Field-msgTarget<p>The">msgTarget&lt;p&gt;The</a></b> : String<div class="mdesc"><div class="short">location where the message text set through markInvalid should display.
 Must be one of the following values:
-&lt;div cl...</div><div class="long">location where the message text set through <a href="output/Ext.form.Field.html#Ext.form.Field-markInvalid" ext:member="markInvalid" ext:cls="Ext.form.Field">markInvalid</a> should display. 
+&lt;div cla...</div><div class="long">location where the message text set through <a href="output/Ext.form.Field.html#Ext.form.Field-markInvalid" ext:member="markInvalid" ext:cls="Ext.form.Field">markInvalid</a> should display.
 Must be one of the following values:</p>
 <div class="mdetail-params"><ul>
 <li><code>qtip</code> Display a quick tip containing the message when the user hovers over the field. This is the default.
@@ -472,7 +449,7 @@ must be called in order for the tips to render.</div></div></td><td class="msour
 or an array of strings to form an Ext.XTemplate.
 Used in conjunction with the data and...</div><div class="long">An <bold><a href="output/Ext.Template.html" ext:cls="Ext.Template">Ext.Template</a></bold>, <bold><a href="output/Ext.XTemplate.html" ext:cls="Ext.XTemplate">Ext.XTemplate</a></bold>
 or an array of strings to form an Ext.XTemplate.
-Used in conjunction with the <code><a href="output/Ext.Component.html#Ext.Component-data" ext:member="data" ext:cls="Ext.Component">data</a></code> and 
+Used in conjunction with the <code><a href="output/Ext.Component.html#Ext.Component-data" ext:member="data" ext:cls="Ext.Component">data</a></code> and
 <code><a href="output/Ext.Component.html#Ext.Component-tplWriteMode" ext:member="tplWriteMode" ext:cls="Ext.Component">tplWriteMode</a></code> configurations.</div></div></td><td class="msource"><a href="output/Ext.Component.html#tpl" ext:member="#tpl" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-tplWriteMode"></a><b><a href="source/Component.html#cfg-Ext.Component-tplWriteMode">tplWriteMode</a></b> : String<div class="mdesc"><div class="short">The Ext.(X)Template method to use when
 updating the content area of the Component. Defaults to 'overwrite'
 (see Ext.X...</div><div class="long">The Ext.(X)Template method to use when
@@ -669,7 +646,8 @@ by calling <a href="output/Ext.util.Observable.html#Ext.util.Observable-enableBu
                                         void<div class="mdesc"><div class="short">Protected method that will not generally be called directly. It
 is called when the editor initializes the iframe with...</div><div class="long">Protected method that will not generally be called directly. It
 is called when the editor initializes the iframe with HTML contents. Override this method if you
-want to change the initialization markup of the iframe (e.g. to add stylesheets).<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">HtmlEditor</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-getEl"></a><b><a href="source/Component.html#method-Ext.Component-getEl">getEl</a></b>()
+want to change the initialization markup of the iframe (e.g. to add stylesheets).
+Note: IE8-Standards has unwanted scroller behavior, so the default meta tag forces IE7 compatibility<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">HtmlEditor</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-getEl"></a><b><a href="source/Component.html#method-Ext.Component-getEl">getEl</a></b>()
     :
                                         Ext.Element<div class="mdesc"><div class="short">Returns the Ext.Element which encapsulates this Component.
 This will usually be a &amp;lt;DIV&gt; element created by the cla...</div><div class="long"><p>Returns the <a href="output/Ext.Element.html" ext:cls="Ext.Element">Ext.Element</a> which encapsulates this Component.</p>

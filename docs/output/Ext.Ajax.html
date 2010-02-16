@@ -10,7 +10,7 @@ and override them at the request function level only if necessary.</p>
 <pre><code><i>// Default headers to pass <b>in</b> every request</i>
 Ext.Ajax.defaultHeaders = {
     <em>'Powered-By'</em>: <em>'Ext'</em>
-};</code></pre> 
+};</code></pre>
 </p>
 <p>Common <b>Events</b> you may want to set are:<div class="mdetail-params"><ul>
 <li><b><tt><a href="output/Ext.data.Connection.html#Ext.data.Connection-beforerequest" ext:member="beforerequest" ext:cls="Ext.data.Connection">beforerequest</a></tt></b><p class="sub-desc"></p></li>
@@ -20,7 +20,7 @@ Ext.Ajax.defaultHeaders = {
 <pre><code><i>// Example: show a spinner during all Ajax requests</i>
 Ext.Ajax.on(<em>'beforerequest'</em>, this.showSpinner, this);
 Ext.Ajax.on(<em>'requestcomplete'</em>, this.hideSpinner, this);
-Ext.Ajax.on(<em>'requestexception'</em>, this.hideSpinner, this);</code></pre> 
+Ext.Ajax.on(<em>'requestexception'</em>, this.hideSpinner, this);</code></pre>
 </p>
 <p>An example request:</p>
 <pre><code><i>// Basic request</i>
@@ -38,7 +38,7 @@ Ext.Ajax.<a href="output/Ext.data.Connection.html#Ext.data.Connection-request" e
 Ext.Ajax.<a href="output/Ext.data.Connection.html#Ext.data.Connection-request" ext:member="request" ext:cls="Ext.data.Connection">request</a>({
     form: <em>'some-form'</em>,
     params: <em>'foo=bar'</em>
-});</code></pre> 
+});</code></pre>
 </p><br><br><i>This class is a singleton and cannot be created directly.</i></div><div class="hr"></div><a id="Ext.Ajax-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Connection-disableCachingParam"></a><b><a href="source/Connection.html#cfg-Ext.data.Connection-disableCachingParam">disableCachingParam</a></b> : String<div class="mdesc">Change the parameter which is sent went disabling caching
 through a cache buster. Defaults to '_dc'</div></td><td class="msource"><a href="output/Ext.data.Connection.html#disableCachingParam" ext:member="#disableCachingParam" ext:cls="Ext.data.Connection">Connection</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-listeners"></a><b><a href="source/Observable.html#cfg-Ext.util.Observable-listeners">listeners</a></b> : Object<div class="mdesc"><div class="short">A config object containing one or more event handlers to be added to this
 object during initialization.  This should ...</div><div class="long"><p>A config object containing one or more event handlers to be added to this
@@ -251,8 +251,8 @@ called regardless of success or failure and is passed the following
 parameters:<ul>
 <li><b>options</b> : Object<div class="sub-desc">The parameter to the request call.</div></li>
 <li><b>success</b> : Boolean<div class="sub-desc">True if the request succeeded.</div></li>
-<li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data. 
-See <a href="http://www.w3.org/TR/XMLHttpRequest/">http://www.w3.org/TR/XMLHttpRequest/</a> for details about 
+<li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data.
+See <a href="http://www.w3.org/TR/XMLHttpRequest/">http://www.w3.org/TR/XMLHttpRequest/</a> for details about
 accessing elements of the response.</div></li>
 </ul></div></li>
 <li><a id="request-option-success"></a><b>success</b> : Function (Optional)<div class="sub-desc">The function
@@ -274,7 +274,7 @@ Defaults to the browser window.</div></li>
 <li><b>timeout</b> : Number (Optional)<div class="sub-desc">The timeout in milliseconds to be used for this request. Defaults to 30 seconds.</div></li>
 <li><b>form</b> : Element/HTMLElement/String (Optional)<div class="sub-desc">The <tt>&lt;form&gt;</tt>
 Element or the id of the <tt>&lt;form&gt;</tt> to pull parameters from.</div></li>
-<li><a id="request-option-isUpload"></a><b>isUpload</b> : Boolean (Optional)<div class="sub-desc"><b>Only meaningful when used 
+<li><a id="request-option-isUpload"></a><b>isUpload</b> : Boolean (Optional)<div class="sub-desc"><b>Only meaningful when used
 with the <tt>form</tt> option</b>.
 <p>True if the form object is a file upload (will be set automatically if the form was
 configured with <b><tt>enctype</tt></b> "multipart/form-data").</p>

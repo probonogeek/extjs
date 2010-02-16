@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -525,11 +525,23 @@ new Ext.tree.TreePanel({
             var uiP = node.attributes.uiProvider;
             node.ui = uiP ? new uiP(node) : new Ext.tree.RootTreeNodeUI(node);
         }
-        if (this.innerCt) {
-            this.innerCt.update('');
-            this.afterRender();
+        if(this.innerCt){
+            this.clearInnerCt();
+            this.renderRoot();
         }
         return node;
+    },
+    
+    clearInnerCt : function(){
+        this.innerCt.update('');    
+    },
+    
+    // private
+    renderRoot : function(){
+        this.root.render();
+        if(!this.rootVisible){
+            this.root.renderChildren();
+        }
     },
 
     /**
@@ -745,10 +757,7 @@ new Ext.tree.TreePanel({
     // private
     afterRender : function(){
         Ext.tree.TreePanel.superclass.afterRender.call(this);
-        this.root.render();
-        if(!this.rootVisible){
-            this.root.renderChildren();
-        }
+        this.renderRoot();
     },
 
     beforeDestroy : function(){
@@ -901,6 +910,15 @@ new Ext.tree.TreePanel({
      * @cfg {String} contentEl  @hide
      */
     /**
+     * @cfg {Mixed} data  @hide
+     */
+    /**
+     * @cfg {Mixed} tpl  @hide
+     */
+    /**
+     * @cfg {String} tplWriteMode  @hide
+     */
+    /**
      * @cfg {String} disabledClass  @hide
      */
     /**
@@ -945,7 +963,7 @@ Ext.reg('treepanel', Ext.tree.TreePanel);Ext.tree.TreeEventModel = function(tree
 Ext.tree.TreeEventModel.prototype = {
     initEvents : function(){
         var t = this.tree;
-            
+
         if(t.trackMouseOver !== false){
             t.mon(t.innerCt, {
                 scope: this,
@@ -1018,12 +1036,15 @@ Ext.tree.TreeEventModel.prototype = {
     },
 
     trackExit : function(e){
-        if(this.lastOverNode && !e.within(this.lastOverNode.ui.getEl())){
-            this.onNodeOut(e, this.lastOverNode);
+        if(this.lastOverNode){
+            if(this.lastOverNode.ui && !e.within(this.lastOverNode.ui.getEl())){
+                this.onNodeOut(e, this.lastOverNode);
+            }
             delete this.lastOverNode;
             Ext.getBody().un('mouseover', this.trackExit, this);
             this.trackingDoc = false;
         }
+
     },
 
     delegateClick : function(e, t){
@@ -1045,7 +1066,7 @@ Ext.tree.TreeEventModel.prototype = {
             if(this.getNodeTarget(e)){
                 this.onNodeDblClick(e, this.getNode(e));
             }else{
-                this.onContainerEvent(e, 'dblclick');    
+                this.onContainerEvent(e, 'dblclick');
             }
         }
     },
@@ -1055,13 +1076,13 @@ Ext.tree.TreeEventModel.prototype = {
             if(this.getNodeTarget(e)){
                 this.onNodeContextMenu(e, this.getNode(e));
             }else{
-                this.onContainerEvent(e, 'contextmenu');    
+                this.onContainerEvent(e, 'contextmenu');
             }
         }
     },
-    
+
     onContainerEvent: function(e, type){
-        this.tree.fireEvent('container' + type, this.tree, e); 
+        this.tree.fireEvent('container' + type, this.tree, e);
     },
 
     onNodeClick : function(e, node){
@@ -1102,7 +1123,8 @@ Ext.tree.TreeEventModel.prototype = {
     },
 
     beforeEvent : function(e){
-        if(this.disabled){
+        var node = this.getNode(e);
+        if(this.disabled || !node || !node.ui){
             e.stopEvent();
             return false;
         }
@@ -1971,6 +1993,20 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
         this.parentNode.removeChild(this, destroy);
         return this;
     },
+    
+    /**
+     * Removes all child nodes from this node.
+     * @param {Boolean} destroy <tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.
+     * @return {Node} this
+     */
+    removeAll : function(destroy){
+        var cn = this.childNodes,
+            n;
+        while((n = cn[0])){
+            this.removeChild(n, destroy);
+        }
+        return this;
+    },
 
     /**
      * Returns the child node at the specified index.
@@ -2443,12 +2479,15 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
     // these methods are overridden to provide lazy rendering support
     // private override
     appendChild : function(n){
+        var node, exists;
         if(!n.render && !Ext.isArray(n)){
             n = this.getLoader().createNode(n);
+        }else{
+            exists = !n.parentNode;
         }
-        var node = Ext.tree.TreeNode.superclass.appendChild.call(this, n);
-        if(node && this.childrenRendered){
-            node.render();
+        node = Ext.tree.TreeNode.superclass.appendChild.call(this, n);
+        if(node){
+            this.afterAdd(node, exists);
         }
         this.ui.updateExpandIcon();
         return node;
@@ -2475,15 +2514,29 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
 
     // private override
     insertBefore : function(node, refNode){
+        var newNode, exists;
         if(!node.render){
             node = this.getLoader().createNode(node);
+        } else {
+            exists = Ext.isObject(node.parentNode);
         }
-        var newNode = Ext.tree.TreeNode.superclass.insertBefore.call(this, node, refNode);
-        if(newNode && refNode && this.childrenRendered){
-            node.render();
+        newNode = Ext.tree.TreeNode.superclass.insertBefore.call(this, node, refNode);
+        if(newNode && refNode){
+            this.afterAdd(newNode, exists);
         }
         this.ui.updateExpandIcon();
         return newNode;
+    },
+    
+    // private
+    afterAdd : function(node, exists){
+        if(this.childrenRendered){
+            // bulk render if the node already exists
+            node.render(exists);
+        }else if(exists){
+            // make sure we update the indent
+            node.renderIndent(true, true);
+        }
     },
 
     /**
@@ -2913,7 +2966,7 @@ Ext.tree.TreeNodeUI.prototype = {
     removeChild : function(node){
         if(this.rendered){
             this.ctNode.removeChild(node.ui.getEl());
-        } 
+        }
     },
 
     // private
@@ -2938,12 +2991,12 @@ Ext.tree.TreeNodeUI.prototype = {
         this.disabled = state;
         if (this.checkbox) {
             this.checkbox.disabled = state;
-        }        
+        }
         if(state){
             this.addClass("x-tree-node-disabled");
         }else{
             this.removeClass("x-tree-node-disabled");
-        } 
+        }
     },
 
     // private
@@ -2994,7 +3047,7 @@ Ext.tree.TreeNodeUI.prototype = {
  */
     removeClass : function(cls){
         if(this.elNode){
-            Ext.fly(this.elNode).removeClass(cls);  
+            Ext.fly(this.elNode).removeClass(cls);
         }
     },
 
@@ -3003,12 +3056,12 @@ Ext.tree.TreeNodeUI.prototype = {
         if(this.rendered){
             this.holder = document.createElement("div");
             this.holder.appendChild(this.wrap);
-        }  
+        }
     },
 
     // private
     fireEvent : function(){
-        return this.node.fireEvent.apply(this.node, arguments);  
+        return this.node.fireEvent.apply(this.node, arguments);
     },
 
     // private
@@ -3016,7 +3069,7 @@ Ext.tree.TreeNodeUI.prototype = {
         this.node.on("move", this.onMove, this);
 
         if(this.node.disabled){
-            this.onDisableChange(this.node, true);            
+            this.onDisableChange(this.node, true);
         }
         if(this.node.hidden){
             this.hide();
@@ -3054,7 +3107,7 @@ Ext.tree.TreeNodeUI.prototype = {
         this.node.hidden = false;
         if(this.wrap){
             this.wrap.style.display = "";
-        } 
+        }
     },
 
     // private
@@ -3124,7 +3177,7 @@ Ext.tree.TreeNodeUI.prototype = {
     onCheckChange : function(){
         var checked = this.checkbox.checked;
         // fix for IE6
-        this.checkbox.defaultChecked = checked;        
+        this.checkbox.defaultChecked = checked;
         this.node.attributes.checked = checked;
         this.fireEvent('checkchange', this.node, checked);
     },
@@ -3140,12 +3193,12 @@ Ext.tree.TreeNodeUI.prototype = {
     startDrop : function(){
         this.dropping = true;
     },
-    
+
     // delayed drop so the click event doesn't get fired on a drop
-    endDrop : function(){ 
+    endDrop : function(){
        setTimeout(function(){
            this.dropping = false;
-       }.createDelegate(this), 50); 
+       }.createDelegate(this), 50);
     },
 
     // private
@@ -3186,7 +3239,7 @@ Ext.tree.TreeNodeUI.prototype = {
     blur : function(){
         try{
             this.anchor.blur();
-        }catch(e){} 
+        }catch(e){}
     },
 
     // private
@@ -3201,7 +3254,7 @@ Ext.tree.TreeNodeUI.prototype = {
         }
         this.animating = true;
         this.updateExpandIcon();
-        
+
         ct.slideIn('t', {
            callback : function(){
                this.animating = false;
@@ -3248,7 +3301,7 @@ Ext.tree.TreeNodeUI.prototype = {
 
     // private
     getContainer : function(){
-        return this.ctNode;  
+        return this.ctNode;
     },
 
 /**
@@ -3256,7 +3309,7 @@ Ext.tree.TreeNodeUI.prototype = {
  * @return {HtmlElement} The DOM element. The default implementation uses a <code>&lt;li></code>.
  */
     getEl : function(){
-        return this.wrap;  
+        return this.wrap;
     },
 
     // private
@@ -3271,15 +3324,15 @@ Ext.tree.TreeNodeUI.prototype = {
 
     // private
     onRender : function(){
-        this.render();    
+        this.render();
     },
 
     // private
     render : function(bulkRender){
         var n = this.node, a = n.attributes;
-        var targetNode = n.parentNode ? 
+        var targetNode = n.parentNode ?
               n.parentNode.ui.getContainer() : n.ownerTree.innerCt.dom;
-        
+
         if(!this.rendered){
             this.rendered = true;
 
@@ -3296,7 +3349,7 @@ Ext.tree.TreeNodeUI.prototype = {
                    if(a.qtipTitle){
                        this.textNode.setAttribute("ext:qtitle", a.qtipTitle);
                    }
-               } 
+               }
             }else if(a.qtipCfg){
                 a.qtipCfg.target = Ext.id(this.textNode);
                 Ext.QuickTips.register(a.qtipCfg);
@@ -3335,7 +3388,7 @@ Ext.tree.TreeNodeUI.prototype = {
         }else{
             this.wrap = Ext.DomHelper.insertHtml("beforeEnd", targetNode, buf);
         }
-        
+
         this.elNode = this.wrap.childNodes[0];
         this.ctNode = this.wrap.childNodes[1];
         var cs = this.elNode.childNodes;
@@ -3360,7 +3413,7 @@ Ext.tree.TreeNodeUI.prototype = {
     getAnchor : function(){
         return this.anchor;
     },
-    
+
 /**
  * Returns the text node.
  * @return {HtmlNode} The DOM text node.
@@ -3368,7 +3421,7 @@ Ext.tree.TreeNodeUI.prototype = {
     getTextEl : function(){
         return this.textNode;
     },
-    
+
 /**
  * Returns the icon &lt;img> element.
  * @return {HtmlElement} The DOM image element.
@@ -3383,14 +3436,14 @@ Ext.tree.TreeNodeUI.prototype = {
  * @return {Boolean} The checked flag.
  */
     isChecked : function(){
-        return this.checkbox ? this.checkbox.checked : false; 
+        return this.checkbox ? this.checkbox.checked : false;
     },
 
     // private
     updateExpandIcon : function(){
         if(this.rendered){
-            var n = this.node, 
-                c1, 
+            var n = this.node,
+                c1,
                 c2,
                 cls = n.isLast() ? "x-tree-elbow-end" : "x-tree-elbow",
                 hasChild = n.hasChildNodes();
@@ -3414,7 +3467,7 @@ Ext.tree.TreeNodeUI.prototype = {
                 }
             }else{
                 if(!this.wasLeaf){
-                    Ext.fly(this.elNode).replaceClass("x-tree-node-expanded", "x-tree-node-leaf");
+                    Ext.fly(this.elNode).replaceClass("x-tree-node-expanded", "x-tree-node-collapsed");
                     delete this.c1;
                     delete this.c2;
                     this.wasLeaf = true;
@@ -3427,7 +3480,7 @@ Ext.tree.TreeNodeUI.prototype = {
             }
         }
     },
-    
+
     // private
     onIdChange: function(id){
         if(this.rendered){
@@ -3475,7 +3528,7 @@ Ext.tree.TreeNodeUI.prototype = {
         if(this.elNode){
             Ext.dd.Registry.unregister(this.elNode.id);
         }
-        
+
         Ext.each(['textnode', 'anchor', 'checkbox', 'indentNode', 'ecNode', 'iconNode', 'elNode', 'ctNode', 'wrap', 'holder'], function(el){
             if(this[el]){
                 Ext.fly(this[el]).remove();
@@ -3622,15 +3675,15 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
 
     /**
      * @cfg {Array/String} paramOrder Defaults to <tt>undefined</tt>. Only used when using directFn.
-     * A list of params to be executed
-     * server side.  Specify the params in the order in which they must be executed on the server-side
+     * Specifies the params in the order in which they must be passed to the server-side Direct method
      * as either (1) an Array of String values, or (2) a String of params delimited by either whitespace,
      * comma, or pipe. For example,
      * any of the following would be acceptable:<pre><code>
+nodeParameter: 'node',
 paramOrder: ['param1','param2','param3']
-paramOrder: 'param1 param2 param3'
-paramOrder: 'param1,param2,param3'
-paramOrder: 'param1|param2|param'
+paramOrder: 'node param1 param2 param3'
+paramOrder: 'param1,node,param2,param3'
+paramOrder: 'param1|param2|param|node'
      </code></pre>
      */
     paramOrder: undefined,
@@ -3641,7 +3694,7 @@ paramOrder: 'param1|param2|param'
      * <tt>{@link #paramOrder}</tt> nullifies this configuration.
      */
     paramsAsHash: false,
-    
+
     /**
      * @cfg {String} nodeParameter The name of the parameter sent to the server which contains
      * the identifier of the node. Defaults to <tt>'node'</tt>.
@@ -3659,7 +3712,7 @@ paramOrder: 'param1|param2|param'
      * This is called automatically when a node is expanded, but may be used to reload
      * a node (or append new children if the {@link #clearOnLoad} option is false.)
      * @param {Ext.tree.TreeNode} node
-     * @param {Function} callback Function to call after the node has been loaded. The 
+     * @param {Function} callback Function to call after the node has been loaded. The
      * function is passed the TreeNode which was requested to be loaded.
      * @param (Object) scope The cope (<code>this</code> reference) in which the callback is executed.
      * defaults to the loaded TreeNode.
@@ -3696,23 +3749,29 @@ paramOrder: 'param1|param2|param'
     },
 
     getParams: function(node){
-        var buf = [], bp = this.baseParams;
+        var bp = Ext.apply({}, this.baseParams),
+            np = this.nodeParameter,
+            po = this.paramOrder;
+
+        np && (bp[ np ] = node.id);
+
         if(this.directFn){
-            buf.push(node.id);
-            if(bp){
-                if(this.paramOrder){
-                    for(var i = 0, len = this.paramOrder.length; i < len; i++){
-                        buf.push(bp[this.paramOrder[i]]);
-                    }
-                }else if(this.paramsAsHash){
-                    buf.push(bp);
+            var buf = [node.id];
+            if(po){
+                // reset 'buf' if the nodeParameter was included in paramOrder
+                if(np && po.indexOf(np) > -1){
+                    buf = [];
                 }
+
+                for(var i = 0, len = po.length; i < len; i++){
+                    buf.push(bp[ po[i] ]);
+                }
+            }else if(this.paramsAsHash){
+                buf = [bp];
             }
             return buf;
         }else{
-            var o = Ext.apply({}, bp);
-            o[this.nodeParameter] = node.id;
-            return o;
+            return bp;
         }
     },
 
@@ -3845,8 +3904,9 @@ new Ext.tree.TreePanel({
         this.fireEvent("loadexception", this, a.node, response);
         this.runCallback(a.callback, a.scope || a.node, [a.node]);
     },
-    
+
     destroy : function(){
+        this.abort();
         this.purgeListeners();
     }
 });/**
@@ -3959,7 +4019,7 @@ Ext.tree.TreeFilter.prototype = {
 };
 /**
  * @class Ext.tree.TreeSorter
- * Provides sorting of nodes in a {@link Ext.tree.TreePanel}.  The TreeSorter automatically monitors events on the 
+ * Provides sorting of nodes in a {@link Ext.tree.TreePanel}.  The TreeSorter automatically monitors events on the
  * associated TreePanel that might affect the tree's sort order (beforechildrenrendered, append, insert and textchange).
  * Example usage:<br />
  * <pre><code>
@@ -3980,33 +4040,33 @@ Ext.tree.TreeSorter = function(tree, config){
     /**
      * @cfg {Boolean} folderSort True to sort leaf nodes under non-leaf nodes (defaults to false)
      */
-    /** 
-     * @cfg {String} property The named attribute on the node to sort by (defaults to "text").  Note that this 
+    /**
+     * @cfg {String} property The named attribute on the node to sort by (defaults to "text").  Note that this
      * property is only used if no {@link #sortType} function is specified, otherwise it is ignored.
      */
-    /** 
+    /**
      * @cfg {String} dir The direction to sort ("asc" or "desc," case-insensitive, defaults to "asc")
      */
-    /** 
+    /**
      * @cfg {String} leafAttr The attribute used to determine leaf nodes when {@link #folderSort} = true (defaults to "leaf")
      */
-    /** 
+    /**
      * @cfg {Boolean} caseSensitive true for case-sensitive sort (defaults to false)
      */
-    /** 
+    /**
      * @cfg {Function} sortType A custom "casting" function used to convert node values before sorting.  The function
      * will be called with a single parameter (the {@link Ext.tree.TreeNode} being evaluated) and is expected to return
      * the node's sort value cast to the specific data type required for sorting.  This could be used, for example, when
-     * a node's text (or other attribute) should be sorted as a date or numeric value.  See the class description for 
+     * a node's text (or other attribute) should be sorted as a date or numeric value.  See the class description for
      * example usage.  Note that if a sortType is specified, any {@link #property} config will be ignored.
      */
-    
+
     Ext.apply(this, config);
     tree.on("beforechildrenrendered", this.doSort, this);
     tree.on("append", this.updateSort, this);
     tree.on("insert", this.updateSort, this);
     tree.on("textchange", this.updateSortParent, this);
-    
+
     var dsc = this.dir && this.dir.toLowerCase() == "desc";
     var p = this.property || "text";
     var sortType = this.sortType;
@@ -4023,14 +4083,14 @@ Ext.tree.TreeSorter = function(tree, config){
                 return -1;
             }
         }
-    	var v1 = sortType ? sortType(n1.attributes[p]) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
-    	var v2 = sortType ? sortType(n2.attributes[p]) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
-    	if(v1 < v2){
-			return dsc ? +1 : -1;
-		}else if(v1 > v2){
-			return dsc ? -1 : +1;
+        var v1 = sortType ? sortType(n1) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
+        var v2 = sortType ? sortType(n2) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
+        if(v1 < v2){
+            return dsc ? +1 : -1;
+        }else if(v1 > v2){
+            return dsc ? -1 : +1;
         }else{
-	    	return 0;
+            return 0;
         }
     };
 };
@@ -4039,20 +4099,20 @@ Ext.tree.TreeSorter.prototype = {
     doSort : function(node){
         node.sort(this.sortFn);
     },
-    
+
     compareNodes : function(n1, n2){
         return (n1.text.toUpperCase() > n2.text.toUpperCase() ? 1 : -1);
     },
-    
+
     updateSort : function(tree, node){
         if(node.childrenRendered){
             this.doSort.defer(1, this, [node]);
         }
     },
-    
+
     updateSortParent : function(node){
-		var p = node.parentNode;
-		if(p && p.childrenRendered){
+        var p = node.parentNode;
+        if(p && p.childrenRendered){
             this.doSort.defer(1, this, [p]);
         }
     }
@@ -4459,6 +4519,7 @@ Ext.extend(Ext.tree.TreeDragZone, Ext.dd.DragZone, {
 Ext.tree.TreeEditor = function(tree, fc, config){
     fc = fc || {};
     var field = fc.events ? fc : new Ext.form.TextField(fc);
+    
     Ext.tree.TreeEditor.superclass.constructor.call(this, field, config);
 
     this.tree = tree;
@@ -4511,16 +4572,18 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
 
     initEditor : function(tree){
         tree.on({
-            scope: this,
+            scope      : this,
             beforeclick: this.beforeNodeClick,
-            dblclick: this.onNodeDblClick
+            dblclick   : this.onNodeDblClick
         });
+        
         this.on({
-            scope: this,
-            complete: this.updateNode,
+            scope          : this,
+            complete       : this.updateNode,
             beforestartedit: this.fitToTree,
-            specialkey: this.onSpecialKey
+            specialkey     : this.onSpecialKey
         });
+        
         this.on('startedit', this.bindScroll, this, {delay:10});
     },
 

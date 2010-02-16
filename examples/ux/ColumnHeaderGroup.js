@@ -1,14 +1,10 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 Ext.ns('Ext.ux.grid');
-
-if(Ext.isWebKit){
-    Ext.grid.GridView.prototype.borderWidth = 0;
-}
 
 Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
 
@@ -378,7 +374,7 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
             }
         }
         return {
-            width: (Ext.isBorderBox ? width : Math.max(width - this.borderWidth, 0)) + 'px',
+            width: (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2) ? width : Math.max(width - this.borderWidth, 0)) + 'px',
             hidden: hidden
         };
     },
@@ -458,8 +454,8 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
         if(cm.isFixed(newIndex)){
             return false;
         }
-        var row = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupRowIndex.call(this.view, h), 
-            oldGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, oldIndex), 
+        var row = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupRowIndex.call(this.view, h),
+            oldGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, oldIndex),
             newGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, newIndex),
             oldIndex = oldGroup.col;
             newIndex = newGroup.col + (pt == "after" ? newGroup.colspan : 0);

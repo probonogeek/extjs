@@ -143,8 +143,6 @@
                 {"href":"output/Ext.direct.Provider.html","text":"Provider","id":"Ext.direct.Provider","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.direct.RemotingProvider.html","text":"RemotingProvider","id":"Ext.direct.RemotingProvider","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
-				,
-                {"href":"output/Ext.direct.Transaction.html","text":"Transaction","id":"Ext.direct.Transaction","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				]}
 				,
                 {"id":"pkg-Ext.form","text":"form","iconCls":"icon-pkg","cls":"package","singleClickExpand":true, children:[
@@ -249,6 +247,8 @@
                 {"href":"output/Ext.layout.AccordionLayout.html","text":"AccordionLayout","id":"Ext.layout.AccordionLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.layout.AnchorLayout.html","text":"AnchorLayout","id":"Ext.layout.AnchorLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.layout.AutoLayout.html","text":"AutoLayout","id":"Ext.layout.AutoLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.layout.BorderLayout.html","text":"BorderLayout","id":"Ext.layout.BorderLayout","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
@@ -402,6 +402,8 @@
                 {"href":"output/Ext.DatePicker.html","text":"DatePicker","id":"Ext.DatePicker","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.Direct.html","text":"Direct","id":"Ext.Direct","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.Direct.Transaction.html","text":"Direct.Transaction","id":"Ext.Direct.Transaction","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.DomHelper.html","text":"DomHelper","id":"Ext.DomHelper","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
 				,
@@ -652,8 +654,6 @@
 			,
 			"Ext.direct.RemotingProvider":"icon-cls"
 			,
-			"Ext.direct.Transaction":"icon-cls"
-			,
 			"Ext.form.Action":"icon-cls"
 			,
 			"Ext.form.Action.DirectLoad":"icon-cls"
@@ -751,6 +751,8 @@
 			"Ext.layout.AccordionLayout":"icon-cls"
 			,
 			"Ext.layout.AnchorLayout":"icon-cls"
+			,
+			"Ext.layout.AutoLayout":"icon-cls"
 			,
 			"Ext.layout.BorderLayout":"icon-cls"
 			,
@@ -893,6 +895,8 @@
 			"Ext.DatePicker":"icon-cmp"
 			,
 			"Ext.Direct":"icon-static"
+			,
+			"Ext.Direct.Transaction":"icon-cls"
 			,
 			"Ext.DomHelper":"icon-static"
 			,

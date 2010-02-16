@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * Portuguese/Brazil Translation by Weber Souza
  * 08 April 2007

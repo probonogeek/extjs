@@ -1,101 +1,9 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
-/**
- * @class Ext.layout.MenuLayout
- * @extends Ext.layout.ContainerLayout
- * <p>Layout manager used by {@link Ext.menu.Menu}. Generally this class should not need to be used directly.</p>
- */
- Ext.layout.MenuLayout = Ext.extend(Ext.layout.ContainerLayout, {
-    monitorResize : true,
-
-    setContainer : function(ct){
-        this.monitorResize = !ct.floating;
-        // This event is only fired by the menu in IE, used so we don't couple
-        // the menu with the layout.
-        ct.on('autosize', this.doAutoSize, this);
-        Ext.layout.MenuLayout.superclass.setContainer.call(this, ct);
-    },
-
-    renderItem : function(c, position, target){
-        if (!this.itemTpl) {
-            this.itemTpl = Ext.layout.MenuLayout.prototype.itemTpl = new Ext.XTemplate(
-                '<li id="{itemId}" class="{itemCls}">',
-                    '<tpl if="needsIcon">',
-                        '<img src="{icon}" class="{iconCls}"/>',
-                    '</tpl>',
-                '</li>'
-            );
-        }
-
-        if(c && !c.rendered){
-            if(Ext.isNumber(position)){
-                position = target.dom.childNodes[position];
-            }
-            var a = this.getItemArgs(c);
-
-//          The Component's positionEl is the <li> it is rendered into
-            c.render(c.positionEl = position ?
-                this.itemTpl.insertBefore(position, a, true) :
-                this.itemTpl.append(target, a, true));
-
-//          Link the containing <li> to the item.
-            c.positionEl.menuItemId = c.getItemId();
-
-//          If rendering a regular Component, and it needs an icon,
-//          move the Component rightwards.
-            if (!a.isMenuItem && a.needsIcon) {
-                c.positionEl.addClass('x-menu-list-item-indent');
-            }
-            this.configureItem(c, position);
-        }else if(c && !this.isValidParent(c, target)){
-            if(Ext.isNumber(position)){
-                position = target.dom.childNodes[position];
-            }
-            target.dom.insertBefore(c.getActionEl().dom, position || null);
-        }
-    },
-
-    getItemArgs : function(c) {
-        var isMenuItem = c instanceof Ext.menu.Item;
-        return {
-            isMenuItem: isMenuItem,
-            needsIcon: !isMenuItem && (c.icon || c.iconCls),
-            icon: c.icon || Ext.BLANK_IMAGE_URL,
-            iconCls: 'x-menu-item-icon ' + (c.iconCls || ''),
-            itemId: 'x-menu-el-' + c.id,
-            itemCls: 'x-menu-list-item '
-        };
-    },
-
-//  Valid if the Component is in a <li> which is part of our target <ul>
-    isValidParent : function(c, target) {
-        return c.el.up('li.x-menu-list-item', 5).dom.parentNode === (target.dom || target);
-    },
-
-    onLayout : function(ct, target){
-        this.renderAll(ct, target);
-        this.doAutoSize();
-    },
-
-    doAutoSize : function(){
-        var ct = this.container, w = ct.width;
-        if(ct.floating){
-            if(w){
-                ct.setWidth(w);
-            }else if(Ext.isIE){
-                ct.setWidth(Ext.isStrict && (Ext.isIE7 || Ext.isIE8) ? 'auto' : ct.minWidth);
-                var el = ct.getEl(), t = el.dom.offsetWidth; // force recalc
-                ct.setWidth(ct.getLayoutTarget().getWidth() + el.getFrameWidth('lr'));
-            }
-        }
-    }
-});
-Ext.Container.LAYOUTS['menu'] = Ext.layout.MenuLayout;
-
 /**
  * @class Ext.menu.Menu
  * @extends Ext.Container
@@ -192,6 +100,13 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      */
     floating : true,
 
+
+    /**
+     * @cfg {Number} zIndex
+     * zIndex to use when the menu is floating.
+     */
+    zIndex: 15000,
+
     // private
     hidden : true,
 
@@ -256,10 +171,10 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
         }
         Ext.menu.Menu.superclass.initComponent.call(this);
         if(this.autoLayout){
+            var fn = this.doLayout.createDelegate(this, []);
             this.on({
-                add: this.doLayout,
-                remove: this.doLayout,
-                scope: this
+                add: fn,
+                remove: fn
             });
         }
     },
@@ -290,7 +205,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
                 dh: dh,
                 constrain: false,
                 parentEl: ct,
-                zindex:15000
+                zindex: this.zIndex
             });
         }else{
             this.el = ct.createChild(dh);
@@ -474,7 +389,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
                 // set the position so we can figure out the constrain value.
                 this.el.setXY(xy);
                 //constrain the value, keep the y coordinate the same
-                this.constrainScroll(xy[1]);
+                xy[1] = this.constrainScroll(xy[1]);
                 xy = [this.el.adjustForConstraints(xy)[0], xy[1]];
             }else{
                 //constrain to the viewport.
@@ -497,9 +412,24 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
     },
 
     constrainScroll : function(y){
-        var max, full = this.ul.setHeight('auto').getHeight();
+        var max, full = this.ul.setHeight('auto').getHeight(),
+            returnY = y, normalY, parentEl, scrollTop, viewHeight;
         if(this.floating){
-            max = this.maxHeight ? this.maxHeight : Ext.fly(this.el.dom.parentNode).getViewSize(false).height - y;
+            parentEl = Ext.fly(this.el.dom.parentNode);
+            scrollTop = parentEl.getScroll().top;
+            viewHeight = parentEl.getViewSize().height;
+            //Normalize y by the scroll position for the parent element.  Need to move it into the coordinate space
+            //of the view.
+            normalY = y - scrollTop;
+            max = this.maxHeight ? this.maxHeight : viewHeight - normalY;
+            if(full > viewHeight) {
+                max = viewHeight;
+                //Set returnY equal to (0,0) in view space by reducing y by the value of normalY
+                returnY = y - normalY;
+            } else if(max < full) {
+                returnY = y - (full - max);
+                max = full;
+            }
         }else{
             max = this.getHeight();
         }
@@ -513,6 +443,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
             this.el.select('.x-menu-scroller').setDisplayed('none');
         }
         this.ul.dom.scrollTop = 0;
+        return returnY;
     },
 
     createScrollers : function(){
@@ -573,9 +504,11 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      * @param {Boolean} deep (optional) True to hide all parent menus recursively, if any (defaults to false)
      */
     hide : function(deep){
-        this.deepHide = deep;
-        Ext.menu.Menu.superclass.hide.call(this);
-        delete this.deepHide;
+        if (!this.isDestroyed) {
+            this.deepHide = deep;
+            Ext.menu.Menu.superclass.hide.call(this);
+            delete this.deepHide;
+        }
     },
 
     // private
@@ -653,7 +586,9 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
      * @return {Ext.menu.Item} The menu item that was added
      */
     addElement : function(el){
-        return this.add(new Ext.menu.BaseItem(el));
+        return this.add(new Ext.menu.BaseItem({
+            el: el
+        }));
     },
 
     /**
@@ -685,6 +620,7 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
 
     //private
     onDestroy : function(){
+        Ext.EventManager.removeResizeListener(this.hide, this);
         var pm = this.parentMenu;
         if(pm && pm.activeChild == this){
             delete pm.activeChild;
@@ -692,7 +628,6 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
         delete this.parentMenu;
         Ext.menu.Menu.superclass.onDestroy.call(this);
         Ext.menu.MenuMgr.unregister(this);
-        Ext.EventManager.removeResizeListener(this.hide, this);
         if(this.keyNav) {
             this.keyNav.disable();
         }

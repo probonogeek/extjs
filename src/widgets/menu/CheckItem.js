@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -93,12 +93,13 @@ Ext.menu.CheckItem = Ext.extend(Ext.menu.Item, {
      * @param {Boolean} suppressEvent (optional) True to prevent the checkchange event from firing (defaults to false)
      */
     setChecked : function(state, suppressEvent){
-        if(this.checked != state && this.fireEvent("beforecheckchange", this, state) !== false){
+        var suppress = suppressEvent === true;
+        if(this.checked != state && (suppress || this.fireEvent("beforecheckchange", this, state) !== false)){
             if(this.container){
                 this.container[state ? "addClass" : "removeClass"]("x-menu-item-checked");
             }
             this.checked = state;
-            if(suppressEvent !== true){
+            if(!suppress){
                 this.fireEvent("checkchange", this, state);
             }
         }

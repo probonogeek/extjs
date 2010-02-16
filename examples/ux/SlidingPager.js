@@ -1,12 +1,13 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 Ext.ux.SlidingPager = Ext.extend(Object, {
     init : function(pbar){
-        Ext.each(pbar.items.getRange(2,6), function(c){
+        var idx = pbar.items.indexOf(pbar.inputItem);
+        Ext.each(pbar.items.getRange(idx - 2, idx + 2), function(c){
             c.hide();
         });
         var slider = new Ext.Slider({
@@ -24,14 +25,11 @@ Ext.ux.SlidingPager = Ext.extend(Object, {
                 }
             }
         });
-        pbar.insert(5, slider);
+        pbar.insert(idx + 1, slider);
         pbar.on({
             change: function(pb, data){
-                slider.maxValue = data.pages;
+                slider.setMaxValue(data.pages);
                 slider.setValue(data.activePage);
-            },
-            beforedestroy: function(){
-                slider.destroy();
             }
         });
     }

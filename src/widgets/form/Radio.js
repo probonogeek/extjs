@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -61,7 +61,7 @@ Ext.form.Radio = Ext.extend(Ext.form.Checkbox, {
     setValue : function(v){
     	if (typeof v == 'boolean') {
             Ext.form.Radio.superclass.setValue.call(this, v);
-        } else {
+        } else if (this.rendered) {
             var r = this.getCheckEl().child('input[name=' + this.el.dom.name + '][value=' + v + ']', true);
             if(r){
                 Ext.getCmp(r.id).setValue(true);
@@ -69,7 +69,7 @@ Ext.form.Radio = Ext.extend(Ext.form.Checkbox, {
         }
         return this;
     },
-    
+
     // private
     getCheckEl: function(){
         if(this.inGroup){

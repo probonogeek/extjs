@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -9,20 +9,7 @@
  * @extends Ext.data.DataWriter
  * DataWriter extension for writing an array or single {@link Ext.data.Record} object(s) in preparation for executing a remote CRUD action.
  */
-Ext.data.JsonWriter = function(config) {
-    Ext.data.JsonWriter.superclass.constructor.call(this, config);
-
-    // careful to respect "returnJson", renamed to "encode"
-    // TODO: remove after Ext-3.0.1 release
-    if (this.returnJson != undefined) {
-        this.encode = this.returnJson;
-    }
-}
-Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
-    /**
-     * @cfg {Boolean} returnJson <b>Deprecated, will be removed in Ext-3.0.1</b>.  Use {@link Ext.data.JsonWriter#encode} instead.
-     */
-    returnJson : undefined,
+Ext.data.JsonWriter = Ext.extend(Ext.data.DataWriter, {
     /**
      * @cfg {Boolean} encode <tt>true</tt> to {@link Ext.util.JSON#encode encode} the
      * {@link Ext.data.DataWriter#toHash hashed data}. Defaults to <tt>true</tt>.  When using
@@ -34,6 +21,17 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * let the lower-level connection object (eg: Ext.Ajax) do the encoding.
      */
     encode : true,
+    /**
+     * @cfg {Boolean} encodeDelete False to send only the id to the server on delete, true to encode it in an object
+     * literal, eg: <pre><code>
+{id: 1}
+ * </code></pre> Defaults to <tt>false</tt>
+     */
+    encodeDelete: false,
+    
+    constructor : function(config){
+        Ext.data.JsonWriter.superclass.constructor.call(this, config);    
+    },
 
     /**
      * Final action of a write event.  Apply the written data-object to params.
@@ -78,8 +76,14 @@ Ext.extend(Ext.data.JsonWriter, Ext.data.DataWriter, {
      * @param {Ext.data.Record} rec
      * @return {Object}
      */
-    destroyRecord : function(rec) {
-        return rec.id;
+    destroyRecord : function(rec){
+        if(this.encodeDelete){
+            var data = {};
+            data[this.meta.idProperty] = rec.id;
+            return data;
+        }else{
+            return rec.id;
+        }
     }
 });/**
  * @class Ext.data.JsonReader
@@ -375,14 +379,20 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
     createAccessor : function(){
         var re = /[\[\.]/;
         return function(expr) {
-            try {
-                return(re.test(expr)) ?
-                new Function('obj', 'return obj.' + expr) :
-                function(obj){
-                    return obj[expr];
-                };
-            } catch(e){}
-            return Ext.emptyFn;
+            if(Ext.isEmpty(expr)){
+                return Ext.emptyFn;
+            }
+            if(Ext.isFunction(expr)){
+                return expr;
+            }
+            var i = String(expr).search(re);
+            if(i >= 0){
+                return new Function('obj', 'return obj' + (i > 0 ? '.' : '') + expr);
+            }
+            return function(obj){
+                return obj[expr];
+            };
+
         };
     }(),
 
@@ -478,6 +488,7 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
             recordType = this.recordType,
             fields = recordType.prototype.fields,
             records = [],
+            success = true,
             v;
 
         var root = this.getRoot(o);
@@ -506,8 +517,15 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
                 totalRecords = v;
             }
         }
+        if(s.successProperty){
+            v = this.getSuccess(o);
+            if(v === false || v === 'false'){
+                success = false;
+            }
+        }
 
         return {
+            success : success,
             records : records,
             totalRecords : totalRecords
         };

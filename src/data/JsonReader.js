@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -298,14 +298,20 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
     createAccessor : function(){
         var re = /[\[\.]/;
         return function(expr) {
-            try {
-                return(re.test(expr)) ?
-                new Function('obj', 'return obj.' + expr) :
-                function(obj){
-                    return obj[expr];
-                };
-            } catch(e){}
-            return Ext.emptyFn;
+            if(Ext.isEmpty(expr)){
+                return Ext.emptyFn;
+            }
+            if(Ext.isFunction(expr)){
+                return expr;
+            }
+            var i = String(expr).search(re);
+            if(i >= 0){
+                return new Function('obj', 'return obj' + (i > 0 ? '.' : '') + expr);
+            }
+            return function(obj){
+                return obj[expr];
+            };
+
         };
     }(),
 

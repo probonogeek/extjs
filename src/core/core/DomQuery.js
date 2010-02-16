@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -57,6 +57,7 @@ All selectors, attribute filters and pseudos below can be combined infinitely in
     <li> <b>E:has(S)</b> an E element that has a descendent that matches simple selector S</li>
     <li> <b>E:next(S)</b> an E element whose next sibling matches simple selector S</li>
     <li> <b>E:prev(S)</b> an E element whose previous sibling matches simple selector S</li>
+    <li> <b>E:any(S1|S2|S2)</b> an E element which matches any of the simple selectors S1, S2 or S3//\\</li>
 </ul>
 <h4>CSS Value Selectors:</h4>
 <ul class="list">
@@ -81,18 +82,20 @@ Ext.DomQuery = function(){
     	nthRe = /(\d*)n\+?(\d*)/, 
     	nthRe2 = /\D/,
     	// This is for IE MSXML which does not support expandos.
-	    // IE runs the same speed using setAttribute, however FF slows way down
-	    // and Safari completely fails so they need to continue to use expandos.
-	    isIE = window.ActiveXObject ? true : false,
-	    key = 30803;
-	    
+	// IE runs the same speed using setAttribute, however FF slows way down
+	// and Safari completely fails so they need to continue to use expandos.
+	isIE = window.ActiveXObject ? true : false,
+	key = 30803;
+    
     // this eval is stop the compressor from
-	// renaming the variable to something shorter
-	eval("var batch = 30803;");    	
+    // renaming the variable to something shorter
+    eval("var batch = 30803;");    	
 
-    function child(p, index){
+    // Retrieve the child node from a particular
+    // parent at the specified index.
+    function child(parent, index){
         var i = 0,
-        	n = p.firstChild;
+            n = parent.firstChild;
         while(n){
             if(n.nodeType == 1){
                if(++i == index){
@@ -102,53 +105,65 @@ Ext.DomQuery = function(){
             n = n.nextSibling;
         }
         return null;
-    };
+    }
 
-    function next(n){
+    // retrieve the next element node
+    function next(n){	
         while((n = n.nextSibling) && n.nodeType != 1);
         return n;
-    };
+    }
 
+    // retrieve the previous element node 
     function prev(n){
         while((n = n.previousSibling) && n.nodeType != 1);
         return n;
-    };
+    }
 
-    function children(d){
-        var n = d.firstChild, ni = -1,
-        	nx;
- 	    while(n){
- 	        nx = n.nextSibling;
- 	        if(n.nodeType == 3 && !nonSpace.test(n.nodeValue)){
- 	            d.removeChild(n);
- 	        }else{
- 	            n.nodeIndex = ++ni;
- 	        }
- 	        n = nx;
- 	    }
- 	    return this;
- 	};
+    // Mark each child node with a nodeIndex skipping and
+    // removing empty text nodes.
+    function children(parent){
+        var n = parent.firstChild,
+	    nodeIndex = -1,
+	    nextNode;
+	while(n){
+	    nextNode = n.nextSibling;
+	    // clean worthless empty nodes.
+	    if(n.nodeType == 3 && !nonSpace.test(n.nodeValue)){
+		parent.removeChild(n);
+	    }else{
+		// add an expando nodeIndex
+		n.nodeIndex = ++nodeIndex;
+	    }
+	    n = nextNode;
+	}
+	return this;
+    }
 
-    function byClassName(c, a, v){
-        if(!v){
-            return c;
+
+    // nodeSet - array of nodes
+    // cls - CSS Class
+    function byClassName(nodeSet, cls){
+        if(!cls){
+            return nodeSet;
         }
-        var r = [], ri = -1, cn;
-        for(var i = 0, ci; ci = c[i]; i++){
-            if((' '+ci.className+' ').indexOf(v) != -1){
-                r[++ri] = ci;
+        var result = [], ri = -1;
+        for(var i = 0, ci; ci = nodeSet[i]; i++){
+            if((' '+ci.className+' ').indexOf(cls) != -1){
+                result[++ri] = ci;
             }
         }
-        return r;
+        return result;
     };
 
     function attrValue(n, attr){
+	// if its an array, use the first node.
         if(!n.tagName && typeof n.length != "undefined"){
             n = n[0];
         }
         if(!n){
             return null;
         }
+
         if(attr == "for"){
             return n.htmlFor;
         }
@@ -159,15 +174,23 @@ Ext.DomQuery = function(){
 
     };
 
+
+    // ns - nodes
+    // mode - false, /, >, +, ~
+    // tagName - defaults to "*"
     function getNodes(ns, mode, tagName){
         var result = [], ri = -1, cs;
         if(!ns){
             return result;
         }
         tagName = tagName || "*";
+	// convert to array
         if(typeof ns.getElementsByTagName != "undefined"){
             ns = [ns];
         }
+	
+	// no mode specified, grab all elements by tagName
+	// at any depth
         if(!mode){
             for(var i = 0, ni; ni = ns[i]; i++){
                 cs = ni.getElementsByTagName(tagName);
@@ -175,7 +198,9 @@ Ext.DomQuery = function(){
                     result[++ri] = ci;
                 }
             }
-        }else if(mode == "/" || mode == ">"){
+	// Direct Child mode (/ or >)
+	// E > F or E/F all direct children elements of E that have the tag 	
+        } else if(mode == "/" || mode == ">"){
             var utag = tagName.toUpperCase();
             for(var i = 0, ni, cn; ni = ns[i]; i++){
                 cn = ni.childNodes;
@@ -185,6 +210,8 @@ Ext.DomQuery = function(){
                     }
                 }
             }
+	// Immediately Preceding mode (+)
+	// E + F all elements with the tag F that are immediately preceded by an element with the tag E
         }else if(mode == "+"){
             var utag = tagName.toUpperCase();
             for(var i = 0, n; n = ns[i]; i++){
@@ -193,6 +220,8 @@ Ext.DomQuery = function(){
                     result[++ri] = n;
                 }
             }
+	// Sibling mode (~)
+	// E ~ F all elements with the tag F that are preceded by a sibling element with the tag E
         }else if(mode == "~"){
             var utag = tagName.toUpperCase();
             for(var i = 0, n; n = ns[i]; i++){
@@ -204,7 +233,7 @@ Ext.DomQuery = function(){
             }
         }
         return result;
-    };
+    }
 
     function concat(a, b){
         if(b.slice){
@@ -223,69 +252,81 @@ Ext.DomQuery = function(){
         if(!tagName){
             return cs;
         }
-        var r = [], ri = -1;
+        var result = [], ri = -1;
         tagName = tagName.toLowerCase();
         for(var i = 0, ci; ci = cs[i]; i++){
-            if(ci.nodeType == 1 && ci.tagName.toLowerCase()==tagName){
-                r[++ri] = ci;
+            if(ci.nodeType == 1 && ci.tagName.toLowerCase() == tagName){
+                result[++ri] = ci;
             }
         }
-        return r;
-    };
+        return result;
+    }
 
-    function byId(cs, attr, id){
+    function byId(cs, id){
         if(cs.tagName || cs == document){
             cs = [cs];
         }
         if(!id){
             return cs;
         }
-        var r = [], ri = -1;
-        for(var i = 0,ci; ci = cs[i]; i++){
+        var result = [], ri = -1;
+        for(var i = 0, ci; ci = cs[i]; i++){
             if(ci && ci.id == id){
-                r[++ri] = ci;
-                return r;
+                result[++ri] = ci;
+                return result;
             }
         }
-        return r;
-    };
+        return result;
+    }
 
+    // operators are =, !=, ^=, $=, *=, %=, |= and ~=
+    // custom can be "{"
     function byAttribute(cs, attr, value, op, custom){
-        var r = [], 
-        	ri = -1, 
-        	st = custom=="{",
-        	f = Ext.DomQuery.operators[op];
+        var result = [], 
+            ri = -1, 
+            useGetStyle = custom == "{",	    
+            fn = Ext.DomQuery.operators[op],	    
+            a,	    
+            innerHTML;
         for(var i = 0, ci; ci = cs[i]; i++){
+	    // skip non-element nodes.
             if(ci.nodeType != 1){
                 continue;
             }
-            var a;
-            if(st){
-                a = Ext.DomQuery.getStyle(ci, attr);
-            }
-            else if(attr == "class" || attr == "className"){
-                a = ci.className;
-            }else if(attr == "for"){
-                a = ci.htmlFor;
-            }else if(attr == "href"){
-                a = ci.getAttribute("href", 2);
+	    
+            innerHTML = ci.innerHTML;
+            // we only need to change the property names if we're dealing with html nodes, not XML
+            if(innerHTML !== null && innerHTML !== undefined){
+                if(useGetStyle){
+                    a = Ext.DomQuery.getStyle(ci, attr);
+                } else if (attr == "class" || attr == "className"){
+                    a = ci.className;
+                } else if (attr == "for"){
+                    a = ci.htmlFor;
+                } else if (attr == "href"){
+		    // getAttribute href bug
+		    // http://www.glennjones.net/Post/809/getAttributehrefbug.htm
+                    a = ci.getAttribute("href", 2);
+                } else{
+                    a = ci.getAttribute(attr);
+                }
             }else{
                 a = ci.getAttribute(attr);
             }
-            if((f && f(a, value)) || (!f && a)){
-                r[++ri] = ci;
+            if((fn && fn(a, value)) || (!fn && a)){
+                result[++ri] = ci;
             }
         }
-        return r;
-    };
+        return result;
+    }
 
     function byPseudo(cs, name, value){
         return Ext.DomQuery.pseudos[name](cs, value);
-    };
+    }
 
     function nodupIEXml(cs){
         var d = ++key, 
-        	r;
+            r;
         cs[0].setAttribute("_nodup", d);
         r = [cs[0]];
         for(var i = 1, len = cs.length; i < len; i++){
@@ -336,7 +377,7 @@ Ext.DomQuery = function(){
 
     function quickDiffIEXml(c1, c2){
         var d = ++key,
-        	r = [];
+            r = [];
         for(var i = 0, len = c1.length; i < len; i++){
             c1[i].setAttribute("_qdiff", d);
         }        
@@ -378,7 +419,7 @@ Ext.DomQuery = function(){
            return d.getElementById(id);
         }
         ns = getNodes(ns, mode, "*");
-        return byId(ns, null, id);
+        return byId(ns, id);
     }
 
     return {
@@ -395,72 +436,80 @@ Ext.DomQuery = function(){
         compile : function(path, type){
             type = type || "select";
 
+	    // setup fn preamble
             var fn = ["var f = function(root){\n var mode; ++batch; var n = root || document;\n"],
-            	q = path, mode, lq,
-            	tk = Ext.DomQuery.matchers,
-            	tklen = tk.length,
-            	mm,
+		mode,		
+		lastPath,
+            	matchers = Ext.DomQuery.matchers,
+            	matchersLn = matchers.length,
+            	modeMatch,
             	// accept leading mode switch
-            	lmode = q.match(modeRe);
+            	lmode = path.match(modeRe);
             
             if(lmode && lmode[1]){
                 fn[fn.length] = 'mode="'+lmode[1].replace(trimRe, "")+'";';
-                q = q.replace(lmode[1], "");
+                path = path.replace(lmode[1], "");
             }
+	    
             // strip leading slashes
             while(path.substr(0, 1)=="/"){
                 path = path.substr(1);
             }
 
-            while(q && lq != q){
-                lq = q;
-                var tm = q.match(tagTokenRe);
+            while(path && lastPath != path){
+                lastPath = path;
+                var tokenMatch = path.match(tagTokenRe);
                 if(type == "select"){
-                    if(tm){
-                        if(tm[1] == "#"){
-                            fn[fn.length] = 'n = quickId(n, mode, root, "'+tm[2]+'");';
+                    if(tokenMatch){
+			// ID Selector
+                        if(tokenMatch[1] == "#"){
+                            fn[fn.length] = 'n = quickId(n, mode, root, "'+tokenMatch[2]+'");';			
                         }else{
-                            fn[fn.length] = 'n = getNodes(n, mode, "'+tm[2]+'");';
+                            fn[fn.length] = 'n = getNodes(n, mode, "'+tokenMatch[2]+'");';
                         }
-                        q = q.replace(tm[0], "");
-                    }else if(q.substr(0, 1) != '@'){
+                        path = path.replace(tokenMatch[0], "");
+                    }else if(path.substr(0, 1) != '@'){
                         fn[fn.length] = 'n = getNodes(n, mode, "*");';
                     }
+		// type of "simple"
                 }else{
-                    if(tm){
-                        if(tm[1] == "#"){
-                            fn[fn.length] = 'n = byId(n, null, "'+tm[2]+'");';
+                    if(tokenMatch){
+                        if(tokenMatch[1] == "#"){
+                            fn[fn.length] = 'n = byId(n, "'+tokenMatch[2]+'");';
                         }else{
-                            fn[fn.length] = 'n = byTag(n, "'+tm[2]+'");';
+                            fn[fn.length] = 'n = byTag(n, "'+tokenMatch[2]+'");';
                         }
-                        q = q.replace(tm[0], "");
+                        path = path.replace(tokenMatch[0], "");
                     }
                 }
-                while(!(mm = q.match(modeRe))){
+                while(!(modeMatch = path.match(modeRe))){
                     var matched = false;
-                    for(var j = 0; j < tklen; j++){
-                        var t = tk[j];
-                        var m = q.match(t.re);
+                    for(var j = 0; j < matchersLn; j++){
+                        var t = matchers[j];
+                        var m = path.match(t.re);
                         if(m){
                             fn[fn.length] = t.select.replace(tplRe, function(x, i){
-                                                    return m[i];
-                                                });
-                            q = q.replace(m[0], "");
+				return m[i];
+			    });
+                            path = path.replace(m[0], "");
                             matched = true;
                             break;
                         }
                     }
                     // prevent infinite loop on bad selector
                     if(!matched){
-                        throw 'Error parsing selector, parsing failed at "' + q + '"';
+                        throw 'Error parsing selector, parsing failed at "' + path + '"';
                     }
                 }
-                if(mm[1]){
-                    fn[fn.length] = 'mode="'+mm[1].replace(trimRe, "")+'";';
-                    q = q.replace(mm[1], "");
+                if(modeMatch[1]){
+                    fn[fn.length] = 'mode="'+modeMatch[1].replace(trimRe, "")+'";';
+                    path = path.replace(modeMatch[1], "");
                 }
             }
+	    // close fn out
             fn[fn.length] = "return nodup(n);\n}";
+	    
+	    // eval fn and return it
             eval(fn.join(""));
             return f;
         },
@@ -468,37 +517,60 @@ Ext.DomQuery = function(){
         /**
          * Selects a group of elements.
          * @param {String} selector The selector/xpath query (can be a comma separated list of selectors)
-         * @param {Node} root (optional) The start of the query (defaults to document).
+         * @param {Node/String} root (optional) The start of the query (defaults to document).
          * @return {Array} An Array of DOM elements which match the selector. If there are
          * no matches, and empty Array is returned.
          */
-        select : function(path, root, type){
-            if(!root || root == document){
-                root = document;
-            }
+	jsSelect: function(path, root, type){
+	    // set root to doc if not specified.
+	    root = root || document;
+	    
             if(typeof root == "string"){
                 root = document.getElementById(root);
             }
             var paths = path.split(","),
             	results = [];
-            for(var i = 0, len = paths.length; i < len; i++){
-                var p = paths[i].replace(trimRe, "");
-                if(!cache[p]){
-                    cache[p] = Ext.DomQuery.compile(p);
-                    if(!cache[p]){
-                        throw p + " is not a valid selector";
+		
+	    // loop over each selector
+            for(var i = 0, len = paths.length; i < len; i++){		
+                var subPath = paths[i].replace(trimRe, "");
+		// compile and place in cache
+                if(!cache[subPath]){
+                    cache[subPath] = Ext.DomQuery.compile(subPath);
+                    if(!cache[subPath]){
+                        throw subPath + " is not a valid selector";
                     }
                 }
-                var result = cache[p](root);
+                var result = cache[subPath](root);
                 if(result && result != document){
                     results = results.concat(result);
                 }
             }
+	    
+	    // if there were multiple selectors, make sure dups
+	    // are eliminated
             if(paths.length > 1){
                 return nodup(results);
             }
             return results;
         },
+	isXml: function(el) {
+	    var docEl = (el ? el.ownerDocument || el : 0).documentElement;
+	    return docEl ? docEl.nodeName !== "HTML" : false;
+	},
+        select : document.querySelectorAll ? function(path, root, type) {
+	    root = root || document;
+	    if (!Ext.DomQuery.isXml(root)) {
+		try {
+		    var cs = root.querySelectorAll(path);
+		    return Ext.toArray(cs);
+		}
+		catch (ex) {}		
+	    }	    
+	    return Ext.DomQuery.jsSelect.call(this, path, root, type);
+	} : function(path, root, type) {
+	    return Ext.DomQuery.jsSelect.call(this, path, root, type);
+	},
 
         /**
          * Selects a single element.
@@ -524,7 +596,11 @@ Ext.DomQuery = function(){
             }
             var n = valueCache[path](root), v;
             n = n[0] ? n[0] : n;
-            
+            	    
+	    // overcome a limitation of maximum textnode size
+	    // Rumored to potentially crash IE6 but has not been confirmed.
+	    // http://reference.sitepoint.com/javascript/Node/normalize
+	    // https://developer.mozilla.org/En/DOM/Node.normalize	    
             if (typeof n.normalize == 'function') n.normalize();
             
             v = (n && n.firstChild ? n.firstChild.nodeValue : null);
@@ -578,10 +654,12 @@ Ext.DomQuery = function(){
 
         /**
          * Collection of matching regular expressions and code snippets.
+         * Each capture group within () will be replace the {} in the select
+         * statement as specified by their index.
          */
         matchers : [{
                 re: /^\.([\w-]+)/,
-                select: 'n = byClassName(n, null, " {1} ");'
+                select: 'n = byClassName(n, " {1} ");'
             }, {
                 re: /^\:([\w-]+)(?:\(((?:[^\s>\/]*|.*?))\))?/,
                 select: 'n = byPseudo(n, "{1}", "{2}");'
@@ -590,7 +668,7 @@ Ext.DomQuery = function(){
                 select: 'n = byAttribute(n, "{2}", "{4}", "{3}", "{1}");'
             }, {
                 re: /^#([\w-]+)/,
-                select: 'n = byId(n, null, "{1}");'
+                select: 'n = byId(n, "{1}");'
             },{
                 re: /^@([\w-]+)/,
                 select: 'return {firstChild:{nodeValue:attrValue(n, "{1}")}};'

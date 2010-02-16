@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 /**
  * Romanian translations for ExtJS 2.1
  * First released by Lucian Lature on 2007-04-24

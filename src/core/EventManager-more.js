@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -29,14 +29,14 @@ Ext.apply(Ext.EventManager, function(){
            var h = D.getViewHeight(),
                w = D.getViewWidth();
 
-           //whacky problem in IE where the resize event will fire even though the w/h are the same.
-           if(curHeight != h || curWidth != w){
+            //whacky problem in IE where the resize event will fire even though the w/h are the same.
+            if(curHeight != h || curWidth != w){
                resizeEvent.fire(curWidth = w, curHeight = h);
-           }
+            }
        },
 
        /**
-        * Adds a listener to be notified when the browser window is resized and provides resize event buffering (50 milliseconds),
+        * Adds a listener to be notified when the browser window is resized and provides resize event buffering (100 milliseconds),
         * passes new viewport width and height to handlers.
         * @param {Function} fn      The handler function the window resize event invokes.
         * @param {Object}   scope   The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
@@ -54,11 +54,7 @@ Ext.apply(Ext.EventManager, function(){
        // exposed only to allow manual firing
        fireWindowResize : function(){
            if(resizeEvent){
-               if((Ext.isIE||Ext.isAir) && resizeTask){
-                   resizeTask.delay(50);
-               }else{
-                   resizeEvent.fire(D.getViewWidth(), D.getViewHeight());
-               }
+               resizeTask.delay(100);
            }
        },
 

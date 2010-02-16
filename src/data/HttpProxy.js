@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -171,7 +171,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
             } else {
                 this.onWrite(action, o, response, rs);
             }
-        }
+        };
     },
 
     /**
@@ -233,10 +233,10 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
             o.request.callback.call(o.request.scope, null, o.request.arg, false);
             return;
         }
-        if (res.success === false) {
-            this.fireEvent('exception', this, 'remote', action, o, res, rs);
-        } else {
+        if (res.success === true) {
             this.fireEvent('write', this, action, res.data, res, rs, o.request.arg);
+        } else {
+            this.fireEvent('exception', this, 'remote', action, o, res, rs);
         }
         // TODO refactor onRead, onWrite to be more generalized now that we're dealing with Ext.data.Response instance
         // the calls to request.callback(...) in each will have to be made similar.

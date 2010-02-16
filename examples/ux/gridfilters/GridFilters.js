@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -44,7 +44,7 @@ Ext.namespace('Ext.ux.grid');
  * The filter collection binds to the
  * <code>{@link Ext.grid.GridPanel#beforestaterestore beforestaterestore}</code>
  * and <code>{@link Ext.grid.GridPanel#beforestatesave beforestatesave}</code>
- * events in order to be stateful. 
+ * events in order to be stateful.
  * </div></li>
  * <li><b>Grid Changes</b> :
  * <div class="sub-desc"><ul>
@@ -63,11 +63,11 @@ Ext.namespace('Ext.ux.grid');
  * </ul></div></li>
  * </ul></div>
  * <p><b><u>Example usage:</u></b></p>
- * <pre><code>    
+ * <pre><code>
 var store = new Ext.data.GroupingStore({
     ...
 });
- 
+
 var filters = new Ext.ux.grid.GridFilters({
     autoReload: false, //don&#39;t reload automatically
     local: true, //only filter locally
@@ -98,7 +98,7 @@ var filters = new Ext.ux.grid.GridFilters({
 var cm = new Ext.grid.ColumnModel([{
     ...
 }]);
- 
+
 var grid = new Ext.grid.GridPanel({
      ds: store,
      cm: cm,
@@ -196,17 +196,17 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     init : function (grid) {
         if (grid instanceof Ext.grid.GridPanel) {
             this.grid = grid;
-            
+
             this.bindStore(this.grid.getStore(), true);
             // assumes no filters were passed in the constructor, so try and use ones from the colModel
             if(this.filters.getCount() == 0){
                 this.addFilters(this.grid.getColumnModel());
             }
-          
+
             this.grid.filters = this;
-             
+
             this.grid.addEvents({'filterupdate': true});
-              
+
             grid.on({
                 scope: this,
                 beforestaterestore: this.applyState,
@@ -214,7 +214,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
                 beforedestroy: this.destroy,
                 reconfigure: this.onReconfigure
             });
-            
+
             if (grid.rendered){
                 this.onRender();
             } else {
@@ -224,19 +224,19 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
                     render: this.onRender
                 });
             }
-                      
+
         } else if (grid instanceof Ext.PagingToolbar) {
             this.toolbar = grid;
         }
     },
-        
+
     /**
      * @private
      * Handler for the grid's beforestaterestore event (fires before the state of the
      * grid is restored).
      * @param {Object} grid The grid object
      * @param {Object} state The hash of state values returned from the StateProvider.
-     */   
+     */
     applyState : function (grid, state) {
         var key, filter;
         this.applyingState = true;
@@ -256,7 +256,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         }
         delete this.applyingState;
     },
-    
+
     /**
      * Saves the state of all active filters
      * @param {Object} grid
@@ -272,11 +272,11 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         });
         return (state.filters = filters);
     },
-    
+
     /**
      * @private
      * Handler called when the grid is rendered
-     */    
+     */
     onRender : function () {
         this.grid.getView().on('refresh', this.onRefresh, this);
         this.createMenu();
@@ -285,7 +285,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called by the grid 'beforedestroy' event
-     */    
+     */
     destroy : function () {
         this.removeAll();
         this.purgeListeners();
@@ -293,17 +293,17 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         if(this.filterMenu){
             Ext.menu.MenuMgr.unregister(this.filterMenu);
             this.filterMenu.destroy();
-             this.filterMenu = this.menu.menu = null;            
+             this.filterMenu = this.menu.menu = null;
         }
     },
 
     /**
      * Remove all filters, permanently destroying them.
-     */    
+     */
     removeAll : function () {
         if(this.filters){
             Ext.destroy.apply(Ext, this.filters.items);
-            // remove all items from the collection 
+            // remove all items from the collection
             this.filters.clear();
         }
     },
@@ -334,7 +334,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called when the grid reconfigure event fires
-     */    
+     */
     onReconfigure : function () {
         this.bindStore(this.grid.getStore());
         this.store.clearFilter();
@@ -348,11 +348,11 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
             hmenu = view.hmenu;
 
         if (this.showMenu && hmenu) {
-            
+
             this.sep  = hmenu.addSeparator();
             this.filterMenu = new Ext.menu.Menu({
                 id: this.grid.id + '-filters-menu'
-            }); 
+            });
             this.menu = hmenu.add({
                 checked: false,
                 itemId: 'filters',
@@ -387,12 +387,12 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called by the grid's hmenu beforeshow event
-     */    
+     */
     onMenu : function (filterMenu) {
         var filter = this.getMenuFilter();
 
         if (filter) {
-/*            
+/*
 TODO: lazy rendering
             if (!filter.menu) {
                 filter.menu = filter.createMenu();
@@ -403,16 +403,16 @@ TODO: lazy rendering
             // disable the menu if filter.disabled explicitly set to true
             this.menu.setDisabled(filter.disabled === true);
         }
-        
+
         this.menu.setVisible(filter !== undefined);
         this.sep.setVisible(filter !== undefined);
     },
-    
+
     /** @private */
     onCheckChange : function (item, value) {
         this.getMenuFilter().setActive(value);
     },
-    
+
     /** @private */
     onBeforeCheck : function (check, value) {
         return !value || this.getMenuFilter().isActivatable();
@@ -423,7 +423,7 @@ TODO: lazy rendering
      * Handler for all events on filters.
      * @param {String} event Event name
      * @param {Object} filter Standard signature of the event before the event is fired
-     */   
+     */
     onStateChange : function (event, filter) {
         if (event === 'serialize') {
             return;
@@ -437,13 +437,13 @@ TODO: lazy rendering
             this.deferredUpdate.delay(this.updateBuffer);
         }
         this.updateColumnHeadings();
-            
+
         if (!this.applyingState) {
             this.grid.saveState();
-        }    
+        }
         this.grid.fireEvent('filterupdate', this, filter);
     },
-    
+
     /**
      * @private
      * Handler for store's beforeload event when configured for remote filtering
@@ -452,11 +452,11 @@ TODO: lazy rendering
      */
     onBeforeLoad : function (store, options) {
         options.params = options.params || {};
-        this.cleanParams(options.params);       
+        this.cleanParams(options.params);
         var params = this.buildQuery(this.getFilterData());
         Ext.apply(options.params, params);
     },
-    
+
     /**
      * @private
      * Handler for store's load event when configured for local filtering
@@ -470,28 +470,25 @@ TODO: lazy rendering
     /**
      * @private
      * Handler called when the grid's view is refreshed
-     */    
+     */
     onRefresh : function () {
         this.updateColumnHeadings();
     },
 
     /**
      * Update the styles for the header row based on the active filters
-     */    
+     */
     updateColumnHeadings : function () {
         var view = this.grid.getView(),
-            hds, i, len, filter;
+            i, len, filter;
         if (view.mainHd) {
-            hds = view.mainHd.select('td').removeClass(this.filterCls);
             for (i = 0, len = view.cm.config.length; i < len; i++) {
                 filter = this.getFilter(view.cm.config[i].dataIndex);
-                if (filter && filter.active) {
-                    hds.item(i).addClass(this.filterCls);
-                }
+                Ext.fly(view.getHeaderCell(i))[filter && filter.active ? 'addClass' : 'removeClass'](this.filterCls);
             }
         }
     },
-    
+
     /** @private */
     reload : function () {
         if (this.local) {
@@ -510,7 +507,7 @@ TODO: lazy rendering
             store.reload();
         }
     },
-    
+
     /**
      * Method factory that generates a record validator for the filters active at the time
      * of invokation.
@@ -523,7 +520,7 @@ TODO: lazy rendering
                 f.push(filter);
             }
         });
-        
+
         len = f.length;
         return function (record) {
             for (i = 0; i < len; i++) {
@@ -534,7 +531,7 @@ TODO: lazy rendering
             return true;
         };
     },
-    
+
     /**
      * Adds a filter to the collection and observes it for state change.
      * @param {Object/Ext.ux.grid.filter.Filter} config A filter configuration or a filter object.
@@ -544,7 +541,7 @@ TODO: lazy rendering
         var Cls = this.getFilterClass(config.type),
             filter = config.menu ? config : (new Cls(config));
         this.filters.add(filter);
-        
+
         Ext.util.Observable.capture(filter, this.onStateChange, this);
         return filter;
     },
@@ -554,7 +551,7 @@ TODO: lazy rendering
      * @param {Array/Ext.grid.ColumnModel} filters Either an Array of
      * filter configuration objects or an Ext.grid.ColumnModel.  The columns
      * of a passed Ext.grid.ColumnModel will be examined for a <code>filter</code>
-     * property and, if present, will be used as the filter configuration object.   
+     * property and, if present, will be used as the filter configuration object.
      */
     addFilters : function (filters) {
         if (filters) {
@@ -574,19 +571,19 @@ TODO: lazy rendering
                         // filter type is specified in order of preference:
                         //     filter type specified in config
                         //     type specified in store's field's type config
-                        filter.type = filter.type || this.store.fields.get(dI).type;  
+                        filter.type = filter.type || this.store.fields.get(dI).type;
                     }
                 } else {
                     filter = filters[i];
                 }
-                // if filter config found add filter for the column 
+                // if filter config found add filter for the column
                 if (filter) {
                     this.addFilter(filter);
                 }
             }
         }
     },
-    
+
     /**
      * Returns a filter for the given dataIndex, if one exists.
      * @param {String} dataIndex The dataIndex of the desired filter object.
@@ -626,13 +623,13 @@ TODO: lazy rendering
         });
         return filters;
     },
-    
+
     /**
      * Function to take the active filters data and build it into a query.
      * The format of the query depends on the <code>{@link #encode}</code>
      * configuration:
      * <div class="mdetail-params"><ul>
-     * 
+     *
      * <li><b><tt>false</tt></b> : <i>Default</i>
      * <div class="sub-desc">
      * Flatten into query string of the form (assuming <code>{@link #paramPrefix}='filters'</code>:
@@ -643,7 +640,7 @@ filters[0][data][type]="someValue2"&
 filters[0][data][value]="someValue3"&
      * </code></pre>
      * </div></li>
-     * <li><b><tt>true</tt></b> : 
+     * <li><b><tt>true</tt></b> :
      * <div class="sub-desc">
      * JSON encode the filter data
      * <pre><code>
@@ -669,7 +666,7 @@ filters[0][data][value]="someValue3"&
                 f = filters[i];
                 root = [this.paramPrefix, '[', i, ']'].join('');
                 p[root + '[field]'] = f.field;
-                
+
                 dataPrefix = root + '[data]';
                 for (key in f.data) {
                     p[[dataPrefix, '[', key, ']'].join('')] = f.data[key];
@@ -685,14 +682,14 @@ filters[0][data][value]="someValue3"&
                     f.data
                 ));
             }
-            // only build if there is active filter 
+            // only build if there is active filter
             if (tmp.length > 0){
                 p[this.paramPrefix] = Ext.util.JSON.encode(tmp);
             }
         }
         return p;
     },
-    
+
     /**
      * Removes filter related query parameters from the provided object.
      * @param {Object} p Query parameters that may contain filter related fields.
@@ -712,13 +709,13 @@ filters[0][data][value]="someValue3"&
             }
         }
     },
-    
+
     /**
      * Function for locating filter classes, overwrite this with your favorite
      * loader to provide dynamic filter loading.
      * @param {String} type The type of filter to load ('Filter' is automatically
      * appended to the passed type; eg, 'string' becomes 'StringFilter').
-     * @return {Class} The Ext.ux.grid.filter.Class 
+     * @return {Class} The Ext.ux.grid.filter.Class
      */
     getFilterClass : function (type) {
         // map the supported Ext.data.Field type values into a supported filter

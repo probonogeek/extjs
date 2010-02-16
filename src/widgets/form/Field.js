@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -86,7 +86,7 @@ Ext.form.Field = Ext.extend(Ext.BoxComponent,  {
      */
     fieldClass : 'x-form-field',
     /**
-     * @cfg {String} msgTarget<p>The location where the message text set through {@link #markInvalid} should display. 
+     * @cfg {String} msgTarget<p>The location where the message text set through {@link #markInvalid} should display.
      * Must be one of the following values:</p>
      * <div class="mdetail-params"><ul>
      * <li><code>qtip</code> Display a quick tip containing the message when the user hovers over the field. This is the default.
@@ -289,7 +289,7 @@ var form = new Ext.form.FormPanel({
         }
         return String(this.getValue()) !== String(this.originalValue);
     },
-    
+
     /**
      * Sets the read only state of this field.
      * @param {Boolean} readOnly Whether the field should be read only.
@@ -430,13 +430,13 @@ var form = new Ext.form.FormPanel({
     validateValue : function(value){
         return true;
     },
-    
+
     /**
      * Gets the active error message for this field.
      * @return {String} Returns the active error message on the field, if there is no error, an empty string is returned.
      */
     getActiveError : function(){
-        return this.activeError || '';    
+        return this.activeError || '';
     },
 
     /**
@@ -503,7 +503,12 @@ var form = new Ext.form.FormPanel({
             this.el.findParent('.x-form-field-wrap', 5, true);   // else direct field wrap
     },
 
-    // private
+    // Alignment for 'under' target
+    alignErrorEl : function(){
+        this.errorEl.setWidth(this.getErrorCt().getWidth(true) - 20);
+    },
+
+    // Alignment for 'side' target
     alignErrorIcon : function(){
         this.errorIcon.alignTo(this.el, 'tl-tr', [2, 0]);
     },
@@ -610,8 +615,12 @@ Ext.form.MessageTargets = {
                     return;
                 }
                 field.errorEl = elp.createChild({cls:'x-form-invalid-msg'});
-                field.errorEl.setWidth(elp.getWidth(true)-20);
+                field.on('resize', field.alignErrorEl, field);
+                field.on('destroy', function(){
+                    Ext.destroy(this.errorEl);
+                }, field);
             }
+            field.alignErrorEl();
             field.errorEl.update(msg);
             Ext.form.Field.msgFx[field.msgFx].show(field.errorEl, field);
         },
@@ -634,19 +643,21 @@ Ext.form.MessageTargets = {
                     return;
                 }
                 field.errorIcon = elp.createChild({cls:'x-form-invalid-icon'});
+                field.on('resize', field.alignErrorIcon, field);
+                field.on('destroy', function(){
+                    Ext.destroy(this.errorIcon);
+                }, field);
             }
             field.alignErrorIcon();
             field.errorIcon.dom.qtip = msg;
             field.errorIcon.dom.qclass = 'x-form-invalid-tip';
             field.errorIcon.show();
-            field.on('resize', field.alignErrorIcon, field);
         },
         clear: function(field){
             field.el.removeClass(field.invalidClass);
             if(field.errorIcon){
                 field.errorIcon.dom.qtip = '';
                 field.errorIcon.hide();
-                field.un('resize', field.alignErrorIcon, field);
             }else{
                 field.el.dom.title = '';
             }

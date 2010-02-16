@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -525,11 +525,23 @@ new Ext.tree.TreePanel({
             var uiP = node.attributes.uiProvider;
             node.ui = uiP ? new uiP(node) : new Ext.tree.RootTreeNodeUI(node);
         }
-        if (this.innerCt) {
-            this.innerCt.update('');
-            this.afterRender();
+        if(this.innerCt){
+            this.clearInnerCt();
+            this.renderRoot();
         }
         return node;
+    },
+    
+    clearInnerCt : function(){
+        this.innerCt.update('');    
+    },
+    
+    // private
+    renderRoot : function(){
+        this.root.render();
+        if(!this.rootVisible){
+            this.root.renderChildren();
+        }
     },
 
     /**
@@ -745,10 +757,7 @@ new Ext.tree.TreePanel({
     // private
     afterRender : function(){
         Ext.tree.TreePanel.superclass.afterRender.call(this);
-        this.root.render();
-        if(!this.rootVisible){
-            this.root.renderChildren();
-        }
+        this.renderRoot();
     },
 
     beforeDestroy : function(){
@@ -899,6 +908,15 @@ new Ext.tree.TreePanel({
      */
     /**
      * @cfg {String} contentEl  @hide
+     */
+    /**
+     * @cfg {Mixed} data  @hide
+     */
+    /**
+     * @cfg {Mixed} tpl  @hide
+     */
+    /**
+     * @cfg {String} tplWriteMode  @hide
      */
     /**
      * @cfg {String} disabledClass  @hide

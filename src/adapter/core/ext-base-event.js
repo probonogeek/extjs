@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -111,7 +111,7 @@ Ext.lib.Event = function() {
                     if(!v.checkReady || loadComplete || element.nextSibling || (doc && doc.body)) {
                         element = v.override ? (v.override === true ? v.obj : v.override) : element;
                         v.fn.call(element, v.obj);
-                        v = null;
+                        onAvailStack.remove(v);
                     } else {
                         notAvail.push(v);
                     }
@@ -203,14 +203,13 @@ Ext.lib.Event = function() {
         // This function should ALWAYS be called from Ext.EventManager
         removeListener: function(el, eventName, fn) {
             el = Ext.getDom(el);
-            var i, len, li;
+            var i, len, li, lis;
             if (el && fn) {
-                if (eventName == UNLOAD) {
-                    if (unloadListeners[id] !== undefined) {
-                        for (i = 0, len = unloadListeners[id].length; i < len; i++) {
-                            li = unloadListeners[id][i];
-                            if (li && li[TYPE] == eventName && li[FN] == fn) {
-                                unloadListeners[id].splice(i, 1);
+                if(eventName == UNLOAD){
+                    if((lis = unloadListeners[el.id]) !== undefined){
+                        for(i = 0, len = lis.length; i < len; i++){
+                            if((li = lis[i]) && li[TYPE] == eventName && li[FN] == fn){
+                                unloadListeners[el.id].splice(i, 1);
                             }
                         }
                     }

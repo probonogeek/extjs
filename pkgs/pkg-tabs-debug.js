@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -33,6 +33,9 @@
  * the active tab.</li>
  * <li><tt><b>{@link Ext.Panel#deactivate deactivate}</b></tt> : Fires when the Component that
  * was the active tab becomes deactivated.</li>
+ * <li><tt><b>{@link Ext.Panel#beforeclose beforeclose}</b></tt> : Fires when the user clicks on the close tool of a closeable tab.
+ * May be vetoed by returning <code>false</code> from a handler.</li>
+ * <li><tt><b>{@link Ext.Panel#close close}</b></tt> : Fires a closeable tab has been closed by the user.</li>
  * </ul></div>
  * <p><b><u>Creating TabPanels from Code</u></b></p>
  * <p>TabPanels can be created and rendered completely in code, as in this example:</p>
@@ -102,11 +105,6 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
      * class name applied to the tab strip item representing the child Component, allowing special
      * styling to be applied.
      */
-    /**
-     * @cfg {Boolean} monitorResize True to automatically monitor window resize events and rerender the layout on
-     * browser resize (defaults to true).
-     */
-    monitorResize : true,
     /**
      * @cfg {Boolean} deferredRender
      * <p><tt>true</tt> by default to defer the rendering of child <tt>{@link Ext.Container#items items}</tt>
@@ -438,8 +436,9 @@ new Ext.TabPanel({
 
     // private
     findTargets : function(e){
-        var item = null;
-        var itemEl = e.getTarget('li', this.strip);
+        var item = null,
+            itemEl = e.getTarget('li:not(.x-tab-edge)', this.strip);
+
         if(itemEl){
             item = this.getComponent(itemEl.id.split(this.idDelimiter)[1]);
             if(item.disabled){
@@ -547,8 +546,8 @@ new Ext.TabPanel({
             beforeshow: this.onBeforeShowItem
         });
     },
-    
-    
+
+
 
     /**
      * <p>Provides template arguments for rendering a tab selector item in the tab strip.</p>
@@ -768,7 +767,7 @@ new Ext.TabPanel({
 
         var each = Math.max(Math.min(Math.floor((aw-4) / count) - this.tabMargin, this.tabWidth), this.minTabWidth); // -4 for float errors in IE
         this.lastTabWidth = each;
-        var lis = this.strip.query("li:not([className^=x-tab-edge])");
+        var lis = this.strip.query('li:not(.x-tab-edge)');
         for(var i = 0, len = lis.length; i < len; i++) {
             var li = lis[i],
                 inner = Ext.fly(li).child('.x-tab-strip-inner', true),
@@ -974,11 +973,11 @@ new Ext.TabPanel({
      */
 
     scrollToTab : function(item, animate){
-        if(!item){ 
-            return; 
+        if(!item){
+            return;
         }
         var el = this.getTabEl(item),
-            pos = this.getScrollPos(), 
+            pos = this.getScrollPos(),
             area = this.getScrollArea(),
             left = Ext.fly(el).getOffsetsTo(this.stripWrap)[0] + pos,
             right = left + el.offsetWidth;

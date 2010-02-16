@@ -185,17 +185,19 @@ Ext.MessageBox = function(){
             }
             msgEl.update(text || '&#160;');
 
-            var iw = iconCls != '' ? (iconEl.getWidth() + iconEl.getMargins('lr')) : 0;
-            var mw = msgEl.getWidth() + msgEl.getMargins('lr');
-            var fw = dlg.getFrameWidth('lr');
-            var bw = dlg.body.getFrameWidth('lr');
+            var iw = iconCls != '' ? (iconEl.getWidth() + iconEl.getMargins('lr')) : 0,
+                mw = msgEl.getWidth() + msgEl.getMargins('lr'),
+                fw = dlg.getFrameWidth('lr'),
+                bw = dlg.body.getFrameWidth('lr'),
+                w;
+                
             if (Ext.isIE && iw > 0){
                 //3 pixels get subtracted in the icon CSS for an IE margin issue,
                 //so we have to add it back here for the overall width to be consistent
                 iw += 3;
             }
-            var w = Math.max(Math.min(opt.width || iw+mw+fw+bw, this.maxWidth),
-                        Math.max(opt.minWidth || this.minWidth, bwidth || 0));
+            w = Math.max(Math.min(opt.width || iw+mw+fw+bw, opt.maxWidth || this.maxWidth),
+                    Math.max(opt.minWidth || this.minWidth, bwidth || 0));
 
             if(opt.prompt === true){
                 activeTextEl.setWidth(w-iw-fw-bw);
@@ -493,7 +495,8 @@ Ext.MessageBox.ERROR
                 msg : msg,
                 buttons: this.OK,
                 fn: fn,
-                scope : scope
+                scope : scope,
+                minWidth: this.minWidth
             });
             return this;
         },
@@ -516,7 +519,8 @@ Ext.MessageBox.ERROR
                 buttons: this.YESNO,
                 fn: fn,
                 scope : scope,
-                icon: this.QUESTION
+                icon: this.QUESTION,
+                minWidth: this.minWidth
             });
             return this;
         },
@@ -541,7 +545,7 @@ Ext.MessageBox.ERROR
                 msg : msg,
                 buttons: this.OKCANCEL,
                 fn: fn,
-                minWidth:250,
+                minWidth: this.minPromptWidth,
                 scope : scope,
                 prompt:true,
                 multiline: multiline,
@@ -613,10 +617,16 @@ Ext.MessageBox.ERROR
         minWidth : 100,
         <div id="prop-Ext.MessageBox-minProgressWidth"></div>/**
          * The minimum width in pixels of the message box if it is a progress-style dialog.  This is useful
-         * for setting a different minimum width than text-only dialogs may need (defaults to 250)
+         * for setting a different minimum width than text-only dialogs may need (defaults to 250).
          * @type Number
          */
         minProgressWidth : 250,
+        <div id="prop-Ext.MessageBox-minPromptWidth"></div>/**
+         * The minimum width in pixels of the message box if it is a prompt dialog.  This is useful
+         * for setting a different minimum width than text-only dialogs may need (defaults to 250).
+         * @type Number
+         */
+        minPromptWidth: 250,
         <div id="prop-Ext.MessageBox-buttonText"></div>/**
          * An object containing the default button text strings that can be overriden for localized language support.
          * Supported properties are: ok, cancel, yes and no.  Generally you should include a locale-specific

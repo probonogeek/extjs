@@ -121,7 +121,7 @@ Ext.Viewport = Ext.extend(Ext.Container, {
     },
 
     fireResize : function(w, h){
-        this.onResize(w, h, w, h);
+        this.fireEvent('resize', this, w, h, w, h);
     }
 });
 Ext.reg('viewport', Ext.Viewport);

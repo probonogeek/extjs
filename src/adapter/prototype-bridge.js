@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -11,12 +11,12 @@ var libFlyweight,
     mouseEnterSupported = (parseInt(version[0]) >= 2) || (parseInt(version[1]) >= 7) || (parseInt(version[2]) >= 1),
     mouseCache = {},
     elContains = function(parent, child) {
-       if(parent && parent.firstChild){  
+       if(parent && parent.firstChild){
          while(child) {
             if(child === parent) {
                 return true;
             }
-            child = child.parentNode;               
+            child = child.parentNode;
             if(child && (child.nodeType != 1)) {
                 child = null;
             }
@@ -25,7 +25,7 @@ var libFlyweight,
         return false;
     },
     checkRelatedTarget = function(e) {
-        return !elContains(e.currentTarget, pub.getRelatedTarget(e));
+        return !elContains(e.currentTarget, Ext.lib.Event.getRelatedTarget(e));
     };
 
 Ext.lib.Dom = {
@@ -74,7 +74,7 @@ Ext.lib.Dom = {
 
     isAncestor : function(p, c){ // missing from prototype?
         var ret = false;
-            
+
         p = Ext.getDom(p);
         c = Ext.getDom(c);
         if (p && c) {
@@ -84,10 +84,10 @@ Ext.lib.Dom = {
                 return !!(p.compareDocumentPosition(c) & 16);
             } else {
                 while (c = c.parentNode) {
-                    ret = c == p || ret;                        
+                    ret = c == p || ret;
                 }
-            }               
-        }   
+            }
+        }
         return ret;
     },
 
@@ -250,7 +250,7 @@ Ext.lib.Event = {
 
     un : function(el, eventName, fn){
         if((eventName == 'mouseenter' || eventName == 'mouseleave') && !mouseEnterSupported){
-            var item = mouseCache[el.id], 
+            var item = mouseCache[el.id],
                 ev = item && item[eventName];
 
             if(ev){
@@ -317,12 +317,12 @@ Ext.lib.Ajax = function(){
     };
     var createResponse = function(cb, xhr){
         var headerObj = {},
-            headerStr,              
+            headerStr,
             t,
             s;
 
         try {
-            headerStr = xhr.getAllResponseHeaders();   
+            headerStr = xhr.getAllResponseHeaders();
             Ext.each(headerStr.replace(/\r\n/g, '\n').split('\n'), function(v){
                 t = v.indexOf(':');
                 if(t >= 0){
@@ -334,7 +334,7 @@ Ext.lib.Ajax = function(){
                 }
             });
         } catch(e) {}
-        
+
         return {
             responseText: xhr.responseText,
             responseXML : xhr.responseXML,
@@ -396,7 +396,7 @@ Ext.lib.Ajax = function(){
         abort : function(trans){
             return false;
         },
-        
+
         serializeForm : function(form){
             return Form.serialize(form.dom||form);
         }
@@ -405,7 +405,7 @@ Ext.lib.Ajax = function(){
 
 
 Ext.lib.Anim = function(){
-    
+
     var easings = {
         easeOut: function(pos) {
             return 1-Math.pow(1-pos,2);
@@ -503,7 +503,7 @@ function fly(el){
     libFlyweight.dom = el;
     return libFlyweight;
 }
-    
+
 Ext.lib.Region = function(t, r, b, l) {
     this.top = t;
     this[1] = t;

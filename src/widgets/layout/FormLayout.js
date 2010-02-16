@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -120,6 +120,8 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
      * True to show/hide the field label when the field is hidden. Defaults to <tt>false</tt>.
      */
     trackLabels: false,
+
+    type: 'form',
 
 
     onRemove: function(c){

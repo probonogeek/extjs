@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -189,8 +189,10 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      */
     shadow : 'sides',
     /**
-     * @cfg {String} listAlign A valid anchor position value. See <tt>{@link Ext.Element#alignTo}</tt> for details
-     * on supported anchor positions (defaults to <tt>'tl-bl?'</tt>)
+     * @cfg {String/Array} listAlign A valid anchor position value. See <tt>{@link Ext.Element#alignTo}</tt> for details
+     * on supported anchor positions and offsets. To specify x/y offsets as well, this value
+     * may be specified as an Array of <tt>{@link Ext.Element#alignTo}</tt> method arguments.</p>
+     * <pre><code>[ 'tl-bl?', [6,0] ]</code></pre>(defaults to <tt>'tl-bl?'</tt>)
      */
     listAlign : 'tl-bl?',
     /**
@@ -221,6 +223,12 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      * <tt>{@link Ext.form.TriggerField#editable editable} = false</tt>).
      */
     minChars : 4,
+    /**
+     * @cfg {Boolean} autoSelect <tt>true</tt> to select the first result gathered by the data store (defaults
+     * to <tt>true</tt>).  A false value would require a manual selection from the dropdown list to set the components value
+     * unless the value of ({@link #typeAheadDelay}) were true.
+     */
+    autoSelect : true,
     /**
      * @cfg {Boolean} typeAhead <tt>true</tt> to populate and autoselect the remainder of the text being
      * typed after a configurable delay ({@link #typeAheadDelay}) if it matches a known value (defaults
@@ -389,6 +397,7 @@ var combo = new Ext.form.ComboBox({
              * @param {Ext.form.ComboBox} combo This combo box
              */
             'collapse',
+
             /**
              * @event beforeselect
              * Fires before a list item is selected. Return false to cancel the selection.
@@ -501,22 +510,30 @@ var combo = new Ext.form.ComboBox({
         Ext.form.ComboBox.superclass.initValue.call(this);
         if(this.hiddenField){
             this.hiddenField.value =
-                Ext.isDefined(this.hiddenValue) ? this.hiddenValue :
-                Ext.isDefined(this.value) ? this.value : '';
+                Ext.value(Ext.isDefined(this.hiddenValue) ? this.hiddenValue : this.value, '');
         }
     },
 
     // private
     initList : function(){
         if(!this.list){
-            var cls = 'x-combo-list';
+            var cls = 'x-combo-list',
+                listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
+                zindex = parseInt(Ext.fly(listParent).getStyle('z-index') ,10);
+
+            if (this.ownerCt && !zindex){
+                this.findParentBy(function(ct){
+                    zindex = parseInt(ct.getPositionEl().getStyle('z-index'), 10);
+                    return !!zindex;
+                });
+            }
 
             this.list = new Ext.Layer({
-                parentEl: this.getListParent(),
+                parentEl: listParent,
                 shadow: this.shadow,
                 cls: [cls, this.listClass].join(' '),
                 constrain:false,
-                zindex: 12000
+                zindex: (zindex || 12000) + 5
             });
 
             var lw = this.listWidth || Math.max(this.wrap.getWidth(), this.minListWidth);
@@ -587,10 +604,15 @@ var combo = new Ext.form.ComboBox({
                 singleSelect: true,
                 selectedClass: this.selectedClass,
                 itemSelector: this.itemSelector || '.' + cls + '-item',
-                emptyText: this.listEmptyText
+                emptyText: this.listEmptyText,
+                deferEmptyText: false
             });
 
-            this.mon(this.view, 'click', this.onViewClick, this);
+            this.mon(this.view, {
+                containerclick : this.onViewClick,
+                click : this.onViewClick,
+                scope :this
+            });
 
             this.bindStore(this.store, true);
 
@@ -713,6 +735,7 @@ var menu = new Ext.menu.Menu({
     initEvents : function(){
         Ext.form.ComboBox.superclass.initEvents.call(this);
 
+
         this.keyNav = new Ext.KeyNav(this.el, {
             "up" : function(e){
                 this.inKeyMode = true;
@@ -737,7 +760,7 @@ var menu = new Ext.menu.Menu({
             },
 
             "tab" : function(e){
-                this.onViewClick(false);
+                this.collapse();
                 return true;
             },
 
@@ -769,6 +792,7 @@ var menu = new Ext.menu.Menu({
             this.mon(this.el, 'keyup', this.onKeyUp, this);
         }
     },
+
 
     // private
     onDestroy : function(){
@@ -851,19 +875,22 @@ var menu = new Ext.menu.Menu({
                 if(this.editable){
                     this.el.dom.select();
                 }
-                if(!this.selectByValue(this.value, true)){
+
+                if(this.autoSelect !== false && !this.selectByValue(this.value, true)){
                     this.select(0, true);
                 }
             }else{
-                this.selectNext();
+                if(this.autoSelect !== false){
+                    this.selectNext();
+                }
                 if(this.typeAhead && this.lastKey != Ext.EventObject.BACKSPACE && this.lastKey != Ext.EventObject.DELETE){
                     this.taTask.delay(this.typeAheadDelay);
                 }
             }
         }else{
-            this.onEmptyResults();
+            this.collapse();
         }
-        //this.el.focus();
+
     },
 
     // private
@@ -878,6 +905,28 @@ var menu = new Ext.menu.Menu({
                 this.selectText(selStart, newValue.length);
             }
         }
+    },
+
+    // private
+    assertValue  : function(){
+
+        var val = this.getRawValue(),
+            rec = this.findRecord(this.displayField, val);
+
+        if(!rec && this.forceSelection){
+            if(val.length > 0 && val != this.emptyText){
+                this.el.dom.value = Ext.value(this.lastSelectionText, '');
+                this.applyEmptyText();
+            }else{
+                this.clearValue();
+            }
+        }else{
+            if(rec){
+                val = rec.get(this.valueField || this.displayField);
+            }
+            this.setValue(val);
+        }
+
     },
 
     // private
@@ -940,7 +989,7 @@ var menu = new Ext.menu.Menu({
         }
         this.lastSelectionText = text;
         if(this.hiddenField){
-            this.hiddenField.value = v;
+            this.hiddenField.value = Ext.value(v, '');
         }
         Ext.form.ComboBox.superclass.setValue.call(this, text);
         this.value = v;
@@ -985,13 +1034,14 @@ var menu = new Ext.menu.Menu({
             r = s.getAt(index);
         if(r){
             this.onSelect(r, index);
-        }else if(s.getCount() === 0){
-            this.onEmptyResults();
+        }else {
+            this.collapse();
         }
         if(doFocus !== false){
             this.el.focus();
         }
     },
+
 
     // private
     restrictHeight : function(){
@@ -1008,13 +1058,8 @@ var menu = new Ext.menu.Menu({
         this.innerList.setHeight(h);
         this.list.beginUpdate();
         this.list.setHeight(h+pad);
-        this.list.alignTo(this.wrap, this.listAlign);
+        this.list.alignTo.apply(this.list, [this.el].concat(this.listAlign));
         this.list.endUpdate();
-    },
-
-    // private
-    onEmptyResults : function(){
-        this.collapse();
     },
 
     /**
@@ -1059,6 +1104,7 @@ var menu = new Ext.menu.Menu({
                 this.innerList.scrollChildIntoView(el, false);
             }
         }
+
     },
 
     // private
@@ -1089,6 +1135,7 @@ var menu = new Ext.menu.Menu({
     onKeyUp : function(e){
         var k = e.getKey();
         if(this.editable !== false && this.readOnly !== true && (k == e.BACKSPACE || !e.isSpecialKey())){
+
             this.lastKey = k;
             this.dqTask.delay(this.queryDelay);
         }
@@ -1107,21 +1154,14 @@ var menu = new Ext.menu.Menu({
 
     // private
     beforeBlur : function(){
-        var val = this.getRawValue(),
-            rec = this.findRecord(this.displayField, val);
-        if(!rec && this.forceSelection){
-            if(val.length > 0 && val != this.emptyText){
-                this.el.dom.value = Ext.isEmpty(this.lastSelectionText) ? '' : this.lastSelectionText;
-                this.applyEmptyText();
-            }else{
-                this.clearValue();
-            }
-        }else{
-            if(rec){
-                val = rec.get(this.valueField || this.displayField);
-            }
-            this.setValue(val);
-        }
+        this.assertValue();
+    },
+
+    // private
+    postBlur  : function(){
+        Ext.form.ComboBox.superclass.postBlur.call(this);
+        this.collapse();
+        this.inKeyMode = false;
     },
 
     /**
@@ -1212,7 +1252,7 @@ var menu = new Ext.menu.Menu({
             this.doResize(this.bufferSize);
             delete this.bufferSize;
         }
-        this.list.alignTo(this.wrap, this.listAlign);
+        this.list.alignTo.apply(this.list, [this.el].concat(this.listAlign));
         this.list.show();
         if(Ext.isGecko2){
             this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac

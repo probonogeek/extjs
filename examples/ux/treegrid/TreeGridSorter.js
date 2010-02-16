@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -9,6 +9,22 @@ Ext.ns('Ext.ux.tree');
 /**
  * @class Ext.ux.tree.TreeGridSorter
  * @extends Ext.tree.TreeSorter
+ * Provides sorting of nodes in a {@link Ext.ux.tree.TreeGrid}.  The TreeGridSorter automatically monitors events on the
+ * associated TreeGrid that might affect the tree's sort order (beforechildrenrendered, append, insert and textchange).
+ * Example usage:<br />
+ * <pre><code>
+ new Ext.ux.tree.TreeGridSorter(myTreeGrid, {
+     folderSort: true,
+     dir: "desc",
+     sortType: function(node) {
+         // sort by a custom, typed attribute:
+         return parseInt(node.id, 10);
+     }
+ });
+ </code></pre>
+ * @constructor
+ * @param {TreeGrid} tree
+ * @param {Object} config
  */
 Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
     /**
@@ -56,14 +72,14 @@ Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
                     return -1;
                 }
             }
-        	var v1 = sortType ? sortType(n1.attributes[p]) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
-        	var v2 = sortType ? sortType(n2.attributes[p]) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
-        	if(v1 < v2){
-    			return dsc ? +1 : -1;
-    		}else if(v1 > v2){
-    			return dsc ? -1 : +1;
+            var v1 = sortType ? sortType(n1) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
+            var v2 = sortType ? sortType(n2) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
+            if(v1 < v2){
+                return dsc ? +1 : -1;
+            }else if(v1 > v2){
+                return dsc ? -1 : +1;
             }else{
-    	    	return 0;
+                return 0;
             }
         };
 
@@ -72,11 +88,12 @@ Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
     },
 
     onAfterTreeRender : function() {
-        var hmenu = this.tree.hmenu;
-        hmenu.insert(0,
-            {itemId:'asc', text: this.sortAscText, cls: 'xg-hmenu-sort-asc'},
-            {itemId:'desc', text: this.sortDescText, cls: 'xg-hmenu-sort-desc'}
-        );
+        if(this.tree.hmenu){
+            this.tree.hmenu.insert(0,
+                {itemId:'asc', text: this.sortAscText, cls: 'xg-hmenu-sort-asc'},
+                {itemId:'desc', text: this.sortDescText, cls: 'xg-hmenu-sort-desc'}
+            );
+        }
         this.updateSortIcon(0, 'asc');
     },
 

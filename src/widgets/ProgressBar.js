@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -120,7 +120,7 @@ Ext.ProgressBar = Ext.extend(Ext.BoxComponent, {
         if(text){
             this.updateText(text);
         }
-        if(this.rendered){
+        if(this.rendered && !this.isDestroyed){
             var w = Math.floor(value*this.el.dom.firstChild.offsetWidth);
             this.progressBar.setWidth(w, animate === true || (animate !== false && this.animate));
             if(this.textTopEl){
@@ -276,18 +276,24 @@ myAction.on('complete', function(){
         if(this.textTopEl){
             this.textTopEl.addClass('x-hidden');
         }
-        if(this.waitTimer){
-            this.waitTimer.onStop = null; //prevent recursion
-            Ext.TaskMgr.stop(this.waitTimer);
-            this.waitTimer = null;
-        }
+        this.clearTimer();
         if(hide === true){
             this.hide();
         }
         return this;
     },
     
+    // private
+    clearTimer : function(){
+        if(this.waitTimer){
+            this.waitTimer.onStop = null; //prevent recursion
+            Ext.TaskMgr.stop(this.waitTimer);
+            this.waitTimer = null;
+        }
+    },
+    
     onDestroy: function(){
+        this.clearTimer();
         if(this.rendered){
             if(this.textEl.isComposite){
                 this.textEl.clear();

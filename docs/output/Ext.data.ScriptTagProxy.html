@@ -40,7 +40,16 @@ $output = array(<em>'a'</em> => <em>'Apple'</em>, <em>'b'</em> => <em>'Banana'</
 } <b>else</b> {
     header(<em>'Content-Type: application/x-json'</em>);
     echo json_encode($output);
-}</code></pre></div><div class="hr"></div><a id="Ext.data.ScriptTagProxy-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.DataProxy-api"></a><b><a href="source/DataProxy.html#cfg-Ext.data.DataProxy-api">api</a></b> : Object<div class="mdesc"><div class="short">Specific urls to call on CRUD action methods "read", "create", "update" and "destroy".&#13;
+}</code></pre>
+<p>Below is the ASP.Net code to do the same thing:</p><pre><code>String jsonString = <em>"{success: true}"</em>;
+String cb = Request.Params.Get(<em>"callback"</em>);
+String responseString = <em>""</em>;
+<b>if</b> (!String.IsNullOrEmpty(cb)) {
+    responseString = cb + <em>"("</em> + jsonString + <em>")"</em>;
+} <b>else</b> {
+    responseString = jsonString;
+}
+Response.Write(responseString);</code></pre></div><div class="hr"></div><a id="Ext.data.ScriptTagProxy-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.DataProxy-api"></a><b><a href="source/DataProxy.html#cfg-Ext.data.DataProxy-api">api</a></b> : Object<div class="mdesc"><div class="short">Specific urls to call on CRUD action methods "read", "create", "update" and "destroy".&#13;
 Defaults to:api: {&#13;
     read ...</div><div class="long">Specific urls to call on CRUD action methods "read", "create", "update" and "destroy".
 Defaults to:<pre><code>api: {

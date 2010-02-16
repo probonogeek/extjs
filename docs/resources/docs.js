@@ -87,12 +87,12 @@ Ext.extend(ApiPanel, Ext.tree.TreePanel, {
 			return;
 		}
 		this.expandAll();
-		
+
 		var re = new RegExp('^' + Ext.escapeRe(text), 'i');
 		this.filter.filterBy(function(n){
 			return !n.attributes.isClass || re.test(n.text);
 		});
-		
+
 		// hide empty packages that weren't filtered
 		this.hiddenPkgs = [];
 		this.root.cascade(function(n){
@@ -131,7 +131,7 @@ Ext.extend(ApiPanel, Ext.tree.TreePanel, {
 DocPanel = Ext.extend(Ext.Panel, {
     closable: true,
     autoScroll:true,
-    
+
     initComponent : function(){
         var ps = this.cclass.split('.');
         this.title = ps[ps.length-1];
@@ -185,7 +185,7 @@ DocPanel = Ext.extend(Ext.Panel, {
         );
         Ext.Msg.alert('Direct Link to ' + this.cclass,link);
     },
-    
+
     scrollToMember : function(member){
         var el = Ext.fly(this.cclass + '-' + member);
         if(el){
@@ -216,14 +216,14 @@ DocPanel = Ext.extend(Ext.Panel, {
 
 
 MainPanel = function(){
-	
+
 	this.searchStore = new Ext.data.Store({
         proxy: new Ext.data.ScriptTagProxy({
             url: 'http://extjs.com/playpen/api.php'
         }),
         reader: new Ext.data.JsonReader({
 	            root: 'data'
-	        }, 
+	        },
 			['cls', 'member', 'type', 'doc']
 		),
 		baseParams: {},
@@ -232,8 +232,8 @@ MainPanel = function(){
                 this.baseParams.qt = Ext.getCmp('search-type').getValue();
             }
         }
-    }); 
-	
+    });
+
     MainPanel.superclass.constructor.call(this, {
         id:'doc-body',
         region:'center',
@@ -327,7 +327,7 @@ Ext.extend(MainPanel, Ext.TabPanel, {
             this.setActiveTab(p);
         }
     },
-	
+
 	initSearch : function(){
 		// Custom rendering Template for the View
 	    var resultTpl = new Ext.XTemplate(
@@ -340,7 +340,7 @@ Ext.extend(MainPanel, Ext.TabPanel, {
 	            '<p>{doc}</p>',
 	        '</div></tpl>'
 	    );
-		
+
 		var p = new Ext.DataView({
             applyTo: 'search',
 			tpl: resultTpl,
@@ -350,7 +350,7 @@ Ext.extend(MainPanel, Ext.TabPanel, {
 			emptyText: '<h3>Use the search field above to search the Ext API for classes, properties, config options, methods and events.</h3>'
         });
 	},
-	
+
 	doSearch : function(e){
 		var k = e.getKey();
 		if(!e.isSpecialKey()){
@@ -364,110 +364,6 @@ Ext.extend(MainPanel, Ext.TabPanel, {
 			}
 		}
 	}
-});
-
-
-Ext.onReady(function(){
-
-    Ext.QuickTips.init();
-
-    var api = new ApiPanel();
-    var mainPanel = new MainPanel();
-
-    api.on('click', function(node, e){
-         if(node.isLeaf()){
-            e.stopEvent();
-            mainPanel.loadClass(node.attributes.href, node.id);
-         }
-    });
-
-    mainPanel.on('tabchange', function(tp, tab){
-        api.selectClass(tab.cclass); 
-    });
-
-    var viewport = new Ext.Viewport({
-        layout:'border',
-        items:[ {
-            cls: 'docs-header',
-            height: 36,
-            region:'north',
-            xtype:'box',
-            el:'header',
-            border:false,
-            margins: '0 0 5 0'
-        }, api, mainPanel ]
-    });
-
-    api.expandPath('/root/apidocs');
-
-    // allow for link in
-    var page = window.location.href.split('?')[1];
-    if(page){
-        var ps = Ext.urlDecode(page);
-        var cls = ps['class'];
-        mainPanel.loadClass('output/' + cls + '.html', cls, ps.member);
-    }
-    
-    viewport.doLayout();
-	
-	setTimeout(function(){
-        Ext.get('loading').remove();
-        Ext.get('loading-mask').fadeOut({remove:true});
-    }, 250);
-	
-});
-
-
-Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
-    initComponent : function(){
-        if(!this.store.baseParams){
-			this.store.baseParams = {};
-		}
-		Ext.app.SearchField.superclass.initComponent.call(this);
-		this.on('specialkey', function(f, e){
-            if(e.getKey() == e.ENTER){
-                this.onTrigger2Click();
-            }
-        }, this);
-    },
-
-    validationEvent:false,
-    validateOnBlur:false,
-    trigger1Class:'x-form-clear-trigger',
-    trigger2Class:'x-form-search-trigger',
-    hideTrigger1:true,
-    width:180,
-    hasSearch : false,
-    paramName : 'query',
-
-    onTrigger1Click : function(){
-        if(this.hasSearch){
-            this.store.baseParams[this.paramName] = '';
-			this.store.removeAll();
-			this.el.dom.value = '';
-            this.triggers[0].hide();
-            this.hasSearch = false;
-			this.focus();
-        }
-    },
-
-    onTrigger2Click : function(){
-        var v = this.getRawValue();
-        if(v.length < 1){
-            this.onTrigger1Click();
-            return;
-        }
-		if(v.length < 2){
-			Ext.Msg.alert('Invalid Search', 'You must enter a minimum of 2 characters to search the API');
-			return;
-		}
-		this.store.baseParams[this.paramName] = v;
-        var o = {start: 0};
-        this.store.reload({params:o});
-        this.hasSearch = true;
-        this.triggers[0].show();
-		this.focus();
-    }
 });
 
 
@@ -662,6 +558,111 @@ Ext.extend(Ext.ux.SelectBox, Ext.form.ComboBox, {
 	}
 
 });
+
+Ext.onReady(function(){
+
+    Ext.QuickTips.init();
+
+    var api = new ApiPanel();
+    var mainPanel = new MainPanel();
+
+    api.on('click', function(node, e){
+         if(node.isLeaf()){
+            e.stopEvent();
+            mainPanel.loadClass(node.attributes.href, node.id);
+         }
+    });
+
+    mainPanel.on('tabchange', function(tp, tab){
+        api.selectClass(tab.cclass);
+    });
+
+    var viewport = new Ext.Viewport({
+        layout:'border',
+        items:[ {
+            cls: 'docs-header',
+            height: 36,
+            region:'north',
+            xtype:'box',
+            el:'header',
+            border:false,
+            margins: '0 0 5 0'
+        }, api, mainPanel ]
+    });
+
+    api.expandPath('/root/apidocs');
+
+    // allow for link in
+    var page = window.location.href.split('?')[1];
+    if(page){
+        var ps = Ext.urlDecode(page);
+        var cls = ps['class'];
+        mainPanel.loadClass('output/' + cls + '.html', cls, ps.member);
+    }
+
+    viewport.doLayout();
+
+	setTimeout(function(){
+        Ext.get('loading').remove();
+        Ext.get('loading-mask').fadeOut({remove:true});
+    }, 250);
+
+});
+
+
+Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
+    initComponent : function(){
+        if(!this.store.baseParams){
+			this.store.baseParams = {};
+		}
+		Ext.app.SearchField.superclass.initComponent.call(this);
+		this.on('specialkey', function(f, e){
+            if(e.getKey() == e.ENTER){
+                this.onTrigger2Click();
+            }
+        }, this);
+    },
+
+    validationEvent:false,
+    validateOnBlur:false,
+    trigger1Class:'x-form-clear-trigger',
+    trigger2Class:'x-form-search-trigger',
+    hideTrigger1:true,
+    width:180,
+    hasSearch : false,
+    paramName : 'query',
+
+    onTrigger1Click : function(){
+        if(this.hasSearch){
+            this.store.baseParams[this.paramName] = '';
+			this.store.removeAll();
+			this.el.dom.value = '';
+            this.triggers[0].hide();
+            this.hasSearch = false;
+			this.focus();
+        }
+    },
+
+    onTrigger2Click : function(){
+        var v = this.getRawValue();
+        if(v.length < 1){
+            this.onTrigger1Click();
+            return;
+        }
+		if(v.length < 2){
+			Ext.Msg.alert('Invalid Search', 'You must enter a minimum of 2 characters to search the API');
+			return;
+		}
+		this.store.baseParams[this.paramName] = v;
+        var o = {start: 0};
+        this.store.reload({params:o});
+        this.hasSearch = true;
+        this.triggers[0].show();
+		this.focus();
+    }
+});
+
+
 
 Ext.Ajax.on('requestcomplete', function(ajax, xhr, o){
     if(typeof urchinTracker == 'function' && o && o.url){

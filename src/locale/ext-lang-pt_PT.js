@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
 ï»¿/**
  * Ext 2.2.0 - Portuguese/Portugal (pt_PT) Translation
  * by Nuno Franco da Costa - francodacosta.com
@@ -102,7 +96,7 @@ if(Ext.DatePicker){
   Ext.apply(Ext.DatePicker.prototype, {
     todayText         : "Hoje",
     minText           : "A data &eacute; anterior ao m&iacute;nimo definido",
-    maxText           : "A data &eacute; posterior ao mï¿½ximo definido",
+    maxText           : "A data &eacute; posterior ao máximo definido",
     disabledDaysText  : "",
     disabledDatesText : "",
     monthNames        : Date.monthNames,
@@ -110,7 +104,7 @@ if(Ext.DatePicker){
     nextText          : 'M&ecirc;s Seguinte (Control+Right)',
     prevText          : 'M&ecirc;s Anterior (Control+Left)',
     monthYearText     : 'Escolha um m&ecirc;s (Control+Up/Down ava&ccedil;ar/recuar anos)',
-    todayTip          : "{0} (barra de espaï¿½o)",
+    todayTip          : "{0} (barra de espaço)",
     format            : "y/m/d",
     okText            : "*OK*",
     cancelText        : "Cancelar",

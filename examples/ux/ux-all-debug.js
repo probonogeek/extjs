@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.0
- * Copyright(c) 2006-2009 Ext JS, LLC
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -328,7 +328,7 @@ Ext.ux.grid.CheckColumn.prototype ={
     },
 
     onMouseDown : function(e, t){
-        if(t.className && t.className.indexOf('x-grid3-cc-'+this.id) != -1){
+        if(Ext.fly(t).hasClass(this.createId())){
             e.stopEvent();
             var index = this.grid.getView().findRowIndex(t);
             var record = this.grid.store.getAt(index);
@@ -338,7 +338,11 @@ Ext.ux.grid.CheckColumn.prototype ={
 
     renderer : function(v, p, record){
         p.css += ' x-grid3-check-col-td'; 
-        return '<div class="x-grid3-check-col'+(v?'-on':'')+' x-grid3-cc-'+this.id+'">&#160;</div>';
+        return String.format('<div class="x-grid3-check-col{0} {1}">&#160;</div>', v ? '-on' : '', this.createId());
+    },
+    
+    createId : function(){
+        return 'x-grid3-cc-' + this.id;
     }
 };
 
@@ -347,10 +351,6 @@ Ext.preg('checkcolumn', Ext.ux.grid.CheckColumn);
 
 // backwards compat
 Ext.grid.CheckColumn = Ext.ux.grid.CheckColumn;Ext.ns('Ext.ux.grid');
-
-if(Ext.isWebKit){
-    Ext.grid.GridView.prototype.borderWidth = 0;
-}
 
 Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
 
@@ -720,7 +720,7 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
             }
         }
         return {
-            width: (Ext.isBorderBox ? width : Math.max(width - this.borderWidth, 0)) + 'px',
+            width: (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2) ? width : Math.max(width - this.borderWidth, 0)) + 'px',
             hidden: hidden
         };
     },
@@ -800,8 +800,8 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
         if(cm.isFixed(newIndex)){
             return false;
         }
-        var row = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupRowIndex.call(this.view, h), 
-            oldGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, oldIndex), 
+        var row = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupRowIndex.call(this.view, h),
+            oldGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, oldIndex),
             newGroup = Ext.ux.grid.ColumnHeaderGroup.prototype.getGroupSpan.call(this.view, row, newIndex),
             oldIndex = oldGroup.col;
             newIndex = newGroup.col + (pt == "after" ? newGroup.colspan : 0);
@@ -1502,7 +1502,7 @@ Ext.reg('gmappanel', Ext.ux.GMapPanel); Ext.namespace('Ext.ux.grid');
  * The filter collection binds to the
  * <code>{@link Ext.grid.GridPanel#beforestaterestore beforestaterestore}</code>
  * and <code>{@link Ext.grid.GridPanel#beforestatesave beforestatesave}</code>
- * events in order to be stateful. 
+ * events in order to be stateful.
  * </div></li>
  * <li><b>Grid Changes</b> :
  * <div class="sub-desc"><ul>
@@ -1521,11 +1521,11 @@ Ext.reg('gmappanel', Ext.ux.GMapPanel); Ext.namespace('Ext.ux.grid');
  * </ul></div></li>
  * </ul></div>
  * <p><b><u>Example usage:</u></b></p>
- * <pre><code>    
+ * <pre><code>
 var store = new Ext.data.GroupingStore({
     ...
 });
- 
+
 var filters = new Ext.ux.grid.GridFilters({
     autoReload: false, //don&#39;t reload automatically
     local: true, //only filter locally
@@ -1556,7 +1556,7 @@ var filters = new Ext.ux.grid.GridFilters({
 var cm = new Ext.grid.ColumnModel([{
     ...
 }]);
- 
+
 var grid = new Ext.grid.GridPanel({
      ds: store,
      cm: cm,
@@ -1654,17 +1654,17 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     init : function (grid) {
         if (grid instanceof Ext.grid.GridPanel) {
             this.grid = grid;
-            
+
             this.bindStore(this.grid.getStore(), true);
             // assumes no filters were passed in the constructor, so try and use ones from the colModel
             if(this.filters.getCount() == 0){
                 this.addFilters(this.grid.getColumnModel());
             }
-          
+
             this.grid.filters = this;
-             
+
             this.grid.addEvents({'filterupdate': true});
-              
+
             grid.on({
                 scope: this,
                 beforestaterestore: this.applyState,
@@ -1672,7 +1672,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
                 beforedestroy: this.destroy,
                 reconfigure: this.onReconfigure
             });
-            
+
             if (grid.rendered){
                 this.onRender();
             } else {
@@ -1682,19 +1682,19 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
                     render: this.onRender
                 });
             }
-                      
+
         } else if (grid instanceof Ext.PagingToolbar) {
             this.toolbar = grid;
         }
     },
-        
+
     /**
      * @private
      * Handler for the grid's beforestaterestore event (fires before the state of the
      * grid is restored).
      * @param {Object} grid The grid object
      * @param {Object} state The hash of state values returned from the StateProvider.
-     */   
+     */
     applyState : function (grid, state) {
         var key, filter;
         this.applyingState = true;
@@ -1714,7 +1714,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         }
         delete this.applyingState;
     },
-    
+
     /**
      * Saves the state of all active filters
      * @param {Object} grid
@@ -1730,11 +1730,11 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         });
         return (state.filters = filters);
     },
-    
+
     /**
      * @private
      * Handler called when the grid is rendered
-     */    
+     */
     onRender : function () {
         this.grid.getView().on('refresh', this.onRefresh, this);
         this.createMenu();
@@ -1743,7 +1743,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called by the grid 'beforedestroy' event
-     */    
+     */
     destroy : function () {
         this.removeAll();
         this.purgeListeners();
@@ -1751,17 +1751,17 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
         if(this.filterMenu){
             Ext.menu.MenuMgr.unregister(this.filterMenu);
             this.filterMenu.destroy();
-             this.filterMenu = this.menu.menu = null;            
+             this.filterMenu = this.menu.menu = null;
         }
     },
 
     /**
      * Remove all filters, permanently destroying them.
-     */    
+     */
     removeAll : function () {
         if(this.filters){
             Ext.destroy.apply(Ext, this.filters.items);
-            // remove all items from the collection 
+            // remove all items from the collection
             this.filters.clear();
         }
     },
@@ -1792,7 +1792,7 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called when the grid reconfigure event fires
-     */    
+     */
     onReconfigure : function () {
         this.bindStore(this.grid.getStore());
         this.store.clearFilter();
@@ -1806,11 +1806,11 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
             hmenu = view.hmenu;
 
         if (this.showMenu && hmenu) {
-            
+
             this.sep  = hmenu.addSeparator();
             this.filterMenu = new Ext.menu.Menu({
                 id: this.grid.id + '-filters-menu'
-            }); 
+            });
             this.menu = hmenu.add({
                 checked: false,
                 itemId: 'filters',
@@ -1845,12 +1845,12 @@ Ext.ux.grid.GridFilters = Ext.extend(Ext.util.Observable, {
     /**
      * @private
      * Handler called by the grid's hmenu beforeshow event
-     */    
+     */
     onMenu : function (filterMenu) {
         var filter = this.getMenuFilter();
 
         if (filter) {
-/*            
+/*
 TODO: lazy rendering
             if (!filter.menu) {
                 filter.menu = filter.createMenu();
@@ -1861,16 +1861,16 @@ TODO: lazy rendering
             // disable the menu if filter.disabled explicitly set to true
             this.menu.setDisabled(filter.disabled === true);
         }
-        
+
         this.menu.setVisible(filter !== undefined);
         this.sep.setVisible(filter !== undefined);
     },
-    
+
     /** @private */
     onCheckChange : function (item, value) {
         this.getMenuFilter().setActive(value);
     },
-    
+
     /** @private */
     onBeforeCheck : function (check, value) {
         return !value || this.getMenuFilter().isActivatable();
@@ -1881,7 +1881,7 @@ TODO: lazy rendering
      * Handler for all events on filters.
      * @param {String} event Event name
      * @param {Object} filter Standard signature of the event before the event is fired
-     */   
+     */
     onStateChange : function (event, filter) {
         if (event === 'serialize') {
             return;
@@ -1895,13 +1895,13 @@ TODO: lazy rendering
             this.deferredUpdate.delay(this.updateBuffer);
         }
         this.updateColumnHeadings();
-            
+
         if (!this.applyingState) {
             this.grid.saveState();
-        }    
+        }
         this.grid.fireEvent('filterupdate', this, filter);
     },
-    
+
     /**
      * @private
      * Handler for store's beforeload event when configured for remote filtering
@@ -1910,11 +1910,11 @@ TODO: lazy rendering
      */
     onBeforeLoad : function (store, options) {
         options.params = options.params || {};
-        this.cleanParams(options.params);       
+        this.cleanParams(options.params);
         var params = this.buildQuery(this.getFilterData());
         Ext.apply(options.params, params);
     },
-    
+
     /**
      * @private
      * Handler for store's load event when configured for local filtering
@@ -1928,28 +1928,25 @@ TODO: lazy rendering
     /**
      * @private
      * Handler called when the grid's view is refreshed
-     */    
+     */
     onRefresh : function () {
         this.updateColumnHeadings();
     },
 
     /**
      * Update the styles for the header row based on the active filters
-     */    
+     */
     updateColumnHeadings : function () {
         var view = this.grid.getView(),
-            hds, i, len, filter;
+            i, len, filter;
         if (view.mainHd) {
-            hds = view.mainHd.select('td').removeClass(this.filterCls);
             for (i = 0, len = view.cm.config.length; i < len; i++) {
                 filter = this.getFilter(view.cm.config[i].dataIndex);
-                if (filter && filter.active) {
-                    hds.item(i).addClass(this.filterCls);
-                }
+                Ext.fly(view.getHeaderCell(i))[filter && filter.active ? 'addClass' : 'removeClass'](this.filterCls);
             }
         }
     },
-    
+
     /** @private */
     reload : function () {
         if (this.local) {
@@ -1968,7 +1965,7 @@ TODO: lazy rendering
             store.reload();
         }
     },
-    
+
     /**
      * Method factory that generates a record validator for the filters active at the time
      * of invokation.
@@ -1981,7 +1978,7 @@ TODO: lazy rendering
                 f.push(filter);
             }
         });
-        
+
         len = f.length;
         return function (record) {
             for (i = 0; i < len; i++) {
@@ -1992,7 +1989,7 @@ TODO: lazy rendering
             return true;
         };
     },
-    
+
     /**
      * Adds a filter to the collection and observes it for state change.
      * @param {Object/Ext.ux.grid.filter.Filter} config A filter configuration or a filter object.
@@ -2002,7 +1999,7 @@ TODO: lazy rendering
         var Cls = this.getFilterClass(config.type),
             filter = config.menu ? config : (new Cls(config));
         this.filters.add(filter);
-        
+
         Ext.util.Observable.capture(filter, this.onStateChange, this);
         return filter;
     },
@@ -2012,7 +2009,7 @@ TODO: lazy rendering
      * @param {Array/Ext.grid.ColumnModel} filters Either an Array of
      * filter configuration objects or an Ext.grid.ColumnModel.  The columns
      * of a passed Ext.grid.ColumnModel will be examined for a <code>filter</code>
-     * property and, if present, will be used as the filter configuration object.   
+     * property and, if present, will be used as the filter configuration object.
      */
     addFilters : function (filters) {
         if (filters) {
@@ -2032,19 +2029,19 @@ TODO: lazy rendering
                         // filter type is specified in order of preference:
                         //     filter type specified in config
                         //     type specified in store's field's type config
-                        filter.type = filter.type || this.store.fields.get(dI).type;  
+                        filter.type = filter.type || this.store.fields.get(dI).type;
                     }
                 } else {
                     filter = filters[i];
                 }
-                // if filter config found add filter for the column 
+                // if filter config found add filter for the column
                 if (filter) {
                     this.addFilter(filter);
                 }
             }
         }
     },
-    
+
     /**
      * Returns a filter for the given dataIndex, if one exists.
      * @param {String} dataIndex The dataIndex of the desired filter object.
@@ -2084,13 +2081,13 @@ TODO: lazy rendering
         });
         return filters;
     },
-    
+
     /**
      * Function to take the active filters data and build it into a query.
      * The format of the query depends on the <code>{@link #encode}</code>
      * configuration:
      * <div class="mdetail-params"><ul>
-     * 
+     *
      * <li><b><tt>false</tt></b> : <i>Default</i>
      * <div class="sub-desc">
      * Flatten into query string of the form (assuming <code>{@link #paramPrefix}='filters'</code>:
@@ -2101,7 +2098,7 @@ filters[0][data][type]="someValue2"&
 filters[0][data][value]="someValue3"&
      * </code></pre>
      * </div></li>
-     * <li><b><tt>true</tt></b> : 
+     * <li><b><tt>true</tt></b> :
      * <div class="sub-desc">
      * JSON encode the filter data
      * <pre><code>
@@ -2127,7 +2124,7 @@ filters[0][data][value]="someValue3"&
                 f = filters[i];
                 root = [this.paramPrefix, '[', i, ']'].join('');
                 p[root + '[field]'] = f.field;
-                
+
                 dataPrefix = root + '[data]';
                 for (key in f.data) {
                     p[[dataPrefix, '[', key, ']'].join('')] = f.data[key];
@@ -2143,14 +2140,14 @@ filters[0][data][value]="someValue3"&
                     f.data
                 ));
             }
-            // only build if there is active filter 
+            // only build if there is active filter
             if (tmp.length > 0){
                 p[this.paramPrefix] = Ext.util.JSON.encode(tmp);
             }
         }
         return p;
     },
-    
+
     /**
      * Removes filter related query parameters from the provided object.
      * @param {Object} p Query parameters that may contain filter related fields.
@@ -2170,13 +2167,13 @@ filters[0][data][value]="someValue3"&
             }
         }
     },
-    
+
     /**
      * Function for locating filter classes, overwrite this with your favorite
      * loader to provide dynamic filter loading.
      * @param {String} type The type of filter to load ('Filter' is automatically
      * appended to the passed type; eg, 'string' becomes 'StringFilter').
-     * @return {Class} The Ext.ux.grid.filter.Class 
+     * @return {Class} The Ext.ux.grid.filter.Class
      */
     getFilterClass : function (type) {
         // map the supported Ext.data.Field type values into a supported filter
@@ -4423,6 +4420,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         }
         if(this.activeGroup != group && this.fireEvent('beforegroupchange', this, group, this.activeGroup) !== false){
             if(this.activeGroup){
+                this.activeGroup.activeTab = null;
                 var oldEl = this.getGroupEl(this.activeGroup);
                 if(oldEl){
                     Ext.fly(oldEl).removeClass('x-grouptabs-strip-active');
@@ -5093,7 +5091,7 @@ Ext.ux.grid.LockingGridView = Ext.extend(Ext.grid.GridView, {
             if(!skipStripe){
                 row.className = row.className.replace(this.rowClsRe, ' ');
                 lrow.className = lrow.className.replace(this.rowClsRe, ' ');
-                if ((idx + 1) % 2 === 0){
+                if ((i + 1) % 2 === 0){
                     row.className += ' x-grid3-row-alt';
                     lrow.className += ' x-grid3-row-alt';
                 }
@@ -5577,7 +5575,7 @@ Ext.ns('Ext.ux.form');
  * @constructor
  * Create a new MultiSelect
  * @param {Object} config Configuration options
- * @xtype multiselect 
+ * @xtype multiselect
  */
 Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field,  {
     /**
@@ -5910,7 +5908,7 @@ Ext.extend(Ext.ux.form.MultiSelect.DragZone, Ext.dd.DragZone, {
         this.onStartDrag(x, y);
         return true;
     },
-    
+
     // private
     collectSelection: function(data) {
         data.repairXY = Ext.fly(this.view.getSelectedNodes()[0]).getXY();
@@ -5999,9 +5997,9 @@ Ext.ux.form.MultiSelect.DropZone = function(ms, config){
 
 Ext.extend(Ext.ux.form.MultiSelect.DropZone, Ext.dd.DropZone, {
     /**
-	 * Part of the Ext.dd.DropZone interface. If no target node is found, the
-	 * whole Element becomes the target, and this causes the drop gesture to append.
-	 */
+     * Part of the Ext.dd.DropZone interface. If no target node is found, the
+     * whole Element becomes the target, and this causes the drop gesture to append.
+     */
     getTargetFromEvent : function(e) {
         var target = e.getTarget();
         return target;
@@ -6084,9 +6082,14 @@ Ext.extend(Ext.ux.form.MultiSelect.DropZone, Ext.dd.DropZone, {
         var pt = this.getDropPoint(e, n, dd);
         if (n != this.ms.fs.body.dom)
             n = this.view.findItemFromChild(n);
-        var insertAt = (this.ms.appendOnly || (n == this.ms.fs.body.dom)) ? this.view.store.getCount() : this.view.indexOf(n);
-        if (pt == "below") {
-            insertAt++;
+
+        if(this.ms.appendOnly) {
+            insertAt = this.view.store.getCount();
+        } else {
+            insertAt = n == this.ms.fs.body.dom ? this.view.store.getCount() - 1 : this.view.indexOf(n);
+            if (pt == "below") {
+                insertAt++;
+            }
         }
 
         var dir = false;
@@ -6617,11 +6620,11 @@ Ext.ns('Ext.ux.grid');
 
 /**
  * @class Ext.ux.grid.RowEditor
- * @extends Ext.Panel 
+ * @extends Ext.Panel
  * Plugin (ptype = 'roweditor') that adds the ability to rapidly edit full rows in a grid.
  * A validation mode may be enabled which uses AnchorTips to notify the user of all
  * validation errors at once.
- * 
+ *
  * @ptype roweditor
  */
 Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
@@ -6638,7 +6641,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
     monitorValid: true,
     focusDelay: 250,
     errorSummary: true,
-    
+
     saveText: 'Save',
     cancelText: 'Cancel',
     commitChangesText: 'You need to commit or cancel your changes',
@@ -6663,7 +6666,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
              * @event canceledit
              * Fired when the editor is cancelled.
              * @param {Ext.ux.grid.RowEditor} roweditor This object
-             * @param {Boolean} forced True if the cancel button is pressed, false is the editor was invalid. 
+             * @param {Boolean} forced True if the cancel button is pressed, false is the editor was invalid.
              */
             'canceledit',
             /**
@@ -6712,8 +6715,8 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             columnresize: this.verifyLayout,
             columnmove: this.refreshFields,
             reconfigure: this.refreshFields,
-	        beforedestroy : this.beforedestroy,
-	        destroy : this.destroy,
+            beforedestroy : this.beforedestroy,
+            destroy : this.destroy,
             bodyscroll: {
                 buffer: 250,
                 fn: this.positionButtons
@@ -6758,7 +6761,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             var g = this.grid, view = g.getView(),
                 row = view.getRow(rowIndex),
                 record = g.store.getAt(rowIndex);
-                
+
             this.record = record;
             this.rowIndex = rowIndex;
             this.values = {};
@@ -6802,10 +6805,10 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             this.fireEvent('canceledit', this, saveChanges === false);
             return;
         }
-        var changes = {}, 
-            r = this.record, 
+        var changes = {},
+            r = this.record,
             hasChange = false,
-            cm = this.grid.colModel, 
+            cm = this.grid.colModel,
             fields = this.items.items;
         for(var i = 0, len = cm.getColumnCount(); i < len; i++){
             if(!cm.isHidden(i)){
@@ -6834,7 +6837,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
     verifyLayout: function(force){
         if(this.el && (this.isVisible() || force === true)){
             var row = this.grid.getView().getRow(this.rowIndex);
-            this.setSize(Ext.fly(row).getWidth(), Ext.fly(row).getHeight() + 9);
+            this.setSize(Ext.fly(row).getWidth(), Ext.isIE ? Ext.fly(row).getHeight() + 9 : undefined);
             var cm = this.grid.colModel, fields = this.items.items;
             for(var i = 0, len = cm.getColumnCount(); i < len; i++){
                 if(!cm.isHidden(i)){
@@ -6867,6 +6870,8 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
                 ed = c.getEditor();
             if(!ed){
                 ed = c.displayEditor || new Ext.form.DisplayField();
+            }else{
+                ed = ed.field;
             }
             if(i == 0){
                 ed.margins = pm('0 1 2 1');
@@ -6982,7 +6987,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
                 scroll = view.scroller.dom.scrollLeft,
                 bw = this.btns.getWidth(),
                 width = Math.min(g.getWidth(), g.getColumnModel().getTotalWidth());
-                
+
             this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: h - 2, stopFx: true, duration:0.2});
         }
     },
@@ -7002,14 +7007,16 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
         if(this.isVisible()){
             var index = 0,
                 cm = this.grid.getColumnModel(),
-                c;
+                c,
+                ed;
             if(pt){
                 index = this.getTargetColumnIndex(pt);
             }
             for(var i = index||0, len = cm.getColumnCount(); i < len; i++){
                 c = cm.getColumnAt(i);
-                if(!c.hidden && c.getEditor()){
-                    c.getEditor().focus();
+                ed = c.getEditor();
+                if(!c.hidden && ed){
+                    ed.field.focus();
                     break;
                 }
             }
@@ -7017,11 +7024,11 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
     },
 
     getTargetColumnIndex: function(pt){
-        var grid = this.grid, 
+        var grid = this.grid,
             v = grid.view,
             x = pt.left,
             cms = grid.colModel.config,
-            i = 0, 
+            i = 0,
             match = false;
         for(var len = cms.length, c; c = cms[i]; i++){
             if(!c.hidden){
@@ -7094,7 +7101,7 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             top = parseInt(this.el.dom.style.top, 10),
             scroll = v.scroller.dom.scrollTop,
             h = this.el.getHeight();
-                
+
         if(top + h >= scroll){
             t.initTarget(this.items.last().getEl());
             if(!t.rendered){
@@ -7423,22 +7430,43 @@ Ext.ux.layout.RowLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     monitorResize:true,
 
+    type: 'row',
+
+    // private
+    allowContainerRemove: false,
+
     // private
     isValidParent : function(c, target){
-        return c.getEl().dom.parentNode == this.innerCt.dom;
+        return this.innerCt && c.getPositionEl().dom.parentNode == this.innerCt.dom;
+    },
+
+    getLayoutTargetSize : function() {
+        var target = this.container.getLayoutTarget(), ret;
+        if (target) {
+            ret = target.getViewSize();
+            ret.width -= target.getPadding('lr');
+            ret.height -= target.getPadding('tb');
+        }
+        return ret;
+    },
+
+    renderAll : function(ct, target) {
+        if(!this.innerCt){
+            // the innerCt prevents wrapping and shuffling while
+            // the container is resizing
+            this.innerCt = target.createChild({cls:'x-column-inner'});
+            this.innerCt.createChild({cls:'x-clear'});
+        }
+        Ext.layout.ColumnLayout.superclass.renderAll.call(this, ct, this.innerCt);
     },
 
     // private
     onLayout : function(ct, target){
         var rs = ct.items.items, len = rs.length, r, i;
 
-        if(!this.innerCt){
-            target.addClass('ux-row-layout-ct');
-            this.innerCt = target.createChild({cls:'x-row-inner'});
-        }
-        this.renderAll(ct, this.innerCt);
+        this.renderAll(ct, target);
 
-        var size = target.getViewSize(true);
+        var size = this.getLayoutTargetSize();
 
         if(size.width < 1 && size.height < 1){ // display none?
             return;
@@ -7455,7 +7483,7 @@ Ext.ux.layout.RowLayout = Ext.extend(Ext.layout.ContainerLayout, {
         for(i = 0; i < len; i++){
             r = rs[i];
             if(!r.rowHeight){
-                ph -= (r.getSize().height + r.getEl().getMargins('tb'));
+                ph -= (r.getHeight() + r.getEl().getMargins('tb'));
             }
         }
 
@@ -7467,6 +7495,20 @@ Ext.ux.layout.RowLayout = Ext.extend(Ext.layout.ContainerLayout, {
                 r.setSize({height: Math.floor(r.rowHeight*ph) - r.getEl().getMargins('tb')});
             }
         }
+
+        // Browsers differ as to when they account for scrollbars.  We need to re-measure to see if the scrollbar
+        // spaces were accounted for properly.  If not, re-layout.
+        if (Ext.isIE) {
+            if (i = target.getStyle('overflow') && i != 'hidden' && !this.adjustmentPass) {
+                var ts = this.getLayoutTargetSize();
+                if (ts.width != size.width){
+                    this.adjustmentPass = true;
+                    this.layoutTargetSize = ts;
+                    this.onLayout(ct, target);
+                }
+            }
+        }
+        delete this.adjustmentPass;
     }
 
     /**
@@ -7748,7 +7790,8 @@ Ext.ux.SliderTip = Ext.extend(Ext.Tip, {
 });
 Ext.ux.SlidingPager = Ext.extend(Object, {
     init : function(pbar){
-        Ext.each(pbar.items.getRange(2,6), function(c){
+        var idx = pbar.items.indexOf(pbar.inputItem);
+        Ext.each(pbar.items.getRange(idx - 2, idx + 2), function(c){
             c.hide();
         });
         var slider = new Ext.Slider({
@@ -7766,14 +7809,11 @@ Ext.ux.SlidingPager = Ext.extend(Object, {
                 }
             }
         });
-        pbar.insert(5, slider);
+        pbar.insert(idx + 1, slider);
         pbar.on({
             change: function(pb, data){
-                slider.maxValue = data.pages;
+                slider.setMaxValue(data.pages);
                 slider.setValue(data.activePage);
-            },
-            beforedestroy: function(){
-                slider.destroy();
             }
         });
     }
@@ -8606,18 +8646,7 @@ sb.setStatus({
             this.insert(0, this.statusEl);
             this.insert(1, '->');
         }
-
-//         this.statusEl = td.createChild({
-//             cls: 'x-status-text ' + (this.iconCls || this.defaultIconCls || ''),
-//             html: this.text || this.defaultText || ''
-//         });
-//         this.statusEl.unselectable();
-
-//         this.spacerEl = td.insertSibling({
-//             tag: 'td',
-//             style: 'width:100%',
-//             cn: [{cls:'ytb-spacer'}]
-//         }, right ? 'before' : 'after');
+        this.doLayout();
     },
 
     /**
@@ -9511,7 +9540,7 @@ Ext.ux.ValidationStatus = Ext.extend(Ext.Component, {
  */
 Ext.ux.tree.TreeGridNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
     isTreeGridNodeUI: true,
-    
+
     renderElements : function(n, a, targetNode, bulkRender){
         var t = n.getOwnerTree(),
             cols = t.columns,
@@ -9522,7 +9551,7 @@ Ext.ux.tree.TreeGridNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
 
         buf = [
              '<tbody class="x-tree-node">',
-                '<tr ext:tree-node-id="', n.id ,'" class="x-tree-node-el ', a.cls, '">',
+                '<tr ext:tree-node-id="', n.id ,'" class="x-tree-node-el x-tree-node-leaf ', a.cls, '">',
                     '<td class="x-treegrid-col">',
                         '<span class="x-tree-node-indent">', this.indentMarkup, "</span>",
                         '<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow">',
@@ -9578,14 +9607,14 @@ Ext.ux.tree.TreeGridNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
 
 Ext.ux.tree.TreeGridRootNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
     isTreeGridNodeUI: true,
-    
+
     // private
     render : function(){
         if(!this.rendered){
             this.wrap = this.ctNode = this.node.ownerTree.innerCt.dom;
             this.node.expanded = true;
         }
-        
+
         if(Ext.isWebKit) {
             // weird table-layout: fixed issue in webkit
             var ct = this.ctNode;
@@ -9602,7 +9631,7 @@ Ext.ux.tree.TreeGridRootNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
         }
         delete this.node;
     },
-    
+
     collapse : Ext.emptyFn,
     expand : Ext.emptyFn
 });/**
@@ -9720,6 +9749,22 @@ Ext.tree.ColumnResizer = Ext.extend(Ext.util.Observable, {
 /**
  * @class Ext.ux.tree.TreeGridSorter
  * @extends Ext.tree.TreeSorter
+ * Provides sorting of nodes in a {@link Ext.ux.tree.TreeGrid}.  The TreeGridSorter automatically monitors events on the
+ * associated TreeGrid that might affect the tree's sort order (beforechildrenrendered, append, insert and textchange).
+ * Example usage:<br />
+ * <pre><code>
+ new Ext.ux.tree.TreeGridSorter(myTreeGrid, {
+     folderSort: true,
+     dir: "desc",
+     sortType: function(node) {
+         // sort by a custom, typed attribute:
+         return parseInt(node.id, 10);
+     }
+ });
+ </code></pre>
+ * @constructor
+ * @param {TreeGrid} tree
+ * @param {Object} config
  */
 Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
     /**
@@ -9767,14 +9812,14 @@ Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
                     return -1;
                 }
             }
-        	var v1 = sortType ? sortType(n1.attributes[p]) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
-        	var v2 = sortType ? sortType(n2.attributes[p]) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
-        	if(v1 < v2){
-    			return dsc ? +1 : -1;
-    		}else if(v1 > v2){
-    			return dsc ? -1 : +1;
+            var v1 = sortType ? sortType(n1) : (cs ? n1.attributes[p] : n1.attributes[p].toUpperCase());
+            var v2 = sortType ? sortType(n2) : (cs ? n2.attributes[p] : n2.attributes[p].toUpperCase());
+            if(v1 < v2){
+                return dsc ? +1 : -1;
+            }else if(v1 > v2){
+                return dsc ? -1 : +1;
             }else{
-    	    	return 0;
+                return 0;
             }
         };
 
@@ -9783,11 +9828,12 @@ Ext.ux.tree.TreeGridSorter = Ext.extend(Ext.tree.TreeSorter, {
     },
 
     onAfterTreeRender : function() {
-        var hmenu = this.tree.hmenu;
-        hmenu.insert(0,
-            {itemId:'asc', text: this.sortAscText, cls: 'xg-hmenu-sort-asc'},
-            {itemId:'desc', text: this.sortDescText, cls: 'xg-hmenu-sort-desc'}
-        );
+        if(this.tree.hmenu){
+            this.tree.hmenu.insert(0,
+                {itemId:'asc', text: this.sortAscText, cls: 'xg-hmenu-sort-asc'},
+                {itemId:'desc', text: this.sortDescText, cls: 'xg-hmenu-sort-desc'}
+            );
+        }
         this.updateSortIcon(0, 'asc');
     },
 
@@ -9999,6 +10045,17 @@ Ext.ux.tree.TreeGrid = Ext.extend(Ext.tree.TreePanel, {
             this.colgroupTpl.insertFirst(this.innerCt, {columns: this.columns});
         }
         return node;
+    },
+    
+    clearInnerCt : function(){
+        if(Ext.isIE){
+            var dom = this.innerCt.dom;
+            while(dom.firstChild){
+                dom.removeChild(dom.firstChild);
+            }
+        }else{
+            Ext.ux.tree.TreeGrid.superclass.clearInnerCt.call(this);
+        }
     },
     
     initEvents : function() {
