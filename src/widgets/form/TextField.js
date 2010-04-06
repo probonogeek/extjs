@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -368,8 +368,8 @@ var myField = new Ext.form.NumberField({
     },
 
     /**
-     * <p>Validates a value according to the field's validation rules and marks the field as invalid
-     * if the validation fails. Validation rules are processed in the following order:</p>
+     * <p>Validates a value according to the field's validation rules and returns an array of errors
+     * for any failing validations. Validation rules are processed in the following order:</p>
      * <div class="mdetail-params"><ul>
      * 
      * <li><b>1. Field specific validator</b>
@@ -432,46 +432,45 @@ var myField = new Ext.form.NumberField({
      * <code>{@link #regexText}</code>.</p>
      * </div></li>
      * 
-     * @param {Mixed} value The value to validate
-     * @return {Boolean} True if the value is valid, else false
+     * @param {Mixed} value The value to validate. The processed raw value will be used if nothing is passed
+     * @return {Array} Array of any validation errors
      */
-    validateValue : function(value){
+    getErrors: function(value) {
+        var errors = Ext.form.TextField.superclass.getErrors.apply(this, arguments);
+        
+        value = value || this.processValue(this.getRawValue());        
+        
         if(Ext.isFunction(this.validator)){
             var msg = this.validator(value);
-            if(msg !== true){
-                this.markInvalid(msg);
-                return false;
+            if (msg !== true) {
+                errors.push(msg);
             }
         }
-        if(value.length < 1 || value === this.emptyText){ // if it's blank
-             if(this.allowBlank){
-                 this.clearInvalid();
-                 return true;
-             }else{
-                 this.markInvalid(this.blankText);
-                 return false;
-             }
+        
+        if (!this.allowBlank && (value.length < 1 || value === this.emptyText)) { // if it's blank
+            errors.push(this.blankText);
         }
-        if(value.length < this.minLength){
-            this.markInvalid(String.format(this.minLengthText, this.minLength));
-            return false;
+        
+        if (value.length < this.minLength) {
+            errors.push(String.format(this.minLengthText, this.minLength));
         }
-        if(value.length > this.maxLength){
-            this.markInvalid(String.format(this.maxLengthText, this.maxLength));
-            return false;
-        }	
-        if(this.vtype){
+        
+        if (value.length > this.maxLength) {
+            errors.push(String.format(this.maxLengthText, this.maxLength));
+        }
+        
+        if (this.vtype) {
             var vt = Ext.form.VTypes;
             if(!vt[this.vtype](value, this)){
-                this.markInvalid(this.vtypeText || vt[this.vtype +'Text']);
-                return false;
+                errors.push(this.vtypeText || vt[this.vtype +'Text']);
             }
         }
-        if(this.regex && !this.regex.test(value)){
-            this.markInvalid(this.regexText);
-            return false;
+        
+        if (this.regex && !this.regex.test(value)) {
+            errors.push(this.regexText);
         }
-        return true;
+        
+        return errors;
     },
 
     /**

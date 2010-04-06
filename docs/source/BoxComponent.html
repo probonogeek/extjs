@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.BoxComponent"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.BoxComponent"></div>/**
  * @class Ext.BoxComponent
  * @extends Ext.Component
  * <p>Base class for any {@link Ext.Component Component} that is to be sized as a box, using width and height.</p>
@@ -281,7 +287,8 @@ var myPanel = new Ext.Panel({
 
         // support for standard size objects
         if(typeof w == 'object'){
-            h = w.height, w = w.width;
+            h = w.height;
+            w = w.width;
         }
         if (Ext.isDefined(w) && Ext.isDefined(this.boxMinWidth) && (w < this.boxMinWidth)) {
             w = this.boxMinWidth;
@@ -297,7 +304,8 @@ var myPanel = new Ext.Panel({
         }
         // not rendered
         if(!this.boxReady){
-            this.width = w, this.height = h;
+            this.width  = w;
+            this.height = h;
             return this;
         }
 
@@ -327,8 +335,8 @@ var myPanel = new Ext.Panel({
 
     <div id="method-Ext.BoxComponent-setWidth"></div>/**
      * Sets the width of the component.  This method fires the {@link #resize} event.
-     * @param {Number} width The new width to setThis may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * @param {Mixed} width The new width to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit defaultUnit}s (by default, pixels).</li>
      * <li>A String used to set the CSS width style.</li>
      * </ul></div>
      * @return {Ext.BoxComponent} this
@@ -339,8 +347,8 @@ var myPanel = new Ext.Panel({
 
     <div id="method-Ext.BoxComponent-setHeight"></div>/**
      * Sets the height of the component.  This method fires the {@link #resize} event.
-     * @param {Number} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * @param {Mixed} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit defaultUnit}s (by default, pixels).</li>
      * <li>A String used to set the CSS height style.</li>
      * <li><i>undefined</i> to leave the height unchanged.</li>
      * </ul></div>

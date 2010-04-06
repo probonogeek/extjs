@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.list.ColumnResizer"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.list.ColumnResizer"></div>/**
  * @class Ext.list.ColumnResizer
  * @extends Ext.util.Observable
  * <p>Supporting Class for Ext.list.ListView</p>
@@ -105,11 +111,11 @@ Ext.list.ColumnResizer = Ext.extend(Ext.util.Observable, {
             minPct = this.minPct * 100,
             pct = Math.ceil((nw * vw.maxWidth) / w),
             diff = (cs[index].width * 100) - pct,
-            each = Math.floor(diff / (len-1-index)),
-            mod = diff - (each * (len-1-index));
+            eachItem = Math.floor(diff / (len-1-index)),
+            mod = diff - (eachItem * (len-1-index));
 
         for(var i = index+1; i < len; i++){
-            var cw = (cs[i].width * 100) + each,
+            var cw = (cs[i].width * 100) + eachItem,
                 ncw = Math.max(minPct, cw);
             if(cw != ncw){
                 mod += cw - ncw;

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -31,6 +31,12 @@
 .view {
     background-image: url( ../menu/images/view.gif ) !important;
 }
+.money-up {
+    background-image: url( images/money_add.png ) !important;
+}
+.money-down {
+    background-image: url( images/money_delete.png ) !important;
+}
 
 .btn-panel td {
     padding-left:5px;
@@ -46,4 +52,29 @@ h2 {
 
 h3 {
     font-weight:normal !important;
+}
+
+.company {
+  float: left;
+  width: 179px;
+  height: 30px;
+  margin: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.company h3 {
+  font-weight: bold !important;
+}
+
+.company .up {
+    color: green;
+}
+
+.company .down {
+    color: red;
+}
+
+.company.x-view-selected {
+    background-color: #efefef;
 }

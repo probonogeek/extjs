@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -40,7 +40,7 @@ a:hover {
 /* header styles */
 #hd {
     background:transparent url(../images/topbar.png) no-repeat 10px bottom;
-       height:95px;
+       height: 108px;
        position:relative;
 }
 
@@ -79,7 +79,7 @@ a:hover {
 
 #hd table.main-nav {
     left:15px;
-    top:40px;
+    top:53px;
 }
 #hd table.main-nav tr {
     height:28px;
@@ -110,7 +110,7 @@ a:hover {
 #hd .sub-nav {
     position:absolute;
     left:25px;
-    top:72px;
+    top:85px;
     height:21px;
 }
 #hd .sub-nav td {
@@ -141,6 +141,16 @@ a:hover {
 }
 #hd h1 a span {
     display:none;
+}
+
+
+#hd a#logo img {
+    border: none !important;
+    height:52px;
+    position:relative;
+    top:-3px;
+    left:7px;
+    width:134px;
 }
 
 /* body styles */

@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.menu.BaseItem"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.menu.BaseItem"></div>/**
  * @class Ext.menu.BaseItem
  * @extends Ext.Component
  * The base class for all items that render into menus.  BaseItem provides default rendering, activated state
@@ -47,7 +53,7 @@ Ext.menu.BaseItem = Ext.extend(Ext.Component, {
      */
     hideOnClick : true,
     <div id="cfg-Ext.menu.BaseItem-clickHideDelay"></div>/**
-     * @cfg {Number} clickHideDelay Length of time in milliseconds to wait before hiding after a click (defaults to 100)
+     * @cfg {Number} clickHideDelay Length of time in milliseconds to wait before hiding after a click (defaults to 1)
      */
     clickHideDelay : 1,
 
@@ -56,33 +62,33 @@ Ext.menu.BaseItem = Ext.extend(Ext.Component, {
 
     // private
     actionMode : "container",
-    
+
     initComponent : function(){
         Ext.menu.BaseItem.superclass.initComponent.call(this);
         this.addEvents(
-	        <div id="event-Ext.menu.BaseItem-click"></div>/**
-	         * @event click
-	         * Fires when this item is clicked
-	         * @param {Ext.menu.BaseItem} this
-	         * @param {Ext.EventObject} e
-	         */
-	        'click',
-	        <div id="event-Ext.menu.BaseItem-activate"></div>/**
-	         * @event activate
-	         * Fires when this item is activated
-	         * @param {Ext.menu.BaseItem} this
-	         */
-	        'activate',
-	        <div id="event-Ext.menu.BaseItem-deactivate"></div>/**
-	         * @event deactivate
-	         * Fires when this item is deactivated
-	         * @param {Ext.menu.BaseItem} this
-	         */
-	        'deactivate'
-	    );
-	    if(this.handler){
-	        this.on("click", this.handler, this.scope);
-	    }
+            <div id="event-Ext.menu.BaseItem-click"></div>/**
+             * @event click
+             * Fires when this item is clicked
+             * @param {Ext.menu.BaseItem} this
+             * @param {Ext.EventObject} e
+             */
+            'click',
+            <div id="event-Ext.menu.BaseItem-activate"></div>/**
+             * @event activate
+             * Fires when this item is activated
+             * @param {Ext.menu.BaseItem} this
+             */
+            'activate',
+            <div id="event-Ext.menu.BaseItem-deactivate"></div>/**
+             * @event deactivate
+             * Fires when this item is deactivated
+             * @param {Ext.menu.BaseItem} this
+             */
+            'deactivate'
+        );
+        if(this.handler){
+            this.on("click", this.handler, this.scope);
+        }
     },
 
     // private

@@ -6,11 +6,17 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+
 // for old browsers
 window.undefined = window.undefined;
 
-/**
+<div id="cls-Ext"></div>/**
  * @class Ext
  * Ext core utilities and functions.
  * @singleton
@@ -21,7 +27,7 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.1.1'
+    version : '3.2.0'
 };
 
 <div id="method-Ext-apply"></div>/**
@@ -667,7 +673,7 @@ function(el){
          * @return {Boolean}
          */
         isElement : function(v) {
-            return !!v && v.tagName;
+            return v ? !!v.tagName : false;
         },
 
         <div id="method-Ext-isDefined"></div>/**
@@ -798,7 +804,7 @@ Ext.ns("Ext.util", "Ext.lib", "Ext.data");
 
 Ext.elCache = {};
 
-/**
+<div id="cls-Function"></div>/**
  * @class Function
  * These functions are available on every Function object (any JavaScript function).
  */
@@ -960,7 +966,7 @@ sayHi.defer(2000, this, ['Fred']);
     }
 });
 
-/**
+<div id="cls-String"></div>/**
  * @class String
  * These functions are available on every String object.
  */

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -65,8 +65,7 @@ restActions : {
 
         /**
          * Returns true if supplied action-name is a valid API action defined in <code>{@link #actions}</code> constants
-         * @param {String} action
-         * @param {String[]}(Optional) List of available CRUD actions.  Pass in list when executing multiple times for efficiency.
+         * @param {String} action Action to test for availability.
          * @return {Boolean}
          */
         isAction : function(action) {
@@ -98,7 +97,7 @@ restActions : {
         /**
          * Returns true if the supplied API is valid; that is, check that all keys match defined actions
          * otherwise returns an array of mistakes.
-         * @return {String[]||true}
+         * @return {String[]|true}
          */
         isValid : function(api){
             var invalid = [];
@@ -438,7 +437,7 @@ var myNewRecord = new TopicRecord(
 myStore.{@link Ext.data.Store#add add}(myNewRecord);
 </code></pre>
  * @method create
- * @return {function} A constructor which is used to create new Records according
+ * @return {Function} A constructor which is used to create new Records according
  * to the definition. The constructor has the same signature as {@link #Record}.
  * @static
  */
@@ -600,7 +599,7 @@ rec.{@link #commit}(); // updates the view
 
     // private
     afterEdit : function(){
-        if(this.store){
+        if (this.store != undefined && typeof this.store.afterEdit == "function") {
             this.store.afterEdit(this);
         }
     },
@@ -1096,6 +1095,20 @@ sortInfo: {
         dir : 'dir'
     },
 
+    /**
+     * @property isDestroyed
+     * @type Boolean
+     * True if the store has been destroyed already. Read only
+     */
+    isDestroyed: false,
+
+    /**
+     * @property hasMultiSort
+     * @type Boolean
+     * True if this store is currently sorted by more than one field/direction combination.
+     */
+    hasMultiSort: false,
+
     // private
     batchKey : '_ext_batch_',
 
@@ -1321,7 +1334,7 @@ sortInfo: {
              * @event beforewrite
              * @param {Ext.data.Store} store
              * @param {String} action [Ext.data.Api.actions.create|update|destroy]
-             * @param {Record/Array[Record]} rs
+             * @param {Record/Record[]} rs The Record(s) being written.
              * @param {Object} options The loading options that were specified. Edit <code>options.params</code> to add Http parameters to the request.  (see {@link #save} for details)
              * @param {Object} arg The callback's arg object passed to the {@link #request} function
              */
@@ -1648,11 +1661,11 @@ sortInfo: {
      * <tt>false</tt>, the load call will abort and will return <tt>false</tt>; otherwise will return <tt>true</tt>.
      */
     load : function(options) {
-        options = options || {};
+        options = Ext.apply({}, options);
         this.storeOptions(options);
         if(this.sortInfo && this.remoteSort){
             var pn = this.paramNames;
-            options.params = options.params || {};
+            options.params = Ext.apply({}, options.params);
             options.params[pn.sort] = this.sortInfo.field;
             options.params[pn.dir] = this.sortInfo.direction;
         }
@@ -1698,9 +1711,9 @@ sortInfo: {
     },
 
     /**
-     * Destroys a record or records.  Should not be used directly.  It's called by Store#remove if a Writer is set.
-     * @param {Store} this
-     * @param {Ext.data.Record/Ext.data.Record[]}
+     * Destroys a Record.  Should not be used directly.  It's called by Store#remove if a Writer is set.
+     * @param {Store} store this
+     * @param {Ext.data.Record} record
      * @param {Number} index
      * @private
      */
@@ -1884,7 +1897,7 @@ sortInfo: {
                 id: batch,
                 count: 0,
                 data: {}
-            }
+            };
         }
         ++o.count;
     },
@@ -2126,26 +2139,87 @@ myStore.reload(lastOptions);
         return this.sortInfo;
     },
 
-    // private
+    /**
+     * @private
+     * Invokes sortData if we have sortInfo to sort on and are not sorting remotely
+     */
     applySort : function(){
-        if(this.sortInfo && !this.remoteSort){
-            var s = this.sortInfo, f = s.field;
-            this.sortData(f, s.direction);
+        if ((this.sortInfo || this.multiSortInfo) && !this.remoteSort) {
+            this.sortData();
         }
     },
 
-    // private
-    sortData : function(f, direction){
-        direction = direction || 'ASC';
-        var st = this.fields.get(f).sortType;
-        var fn = function(r1, r2){
-            var v1 = st(r1.data[f]), v2 = st(r2.data[f]);
-            return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
+    /**
+     * @private
+     * Performs the actual sorting of data. This checks to see if we currently have a multi sort or not. It applies
+     * each sorter field/direction pair in turn by building an OR'ed master sorting function and running it against
+     * the full dataset
+     */
+    sortData : function() {
+        var sortInfo  = this.hasMultiSort ? this.multiSortInfo : this.sortInfo,
+            direction = sortInfo.direction || "ASC",
+            sorters   = sortInfo.sorters,
+            sortFns   = [];
+
+        //if we just have a single sorter, pretend it's the first in an array
+        if (!this.hasMultiSort) {
+            sorters = [{direction: direction, field: sortInfo.field}];
+        }
+
+        //create a sorter function for each sorter field/direction combo
+        for (var i=0, j = sorters.length; i < j; i++) {
+            sortFns.push(this.createSortFunction(sorters[i].field, sorters[i].direction));
+        }
+        
+        if (sortFns.length == 0) {
+            return;
+        }
+
+        //the direction modifier is multiplied with the result of the sorting functions to provide overall sort direction
+        //(as opposed to direction per field)
+        var directionModifier = direction.toUpperCase() == "DESC" ? -1 : 1;
+
+        //create a function which ORs each sorter together to enable multi-sort
+        var fn = function(r1, r2) {
+          var result = sortFns[0].call(this, r1, r2);
+
+          //if we have more than one sorter, OR any additional sorter functions together
+          if (sortFns.length > 1) {
+              for (var i=1, j = sortFns.length; i < j; i++) {
+                  result = result || sortFns[i].call(this, r1, r2);
+              }
+          }
+
+          return directionModifier * result;
         };
+
+        //sort the data
         this.data.sort(direction, fn);
-        if(this.snapshot && this.snapshot != this.data){
+        if (this.snapshot && this.snapshot != this.data) {
             this.snapshot.sort(direction, fn);
         }
+    },
+
+    /**
+     * Creates and returns a function which sorts an array by the given field and direction
+     * @param {String} field The field to create the sorter for
+     * @param {String} direction The direction to sort by (defaults to "ASC")
+     * @return {Function} A function which sorts by the field/direction combination provided
+     */
+    createSortFunction: function(field, direction) {
+        direction = direction || "ASC";
+        var directionModifier = direction.toUpperCase() == "DESC" ? -1 : 1;
+
+        var sortType = this.fields.get(field).sortType;
+
+        //create a comparison function. Takes 2 records, returns 1 if record 1 is greater,
+        //-1 if record 2 is greater or 0 if they are equal
+        return function(r1, r2) {
+            var v1 = sortType(r1.data[field]),
+                v2 = sortType(r2.data[field]);
+
+            return directionModifier * (v1 > v2 ? 1 : (v1 < v2 ? -1 : 0));
+        };
     },
 
     /**
@@ -2153,7 +2227,7 @@ myStore.reload(lastOptions);
      * @param {String} fieldName The name of the field to sort by.
      * @param {String} dir (optional) The sort order, 'ASC' or 'DESC' (case-sensitive, defaults to <tt>'ASC'</tt>)
      */
-    setDefaultSort : function(field, dir){
+    setDefaultSort : function(field, dir) {
         dir = dir ? dir.toUpperCase() : 'ASC';
         this.sortInfo = {field: field, direction: dir};
         this.sortToggle[field] = dir;
@@ -2163,38 +2237,109 @@ myStore.reload(lastOptions);
      * Sort the Records.
      * If remote sorting is used, the sort is performed on the server, and the cache is reloaded. If local
      * sorting is used, the cache is sorted internally. See also {@link #remoteSort} and {@link #paramNames}.
+     * This function accepts two call signatures - pass in a field name as the first argument to sort on a single
+     * field, or pass in an array of sort configuration objects to sort by multiple fields.
+     * Single sort example:
+     * store.sort('name', 'ASC');
+     * Multi sort example:
+     * store.sort([
+     *   {
+     *     field    : 'name',
+     *     direction: 'ASC'
+     *   },
+     *   {
+     *     field    : 'salary',
+     *     direction: 'DESC'
+     *   }
+     * ], 'ASC');
+     * In this second form, the sort configs are applied in order, with later sorters sorting within earlier sorters' results.
+     * For example, if two records with the same name are present they will also be sorted by salary if given the sort configs
+     * above. Any number of sort configs can be added.
+     * @param {String/Array} fieldName The name of the field to sort by, or an array of ordered sort configs
+     * @param {String} dir (optional) The sort order, 'ASC' or 'DESC' (case-sensitive, defaults to <tt>'ASC'</tt>)
+     */
+    sort : function(fieldName, dir) {
+        if (Ext.isArray(arguments[0])) {
+            return this.multiSort.call(this, fieldName, dir);
+        } else {
+            return this.singleSort(fieldName, dir);
+        }
+    },
+
+    /**
+     * Sorts the store contents by a single field and direction. This is called internally by {@link sort} and would
+     * not usually be called manually
      * @param {String} fieldName The name of the field to sort by.
      * @param {String} dir (optional) The sort order, 'ASC' or 'DESC' (case-sensitive, defaults to <tt>'ASC'</tt>)
      */
-    sort : function(fieldName, dir){
-        var f = this.fields.get(fieldName);
-        if(!f){
-            return false;
-        }
-        if(!dir){
-            if(this.sortInfo && this.sortInfo.field == f.name){ // toggle sort dir
-                dir = (this.sortToggle[f.name] || 'ASC').toggle('ASC', 'DESC');
-            }else{
-                dir = f.sortDir;
+    singleSort: function(fieldName, dir) {
+        var field = this.fields.get(fieldName);
+        if (!field) return false;
+
+        var name       = field.name,
+            sortInfo   = this.sortInfo || null,
+            sortToggle = this.sortToggle ? this.sortToggle[name] : null;
+
+        if (!dir) {
+            if (sortInfo && sortInfo.field == name) { // toggle sort dir
+                dir = (this.sortToggle[name] || 'ASC').toggle('ASC', 'DESC');
+            } else {
+                dir = field.sortDir;
             }
         }
-        var st = (this.sortToggle) ? this.sortToggle[f.name] : null;
-        var si = (this.sortInfo) ? this.sortInfo : null;
 
-        this.sortToggle[f.name] = dir;
-        this.sortInfo = {field: f.name, direction: dir};
-        if(!this.remoteSort){
+        this.sortToggle[name] = dir;
+        this.sortInfo = {field: name, direction: dir};
+        this.hasMultiSort = false;
+
+        if (this.remoteSort) {
+            if (!this.load(this.lastOptions)) {
+                if (sortToggle) {
+                    this.sortToggle[name] = sortToggle;
+                }
+                if (sortInfo) {
+                    this.sortInfo = sortInfo;
+                }
+            }
+        } else {
             this.applySort();
             this.fireEvent('datachanged', this);
-        }else{
-            if (!this.load(this.lastOptions)) {
-                if (st) {
-                    this.sortToggle[f.name] = st;
-                }
-                if (si) {
-                    this.sortInfo = si;
-                }
-            }
+        }
+    },
+
+    /**
+     * Sorts the contents of this store by multiple field/direction sorters. This is called internally by {@link sort}
+     * and would not usually be called manually.
+     * Multi sorting only currently applies to local datasets - multiple sort data is not currently sent to a proxy
+     * if remoteSort is used.
+     * @param {Array} sorters Array of sorter objects (field and direction)
+     * @param {String} direction Overall direction to sort the ordered results by (defaults to "ASC")
+     */
+    multiSort: function(sorters, direction) {
+        this.hasMultiSort = true;
+        direction = direction || "ASC";
+
+        //toggle sort direction
+        if (this.multiSortInfo && direction == this.multiSortInfo.direction) {
+            direction = direction.toggle("ASC", "DESC");
+        }
+
+        /**
+         * @property multiSortInfo
+         * @type Object
+         * Object containing overall sort direction and an ordered array of sorter configs used when sorting on multiple fields
+         */
+        this.multiSortInfo = {
+            sorters  : sorters,
+            direction: direction
+        };
+        
+        if (this.remoteSort) {
+            this.singleSort(sorters[0].field, sorters[0].direction);
+
+        } else {
+            this.applySort();
+            this.fireEvent('datachanged', this);
         }
     },
 
@@ -2222,17 +2367,6 @@ myStore.reload(lastOptions);
         return this.modified;
     },
 
-    // private
-    createFilterFn : function(property, value, anyMatch, caseSensitive){
-        if(Ext.isEmpty(value, false)){
-            return false;
-        }
-        value = this.data.createValueMatcher(value, anyMatch, caseSensitive);
-        return function(r){
-            return value.test(r.data[property]);
-        };
-    },
-
     /**
      * Sums the value of <tt>property</tt> for each {@link Ext.data.Record record} between <tt>start</tt>
      * and <tt>end</tt> and returns the result.
@@ -2253,15 +2387,105 @@ myStore.reload(lastOptions);
     },
 
     /**
-     * Filter the {@link Ext.data.Record records} by a specified property.
-     * @param {String} field A field on your records
+     * @private
+     * Returns a filter function used to test a the given property's value. Defers most of the work to
+     * Ext.util.MixedCollection's createValueMatcher function
+     * @param {String} property The property to create the filter function for
+     * @param {String/RegExp} value The string/regex to compare the property value to
+     * @param {Boolean} anyMatch True if we don't care if the filter value is not the full value (defaults to false)
+     * @param {Boolean} caseSensitive True to create a case-sensitive regex (defaults to false)
+     * @param {Boolean} exactMatch True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
+     */
+    createFilterFn : function(property, value, anyMatch, caseSensitive, exactMatch){
+        if(Ext.isEmpty(value, false)){
+            return false;
+        }
+        value = this.data.createValueMatcher(value, anyMatch, caseSensitive, exactMatch);
+        return function(r) {
+            return value.test(r.data[property]);
+        };
+    },
+
+    /**
+     * Given an array of filter functions (each with optional scope), constructs and returns a single function that returns
+     * the result of all of the filters ANDed together
+     * @param {Array} filters The array of filter objects (each object should contain an 'fn' and optional scope)
+     * @return {Function} The multiple filter function
+     */
+    createMultipleFilterFn: function(filters) {
+        return function(record) {
+            var isMatch = true;
+
+            for (var i=0, j = filters.length; i < j; i++) {
+                var filter = filters[i],
+                    fn     = filter.fn,
+                    scope  = filter.scope;
+
+                isMatch = isMatch && fn.call(scope, record);
+            }
+
+            return isMatch;
+        };
+    },
+
+    /**
+     * Filter the {@link Ext.data.Record records} by a specified property. Alternatively, pass an array of filter
+     * options to filter by more than one property.
+     * Single filter example:
+     * store.filter('name', 'Ed', true, true); //finds all records containing the substring 'Ed'
+     * Multiple filter example:
+     * store.filter([
+     *   {
+     *     property     : 'name',
+     *     value        : 'Ed',
+     *     anyMatch     : true, //optional, defaults to true
+     *     caseSensitive: true  //optional, defaults to true
+     *   },
+     *
+     *   //filter functions can also be passed
+     *   {
+     *     fn   : function(record) {
+     *       return record.get('age') == 24
+     *     },
+     *     scope: this
+     *   }
+     * ]);
+     * @param {String|Array} field A field on your records, or an array containing multiple filter options
      * @param {String/RegExp} value Either a string that the field should begin with, or a RegExp to test
      * against the field.
      * @param {Boolean} anyMatch (optional) <tt>true</tt> to match any part not just the beginning
      * @param {Boolean} caseSensitive (optional) <tt>true</tt> for case sensitive comparison
+     * @param {Boolean} exactMatch True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
      */
-    filter : function(property, value, anyMatch, caseSensitive){
-        var fn = this.createFilterFn(property, value, anyMatch, caseSensitive);
+    filter : function(property, value, anyMatch, caseSensitive, exactMatch){
+        //we can accept an array of filter objects, or a single filter object - normalize them here
+        if (Ext.isObject(property)) {
+            property = [property];
+        }
+
+        if (Ext.isArray(property)) {
+            var filters = [];
+
+            //normalize the filters passed into an array of filter functions
+            for (var i=0, j = property.length; i < j; i++) {
+                var filter = property[i],
+                    func   = filter.fn,
+                    scope  = filter.scope || this;
+
+                //if we weren't given a filter function, construct one now
+                if (!Ext.isFunction(func)) {
+                    func = this.createFilterFn(filter.property, filter.value, filter.anyMatch, filter.caseSensitive, filter.exactMatch);
+                }
+
+                filters.push({fn: func, scope: scope});
+            }
+
+            var fn = this.createMultipleFilterFn(filters);
+        } else {
+            //classic single property filter
+            var fn = this.createFilterFn(property, value, anyMatch, caseSensitive, exactMatch);
+        }
+
         return fn ? this.filterBy(fn) : this.clearFilter();
     },
 
@@ -2280,6 +2504,29 @@ myStore.reload(lastOptions);
         this.snapshot = this.snapshot || this.data;
         this.data = this.queryBy(fn, scope||this);
         this.fireEvent('datachanged', this);
+    },
+
+    /**
+     * Revert to a view of the Record cache with no filtering applied.
+     * @param {Boolean} suppressEvent If <tt>true</tt> the filter is cleared silently without firing the
+     * {@link #datachanged} event.
+     */
+    clearFilter : function(suppressEvent){
+        if(this.isFiltered()){
+            this.data = this.snapshot;
+            delete this.snapshot;
+            if(suppressEvent !== true){
+                this.fireEvent('datachanged', this);
+            }
+        }
+    },
+
+    /**
+     * Returns true if this store is currently filtered
+     * @return {Boolean}
+     */
+    isFiltered : function(){
+        return !!this.snapshot && this.snapshot != this.data;
     },
 
     /**
@@ -2377,29 +2624,6 @@ myStore.reload(lastOptions);
             }
         }
         return r;
-    },
-
-    /**
-     * Revert to a view of the Record cache with no filtering applied.
-     * @param {Boolean} suppressEvent If <tt>true</tt> the filter is cleared silently without firing the
-     * {@link #datachanged} event.
-     */
-    clearFilter : function(suppressEvent){
-        if(this.isFiltered()){
-            this.data = this.snapshot;
-            delete this.snapshot;
-            if(suppressEvent !== true){
-                this.fireEvent('datachanged', this);
-            }
-        }
-    },
-
-    /**
-     * Returns true if this store is currently filtered
-     * @return {Boolean}
-     */
-    isFiltered : function(){
-        return this.snapshot && this.snapshot != this.data;
     },
 
     // private
@@ -2517,109 +2741,49 @@ Ext.apply(Ext.data.Store.Error.prototype, {
  * <p>Developers do not need to instantiate this class. Instances are created by {@link Ext.data.Record.create}
  * and cached in the {@link Ext.data.Record#fields fields} property of the created Record constructor's <b>prototype.</b></p>
  */
-Ext.data.Field = function(config){
-    if(typeof config == "string"){
-        config = {name: config};
-    }
-    Ext.apply(this, config);
-
-    if(!this.type){
-        this.type = "auto";
-    }
-
-    var st = Ext.data.SortTypes;
-    // named sortTypes are supported, here we look them up
-    if(typeof this.sortType == "string"){
-        this.sortType = st[this.sortType];
-    }
-
-    // set default sortType for strings and dates
-    if(!this.sortType){
-        switch(this.type){
-            case "string":
-                this.sortType = st.asUCString;
-                break;
-            case "date":
-                this.sortType = st.asDate;
-                break;
-            default:
-                this.sortType = st.none;
+Ext.data.Field = Ext.extend(Object, {
+    
+    constructor : function(config){
+        if(Ext.isString(config)){
+            config = {name: config};
         }
-    }
+        Ext.apply(this, config);
+        
+        var types = Ext.data.Types,
+            st = this.sortType,
+            t;
 
-    // define once
-    var stripRe = /[\$,%]/g;
-
-    // prebuilt conversion function for this field, instead of
-    // switching every time we're reading a value
-    if(!this.convert){
-        var cv, dateFormat = this.dateFormat;
-        switch(this.type){
-            case "":
-            case "auto":
-            case undefined:
-                cv = function(v){ return v; };
-                break;
-            case "string":
-                cv = function(v){ return (v === undefined || v === null) ? '' : String(v); };
-                break;
-            case "int":
-                cv = function(v){
-                    return v !== undefined && v !== null && v !== '' ?
-                        parseInt(String(v).replace(stripRe, ""), 10) : '';
-                    };
-                break;
-            case "float":
-                cv = function(v){
-                    return v !== undefined && v !== null && v !== '' ?
-                        parseFloat(String(v).replace(stripRe, ""), 10) : '';
-                    };
-                break;
-            case "bool":
-                cv = function(v){ return v === true || v === "true" || v == 1; };
-                break;
-            case "date":
-                cv = function(v){
-                    if(!v){
-                        return '';
-                    }
-                    if(Ext.isDate(v)){
-                        return v;
-                    }
-                    if(dateFormat){
-                        if(dateFormat == "timestamp"){
-                            return new Date(v*1000);
-                        }
-                        if(dateFormat == "time"){
-                            return new Date(parseInt(v, 10));
-                        }
-                        return Date.parseDate(v, dateFormat);
-                    }
-                    var parsed = Date.parse(v);
-                    return parsed ? new Date(parsed) : null;
-                };
-                break;
-            default:
-                cv = function(v){ return v; };
-                break;
-
+        if(this.type){
+            if(Ext.isString(this.type)){
+                this.type = Ext.data.Types[this.type.toUpperCase()] || types.AUTO;
+            }
+        }else{
+            this.type = types.AUTO;
         }
-        this.convert = cv;
-    }
-};
 
-Ext.data.Field.prototype = {
+        // named sortTypes are supported, here we look them up
+        if(Ext.isString(st)){
+            this.sortType = Ext.data.SortTypes[st];
+        }else if(Ext.isEmpty(st)){
+            this.sortType = this.type.sortType;
+        }
+
+        if(!this.convert){
+            this.convert = this.type.convert;
+        }
+    },
+    
     /**
      * @cfg {String} name
      * The name by which the field is referenced within the Record. This is referenced by, for example,
-     * the <tt>dataIndex</tt> property in column definition objects passed to {@link Ext.grid.ColumnModel}.
-     * <p>Note: In the simplest case, if no properties other than <tt>name</tt> are required, a field
+     * the <code>dataIndex</code> property in column definition objects passed to {@link Ext.grid.ColumnModel}.
+     * <p>Note: In the simplest case, if no properties other than <code>name</code> are required, a field
      * definition may consist of just a String for the field name.</p>
      */
     /**
-     * @cfg {String} type
-     * (Optional) The data type for conversion to displayable value if <tt>{@link Ext.data.Field#convert convert}</tt>
-     * has not been specified. Possible values are
+     * @cfg {Mixed} type
+     * (Optional) The data type for automatic conversion from received data to the <i>stored</i> value if <code>{@link Ext.data.Field#convert convert}</code>
+     * has not been specified. This may be specified as a string value. Possible values are
      * <div class="mdetail-params"><ul>
      * <li>auto (Default, implies no conversion)</li>
      * <li>string</li>
@@ -2627,13 +2791,16 @@ Ext.data.Field.prototype = {
      * <li>float</li>
      * <li>boolean</li>
      * <li>date</li></ul></div>
+     * <p>This may also be specified by referencing a member of the {@link Ext.data.Types} class.</p>
+     * <p>Developers may create their own application-specific data types by defining new members of the
+     * {@link Ext.data.Types} class.</p>
      */
     /**
      * @cfg {Function} convert
      * (Optional) A function which converts the value provided by the Reader into an object that will be stored
      * in the Record. It is passed the following parameters:<div class="mdetail-params"><ul>
      * <li><b>v</b> : Mixed<div class="sub-desc">The data value as read by the Reader, if undefined will use
-     * the configured <tt>{@link Ext.data.Field#defaultValue defaultValue}</tt>.</div></li>
+     * the configured <code>{@link Ext.data.Field#defaultValue defaultValue}</code>.</div></li>
      * <li><b>rec</b> : Mixed<div class="sub-desc">The data object containing the row as read by the Reader.
      * Depending on the Reader type, this could be an Array ({@link Ext.data.ArrayReader ArrayReader}), an object
      *  ({@link Ext.data.JsonReader JsonReader}), or an XML element ({@link Ext.data.XMLReader XMLReader}).</div></li>
@@ -2687,15 +2854,16 @@ var myData = [
      */
     /**
      * @cfg {String} dateFormat
-     * (Optional) A format string for the {@link Date#parseDate Date.parseDate} function, or "timestamp" if the
+     * <p>(Optional) Used when converting received data into a Date when the {@link #type} is specified as <code>"date"</code>.</p>
+     * <p>A format string for the {@link Date#parseDate Date.parseDate} function, or "timestamp" if the
      * value provided by the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a
-     * javascript millisecond timestamp.
+     * javascript millisecond timestamp. See {@link Date}</p>
      */
     dateFormat: null,
     /**
      * @cfg {Mixed} defaultValue
      * (Optional) The default value used <b>when a Record is being created by a {@link Ext.data.Reader Reader}</b>
-     * when the item referenced by the <tt>{@link Ext.data.Field#mapping mapping}</tt> does not exist in the data
+     * when the item referenced by the <code>{@link Ext.data.Field#mapping mapping}</code> does not exist in the data
      * object (i.e. undefined). (defaults to "")
      */
     defaultValue: "",
@@ -2743,18 +2911,19 @@ sortType: function(value) {
     sortType : null,
     /**
      * @cfg {String} sortDir
-     * (Optional) Initial direction to sort (<tt>"ASC"</tt> or  <tt>"DESC"</tt>).  Defaults to
-     * <tt>"ASC"</tt>.
+     * (Optional) Initial direction to sort (<code>"ASC"</code> or  <code>"DESC"</code>).  Defaults to
+     * <code>"ASC"</code>.
      */
     sortDir : "ASC",
     /**
      * @cfg {Boolean} allowBlank
-     * (Optional) Used for validating a {@link Ext.data.Record record}, defaults to <tt>true</tt>.
+     * (Optional) Used for validating a {@link Ext.data.Record record}, defaults to <code>true</code>.
      * An empty value here will cause {@link Ext.data.Record}.{@link Ext.data.Record#isValid isValid}
-     * to evaluate to <tt>false</tt>.
+     * to evaluate to <code>false</code>.
      */
     allowBlank : true
-};/**
+});
+/**
  * @class Ext.data.DataReader
  * Abstract base class for reading structured data from a data source and converting
  * it into an object containing {@link Ext.data.Record} objects and metadata for use
@@ -2821,10 +2990,6 @@ Ext.data.DataReader.prototype = {
     /**
      * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
      */
-    extractData : Ext.emptyFn,
-    /**
-     * Abstract method overridden in DataReader extensions such as {@link Ext.data.JsonReader} and {@link Ext.data.XmlReader}
-     */
     extractValues : Ext.emptyFn,
 
     /**
@@ -2863,12 +3028,8 @@ Ext.data.DataReader.prototype = {
             rs.phantom = false; // <-- That's what it's all about
             rs._phid = rs.id;  // <-- copy phantom-id -> _phid, so we can remap in Store#onCreateRecords
             rs.id = this.getId(data);
+            rs.data = data;
 
-            rs.fields.each(function(f) {
-                if (data[f.name] !== f.defaultValue) {
-                    rs.data[f.name] = data[f.name];
-                }
-            });
             rs.commit();
         }
     },
@@ -2900,11 +3061,7 @@ Ext.data.DataReader.prototype = {
                 data = data.shift();
             }
             if (this.isData(data)) {
-                rs.fields.each(function(f) {
-                    if (data[f.name] !== f.defaultValue) {
-                        rs.data[f.name] = data[f.name];
-                    }
-                });
+                rs.data = Ext.apply(rs.data, data);
             }
             rs.commit();
         }
@@ -3145,7 +3302,7 @@ Ext.data.DataWriter.prototype = {
      * Converts a Record to a hash, taking into account the state of the Ext.data.Record along with configuration properties
      * related to its rendering, such as {@link #writeAllFields}, {@link Ext.data.Record#phantom phantom}, {@link Ext.data.Record#getChanges getChanges} and
      * {@link Ext.data.DataReader#idProperty idProperty}
-     * @param {Ext.data.Record}
+     * @param {Ext.data.Record} rec The Record from which to create a hash.
      * @param {Object} config <b>NOT YET IMPLEMENTED</b>.  Will implement an exlude/only configuration for fine-control over which fields do/don't get rendered.
      * @return {Object}
      * @protected
@@ -3430,7 +3587,7 @@ myStore.on({
          * DataProxies by attaching a listener to the Ext.data.Proxy class itself.</p>
          * @param {DataProxy} this The proxy for the request
          * @param {String} action [Ext.data.Api.actions.create|update|destroy]
-         * @param {Record/Array[Record]} rs The Record(s) to create|update|destroy.
+         * @param {Record/Record[]} rs The Record(s) to create|update|destroy.
          * @param {Object} params The request <code>params</code> object.  Edit <code>params</code> to add parameters to the request.
          */
         'beforewrite',
@@ -3444,7 +3601,7 @@ myStore.on({
          * @param {String} action [Ext.data.Api.actions.create|upate|destroy]
          * @param {Object} data The data object extracted from the server-response
          * @param {Object} response The decoded response from server
-         * @param {Record/Record{}} rs The records from Store
+         * @param {Record/Record[]} rs The Record(s) from Store
          * @param {Object} options The callback's <tt>options</tt> property as passed to the {@link #request} function
          */
         'write'
@@ -3626,7 +3783,7 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
      * url will be built Rails-style, as in "/controller/action/32".  restful will aply iff the supplied record is an
      * instance of Ext.data.Record rather than an Array of them.
      * @param {String} action The api action being executed [read|create|update|destroy]
-     * @param {Ext.data.Record/Array[Ext.data.Record]} The record or Array of Records being acted upon.
+     * @param {Ext.data.Record/Ext.data.Record[]} record The record or Array of Records being acted upon.
      * @return {String} url
      * @private
      */
@@ -3678,8 +3835,8 @@ Ext.util.Observable.call(Ext.data.DataProxy);
  * @extends Ext.Error
  * DataProxy Error extension.
  * constructor
- * @param {String} name
- * @param {Record/Array[Record]/Array}
+ * @param {String} message Message describing the error.
+ * @param {Record/Record[]} arg
  */
 Ext.data.DataProxy.Error = Ext.extend(Ext.Error, {
     constructor : function(message, arg) {
@@ -4217,7 +4374,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
             if (!success) {
                 if (action === Ext.data.Api.actions.read) {
                     // @deprecated: fire loadexception for backwards compat.
-                    // TODO remove in 3.1
+                    // TODO remove
                     this.fireEvent('loadexception', this, o, response);
                 }
                 this.fireEvent('exception', this, 'response', action, o, response);
@@ -4248,7 +4405,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
             result = o.reader.read(response);
         }catch(e){
             // @deprecated: fire old loadexception for backwards-compat.
-            // TODO remove in 3.1
+            // TODO remove
             this.fireEvent('loadexception', this, o, response, e);
 
             this.fireEvent('exception', this, 'response', action, o, response, e);
@@ -4257,7 +4414,7 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
         }
         if (result.success === false) {
             // @deprecated: fire old loadexception for backwards-compat.
-            // TODO remove in 3.1
+            // TODO remove
             this.fireEvent('loadexception', this, o, response);
 
             // Get DataReader read-back a response-object to pass along to exception event
@@ -4378,4 +4535,184 @@ Ext.extend(Ext.data.MemoryProxy, Ext.data.DataProxy, {
         }
         callback.call(scope, result, arg, true);
     }
-});
+});/**
+ * @class Ext.data.Types
+ * <p>This is s static class containing the system-supplied data types which may be given to a {@link Ext.data.Field Field}.<p/>
+ * <p>The properties in this class are used as type indicators in the {@link Ext.data.Field Field} class, so to
+ * test whether a Field is of a certain type, compare the {@link Ext.data.Field#type type} property against properties
+ * of this class.</p>
+ * <p>Developers may add their own application-specific data types to this class. Definition names must be UPPERCASE.
+ * each type definition must contain three properties:</p>
+ * <div class="mdetail-params"><ul>
+ * <li><code>convert</code> : <i>Function</i><div class="sub-desc">A function to convert raw data values from a data block into the data
+ * to be stored in the Field. The function is passed the collowing parameters:
+ * <div class="mdetail-params"><ul>
+ * <li><b>v</b> : Mixed<div class="sub-desc">The data value as read by the Reader, if undefined will use
+ * the configured <tt>{@link Ext.data.Field#defaultValue defaultValue}</tt>.</div></li>
+ * <li><b>rec</b> : Mixed<div class="sub-desc">The data object containing the row as read by the Reader.
+ * Depending on the Reader type, this could be an Array ({@link Ext.data.ArrayReader ArrayReader}), an object
+ * ({@link Ext.data.JsonReader JsonReader}), or an XML element ({@link Ext.data.XMLReader XMLReader}).</div></li>
+ * </ul></div></div></li>
+ * <li><code>sortType</code> : <i>Function</i> <div class="sub-desc">A function to convert the stored data into comparable form, as defined by {@link Ext.data.SortTypes}.</div></li>
+ * <li><code>type</code> : <i>String</i> <div class="sub-desc">A textual data type name.</div></li>
+ * </ul></div>
+ * <p>For example, to create a VELatLong field (See the Microsoft Bing Mapping API) containing the latitude/longitude value of a datapoint on a map from a JsonReader data block
+ * which contained the properties <code>lat</code> and <code>long</code>, you would define a new data type like this:</p>
+ *<pre><code>
+// Add a new Field data type which stores a VELatLong object in the Record.
+Ext.data.Types.VELATLONG = {
+    convert: function(v, data) {
+        return new VELatLong(data.lat, data.long);
+    },
+    sortType: function(v) {
+        return v.Latitude;  // When sorting, order by latitude
+    },
+    type: 'VELatLong'
+};
+</code></pre>
+ * <p>Then, when declaring a Record, use <pre><code>
+var types = Ext.data.Types; // allow shorthand type access
+UnitRecord = Ext.data.Record.create([
+    { name: 'unitName', mapping: 'UnitName' },
+    { name: 'curSpeed', mapping: 'CurSpeed', type: types.INT },
+    { name: 'latitude', mapping: 'lat', type: types.FLOAT },
+    { name: 'latitude', mapping: 'lat', type: types.FLOAT },
+    { name: 'position', type: types.VELATLONG }
+]);
+</code></pre>
+ * @singleton
+ */
+Ext.data.Types = new function(){
+    var st = Ext.data.SortTypes;
+    Ext.apply(this, {
+        /**
+         * @type Regexp
+         * @property stripRe
+         * A regular expression for stripping non-numeric characters from a numeric value. Defaults to <tt>/[\$,%]/g</tt>.
+         * This should be overridden for localization.
+         */
+        stripRe: /[\$,%]/g,
+        
+        /**
+         * @type Object.
+         * @property AUTO
+         * This data type means that no conversion is applied to the raw data before it is placed into a Record.
+         */
+        AUTO: {
+            convert: function(v){ return v; },
+            sortType: st.none,
+            type: 'auto'
+        },
+
+        /**
+         * @type Object.
+         * @property STRING
+         * This data type means that the raw data is converted into a String before it is placed into a Record.
+         */
+        STRING: {
+            convert: function(v){ return (v === undefined || v === null) ? '' : String(v); },
+            sortType: st.asUCString,
+            type: 'string'
+        },
+
+        /**
+         * @type Object.
+         * @property INT
+         * This data type means that the raw data is converted into an integer before it is placed into a Record.
+         * <p>The synonym <code>INTEGER</code> is equivalent.</p>
+         */
+        INT: {
+            convert: function(v){
+                return v !== undefined && v !== null && v !== '' ?
+                    parseInt(String(v).replace(Ext.data.Types.stripRe, ''), 10) : 0;
+            },
+            sortType: st.none,
+            type: 'int'
+        },
+        
+        /**
+         * @type Object.
+         * @property FLOAT
+         * This data type means that the raw data is converted into a number before it is placed into a Record.
+         * <p>The synonym <code>NUMBER</code> is equivalent.</p>
+         */
+        FLOAT: {
+            convert: function(v){
+                return v !== undefined && v !== null && v !== '' ?
+                    parseFloat(String(v).replace(Ext.data.Types.stripRe, ''), 10) : 0;
+            },
+            sortType: st.none,
+            type: 'float'
+        },
+        
+        /**
+         * @type Object.
+         * @property BOOL
+         * <p>This data type means that the raw data is converted into a boolean before it is placed into
+         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
+         * <p>The synonym <code>BOOLEAN</code> is equivalent.</p>
+         */
+        BOOL: {
+            convert: function(v){ return v === true || v === 'true' || v == 1; },
+            sortType: st.none,
+            type: 'bool'
+        },
+        
+        /**
+         * @type Object.
+         * @property DATE
+         * This data type means that the raw data is converted into a Date before it is placed into a Record.
+         * The date format is specified in the constructor of the {@link Ext.data.Field} to which this type is
+         * being applied.
+         */
+        DATE: {
+            convert: function(v){
+                var df = this.dateFormat;
+                if(!v){
+                    return null;
+                }
+                if(Ext.isDate(v)){
+                    return v;
+                }
+                if(df){
+                    if(df == 'timestamp'){
+                        return new Date(v*1000);
+                    }
+                    if(df == 'time'){
+                        return new Date(parseInt(v, 10));
+                    }
+                    return Date.parseDate(v, df);
+                }
+                var parsed = Date.parse(v);
+                return parsed ? new Date(parsed) : null;
+            },
+            sortType: st.asDate,
+            type: 'date'
+        }
+    });
+    
+    Ext.apply(this, {
+        /**
+         * @type Object.
+         * @property BOOLEAN
+         * <p>This data type means that the raw data is converted into a boolean before it is placed into
+         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
+         * <p>The synonym <code>BOOL</code> is equivalent.</p>
+         */
+        BOOLEAN: this.BOOL,
+        /**
+         * @type Object.
+         * @property INTEGER
+         * This data type means that the raw data is converted into an integer before it is placed into a Record.
+         * <p>The synonym <code>INT</code> is equivalent.</p>
+         */
+        INTEGER: this.INT,
+        /**
+         * @type Object.
+         * @property NUMBER
+         * This data type means that the raw data is converted into a number before it is placed into a Record.
+         * <p>The synonym <code>FLOAT</code> is equivalent.</p>
+         */
+        NUMBER: this.FLOAT    
+    });
+};

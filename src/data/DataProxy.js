@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -243,7 +243,7 @@ myStore.on({
          * DataProxies by attaching a listener to the Ext.data.Proxy class itself.</p>
          * @param {DataProxy} this The proxy for the request
          * @param {String} action [Ext.data.Api.actions.create|update|destroy]
-         * @param {Record/Array[Record]} rs The Record(s) to create|update|destroy.
+         * @param {Record/Record[]} rs The Record(s) to create|update|destroy.
          * @param {Object} params The request <code>params</code> object.  Edit <code>params</code> to add parameters to the request.
          */
         'beforewrite',
@@ -257,7 +257,7 @@ myStore.on({
          * @param {String} action [Ext.data.Api.actions.create|upate|destroy]
          * @param {Object} data The data object extracted from the server-response
          * @param {Object} response The decoded response from server
-         * @param {Record/Record{}} rs The records from Store
+         * @param {Record/Record[]} rs The Record(s) from Store
          * @param {Object} options The callback's <tt>options</tt> property as passed to the {@link #request} function
          */
         'write'
@@ -439,7 +439,7 @@ proxy.setApi(Ext.data.Api.actions.read, '/users/new_load_url');
      * url will be built Rails-style, as in "/controller/action/32".  restful will aply iff the supplied record is an
      * instance of Ext.data.Record rather than an Array of them.
      * @param {String} action The api action being executed [read|create|update|destroy]
-     * @param {Ext.data.Record/Array[Ext.data.Record]} The record or Array of Records being acted upon.
+     * @param {Ext.data.Record/Ext.data.Record[]} record The record or Array of Records being acted upon.
      * @return {String} url
      * @private
      */
@@ -491,8 +491,8 @@ Ext.util.Observable.call(Ext.data.DataProxy);
  * @extends Ext.Error
  * DataProxy Error extension.
  * constructor
- * @param {String} name
- * @param {Record/Array[Record]/Array}
+ * @param {String} message Message describing the error.
+ * @param {Record/Record[]} arg
  */
 Ext.data.DataProxy.Error = Ext.extend(Ext.Error, {
     constructor : function(message, arg) {

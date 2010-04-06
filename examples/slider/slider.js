@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -35,12 +35,12 @@ Ext.onReady(function(){
         width: 214,
         minValue: 0,
         maxValue: 100,
-        plugins: new Ext.ux.SliderTip()
+        plugins: new Ext.slider.Tip()
     });
 
-    var tip = new Ext.ux.SliderTip({
-        getText: function(slider){
-            return String.format('<b>{0}% complete</b>', slider.getValue());
+    var tip = new Ext.slider.Tip({
+        getText: function(thumb){
+            return String.format('<b>{0}% complete</b>', thumb.value);
         }
     });
 
@@ -59,6 +59,25 @@ Ext.onReady(function(){
         increment: 10,
         minValue: 0,
         maxValue: 100,
-        plugins: new Ext.ux.SliderTip()
+        plugins: new Ext.slider.Tip()
+    });
+    
+    new Ext.Slider({
+        renderTo: 'multi-slider-horizontal',
+        width   : 214,
+        minValue: 0,
+        maxValue: 100,
+        values  : [10, 50, 90],
+        plugins : new Ext.slider.Tip()
+    });
+    
+    new Ext.Slider({
+        renderTo : 'multi-slider-vertical',
+        vertical : true,
+        height   : 214,
+        minValue: 0,
+        maxValue: 100,
+        values  : [10, 50, 90],
+        plugins : new Ext.slider.Tip()
     });
 });

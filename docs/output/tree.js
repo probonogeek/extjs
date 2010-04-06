@@ -98,6 +98,8 @@
 				,
                 {"href":"output/Ext.data.Tree.html","text":"Tree","id":"Ext.data.Tree","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
+                {"href":"output/Ext.data.Types.html","text":"Types","id":"Ext.data.Types","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
+				,
                 {"href":"output/Ext.data.XmlReader.html","text":"XmlReader","id":"Ext.data.XmlReader","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.data.XmlStore.html","text":"XmlStore","id":"Ext.data.XmlStore","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
@@ -164,6 +166,8 @@
 				,
                 {"href":"output/Ext.form.ComboBox.html","text":"ComboBox","id":"Ext.form.ComboBox","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
+                {"href":"output/Ext.form.CompositeField.html","text":"CompositeField","id":"Ext.form.CompositeField","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
+				,
                 {"href":"output/Ext.form.DateField.html","text":"DateField","id":"Ext.form.DateField","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.form.DisplayField.html","text":"DisplayField","id":"Ext.form.DisplayField","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
@@ -185,6 +189,8 @@
                 {"href":"output/Ext.form.Radio.html","text":"Radio","id":"Ext.form.Radio","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.form.RadioGroup.html","text":"RadioGroup","id":"Ext.form.RadioGroup","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.form.SliderField.html","text":"SliderField","id":"Ext.form.SliderField","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.form.TextArea.html","text":"TextArea","id":"Ext.form.TextArea","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
@@ -313,6 +319,16 @@
                 {"href":"output/Ext.menu.Separator.html","text":"Separator","id":"Ext.menu.Separator","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.menu.TextItem.html","text":"TextItem","id":"Ext.menu.TextItem","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
+				]}
+				,
+                {"id":"pkg-Ext.slider","text":"slider","iconCls":"icon-pkg","cls":"package","singleClickExpand":true, children:[
+                {"href":"output/Ext.slider.MultiSlider.html","text":"MultiSlider","id":"Ext.slider.MultiSlider","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.slider.SingleSlider.html","text":"SingleSlider","id":"Ext.slider.SingleSlider","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.slider.Thumb.html","text":"Thumb","id":"Ext.slider.Thumb","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.slider.Tip.html","text":"Tip","id":"Ext.slider.Tip","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				]}
 				,
                 {"id":"pkg-Ext.state","text":"state","iconCls":"icon-pkg","cls":"package","singleClickExpand":true, children:[
@@ -450,8 +466,6 @@
                 {"href":"output/Ext.Resizable.html","text":"Resizable","id":"Ext.Resizable","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.Shadow.html","text":"Shadow","id":"Ext.Shadow","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
-				,
-                {"href":"output/Ext.Slider.html","text":"Slider","id":"Ext.Slider","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.Spacer.html","text":"Spacer","id":"Ext.Spacer","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
 				,
@@ -612,6 +626,8 @@
 			,
 			"Ext.data.Tree":"icon-cls"
 			,
+			"Ext.data.Types":"icon-static"
+			,
 			"Ext.data.XmlReader":"icon-cls"
 			,
 			"Ext.data.XmlStore":"icon-cls"
@@ -672,6 +688,8 @@
 			,
 			"Ext.form.ComboBox":"icon-cmp"
 			,
+			"Ext.form.CompositeField":"icon-cmp"
+			,
 			"Ext.form.DateField":"icon-cmp"
 			,
 			"Ext.form.DisplayField":"icon-cmp"
@@ -693,6 +711,8 @@
 			"Ext.form.Radio":"icon-cmp"
 			,
 			"Ext.form.RadioGroup":"icon-cmp"
+			,
+			"Ext.form.SliderField":"icon-cmp"
 			,
 			"Ext.form.TextArea":"icon-cmp"
 			,
@@ -813,6 +833,14 @@
 			"Ext.menu.Separator":"icon-cmp"
 			,
 			"Ext.menu.TextItem":"icon-cmp"
+			,
+			"Ext.slider.MultiSlider":"icon-cmp"
+			,
+			"Ext.slider.SingleSlider":"icon-cmp"
+			,
+			"Ext.slider.Thumb":"icon-cls"
+			,
+			"Ext.slider.Tip":"icon-cmp"
 			,
 			"Ext.state.CookieProvider":"icon-cls"
 			,
@@ -943,8 +971,6 @@
 			"Ext.Resizable":"icon-cls"
 			,
 			"Ext.Shadow":"icon-cls"
-			,
-			"Ext.Slider":"icon-cmp"
 			,
 			"Ext.Spacer":"icon-cmp"
 			,

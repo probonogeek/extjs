@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.grid.EditorGridPanel"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.grid.EditorGridPanel"></div>/**
  * @class Ext.grid.EditorGridPanel
  * @extends Ext.grid.GridPanel
  * <p>This class extends the {@link Ext.grid.GridPanel GridPanel Class} to provide cell editing
@@ -205,6 +211,7 @@ grid.on('validateedit', function(e) {
     // private
     onEditComplete : function(ed, value, startValue){
         this.editing = false;
+        this.lastActiveEditor = this.activeEditor;
         this.activeEditor = null;
 
         var r = ed.record,

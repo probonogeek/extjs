@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.Tree"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.Tree"></div>/**
  * @class Ext.data.Tree
  * @extends Ext.util.Observable
  * Represents a tree data structure and bubbles all the events for its nodes. The nodes
@@ -352,7 +358,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     hasChildNodes : function(){
         return !this.isLeaf() && this.childNodes.length > 0;
     },
-    
+
     /**
      * Returns true if this node has one or more child nodes, or if the <tt>expandable</tt>
      * node attribute is explicitly specified as true (see {@link #attributes}), otherwise returns false.
@@ -377,7 +383,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
         // if passed an array or multiple args do them one by one
         if(multi){
             for(var i = 0, len = multi.length; i < len; i++) {
-            	this.appendChild(multi[i]);
+                this.appendChild(multi[i]);
             }
         }else{
             if(this.fireEvent("beforeappend", this.ownerTree, this, node) === false){
@@ -450,34 +456,45 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             this.setLastChild(node.previousSibling);
         }
 
-        node.clear();
         this.fireEvent("remove", this.ownerTree, this, node);
         if(destroy){
-            node.destroy();
+            node.destroy(true);
+        }else{
+            node.clear();
         }
         return node;
     },
-    
+
     // private
     clear : function(destroy){
         // clear any references from the node
         this.setOwnerTree(null, destroy);
-        this.parentNode = this.previousSibling = this.nextSibling = null
+        this.parentNode = this.previousSibling = this.nextSibling = null;
         if(destroy){
-            this.firstChild = this.lastChild = null; 
+            this.firstChild = this.lastChild = null;
         }
     },
-    
+
     /**
      * Destroys the node.
      */
-    destroy : function(){
-        this.purgeListeners();
-        this.clear(true);  
-        Ext.each(this.childNodes, function(n){
-            n.destroy();
-        });
-        this.childNodes = null;
+    destroy : function(/* private */ silent){
+        /*
+         * Silent is to be used in a number of cases
+         * 1) When setRootNode is called.
+         * 2) When destroy on the tree is called
+         * 3) For destroying child nodes on a node
+         */
+        if(silent === true){
+            this.purgeListeners();
+            this.clear(true);
+            Ext.each(this.childNodes, function(n){
+                n.destroy(true);
+            });
+            this.childNodes = null;
+        }else{
+            this.remove(true);
+        }
     },
 
     /**
@@ -542,10 +559,12 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      * @return {Node} this
      */
     remove : function(destroy){
-        this.parentNode.removeChild(this, destroy);
+        if (this.parentNode) {
+            this.parentNode.removeChild(this, destroy);
+        }
         return this;
     },
-    
+
     /**
      * Removes all child nodes from this node.
      * @param {Boolean} destroy <tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.
@@ -643,7 +662,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             }
         }
     },
-    
+
     /**
      * Changes the id of this node.
      * @param {String} id The new id for the node.
@@ -661,7 +680,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             this.onIdChange(id);
         }
     },
-    
+
     // private
     onIdChange: Ext.emptyFn,
 
@@ -712,7 +731,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
         if(fn.apply(scope || this, args || [this]) !== false){
             var cs = this.childNodes;
             for(var i = 0, len = cs.length; i < len; i++) {
-            	cs[i].cascade(fn, scope, args);
+                cs[i].cascade(fn, scope, args);
             }
         }
     },
@@ -728,9 +747,9 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     eachChild : function(fn, scope, args){
         var cs = this.childNodes;
         for(var i = 0, len = cs.length; i < len; i++) {
-        	if(fn.apply(scope || this, args || [cs[i]]) === false){
-        	    break;
-        	}
+            if(fn.apply(scope || this, args || [cs[i]]) === false){
+                break;
+            }
         }
     },
 
@@ -738,30 +757,39 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      * Finds the first child that has the attribute with the specified value.
      * @param {String} attribute The attribute name
      * @param {Mixed} value The value to search for
+     * @param {Boolean} deep (Optional) True to search through nodes deeper than the immediate children
      * @return {Node} The found child or null if none was found
      */
-    findChild : function(attribute, value){
-        var cs = this.childNodes;
-        for(var i = 0, len = cs.length; i < len; i++) {
-        	if(cs[i].attributes[attribute] == value){
-        	    return cs[i];
-        	}
-        }
-        return null;
+    findChild : function(attribute, value, deep){
+        return this.findChildBy(function(){
+            return this.attributes[attribute] == value;
+        }, null, deep);
     },
 
     /**
      * Finds the first child by a custom function. The child matches if the function passed returns <code>true</code>.
      * @param {Function} fn A function which must return <code>true</code> if the passed Node is the required Node.
      * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Node being tested.
+     * @param {Boolean} deep (Optional) True to search through nodes deeper than the immediate children
      * @return {Node} The found child or null if none was found
      */
-    findChildBy : function(fn, scope){
-        var cs = this.childNodes;
-        for(var i = 0, len = cs.length; i < len; i++) {
-        	if(fn.call(scope||cs[i], cs[i]) === true){
-        	    return cs[i];
-        	}
+    findChildBy : function(fn, scope, deep){
+        var cs = this.childNodes,
+            len = cs.length,
+            i = 0,
+            n,
+            res;
+        for(; i < len; i++){
+            n = cs[i];
+            if(fn.call(scope || n, n) === true){
+                return n;
+            }else if (deep){
+                res = n.findChildBy(fn, scope, deep);
+                if(res != null){
+                    return res;
+                }
+            }
+            
         }
         return null;
     },

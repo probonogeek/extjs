@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -35,7 +35,7 @@
  * @param {Object} config Configuration options
  */
 Ext.form.BasicForm = Ext.extend(Ext.util.Observable, {
-    
+
     constructor: function(el, config){
         Ext.apply(this, config);
         if(Ext.isString(this.paramOrder)){
@@ -76,9 +76,9 @@ Ext.form.BasicForm = Ext.extend(Ext.util.Observable, {
         if(el){
             this.initEl(el);
         }
-        Ext.form.BasicForm.superclass.constructor.call(this);    
+        Ext.form.BasicForm.superclass.constructor.call(this);
     },
-    
+
     /**
      * @cfg {String} method
      * The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
@@ -184,7 +184,7 @@ paramOrder: 'param1|param2|param'
      * <tt>{@link #paramOrder}</tt> nullifies this configuration.
      */
     paramsAsHash: false,
-    
+
     /**
      * @cfg {String} waitTitle
      * The default title to show for the waiting message box (defaults to <tt>'Please Wait...'</tt>)
@@ -278,15 +278,20 @@ new Ext.FormPanel({
         e.stopEvent();
     },
 
-    // private
-    destroy: function() {
-        this.items.each(function(f){
-            Ext.destroy(f);
-        });
-        if(this.el){
-            this.el.removeAllListeners();
-            this.el.remove();
+    /**
+     * Destroys this object.
+     * @private
+     * @param {Boolean} bound true if the object is bound to a form panel. If this is the case
+     * the FormPanel will take care of destroying certain things, so we're just doubling up.
+     */
+    destroy: function(bound){
+        if(bound !== true){
+            this.items.each(function(f){
+                Ext.destroy(f);
+            });
+            Ext.destroy(this.el);
         }
+        this.items.clear();
         this.purgeListeners();
     },
 
@@ -435,8 +440,9 @@ myFormPanel.getForm().submit({
      * @return {BasicForm} this
      */
     submit : function(options){
+        options = options || {};
         if(this.standardSubmit){
-            var v = this.isValid();
+            var v = options.clientValidation === false || this.isValid();
             if(v){
                 var el = this.el.dom;
                 if(this.url && Ext.isEmpty(el.action)){
@@ -494,6 +500,12 @@ myFormPanel.getForm().submit({
 
     // private
     beforeAction : function(action){
+        // Call HtmlEditor's syncValue before actions
+        this.items.each(function(f){
+            if(f.isFormField && f.syncValue){
+                f.syncValue();
+            }
+        });
         var o = action.options;
         if(o.waitMsg){
             if(this.waitMsgTarget === true){
@@ -539,15 +551,23 @@ myFormPanel.getForm().submit({
      * {@link Ext.grid.Column#dataIndex dataIndex}, {@link Ext.form.Field#getName name or hiddenName}).
      * @return Field
      */
-    findField : function(id){
+    findField : function(id) {
         var field = this.items.get(id);
-        if(!Ext.isObject(field)){
-            this.items.each(function(f){
-                if(f.isFormField && (f.dataIndex == id || f.id == id || f.getName() == id)){
-                    field = f;
-                    return false;
+
+        if (!Ext.isObject(field)) {
+            //searches for the field corresponding to the given id. Used recursively for composite fields
+            var findMatchingField = function(f) {
+                if (f.isFormField) {
+                    if (f.dataIndex == id || f.id == id || f.getName() == id) {
+                        field = f;
+                        return false;
+                    } else if (f.isComposite) {
+                        return f.items.each(findMatchingField);
+                    }
                 }
-            });
+            };
+
+            this.items.each(findMatchingField);
         }
         return field || null;
     },
@@ -559,7 +579,7 @@ myFormPanel.getForm().submit({
      * @return {BasicForm} this
      */
     markInvalid : function(errors){
-        if(Ext.isArray(errors)){
+        if (Ext.isArray(errors)) {
             for(var i = 0, len = errors.length; i < len; i++){
                 var fieldError = errors[i];
                 var f = this.findField(fieldError.id);
@@ -567,7 +587,7 @@ myFormPanel.getForm().submit({
                     f.markInvalid(fieldError.msg);
                 }
             }
-        }else{
+        } else {
             var field, id;
             for(id in errors){
                 if(!Ext.isFunction(errors[id]) && (field = this.findField(id))){
@@ -575,6 +595,7 @@ myFormPanel.getForm().submit({
                 }
             }
         }
+
         return this;
     },
 
@@ -646,12 +667,12 @@ myFormPanel.getForm().submit({
             n,
             key,
             val;
-        this.items.each(function(f){
-            if(dirtyOnly !== true || f.isDirty()){
+        this.items.each(function(f) {
+            if (dirtyOnly !== true || f.isDirty()) {
                 n = f.getName();
                 key = o[n];
                 val = f.getValue();
-                
+
                 if(Ext.isDefined(key)){
                     if(Ext.isArray(key)){
                         o[n].push(val);
@@ -705,7 +726,6 @@ myFormPanel.getForm().submit({
         this.items.addAll(Array.prototype.slice.call(arguments, 0));
         return this;
     },
-
 
     /**
      * Removes a field from the items collection (does NOT remove its markup).

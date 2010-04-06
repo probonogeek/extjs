@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -74,7 +74,7 @@ function(){
                 el,
                 mask;
 
-	        if(me.getStyle("position") == "static"){
+	        if(!/^body/i.test(dom.tagName) && me.getStyle('position') == 'static'){
 	            me.addClass(XMASKEDRELATIVE);
 	        }
 	        if((el = data(dom, 'maskMsg'))){

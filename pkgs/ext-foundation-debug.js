@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -1934,7 +1934,7 @@ Employee = Ext.extend(Ext.util.Observable, {
         this.listeners = config.listeners;
 
         // Call our superclass constructor to complete construction process.
-        Employee.superclass.constructor.call(config)
+        Employee.superclass.constructor.call(this, config)
     }
 });
 </code></pre>
@@ -2204,7 +2204,7 @@ this.addEvents('storeloaded', 'storecleared');
      * @return {Boolean} True if the event is being listened for, else false
      */
     hasListener : function(eventName){
-        var e = this.events[eventName];
+        var e = this.events[eventName.toLowerCase()];
         return ISOBJECT(e) && e.listeners.length > 0;
     },
 
@@ -2344,13 +2344,13 @@ EXTUTIL.Event.prototype = {
     findListener : function(fn, scope){
         var list = this.listeners,
             i = list.length,
-            l,
-            s;
-        while(i--) {
+            l;
+            
+        scope = scope || this.obj;
+        while(i--){
             l = list[i];
-            if(l) {
-                s = l.scope;
-                if(l.fn == fn && (s == scope || s == this.obj)){
+            if(l){
+                if(l.fn == fn && l.scope == scope){
                     return i;
                 }
             }
@@ -2640,16 +2640,18 @@ Ext.util.Observable.observeClass = function(c, listeners){
  * See {@link Ext.EventObject} for more details on normalized event objects.
  * @singleton
  */
+
 Ext.EventManager = function(){
     var docReadyEvent,
         docReadyProcId,
         docReadyState = false,
+        DETECT_NATIVE = Ext.isGecko || Ext.isWebKit || Ext.isSafari,
         E = Ext.lib.Event,
         D = Ext.lib.Dom,
         DOC = document,
         WINDOW = window,
-        IEDEFERED = "ie-deferred-loader",
         DOMCONTENTLOADED = "DOMContentLoaded",
+        COMPLETE = 'complete',
         propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
         /*
          * This cache is used to hold special js objects, the document and window, that don't have an id. We need to keep
@@ -2732,48 +2734,109 @@ Ext.EventManager = function(){
         }
     };
 
-    function fireDocReady(){
+    function doScrollChk(){
+        /* Notes:
+             'doScroll' will NOT work in a IFRAME/FRAMESET.
+             The method succeeds but, a DOM query done immediately after -- FAILS.
+          */
+        if(window != top){
+            return false;
+        }
+
+        try{
+            DOC.documentElement.doScroll('left');
+        }catch(e){
+             return false;
+        }
+
+        fireDocReady();
+        return true;
+    }
+    /**
+     * @return {Boolean} True if the document is in a 'complete' state (or was determined to
+     * be true by other means). If false, the state is evaluated again until canceled.
+     */
+    function checkReadyState(e){
+
+        if(Ext.isIE && doScrollChk()){
+            return true;
+        }
+        if(DOC.readyState == COMPLETE){
+            fireDocReady();
+            return true;
+        }
+        docReadyState || (docReadyProcId = setTimeout(arguments.callee, 2));
+        return false;
+    }
+
+    var styles;
+    function checkStyleSheets(e){
+        styles || (styles = Ext.query('style, link[rel=stylesheet]'));
+        if(styles.length == DOC.styleSheets.length){
+            fireDocReady();
+            return true;
+        }
+        docReadyState || (docReadyProcId = setTimeout(arguments.callee, 2));
+        return false;
+    }
+
+    function OperaDOMContentLoaded(e){
+        DOC.removeEventListener(DOMCONTENTLOADED, arguments.callee, false);
+        checkStyleSheets();
+    }
+
+    function fireDocReady(e){
         if(!docReadyState){
-            Ext.isReady = docReadyState = true;
+            docReadyState = true; //only attempt listener removal once
+
             if(docReadyProcId){
-                clearInterval(docReadyProcId);
+                clearTimeout(docReadyProcId);
             }
-            if(Ext.isGecko || Ext.isOpera) {
+            if(DETECT_NATIVE) {
                 DOC.removeEventListener(DOMCONTENTLOADED, fireDocReady, false);
             }
-            if(Ext.isIE){
-                var defer = DOC.getElementById(IEDEFERED);
-                if(defer){
-                    defer.onreadystatechange = null;
-                    defer.parentNode.removeChild(defer);
-                }
+            if(Ext.isIE && checkReadyState.bindIE){  //was this was actually set ??
+                DOC.detachEvent('onreadystatechange', checkReadyState);
             }
-            if(docReadyEvent){
-                docReadyEvent.fire();
-                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
-            }
+            E.un(WINDOW, "load", arguments.callee);
         }
+        if(docReadyEvent && !Ext.isReady){
+            Ext.isReady = true;
+            docReadyEvent.fire();
+            docReadyEvent.listeners = [];
+        }
+
     };
 
     function initDocReady(){
-        var COMPLETE = "complete";
-
-        docReadyEvent = new Ext.util.Event();
-        if (Ext.isGecko || Ext.isOpera) {
+        docReadyEvent || (docReadyEvent = new Ext.util.Event());
+        if (DETECT_NATIVE) {
             DOC.addEventListener(DOMCONTENTLOADED, fireDocReady, false);
-        } else if (Ext.isIE){
-            DOC.write("<s"+'cript id=' + IEDEFERED + ' defer="defer" src="/'+'/:"></s'+"cript>");
-            DOC.getElementById(IEDEFERED).onreadystatechange = function(){
-                if(this.readyState == COMPLETE){
-                    fireDocReady();
-                }
-            };
-        } else if (Ext.isWebKit){
-            docReadyProcId = setInterval(function(){
-                if(DOC.readyState == COMPLETE) {
-                    fireDocReady();
-                 }
-            }, 10);
+        }
+        /*
+         * Handle additional (exceptional) detection strategies here
+         */
+        if (Ext.isIE){
+            //Use readystatechange as a backup AND primary detection mechanism for a FRAME/IFRAME
+            //See if page is already loaded
+            if(!checkReadyState()){
+                checkReadyState.bindIE = true;
+                DOC.attachEvent('onreadystatechange', checkReadyState);
+            }
+
+        }else if(Ext.isOpera ){
+            /* Notes:
+               Opera needs special treatment needed here because CSS rules are NOT QUITE
+               available after DOMContentLoaded is raised.
+            */
+
+            //See if page is already loaded and all styleSheets are in place
+            (DOC.readyState == COMPLETE && checkStyleSheets()) ||
+                DOC.addEventListener(DOMCONTENTLOADED, OperaDOMContentLoaded, false);
+
+        }else if (Ext.isWebKit){
+            //Fallback for older Webkits without DOMCONTENTLOADED support
+            checkReadyState();
         }
         // no matter what, make sure it fires on load
         E.on(WINDOW, "load", fireDocReady);
@@ -3076,6 +3139,19 @@ Ext.EventManager = function(){
             }
             delete Ext.elCache;
             delete Ext.Element._flyweights;
+
+            // Abort any outstanding Ajax requests
+            var c,
+                conn,
+                tid,
+                ajax = Ext.lib.Ajax;
+            (Ext.isObject(ajax.conn)) ? conn = ajax.conn : conn = {};
+            for (tid in conn) {
+                c = conn[tid];
+                if (c) {
+                    ajax.abort({conn: c, tId: tid});
+                }
+            }
         },
         /**
          * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
@@ -3086,17 +3162,27 @@ Ext.EventManager = function(){
          * <code>{single: true}</code> be used so that the handler is removed on first invocation.
          */
         onDocumentReady : function(fn, scope, options){
-            if(docReadyState){ // if it already fired
+            if(Ext.isReady){ // if it already fired or document.body is present
+                docReadyEvent || (docReadyEvent = new Ext.util.Event());
                 docReadyEvent.addListener(fn, scope, options);
                 docReadyEvent.fire();
-                docReadyEvent.listeners = []; // clearListeners no longer compatible.  Force single: true?
-            } else {
-                if(!docReadyEvent) initDocReady();
+                docReadyEvent.listeners = [];
+            }else{
+                if(!docReadyEvent){
+                    initDocReady();
+                }
                 options = options || {};
                 options.delay = options.delay || 1;
                 docReadyEvent.addListener(fn, scope, options);
             }
-        }
+        },
+
+        /**
+         * Forces a document ready state transition for the framework.  Used when Ext is loaded
+         * into a DOM structure AFTER initial page load (Google API or other dynamic load scenario.
+         * Any pending 'onDocumentReady' handlers will be fired (if not already handled).
+         */
+        fireDocReady  : fireDocReady
     };
      /**
      * Appends an event handler to an element.  Shorthand for {@link #addListener}.
@@ -3723,7 +3809,7 @@ Ext.apply(Ext.EventObjectImpl.prototype, {
        this.isNavKeyPress() ||
        (k == this.BACKSPACE) || // Backspace
        (k >= 16 && k <= 20) || // Shift, Ctrl, Alt, Pause, Caps Lock
-       (k >= 44 && k <= 45);   // Print Screen, Insert
+       (k >= 44 && k <= 46);   // Print Screen, Insert, Delete
    },
 
    getPoint : function(){
@@ -4535,8 +4621,15 @@ El.get = function(el){
         return ex;
     } else if (el instanceof El) {
         if(el != docEl){
-            el.dom = DOC.getElementById(el.id) || el.dom; // refresh dom element in case no longer valid,
-                                                          // catch case where it hasn't been appended
+            // refresh dom element in case no longer valid,
+            // catch case where it hasn't been appended
+
+            // If an el instance is passed, don't pass to getElementById without some kind of id
+            if (Ext.isIE && (el.id == undefined || el.id == '')) {
+                el.dom = el.dom;
+            } else {
+                el.dom = DOC.getElementById(el.id) || el.dom;
+            }
         }
         return el;
     } else if(el.isComposite) {
@@ -6385,7 +6478,7 @@ Ext.Element.addMethods(function(){
                 return {
                     width : extdom.getViewWidth(),
                     height : extdom.getViewHeight()
-                }
+                };
 
             // Else use clientHeight/clientWidth
             } else {
@@ -7134,7 +7227,8 @@ Ext.Element.addMethods(function(){
     var VISIBILITY = "visibility",
         DISPLAY = "display",
         HIDDEN = "hidden",
-        NONE = "none",      
+        OFFSETS = "offsets",
+        NONE = "none",
         ORIGINALDISPLAY = 'originalDisplay',
         VISMODE = 'visibilityMode',
         ELDISPLAY = Ext.Element.DISPLAY,
@@ -7149,11 +7243,11 @@ Ext.Element.addMethods(function(){
         getVisMode = function(dom){
             var m = data(dom, VISMODE);
             if(m === undefined){
-                data(dom, VISMODE, m = 1)
+                data(dom, VISMODE, m = 1);
             }
             return m;
         };
-    
+
     return {
         /**
          * The element's default display mode  (defaults to "")
@@ -7161,23 +7255,23 @@ Ext.Element.addMethods(function(){
          */
         originalDisplay : "",
         visibilityMode : 1,
-        
+
         /**
          * Sets the element's visibility mode. When setVisible() is called it
          * will use this to determine whether to set the visibility or the display property.
          * @param {Number} visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
          * @return {Ext.Element} this
          */
-        setVisibilityMode : function(visMode){  
+        setVisibilityMode : function(visMode){
             data(this.dom, VISMODE, visMode);
             return this;
         },
-        
+
         /**
          * Perform custom animation on this element.
          * <div><ul class="mdetail-params">
          * <li><u>Animation Properties</u></li>
-         * 
+         *
          * <p>The Animation Control Object enables gradual transitions for any member of an
          * element's style object that takes a numeric value including but not limited to
          * these properties:</p><div><ul class="mdetail-params">
@@ -7189,10 +7283,10 @@ Ext.Element.addMethods(function(){
          * <li><tt>fontSize</tt></li>
          * <li><tt>lineHeight</tt></li>
          * </ul></div>
-         * 
-         * 
+         *
+         *
          * <li><u>Animation Property Attributes</u></li>
-         * 
+         *
          * <p>Each Animation Property is a config object with optional properties:</p>
          * <div><ul class="mdetail-params">
          * <li><tt>by</tt>*  : relative change - start at current value, change by this value</li>
@@ -7201,9 +7295,9 @@ Ext.Element.addMethods(function(){
          * <li><tt>unit</tt> : any allowable unit specification</li>
          * <p>* do not specify both <tt>to</tt> and <tt>by</tt> for an animation property</p>
          * </ul></div>
-         * 
+         *
          * <li><u>Animation Types</u></li>
-         * 
+         *
          * <p>The supported animation types:</p><div><ul class="mdetail-params">
          * <li><tt>'run'</tt> : Default
          * <pre><code>
@@ -7220,7 +7314,7 @@ el.animate(
     0.35,      // animation duration
     null,      // callback
     'easeOut', // easing method
-    'run'      // animation type ('run','color','motion','scroll')    
+    'run'      // animation type ('run','color','motion','scroll')
 );
          * </code></pre>
          * </li>
@@ -7236,11 +7330,11 @@ el.animate(
     0.35,      // animation duration
     null,      // callback
     'easeOut', // easing method
-    'color'    // animation type ('run','color','motion','scroll')    
+    'color'    // animation type ('run','color','motion','scroll')
 );
-         * </code></pre> 
+         * </code></pre>
          * </li>
-         * 
+         *
          * <li><tt>'motion'</tt>
          * <p>Animates the motion of an element to/from specific points using optional bezier
          * way points during transit.</p>
@@ -7264,9 +7358,9 @@ el.animate(
     3000,      // animation duration (milliseconds!)
     null,      // callback
     'easeOut', // easing method
-    'motion'   // animation type ('run','color','motion','scroll')    
+    'motion'   // animation type ('run','color','motion','scroll')
 );
-         * </code></pre> 
+         * </code></pre>
          * </li>
          * <li><tt>'scroll'</tt>
          * <p>Animate horizontal or vertical scrolling of an overflowing page element.</p>
@@ -7279,14 +7373,14 @@ el.animate(
     0.35,      // animation duration
     null,      // callback
     'easeOut', // easing method
-    'scroll'   // animation type ('run','color','motion','scroll')    
+    'scroll'   // animation type ('run','color','motion','scroll')
 );
-         * </code></pre> 
+         * </code></pre>
          * </li>
          * </ul></div>
-         * 
+         *
          * </ul></div>
-         * 
+         *
          * @param {Object} args The animation control args
          * @param {Float} duration (optional) How long the animation lasts in seconds (defaults to <tt>.35</tt>)
          * @param {Function} onComplete (optional) Function to call when animation completes
@@ -7295,20 +7389,20 @@ el.animate(
          * <tt>'motion'</tt>, or <tt>'scroll'</tt>
          * @return {Ext.Element} this
          */
-        animate : function(args, duration, onComplete, easing, animType){       
+        animate : function(args, duration, onComplete, easing, animType){
             this.anim(args, {duration: duration, callback: onComplete, easing: easing}, animType);
             return this;
         },
-    
+
         /*
          * @private Internal animation call
          */
         anim : function(args, opt, animType, defaultDur, defaultEase, cb){
             animType = animType || 'run';
             opt = opt || {};
-            var me = this,              
+            var me = this,
                 anim = Ext.lib.Anim[animType](
-                    me.dom, 
+                    me.dom,
                     args,
                     (opt.duration || defaultDur) || .35,
                     (opt.easing || defaultEase) || 'easeOut',
@@ -7321,20 +7415,20 @@ el.animate(
             opt.anim = anim;
             return anim;
         },
-    
+
         // private legacy anim prep
         preanim : function(a, i){
             return !a[i] ? false : (Ext.isObject(a[i]) ? a[i]: {duration: a[i+1], callback: a[i+2], easing: a[i+3]});
         },
-        
+
         /**
-         * Checks whether the element is currently visible using both visibility and display properties.         
+         * Checks whether the element is currently visible using both visibility and display properties.
          * @return {Boolean} True if the element is currently visible, else false
          */
         isVisible : function() {
             return !this.isStyle(VISIBILITY, HIDDEN) && !this.isStyle(DISPLAY, NONE);
         },
-        
+
         /**
          * Sets the visibility of the element (see details). If the visibilityMode is set to Element.DISPLAY, it will use
          * the display property to hide the element, otherwise it uses visibility. The default is to hide and show using the visibility property.
@@ -7343,20 +7437,42 @@ el.animate(
          * @return {Ext.Element} this
          */
          setVisible : function(visible, animate){
-            var me = this,
-                dom = me.dom,
+            var me = this, isDisplay, isVisible, isOffsets,
+                dom = me.dom;
+
+            // hideMode string override
+            if (Ext.isString(animate)){
+                isDisplay = animate == DISPLAY;
+                isVisible = animate == VISIBILITY;
+                isOffsets = animate == OFFSETS;
+                animate = false;
+            } else {
                 isDisplay = getVisMode(this.dom) == ELDISPLAY;
-                
+                isVisible = !isDisplay;
+            }
+
             if (!animate || !me.anim) {
-                if(isDisplay){
+                if (isDisplay){
                     me.setDisplayed(visible);
+                } else if (isOffsets){
+                    if (!visible){
+                        me.hideModeStyles = {
+                            position: me.getStyle('position'),
+                            top: me.getStyle('top'),
+                            left: me.getStyle('left')
+                        };
+
+                        me.applyStyles({position: 'absolute', top: '-10000px', left: '-10000px'});
+                    } else {
+                        me.applyStyles(me.hideModeStyles || {position: '', top: '', left: ''});
+                    }
                 }else{
                     me.fixDisplay();
                     dom.style.visibility = visible ? "visible" : HIDDEN;
                 }
             }else{
-                // closure for composites            
-                if(visible){
+                // closure for composites
+                if (visible){
                     me.setOpacity(.01);
                     me.setVisible(true);
                 }
@@ -7367,14 +7483,14 @@ el.animate(
                         'easeIn',
                         function(){
                              if(!visible){
-                                 dom.style[isDisplay ? DISPLAY : VISIBILITY] = (isDisplay) ? NONE : HIDDEN;                     
+                                 dom.style[isDisplay ? DISPLAY : VISIBILITY] = (isDisplay) ? NONE : HIDDEN;
                                  Ext.fly(dom).setOpacity(1);
                              }
                         });
             }
             return me;
         },
-    
+
         /**
          * Toggles the element's visibility or display, depending on visibility mode.
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
@@ -7385,20 +7501,20 @@ el.animate(
             me.setVisible(!me.isVisible(), me.preanim(arguments, 0));
             return me;
         },
-    
+
         /**
          * Sets the CSS display property. Uses originalDisplay if the specified value is a boolean true.
          * @param {Mixed} value Boolean value to display the element using its default display, or a string to set the display directly.
          * @return {Ext.Element} this
          */
-        setDisplayed : function(value) {            
+        setDisplayed : function(value) {
             if(typeof value == "boolean"){
                value = value ? getDisplay(this.dom) : NONE;
             }
             this.setStyle(DISPLAY, value);
             return this;
         },
-        
+
         // private
         fixDisplay : function(){
             var me = this;
@@ -7410,27 +7526,37 @@ el.animate(
                 }
             }
         },
-    
+
         /**
          * Hide this element - Uses display mode to determine whether to use "display" or "visibility". See {@link #setVisible}.
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
          * @return {Ext.Element} this
          */
         hide : function(animate){
+            // hideMode override
+            if (Ext.isString(animate)){
+                this.setVisible(false, animate);
+                return this;
+            }
             this.setVisible(false, this.preanim(arguments, 0));
             return this;
         },
-    
+
         /**
         * Show this element - Uses display mode to determine whether to use "display" or "visibility". See {@link #setVisible}.
         * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
          * @return {Ext.Element} this
          */
         show : function(animate){
+            // hideMode override
+            if (Ext.isString(animate)){
+                this.setVisible(true, animate);
+                return this;
+            }
             this.setVisible(true, this.preanim(arguments, 0));
             return this;
         }
-    }
+    };
 }());/**
  * @class Ext.Element
  */
@@ -7501,7 +7627,7 @@ function(){
                 el,
                 mask;
 
-	        if(me.getStyle("position") == "static"){
+	        if(!/^body/i.test(dom.tagName) && me.getStyle('position') == 'static'){
 	            me.addClass(XMASKEDRELATIVE);
 	        }
 	        if((el = data(dom, 'maskMsg'))){
@@ -9818,15 +9944,15 @@ Ext.Ajax = new Ext.data.Connection({
  * @param {Boolean} forceNew (optional) By default the constructor checks to see if the passed element already
  * has an Updater and if it does it returns the same instance. This will skip that check (useful for extending this class).
  */
-Ext.UpdateManager = Ext.Updater = Ext.extend(Ext.util.Observable, 
+Ext.UpdateManager = Ext.Updater = Ext.extend(Ext.util.Observable,
 function() {
-	var BEFOREUPDATE = "beforeupdate",
-		UPDATE = "update",
-		FAILURE = "failure";
-		
-	// private
-    function processSuccess(response){	    
-	    var me = this;
+    var BEFOREUPDATE = "beforeupdate",
+        UPDATE = "update",
+        FAILURE = "failure";
+
+    // private
+    function processSuccess(response){
+        var me = this;
         me.transaction = null;
         if (response.argument.form && response.argument.reset) {
             try { // put in try/catch since some older FF releases had problems with this
@@ -9841,7 +9967,7 @@ function() {
             updateComplete.call(me, response);
         }
     }
-    
+
     // private
     function updateComplete(response, type, success){
         this.fireEvent(type || UPDATE, this.el, response);
@@ -9851,384 +9977,384 @@ function() {
     }
 
     // private
-    function processFailure(response){	            
+    function processFailure(response){
         updateComplete.call(this, response, FAILURE, !!(this.transaction = null));
     }
-	    
-	return {
-	    constructor: function(el, forceNew){
-		    var me = this;
-	        el = Ext.get(el);
-	        if(!forceNew && el.updateManager){
-	            return el.updateManager;
-	        }
-	        /**
-	         * The Element object
-	         * @type Ext.Element
-	         */
-	        me.el = el;
-	        /**
-	         * Cached url to use for refreshes. Overwritten every time update() is called unless "discardUrl" param is set to true.
-	         * @type String
-	         */
-	        me.defaultUrl = null;
-	
-	        me.addEvents(
-	            /**
-	             * @event beforeupdate
-	             * Fired before an update is made, return false from your handler and the update is cancelled.
-	             * @param {Ext.Element} el
-	             * @param {String/Object/Function} url
-	             * @param {String/Object} params
-	             */
-	            BEFOREUPDATE,
-	            /**
-	             * @event update
-	             * Fired after successful update is made.
-	             * @param {Ext.Element} el
-	             * @param {Object} oResponseObject The response Object
-	             */
-	            UPDATE,
-	            /**
-	             * @event failure
-	             * Fired on update failure.
-	             * @param {Ext.Element} el
-	             * @param {Object} oResponseObject The response Object
-	             */
-	            FAILURE
-	        );
-	
-	        Ext.apply(me, Ext.Updater.defaults);
-	        /**
-	         * Blank page URL to use with SSL file uploads (defaults to {@link Ext.Updater.defaults#sslBlankUrl}).
-	         * @property sslBlankUrl
-	         * @type String
-	         */
-	        /**
-	         * Whether to append unique parameter on get request to disable caching (defaults to {@link Ext.Updater.defaults#disableCaching}).
-	         * @property disableCaching
-	         * @type Boolean
-	         */
-	        /**
-	         * Text for loading indicator (defaults to {@link Ext.Updater.defaults#indicatorText}).
-	         * @property indicatorText
-	         * @type String
-	         */
-	        /**
-	         * Whether to show indicatorText when loading (defaults to {@link Ext.Updater.defaults#showLoadIndicator}).
-	         * @property showLoadIndicator
-	         * @type String
-	         */
-	        /**
-	         * Timeout for requests or form posts in seconds (defaults to {@link Ext.Updater.defaults#timeout}).
-	         * @property timeout
-	         * @type Number
-	         */
-	        /**
-	         * True to process scripts in the output (defaults to {@link Ext.Updater.defaults#loadScripts}).
-	         * @property loadScripts
-	         * @type Boolean
-	         */
-	
-	        /**
-	         * Transaction object of the current executing transaction, or null if there is no active transaction.
-	         */
-	        me.transaction = null;
-	        /**
-	         * Delegate for refresh() prebound to "this", use myUpdater.refreshDelegate.createCallback(arg1, arg2) to bind arguments
-	         * @type Function
-	         */
-	        me.refreshDelegate = me.refresh.createDelegate(me);
-	        /**
-	         * Delegate for update() prebound to "this", use myUpdater.updateDelegate.createCallback(arg1, arg2) to bind arguments
-	         * @type Function
-	         */
-	        me.updateDelegate = me.update.createDelegate(me);
-	        /**
-	         * Delegate for formUpdate() prebound to "this", use myUpdater.formUpdateDelegate.createCallback(arg1, arg2) to bind arguments
-	         * @type Function
-	         */
-	        me.formUpdateDelegate = (me.formUpdate || function(){}).createDelegate(me);	
-	        
-			/**
-			 * The renderer for this Updater (defaults to {@link Ext.Updater.BasicRenderer}).
-			 */
-	        me.renderer = me.renderer || me.getDefaultRenderer();
-	        
-	        Ext.Updater.superclass.constructor.call(me);
-	    },
-        
-		/**
-	     * Sets the content renderer for this Updater. See {@link Ext.Updater.BasicRenderer#render} for more details.
-	     * @param {Object} renderer The object implementing the render() method
-	     */
-	    setRenderer : function(renderer){
-	        this.renderer = renderer;
-	    },	
-        
-	    /**
-	     * Returns the current content renderer for this Updater. See {@link Ext.Updater.BasicRenderer#render} for more details.
-	     * @return {Object}
-	     */
-	    getRenderer : function(){
-	       return this.renderer;
-	    },
 
-	    /**
-	     * This is an overrideable method which returns a reference to a default
-	     * renderer class if none is specified when creating the Ext.Updater.
-	     * Defaults to {@link Ext.Updater.BasicRenderer}
-	     */
-	    getDefaultRenderer: function() {
-	        return new Ext.Updater.BasicRenderer();
-	    },
-                
-	    /**
-	     * Sets the default URL used for updates.
-	     * @param {String/Function} defaultUrl The url or a function to call to get the url
-	     */
-	    setDefaultUrl : function(defaultUrl){
-	        this.defaultUrl = defaultUrl;
-	    },
-        
-	    /**
-	     * Get the Element this Updater is bound to
-	     * @return {Ext.Element} The element
-	     */
-	    getEl : function(){
-	        return this.el;
-	    },
-	
-		/**
-	     * Performs an <b>asynchronous</b> request, updating this element with the response.
-	     * If params are specified it uses POST, otherwise it uses GET.<br><br>
-	     * <b>Note:</b> Due to the asynchronous nature of remote server requests, the Element
-	     * will not have been fully updated when the function returns. To post-process the returned
-	     * data, use the callback option, or an <b><code>update</code></b> event handler.
-	     * @param {Object} options A config object containing any of the following options:<ul>
-	     * <li>url : <b>String/Function</b><p class="sub-desc">The URL to request or a function which
-	     * <i>returns</i> the URL (defaults to the value of {@link Ext.Ajax#url} if not specified).</p></li>
-	     * <li>method : <b>String</b><p class="sub-desc">The HTTP method to
-	     * use. Defaults to POST if the <code>params</code> argument is present, otherwise GET.</p></li>
-	     * <li>params : <b>String/Object/Function</b><p class="sub-desc">The
-	     * parameters to pass to the server (defaults to none). These may be specified as a url-encoded
-	     * string, or as an object containing properties which represent parameters,
-	     * or as a function, which returns such an object.</p></li>
-	     * <li>scripts : <b>Boolean</b><p class="sub-desc">If <code>true</code>
-	     * any &lt;script&gt; tags embedded in the response text will be extracted
-	     * and executed (defaults to {@link Ext.Updater.defaults#loadScripts}). If this option is specified,
-	     * the callback will be called <i>after</i> the execution of the scripts.</p></li>
-	     * <li>callback : <b>Function</b><p class="sub-desc">A function to
-	     * be called when the response from the server arrives. The following
-	     * parameters are passed:<ul>
-	     * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
-	     * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
-	     * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li>
-	     * <li><b>options</b> : Object<p class="sub-desc">The config object passed to the update call.</p></li></ul>
-	     * </p></li>
-	     * <li>scope : <b>Object</b><p class="sub-desc">The scope in which
-	     * to execute the callback (The callback's <code>this</code> reference.) If the
-	     * <code>params</code> argument is a function, this scope is used for that function also.</p></li>
-	     * <li>discardUrl : <b>Boolean</b><p class="sub-desc">By default, the URL of this request becomes
-	     * the default URL for this Updater object, and will be subsequently used in {@link #refresh}
-	     * calls.  To bypass this behavior, pass <code>discardUrl:true</code> (defaults to false).</p></li>
-	     * <li>timeout : <b>Number</b><p class="sub-desc">The number of seconds to wait for a response before
-	     * timing out (defaults to {@link Ext.Updater.defaults#timeout}).</p></li>
-	     * <li>text : <b>String</b><p class="sub-desc">The text to use as the innerHTML of the
-	     * {@link Ext.Updater.defaults#indicatorText} div (defaults to 'Loading...').  To replace the entire div, not
-	     * just the text, override {@link Ext.Updater.defaults#indicatorText} directly.</p></li>
-	     * <li>nocache : <b>Boolean</b><p class="sub-desc">Only needed for GET
-	     * requests, this option causes an extra, auto-generated parameter to be appended to the request
-	     * to defeat caching (defaults to {@link Ext.Updater.defaults#disableCaching}).</p></li></ul>
-	     * <p>
-	     * For example:
-	<pre><code>
-	um.update({
-	    url: "your-url.php",
-	    params: {param1: "foo", param2: "bar"}, // or a URL encoded string
-	    callback: yourFunction,
-	    scope: yourObject, //(optional scope)
-	    discardUrl: true,
-	    nocache: true,
-	    text: "Loading...",
-	    timeout: 60,
-	    scripts: false // Save time by avoiding RegExp execution.
-	});
-	</code></pre>
-	     */
-	    update : function(url, params, callback, discardUrl){
-		    var me = this,
-		    	cfg, 
-		    	callerScope;
-		    	
-	        if(me.fireEvent(BEFOREUPDATE, me.el, url, params) !== false){	            
-	            if(Ext.isObject(url)){ // must be config object
-	                cfg = url;
-	                url = cfg.url;
-	                params = params || cfg.params;
-	                callback = callback || cfg.callback;
-	                discardUrl = discardUrl || cfg.discardUrl;
-	                callerScope = cfg.scope;	                
-	                if(!Ext.isEmpty(cfg.nocache)){me.disableCaching = cfg.nocache;};
-	                if(!Ext.isEmpty(cfg.text)){me.indicatorText = '<div class="loading-indicator">'+cfg.text+"</div>";};
-	                if(!Ext.isEmpty(cfg.scripts)){me.loadScripts = cfg.scripts;};
-	                if(!Ext.isEmpty(cfg.timeout)){me.timeout = cfg.timeout;};
-	            }
-	            me.showLoading();
-	
-	            if(!discardUrl){
-	                me.defaultUrl = url;
-	            }
-	            if(Ext.isFunction(url)){
-	                url = url.call(me);
-	            }
-	
-	            var o = Ext.apply({}, {
-	                url : url,
-	                params: (Ext.isFunction(params) && callerScope) ? params.createDelegate(callerScope) : params,
-	                success: processSuccess,
-	                failure: processFailure,
-	                scope: me,
-	                callback: undefined,
-	                timeout: (me.timeout*1000),
-	                disableCaching: me.disableCaching,
-	                argument: {
-	                    "options": cfg,
-	                    "url": url,
-	                    "form": null,
-	                    "callback": callback,
-	                    "scope": callerScope || window,
-	                    "params": params
-	                }
-	            }, cfg);
-	
-	            me.transaction = Ext.Ajax.request(o);
-	        }
-	    },	    	
+    return {
+        constructor: function(el, forceNew){
+            var me = this;
+            el = Ext.get(el);
+            if(!forceNew && el.updateManager){
+                return el.updateManager;
+            }
+            /**
+             * The Element object
+             * @type Ext.Element
+             */
+            me.el = el;
+            /**
+             * Cached url to use for refreshes. Overwritten every time update() is called unless "discardUrl" param is set to true.
+             * @type String
+             */
+            me.defaultUrl = null;
 
-		/**
-	     * <p>Performs an asynchronous form post, updating this element with the response. If the form has the attribute
-	     * enctype="<a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>", it assumes it's a file upload.
-	     * Uses this.sslBlankUrl for SSL file uploads to prevent IE security warning.</p>
-	     * <p>File uploads are not performed using normal "Ajax" techniques, that is they are <b>not</b>
-	     * performed using XMLHttpRequests. Instead the form is submitted in the standard manner with the
-	     * DOM <code>&lt;form></code> element temporarily modified to have its
-	     * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
-	     * to a dynamically generated, hidden <code>&lt;iframe></code> which is inserted into the document
-	     * but removed after the return data has been gathered.</p>
-	     * <p>Be aware that file upload packets, sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>
-	     * and some server technologies (notably JEE) may require some custom processing in order to
-	     * retrieve parameter names and parameter values from the packet content.</p>
-	     * @param {String/HTMLElement} form The form Id or form element
-	     * @param {String} url (optional) The url to pass the form to. If omitted the action attribute on the form will be used.
-	     * @param {Boolean} reset (optional) Whether to try to reset the form after the update
-	     * @param {Function} callback (optional) Callback when transaction is complete. The following
-	     * parameters are passed:<ul>
-	     * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
-	     * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
-	     * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li></ul>
-	     */
-	    formUpdate : function(form, url, reset, callback){
-		    var me = this;
-	        if(me.fireEvent(BEFOREUPDATE, me.el, form, url) !== false){
-	            if(Ext.isFunction(url)){
-	                url = url.call(me);
-	            }
-	            form = Ext.getDom(form)
-	            me.transaction = Ext.Ajax.request({
-	                form: form,
-	                url:url,
-	                success: processSuccess,
-	                failure: processFailure,
-	                scope: me,
-	                timeout: (me.timeout*1000),
-	                argument: {
-	                    "url": url,
-	                    "form": form,
-	                    "callback": callback,
-	                    "reset": reset
-	                }
-	            });
-	            me.showLoading.defer(1, me);
-	        }
-	    },
-                	
-	    /**
-	     * Set this element to auto refresh.  Can be canceled by calling {@link #stopAutoRefresh}.
-	     * @param {Number} interval How often to update (in seconds).
-	     * @param {String/Object/Function} url (optional) The url for this request, a config object in the same format
-	     * supported by {@link #load}, or a function to call to get the url (defaults to the last used url).  Note that while
-	     * the url used in a load call can be reused by this method, other load config options will not be reused and must be
-	     * sepcified as part of a config object passed as this paramter if needed.
-	     * @param {String/Object} params (optional) The parameters to pass as either a url encoded string
-	     * "&param1=1&param2=2" or as an object {param1: 1, param2: 2}
-	     * @param {Function} callback (optional) Callback when transaction is complete - called with signature (oElement, bSuccess)
-	     * @param {Boolean} refreshNow (optional) Whether to execute the refresh now, or wait the interval
-	     */
-	    startAutoRefresh : function(interval, url, params, callback, refreshNow){
-		    var me = this;
-	        if(refreshNow){
-	            me.update(url || me.defaultUrl, params, callback, true);
-	        }
-	        if(me.autoRefreshProcId){
-	            clearInterval(me.autoRefreshProcId);
-	        }
-	        me.autoRefreshProcId = setInterval(me.update.createDelegate(me, [url || me.defaultUrl, params, callback, true]), interval * 1000);
-	    },
-	
-	    /**
-	     * Stop auto refresh on this element.
-	     */
-	    stopAutoRefresh : function(){
-	        if(this.autoRefreshProcId){
-	            clearInterval(this.autoRefreshProcId);
-	            delete this.autoRefreshProcId;
-	        }
-	    },
-	
-	    /**
-	     * Returns true if the Updater is currently set to auto refresh its content (see {@link #startAutoRefresh}), otherwise false.
-	     */
-	    isAutoRefreshing : function(){
-	       return !!this.autoRefreshProcId;
-	    },
-	
-	    /**
-	     * Display the element's "loading" state. By default, the element is updated with {@link #indicatorText}. This
-	     * method may be overridden to perform a custom action while this Updater is actively updating its contents.
-	     */
-	    showLoading : function(){
-	        if(this.showLoadIndicator){
-            	this.el.dom.innerHTML = this.indicatorText;
-	        }
-	    },
-	
-	    /**
-	     * Aborts the currently executing transaction, if any.
-	     */
-	    abort : function(){
-	        if(this.transaction){
-	            Ext.Ajax.abort(this.transaction);
-	        }
-	    },
-	
-	    /**
-	     * Returns true if an update is in progress, otherwise false.
-	     * @return {Boolean}
-	     */
-	    isUpdating : function(){        
-	    	return this.transaction ? Ext.Ajax.isLoading(this.transaction) : false;        
-	    },
-	    
-	    /**
-	     * Refresh the element with the last used url or defaultUrl. If there is no url, it returns immediately
-	     * @param {Function} callback (optional) Callback when transaction is complete - called with signature (oElement, bSuccess)
-	     */
-	    refresh : function(callback){
-	        if(this.defaultUrl){
-	        	this.update(this.defaultUrl, null, callback, true);
-	    	}
-	    }
+            me.addEvents(
+                /**
+                 * @event beforeupdate
+                 * Fired before an update is made, return false from your handler and the update is cancelled.
+                 * @param {Ext.Element} el
+                 * @param {String/Object/Function} url
+                 * @param {String/Object} params
+                 */
+                BEFOREUPDATE,
+                /**
+                 * @event update
+                 * Fired after successful update is made.
+                 * @param {Ext.Element} el
+                 * @param {Object} oResponseObject The response Object
+                 */
+                UPDATE,
+                /**
+                 * @event failure
+                 * Fired on update failure.
+                 * @param {Ext.Element} el
+                 * @param {Object} oResponseObject The response Object
+                 */
+                FAILURE
+            );
+
+            Ext.apply(me, Ext.Updater.defaults);
+            /**
+             * Blank page URL to use with SSL file uploads (defaults to {@link Ext.Updater.defaults#sslBlankUrl}).
+             * @property sslBlankUrl
+             * @type String
+             */
+            /**
+             * Whether to append unique parameter on get request to disable caching (defaults to {@link Ext.Updater.defaults#disableCaching}).
+             * @property disableCaching
+             * @type Boolean
+             */
+            /**
+             * Text for loading indicator (defaults to {@link Ext.Updater.defaults#indicatorText}).
+             * @property indicatorText
+             * @type String
+             */
+            /**
+             * Whether to show indicatorText when loading (defaults to {@link Ext.Updater.defaults#showLoadIndicator}).
+             * @property showLoadIndicator
+             * @type String
+             */
+            /**
+             * Timeout for requests or form posts in seconds (defaults to {@link Ext.Updater.defaults#timeout}).
+             * @property timeout
+             * @type Number
+             */
+            /**
+             * True to process scripts in the output (defaults to {@link Ext.Updater.defaults#loadScripts}).
+             * @property loadScripts
+             * @type Boolean
+             */
+
+            /**
+             * Transaction object of the current executing transaction, or null if there is no active transaction.
+             */
+            me.transaction = null;
+            /**
+             * Delegate for refresh() prebound to "this", use myUpdater.refreshDelegate.createCallback(arg1, arg2) to bind arguments
+             * @type Function
+             */
+            me.refreshDelegate = me.refresh.createDelegate(me);
+            /**
+             * Delegate for update() prebound to "this", use myUpdater.updateDelegate.createCallback(arg1, arg2) to bind arguments
+             * @type Function
+             */
+            me.updateDelegate = me.update.createDelegate(me);
+            /**
+             * Delegate for formUpdate() prebound to "this", use myUpdater.formUpdateDelegate.createCallback(arg1, arg2) to bind arguments
+             * @type Function
+             */
+            me.formUpdateDelegate = (me.formUpdate || function(){}).createDelegate(me);
+
+            /**
+             * The renderer for this Updater (defaults to {@link Ext.Updater.BasicRenderer}).
+             */
+            me.renderer = me.renderer || me.getDefaultRenderer();
+
+            Ext.Updater.superclass.constructor.call(me);
+        },
+
+        /**
+         * Sets the content renderer for this Updater. See {@link Ext.Updater.BasicRenderer#render} for more details.
+         * @param {Object} renderer The object implementing the render() method
+         */
+        setRenderer : function(renderer){
+            this.renderer = renderer;
+        },
+
+        /**
+         * Returns the current content renderer for this Updater. See {@link Ext.Updater.BasicRenderer#render} for more details.
+         * @return {Object}
+         */
+        getRenderer : function(){
+           return this.renderer;
+        },
+
+        /**
+         * This is an overrideable method which returns a reference to a default
+         * renderer class if none is specified when creating the Ext.Updater.
+         * Defaults to {@link Ext.Updater.BasicRenderer}
+         */
+        getDefaultRenderer: function() {
+            return new Ext.Updater.BasicRenderer();
+        },
+
+        /**
+         * Sets the default URL used for updates.
+         * @param {String/Function} defaultUrl The url or a function to call to get the url
+         */
+        setDefaultUrl : function(defaultUrl){
+            this.defaultUrl = defaultUrl;
+        },
+
+        /**
+         * Get the Element this Updater is bound to
+         * @return {Ext.Element} The element
+         */
+        getEl : function(){
+            return this.el;
+        },
+
+        /**
+         * Performs an <b>asynchronous</b> request, updating this element with the response.
+         * If params are specified it uses POST, otherwise it uses GET.<br><br>
+         * <b>Note:</b> Due to the asynchronous nature of remote server requests, the Element
+         * will not have been fully updated when the function returns. To post-process the returned
+         * data, use the callback option, or an <b><code>update</code></b> event handler.
+         * @param {Object} options A config object containing any of the following options:<ul>
+         * <li>url : <b>String/Function</b><p class="sub-desc">The URL to request or a function which
+         * <i>returns</i> the URL (defaults to the value of {@link Ext.Ajax#url} if not specified).</p></li>
+         * <li>method : <b>String</b><p class="sub-desc">The HTTP method to
+         * use. Defaults to POST if the <code>params</code> argument is present, otherwise GET.</p></li>
+         * <li>params : <b>String/Object/Function</b><p class="sub-desc">The
+         * parameters to pass to the server (defaults to none). These may be specified as a url-encoded
+         * string, or as an object containing properties which represent parameters,
+         * or as a function, which returns such an object.</p></li>
+         * <li>scripts : <b>Boolean</b><p class="sub-desc">If <code>true</code>
+         * any &lt;script&gt; tags embedded in the response text will be extracted
+         * and executed (defaults to {@link Ext.Updater.defaults#loadScripts}). If this option is specified,
+         * the callback will be called <i>after</i> the execution of the scripts.</p></li>
+         * <li>callback : <b>Function</b><p class="sub-desc">A function to
+         * be called when the response from the server arrives. The following
+         * parameters are passed:<ul>
+         * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
+         * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
+         * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li>
+         * <li><b>options</b> : Object<p class="sub-desc">The config object passed to the update call.</p></li></ul>
+         * </p></li>
+         * <li>scope : <b>Object</b><p class="sub-desc">The scope in which
+         * to execute the callback (The callback's <code>this</code> reference.) If the
+         * <code>params</code> argument is a function, this scope is used for that function also.</p></li>
+         * <li>discardUrl : <b>Boolean</b><p class="sub-desc">By default, the URL of this request becomes
+         * the default URL for this Updater object, and will be subsequently used in {@link #refresh}
+         * calls.  To bypass this behavior, pass <code>discardUrl:true</code> (defaults to false).</p></li>
+         * <li>timeout : <b>Number</b><p class="sub-desc">The number of seconds to wait for a response before
+         * timing out (defaults to {@link Ext.Updater.defaults#timeout}).</p></li>
+         * <li>text : <b>String</b><p class="sub-desc">The text to use as the innerHTML of the
+         * {@link Ext.Updater.defaults#indicatorText} div (defaults to 'Loading...').  To replace the entire div, not
+         * just the text, override {@link Ext.Updater.defaults#indicatorText} directly.</p></li>
+         * <li>nocache : <b>Boolean</b><p class="sub-desc">Only needed for GET
+         * requests, this option causes an extra, auto-generated parameter to be appended to the request
+         * to defeat caching (defaults to {@link Ext.Updater.defaults#disableCaching}).</p></li></ul>
+         * <p>
+         * For example:
+    <pre><code>
+    um.update({
+        url: "your-url.php",
+        params: {param1: "foo", param2: "bar"}, // or a URL encoded string
+        callback: yourFunction,
+        scope: yourObject, //(optional scope)
+        discardUrl: true,
+        nocache: true,
+        text: "Loading...",
+        timeout: 60,
+        scripts: false // Save time by avoiding RegExp execution.
+    });
+    </code></pre>
+         */
+        update : function(url, params, callback, discardUrl){
+            var me = this,
+                cfg,
+                callerScope;
+
+            if(me.fireEvent(BEFOREUPDATE, me.el, url, params) !== false){
+                if(Ext.isObject(url)){ // must be config object
+                    cfg = url;
+                    url = cfg.url;
+                    params = params || cfg.params;
+                    callback = callback || cfg.callback;
+                    discardUrl = discardUrl || cfg.discardUrl;
+                    callerScope = cfg.scope;
+                    if(!Ext.isEmpty(cfg.nocache)){me.disableCaching = cfg.nocache;};
+                    if(!Ext.isEmpty(cfg.text)){me.indicatorText = '<div class="loading-indicator">'+cfg.text+"</div>";};
+                    if(!Ext.isEmpty(cfg.scripts)){me.loadScripts = cfg.scripts;};
+                    if(!Ext.isEmpty(cfg.timeout)){me.timeout = cfg.timeout;};
+                }
+                me.showLoading();
+
+                if(!discardUrl){
+                    me.defaultUrl = url;
+                }
+                if(Ext.isFunction(url)){
+                    url = url.call(me);
+                }
+
+                var o = Ext.apply({}, {
+                    url : url,
+                    params: (Ext.isFunction(params) && callerScope) ? params.createDelegate(callerScope) : params,
+                    success: processSuccess,
+                    failure: processFailure,
+                    scope: me,
+                    callback: undefined,
+                    timeout: (me.timeout*1000),
+                    disableCaching: me.disableCaching,
+                    argument: {
+                        "options": cfg,
+                        "url": url,
+                        "form": null,
+                        "callback": callback,
+                        "scope": callerScope || window,
+                        "params": params
+                    }
+                }, cfg);
+
+                me.transaction = Ext.Ajax.request(o);
+            }
+        },
+
+        /**
+         * <p>Performs an asynchronous form post, updating this element with the response. If the form has the attribute
+         * enctype="<a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>", it assumes it's a file upload.
+         * Uses this.sslBlankUrl for SSL file uploads to prevent IE security warning.</p>
+         * <p>File uploads are not performed using normal "Ajax" techniques, that is they are <b>not</b>
+         * performed using XMLHttpRequests. Instead the form is submitted in the standard manner with the
+         * DOM <code>&lt;form></code> element temporarily modified to have its
+         * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
+         * to a dynamically generated, hidden <code>&lt;iframe></code> which is inserted into the document
+         * but removed after the return data has been gathered.</p>
+         * <p>Be aware that file upload packets, sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form-data</a>
+         * and some server technologies (notably JEE) may require some custom processing in order to
+         * retrieve parameter names and parameter values from the packet content.</p>
+         * @param {String/HTMLElement} form The form Id or form element
+         * @param {String} url (optional) The url to pass the form to. If omitted the action attribute on the form will be used.
+         * @param {Boolean} reset (optional) Whether to try to reset the form after the update
+         * @param {Function} callback (optional) Callback when transaction is complete. The following
+         * parameters are passed:<ul>
+         * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
+         * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
+         * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li></ul>
+         */
+        formUpdate : function(form, url, reset, callback){
+            var me = this;
+            if(me.fireEvent(BEFOREUPDATE, me.el, form, url) !== false){
+                if(Ext.isFunction(url)){
+                    url = url.call(me);
+                }
+                form = Ext.getDom(form);
+                me.transaction = Ext.Ajax.request({
+                    form: form,
+                    url:url,
+                    success: processSuccess,
+                    failure: processFailure,
+                    scope: me,
+                    timeout: (me.timeout*1000),
+                    argument: {
+                        "url": url,
+                        "form": form,
+                        "callback": callback,
+                        "reset": reset
+                    }
+                });
+                me.showLoading.defer(1, me);
+            }
+        },
+
+        /**
+         * Set this element to auto refresh.  Can be canceled by calling {@link #stopAutoRefresh}.
+         * @param {Number} interval How often to update (in seconds).
+         * @param {String/Object/Function} url (optional) The url for this request, a config object in the same format
+         * supported by {@link #load}, or a function to call to get the url (defaults to the last used url).  Note that while
+         * the url used in a load call can be reused by this method, other load config options will not be reused and must be
+         * sepcified as part of a config object passed as this paramter if needed.
+         * @param {String/Object} params (optional) The parameters to pass as either a url encoded string
+         * "&param1=1&param2=2" or as an object {param1: 1, param2: 2}
+         * @param {Function} callback (optional) Callback when transaction is complete - called with signature (oElement, bSuccess)
+         * @param {Boolean} refreshNow (optional) Whether to execute the refresh now, or wait the interval
+         */
+        startAutoRefresh : function(interval, url, params, callback, refreshNow){
+            var me = this;
+            if(refreshNow){
+                me.update(url || me.defaultUrl, params, callback, true);
+            }
+            if(me.autoRefreshProcId){
+                clearInterval(me.autoRefreshProcId);
+            }
+            me.autoRefreshProcId = setInterval(me.update.createDelegate(me, [url || me.defaultUrl, params, callback, true]), interval * 1000);
+        },
+
+        /**
+         * Stop auto refresh on this element.
+         */
+        stopAutoRefresh : function(){
+            if(this.autoRefreshProcId){
+                clearInterval(this.autoRefreshProcId);
+                delete this.autoRefreshProcId;
+            }
+        },
+
+        /**
+         * Returns true if the Updater is currently set to auto refresh its content (see {@link #startAutoRefresh}), otherwise false.
+         */
+        isAutoRefreshing : function(){
+           return !!this.autoRefreshProcId;
+        },
+
+        /**
+         * Display the element's "loading" state. By default, the element is updated with {@link #indicatorText}. This
+         * method may be overridden to perform a custom action while this Updater is actively updating its contents.
+         */
+        showLoading : function(){
+            if(this.showLoadIndicator){
+                this.el.dom.innerHTML = this.indicatorText;
+            }
+        },
+
+        /**
+         * Aborts the currently executing transaction, if any.
+         */
+        abort : function(){
+            if(this.transaction){
+                Ext.Ajax.abort(this.transaction);
+            }
+        },
+
+        /**
+         * Returns true if an update is in progress, otherwise false.
+         * @return {Boolean}
+         */
+        isUpdating : function(){
+            return this.transaction ? Ext.Ajax.isLoading(this.transaction) : false;
+        },
+
+        /**
+         * Refresh the element with the last used url or defaultUrl. If there is no url, it returns immediately
+         * @param {Function} callback (optional) Callback when transaction is complete - called with signature (oElement, bSuccess)
+         */
+        refresh : function(callback){
+            if(this.defaultUrl){
+                this.update(this.defaultUrl, null, callback, true);
+            }
+        }
     }
 }());
 
@@ -10241,7 +10367,7 @@ Ext.Updater.defaults = {
      * Timeout for requests or form posts in seconds (defaults to 30 seconds).
      * @type Number
      */
-    timeout : 30,    
+    timeout : 30,
     /**
      * True to append a unique parameter to GET requests to disable caching (defaults to false).
      * @type Boolean
@@ -10266,7 +10392,7 @@ Ext.Updater.defaults = {
     * Blank page URL to use with SSL file uploads (defaults to {@link Ext#SSL_SECURE_URL} if set, or "javascript:false").
     * @type String
     */
-    sslBlankUrl : Ext.SSL_SECURE_URL      
+    sslBlankUrl : Ext.SSL_SECURE_URL
 };
 
 
@@ -10305,7 +10431,7 @@ Ext.Updater.BasicRenderer.prototype = {
      * @param {Updater} updateManager The calling update manager
      * @param {Function} callback A callback that will need to be called if loadScripts is true on the Updater
      */
-     render : function(el, response, updateManager, callback){	     
+     render : function(el, response, updateManager, callback){
         el.update(response.responseText, updateManager.loadScripts, callback);
     }
 };/**
@@ -10456,14 +10582,14 @@ Date.formatCodeToRegex = function(character, currentGroup) {
       Date.parseCodes[character] = p; // reassign function result to prevent repeated execution
     }
 
-    return p? Ext.applyIf({
-      c: p.c? xf(p.c, currentGroup || "{0}") : p.c
+    return p ? Ext.applyIf({
+      c: p.c ? xf(p.c, currentGroup || "{0}") : p.c
     }, p) : {
         g:0,
         c:null,
         s:Ext.escapeRe(character) // treat unrecognised characters as literals
     }
-}
+};
 
 // private shorthand for Date.formatCodeToRegex since we'll be using it fairly often
 var $f = Date.formatCodeToRegex;
@@ -10511,7 +10637,7 @@ Date.parseFunctions['x-date-format'] = myDateParser;
      * may be used as a format string to {@link #format}. Example:</p><pre><code>
 Date.formatFunctions['x-date-format'] = myDateFormatter;
 </code></pre>
-     * <p>A formatting function should return a string repesentation of the passed Date object:<div class="mdetail-params"><ul>
+     * <p>A formatting function should return a string representation of the passed Date object, and is passed the following parameters:<div class="mdetail-params"><ul>
      * <li><code>date</code> : Date<div class="sub-desc">The Date to format.</div></li>
      * </ul></div></p>
      * <p>To enable date strings to also be <i>parsed</i> according to that format, a corresponding
@@ -10985,7 +11111,7 @@ dt = Date.parseDate("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
                 }
             }
 
-            Date.parseRegexes[regexNum] = new RegExp("^" + regex.join('') + "$", "i");
+            Date.parseRegexes[regexNum] = new RegExp("^" + regex.join('') + "$");
             Date.parseFunctions[format] = new Function("input", "strict", xf(code, regexNum, calc.join('')));
         }
     }(),
@@ -11618,7 +11744,8 @@ console.group('ISO-8601 Granularity Test (see http://www.w3.org/TR/NOTE-datetime
     console.log('Date.parseDate("1997-13-16T19:20:30.45+01:00", "c", true)= %o', Date.parseDate("1997-13-16T19:20:30.45+01:00", "c", true)); // strict date parsing with invalid month value
 console.groupEnd();
 
-//*//**
+//*/
+/**
  * @class Ext.util.MixedCollection
  * @extends Ext.util.Observable
  * A Collection class that maintains both numeric indexes and keys and exposes events.
@@ -12015,23 +12142,38 @@ mc.add(otherEl);
 
     /**
      * @private
+     * Performs the actual sorting based on a direction and a sorting function. Internally,
+     * this creates a temporary array of all items in the MixedCollection, sorts it and then writes
+     * the sorted array data back into this.items and this.keys
      * @param {String} property Property to sort by ('key', 'value', or 'index')
      * @param {String} dir (optional) Direction to sort 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
      * Defaults to sorting by numeric value.
      */
     _sort : function(property, dir, fn){
-        var i,
-            len,
-            dsc = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
-            c = [], k = this.keys, items = this.items;
-
-        fn = fn || function(a, b){
-            return a-b;
+        var i, len,
+            dsc   = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
+            
+            //this is a temporary array used to apply the sorting function
+            c     = [],
+            keys  = this.keys,
+            items = this.items;
+        
+        //default to a simple sorter function if one is not provided
+        fn = fn || function(a, b) {
+            return a - b;
         };
+        
+        //copy all the items into a temporary array, which we will sort
         for(i = 0, len = items.length; i < len; i++){
-            c[c.length] = {key: k[i], value: items[i], index: i};
+            c[c.length] = {
+                key  : keys[i], 
+                value: items[i], 
+                index: i
+            };
         }
+        
+        //sort the temporary array
         c.sort(function(a, b){
             var v = fn(a[property], b[property]) * dsc;
             if(v === 0){
@@ -12039,10 +12181,13 @@ mc.add(otherEl);
             }
             return v;
         });
+        
+        //copy the temporary array back into the main this.items and this.keys objects
         for(i = 0, len = c.length; i < len; i++){
             items[i] = c[i].value;
-            k[i] = c[i].key;
+            keys[i]  = c[i].key;
         }
+        
         this.fireEvent('sort', this);
     },
 
@@ -12054,6 +12199,44 @@ mc.add(otherEl);
      */
     sort : function(dir, fn){
         this._sort('value', dir, fn);
+    },
+    
+    /**
+     * Reorders each of the items based on a mapping from old index to new index. Internally this
+     * just translates into a sort. The 'sort' event is fired whenever reordering has occured.
+     * @param {Object} mapping Mapping from old item index to new item index
+     */
+    reorder: function(mapping) {
+        this.suspendEvents();
+        
+        var items     = this.items,
+            index     = 0,
+            length    = items.length,
+            order     = [],
+            remaining = [];
+        
+        //object of {oldPosition: newPosition} reversed to {newPosition: oldPosition}
+        for (oldIndex in mapping) {
+            order[mapping[oldIndex]] = items[oldIndex];
+        } 
+        
+        for (index = 0; index < length; index++) {
+            if (mapping[index] == undefined) {
+                remaining.push(items[index]);
+            }
+        }
+        
+        for (index = 0; index < length; index++) {
+            if (order[index] == undefined) {
+                order[index] = remaining.shift();
+            }
+        }
+        
+        this.clear();
+        this.addAll(order);
+        
+        this.resumeEvents();
+        this.fireEvent('sort', this);
     },
 
     /**
@@ -12173,11 +12356,20 @@ mc.add(otherEl);
         return -1;
     },
 
-    // private
+    /**
+     * Returns a regular expression based on the given value and matching options. This is used internally for finding and filtering,
+     * and by Ext.data.Store#filter
+     * @private
+     * @param {String} value The value to create the regex for. This is escaped using Ext.escapeRe
+     * @param {Boolean} anyMatch True to allow any match - no regex start/end line anchors will be added. Defaults to false
+     * @param {Boolean} caseSensitive True to make the regex case sensitive (adds 'i' switch to regex). Defaults to false.
+     * @param {Boolean} exactMatch True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
+     */
     createValueMatcher : function(value, anyMatch, caseSensitive, exactMatch) {
         if (!value.exec) { // not a regex
             var er = Ext.escapeRe;
             value = String(value);
+            
             if (anyMatch === true) {
                 value = er(value);
             } else {
@@ -12409,7 +12601,7 @@ Ext.util.Format = function(){
         stripTagsRE = /<\/?[^>]+>/gi,
         stripScriptsRe = /(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/ig,
         nl2brRe = /\r?\n/g;
-        
+
     return {
         /**
          * Truncate a string and add an ellipsis ('...') to the end if it exceeds the specified length
@@ -12579,7 +12771,7 @@ Ext.util.Format = function(){
                 return Ext.util.Format.date(v, format);
             };
         },
-        
+
         /**
          * Strips all HTML tags
          * @param {Mixed} value The text from which to strip tags
@@ -12663,56 +12855,61 @@ Ext.util.Format = function(){
          */
         number: function(v, format) {
             if(!format){
-		        return v;
-		    }
-		    v = Ext.num(v, NaN);
+                return v;
+            }
+            v = Ext.num(v, NaN);
             if (isNaN(v)){
                 return '';
             }
-		    var comma = ',',
-		        dec = '.',
-		        i18n = false,
-		        neg = v < 0;
-		
-		    v = Math.abs(v);
-		    if(format.substr(format.length - 2) == '/i'){
-		        format = format.substr(0, format.length - 2);
-		        i18n = true;
-		        comma = '.';
-		        dec = ',';
-		    }
-		
-		    var hasComma = format.indexOf(comma) != -1, 
-		        psplit = (i18n ? format.replace(/[^\d\,]/g, '') : format.replace(/[^\d\.]/g, '')).split(dec);
-		
-		    if(1 < psplit.length){
-		        v = v.toFixed(psplit[1].length);
-		    }else if(2 < psplit.length){
-		        throw ('NumberFormatException: invalid format, formats should have no more than 1 period: ' + format);
-		    }else{
-		        v = v.toFixed(0);
-		    }
-		
-		    var fnum = v.toString();
-		    if(hasComma){
-		        psplit = fnum.split('.');
-		
-		        var cnum = psplit[0], parr = [], j = cnum.length, m = Math.floor(j / 3), n = cnum.length % 3 || 3;
-		
-		        for(var i = 0; i < j; i += n){
-		            if(i != 0){
-		                n = 3;
-		            }
-		            parr[parr.length] = cnum.substr(i, n);
-		            m -= 1;
-		        }
-		        fnum = parr.join(comma);
-		        if(psplit[1]){
-		            fnum += dec + psplit[1];
-		        }
-		    }
-		
-		    return (neg ? '-' : '') + format.replace(/[\d,?\.?]+/, fnum);
+            var comma = ',',
+                dec = '.',
+                i18n = false,
+                neg = v < 0;
+
+            v = Math.abs(v);
+            if(format.substr(format.length - 2) == '/i'){
+                format = format.substr(0, format.length - 2);
+                i18n = true;
+                comma = '.';
+                dec = ',';
+            }
+
+            var hasComma = format.indexOf(comma) != -1,
+                psplit = (i18n ? format.replace(/[^\d\,]/g, '') : format.replace(/[^\d\.]/g, '')).split(dec);
+
+            if(1 < psplit.length){
+                v = v.toFixed(psplit[1].length);
+            }else if(2 < psplit.length){
+                throw ('NumberFormatException: invalid format, formats should have no more than 1 period: ' + format);
+            }else{
+                v = v.toFixed(0);
+            }
+
+            var fnum = v.toString();
+
+            psplit = fnum.split('.');
+
+            if (hasComma) {
+                var cnum = psplit[0], parr = [], j = cnum.length, m = Math.floor(j / 3), n = cnum.length % 3 || 3;
+
+                for (var i = 0; i < j; i += n) {
+                    if (i != 0) {
+                        n = 3;
+                    }
+                    parr[parr.length] = cnum.substr(i, n);
+                    m -= 1;
+                }
+                fnum = parr.join(comma);
+                if (psplit[1]) {
+                    fnum += dec + psplit[1];
+                }
+            } else {
+                if (psplit[1]) {
+                    fnum = psplit[0] + dec + psplit[1];
+                }
+            }
+
+            return (neg ? '-' : '') + format.replace(/[\d,?\.?]+/, fnum);
         },
 
         /**
@@ -12737,7 +12934,7 @@ Ext.util.Format = function(){
         plural : function(v, s, p){
             return v +' ' + (v == 1 ? s : (p ? p : s+'s'));
         },
-        
+
         /**
          * Converts newline characters to the HTML tag &lt;br/>
          * @param {String} The string value to format.
@@ -13456,13 +13653,16 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
     enable: function(){
         if(this.disabled){
             this.el.on('mousedown', this.handleMouseDown, this);
+            if (Ext.isIE){
+                this.el.on('dblclick', this.handleDblClick, this);
+            }
             if(this.preventDefault || this.stopDefault){
                 this.el.on('click', this.eventOptions, this);
             }
         }
         this.disabled = false;
     },
-    
+
     /**
      * Disables the repeater and stops events from firing.
      */
@@ -13477,31 +13677,39 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
         }
         this.disabled = true;
     },
-    
+
     /**
      * Convenience function for setting disabled/enabled by boolean.
      * @param {Boolean} disabled
      */
     setDisabled: function(disabled){
-        this[disabled ? 'disable' : 'enable']();    
+        this[disabled ? 'disable' : 'enable']();
     },
-    
+
     eventOptions: function(e){
         if(this.preventDefault){
             e.preventDefault();
         }
         if(this.stopDefault){
             e.stopEvent();
-        }       
+        }
     },
-    
+
     // private
     destroy : function() {
         this.disable(true);
         Ext.destroy(this.el);
         this.purgeListeners();
     },
-    
+
+    handleDblClick : function(){
+        clearTimeout(this.timer);
+        this.el.blur();
+
+        this.fireEvent("mousedown", this);
+        this.fireEvent("click", this);
+    },
+
     // private
     handleMouseDown : function(){
         clearTimeout(this.timer);
@@ -13517,10 +13725,10 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
         this.fireEvent("mousedown", this);
         this.fireEvent("click", this);
 
-//      Do not honor delay or interval if acceleration wanted.
+        // Do not honor delay or interval if acceleration wanted.
         if (this.accelerate) {
             this.delay = 400;
-	    }
+        }
         this.timer = this.click.defer(this.delay || this.interval, this);
     },
 
@@ -14226,7 +14434,8 @@ function generateError(data) {
 Ext.Error = function(message) {
     // Try to read the message from Ext.Error.lang
     this.message = (this.lang[message]) ? this.lang[message] : message;
-}
+};
+
 Ext.Error.prototype = new Error();
 Ext.apply(Ext.Error.prototype, {
     // protected.  Extensions place their error-strings here.
@@ -14255,4 +14464,3 @@ Ext.apply(Ext.Error.prototype, {
         return Ext.encode(this);
     }
 });
-

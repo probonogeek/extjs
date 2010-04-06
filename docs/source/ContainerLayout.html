@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.ContainerLayout"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.layout.ContainerLayout"></div>/**
  * @class Ext.layout.ContainerLayout
  * <p>This class is intended to be extended or created via the <tt><b>{@link Ext.Container#layout layout}</b></tt>
  * configuration property.  See <tt><b>{@link Ext.Container#layout}</b></tt> for additional details.</p>
@@ -117,16 +123,24 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         }
     },
 
-    // private
+    /**
+     * @private
+     * Renders the given Component into the target Element. If the Component is already rendered,
+     * it is moved to the provided target instead.
+     * @param {Ext.Component} c The Component to render
+     * @param {Number} position The position within the target to render the item to
+     * @param {Ext.Element} target The target Element
+     */
     renderItem : function(c, position, target){
-        if(c){
-            if(!c.rendered){
+        if (c) {
+            if (!c.rendered) {
                 c.render(target, position);
                 this.configureItem(c, position);
-            }else if(!this.isValidParent(c, target)){
-                if(Ext.isNumber(position)){
+            } else if (!this.isValidParent(c, target)) {
+                if (Ext.isNumber(position)) {
                     position = target.dom.childNodes[position];
                 }
+                
                 target.dom.insertBefore(c.getPositionEl().dom, position || null);
                 c.container = target;
                 this.configureItem(c, position);
@@ -146,14 +160,18 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         return items;
     },
 
-    // private
+    /**
+     * @private
+     * Applies extraCls and hides the item if renderHidden is true
+     */
     configureItem: function(c, position){
-        if(this.extraCls){
+        if (this.extraCls) {
             var t = c.getPositionEl ? c.getPositionEl() : c;
             t.addClass(this.extraCls);
         }
+        
         // If we are forcing a layout, do so *before* we hide so elements have height/width
-        if(c.doLayout && this.forceLayout){
+        if (c.doLayout && this.forceLayout) {
             c.doLayout();
         }
         if (this.renderHidden && c != this.activeItem) {
@@ -162,10 +180,10 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
     },
 
     onRemove: function(c){
-         if(this.activeItem == c){
+        if(this.activeItem == c){
             delete this.activeItem;
-         }
-         if(c.rendered && this.extraCls){
+        }
+        if(c.rendered && this.extraCls){
             var t = c.getPositionEl ? c.getPositionEl() : c;
             t.removeClass(this.extraCls);
         }
@@ -185,16 +203,13 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         if(ct.collapsed){
             return;
         }
-        if(b = ct.bufferResize){
-            // Only allow if we should buffer the layout
-            if(ct.shouldBufferLayout()){
-                if(!this.resizeTask){
-                    this.resizeTask = new Ext.util.DelayedTask(this.runLayout, this);
-                    this.resizeBuffer = Ext.isNumber(b) ? b : 50;
-                }
-                ct.layoutPending = true;
-                this.resizeTask.delay(this.resizeBuffer);
+        if(b = ct.bufferResize && ct.shouldBufferLayout()){
+            if(!this.resizeTask){
+                this.resizeTask = new Ext.util.DelayedTask(this.runLayout, this);
+                this.resizeBuffer = Ext.isNumber(b) ? b : 50;
             }
+            ct.layoutPending = true;
+            this.resizeTask.delay(this.resizeBuffer);
         }else{
             this.runLayout();
         }
@@ -202,27 +217,20 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
 
     runLayout: function(){
         var ct = this.container;
-        // AutoLayout is known to require the recursive doLayout call, others need this currently (BorderLayout for example)
-        // but shouldn't.  A more extensive review will take place for 3.2 which requires a ContainerMgr with hierarchy lookups.
-        //this.layout();
-        //ct.onLayout();
-        ct.doLayout();
+        this.layout();
+        ct.onLayout();
         delete ct.layoutPending;
     },
 
     // private
     setContainer : function(ct){
-        if (!Ext.LayoutManager) {
-            Ext.LayoutManager = {};
-        }
-
-        /* This monitorResize flag will be renamed soon as to avoid confusion
-        * with the Container version which hooks onWindowResize to doLayout
-        *
-        * monitorResize flag in this context attaches the resize event between
-        * a container and it's layout
-        */
-
+        <div id="prop-Ext.layout.ContainerLayout-if"></div>/**
+         * This monitorResize flag will be renamed soon as to avoid confusion
+         * with the Container version which hooks onWindowResize to doLayout
+         *
+         * monitorResize flag in this context attaches the resize event between
+         * a container and it's layout
+         */
         if(this.monitorResize && ct != this.container){
             var old = this.container;
             if(old){
@@ -235,26 +243,33 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         this.container = ct;
     },
 
-    // private
+    <div id="method-Ext.layout.ContainerLayout-parseMargins"></div>/**
+     * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
+     * (e.g. 10, "10", "10 10", "10 10 10" and "10 10 10 10" are all valid options and would return the same result)
+     * @param {Number|String} v The encoded margins
+     * @return {Object} An object with margin sizes for top, right, bottom and left
+     */
     parseMargins : function(v){
-        if(Ext.isNumber(v)){
+        if (Ext.isNumber(v)) {
             v = v.toString();
         }
-        var ms = v.split(' ');
-        var len = ms.length;
-        if(len == 1){
+        var ms  = v.split(' '),
+            len = ms.length;
+            
+        if (len == 1) {
             ms[1] = ms[2] = ms[3] = ms[0];
-        } else if(len == 2){
+        } else if(len == 2) {
             ms[2] = ms[0];
             ms[3] = ms[1];
-        } else if(len == 3){
+        } else if(len == 3) {
             ms[3] = ms[1];
         }
+        
         return {
-            top:parseInt(ms[0], 10) || 0,
-            right:parseInt(ms[1], 10) || 0,
+            top   :parseInt(ms[0], 10) || 0,
+            right :parseInt(ms[1], 10) || 0,
             bottom:parseInt(ms[2], 10) || 0,
-            left:parseInt(ms[3], 10) || 0
+            left  :parseInt(ms[3], 10) || 0
         };
     },
 
@@ -285,6 +300,10 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
      * @protected
      */
     destroy : function(){
+        // Stop any buffered layout tasks
+        if(this.resizeTask && this.resizeTask.cancel){
+            this.resizeTask.cancel();
+        }
         if(!Ext.isEmpty(this.targetCls)){
             var target = this.container.getLayoutTarget();
             if(target){

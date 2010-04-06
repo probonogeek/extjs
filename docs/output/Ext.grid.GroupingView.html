@@ -1,15 +1,14 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.grid.GridView.html" ext:member="" ext:cls="Ext.grid.GridView">GridView</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif">GroupingView</pre></div><h1>Class <a href="source/GroupingView.html#cls-Ext.grid.GroupingView">Ext.grid.GroupingView</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.grid</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">GroupingView.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/GroupingView.html#cls-Ext.grid.GroupingView">GroupingView</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.grid.GridView.html" ext:cls="Ext.grid.GridView" ext:member="">GridView</a></td></tr></table><div class="description">Adds the ability for single level grouping to the grid. A <a href="output/Ext.data.GroupingStore.html" ext:cls="Ext.data.GroupingStore">GroupingStore</a>
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.grid.GroupingView-props"><img src="../resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.grid.GroupingView-methods"><img src="../resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.grid.GroupingView-events"><img src="../resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.grid.GroupingView-configs"><img src="../resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.grid.GroupingView"><img src="../resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif"><a href="output/Ext.grid.GridView.html" ext:member="" ext:cls="Ext.grid.GridView">GridView</a>&#13;&nbsp;&nbsp;&nbsp;&nbsp;<img src="resources/elbow-end.gif">GroupingView</pre></div><h1>Class <a href="source/GroupingView.html#cls-Ext.grid.GroupingView">Ext.grid.GroupingView</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.grid</td></tr><tr><td class="label">Defined In:</td><td class="hd-info"><a href="source/GroupingView.html#cls-Ext.grid.GroupingView">GroupingView.js</a></td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/GroupingView.html#cls-Ext.grid.GroupingView">GroupingView</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.grid.GridView.html" ext:cls="Ext.grid.GridView" ext:member="">GridView</a></td></tr></table><div class="description">Adds the ability for single level grouping to the grid. A <a href="output/Ext.data.GroupingStore.html" ext:cls="Ext.data.GroupingStore">GroupingStore</a>
 must be used to enable grouping.  Some grouping characteristics may also be configured at the
 <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Column level</a><div class="mdetail-params"><ul>
-<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-emptyGroupText" ext:member="emptyGroupText" ext:cls="Ext.grid.Column">emptyGroupText</a></li>
-<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupable" ext:member="groupable" ext:cls="Ext.grid.Column">groupable</a></li>
-<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupName" ext:member="groupName" ext:cls="Ext.grid.Column">groupName</a></li>
-<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupRender" ext:member="groupRender" ext:cls="Ext.grid.Column">groupRender</a></li>
+<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-emptyGroupText" ext:member="emptyGroupText" ext:cls="Ext.grid.Column">emptyGroupText</a></code></li>
+<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupable" ext:member="groupable" ext:cls="Ext.grid.Column">groupable</a></code></li>
+<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupName" ext:member="groupName" ext:cls="Ext.grid.Column">groupName</a></code></li>
+<li><code><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupRender" ext:member="groupRender" ext:cls="Ext.grid.Column">groupRender</a></code></li>
 </ul></div>
 <p>Sample usage:</p>
-<pre><code>
-<b>var</b> grid = <b>new</b> Ext.grid.GridPanel({
-    <i>// A groupingStore is required <b>for</b> a GroupingView</i>
+<pre><code><b>var</b> grid = <b>new</b> Ext.grid.GridPanel({
+    <i>// A groupingStore is required <b>for</b> a GroupingView</i>
     store: <b>new</b> <a href="output/Ext.data.GroupingStore.html" ext:cls="Ext.data.GroupingStore">Ext.data.GroupingStore</a>({
         autoDestroy: true,
         reader: reader,
@@ -22,7 +21,7 @@ must be used to enable grouping.  Some grouping characteristics may also be conf
     colModel: <b>new</b> <a href="output/Ext.grid.ColumnModel.html" ext:cls="Ext.grid.ColumnModel">Ext.grid.ColumnModel</a>({
         columns:[
             {id:<em>'company'</em>,header: <em>'Company'</em>, width: 60, dataIndex: <em>'company'</em>},
-            <i>// <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupable" ext:member="groupable" ext:cls="Ext.grid.Column">groupable</a>, <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupName" ext:member="groupName" ext:cls="Ext.grid.Column">groupName</a>, <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupRender" ext:member="groupRender" ext:cls="Ext.grid.Column">groupRender</a> are also configurable at column level</i>
+            <i>// <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupable" ext:member="groupable" ext:cls="Ext.grid.Column">groupable</a>, <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupName" ext:member="groupName" ext:cls="Ext.grid.Column">groupName</a>, <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupRender" ext:member="groupRender" ext:cls="Ext.grid.Column">groupRender</a> are also configurable at column level</i>
             {header: <em>'Price'</em>, renderer: Ext.util.Format.usMoney, dataIndex: <em>'price'</em>, <a href="output/Ext.grid.Column.html#Ext.grid.Column-groupable" ext:member="groupable" ext:cls="Ext.grid.Column">groupable</a>: false},
             {header: <em>'Change'</em>, dataIndex: <em>'change'</em>, renderer: Ext.util.Format.usMoney},
             {header: <em>'Industry'</em>, dataIndex: <em>'industry'</em>},
@@ -37,7 +36,7 @@ must be used to enable grouping.  Some grouping characteristics may also be conf
 
     view: <b>new</b> Ext.grid.GroupingView({
         <a href="output/Ext.grid.GridView.html#Ext.grid.GridView-forceFit" ext:member="forceFit" ext:cls="Ext.grid.GridView">forceFit</a>: true,
-        <i>// custom grouping text template to display the number of items per group</i>
+        <i>// custom grouping text template to display the number of items per group</i>
         <a href="output/Ext.grid.GroupingView.html#Ext.grid.GroupingView-groupTextTpl" ext:member="groupTextTpl" ext:cls="Ext.grid.GroupingView">groupTextTpl</a>: <em>'{text} ({[values.rs.length]} {[values.rs.length > 1 ? <em>"Items"</em> : <em>"Item"</em>]})'</em>
     }),
 
@@ -50,14 +49,15 @@ must be used to enable grouping.  Some grouping characteristics may also be conf
     iconCls: <em>'icon-grid'</em>,
     renderTo: document.body
 });</code></pre></div><div class="hr"></div><a id="Ext.grid.GroupingView-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-autoFill"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-autoFill">autoFill</a></b> : Boolean<div class="mdesc"><div class="short">Defaults to false.  Specify true to have the column widths re-proportioned
-when the grid is initially rendered.  The ...</div><div class="long">Defaults to <tt>false</tt>.  Specify <tt>true</tt> to have the column widths re-proportioned
-when the grid is <b>initially rendered</b>.  The 
+when the grid is initially rendered.  The
+...</div><div class="long">Defaults to <tt>false</tt>.  Specify <tt>true</tt> to have the column widths re-proportioned
+when the grid is <b>initially rendered</b>.  The
 <a href="output/Ext.grid.Column.html#Ext.grid.Column-width" ext:member="width" ext:cls="Ext.grid.Column">initially configured width</a></tt> of each column will be adjusted
 to fit the grid width and prevent horizontal scrolling. If columns are later resized (manually
 or programmatically), the other columns in the grid will <b>not</b> be resized to fit the grid width.
 See <tt><a href="output/Ext.grid.GridView.html#Ext.grid.GridView-forceFit" ext:member="forceFit" ext:cls="Ext.grid.GridView">forceFit</a></tt> also.</div></div></td><td class="msource"><a href="output/Ext.grid.GridView.html#autoFill" ext:member="#autoFill" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-cellSelector"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-cellSelector">cellSelector</a></b> : String<div class="mdesc">The selector used to find cells internally (defaults to <tt>'td.x-grid3-cell'</tt>)</div></td><td class="msource"><a href="output/Ext.grid.GridView.html#cellSelector" ext:member="#cellSelector" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-cellSelectorDepth"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-cellSelectorDepth">cellSelectorDepth</a></b> : Number<div class="mdesc">The number of levels to search for cells in event delegation (defaults to <tt>4</tt>)</div></td><td class="msource"><a href="output/Ext.grid.GridView.html#cellSelectorDepth" ext:member="#cellSelectorDepth" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-columnsText"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-columnsText">columnsText</a></b> : String<div class="mdesc">The text displayed in the 'Columns' menu item (defaults to <tt>'Columns'</tt>)</div></td><td class="msource"><a href="output/Ext.grid.GridView.html#columnsText" ext:member="#columnsText" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row  inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-deferEmptyText"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-deferEmptyText">deferEmptyText</a></b> : Boolean<div class="mdesc">True to defer <tt><a href="output/Ext.grid.GridView.html#Ext.grid.GridView-emptyText" ext:member="emptyText" ext:cls="Ext.grid.GridView">emptyText</a></tt> being applied until the store's
-first load (defaults to <tt>true</tt>).</div></td><td class="msource"><a href="output/Ext.grid.GridView.html#deferEmptyText" ext:member="#deferEmptyText" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-emptyGroupText"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-emptyGroupText">emptyGroupText</a></b> : String<div class="mdesc"><div class="short">The text to display when there is an empty group value (defaults to '(None)').&#13;
-May also be specified per column, see...</div><div class="long">The text to display when there is an empty group value (defaults to <tt>'(None)'</tt>).
+first load (defaults to <tt>true</tt>).</div></td><td class="msource"><a href="output/Ext.grid.GridView.html#deferEmptyText" ext:member="#deferEmptyText" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-emptyGroupText"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-emptyGroupText">emptyGroupText</a></b> : String<div class="mdesc"><div class="short">The text to display when there is an empty group value (defaults to '(None)').
+May also be specified per column, see ...</div><div class="long">The text to display when there is an empty group value (defaults to <tt>'(None)'</tt>).
 May also be specified per column, see <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a>.<a href="output/Ext.grid.Column.html#Ext.grid.Column-emptyGroupText" ext:member="emptyGroupText" ext:cls="Ext.grid.Column">emptyGroupText</a>.</div></div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-emptyText"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-emptyText">emptyText</a></b> : String<div class="mdesc"><div class="short">Default text (html tags are accepted) to display in the grid body when no rows
 are available (defaults to ''). This v...</div><div class="long">Default text (html tags are accepted) to display in the grid body when no rows
 are available (defaults to ''). This value will be used to update the <tt><a href="output/Ext.grid.GridView.html#Ext.grid.GridView-mainBody" ext:member="mainBody" ext:cls="Ext.grid.GridView">mainBody</a></tt>:
@@ -69,11 +69,11 @@ at <b>all times</b>.  The <a href="output/Ext.grid.Column.html#Ext.grid.Column-w
 column will be adjusted to fit the grid width and prevent horizontal scrolling. If columns are
 later resized (manually or programmatically), the other columns in the grid <b>will</b> be resized
 to fit the grid width. See <tt><a href="output/Ext.grid.GridView.html#Ext.grid.GridView-autoFill" ext:member="autoFill" ext:cls="Ext.grid.GridView">autoFill</a></tt> also.</div></div></td><td class="msource"><a href="output/Ext.grid.GridView.html#forceFit" ext:member="#forceFit" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupByText"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupByText">groupByText</a></b> : String<div class="mdesc">Text displayed in the grid header menu for grouping by a column
-(defaults to 'Group By This Field').</div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupMode"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupMode">groupMode</a></b> : String<div class="mdesc"><div class="short">Indicates how to construct the group identifier. 'value' constructs the id using&#13;
-raw value, 'display' constructs the...</div><div class="long">Indicates how to construct the group identifier. <tt>'value'</tt> constructs the id using
+(defaults to 'Group By This Field').</div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupMode"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupMode">groupMode</a></b> : String<div class="mdesc"><div class="short">Indicates how to construct the group identifier. 'value' constructs the id using
+raw value, 'display' constructs the ...</div><div class="long">Indicates how to construct the group identifier. <tt>'value'</tt> constructs the id using
 raw value, <tt>'display'</tt> constructs the id using the rendered value. Defaults to <tt>'value'</tt>.</div></div></td><td class="msource">GroupingView</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupRenderer"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupRenderer">groupRenderer</a></b> : Function<div class="mdesc">This property must be configured in the <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a> for
-each column.</div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupTextTpl"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupTextTpl">groupTextTpl</a></b> : String<div class="mdesc"><div class="short">The template used to render the group header (defaults to '{text}').&#13;
-This is used to format an object which contains...</div><div class="long">The template used to render the group header (defaults to <tt>'{text}'</tt>).
+each column.</div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-groupTextTpl"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-groupTextTpl">groupTextTpl</a></b> : String<div class="mdesc"><div class="short">The template used to render the group header (defaults to '{text}').
+This is used to format an object which contains ...</div><div class="long">The template used to render the group header (defaults to <tt>'{text}'</tt>).
 This is used to format an object which contains the following properties:
 <div class="mdetail-params"><ul>
 <li><b>group</b> : String<p class="sub-desc">The <i>rendered</i> value of the group field.
@@ -95,9 +95,9 @@ See <a href="output/Ext.XTemplate.html" ext:cls="Ext.XTemplate">Ext.XTemplate</a
     view: <b>new</b> Ext.grid.GroupingView({
         groupTextTpl: <em>'{text} ({[values.rs.length]} {[values.rs.length > 1 ? <em>"Items"</em> : <em>"Item"</em>]})'</em>
     }),
-});</code></pre></div></div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-headersDisabled"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-headersDisabled">headersDisabled</a></b> : Boolean<div class="mdesc"><div class="short">True to disable the grid column headers (defaults to false). 
+});</code></pre></div></div></td><td class="msource">GroupingView</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GridView-headersDisabled"></a><b><a href="source/GridView.html#cfg-Ext.grid.GridView-headersDisabled">headersDisabled</a></b> : Boolean<div class="mdesc"><div class="short">True to disable the grid column headers (defaults to false).
 Use the ColumnModel menuDisabled
-config to disable the ...</div><div class="long">True to disable the grid column headers (defaults to <tt>false</tt>). 
+config to disable the m...</div><div class="long">True to disable the grid column headers (defaults to <tt>false</tt>).
 Use the <a href="output/Ext.grid.ColumnModel.html" ext:cls="Ext.grid.ColumnModel">ColumnModel</a> <tt><a href="output/Ext.grid.ColumnModel.html#Ext.grid.ColumnModel-menuDisabled" ext:member="menuDisabled" ext:cls="Ext.grid.ColumnModel">menuDisabled</a></tt>
 config to disable the <i>menu</i> for individual columns.  While this config is true the
 following will be disabled:<div class="mdetail-params"><ul>
@@ -169,8 +169,8 @@ Note that this only controls the row, and will not do anything for the text insi
 facets (like text) use something like:
     <pre><code>.x-grid3-row-selected .x-grid3-cell-inner {
         color: #FFCC00;
-    }</code></pre></div></div></td><td class="msource"><a href="output/Ext.grid.GridView.html#selectedRowClass" ext:member="#selectedRowClass" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-showGroupName"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-showGroupName">showGroupName</a></b> : Boolean<div class="mdesc"><div class="short">If true will display a prefix plus a ': ' before the group field value&#13;
-in the group header line.  The prefix will co...</div><div class="long">If <tt>true</tt> will display a prefix plus a ': ' before the group field value
+    }</code></pre></div></div></td><td class="msource"><a href="output/Ext.grid.GridView.html#selectedRowClass" ext:member="#selectedRowClass" ext:cls="Ext.grid.GridView">GridView</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-showGroupName"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-showGroupName">showGroupName</a></b> : Boolean<div class="mdesc"><div class="short">If true will display a prefix plus a ': ' before the group field value
+in the group header line.  The prefix will con...</div><div class="long">If <tt>true</tt> will display a prefix plus a ': ' before the group field value
 in the group header line.  The prefix will consist of the <tt><b><a href="output/Ext.grid.Column.html#Ext.grid.Column-groupName" ext:member="groupName" ext:cls="Ext.grid.Column">groupName</a></b></tt>
 (or the configured <tt><b><a href="output/Ext.grid.Column.html#Ext.grid.Column-header" ext:member="header" ext:cls="Ext.grid.Column">header</a></b></tt> if not provided) configured in the
 <a href="output/Ext.grid.Column.html" ext:cls="Ext.grid.Column">Ext.grid.Column</a> for each set of grouped rows (defaults to <tt>true</tt>).</div></div></td><td class="msource">GroupingView</td></tr><tr class="config-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.grid.GroupingView-showGroupsText"></a><b><a href="source/GroupingView.html#cfg-Ext.grid.GroupingView-showGroupsText">showGroupsText</a></b> : String<div class="mdesc">Text displayed in the grid header for enabling/disabling grouping
@@ -243,19 +243,19 @@ Or a shorthand syntax:<br>
     :
                                         void<div class="mdesc"><div class="short">Collapses all grouped rows.</div><div class="long">Collapses all grouped rows.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">GroupingView</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>String/Array&nbsp;events</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
-this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling
+this.getBubbleTarget() if present....</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
 <code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
 <p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
 implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
 access the required target more quickly.</p>
 <p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
-    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
+    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
     initComponent : Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
         this.enableBubble(<em>'change'</em>);
     }),
 
-    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
+    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
     getBubbleTarget : <b>function</b>() {
         <b>if</b> (!this.formPanel) {
             this.formPanel = this.findParentByType(<em>'form'</em>);
@@ -271,7 +271,7 @@ access the required target more quickly.</p>
     }],
     listeners: {
         change: <b>function</b>() {
-            <i>// Title goes red <b>if</b> form has been modified.</i>
+            <i>// Title goes red <b>if</b> form has been modified.</i>
             myForm.header.setStyle(<em>'color'</em>, <em>'red'</em>);
         }
     }

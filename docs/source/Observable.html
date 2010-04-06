@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">(function(){
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+(function(){
 
 var EXTUTIL = Ext.util,
     TOARRAY = Ext.toArray,
@@ -14,7 +20,7 @@ var EXTUTIL = Ext.util,
     ISOBJECT = Ext.isObject,
     TRUE = true,
     FALSE = false;
-/**
+<div id="cls-Ext.util.Observable"></div>/**
  * @class Ext.util.Observable
  * Base class that provides a common interface for publishing events. Subclasses are expected to
  * to have a property "events" with all the events defined, and, optionally, a property "listeners"
@@ -34,7 +40,7 @@ Employee = Ext.extend(Ext.util.Observable, {
         this.listeners = config.listeners;
 
         // Call our superclass constructor to complete construction process.
-        Employee.superclass.constructor.call(config)
+        Employee.superclass.constructor.call(this, config)
     }
 });
 </code></pre>
@@ -304,7 +310,7 @@ this.addEvents('storeloaded', 'storecleared');
      * @return {Boolean} True if the event is being listened for, else false
      */
     hasListener : function(eventName){
-        var e = this.events[eventName];
+        var e = this.events[eventName.toLowerCase()];
         return ISOBJECT(e) && e.listeners.length > 0;
     },
 
@@ -444,13 +450,13 @@ EXTUTIL.Event.prototype = {
     findListener : function(fn, scope){
         var list = this.listeners,
             i = list.length,
-            l,
-            s;
-        while(i--) {
+            l;
+            
+        scope = scope || this.obj;
+        while(i--){
             l = list[i];
-            if(l) {
-                s = l.scope;
-                if(l.fn == fn && (s == scope || s == this.obj)){
+            if(l){
+                if(l.fn == fn && l.scope == scope){
                     return i;
                 }
             }

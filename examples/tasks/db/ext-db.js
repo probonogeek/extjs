@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -49,24 +49,26 @@ Ext.extend(Ext.data.SqlDB, Ext.util.Observable, {
 	},
 
 	createTable : function(o){
-		var tableName = o.name;
-		var keyName = o.key;
-		var fs = o.fields;
-		var cb = o.callback;
-		var scope = o.scope;
+		var tableName = o.name,
+		    keyName = o.key,
+		    fs = o.fields,
+		    cb = o.callback,
+		    scope = o.scope,
+            buf = [],
+            types = Ext.data.Types;
+            
 		if(!(fs instanceof Array)){ // Ext fields collection
 			fs = fs.items;
 		}
-		var buf = [];
 		for(var i = 0, len = fs.length; i < len; i++){
-			var f = fs[i], s = f.name;
+			var f = fs[i], 
+                s = f.name;
 			switch(f.type){
-	            case "int":
-	            case "bool":
-	            case "boolean":
+	            case types.INT:
+	            case types.BOOL:
 	                s += ' INTEGER';
 	                break;
-	            case "float":
+	            case types.FLOAT:
 	                s += ' REAL';
 	                break;
 	            default:
@@ -223,14 +225,15 @@ Ext.extend(Ext.data.SqlDB.Proxy, Ext.data.DataProxy, {
     },
 
     processData : function(o){
-    	var fs = this.store.fields;
-    	var r = {};
+    	var fs = this.store.fields,
+    	    r = {},
+            types = Ext.data.Types;
     	for(var key in o){
     		var f = fs.key(key), v = o[key];
 			if(f){
-				if(f.type == 'date'){
+				if(f.type == types.DATE){
 					r[key] = v ? v.format('Y-m-d H:i:s') : '';
-				}else if(f.type == 'boolean'){
+				}else if(f.type == types.BOOL){
 					r[key] = v ? 1 : 0;
 				}else{
 					r[key] = v;

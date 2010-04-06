@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -513,7 +513,7 @@ new Ext.tree.TreePanel({
      * @return {Node}
      */
     setRootNode : function(node){
-        Ext.destroy(this.root);
+        this.destroyRoot();
         if(!node.render){ // attributes passed
             node = this.loader.createNode(node);
         }
@@ -765,9 +765,20 @@ new Ext.tree.TreePanel({
             Ext.dd.ScrollManager.unregister(this.body);
             Ext.destroy(this.dropZone, this.dragZone);
         }
-        Ext.destroy(this.root, this.loader);
+        this.destroyRoot();
+        Ext.destroy(this.loader);
         this.nodeHash = this.root = this.loader = null;
         Ext.tree.TreePanel.superclass.beforeDestroy.call(this);
+    },
+    
+    /**
+     * Destroy the root node. Not included by itself because we need to pass the silent parameter.
+     * @private
+     */
+    destroyRoot : function(){
+        if(this.root && this.root.destroy){
+            this.root.destroy(true);
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -279,7 +279,8 @@ var myPanel = new Ext.Panel({
 
         // support for standard size objects
         if(typeof w == 'object'){
-            h = w.height, w = w.width;
+            h = w.height;
+            w = w.width;
         }
         if (Ext.isDefined(w) && Ext.isDefined(this.boxMinWidth) && (w < this.boxMinWidth)) {
             w = this.boxMinWidth;
@@ -295,7 +296,8 @@ var myPanel = new Ext.Panel({
         }
         // not rendered
         if(!this.boxReady){
-            this.width = w, this.height = h;
+            this.width  = w;
+            this.height = h;
             return this;
         }
 
@@ -325,8 +327,8 @@ var myPanel = new Ext.Panel({
 
     /**
      * Sets the width of the component.  This method fires the {@link #resize} event.
-     * @param {Number} width The new width to setThis may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * @param {Mixed} width The new width to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit defaultUnit}s (by default, pixels).</li>
      * <li>A String used to set the CSS width style.</li>
      * </ul></div>
      * @return {Ext.BoxComponent} this
@@ -337,8 +339,8 @@ var myPanel = new Ext.Panel({
 
     /**
      * Sets the height of the component.  This method fires the {@link #resize} event.
-     * @param {Number} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * @param {Mixed} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit defaultUnit}s (by default, pixels).</li>
      * <li>A String used to set the CSS height style.</li>
      * <li><i>undefined</i> to leave the height unchanged.</li>
      * </ul></div>

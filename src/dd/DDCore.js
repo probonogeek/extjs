@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -96,7 +96,7 @@ Ext.dd.DragDrop.prototype = {
 
     /**
      * The id of the element that will be dragged.  By default this is same
-     * as the linked element , but could be changed to another element. Ex:
+     * as the linked element, but could be changed to another element. Ex:
      * Ext.dd.DDProxy
      * @property dragElId
      * @type String
@@ -187,7 +187,9 @@ Ext.dd.DragDrop.prototype = {
      * Lock this instance
      * @method lock
      */
-    lock: function() { this.locked = true; },
+    lock: function() {
+        this.locked = true;
+    },
 
     /**
      * When set to true, other DD objects in cooperating DDGroups do not receive
@@ -201,7 +203,9 @@ Ext.dd.DragDrop.prototype = {
      * Unlock this instace
      * @method unlock
      */
-    unlock: function() { this.locked = false; },
+    unlock: function() {
+        this.locked = false;
+    },
 
     /**
      * By default, all instances can be a drop target.  This can be disabled by
@@ -269,7 +273,6 @@ Ext.dd.DragDrop.prototype = {
      * The up constraint
      * @property minY
      * @type int
-     * @type int
      * @private
      */
     minY: 0,
@@ -321,7 +324,7 @@ Ext.dd.DragDrop.prototype = {
     primaryButtonOnly: true,
 
     /**
-     * The availabe property is false until the linked dom element is accessible.
+     * The available property is false until the linked dom element is accessible.
      * @property available
      * @type boolean
      */
@@ -712,7 +715,6 @@ Ext.dd.DragDrop.prototype = {
         this.lastPageX = p[0];
         this.lastPageY = p[1];
 
-
         this.setStartPosition(p);
     },
 
@@ -853,7 +855,6 @@ Ext.dd.DragDrop.prototype = {
 
                 // set the initial element position
                 this.setStartPosition();
-
 
                 this.b4MouseDown(e);
                 this.onMouseDown(e);
@@ -1105,8 +1106,6 @@ Ext.dd.DragDrop.prototype = {
      * @param {boolean} maintainOffset
      */
     resetConstraints: function() {
-
-
         // Maintain offsets if necessary
         if (this.initPageX || this.initPageX === 0) {
             // figure out how much this thing has moved
@@ -1144,7 +1143,6 @@ Ext.dd.DragDrop.prototype = {
      * @private
      */
     getTick: function(val, tickArray) {
-
         if (!tickArray) {
             // If tick interval is not defined, it is effectively 1 pixel,
             // so we return the value passed to us.
@@ -1181,7 +1179,7 @@ Ext.dd.DragDrop.prototype = {
 };
 
 })();
-/**
+/*!
  * The drag and drop utility provides a framework for building drag and drop
  * applications.  In addition to enabling drag and drop for specific elements,
  * the drag and drop elements are tracked by the manager class, and the
@@ -1212,7 +1210,7 @@ Ext.dd.DragDropMgr = function() {
          * dimension is the DragDrop item group, the second the DragDrop
          * object.
          * @property ids
-         * @type {string: string}
+         * @type String[]
          * @private
          * @static
          */
@@ -1223,7 +1221,7 @@ Ext.dd.DragDropMgr = function() {
          * if the element that generated the mousedown event is actually the
          * handle and not the html element itself.
          * @property handleIds
-         * @type {string: string}
+         * @type String[]
          * @private
          * @static
          */
@@ -1593,8 +1591,8 @@ Ext.dd.DragDropMgr = function() {
          * Returns true if the specified dd target is a legal target for
          * the specifice drag obj
          * @method isLegalTarget
-         * @param {DragDrop} the drag obj
-         * @param {DragDrop} the target
+         * @param {DragDrop} oDD the drag obj
+         * @param {DragDrop} oTargetDD the target
          * @return {boolean} true if the target is a legal target for the
          * dd obj
          * @static
@@ -2381,7 +2379,9 @@ Ext.dd.DragDropMgr = function() {
          * @return {int} the document's scrollTop
          * @static
          */
-        getScrollTop: function () { return this.getScroll().top; },
+        getScrollTop: function () {
+            return this.getScroll().top;
+        },
 
         /**
          * Gets the scrollLeft
@@ -2389,7 +2389,9 @@ Ext.dd.DragDropMgr = function() {
          * @return {int} the document's scrollTop
          * @static
          */
-        getScrollLeft: function () { return this.getScroll().left; },
+        getScrollLeft: function () {
+            return this.getScroll().left;
+        },
 
         /**
          * Sets the x/y position of an element to the location of the
@@ -2409,7 +2411,9 @@ Ext.dd.DragDropMgr = function() {
          * @method numericSort
          * @static
          */
-        numericSort: function(a, b) { return (a - b); },
+        numericSort: function(a, b) {
+            return (a - b);
+        },
 
         /**
          * Internal counter
@@ -2684,8 +2688,6 @@ Ext.extend(Ext.dd.DD, Ext.dd.DragDrop, {
      * @private
      */
     getTargetCoord: function(iPageX, iPageY) {
-
-
         var x = iPageX - this.deltaX;
         var y = iPageY - this.deltaY;
 

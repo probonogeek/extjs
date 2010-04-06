@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -152,14 +152,14 @@ Date.formatCodeToRegex = function(character, currentGroup) {
       Date.parseCodes[character] = p; // reassign function result to prevent repeated execution
     }
 
-    return p? Ext.applyIf({
-      c: p.c? xf(p.c, currentGroup || "{0}") : p.c
+    return p ? Ext.applyIf({
+      c: p.c ? xf(p.c, currentGroup || "{0}") : p.c
     }, p) : {
         g:0,
         c:null,
         s:Ext.escapeRe(character) // treat unrecognised characters as literals
     }
-}
+};
 
 // private shorthand for Date.formatCodeToRegex since we'll be using it fairly often
 var $f = Date.formatCodeToRegex;
@@ -207,7 +207,7 @@ Date.parseFunctions['x-date-format'] = myDateParser;
      * may be used as a format string to {@link #format}. Example:</p><pre><code>
 Date.formatFunctions['x-date-format'] = myDateFormatter;
 </code></pre>
-     * <p>A formatting function should return a string repesentation of the passed Date object:<div class="mdetail-params"><ul>
+     * <p>A formatting function should return a string representation of the passed Date object, and is passed the following parameters:<div class="mdetail-params"><ul>
      * <li><code>date</code> : Date<div class="sub-desc">The Date to format.</div></li>
      * </ul></div></p>
      * <p>To enable date strings to also be <i>parsed</i> according to that format, a corresponding
@@ -681,7 +681,7 @@ dt = Date.parseDate("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
                 }
             }
 
-            Date.parseRegexes[regexNum] = new RegExp("^" + regex.join('') + "$", "i");
+            Date.parseRegexes[regexNum] = new RegExp("^" + regex.join('') + "$");
             Date.parseFunctions[format] = new Function("input", "strict", xf(code, regexNum, calc.join('')));
         }
     }(),

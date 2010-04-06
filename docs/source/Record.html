@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.data.Record"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.data.Record"></div>/**
  * @class Ext.data.Record
  * <p>Instances of this class encapsulate both Record <em>definition</em> information, and Record
  * <em>value</em> information for use in {@link Ext.data.Store} objects, or any code which needs
@@ -76,7 +82,7 @@ var myNewRecord = new TopicRecord(
 myStore.{@link Ext.data.Store#add add}(myNewRecord);
 </code></pre>
  * @method create
- * @return {function} A constructor which is used to create new Records according
+ * @return {Function} A constructor which is used to create new Records according
  * to the definition. The constructor has the same signature as {@link #Record}.
  * @static
  */
@@ -238,7 +244,7 @@ rec.{@link #commit}(); // updates the view
 
     // private
     afterEdit : function(){
-        if(this.store){
+        if (this.store != undefined && typeof this.store.afterEdit == "function") {
             this.store.afterEdit(this);
         }
     },

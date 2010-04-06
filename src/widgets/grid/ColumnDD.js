@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -22,8 +22,8 @@ Ext.grid.HeaderDragZone = Ext.extend(Ext.dd.DragZone, {
     },
     
     getDragData : function(e){
-        var t = Ext.lib.Event.getTarget(e);
-        var h = this.view.findHeaderCell(t);
+        var t = Ext.lib.Event.getTarget(e),
+            h = this.view.findHeaderCell(t);
         if(h){
             return {ddel: h.firstChild, header:h};
         }
@@ -31,6 +31,8 @@ Ext.grid.HeaderDragZone = Ext.extend(Ext.dd.DragZone, {
     },
 
     onInitDrag : function(e){
+        // keep the value here so we can restore it;
+        this.dragHeadersDisabled = this.view.headersDisabled;
         this.view.headersDisabled = true;
         var clone = this.dragData.ddel.cloneNode(true);
         clone.id = Ext.id();
@@ -40,16 +42,18 @@ Ext.grid.HeaderDragZone = Ext.extend(Ext.dd.DragZone, {
     },
 
     afterValidDrop : function(){
-        var v = this.view;
-        setTimeout(function(){
-            v.headersDisabled = false;
-        }, 50);
+        this.completeDrop();
     },
 
     afterInvalidDrop : function(){
-        var v = this.view;
+        this.completeDrop();
+    },
+    
+    completeDrop: function(){
+        var v = this.view,
+            disabled = this.dragHeadersDisabled;
         setTimeout(function(){
-            v.headersDisabled = false;
+            v.headersDisabled = disabled;
         }, 50);
     }
 });
@@ -81,8 +85,8 @@ Ext.grid.HeaderDropZone = Ext.extend(Ext.dd.DropZone, {
     },
 
     getTargetFromEvent : function(e){
-        var t = Ext.lib.Event.getTarget(e);
-        var cindex = this.view.findCellIndex(t);
+        var t = Ext.lib.Event.getTarget(e),
+            cindex = this.view.findCellIndex(t);
         if(cindex !== false){
             return this.view.getHeaderCell(cindex);
         }
@@ -113,9 +117,11 @@ Ext.grid.HeaderDropZone = Ext.extend(Ext.dd.DropZone, {
     },
 
     positionIndicator : function(h, n, e){
-        var x = Ext.lib.Event.getPageX(e);
-        var r = Ext.lib.Dom.getRegion(n.firstChild);
-        var px, pt, py = r.top + this.proxyOffsets[1];
+        var x = Ext.lib.Event.getPageX(e),
+            r = Ext.lib.Dom.getRegion(n.firstChild),
+            px, 
+            pt, 
+            py = r.top + this.proxyOffsets[1];
         if((r.right - x) <= (r.right-r.left)/2){
             px = r.right+this.view.borderWidth;
             pt = "after";
@@ -165,12 +171,12 @@ Ext.grid.HeaderDropZone = Ext.extend(Ext.dd.DropZone, {
     onNodeDrop : function(n, dd, e, data){
         var h = data.header;
         if(h != n){
-            var cm = this.grid.colModel;
-            var x = Ext.lib.Event.getPageX(e);
-            var r = Ext.lib.Dom.getRegion(n.firstChild);
-            var pt = (r.right - x) <= ((r.right-r.left)/2) ? "after" : "before";
-            var oldIndex = this.view.getCellIndex(h);
-            var newIndex = this.view.getCellIndex(n);
+            var cm = this.grid.colModel,
+                x = Ext.lib.Event.getPageX(e),
+                r = Ext.lib.Dom.getRegion(n.firstChild),
+                pt = (r.right - x) <= ((r.right-r.left)/2) ? "after" : "before",
+                oldIndex = this.view.getCellIndex(h),
+                newIndex = this.view.getCellIndex(n);
             if(pt == "after"){
                 newIndex++;
             }

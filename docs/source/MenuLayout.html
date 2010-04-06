@@ -6,13 +6,21 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.layout.MenuLayout"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.layout.MenuLayout"></div>/**
  * @class Ext.layout.MenuLayout
  * @extends Ext.layout.ContainerLayout
  * <p>Layout manager used by {@link Ext.menu.Menu}. Generally this class should not need to be used directly.</p>
  */
  Ext.layout.MenuLayout = Ext.extend(Ext.layout.ContainerLayout, {
     monitorResize : true,
+
+    type: 'menu',
 
     setContainer : function(ct){
         this.monitorResize = !ct.floating;
@@ -96,6 +104,7 @@
         }
     }
 });
-Ext.Container.LAYOUTS['menu'] = Ext.layout.MenuLayout;</pre>    
+Ext.Container.LAYOUTS['menu'] = Ext.layout.MenuLayout;
+</pre>    
 </body>
 </html>

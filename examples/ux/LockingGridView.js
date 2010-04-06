@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -11,15 +11,18 @@ Ext.ux.grid.LockingGridView = Ext.extend(Ext.grid.GridView, {
     unlockText : 'Unlock',
     rowBorderWidth : 1,
     lockedBorderWidth : 1,
+    
     /*
      * This option ensures that height between the rows is synchronized
      * between the locked and unlocked sides. This option only needs to be used
-     * when the row heights isn't predictable.
+     * when the row heights aren't predictable.
      */
     syncHeights: false,
+    
     initTemplates : function(){
         var ts = this.templates || {};
-        if(!ts.master){
+        
+        if (!ts.master) {
             ts.master = new Ext.Template(
                 '<div class="x-grid3" hidefocus="true">',
                     '<div class="x-grid3-locked">',
@@ -35,38 +38,48 @@ Ext.ux.grid.LockingGridView = Ext.extend(Ext.grid.GridView, {
                 '</div>'
             );
         }
+        
         this.templates = ts;
+        
         Ext.ux.grid.LockingGridView.superclass.initTemplates.call(this);
     },
+    
     getEditorParent : function(ed){
         return this.el.dom;
     },
+    
     initElements : function(){
-        var E = Ext.Element;
-        var el = this.grid.getGridEl().dom.firstChild;
-        var cs = el.childNodes;
-        this.el = new E(el);
-        this.lockedWrap = new E(cs[0]);
-        this.lockedHd = new E(this.lockedWrap.dom.firstChild);
-        this.lockedInnerHd = this.lockedHd.dom.firstChild;
+        var E  = Ext.Element,
+            el = this.grid.getGridEl().dom.firstChild,
+            cs = el.childNodes;
+            
+        this.el             = new E(el);
+        this.lockedWrap     = new E(cs[0]);
+        this.lockedHd       = new E(this.lockedWrap.dom.firstChild);
+        this.lockedInnerHd  = this.lockedHd.dom.firstChild;
         this.lockedScroller = new E(this.lockedWrap.dom.childNodes[1]);
-        this.lockedBody = new E(this.lockedScroller.dom.firstChild);
-        this.mainWrap = new E(cs[1]);
-        this.mainHd = new E(this.mainWrap.dom.firstChild);
-        if(this.grid.hideHeaders){
+        this.lockedBody     = new E(this.lockedScroller.dom.firstChild);
+        this.mainWrap       = new E(cs[1]);
+        this.mainHd         = new E(this.mainWrap.dom.firstChild);
+        
+        if (this.grid.hideHeaders) {
             this.lockedHd.setDisplayed(false);
             this.mainHd.setDisplayed(false);
         }
-        this.innerHd = this.mainHd.dom.firstChild;
+        
+        this.innerHd  = this.mainHd.dom.firstChild;
         this.scroller = new E(this.mainWrap.dom.childNodes[1]);
+        
         if(this.forceFit){
             this.scroller.setStyle('overflow-x', 'hidden');
         }
-        this.mainBody = new E(this.scroller.dom.firstChild);
-        this.focusEl = new E(this.scroller.dom.childNodes[1]);
-        this.focusEl.swallowEvent('click', true);
+        
+        this.mainBody     = new E(this.scroller.dom.firstChild);
+        this.focusEl      = new E(this.scroller.dom.childNodes[1]);
         this.resizeMarker = new E(cs[2]);
-        this.resizeProxy = new E(cs[3]);
+        this.resizeProxy  = new E(cs[3]);
+        
+        this.focusEl.swallowEvent('click', true);
     },
     
     getLockedRows : function(){
@@ -730,44 +743,78 @@ Ext.ux.grid.LockingGridView = Ext.extend(Ext.grid.GridView, {
 });
 
 Ext.ux.grid.LockingColumnModel = Ext.extend(Ext.grid.ColumnModel, {
+    /**
+     * Returns true if the given column index is currently locked
+     * @param {Number} colIndex The column index
+     * @return {Boolean} True if the column is locked
+     */
     isLocked : function(colIndex){
         return this.config[colIndex].locked === true;
     },
     
+    /**
+     * Locks or unlocks a given column
+     * @param {Number} colIndex The column index
+     * @param {Boolean} value True to lock, false to unlock
+     * @param {Boolean} suppressEvent Pass false to cause the columnlockchange event not to fire
+     */
     setLocked : function(colIndex, value, suppressEvent){
-        if(this.isLocked(colIndex) == value){
+        if (this.isLocked(colIndex) == value) {
             return;
         }
         this.config[colIndex].locked = value;
-        if(!suppressEvent){
+        if (!suppressEvent) {
             this.fireEvent('columnlockchange', this, colIndex, value);
         }
     },
     
+    /**
+     * Returns the total width of all locked columns
+     * @return {Number} The width of all locked columns
+     */
     getTotalLockedWidth : function(){
         var totalWidth = 0;
-        for(var i = 0, len = this.config.length; i < len; i++){
-            if(this.isLocked(i) && !this.isHidden(i)){
+        for (var i = 0, len = this.config.length; i < len; i++) {
+            if (this.isLocked(i) && !this.isHidden(i)) {
                 totalWidth += this.getColumnWidth(i);
             }
         }
+        
         return totalWidth;
     },
     
-    getLockedCount : function(){
-        for(var i = 0, len = this.config.length; i < len; i++){
-            if(!this.isLocked(i)){
+    /**
+     * Returns the total number of locked columns
+     * @return {Number} The number of locked columns
+     */
+    getLockedCount : function() {
+        var len = this.config.length;
+        
+        for (var i = 0; i < len; i++) {
+            if (!this.isLocked(i)) {
                 return i;
             }
         }
+        
+        //if we get to this point all of the columns are locked so we return the total
+        return len;
     },
     
+    /**
+     * Moves a column from one position to another
+     * @param {Number} oldIndex The current column index
+     * @param {Number} newIndex The destination column index
+     */
     moveColumn : function(oldIndex, newIndex){
-        if(oldIndex < newIndex && this.isLocked(oldIndex) && !this.isLocked(newIndex)){
+        var oldLocked = this.isLocked(oldIndex),
+            newLocked = this.isLocked(newIndex);
+        
+        if (oldIndex < newIndex && oldLocked && !newLocked) {
             this.setLocked(oldIndex, false, true);
-        }else if(oldIndex > newIndex && !this.isLocked(oldIndex) && this.isLocked(newIndex)){
+        } else if (oldIndex > newIndex && !oldLocked && newLocked) {
             this.setLocked(oldIndex, true, true);
         }
+        
         Ext.ux.grid.LockingColumnModel.superclass.moveColumn.apply(this, arguments);
     }
 });

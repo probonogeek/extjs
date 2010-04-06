@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.dd.Registry"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.dd.Registry"></div>/**
  * @class Ext.dd.Registry
  * Provides easy access to all drag drop components that are registered on a page.  Items can be retrieved either
  * directly by DOM node id, or by passing in the drag drop event that occurred and looking up the event target.
@@ -32,7 +38,7 @@ Ext.dd.Registry = function(){
     return {
     <div id="method-Ext.dd.Registry-register"></div>/**
      * Resgister a drag drop element
-     * @param {String/HTMLElement) element The id or DOM node to register
+     * @param {String/HTMLElement} element The id or DOM node to register
      * @param {Object} data (optional) An custom data object that will be passed between the elements that are involved
      * in drag drop operations.  You can populate this object with any arbitrary properties that your own code
      * knows how to interpret, plus there are some specific properties known to the Registry that should be
@@ -66,7 +72,7 @@ isHandle   True if the element passed in triggers<br />
 
     <div id="method-Ext.dd.Registry-unregister"></div>/**
      * Unregister a drag drop element
-     * @param {String/HTMLElement) element The id or DOM node to unregister
+     * @param {String/HTMLElement} element The id or DOM node to unregister
      */
         unregister : function(el){
             var id = getId(el, false);

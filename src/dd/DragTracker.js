@@ -1,14 +1,20 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 /**
  * @class Ext.dd.DragTracker
  * @extends Ext.util.Observable
+ * A DragTracker listens for drag events on an Element and fires events at the start and end of the drag,
+ * as well as during the drag. This is useful for components such as {@link Ext.Slider}, where there is
+ * an element that can be dragged around to change the Slider's value.
+ * DragTracker provides a series of template methods that should be overridden to provide functionality
+ * in response to detected drag operations. These are onBeforeStart, onStart, onDrag and onEnd.
+ * See {@link Ext.Slider}'s initEvents function for an example implementation.
  */
-Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
+Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {    
     /**
      * @cfg {Boolean} active
 	 * Defaults to <tt>false</tt>.
@@ -16,7 +22,7 @@ Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
     active: false,
     /**
      * @cfg {Number} tolerance
-	 * Defaults to <tt>5</tt>.
+	 * Number of pixels the drag target must be moved before dragging is considered to have started. Defaults to <tt>5</tt>.
 	 */	
     tolerance: 5,
     /**
@@ -125,7 +131,7 @@ Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
         this.fireEvent('drag', this, e);
     },
 
-    onMouseUp: function(e){
+    onMouseUp: function(e) {
         var doc = Ext.getDoc();
         doc.un('mousemove', this.onMouseMove, this);
         doc.un('mouseup', this.onMouseUp, this);
@@ -142,41 +148,64 @@ Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
         }
     },
 
-    triggerStart: function(isTimer){
+    triggerStart: function(isTimer) {
         this.clearStart();
         this.active = true;
         this.onStart(this.startXY);
         this.fireEvent('dragstart', this, this.startXY);
     },
 
-    clearStart : function(){
+    clearStart : function() {
         if(this.timer){
             clearTimeout(this.timer);
             delete this.timer;
         }
     },
 
-    stopSelect : function(e){
+    stopSelect : function(e) {
         e.stopEvent();
         return false;
     },
-
-    onBeforeStart : function(e){
-
-    },
-
-    onStart : function(xy){
-
-    },
-
-    onDrag : function(e){
+    
+    /**
+     * Template method which should be overridden by each DragTracker instance. Called when the user first clicks and
+     * holds the mouse button down. Return false to disallow the drag
+     * @param {Ext.EventObject} e The event object
+     */
+    onBeforeStart : function(e) {
 
     },
 
-    onEnd : function(e){
+    /**
+     * Template method which should be overridden by each DragTracker instance. Called when a drag operation starts
+     * (e.g. the user has moved the tracked element beyond the specified tolerance)
+     * @param {Array} xy x and y co-ordinates of the original location of the tracked element
+     */
+    onStart : function(xy) {
 
     },
 
+    /**
+     * Template method which should be overridden by each DragTracker instance. Called whenever a drag has been detected.
+     * @param {Ext.EventObject} e The event object
+     */
+    onDrag : function(e) {
+
+    },
+
+    /**
+     * Template method which should be overridden by each DragTracker instance. Called when a drag operation has been completed
+     * (e.g. the user clicked and held the mouse down, dragged the element and then released the mouse button)
+     * @param {Ext.EventObject} e The event object
+     */
+    onEnd : function(e) {
+
+    },
+
+    /**
+     * Returns the drag target
+     * @return {Ext.Element} The element currently being tracked
+     */
     getDragTarget : function(){
         return this.dragTarget;
     },

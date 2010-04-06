@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -165,12 +165,15 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
         return this.readRecords(o);
     },
 
-    /**
-     * Decode a json response from server.
-     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
-     * @param {Object} response
+    /*
      * TODO: refactor code between JsonReader#readRecords, #readResponse into 1 method.
      * there's ugly duplication going on due to maintaining backwards compat. with 2.0.  It's time to do this.
+     */
+    /**
+     * Decode a JSON response from server.
+     * @param {String} action [Ext.data.Api.actions.create|read|update|destroy]
+     * @param {Object} response The XHR object returned through an Ajax server request.
+     * @return {Response} A {@link Ext.data.Response Response} object containing the data response, and also status information.
      */
     readResponse : function(action, response) {
         var o = (response.responseText !== undefined) ? Ext.decode(response.responseText) : response;

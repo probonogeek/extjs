@@ -20,13 +20,22 @@
     </style>
     <script type="text/javascript">
         Ext.onReady(function() {
-
-            var replace = function(config){
+            var currentName;
+            var replace = function(config, name) {
                 var btns = Ext.getCmp('btns');
-                btns.remove(0);
-                btns.add(config);
-
+                
+                if (name && name != currentName) {
+                    currentName = name;
+                    
+                    btns.remove(0);
+                
+                    btns.add(config);
+                };
+                
+                // console.profile();
+                
                 btns.doLayout();
+                // console.profileEnd();
             }
 
 
@@ -92,7 +101,7 @@
                                         text: 'Button 4',
                                         margins:'0'
                                     }]
-                                });
+                                }, 'spaced');
                             }
                         },{
                             xtype:'button',
@@ -128,7 +137,7 @@
                                         text: 'Button 4',
                                         margins:'0'
                                     }]
-                                });
+                                }, 'multi spaced - align left');
                             }
                         },{
                             xtype:'button',
@@ -154,7 +163,7 @@
                                         xtype:'button',
                                         text: 'Button 4'
                                     }]
-                                });
+                                }, 'align left');
                             }
                         },{
                             xtype:'button',
@@ -180,7 +189,7 @@
                                         xtype:'button',
                                         text: 'Button 4'
                                     }]
-                                });
+                                }, 'align center');
                             }
                         },{
                             xtype:'button',
@@ -206,7 +215,7 @@
                                         xtype:'button',
                                         text: 'Button 4'
                                     }]
-                                });
+                                }, 'align stretch');
                             }
                         },{
                             xtype:'button',
@@ -232,7 +241,7 @@
                                         xtype:'button',
                                         text: 'Button 4'
                                     }]
-                                });
+                                }, 'align stretchmax');
                             }
                         }]
                     },{
@@ -277,7 +286,7 @@
                                         flex:1,
                                         margins:'0'
                                     }]
-                                });
+                                }, 'align flex even');
                             }
                         },{
                             xtype:'button',
@@ -308,7 +317,7 @@
                                         flex:3,
                                         margins:'0'
                                     }]
-                                });
+                                }, 'align flex ratio');
                             }
                         },{
                             xtype:'button',
@@ -339,7 +348,7 @@
                                         flex:3,
                                         margins:'0'
                                     }]
-                                });
+                                }, 'align flex + stretch');
                             }
                         },{
                             xtype:'button',
@@ -366,7 +375,7 @@
                                         xtype:'button',
                                         text: 'Button 4'
                                     }]
-                                });
+                                }, 'align pack start + align center');
                             }
                         },{
                             xtype:'button',
@@ -394,7 +403,7 @@
                                         text: 'Button 4',
                                         margins:'0'
                                     }]
-                                });
+                                }, 'align pack center + align center');
                             }
                         },{
                             xtype:'button',
@@ -422,7 +431,7 @@
                                         text: 'Button 4',
                                         margins:'0'
                                     }]
-                                });
+                                }, 'align pack end + align center');
                             }
                         }]
                     }]

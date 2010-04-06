@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -13,7 +13,7 @@
 Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
     /**
      * @cfg {String} flashVersion
-     * Indicates the version the flash content was published for. Defaults to <tt>'9.0.45'</tt>.
+     * Indicates the version the flash content was published for. Defaults to <tt>'9.0.115'</tt>.
      */
     flashVersion : '9.0.115',
 
@@ -28,13 +28,13 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
      * The wmode of the flash object. This can be used to control layering. Defaults to <tt>'opaque'</tt>.
      */
     wmode: 'opaque',
-    
+
     /**
      * @cfg {Object} flashVars
      * A set of key value pairs to be passed to the flash object as flash variables. Defaults to <tt>undefined</tt>.
      */
     flashVars: undefined,
-    
+
     /**
      * @cfg {Object} flashParams
      * A set of key value pairs to be passed to the flash object as parameters. Possible parameters can be found here:
@@ -64,7 +64,7 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
         this.addEvents(
             /**
              * @event initialize
-             * 
+             *
              * @param {Chart} this
              */
             'initialize'
@@ -80,8 +80,8 @@ Ext.FlashComponent = Ext.extend(Ext.BoxComponent, {
             wmode: this.wmode
         }, this.flashParams), vars = Ext.apply({
             allowedDomain: document.location.hostname,
-            elementID: this.getId(),
-            eventHandler: 'Ext.FlashEventProxy.onEvent'
+            YUISwfId: this.getId(),
+            YUIBridgeCallback: 'Ext.FlashEventProxy.onEvent'
         }, this.flashVars);
 
         new swfobject.embedSWF(this.url, this.id, this.swfWidth, this.swfHeight, this.flashVersion,

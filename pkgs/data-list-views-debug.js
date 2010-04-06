@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -122,6 +122,12 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
      * @cfg {Boolean} trackOver True to enable mouseenter and mouseleave events
      */
     trackOver: false,
+    
+    /**
+     * @cfg {Boolean} blockRefresh Set this to true to ignore datachanged events on the bound store. This is useful if
+     * you wish to provide custom transition animations via a plugin (defaults to false)
+     */
+    blockRefresh: false,
 
     //private
     last: false,
@@ -252,7 +258,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
     /**
      * Refreshes the view by reloading the data from the store and re-rendering the template.
      */
-    refresh : function(){
+    refresh : function() {
         this.clearSelections(false, true);
         var el = this.getTemplateTarget();
         el.update("");
@@ -394,7 +400,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
                 this.store.destroy();
             }else{
                 this.store.un("beforeload", this.onBeforeLoad, this);
-                this.store.un("datachanged", this.refresh, this);
+                this.store.un("datachanged", this.onDataChanged, this);
                 this.store.un("add", this.onAdd, this);
                 this.store.un("remove", this.onRemove, this);
                 this.store.un("update", this.onUpdate, this);
@@ -409,7 +415,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             store.on({
                 scope: this,
                 beforeload: this.onBeforeLoad,
-                datachanged: this.refresh,
+                datachanged: this.onDataChanged,
                 add: this.onAdd,
                 remove: this.onRemove,
                 update: this.onUpdate,
@@ -419,6 +425,16 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
         this.store = store;
         if(store){
             this.refresh();
+        }
+    },
+    
+    /**
+     * @private
+     * Calls this.refresh if this.blockRefresh is not true
+     */
+    onDataChanged: function() {
+        if (this.blockRefresh !== true) {
+            this.refresh.apply(this, arguments);
         }
     },
 
@@ -609,7 +625,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Returns true if the passed node is selected, else false.
-     * @param {HTMLElement/Number} node The node or node index to check
+     * @param {HTMLElement/Number/Ext.data.Record} node The node, node index or record to check
      * @return {Boolean} True if selected, else false
      */
     isSelected : function(node){
@@ -618,7 +634,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Deselects a node.
-     * @param {HTMLElement/Number} node The node to deselect
+     * @param {HTMLElement/Number/Record} node The node, node index or record to deselect
      */
     deselect : function(node){
         if(this.isSelected(node)){
@@ -634,8 +650,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Selects a set of nodes.
-     * @param {Array/HTMLElement/String/Number} nodeInfo An HTMLElement template node, index of a template node,
-     * id of a template node or an array of any of those to select
+     * @param {Array/HTMLElement/String/Number/Ext.data.Record} nodeInfo An HTMLElement template node, index of a template node,
+     * id of a template node, record associated with a node or an array of any of those to select
      * @param {Boolean} keepExisting (optional) true to keep existing selections
      * @param {Boolean} suppressEvent (optional) true to skip firing of the selectionchange vent
      */
@@ -683,7 +699,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Gets a template node.
-     * @param {HTMLElement/String/Number} nodeInfo An HTMLElement template node, index of a template node or the id of a template node
+     * @param {HTMLElement/String/Number/Ext.data.Record} nodeInfo An HTMLElement template node, index of a template node, 
+     * the id of a template node or the record associated with the node.
      * @return {HTMLElement} The node or null if it wasn't found
      */
     getNode : function(nodeInfo){
@@ -691,6 +708,9 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
             return document.getElementById(nodeInfo);
         }else if(Ext.isNumber(nodeInfo)){
             return this.all.elements[nodeInfo];
+        }else if(nodeInfo instanceof Ext.data.Record){
+            var idx = this.store.indexOf(nodeInfo);
+            return this.all.elements[idx];
         }
         return nodeInfo;
     },
@@ -720,7 +740,8 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Finds the index of the passed node.
-     * @param {HTMLElement/String/Number} nodeInfo An HTMLElement template node, index of a template node or the id of a template node
+     * @param {HTMLElement/String/Number/Record} nodeInfo An HTMLElement template node, index of a template node, the id of a template node
+     * or a record associated with a node.
      * @return {Number} The index of the node or -1
      */
     indexOf : function(node){
@@ -787,7 +808,7 @@ Ext.reg('dataview', Ext.DataView);
          "url":"images\/thumbs\/zack_sink.jpg"
       }
    ]
-} 
+}
 var store = new Ext.data.JsonStore({
     url: 'get-images.php',
     root: 'images',
@@ -810,7 +831,7 @@ var listView = new Ext.list.ListView({
         dataIndex: 'name'
     },{
         header: 'Last Modified',
-        width: .35, 
+        width: .35,
         dataIndex: 'lastmod',
         tpl: '{lastmod:date("m-d h:i a")}'
     },{
@@ -860,7 +881,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
      * @cfg {String} itemSelector
      * Defaults to <tt>'dl'</tt> to work with the preconfigured <b><tt>{@link Ext.DataView#tpl tpl}</tt></b>.
      * This setting specifies the CSS selector (e.g. <tt>div.some-class</tt> or <tt>span:first-child</tt>)
-     * that will be used to determine what nodes the ListView will be working with.   
+     * that will be used to determine what nodes the ListView will be working with.
      */
     itemSelector: 'dl',
     /**
@@ -909,7 +930,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
     tpl: '{size:fileSize}',
     width: .35
 }
-     * </code></pre> 
+     * </code></pre>
      * Acceptable properties for each column configuration object are:
      * <div class="mdetail-params"><ul>
      * <li><b><tt>align</tt></b> : String<div class="sub-desc">Set the CSS text-align property
@@ -944,7 +965,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
      * IE has issues when setting percentage based widths to 100%. Default to 99.
      */
     maxWidth: Ext.isIE ? 99 : 100,
-    
+
     initComponent : function(){
         if(this.columnResize){
             this.colResizer = new Ext.list.ColumnResizer(this.colResizer);
@@ -983,13 +1004,13 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
-        
-        var cs = this.columns, 
-            allocatedWidth = 0, 
-            colsWithWidth = 0, 
-            len = cs.length, 
+
+        var cs = this.columns,
+            allocatedWidth = 0,
+            colsWithWidth = 0,
+            len = cs.length,
             columns = [];
-            
+
         for(var i = 0; i < len; i++){
             var c = cs[i];
             if(!c.isColumn) {
@@ -1002,9 +1023,9 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
             }
             columns.push(c);
         }
-        
+
         cs = this.columns = columns;
-        
+
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
@@ -1023,12 +1044,12 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
 
     onRender : function(){
         this.autoEl = {
-            cls: 'x-list-wrap'  
+            cls: 'x-list-wrap'
         };
         Ext.list.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
-        
+
         this.innerBody = Ext.get(this.el.dom.childNodes[1].firstChild);
         this.innerHd = Ext.get(this.el.dom.firstChild.firstChild);
 
@@ -1043,7 +1064,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
 
     /**
      * <p>Function which can be overridden which returns the data object passed to this
-     * view's {@link #tpl template} to render the whole ListView. The returned object 
+     * view's {@link #tpl template} to render the whole ListView. The returned object
      * shall contain the following properties:</p>
      * <div class="mdetail-params"><ul>
      * <li><b>columns</b> : String<div class="sub-desc">See <tt>{@link #columns}</tt></div></li>
@@ -1072,7 +1093,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
     // private
     onResize : function(w, h){
         var bd = this.innerBody.dom;
-        var hd = this.innerHd.dom
+        var hd = this.innerHd.dom;
         if(!bd){
             return;
         }
@@ -1375,11 +1396,11 @@ Ext.list.ColumnResizer = Ext.extend(Ext.util.Observable, {
             minPct = this.minPct * 100,
             pct = Math.ceil((nw * vw.maxWidth) / w),
             diff = (cs[index].width * 100) - pct,
-            each = Math.floor(diff / (len-1-index)),
-            mod = diff - (each * (len-1-index));
+            eachItem = Math.floor(diff / (len-1-index)),
+            mod = diff - (eachItem * (len-1-index));
 
         for(var i = index+1; i < len; i++){
-            var cw = (cs[i].width * 100) + each,
+            var cw = (cs[i].width * 100) + eachItem,
                 ncw = Math.max(minPct, cw);
             if(cw != ncw){
                 mod += cw - ncw;

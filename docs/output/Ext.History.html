@@ -1,4 +1,4 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">History</pre></div><h1>Class <a href="source/History.html#cls-Ext.History">Ext.History</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">History.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/History.html#cls-Ext.History">History</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description">History management component that allows you to register arbitrary tokens that signify application
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.History-props"><img src="../resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.History-methods"><img src="../resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.History-events"><img src="../resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.History-configs"><img src="../resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.History"><img src="../resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">History</pre></div><h1>Class <a href="source/History.html#cls-Ext.History">Ext.History</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info"><a href="source/History.html#cls-Ext.History">History.js</a></td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/History.html#cls-Ext.History">History</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description">History management component that allows you to register arbitrary tokens that signify application
 history state on navigation actions.  You can then handle the history <a href="output/Ext.History.html#Ext.History-change" ext:member="change" ext:cls="Ext.History">change</a> event in order
 to reset your application UI to the appropriate state when the user navigates forward or backward through
 the browser history stack.<br><br><i>This class is a singleton and cannot be created directly.</i></div><div class="hr"></div><a id="Ext.History-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-listeners"></a><b><a href="source/Observable.html#cfg-Ext.util.Observable-listeners">listeners</a></b> : Object<div class="mdesc"><div class="short">A config object containing one or more event handlers to be added to this
@@ -58,11 +58,11 @@ Ext.DomObserver = Ext.extend(Object, {
     triggerAction: <em>'all'</em>
 });</code></pre></p></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#listeners" ext:member="#listeners" ext:cls="Ext.util.Observable">Observable</a></td></tr></tbody></table><a id="Ext.History-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.History-fieldId"></a><b><a href="source/History.html#prop-Ext.History-fieldId">fieldId</a></b> : String<div class="mdesc">The id of the hidden field required for storing the current history token.</div></td><td class="msource">History</td></tr><tr class="property-row  "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.History-iframeId"></a><b><a href="source/History.html#prop-Ext.History-iframeId">iframeId</a></b> : String<div class="mdesc">The id of the iframe required by IE to manage the history stack.</div></td><td class="msource">History</td></tr></tbody></table><a id="Ext.History-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.History-add"></a><b><a href="source/History.html#method-Ext.History-add">add</a></b>(&nbsp;<code>String&nbsp;token</code>,&nbsp;<code>Boolean&nbsp;preventDuplicates</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Add a new token to the history stack. This can be any arbitrary value, although it would&#13;
-commonly be the concatenati...</div><div class="long">Add a new token to the history stack. This can be any arbitrary value, although it would
+                                        void<div class="mdesc"><div class="short">Add a new token to the history stack. This can be any arbitrary value, although it would
+commonly be the concatenatio...</div><div class="long">Add a new token to the history stack. This can be any arbitrary value, although it would
 commonly be the concatenation of a component id and another id marking the specifc history
 state of that component.  Example usage:
-<pre><code><i>// Handle tab changes on a TabPanel</i>
+<pre><code><i>// Handle tab changes on a TabPanel</i>
 tabPanel.on(<em>'tabchange'</em>, <b>function</b>(tabPanel, tab){
     Ext.History.add(tabPanel.id + <em>':'</em> + tab.id);
 });</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>token</code> : String<div class="sub-desc">The value that defines a particular application-specific history state</div></li><li><code>preventDuplicates</code> : Boolean<div class="sub-desc">When true, if the passed token matches the current token
@@ -126,19 +126,19 @@ Or a shorthand syntax:<br>
     :
                                         void<div class="mdesc"><div class="short">Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).</div><div class="long">Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">History</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>String/Array&nbsp;events</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
-this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling
+this.getBubbleTarget() if present....</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
 <code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
 <p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
 implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
 access the required target more quickly.</p>
 <p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
-    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
+    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
     initComponent : Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
         this.enableBubble(<em>'change'</em>);
     }),
 
-    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
+    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
     getBubbleTarget : <b>function</b>() {
         <b>if</b> (!this.formPanel) {
             this.formPanel = this.findParentByType(<em>'form'</em>);
@@ -154,7 +154,7 @@ access the required target more quickly.</p>
     }],
     listeners: {
         change: <b>function</b>() {
-            <i>// Title goes red <b>if</b> form has been modified.</i>
+            <i>// Title goes red <b>if</b> form has been modified.</i>
             myForm.header.setStyle(<em>'color'</em>, <em>'red'</em>);
         }
     }

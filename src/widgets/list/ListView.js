@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -36,7 +36,7 @@
          "url":"images\/thumbs\/zack_sink.jpg"
       }
    ]
-} 
+}
 var store = new Ext.data.JsonStore({
     url: 'get-images.php',
     root: 'images',
@@ -59,7 +59,7 @@ var listView = new Ext.list.ListView({
         dataIndex: 'name'
     },{
         header: 'Last Modified',
-        width: .35, 
+        width: .35,
         dataIndex: 'lastmod',
         tpl: '{lastmod:date("m-d h:i a")}'
     },{
@@ -109,7 +109,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
      * @cfg {String} itemSelector
      * Defaults to <tt>'dl'</tt> to work with the preconfigured <b><tt>{@link Ext.DataView#tpl tpl}</tt></b>.
      * This setting specifies the CSS selector (e.g. <tt>div.some-class</tt> or <tt>span:first-child</tt>)
-     * that will be used to determine what nodes the ListView will be working with.   
+     * that will be used to determine what nodes the ListView will be working with.
      */
     itemSelector: 'dl',
     /**
@@ -158,7 +158,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
     tpl: '{size:fileSize}',
     width: .35
 }
-     * </code></pre> 
+     * </code></pre>
      * Acceptable properties for each column configuration object are:
      * <div class="mdetail-params"><ul>
      * <li><b><tt>align</tt></b> : String<div class="sub-desc">Set the CSS text-align property
@@ -193,7 +193,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
      * IE has issues when setting percentage based widths to 100%. Default to 99.
      */
     maxWidth: Ext.isIE ? 99 : 100,
-    
+
     initComponent : function(){
         if(this.columnResize){
             this.colResizer = new Ext.list.ColumnResizer(this.colResizer);
@@ -232,13 +232,13 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
                 '</tpl>'
             );
         };
-        
-        var cs = this.columns, 
-            allocatedWidth = 0, 
-            colsWithWidth = 0, 
-            len = cs.length, 
+
+        var cs = this.columns,
+            allocatedWidth = 0,
+            colsWithWidth = 0,
+            len = cs.length,
             columns = [];
-            
+
         for(var i = 0; i < len; i++){
             var c = cs[i];
             if(!c.isColumn) {
@@ -251,9 +251,9 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
             }
             columns.push(c);
         }
-        
+
         cs = this.columns = columns;
-        
+
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
@@ -272,12 +272,12 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
 
     onRender : function(){
         this.autoEl = {
-            cls: 'x-list-wrap'  
+            cls: 'x-list-wrap'
         };
         Ext.list.ListView.superclass.onRender.apply(this, arguments);
 
         this.internalTpl.overwrite(this.el, {columns: this.columns});
-        
+
         this.innerBody = Ext.get(this.el.dom.childNodes[1].firstChild);
         this.innerHd = Ext.get(this.el.dom.firstChild.firstChild);
 
@@ -292,7 +292,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
 
     /**
      * <p>Function which can be overridden which returns the data object passed to this
-     * view's {@link #tpl template} to render the whole ListView. The returned object 
+     * view's {@link #tpl template} to render the whole ListView. The returned object
      * shall contain the following properties:</p>
      * <div class="mdetail-params"><ul>
      * <li><b>columns</b> : String<div class="sub-desc">See <tt>{@link #columns}</tt></div></li>
@@ -321,7 +321,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
     // private
     onResize : function(w, h){
         var bd = this.innerBody.dom;
-        var hd = this.innerHd.dom
+        var hd = this.innerHd.dom;
         if(!bd){
             return;
         }

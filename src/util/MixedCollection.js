@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -401,23 +401,38 @@ mc.add(otherEl);
 
     /**
      * @private
+     * Performs the actual sorting based on a direction and a sorting function. Internally,
+     * this creates a temporary array of all items in the MixedCollection, sorts it and then writes
+     * the sorted array data back into this.items and this.keys
      * @param {String} property Property to sort by ('key', 'value', or 'index')
      * @param {String} dir (optional) Direction to sort 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
      * Defaults to sorting by numeric value.
      */
     _sort : function(property, dir, fn){
-        var i,
-            len,
-            dsc = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
-            c = [], k = this.keys, items = this.items;
-
-        fn = fn || function(a, b){
-            return a-b;
+        var i, len,
+            dsc   = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
+            
+            //this is a temporary array used to apply the sorting function
+            c     = [],
+            keys  = this.keys,
+            items = this.items;
+        
+        //default to a simple sorter function if one is not provided
+        fn = fn || function(a, b) {
+            return a - b;
         };
+        
+        //copy all the items into a temporary array, which we will sort
         for(i = 0, len = items.length; i < len; i++){
-            c[c.length] = {key: k[i], value: items[i], index: i};
+            c[c.length] = {
+                key  : keys[i], 
+                value: items[i], 
+                index: i
+            };
         }
+        
+        //sort the temporary array
         c.sort(function(a, b){
             var v = fn(a[property], b[property]) * dsc;
             if(v === 0){
@@ -425,10 +440,13 @@ mc.add(otherEl);
             }
             return v;
         });
+        
+        //copy the temporary array back into the main this.items and this.keys objects
         for(i = 0, len = c.length; i < len; i++){
             items[i] = c[i].value;
-            k[i] = c[i].key;
+            keys[i]  = c[i].key;
         }
+        
         this.fireEvent('sort', this);
     },
 
@@ -440,6 +458,44 @@ mc.add(otherEl);
      */
     sort : function(dir, fn){
         this._sort('value', dir, fn);
+    },
+    
+    /**
+     * Reorders each of the items based on a mapping from old index to new index. Internally this
+     * just translates into a sort. The 'sort' event is fired whenever reordering has occured.
+     * @param {Object} mapping Mapping from old item index to new item index
+     */
+    reorder: function(mapping) {
+        this.suspendEvents();
+        
+        var items     = this.items,
+            index     = 0,
+            length    = items.length,
+            order     = [],
+            remaining = [];
+        
+        //object of {oldPosition: newPosition} reversed to {newPosition: oldPosition}
+        for (oldIndex in mapping) {
+            order[mapping[oldIndex]] = items[oldIndex];
+        } 
+        
+        for (index = 0; index < length; index++) {
+            if (mapping[index] == undefined) {
+                remaining.push(items[index]);
+            }
+        }
+        
+        for (index = 0; index < length; index++) {
+            if (order[index] == undefined) {
+                order[index] = remaining.shift();
+            }
+        }
+        
+        this.clear();
+        this.addAll(order);
+        
+        this.resumeEvents();
+        this.fireEvent('sort', this);
     },
 
     /**
@@ -559,11 +615,20 @@ mc.add(otherEl);
         return -1;
     },
 
-    // private
+    /**
+     * Returns a regular expression based on the given value and matching options. This is used internally for finding and filtering,
+     * and by Ext.data.Store#filter
+     * @private
+     * @param {String} value The value to create the regex for. This is escaped using Ext.escapeRe
+     * @param {Boolean} anyMatch True to allow any match - no regex start/end line anchors will be added. Defaults to false
+     * @param {Boolean} caseSensitive True to make the regex case sensitive (adds 'i' switch to regex). Defaults to false.
+     * @param {Boolean} exactMatch True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
+     */
     createValueMatcher : function(value, anyMatch, caseSensitive, exactMatch) {
         if (!value.exec) { // not a regex
             var er = Ext.escapeRe;
             value = String(value);
+            
             if (anyMatch === true) {
                 value = er(value);
             } else {

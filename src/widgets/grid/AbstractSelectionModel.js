@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -17,7 +17,7 @@ Ext.grid.AbstractSelectionModel = Ext.extend(Ext.util.Observable,  {
      * @type Object
      * @property grid
      */
-    
+
     constructor : function(){
         this.locked = false;
         Ext.grid.AbstractSelectionModel.superclass.constructor.call(this);
@@ -26,6 +26,11 @@ Ext.grid.AbstractSelectionModel = Ext.extend(Ext.util.Observable,  {
     /** @ignore Called by the grid automatically. Do not call directly. */
     init : function(grid){
         this.grid = grid;
+        if(this.lockOnInit){
+            delete this.lockOnInit;
+            this.locked = false;
+            this.lock();
+        }
         this.initEvents();
     },
 
@@ -33,14 +38,50 @@ Ext.grid.AbstractSelectionModel = Ext.extend(Ext.util.Observable,  {
      * Locks the selections.
      */
     lock : function(){
+        if(!this.locked){
+            this.locked = true;
+            // If the grid has been set, then the view is already initialized.
+            var g = this.grid;
+            if(g){
+                g.getView().on({
+                    scope: this,
+                    beforerefresh: this.sortUnLock,
+                    refresh: this.sortLock
+                });
+            }else{
+                this.lockOnInit = true;
+            }
+        }
+    },
+
+    // set the lock states before and after a view refresh
+    sortLock : function() {
         this.locked = true;
+    },
+
+    // set the lock states before and after a view refresh
+    sortUnLock : function() {
+        this.locked = false;
     },
 
     /**
      * Unlocks the selections.
      */
     unlock : function(){
-        this.locked = false;
+        if(this.locked){
+            this.locked = false;
+            var g = this.grid,
+                gv;
+                
+            // If the grid has been set, then the view is already initialized.
+            if(g){
+                gv = g.getView();
+                gv.un('beforerefresh', this.sortUnLock, this);
+                gv.un('refresh', this.sortLock, this);    
+            }else{
+                delete this.lockOnInit;
+            }
+        }
     },
 
     /**
@@ -50,8 +91,9 @@ Ext.grid.AbstractSelectionModel = Ext.extend(Ext.util.Observable,  {
     isLocked : function(){
         return this.locked;
     },
-    
+
     destroy: function(){
+        this.unlock();
         this.purgeListeners();
     }
 });

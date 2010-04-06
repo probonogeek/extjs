@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -513,7 +513,7 @@ new Ext.tree.TreePanel({
      * @return {Node}
      */
     setRootNode : function(node){
-        Ext.destroy(this.root);
+        this.destroyRoot();
         if(!node.render){ // attributes passed
             node = this.loader.createNode(node);
         }
@@ -765,9 +765,20 @@ new Ext.tree.TreePanel({
             Ext.dd.ScrollManager.unregister(this.body);
             Ext.destroy(this.dropZone, this.dragZone);
         }
-        Ext.destroy(this.root, this.loader);
+        this.destroyRoot();
+        Ext.destroy(this.loader);
         this.nodeHash = this.root = this.loader = null;
         Ext.tree.TreePanel.superclass.beforeDestroy.call(this);
+    },
+    
+    /**
+     * Destroy the root node. Not included by itself because we need to pass the silent parameter.
+     * @private
+     */
+    destroyRoot : function(){
+        if(this.root && this.root.destroy){
+            this.root.destroy(true);
+        }
     }
 
     /**
@@ -958,7 +969,7 @@ Ext.tree.TreePanel.nodeTypes = {};
 Ext.reg('treepanel', Ext.tree.TreePanel);Ext.tree.TreeEventModel = function(tree){
     this.tree = tree;
     this.tree.on('render', this.initEvents, this);
-}
+};
 
 Ext.tree.TreeEventModel.prototype = {
     initEvents : function(){
@@ -1055,9 +1066,9 @@ Ext.tree.TreeEventModel.prototype = {
                 this.onIconClick(e, this.getNode(e));
             }else if(this.getNodeTarget(e)){
                 this.onNodeClick(e, this.getNode(e));
-            }else{
-                this.onContainerEvent(e, 'click');
             }
+        }else{
+            this.checkContainerEvent(e, 'click');
         }
     },
 
@@ -1065,9 +1076,9 @@ Ext.tree.TreeEventModel.prototype = {
         if(this.beforeEvent(e)){
             if(this.getNodeTarget(e)){
                 this.onNodeDblClick(e, this.getNode(e));
-            }else{
-                this.onContainerEvent(e, 'dblclick');
             }
+        }else{
+            this.checkContainerEvent(e, 'dblclick');
         }
     },
 
@@ -1075,10 +1086,18 @@ Ext.tree.TreeEventModel.prototype = {
         if(this.beforeEvent(e)){
             if(this.getNodeTarget(e)){
                 this.onNodeContextMenu(e, this.getNode(e));
-            }else{
-                this.onContainerEvent(e, 'contextmenu');
             }
+        }else{
+            this.checkContainerEvent(e, 'contextmenu');
         }
+    },
+    
+    checkContainerEvent: function(e, type){
+        if(this.disabled){
+            e.stopEvent();
+            return false;
+        }
+        this.onContainerEvent(e, type);    
     },
 
     onContainerEvent: function(e, type){
@@ -1800,7 +1819,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     hasChildNodes : function(){
         return !this.isLeaf() && this.childNodes.length > 0;
     },
-    
+
     /**
      * Returns true if this node has one or more child nodes, or if the <tt>expandable</tt>
      * node attribute is explicitly specified as true (see {@link #attributes}), otherwise returns false.
@@ -1825,7 +1844,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
         // if passed an array or multiple args do them one by one
         if(multi){
             for(var i = 0, len = multi.length; i < len; i++) {
-            	this.appendChild(multi[i]);
+                this.appendChild(multi[i]);
             }
         }else{
             if(this.fireEvent("beforeappend", this.ownerTree, this, node) === false){
@@ -1898,34 +1917,45 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             this.setLastChild(node.previousSibling);
         }
 
-        node.clear();
         this.fireEvent("remove", this.ownerTree, this, node);
         if(destroy){
-            node.destroy();
+            node.destroy(true);
+        }else{
+            node.clear();
         }
         return node;
     },
-    
+
     // private
     clear : function(destroy){
         // clear any references from the node
         this.setOwnerTree(null, destroy);
-        this.parentNode = this.previousSibling = this.nextSibling = null
+        this.parentNode = this.previousSibling = this.nextSibling = null;
         if(destroy){
-            this.firstChild = this.lastChild = null; 
+            this.firstChild = this.lastChild = null;
         }
     },
-    
+
     /**
      * Destroys the node.
      */
-    destroy : function(){
-        this.purgeListeners();
-        this.clear(true);  
-        Ext.each(this.childNodes, function(n){
-            n.destroy();
-        });
-        this.childNodes = null;
+    destroy : function(/* private */ silent){
+        /*
+         * Silent is to be used in a number of cases
+         * 1) When setRootNode is called.
+         * 2) When destroy on the tree is called
+         * 3) For destroying child nodes on a node
+         */
+        if(silent === true){
+            this.purgeListeners();
+            this.clear(true);
+            Ext.each(this.childNodes, function(n){
+                n.destroy(true);
+            });
+            this.childNodes = null;
+        }else{
+            this.remove(true);
+        }
     },
 
     /**
@@ -1990,10 +2020,12 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      * @return {Node} this
      */
     remove : function(destroy){
-        this.parentNode.removeChild(this, destroy);
+        if (this.parentNode) {
+            this.parentNode.removeChild(this, destroy);
+        }
         return this;
     },
-    
+
     /**
      * Removes all child nodes from this node.
      * @param {Boolean} destroy <tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.
@@ -2091,7 +2123,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             }
         }
     },
-    
+
     /**
      * Changes the id of this node.
      * @param {String} id The new id for the node.
@@ -2109,7 +2141,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
             this.onIdChange(id);
         }
     },
-    
+
     // private
     onIdChange: Ext.emptyFn,
 
@@ -2160,7 +2192,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
         if(fn.apply(scope || this, args || [this]) !== false){
             var cs = this.childNodes;
             for(var i = 0, len = cs.length; i < len; i++) {
-            	cs[i].cascade(fn, scope, args);
+                cs[i].cascade(fn, scope, args);
             }
         }
     },
@@ -2176,9 +2208,9 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     eachChild : function(fn, scope, args){
         var cs = this.childNodes;
         for(var i = 0, len = cs.length; i < len; i++) {
-        	if(fn.apply(scope || this, args || [cs[i]]) === false){
-        	    break;
-        	}
+            if(fn.apply(scope || this, args || [cs[i]]) === false){
+                break;
+            }
         }
     },
 
@@ -2186,30 +2218,39 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      * Finds the first child that has the attribute with the specified value.
      * @param {String} attribute The attribute name
      * @param {Mixed} value The value to search for
+     * @param {Boolean} deep (Optional) True to search through nodes deeper than the immediate children
      * @return {Node} The found child or null if none was found
      */
-    findChild : function(attribute, value){
-        var cs = this.childNodes;
-        for(var i = 0, len = cs.length; i < len; i++) {
-        	if(cs[i].attributes[attribute] == value){
-        	    return cs[i];
-        	}
-        }
-        return null;
+    findChild : function(attribute, value, deep){
+        return this.findChildBy(function(){
+            return this.attributes[attribute] == value;
+        }, null, deep);
     },
 
     /**
      * Finds the first child by a custom function. The child matches if the function passed returns <code>true</code>.
      * @param {Function} fn A function which must return <code>true</code> if the passed Node is the required Node.
      * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Node being tested.
+     * @param {Boolean} deep (Optional) True to search through nodes deeper than the immediate children
      * @return {Node} The found child or null if none was found
      */
-    findChildBy : function(fn, scope){
-        var cs = this.childNodes;
-        for(var i = 0, len = cs.length; i < len; i++) {
-        	if(fn.call(scope||cs[i], cs[i]) === true){
-        	    return cs[i];
-        	}
+    findChildBy : function(fn, scope, deep){
+        var cs = this.childNodes,
+            len = cs.length,
+            i = 0,
+            n,
+            res;
+        for(; i < len; i++){
+            n = cs[i];
+            if(fn.call(scope || n, n) === true){
+                return n;
+            }else if (deep){
+                res = n.findChildBy(fn, scope, deep);
+                if(res != null){
+                    return res;
+                }
+            }
+            
         }
         return null;
     },
@@ -2479,15 +2520,12 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
     // these methods are overridden to provide lazy rendering support
     // private override
     appendChild : function(n){
-        var node, exists;
         if(!n.render && !Ext.isArray(n)){
             n = this.getLoader().createNode(n);
-        }else{
-            exists = !n.parentNode;
         }
-        node = Ext.tree.TreeNode.superclass.appendChild.call(this, n);
-        if(node){
-            this.afterAdd(node, exists);
+        var node = Ext.tree.TreeNode.superclass.appendChild.call(this, n);
+        if(node && this.childrenRendered){
+            node.render();
         }
         this.ui.updateExpandIcon();
         return node;
@@ -2497,46 +2535,35 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
     removeChild : function(node, destroy){
         this.ownerTree.getSelectionModel().unselect(node);
         Ext.tree.TreeNode.superclass.removeChild.apply(this, arguments);
-        // if it's been rendered remove dom node
-        if(node.ui.rendered){
-            node.ui.remove();
-        }
-        if(this.childNodes.length < 1){
-            this.collapse(false, false);
-        }else{
-            this.ui.updateExpandIcon();
-        }
-        if(!this.firstChild && !this.isHiddenRoot()) {
-            this.childrenRendered = false;
+        // only update the ui if we're not destroying
+        if(!destroy){
+            // if it's been rendered remove dom node
+            if(node.ui.rendered){
+                node.ui.remove();
+            }
+            if(this.childNodes.length < 1){
+                this.collapse(false, false);
+            }else{
+                this.ui.updateExpandIcon();
+            }
+            if(!this.firstChild && !this.isHiddenRoot()){
+                this.childrenRendered = false;
+            }
         }
         return node;
     },
 
     // private override
     insertBefore : function(node, refNode){
-        var newNode, exists;
         if(!node.render){
             node = this.getLoader().createNode(node);
-        } else {
-            exists = Ext.isObject(node.parentNode);
         }
-        newNode = Ext.tree.TreeNode.superclass.insertBefore.call(this, node, refNode);
-        if(newNode && refNode){
-            this.afterAdd(newNode, exists);
+        var newNode = Ext.tree.TreeNode.superclass.insertBefore.call(this, node, refNode);
+        if(newNode && refNode && this.childrenRendered){
+            node.render();
         }
         this.ui.updateExpandIcon();
         return newNode;
-    },
-    
-    // private
-    afterAdd : function(node, exists){
-        if(this.childrenRendered){
-            // bulk render if the node already exists
-            node.render(exists);
-        }else if(exists){
-            // make sure we update the indent
-            node.renderIndent(true, true);
-        }
     },
 
     /**
@@ -2819,9 +2846,12 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
         }
     },
 
-    destroy : function(){
-        this.unselect(true);
-        Ext.tree.TreeNode.superclass.destroy.call(this);
+    //inherit docs
+    destroy : function(silent){
+        if(silent === true){
+            this.unselect(true);
+        }
+        Ext.tree.TreeNode.superclass.destroy.call(this, silent);
         Ext.destroy(this.ui, this.loader);
         this.ui = this.loader = null;
     },
@@ -3225,7 +3255,7 @@ Ext.tree.TreeNodeUI.prototype = {
 /**
  * Sets the checked status of the tree node to the passed value, or, if no value was passed,
  * toggles the checked status. If the node was rendered with no checkbox, this has no effect.
- * @param {Boolean} (optional) The new checked status.
+ * @param {Boolean} value (optional) The new checked status.
  */
     toggleCheck : function(value){
         var cb = this.checkbox;
@@ -3714,7 +3744,7 @@ paramOrder: 'param1|param2|param|node'
      * @param {Ext.tree.TreeNode} node
      * @param {Function} callback Function to call after the node has been loaded. The
      * function is passed the TreeNode which was requested to be loaded.
-     * @param (Object) scope The cope (<code>this</code> reference) in which the callback is executed.
+     * @param {Object} scope The scope (<code>this</code> reference) in which the callback is executed.
      * defaults to the loaded TreeNode.
      */
     load : function(node, callback, scope){

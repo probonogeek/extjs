@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -290,7 +290,7 @@ Ext.tree.TreeNodeUI.prototype = {
 /**
  * Sets the checked status of the tree node to the passed value, or, if no value was passed,
  * toggles the checked status. If the node was rendered with no checkbox, this has no effect.
- * @param {Boolean} (optional) The new checked status.
+ * @param {Boolean} value (optional) The new checked status.
  */
     toggleCheck : function(value){
         var cb = this.checkbox;

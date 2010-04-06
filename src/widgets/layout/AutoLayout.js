@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -8,16 +8,24 @@
  * @class Ext.layout.AutoLayout
  * <p>The AutoLayout is the default layout manager delegated by {@link Ext.Container} to
  * render any child Components when no <tt>{@link Ext.Container#layout layout}</tt> is configured into
- * a {@link Ext.Container Container}. ContainerLayout provides the basic foundation for all other layout
- * classes in Ext. It simply renders all child Components into the Container, performing no sizing or
- * positioning services. To utilize a layout that provides sizing and positioning of child Components,
- * specify an appropriate <tt>{@link Ext.Container#layout layout}</tt>.</p>
+ * a {@link Ext.Container Container}.</tt>.  AutoLayout provides only a passthrough of any layout calls
+ * to any child containers.</p>
  */
 Ext.layout.AutoLayout = Ext.extend(Ext.layout.ContainerLayout, {
-    runLayout: function(){
-        var ct = this.container;
-        ct.doLayout();
-        delete ct.layoutPending;
+    type: 'auto',
+
+    monitorResize: true,
+
+    onLayout : function(ct, target){
+        Ext.layout.AutoLayout.superclass.onLayout.call(this, ct, target);
+        var cs = this.getRenderedItems(ct), len = cs.length, i, c;
+        for(i = 0; i < len; i++){
+            c = cs[i];
+            if (c.doLayout){
+                // Shallow layout children
+                c.doLayout(true);
+            }
+        }
     }
 });
 

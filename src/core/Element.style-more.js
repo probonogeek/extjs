@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -248,7 +248,7 @@ Ext.Element.addMethods(function(){
                 return {
                     width : extdom.getViewWidth(),
                     height : extdom.getViewHeight()
-                }
+                };
 
             // Else use clientHeight/clientWidth
             } else {

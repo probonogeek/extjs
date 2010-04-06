@@ -1,19 +1,19 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.CompositeElementLite.html" ext:member="" ext:cls="Ext.CompositeElementLite">CompositeElementLite</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">CompositeElement</pre></div><h1>Class <a href="source/CompositeElement.html#cls-Ext.CompositeElement">Ext.CompositeElement</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">CompositeElement.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/CompositeElement.html#cls-Ext.CompositeElement">CompositeElement</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.CompositeElementLite.html" ext:cls="Ext.CompositeElementLite" ext:member="">CompositeElementLite</a></td></tr></table><div class="description"><p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.CompositeElement-props"><img src="../resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.CompositeElement-methods"><img src="../resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.CompositeElement-events"><img src="../resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="bookmark" href="../docs/?class=Ext.CompositeElement"><img src="../resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.CompositeElementLite.html" ext:member="" ext:cls="Ext.CompositeElementLite">CompositeElementLite</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">CompositeElement</pre></div><h1>Class <a href="source/CompositeElement.html#cls-Ext.CompositeElement">Ext.CompositeElement</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext</td></tr><tr><td class="label">Defined In:</td><td class="hd-info"><a href="source/CompositeElement.html#cls-Ext.CompositeElement">CompositeElement.js</a></td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/CompositeElement.html#cls-Ext.CompositeElement">CompositeElement</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.CompositeElementLite.html" ext:cls="Ext.CompositeElementLite" ext:member="">CompositeElementLite</a></td></tr></table><div class="description"><p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter
 members, or to perform collective actions upon the whole set.</p>
 <p>Although they are not listed, this class supports all of the methods of <a href="output/Ext.Element.html" ext:cls="Ext.Element">Ext.Element</a> and
 <a href="output/Ext.Fx.html" ext:cls="Ext.Fx">Ext.Fx</a>. The methods from these classes will be performed on all the elements in this collection.</p>
 <p>All methods return <i>this</i> and can be chained.</p>
 Usage:
 <pre><code><b>var</b> els = Ext.select(<em>"#some-el div.some-class"</em>, true);
-<i>// or select directly from an existing element</i>
+<i>// or select directly from an existing element</i>
 <b>var</b> el = Ext.get(<em>'some-el'</em>);
 el.select(<em>'div.some-class'</em>, true);
 
-els.setWidth(100); <i>// all elements become 100 width</i>
-els.hide(true); <i>// all elements fade out and hide</i>
-<i>// or</i>
-els.setWidth(100).hide(true);</code></pre></div><div class="hr"></div><a id="Ext.CompositeElement-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.CompositeElementLite-elements"></a><b><a href="source/CompositeElementLite.html#prop-Ext.CompositeElementLite-elements">elements</a></b> : Array<div class="mdesc"><div class="short">The Array of DOM elements which this CompositeElement encapsulates. Read-only.&#13;
-This will not usually be accessed in ...</div><div class="long"><p>The Array of DOM elements which this CompositeElement encapsulates. Read-only.</p>
+els.setWidth(100); <i>// all elements become 100 width</i>
+els.hide(true); <i>// all elements fade out and hide</i>
+<i>// or</i>
+els.setWidth(100).hide(true);</code></pre></div><div class="hr"></div><a id="Ext.CompositeElement-props"></a><h2>Public Properties</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Property</th><th class="msource-header">Defined By</th></tr><tr class="property-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.CompositeElementLite-elements"></a><b><a href="source/CompositeElementLite.html#prop-Ext.CompositeElementLite-elements">elements</a></b> : Array<div class="mdesc"><div class="short">The Array of DOM elements which this CompositeElement encapsulates. Read-only.
+This will not usually be accessed in d...</div><div class="long"><p>The Array of DOM elements which this CompositeElement encapsulates. Read-only.</p>
 <p>This will not <i>usually</i> be accessed in developers' code, but developers wishing
 to augment the capabilities of the CompositeElementLite class may use it when adding
 methods to the class.</p>
@@ -23,20 +23,20 @@ Ext.override(Ext.CompositeElementLite, {
     nextAll: <b>function</b>() {
         <b>var</b> els = this.elements, i, l = els.length, n, r = [], ri = -1;
 
-<i>//      Loop through all elements <b>in</b> this Composite, accumulating</i>
-<i>//      an Array of all siblings.</i>
+<i>//      Loop through all elements <b>in</b> this Composite, accumulating</i>
+<i>//      an Array of all siblings.</i>
         <b>for</b> (i = 0; i < l; i++) {
             <b>for</b> (n = els[i].nextSibling; n; n = n.nextSibling) {
                 r[++ri] = n;
             }
         }
 
-<i>//      Add all found siblings to this Composite</i>
+<i>//      Add all found siblings to this Composite</i>
         <b>return</b> this.add(r);
     }
 });</pre></code></div></div></td><td class="msource"><a href="output/Ext.CompositeElementLite.html#elements" ext:member="#elements" ext:cls="Ext.CompositeElementLite">CompositeElementLite</a></td></tr></tbody></table><a id="Ext.CompositeElement-methods"></a><h2>Public Methods</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Method</th><th class="msource-header">Defined By</th></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.CompositeElement-"></a><b><a href="source/CompositeElement.html#method-Ext.CompositeElement-"></a></b>(&nbsp;<code>Function&nbsp;fn</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>&nbsp;)
     :
-                                        CompositeElement<div class="mdesc"><div class="short">Iterates each element in this composite&#13;
+                                        CompositeElement<div class="mdesc"><div class="short">Iterates each element in this composite
 calling the supplied function using Ext.each.</div><div class="long">Iterates each <code>element</code> in this <code>composite</code>
 calling the supplied function using <a href="output/Ext.html#Ext-each" ext:member="each" ext:cls="Ext">Ext.each</a>.<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>fn</code> : Function<div class="sub-desc">The function to be called with each
 <code>element</code>. If the supplied function returns <tt>false</tt>,

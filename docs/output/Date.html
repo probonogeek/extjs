@@ -1,4 +1,4 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><h1>Class <a href="source/Date.html#cls-Date">Date</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Global</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">Date.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Date.html#cls-Date">Date</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">The date parsing and formatting syntax contains a subset of
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Date-props"><img src="../resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Date-methods"><img src="../resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Date-events"><img src="../resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="bookmark" href="../docs/?class=Date"><img src="../resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><h1>Class <a href="source/Date.html#cls-Date">Date</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Global</td></tr><tr><td class="label">Defined In:</td><td class="hd-info"><a href="source/Date.html#cls-Date">Date.js</a></td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Date.html#cls-Date">Date</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info">Object</td></tr></table><div class="description">The date parsing and formatting syntax contains a subset of
 <a href="http://www.php.net/date">PHP's date() function</a>, and the formats that are
 supported will provide results equivalent to their PHP versions.
 The following is a list of all currently supported formats:
@@ -136,7 +136,7 @@ format string which corresponds to the produced formatted date string.</p>
 date formats are requested for Ext standard formatting strings.</p>
 <p>Custom formatting functions may be inserted into this object, keyed by a name which from then on
 may be used as a format string to <a href="output/Date.html#Date-format" ext:member="format" ext:cls="Date">format</a>. Example:</p><pre><code>Date.formatFunctions[<em>'x-date-format'</em>] = myDateFormatter;</code></pre>
-<p>A formatting function should return a string repesentation of the passed Date object:<div class="mdetail-params"><ul>
+<p>A formatting function should return a string representation of the passed Date object, and is passed the following parameters:<div class="mdetail-params"><ul>
 <li><code>date</code> : Date<div class="sub-desc">The Date to format.</div></li>
 </ul></div></p>
 <p>To enable date strings to also be <i>parsed</i> according to that format, a corresponding

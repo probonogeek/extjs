@@ -1,12 +1,13 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 Ext.Direct.Event = function(config){
     Ext.apply(this, config);
-}
+};
+
 Ext.Direct.Event.prototype = {
     status: true,
     getData: function(){
@@ -31,4 +32,3 @@ Ext.Direct.eventTypes = {
     'event':  Ext.Direct.Event,
     'exception':  Ext.Direct.ExceptionEvent
 };
-

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -23,13 +23,13 @@ new Ext.form.TimeField({
 Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
     /**
      * @cfg {Date/String} minValue
-     * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string 
+     * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string
      * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
     minValue : undefined,
     /**
      * @cfg {Date/String} maxValue
-     * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string 
+     * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string
      * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
     maxValue : undefined,
@@ -61,9 +61,9 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
     /**
      * @cfg {String} altFormats
      * Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined
-     * format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H').
+     * format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').
      */
-    altFormats : "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H",
+    altFormats : "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A",
     /**
      * @cfg {Number} increment
      * The number of minutes between each time value in the list (defaults to 15).
@@ -76,11 +76,13 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
     triggerAction: 'all',
     // private override
     typeAhead: false,
-    
+
     // private - This is the date to use when generating time values in the absence of either minValue
-    // or maxValue.  Using the current date causes DST issues on DST boundary dates, so this is an 
+    // or maxValue.  Using the current date causes DST issues on DST boundary dates, so this is an
     // arbitrary "safe" date that can be any date aside from DST boundary dates.
     initDate: '1/1/2008',
+
+    initDateFormat: 'j/n/Y',
 
     // private
     initComponent : function(){
@@ -95,7 +97,7 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
         }
         Ext.form.TimeField.superclass.initComponent.call(this);
     },
-    
+
     /**
      * Replaces any existing {@link #minValue} with the new time and refreshes the store.
      * @param {Date/String} value The minimum time that can be selected
@@ -113,13 +115,13 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
         this.setLimit(value, false, initial);
         return this;
     },
-    
+
     // private
     generateStore: function(initial){
         var min = this.minValue || new Date(this.initDate).clearTime(),
             max = this.maxValue || new Date(this.initDate).clearTime().add('mi', (24 * 60) - 1),
             times = [];
-            
+
         while(min <= max){
             times.push(min.dateFormat(this.format));
             min = min.add('mi', this.increment);
@@ -137,14 +139,14 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
         }
         if(d){
             var val = new Date(this.initDate).clearTime();
-            val.setHours(d.getHours(), d.getMinutes(), isMin ? 0 : 59, 0);
+            val.setHours(d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
             this[isMin ? 'minValue' : 'maxValue'] = val;
             if(!initial){
                 this.generateStore();
             }
         }
     },
-    
+
     // inherited docs
     getValue : function(){
         var v = Ext.form.TimeField.superclass.getValue.call(this);
@@ -158,30 +160,29 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
 
     // private overrides
     validateValue : Ext.form.DateField.prototype.validateValue,
-    parseDate : Ext.form.DateField.prototype.parseDate,
+
     formatDate : Ext.form.DateField.prototype.formatDate,
 
-    // private
-    beforeBlur : function(){
-        var v = this.parseDate(this.getRawValue());
-        if(v){
-            this.setValue(v.dateFormat(this.format));
+    parseDate: function(value) {
+        if (!value || Ext.isDate(value)) {
+            return value;
         }
-        Ext.form.TimeField.superclass.beforeBlur.call(this);
-    }
 
-    /**
-     * @cfg {Boolean} grow @hide
-     */
-    /**
-     * @cfg {Number} growMin @hide
-     */
-    /**
-     * @cfg {Number} growMax @hide
-     */
-    /**
-     * @hide
-     * @method autoSize
-     */
+        var id = this.initDate + ' ',
+            idf = this.initDateFormat + ' ',
+            v = Date.parseDate(id + value, idf + this.format), // *** handle DST. note: this.format is a TIME-only format
+            af = this.altFormats;
+
+        if (!v && af) {
+            if (!this.altFormatsArray) {
+                this.altFormatsArray = af.split("|");
+            }
+            for (var i = 0, afa = this.altFormatsArray, len = afa.length; i < len && !v; i++) {
+                v = Date.parseDate(id + value, idf + afa[i]);
+            }
+        }
+
+        return v;
+    }
 });
 Ext.reg('timefield', Ext.form.TimeField);

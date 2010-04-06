@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -8,52 +8,52 @@
  * @class Ext.Direct
  * @extends Ext.util.Observable
  * <p><b><u>Overview</u></b></p>
- * 
+ *
  * <p>Ext.Direct aims to streamline communication between the client and server
  * by providing a single interface that reduces the amount of common code
  * typically required to validate data and handle returned data packets
  * (reading data, error conditions, etc).</p>
- *  
+ *
  * <p>The Ext.direct namespace includes several classes for a closer integration
  * with the server-side. The Ext.data namespace also includes classes for working
  * with Ext.data.Stores which are backed by data from an Ext.Direct method.</p>
- * 
+ *
  * <p><b><u>Specification</u></b></p>
- * 
- * <p>For additional information consult the 
+ *
+ * <p>For additional information consult the
  * <a href="http://extjs.com/products/extjs/direct.php">Ext.Direct Specification</a>.</p>
- *   
+ *
  * <p><b><u>Providers</u></b></p>
- * 
+ *
  * <p>Ext.Direct uses a provider architecture, where one or more providers are
  * used to transport data to and from the server. There are several providers
  * that exist in the core at the moment:</p><div class="mdetail-params"><ul>
- * 
+ *
  * <li>{@link Ext.direct.JsonProvider JsonProvider} for simple JSON operations</li>
  * <li>{@link Ext.direct.PollingProvider PollingProvider} for repeated requests</li>
  * <li>{@link Ext.direct.RemotingProvider RemotingProvider} exposes server side
  * on the client.</li>
  * </ul></div>
- * 
+ *
  * <p>A provider does not need to be invoked directly, providers are added via
  * {@link Ext.Direct}.{@link Ext.Direct#add add}.</p>
- * 
+ *
  * <p><b><u>Router</u></b></p>
- * 
+ *
  * <p>Ext.Direct utilizes a "router" on the server to direct requests from the client
  * to the appropriate server-side method. Because the Ext.Direct API is completely
  * platform-agnostic, you could completely swap out a Java based server solution
  * and replace it with one that uses C# without changing the client side JavaScript
  * at all.</p>
- * 
+ *
  * <p><b><u>Server side events</u></b></p>
- * 
+ *
  * <p>Custom events from the server may be handled by the client by adding
  * listeners, for example:</p>
  * <pre><code>
 {"type":"event","name":"message","data":"Successfully polled at: 11:19:30 am"}
 
-// add a handler for a 'message' event sent by the server 
+// add a handler for a 'message' event sent by the server
 Ext.Direct.on('message', function(e){
     out.append(String.format('&lt;p>&lt;i>{0}&lt;/i>&lt;/p>', e.data));
             out.el.scrollTo('t', 100000, true);
@@ -90,7 +90,7 @@ Ext.Direct = Ext.extend(Ext.util.Observable, {
         LOGIN: 'login',
         SERVER: 'exception'
     },
-    
+
     // private
     constructor: function(){
         this.addEvents(
@@ -118,14 +118,14 @@ Ext.Direct = Ext.extend(Ext.util.Observable, {
      * <pre><code>
 var pollProv = new Ext.direct.PollingProvider({
     url: 'php/poll2.php'
-}); 
+});
 
 Ext.Direct.addProvider(
     {
-        "type":"remoting",       // create a {@link Ext.direct.RemotingProvider} 
+        "type":"remoting",       // create a {@link Ext.direct.RemotingProvider}
         "url":"php\/router.php", // url to connect to the Ext.Direct server-side router.
-        "actions":{              // each property within the actions object represents a Class 
-            "TestAction":[       // array of methods within each server side Class   
+        "actions":{              // each property within the actions object represents a Class
+            "TestAction":[       // array of methods within each server side Class
             {
                 "name":"doEcho", // name of method
                 "len":1
@@ -134,13 +134,13 @@ Ext.Direct.addProvider(
                 "len":1
             },{
                 "name":"doForm",
-                "formHandler":true, // handle form on server with Ext.Direct.Transaction 
+                "formHandler":true, // handle form on server with Ext.Direct.Transaction
                 "len":1
             }]
         },
         "namespace":"myApplication",// namespace to create the Remoting Provider in
     },{
-        type: 'polling', // create a {@link Ext.direct.PollingProvider} 
+        type: 'polling', // create a {@link Ext.direct.PollingProvider}
         url:  'php/poll.php'
     },
     pollProv // reference to previously created instance
@@ -150,7 +150,7 @@ Ext.Direct.addProvider(
      * or config object for a Provider) or any number of Provider descriptions as arguments.  Each
      * Provider description instructs Ext.Direct how to create client-side stub methods.
      */
-    addProvider : function(provider){        
+    addProvider : function(provider){
         var a = arguments;
         if(a.length > 1){
             for(var i = 0, len = a.length; i < len; i++){
@@ -158,7 +158,7 @@ Ext.Direct.addProvider(
             }
             return;
         }
-        
+
         // if provider has not already been instantiated
         if(!provider.events){
             provider = new Ext.Direct.PROVIDERS[provider.type](provider);
@@ -181,14 +181,14 @@ Ext.Direct.addProvider(
      * Retrieve a {@link Ext.direct.Provider provider} by the
      * <b><tt>{@link Ext.direct.Provider#id id}</tt></b> specified when the provider is
      * {@link #addProvider added}.
-     * @param {String} id Unique identifier assigned to the provider when calling {@link #addProvider} 
+     * @param {String} id Unique identifier assigned to the provider when calling {@link #addProvider}
      */
     getProvider : function(id){
         return this.providers[id];
     },
 
     removeProvider : function(id){
-        var provider = id.id ? id : this.providers[id.id];
+        var provider = id.id ? id : this.providers[id];
         provider.un('data', this.onProviderData, this);
         provider.un('exception', this.onProviderException, this);
         delete this.providers[provider.id];

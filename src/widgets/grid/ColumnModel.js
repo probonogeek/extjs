@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -111,7 +111,7 @@ Ext.grid.ColumnModel = Ext.extend(Ext.util.Observable, {
      * configuration options to all <tt><b>{@link #columns}</b></tt>.  Configuration options specified with
      * individual {@link Ext.grid.Column column} configs will supersede these <tt><b>{@link #defaults}</b></tt>.
      */
-    
+
     constructor : function(config){
         /**
 	     * An Array of {@link Ext.grid.Column Column definition} objects representing the configuration
@@ -200,7 +200,11 @@ Ext.grid.ColumnModel = Ext.extend(Ext.util.Observable, {
         if(!initial){ // cleanup
             delete this.totalWidth;
             for(i = 0, len = this.config.length; i < len; i++){
-                this.config[i].destroy();
+                c = this.config[i];
+                if(c.setEditor){
+                    //check here, in case we have a special column like a CheckboxSelectionModel
+                    c.setEditor(null);
+                }
             }
         }
 
@@ -340,7 +344,7 @@ var columns = grid.getColumnModel().getColumnsBy(function(c){
         }
         return this.config[col].renderer;
     },
-    
+
     getRendererScope : function(col){
         return this.config[col].scope;
     },
@@ -507,7 +511,7 @@ var grid = new Ext.grid.GridPanel({
     isCellEditable : function(colIndex, rowIndex){
         var c = this.config[colIndex],
             ed = c.editable;
-            
+
         //force boolean
         return !!(ed || (!Ext.isDefined(ed) && c.editor));
     },
@@ -589,8 +593,12 @@ myGrid.getColumnModel().setHidden(0, true); // hide column 0 (0 = the first colu
      * Destroys this column model by purging any event listeners, and removing any editors.
      */
     destroy : function(){
+        var c;
         for(var i = 0, len = this.config.length; i < len; i++){
-            this.config[i].destroy();
+            c = this.config[i];
+            if(c.setEditor){
+                c.setEditor(null);
+            }
         }
         this.purgeListeners();
     }

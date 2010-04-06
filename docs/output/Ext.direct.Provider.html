@@ -1,4 +1,4 @@
-<div xmlns:ext="http://www.extjs.com" class="body-wrap"><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">Provider</pre></div><h1>Class <a href="source/Provider.html#cls-Ext.direct.Provider">Ext.direct.Provider</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.direct</td></tr><tr><td class="label">Defined In:</td><td class="hd-info">Provider.js</td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Provider.html#cls-Ext.direct.Provider">Provider</a></td></tr><tr><td class="label">Subclasses:</td><td class="hd-info"><a href="output/Ext.direct.JsonProvider.html" ext:cls="Ext.direct.JsonProvider">JsonProvider</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description"><p>Ext.direct.Provider is an abstract class meant to be extended.</p>
+<div class="body-wrap" xmlns:ext="http://www.extjs.com"><div class="top-tools"><a class="inner-link" href="#Ext.direct.Provider-props"><img src="../resources/images/default/s.gif" class="item-icon icon-prop">Properties</a>&#13;<a class="inner-link" href="#Ext.direct.Provider-methods"><img src="../resources/images/default/s.gif" class="item-icon icon-method">Methods</a>&#13;<a class="inner-link" href="#Ext.direct.Provider-events"><img src="../resources/images/default/s.gif" class="item-icon icon-event">Events</a>&#13;<a class="inner-link" href="#Ext.direct.Provider-configs"><img src="../resources/images/default/s.gif" class="item-icon icon-config">Config Options</a>&#13;<a class="bookmark" href="../docs/?class=Ext.direct.Provider"><img src="../resources/images/default/s.gif" class="item-icon icon-fav">Direct Link</a>&#13;</div><div class="inheritance res-block"><pre class="res-block-inner"><a href="output/Ext.util.Observable.html" ext:member="" ext:cls="Ext.util.Observable">Observable</a>&#13;&nbsp;&nbsp;<img src="resources/elbow-end.gif">Provider</pre></div><h1>Class <a href="source/Provider.html#cls-Ext.direct.Provider">Ext.direct.Provider</a></h1><table cellspacing="0"><tr><td class="label">Package:</td><td class="hd-info">Ext.direct</td></tr><tr><td class="label">Defined In:</td><td class="hd-info"><a href="source/Provider.html#cls-Ext.direct.Provider">Provider.js</a></td></tr><tr><td class="label">Class:</td><td class="hd-info"><a href="source/Provider.html#cls-Ext.direct.Provider">Provider</a></td></tr><tr><td class="label">Subclasses:</td><td class="hd-info"><a href="output/Ext.direct.JsonProvider.html" ext:cls="Ext.direct.JsonProvider">JsonProvider</a></td></tr><tr><td class="label">Extends:</td><td class="hd-info"><a href="output/Ext.util.Observable.html" ext:cls="Ext.util.Observable" ext:member="">Observable</a></td></tr></table><div class="description"><p>Ext.direct.Provider is an abstract class meant to be extended.</p>
 <p>For example ExtJs implements the following subclasses:</p>
 <pre><code>Provider
 |
@@ -6,8 +6,8 @@
     |
     +---<a href="output/Ext.direct.PollingProvider.html" ext:cls="Ext.direct.PollingProvider">PollingProvider</a>   
     |
-    +---<a href="output/Ext.direct.RemotingProvider.html" ext:cls="Ext.direct.RemotingProvider">RemotingProvider</a></code></pre></div><div class="hr"></div><a id="Ext.direct.Provider-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-id"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-id">id</a></b> : String<div class="mdesc"><div class="short">The unique id of the provider (defaults to an auto-assigned id).&#13;
-You should assign an id if you need to be able to a...</div><div class="long">The unique id of the provider (defaults to an <a href="output/Ext.html#Ext-id" ext:member="id" ext:cls="Ext">auto-assigned id</a>).
+    +---<a href="output/Ext.direct.RemotingProvider.html" ext:cls="Ext.direct.RemotingProvider">RemotingProvider</a></code></pre></div><div class="hr"></div><a id="Ext.direct.Provider-configs"></a><h2>Config Options</h2><table cellspacing="0" class="member-table"><tbody><tr><th colspan="2" class="sig-header">Config Options</th><th class="msource-header">Defined By</th></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-id"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-id">id</a></b> : String<div class="mdesc"><div class="short">The unique id of the provider (defaults to an auto-assigned id).
+You should assign an id if you need to be able to ac...</div><div class="long">The unique id of the provider (defaults to an <a href="output/Ext.html#Ext-id" ext:member="id" ext:cls="Ext">auto-assigned id</a>).
 You should assign an id if you need to be able to access the provider later and you do
 not have an object reference available, for example:
 <pre><code>Ext.Direct.addProvider(
@@ -74,11 +74,11 @@ Ext.DomObserver = Ext.extend(Object, {
     typeAhead: true,
     mode: <em>'local'</em>,
     triggerAction: <em>'all'</em>
-});</code></pre></p></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#listeners" ext:member="#listeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-priority"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-priority">priority</a></b> : Number<div class="mdesc"><div class="short">Priority of the request. Lower is higher priority, 0 means "duplex" (always on).&#13;
-All Providers default to 1 except f...</div><div class="long">Priority of the request. Lower is higher priority, <tt>0</tt> means "duplex" (always on).
-All Providers default to <tt>1</tt> except for PollingProvider which defaults to <tt>3</tt>.</div></div></td><td class="msource">Provider</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-type"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-type">type</a></b> : String<div class="mdesc"><div class="short">Required, undefined by default.  The type of provider specified&#13;
-to Ext.Direct.addProvider to create a&#13;
-new Provider....</div><div class="long"><b>Required</b>, <tt>undefined</tt> by default.  The <tt>type</tt> of provider specified
+});</code></pre></p></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#listeners" ext:member="#listeners" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-priority"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-priority">priority</a></b> : Number<div class="mdesc"><div class="short">Priority of the request. Lower is higher priority, 0 means "duplex" (always on).
+All Providers default to 1 except fo...</div><div class="long">Priority of the request. Lower is higher priority, <tt>0</tt> means "duplex" (always on).
+All Providers default to <tt>1</tt> except for PollingProvider which defaults to <tt>3</tt>.</div></div></td><td class="msource">Provider</td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-type"></a><b><a href="source/Provider.html#cfg-Ext.direct.Provider-type">type</a></b> : String<div class="mdesc"><div class="short">Required, undefined by default.  The type of provider specified
+to Ext.Direct.addProvider to create a
+new Provider. A...</div><div class="long"><b>Required</b>, <tt>undefined</tt> by default.  The <tt>type</tt> of provider specified
 to <a href="output/Ext.Direct.html" ext:cls="Ext.Direct">Ext.Direct</a>.<a href="output/Ext.Direct.html#Ext.Direct-addProvider" ext:member="addProvider" ext:cls="Ext.Direct">addProvider</a> to create a
 new Provider. Acceptable values by default are:<div class="mdetail-params"><ul>
 <li><b><tt>polling</tt></b> : <a href="output/Ext.direct.PollingProvider.html" ext:cls="Ext.direct.PollingProvider">PollingProvider</a></li>
@@ -140,19 +140,19 @@ Or a shorthand syntax:<br>
  scope: this
 });</code></pre></div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#addListener" ext:member="#addListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-enableBubble"></a><b><a href="source/Observable-more.html#method-Ext.util.Observable-enableBubble">enableBubble</a></b>(&nbsp;<code>String/Array&nbsp;events</code>&nbsp;)
     :
-                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling&#13;
-this.getBubbleTarget() if present...</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+                                        void<div class="mdesc"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling
+this.getBubbleTarget() if present....</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
 <code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
 <p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="output/Ext.Component.getBubbleTarget.html" ext:cls="Ext.Component.getBubbleTarget">Ext.Component.getBubbleTarget</a>. The default
 implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
 access the required target more quickly.</p>
 <p>Example:</p><pre><code>Ext.override(Ext.form.Field, {
-    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
+    <i>//  Add functionality to Field&#39;s initComponent to enable the change event to bubble</i>
     initComponent : Ext.form.Field.prototype.initComponent.createSequence(<b>function</b>() {
         this.enableBubble(<em>'change'</em>);
     }),
 
-    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
+    <i>//  We know that we want Field&#39;s events to bubble directly to the FormPanel.</i>
     getBubbleTarget : <b>function</b>() {
         <b>if</b> (!this.formPanel) {
             this.formPanel = this.findParentByType(<em>'form'</em>);
@@ -168,7 +168,7 @@ access the required target more quickly.</p>
     }],
     listeners: {
         change: <b>function</b>() {
-            <i>// Title goes red <b>if</b> form has been modified.</i>
+            <i>// Title goes red <b>if</b> form has been modified.</i>
             myForm.header.setStyle(<em>'color'</em>, <em>'red'</em>);
         }
     }
@@ -181,7 +181,7 @@ by calling <a href="output/Ext.util.Observable.html#Ext.util.Observable-enableBu
     :
                                         Boolean<div class="mdesc"><div class="short">Checks to see if this object has any listeners for a specified event</div><div class="long">Checks to see if this object has any listeners for a specified event<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>eventName</code> : String<div class="sub-desc">The name of the event to check for</div></li></ul><strong>Returns:</strong><ul><li><code>Boolean</code><div class="sub-desc">True if the event is being listened for, else false</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.util.Observable.html#hasListener" ext:member="#hasListener" ext:cls="Ext.util.Observable">Observable</a></td></tr><tr class="method-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.direct.Provider-isConnected"></a><b><a href="source/Provider.html#method-Ext.direct.Provider-isConnected">isConnected</a></b>()
     :
-                                        void<div class="mdesc"><div class="short">Returns whether or not the server-side is currently connected.&#13;
+                                        void<div class="mdesc"><div class="short">Returns whether or not the server-side is currently connected.
 Abstract method for subclasses to implement.</div><div class="long">Returns whether or not the server-side is currently connected.
 Abstract method for subclasses to implement.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource">Provider</td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.util.Observable-on"></a><b><a href="source/Observable.html#method-Ext.util.Observable-on">on</a></b>(&nbsp;<code>String&nbsp;eventName</code>,&nbsp;<code>Function&nbsp;handler</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;options</code>]</span>&nbsp;)
     :

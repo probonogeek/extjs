@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -91,8 +91,19 @@ anchor: '-50 75%'
      */
 
     // private
-    monitorResize:true,
-    type: 'anchor',
+    monitorResize : true,
+
+    type : 'anchor',
+
+    /**
+     * @cfg {String} defaultAnchor
+     *
+     * default anchor for all child container items applied if no anchor or specific width is set on the child item.  Defaults to '100%'.
+     *
+     */
+    defaultAnchor : '100%',
+
+    parseAnchorRE : /^(r|right|b|bottom)$/i,
 
     getLayoutTargetSize : function() {
         var target = this.container.getLayoutTarget();
@@ -128,10 +139,16 @@ anchor: '-50 75%'
             ah = ct.initialConfig.height;
         }
 
-        var cs = this.getRenderedItems(ct), len = cs.length, i, c, a, cw, ch, el, vs;
+        var cs = this.getRenderedItems(ct), len = cs.length, i, c, a, cw, ch, el, vs, boxes = [];
         for(i = 0; i < len; i++){
             c = cs[i];
             el = c.getPositionEl();
+
+            // If a child container item has no anchor and no specific width, set the child to the default anchor size
+            if (!c.anchor && c.items && !Ext.isNumber(c.width) && !(Ext.isIE6 && Ext.isStrict)){
+                c.anchor = this.defaultAnchor;
+            }
+
             if(c.anchor){
                 a = c.anchorSpec;
                 if(!a){ // cache all anchor values
@@ -145,9 +162,17 @@ anchor: '-50 75%'
                 ch = a.bottom ? this.adjustHeightAnchor(a.bottom(h) - el.getMargins('tb'), c) : undefined;
 
                 if(cw || ch){
-                    c.setSize(cw || undefined, ch || undefined);
+                    boxes.push({
+                        comp: c,
+                        width: cw || undefined,
+                        height: ch || undefined
+                    });
                 }
             }
+        }
+        for (i = 0, len = boxes.length; i < len; i++) {
+            c = boxes[i];
+            c.comp.setSize(c.width, c.height);
         }
     },
 
@@ -155,7 +180,8 @@ anchor: '-50 75%'
     parseAnchor : function(a, start, cstart){
         if(a && a != 'none'){
             var last;
-            if(/^(r|right|b|bottom)$/i.test(a)){   // standard anchor
+            // standard anchor
+            if(this.parseAnchorRE.test(a)){
                 var diff = cstart - start;
                 return function(v){
                     if(v !== last){
@@ -163,17 +189,19 @@ anchor: '-50 75%'
                         return v - diff;
                     }
                 }
+            // percentage
             }else if(a.indexOf('%') != -1){
-                var ratio = parseFloat(a.replace('%', ''))*.01;   // percentage
+                var ratio = parseFloat(a.replace('%', ''))*.01;
                 return function(v){
                     if(v !== last){
                         last = v;
                         return Math.floor(v*ratio);
                     }
                 }
+            // simple offset adjustment
             }else{
                 a = parseInt(a, 10);
-                if(!isNaN(a)){                            // simple offset adjustment
+                if(!isNaN(a)){
                     return function(v){
                         if(v !== last){
                             last = v;

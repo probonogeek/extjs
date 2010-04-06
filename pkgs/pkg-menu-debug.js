@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -432,6 +432,10 @@ Ext.menu.Menu = Ext.extend(Ext.Container, {
             }
         }else{
             max = this.getHeight();
+        }
+        // Always respect maxHeight 
+        if (this.maxHeight){
+            max = Math.min(this.maxHeight, max);
         }
         if(full > max && max > 0){
             this.activeMax = max - this.scrollerHeight * 2 - this.el.getFrameWidth('tb') - Ext.num(this.el.shadowOffset, 0);
@@ -950,7 +954,7 @@ Ext.menu.BaseItem = Ext.extend(Ext.Component, {
      */
     hideOnClick : true,
     /**
-     * @cfg {Number} clickHideDelay Length of time in milliseconds to wait before hiding after a click (defaults to 100)
+     * @cfg {Number} clickHideDelay Length of time in milliseconds to wait before hiding after a click (defaults to 1)
      */
     clickHideDelay : 1,
 
@@ -959,33 +963,33 @@ Ext.menu.BaseItem = Ext.extend(Ext.Component, {
 
     // private
     actionMode : "container",
-    
+
     initComponent : function(){
         Ext.menu.BaseItem.superclass.initComponent.call(this);
         this.addEvents(
-	        /**
-	         * @event click
-	         * Fires when this item is clicked
-	         * @param {Ext.menu.BaseItem} this
-	         * @param {Ext.EventObject} e
-	         */
-	        'click',
-	        /**
-	         * @event activate
-	         * Fires when this item is activated
-	         * @param {Ext.menu.BaseItem} this
-	         */
-	        'activate',
-	        /**
-	         * @event deactivate
-	         * Fires when this item is deactivated
-	         * @param {Ext.menu.BaseItem} this
-	         */
-	        'deactivate'
-	    );
-	    if(this.handler){
-	        this.on("click", this.handler, this.scope);
-	    }
+            /**
+             * @event click
+             * Fires when this item is clicked
+             * @param {Ext.menu.BaseItem} this
+             * @param {Ext.EventObject} e
+             */
+            'click',
+            /**
+             * @event activate
+             * Fires when this item is activated
+             * @param {Ext.menu.BaseItem} this
+             */
+            'activate',
+            /**
+             * @event deactivate
+             * Fires when this item is deactivated
+             * @param {Ext.menu.BaseItem} this
+             */
+            'deactivate'
+        );
+        if(this.handler){
+            this.on("click", this.handler, this.scope);
+        }
     },
 
     // private

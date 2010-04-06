@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -13,10 +13,10 @@
  * @constructor
  * @xtype chart
  */
- 
+
  Ext.chart.Chart = Ext.extend(Ext.FlashComponent, {
     refreshBuffer: 100,
-    
+
     /**
      * @cfg {String} backgroundColor
      * @hide
@@ -25,7 +25,7 @@
     /**
      * @cfg {Object} chartStyle
      * Sets styles for this chart. This contains default styling, so modifying this property will <b>override</b>
-     * the built in styles of the chart. Use {@link #extraStyle} to add customizations to the default styling. 
+     * the built in styles of the chart. Use {@link #extraStyle} to add customizations to the default styling.
      */
     chartStyle: {
         padding: 10,
@@ -53,17 +53,17 @@
             }
         }
     },
-    
+
     /**
      * @cfg {String} url
      * The url to load the chart from. This defaults to Ext.chart.Chart.CHART_URL, which should
      * be modified to point to the local charts resource.
      */
-    
+
     /**
      * @cfg {Object} extraStyle
      * Contains extra styles that will be added or overwritten to the default chartStyle. Defaults to <tt>null</tt>.
-     * For a detailed list of the options available, visit the YUI Charts site 
+     * For a detailed list of the options available, visit the YUI Charts site
      * at <a href="http://developer.yahoo.com/yui/charts/#basicstyles">http://developer.yahoo.com/yui/charts/#basicstyles</a><br/>
      * Some of the options availabe:<br />
      * <ul style="padding:5px;padding-left:16px;list-style-type:inherit;">
@@ -125,13 +125,13 @@
      * </ul>
      */
     extraStyle: null,
-    
+
     /**
      * @cfg {Object} seriesStyles
      * Contains styles to apply to the series after a refresh. Defaults to <tt>null</tt>.
      */
     seriesStyles: null,
-    
+
     /**
      * @cfg {Boolean} disableCaching
      * True to add a "cache buster" to the end of the chart url. Defaults to true for Opera and IE.
@@ -209,13 +209,25 @@
         this.swf.setCategoryNames(names);
     },
 
-    setTipRenderer : function(fn){
+    setLegendRenderer : function(fn, scope){
         var chart = this;
-        this.tipFnName = this.createFnProxy(function(item, index, series){
+        scope = scope || chart;
+        chart.removeFnProxy(chart.legendFnName);
+        chart.legendFnName = chart.createFnProxy(function(name){
+            return fn.call(scope, name);
+        });
+        chart.swf.setLegendLabelFunction(chart.legendFnName);
+    },
+
+    setTipRenderer : function(fn, scope){
+        var chart = this;
+        scope = scope || chart;
+        chart.removeFnProxy(chart.tipFnName);
+        chart.tipFnName = chart.createFnProxy(function(item, index, series){
             var record = chart.store.getAt(index);
-            return fn(chart, record, index, series);
-        }, this.tipFnName);
-        this.swf.setDataTipFunction(this.tipFnName);
+            return fn.call(scope, chart, record, index, series);
+        });
+        chart.swf.setDataTipFunction(chart.tipFnName);
     },
 
     setSeries : function(series){
@@ -258,6 +270,7 @@
 
     onSwfReady : function(isReset){
         Ext.chart.Chart.superclass.onSwfReady.call(this, isReset);
+        var ref;
         this.swf.setType(this.type);
 
         if(this.chartStyle){
@@ -269,7 +282,12 @@
         }
 
         if(this.tipRenderer){
-            this.setTipRenderer(this.tipRenderer);
+            ref = this.getFunctionRef(this.tipRenderer);
+            this.setTipRenderer(ref.fn, ref.scope);
+        }
+        if(this.legendRenderer){
+            ref = this.getFunctionRef(this.legendRenderer);
+            this.setLegendRenderer(ref.fn, ref.scope);
         }
         if(!isReset){
             this.bindStore(this.store, true);
@@ -286,85 +304,109 @@
 
     refresh : function(){
         if(this.fireEvent('beforerefresh', this) !== false){
-	        var styleChanged = false;
-	        // convert the store data into something YUI charts can understand
-	        var data = [], rs = this.store.data.items;
-	        for(var j = 0, len = rs.length; j < len; j++){
-	            data[j] = rs[j].data;
-	        }
-	        //make a copy of the series definitions so that we aren't
-	        //editing them directly.
-	        var dataProvider = [];
-	        var seriesCount = 0;
-	        var currentSeries = null;
-	        var i = 0;
-	        if(this.series){
-	            seriesCount = this.series.length;
-	            for(i = 0; i < seriesCount; i++){
-	                currentSeries = this.series[i];
-	                var clonedSeries = {};
-	                for(var prop in currentSeries){
-	                    if(prop == "style" && currentSeries.style !== null){
-	                        clonedSeries.style = Ext.encode(currentSeries.style);
-	                        styleChanged = true;
-	                        //we don't want to modify the styles again next time
-	                        //so null out the style property.
-	                        // this causes issues
-	                        // currentSeries.style = null;
-	                    } else{
-	                        clonedSeries[prop] = currentSeries[prop];
-	                    }
-	                }
-	                dataProvider.push(clonedSeries);
-	            }
-	        }
-	
-	        if(seriesCount > 0){
-	            for(i = 0; i < seriesCount; i++){
-	                currentSeries = dataProvider[i];
-	                if(!currentSeries.type){
-	                    currentSeries.type = this.type;
-	                }
-	                currentSeries.dataProvider = data;
-	            }
-	        } else{
-	            dataProvider.push({type: this.type, dataProvider: data});
-	        }
-	        this.swf.setDataProvider(dataProvider);
-	        if(this.seriesStyles){
-	            this.setSeriesStyles(this.seriesStyles);
-	        }
+            var styleChanged = false;
+            // convert the store data into something YUI charts can understand
+            var data = [], rs = this.store.data.items;
+            for(var j = 0, len = rs.length; j < len; j++){
+                data[j] = rs[j].data;
+            }
+            //make a copy of the series definitions so that we aren't
+            //editing them directly.
+            var dataProvider = [];
+            var seriesCount = 0;
+            var currentSeries = null;
+            var i = 0;
+            if(this.series){
+                seriesCount = this.series.length;
+                for(i = 0; i < seriesCount; i++){
+                    currentSeries = this.series[i];
+                    var clonedSeries = {};
+                    for(var prop in currentSeries){
+                        if(prop == "style" && currentSeries.style !== null){
+                            clonedSeries.style = Ext.encode(currentSeries.style);
+                            styleChanged = true;
+                            //we don't want to modify the styles again next time
+                            //so null out the style property.
+                            // this causes issues
+                            // currentSeries.style = null;
+                        } else{
+                            clonedSeries[prop] = currentSeries[prop];
+                        }
+                    }
+                    dataProvider.push(clonedSeries);
+                }
+            }
+
+            if(seriesCount > 0){
+                for(i = 0; i < seriesCount; i++){
+                    currentSeries = dataProvider[i];
+                    if(!currentSeries.type){
+                        currentSeries.type = this.type;
+                    }
+                    currentSeries.dataProvider = data;
+                }
+            } else{
+                dataProvider.push({type: this.type, dataProvider: data});
+            }
+            this.swf.setDataProvider(dataProvider);
+            if(this.seriesStyles){
+                this.setSeriesStyles(this.seriesStyles);
+            }
             this.fireEvent('refresh', this);
         }
     },
 
-    createFnProxy : function(fn, old){
-        if(old){
-            delete window[old];
-        }
-        var fnName = "extFnProxy" + (++Ext.chart.Chart.PROXY_FN_ID);
-        window[fnName] = fn;
-        return fnName;
+    // private
+    createFnProxy : function(fn){
+        var fnName = 'extFnProxy' + (++Ext.chart.Chart.PROXY_FN_ID);
+        Ext.chart.Chart.proxyFunction[fnName] = fn;
+        return 'Ext.chart.Chart.proxyFunction.' + fnName;
     },
-    
+
+    // private
+    removeFnProxy : function(fn){
+        if(!Ext.isEmpty(fn)){
+            fn = fn.replace('Ext.chart.Chart.proxyFunction.', '');
+            delete Ext.chart.Chart.proxyFunction[fn];
+        }
+    },
+
+    // private
+    getFunctionRef : function(val){
+        if(Ext.isFunction(val)){
+            return {
+                fn: val,
+                scope: this
+            };
+        }else{
+            return {
+                fn: val.fn,
+                scope: val.scope || this
+            }
+        }
+    },
+
+    // private
     onDestroy: function(){
+        if (this.refreshTask && this.refreshTask.cancel){
+            this.refreshTask.cancel();
+        }
         Ext.chart.Chart.superclass.onDestroy.call(this);
         this.bindStore(null);
-        var tip = this.tipFnName;
-        if(!Ext.isEmpty(tip)){
-            delete window[tip];
-        }
+        this.removeFnProxy(this.tipFnName);
+        this.removeFnProxy(this.legendFnName);
     }
 });
 Ext.reg('chart', Ext.chart.Chart);
 Ext.chart.Chart.PROXY_FN_ID = 0;
+Ext.chart.Chart.proxyFunction = {};
 
 /**
  * Sets the url to load the chart from. This should be set to a local resource.
  * @static
  * @type String
  */
-Ext.chart.Chart.CHART_URL = 'http:/' + '/yui.yahooapis.com/2.7.0/build/charts/assets/charts.swf';
+Ext.chart.Chart.CHART_URL = 'http:/' + '/yui.yahooapis.com/2.8.0/build/charts/assets/charts.swf';
 
 /**
  * @class Ext.chart.PieChart
@@ -403,7 +445,7 @@ Ext.reg('piechart', Ext.chart.PieChart);
 Ext.chart.CartesianChart = Ext.extend(Ext.chart.Chart, {
     onSwfReady : function(isReset){
         Ext.chart.CartesianChart.superclass.onSwfReady.call(this, isReset);
-
+        this.labelFn = [];
         if(this.xField){
             this.setXField(this.xField);
         }
@@ -413,8 +455,17 @@ Ext.chart.CartesianChart = Ext.extend(Ext.chart.Chart, {
         if(this.xAxis){
             this.setXAxis(this.xAxis);
         }
+        if(this.xAxes){
+            this.setXAxes(this.xAxes);
+        }
         if(this.yAxis){
             this.setYAxis(this.yAxis);
+        }
+        if(this.yAxes){
+            this.setYAxes(this.yAxes);
+        }
+        if(Ext.isDefined(this.constrainViewport)){
+            this.swf.setConstrainViewport(this.constrainViewport);
         }
     },
 
@@ -433,24 +484,56 @@ Ext.chart.CartesianChart = Ext.extend(Ext.chart.Chart, {
         this.swf.setHorizontalAxis(this.xAxis);
     },
 
+    setXAxes : function(value){
+        var axis;
+        for(var i = 0; i < value.length; i++) {
+            axis = this.createAxis('xAxis' + i, value[i]);
+            this.swf.setHorizontalAxis(axis);
+        }
+    },
+
     setYAxis : function(value){
         this.yAxis = this.createAxis('yAxis', value);
         this.swf.setVerticalAxis(this.yAxis);
     },
 
+    setYAxes : function(value){
+        var axis;
+        for(var i = 0; i < value.length; i++) {
+            axis = this.createAxis('yAxis' + i, value[i]);
+            this.swf.setVerticalAxis(axis);
+        }
+    },
+
     createAxis : function(axis, value){
-        var o = Ext.apply({}, value), oldFn = null;
+        var o = Ext.apply({}, value),
+            ref,
+            old;
+
         if(this[axis]){
-            oldFn = this[axis].labelFunction;
+            old = this[axis].labelFunction;
+            this.removeFnProxy(old);
+            this.labelFn.remove(old);
         }
         if(o.labelRenderer){
-            var fn = o.labelRenderer;
+            ref = this.getFunctionRef(o.labelRenderer);
             o.labelFunction = this.createFnProxy(function(v){
-                return fn(v);
-            }, oldFn);
+                return ref.fn.call(ref.scope, v);
+            });
             delete o.labelRenderer;
+            this.labelFn.push(o.labelFunction);
+        }
+        if(axis.indexOf('xAxis') > -1 && o.position == 'left'){
+            o.position = 'bottom';
         }
         return o;
+    },
+
+    onDestroy : function(){
+        Ext.chart.CartesianChart.superclass.onDestroy.call(this);
+        Ext.each(this.labelFn, function(fn){
+            this.removeFnProxy(fn);
+        }, this);
     }
 });
 Ext.reg('cartesianchart', Ext.chart.CartesianChart);
@@ -562,7 +645,15 @@ Ext.chart.Axis.prototype =
      * @property hideOverlappingLabels
      * @type Boolean
      */
-    hideOverlappingLabels: true
+    hideOverlappingLabels: true,
+
+    /**
+     * The space, in pixels, between labels on an axis.
+     *
+     * @property labelSpacing
+     * @type Number
+     */
+    labelSpacing: 2
 };
 
 /**
@@ -575,8 +666,8 @@ Ext.chart.NumericAxis = Ext.extend(Ext.chart.Axis, {
     type: "numeric",
 
     /**
-     * The minimum value drawn by the axis. If not set explicitly, the axis minimum
-     * will be calculated automatically.
+     * The minimum value drawn by the axis. If not set explicitly, the axis
+     * minimum will be calculated automatically.
      *
      * @property minimum
      * @type Number
@@ -584,8 +675,8 @@ Ext.chart.NumericAxis = Ext.extend(Ext.chart.Axis, {
     minimum: NaN,
 
     /**
-     * The maximum value drawn by the axis. If not set explicitly, the axis maximum
-     * will be calculated automatically.
+     * The maximum value drawn by the axis. If not set explicitly, the axis
+     * maximum will be calculated automatically.
      *
      * @property maximum
      * @type Number
@@ -609,9 +700,9 @@ Ext.chart.NumericAxis = Ext.extend(Ext.chart.Axis, {
     minorUnit: NaN,
 
     /**
-     * If true, the labels, ticks, gridlines, and other objects will snap to
-     * the nearest major or minor unit. If false, their position will be based
-     * on the minimum value.
+     * If true, the labels, ticks, gridlines, and other objects will snap to the
+     * nearest major or minor unit. If false, their position will be based on
+     * the minimum value.
      *
      * @property snapToUnits
      * @type Boolean
@@ -619,8 +710,8 @@ Ext.chart.NumericAxis = Ext.extend(Ext.chart.Axis, {
     snapToUnits: true,
 
     /**
-     * If true, and the bounds are calculated automatically, either the minimum or
-     * maximum will be set to zero.
+     * If true, and the bounds are calculated automatically, either the minimum
+     * or maximum will be set to zero.
      *
      * @property alwaysShowZero
      * @type Boolean
@@ -628,12 +719,57 @@ Ext.chart.NumericAxis = Ext.extend(Ext.chart.Axis, {
     alwaysShowZero: true,
 
     /**
-     * The scaling algorithm to use on this axis. May be "linear" or "logarithmic".
+     * The scaling algorithm to use on this axis. May be "linear" or
+     * "logarithmic".
      *
      * @property scale
      * @type String
      */
-    scale: "linear"
+    scale: "linear",
+
+    /**
+     * Indicates whether to round the major unit.
+     *
+     * @property roundMajorUnit
+     * @type Boolean
+     */
+    roundMajorUnit: true,
+
+    /**
+     * Indicates whether to factor in the size of the labels when calculating a
+     * major unit.
+     *
+     * @property calculateByLabelSize
+     * @type Boolean
+     */
+    calculateByLabelSize: true,
+
+    /**
+     * Indicates the position of the axis relative to the chart
+     *
+     * @property position
+     * @type String
+     */
+    position: 'left',
+
+    /**
+     * Indicates whether to extend maximum beyond data's maximum to the nearest
+     * majorUnit.
+     *
+     * @property adjustMaximumByMajorUnit
+     * @type Boolean
+     */
+    adjustMaximumByMajorUnit: true,
+
+    /**
+     * Indicates whether to extend the minimum beyond data's minimum to the
+     * nearest majorUnit.
+     *
+     * @property adjustMinimumByMajorUnit
+     * @type Boolean
+     */
+    adjustMinimumByMajorUnit: true
+
 });
 
 /**
@@ -646,8 +782,8 @@ Ext.chart.TimeAxis = Ext.extend(Ext.chart.Axis, {
     type: "time",
 
     /**
-     * The minimum value drawn by the axis. If not set explicitly, the axis minimum
-     * will be calculated automatically.
+     * The minimum value drawn by the axis. If not set explicitly, the axis
+     * minimum will be calculated automatically.
      *
      * @property minimum
      * @type Date
@@ -655,8 +791,8 @@ Ext.chart.TimeAxis = Ext.extend(Ext.chart.Axis, {
     minimum: null,
 
     /**
-     * The maximum value drawn by the axis. If not set explicitly, the axis maximum
-     * will be calculated automatically.
+     * The maximum value drawn by the axis. If not set explicitly, the axis
+     * maximum will be calculated automatically.
      *
      * @property maximum
      * @type Number
@@ -696,14 +832,32 @@ Ext.chart.TimeAxis = Ext.extend(Ext.chart.Axis, {
     minorTimeUnit: null,
 
     /**
-     * If true, the labels, ticks, gridlines, and other objects will snap to
-     * the nearest major or minor unit. If false, their position will be based
-     * on the minimum value.
+     * If true, the labels, ticks, gridlines, and other objects will snap to the
+     * nearest major or minor unit. If false, their position will be based on
+     * the minimum value.
      *
      * @property snapToUnits
      * @type Boolean
      */
-    snapToUnits: true
+    snapToUnits: true,
+
+    /**
+     * Series that are stackable will only stack when this value is set to true.
+     *
+     * @property stackingEnabled
+     * @type Boolean
+     */
+    stackingEnabled: false,
+
+    /**
+     * Indicates whether to factor in the size of the labels when calculating a
+     * major unit.
+     *
+     * @property calculateByLabelSize
+     * @type Boolean
+     */
+    calculateByLabelSize: true
+
 });
 
 /**
@@ -721,7 +875,19 @@ Ext.chart.CategoryAxis = Ext.extend(Ext.chart.Axis, {
      * @property categoryNames
      * @type Array
      */
-    categoryNames: null
+    categoryNames: null,
+
+    /**
+     * Indicates whether or not to calculate the number of categories (ticks and
+     * labels) when there is not enough room to display all labels on the axis.
+     * If set to true, the axis will determine the number of categories to plot.
+     * If not, all categories will be plotted.
+     *
+     * @property calculateCategoryCount
+     * @type Boolean
+     */
+    calculateCategoryCount: false
+
 });
 
 /**
@@ -758,7 +924,8 @@ Ext.chart.Series.prototype =
  */
 Ext.chart.CartesianSeries = Ext.extend(Ext.chart.Series, {
     /**
-     * The field used to access the x-axis value from the items from the data source.
+     * The field used to access the x-axis value from the items from the data
+     * source.
      *
      * @property xField
      * @type String
@@ -766,12 +933,29 @@ Ext.chart.CartesianSeries = Ext.extend(Ext.chart.Series, {
     xField: null,
 
     /**
-     * The field used to access the y-axis value from the items from the data source.
+     * The field used to access the y-axis value from the items from the data
+     * source.
      *
      * @property yField
      * @type String
      */
-    yField: null
+    yField: null,
+
+    /**
+     * False to not show this series in the legend. Defaults to <tt>true</tt>.
+     *
+     * @property showInLegend
+     * @type Boolean
+     */
+    showInLegend: true,
+
+    /**
+     * Indicates which axis the series will bind to
+     *
+     * @property axis
+     * @type String
+     */
+    axis: 'primary'
 });
 
 /**

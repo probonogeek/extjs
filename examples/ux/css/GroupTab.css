@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -90,7 +90,7 @@
     width: 3px;
     top: 1px;
     background: #fff;
-    z-index: 9999;
+    z-index: 8999;
 }
 
 .x-grouptabs-panel .x-grouptabs-panel-body {

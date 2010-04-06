@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -313,7 +313,7 @@ Ext.apply(Ext.EventObjectImpl.prototype, {
        this.isNavKeyPress() ||
        (k == this.BACKSPACE) || // Backspace
        (k >= 16 && k <= 20) || // Shift, Ctrl, Alt, Pause, Caps Lock
-       (k >= 44 && k <= 45);   // Print Screen, Insert
+       (k >= 44 && k <= 46);   // Print Screen, Insert, Delete
    },
 
    getPoint : function(){

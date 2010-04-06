@@ -1,19 +1,13 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-/*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
 /**
  * @class Ext.Resizable
  * @extends Ext.util.Observable
- * <p>Applies drag handles to an element to make it resizable. The drag handles are inserted into the element 
+ * <p>Applies drag handles to an element to make it resizable. The drag handles are inserted into the element
  * and positioned absolute. Some elements, such as a textarea or image, don't support this. To overcome that, you can wrap
  * the textarea in a div and set 'resizeChild' to true (or to the id of the element), <b>or</b> set wrap:true in your config and
  * the element will be wrapped for you automatically.</p>
@@ -51,7 +45,7 @@ resizer.on('resize', myHandler);
  * @param {Object} config configuration options
   */
 Ext.Resizable = Ext.extend(Ext.util.Observable, {
-    
+
     constructor: function(el, config){
         this.el = Ext.get(el);
         if(config && config.wrap){
@@ -69,7 +63,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
                 config.adjustments = 'auto';
             }
         }
-    
+
         /**
          * The proxy Element that is resized in place of the real Element during the resize operation.
          * This may be queried using {@link Ext.Element#getBox} to provide the new area to resize to.
@@ -80,9 +74,9 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
         this.proxy = this.el.createProxy({tag: 'div', cls: 'x-resizable-proxy', id: this.el.id + '-rzproxy'}, Ext.getBody());
         this.proxy.unselectable();
         this.proxy.enableDisplayMode('block');
-    
+
         Ext.apply(this, config);
-        
+
         if(this.pinned){
             this.disableTrackOver = true;
             this.el.addClass('x-resizable-pinned');
@@ -111,13 +105,13 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
         }
         // legacy
         this.corner = this.southeast;
-        
+
         if(this.handles.indexOf('n') != -1 || this.handles.indexOf('w') != -1){
             this.updateBox = true;
-        }   
-       
+        }
+
         this.activeHandle = null;
-        
+
         if(this.resizeChild){
             if(typeof this.resizeChild == 'boolean'){
                 this.resizeChild = Ext.get(this.el.dom.firstChild, true);
@@ -125,7 +119,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
                 this.resizeChild = Ext.get(this.resizeChild, true);
             }
         }
-        
+
         if(this.adjustments == 'auto'){
             var rc = this.resizeChild;
             var hw = this.west, he = this.east, hn = this.north, hs = this.south;
@@ -136,19 +130,19 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
             }
             this.adjustments = [
                 (he ? -he.el.getWidth() : 0) + (hw ? -hw.el.getWidth() : 0),
-                (hn ? -hn.el.getHeight() : 0) + (hs ? -hs.el.getHeight() : 0) -1 
+                (hn ? -hn.el.getHeight() : 0) + (hs ? -hs.el.getHeight() : 0) -1
             ];
         }
-        
+
         if(this.draggable){
-            this.dd = this.dynamic ? 
+            this.dd = this.dynamic ?
                 this.el.initDD(null) : this.el.initDDProxy(null, {dragElId: this.proxy.id});
             this.dd.setHandleElId(this.resizeChild ? this.resizeChild.id : this.el.id);
             if(this.constrainTo){
                 this.dd.constrainTo(this.constrainTo);
             }
         }
-        
+
         this.addEvents(
             /**
              * @event beforeresize
@@ -167,7 +161,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
              */
             'resize'
         );
-        
+
         if(this.width !== null && this.height !== null){
             this.resizeTo(this.width, this.height);
         }else{
@@ -176,7 +170,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
         if(Ext.isIE){
             this.el.dom.style.zoom = 1;
         }
-        Ext.Resizable.superclass.constructor.call(this);    
+        Ext.Resizable.superclass.constructor.call(this);
     },
 
     /**
@@ -217,7 +211,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
     enabled : true,
     /**
      * @property enabled Writable. False if resizing is disabled.
-     * @type Boolean 
+     * @type Boolean
      */
     /**
      * @cfg {String} handles String consisting of the resize handles to display (defaults to undefined).
@@ -281,8 +275,8 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
      */
     preserveRatio : false,
     /**
-     * @cfg {Boolean/String/Element} resizeChild True to resize the first child, or id/element to resize (defaults to false) 
-     */ 
+     * @cfg {Boolean/String/Element} resizeChild True to resize the first child, or id/element to resize (defaults to false)
+     */
     resizeChild : false,
     /**
      * @cfg {Boolean} transparent True for transparent handles. This is only applied at config time. (defaults to false)
@@ -299,7 +293,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
      * @cfg {String} handleCls A css class to add to each handle. Defaults to <tt>''</tt>.
      */
 
-    
+
     /**
      * Perform a manual resize and fires the 'resize' event.
      * @param {Number} width
@@ -362,7 +356,7 @@ Ext.Resizable = Ext.extend(Ext.util.Observable, {
             e.stopEvent();
             this.activeHandle = handle;
             this.startSizing(e, handle);
-        }          
+        }
     },
 
     // private
@@ -478,11 +472,11 @@ new Ext.Panel({
     // private
     constrain : function(v, diff, m, mx){
         if(v - diff < m){
-            diff = v - m;    
+            diff = v - m;
         }else if(v - diff > mx){
-            diff = v - mx; 
+            diff = v - mx;
         }
-        return diff;                
+        return diff;
     },
 
     // private
@@ -497,15 +491,15 @@ new Ext.Panel({
             //var curXY = this.startPoint;
             var curSize = this.curSize || this.startBox,
                 x = this.startBox.x, y = this.startBox.y,
-                ox = x, 
+                ox = x,
                 oy = y,
-                w = curSize.width, 
+                w = curSize.width,
                 h = curSize.height,
-                ow = w, 
+                ow = w,
                 oh = h,
-                mw = this.minWidth, 
+                mw = this.minWidth,
                 mh = this.minHeight,
-                mxw = this.maxWidth, 
+                mxw = this.maxWidth,
                 mxh = this.maxHeight,
                 wi = this.widthIncrement,
                 hi = this.heightIncrement,
@@ -515,10 +509,10 @@ new Ext.Panel({
                 pos = this.activeHandle.position,
                 tw,
                 th;
-            
+
             switch(pos){
                 case 'east':
-                    w += diffX; 
+                    w += diffX;
                     w = Math.min(Math.max(mw, w), mxw);
                     break;
                 case 'south':
@@ -526,7 +520,7 @@ new Ext.Panel({
                     h = Math.min(Math.max(mh, h), mxh);
                     break;
                 case 'southeast':
-                    w += diffX; 
+                    w += diffX;
                     h += diffY;
                     w = Math.min(Math.max(mw, w), mxw);
                     h = Math.min(Math.max(mh, h), mxh);
@@ -542,7 +536,7 @@ new Ext.Panel({
                     w -= diffX;
                     break;
                 case 'northeast':
-                    w += diffX; 
+                    w += diffX;
                     w = Math.min(Math.max(mw, w), mxw);
                     diffY = this.constrain(h, diffY, mh, mxh);
                     y += diffY;
@@ -564,7 +558,7 @@ new Ext.Panel({
                     w -= diffX;
                     break;
             }
-            
+
             var sw = this.snap(w, wi, mw);
             var sh = this.snap(h, hi, mh);
             if(sw != w || sh != h){
@@ -589,7 +583,7 @@ new Ext.Panel({
                 w = sw;
                 h = sh;
             }
-            
+
             if(this.preserveRatio){
                 switch(pos){
                     case 'southeast':
@@ -640,7 +634,7 @@ new Ext.Panel({
                         y += th - h;
                         x += tw - w;
                         break;
-                        
+
                 }
             }
             this.proxy.setBounds(x, y, w, h);
@@ -664,7 +658,7 @@ new Ext.Panel({
             this.el.removeClass('x-resizable-over');
         }
     },
-    
+
     /**
      * Returns the element this component is bound to.
      * @return {Ext.Element}
@@ -672,7 +666,7 @@ new Ext.Panel({
     getEl : function(){
         return this.el;
     },
-    
+
     /**
      * Returns the resizeChild element (or null).
      * @return {Ext.Element}
@@ -680,9 +674,9 @@ new Ext.Panel({
     getResizeChild : function(){
         return this.resizeChild;
     },
-    
+
     /**
-     * Destroys this resizable. If the element was wrapped and 
+     * Destroys this resizable. If the element was wrapped and
      * removeEl is not true then the element remains.
      * @param {Boolean} removeEl (optional) true to remove the element from the DOM
      */
@@ -690,7 +684,7 @@ new Ext.Panel({
         Ext.destroy(this.dd, this.overlay, this.proxy);
         this.overlay = null;
         this.proxy = null;
-        
+
         var ps = Ext.Resizable.positions;
         for(var k in ps){
             if(typeof ps[k] != 'function' && this[ps[k]]){
@@ -740,7 +734,7 @@ Ext.Resizable.Handle = Ext.extend(Object, {
             this.el.setOpacity(0);
         }
         if(!Ext.isEmpty(cls)){
-            this.el.addClass(cls);    
+            this.el.addClass(cls);
         }
         this.el.on('mousedown', this.onMouseDown, this);
         if(!disableTrackOver){
@@ -749,12 +743,12 @@ Ext.Resizable.Handle = Ext.extend(Object, {
                 mouseover: this.onMouseOver,
                 mouseout: this.onMouseOut
             });
-        }        
+        }
     },
-    
+
     // private
     afterResize : function(rz){
-        // do nothing    
+        // do nothing
     },
     // private
     onMouseDown : function(e){

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -201,12 +201,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
     // private
     beforeDestroy : function(){
         this.stopMonitoring();
-        /*
-         * Don't move this behaviour to BasicForm because it can be used
-         * on it's own.
-         */
-        Ext.destroy(this.form);
-        this.form.items.clear();
+        this.form.destroy(true);
         Ext.FormPanel.superclass.beforeDestroy.call(this);
     },
 
@@ -267,16 +262,15 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
     },
 
     // private
-    processRemove : function(c){
-        // If a single form Field, remove it
-        if(this.isField(c)){
-            this.form.remove(c);
-        // If a Container, its already destroyed by the time it gets here.  Remove any references to destroyed fields.
-        }else if(c.findBy){
-            var isDestroyed = function(o) {
-                return !!o.isDestroyed;
+    processRemove: function(c){
+        if(!this.destroying){
+            // If a single form Field, remove it
+            if(this.isField(c)){
+                this.form.remove(c);
+            // If a Container, its already destroyed by the time it gets here.  Remove any references to destroyed fields.
+            }else if (c.findBy){
+                Ext.each(c.findBy(this.isField), this.form.remove, this.form);
             }
-            this.form.items.filterBy(isDestroyed, this.form).each(this.form.remove, this.form);
         }
     },
 

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -10,14 +10,14 @@ Ext.apply(Ext.form.VTypes, {
         var date = field.parseDate(val);
 
         if(!date){
-            return;
+            return false;
         }
         if (field.startDateField && (!this.dateRangeMax || (date.getTime() != this.dateRangeMax.getTime()))) {
             var start = Ext.getCmp(field.startDateField);
             start.setMaxValue(date);
             start.validate();
             this.dateRangeMax = date;
-        } 
+        }
         else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime()))) {
             var end = Ext.getCmp(field.endDateField);
             end.setMinValue(date);
@@ -52,16 +52,16 @@ Ext.onReady(function(){
 
     var bd = Ext.getBody();
 
-		/*
-		 * ================  Date Range  =======================
-		 */
-    
+    /*
+     * ================  Date Range  =======================
+     */
+
     var dr = new Ext.FormPanel({
       labelWidth: 125,
       frame: true,
       title: 'Date Range',
-	  bodyStyle:'padding:5px 5px 0',
-	  width: 350,
+      bodyStyle:'padding:5px 5px 0',
+      width: 350,
       defaults: {width: 175},
       defaultType: 'datefield',
       items: [{
@@ -80,11 +80,11 @@ Ext.onReady(function(){
     });
 
     dr.render('dr');
-    
+
     /*
      * ================  Password Verification =======================
      */
-        
+
     var pwd = new Ext.FormPanel({
       labelWidth: 125,
       frame: true,

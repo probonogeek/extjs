@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -29,7 +29,7 @@ Ext.direct.JsonProvider = Ext.extend(Ext.direct.Provider, {
                 xhr: xhr,
                 code: Ext.Direct.exceptions.PARSE,
                 message: 'Error parsing json response: \n\n ' + data
-            })
+            });
             return [event];
         }
         var events = [];

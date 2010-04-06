@@ -1,8 +1,11 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
+ */
+/**
+ * Plugin for PagingToolbar which replaces the textfield input with a slider 
  */
 Ext.ux.SlidingPager = Ext.extend(Object, {
     init : function(pbar){
@@ -14,9 +17,9 @@ Ext.ux.SlidingPager = Ext.extend(Object, {
             width: 114,
             minValue: 1,
             maxValue: 1,
-            plugins: new Ext.ux.SliderTip({
-                getText : function(s){
-                    return String.format('Page <b>{0}</b> of <b>{1}</b>', s.value, s.maxValue);
+            plugins: new Ext.slider.Tip({
+                getText : function(thumb) {
+                    return String.format('Page <b>{0}</b> of <b>{1}</b>', thumb.value, thumb.slider.maxValue);
                 }
             }),
             listeners: {

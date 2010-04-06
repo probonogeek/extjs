@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -514,18 +514,26 @@ var combo = new Ext.form.ComboBox({
         }
     },
 
+    getParentZIndex : function(){
+        var zindex;
+        if (this.ownerCt){
+            this.findParentBy(function(ct){
+                zindex = parseInt(ct.getPositionEl().getStyle('z-index'), 10);
+                return !!zindex;
+            });
+        }
+        return zindex;
+    },
+
     // private
     initList : function(){
         if(!this.list){
             var cls = 'x-combo-list',
                 listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
-                zindex = parseInt(Ext.fly(listParent).getStyle('z-index') ,10);
+                zindex = parseInt(Ext.fly(listParent).getStyle('z-index'), 10);
 
-            if (this.ownerCt && !zindex){
-                this.findParentBy(function(ct){
-                    zindex = parseInt(ct.getPositionEl().getStyle('z-index'), 10);
-                    return !!zindex;
-                });
+            if (!zindex) {
+                zindex = this.getParentZIndex();
             }
 
             this.list = new Ext.Layer({
@@ -760,7 +768,11 @@ var menu = new Ext.menu.Menu({
             },
 
             "tab" : function(e){
-                this.collapse();
+                if (this.forceSelection === true) {
+                    this.collapse();
+                } else {
+                    this.onViewClick(false);
+                }
                 return true;
             },
 
@@ -821,7 +833,7 @@ var menu = new Ext.menu.Menu({
     // private
     onResize : function(w, h){
         Ext.form.ComboBox.superclass.onResize.apply(this, arguments);
-        if(this.isVisible() && this.list){
+        if(!isNaN(w) && this.isVisible() && this.list){
             this.doResize(w);
         }else{
             this.bufferSize = w;
@@ -909,7 +921,6 @@ var menu = new Ext.menu.Menu({
 
     // private
     assertValue  : function(){
-
         var val = this.getRawValue(),
             rec = this.findRecord(this.displayField, val);
 
@@ -922,11 +933,16 @@ var menu = new Ext.menu.Menu({
             }
         }else{
             if(rec){
+                // onSelect may have already set the value and by doing so
+                // set the display field properly.  Let's not wipe out the
+                // valueField here by just sending the displayField.
+                if (val == rec.get(this.displayField) && this.value == rec.get(this.valueField)){
+                    return;
+                }
                 val = rec.get(this.valueField || this.displayField);
             }
             this.setValue(val);
         }
-
     },
 
     // private
@@ -1236,7 +1252,7 @@ var menu = new Ext.menu.Menu({
 
     // private
     collapseIf : function(e){
-        if(!e.within(this.wrap) && !e.within(this.list)){
+        if(!this.isDestroyed && !e.within(this.wrap) && !e.within(this.list)){
             this.collapse();
         }
     },
@@ -1248,11 +1264,32 @@ var menu = new Ext.menu.Menu({
         if(this.isExpanded() || !this.hasFocus){
             return;
         }
+
+        if(this.title || this.pageSize){
+            this.assetHeight = 0;
+            if(this.title){
+                this.assetHeight += this.header.getHeight();
+            }
+            if(this.pageSize){
+                this.assetHeight += this.footer.getHeight();
+            }
+        }
+
         if(this.bufferSize){
             this.doResize(this.bufferSize);
             delete this.bufferSize;
         }
         this.list.alignTo.apply(this.list, [this.el].concat(this.listAlign));
+
+        // zindex can change, re-check it and set it if necessary
+        var listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
+            zindex = parseInt(Ext.fly(listParent).getStyle('z-index') ,10);
+        if (!zindex){
+            zindex = this.getParentZIndex();
+        }
+        if (zindex) {
+            this.list.setZIndex(zindex + 5);
+        }
         this.list.show();
         if(Ext.isGecko2){
             this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -145,7 +145,7 @@ li.x-menu-list-item-indent {
 	padding-left:0px;
 }
 li.x-menu-list-item div {
-	display: inline;
+	display: block;
 }
 
 /**
@@ -267,7 +267,7 @@ li.x-menu-list-item div {
     width: 3px;
     top: 1px;
     background: #fff;
-    z-index: 9999;
+    z-index: 8999;
 }
 
 .x-grouptabs-panel .x-grouptabs-panel-body {
@@ -720,7 +720,7 @@ li.x-menu-list-item div {
 .x-status-error-list li a {
     color: #15428B;
 }/*!
- * Ext JS Library 3.1+
+ * Ext JS Library 3.2+
  * Copyright(c) 2006-2009 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license

@@ -6,7 +6,13 @@
     <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
 </head>
 <body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js"><div id="cls-Ext.grid.CheckboxSelectionModel"></div>/**
+    <pre class="prettyprint lang-js">/*!
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+<div id="cls-Ext.grid.CheckboxSelectionModel"></div>/**
  * @class Ext.grid.CheckboxSelectionModel
  * @extends Ext.grid.RowSelectionModel
  * A custom selection model that renders a column of checkboxes that can be toggled to select or deselect rows.
@@ -44,6 +50,7 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
     // private
     menuDisabled : true,
     fixed : true,
+    hideable: false,
     dataIndex : '',
     id : 'checker',
 
@@ -66,12 +73,21 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
         }, this);
     },
 
+    // If handleMouseDown was called from another event (enableDragDrop), set a flag so
+    // onMouseDown does not process it a second time
+    handleMouseDown : function() {
+        Ext.grid.CheckboxSelectionModel.superclass.handleMouseDown.apply(this, arguments);
+        this.mouseHandled = true;
+    },
+
     // private
     onMouseDown : function(e, t){
         if(e.button === 0 && t.className == 'x-grid3-row-checker'){ // Only fire if left-click
             e.stopEvent();
             var row = e.getTarget('.x-grid3-row');
-            if(row){
+
+            // mouseHandled flag check for a duplicate selection (handleMouseDown) call
+            if(!this.mouseHandled && row){
                 var index = row.rowIndex;
                 if(this.isSelected(index)){
                     this.deselectRow(index);
@@ -80,6 +96,7 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
                 }
             }
         }
+        this.mouseHandled = false;
     },
 
     // private

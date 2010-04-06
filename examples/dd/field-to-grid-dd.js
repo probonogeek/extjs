@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -63,20 +63,21 @@ Ext.ux.CellFieldDropZone = Ext.extend(Ext.dd.DropZone, {
 
 //      Check whether the data type of the column being dropped on accepts the
 //      dragged field type. If so, set dropOK flag, and highlight the target node.
-        var type = target.record.fields.get(target.fieldName).type;
-        switch (type) {
-            case 'float':
-            case 'int':
+        var type = target.record.fields.get(target.fieldName).type,
+            types = Ext.data.Types;
+        switch(type){
+            case types.FLOAT:
+            case types.INT:
                 if (!f.isXType('numberfield')) {
                     return;
                 }
                 break;
-            case 'date':
+            case types.DATE:
                 if (!f.isXType('datefield')) {
                     return;
                 }
                 break;
-            case 'boolean':
+            case types.BOOL:
                 if (!f.isXType('checkbox')) {
                     return;
                 }
