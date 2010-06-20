@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -16,6 +16,8 @@ Ext.Element.addMethods(function(){
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
+        spacesRe = /\s+/,
+        wordsRe = /\w/g,
         EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
@@ -52,7 +54,7 @@ Ext.Element.addMethods(function(){
         // private  ==> used by Fx
         adjustWidth : function(width) {
             var me = this;
-            var isNum = Ext.isNumber(width);
+            var isNum = (typeof width == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -62,7 +64,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx
         adjustHeight : function(height) {
             var me = this;
-            var isNum = Ext.isNumber(height);
+            var isNum = (typeof height == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));
             }
@@ -76,14 +78,60 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         addClass : function(className){
-            var me = this, i, len, v;
-            className = Ext.isArray(className) ? className : [className];
-            for (i=0, len = className.length; i < len; i++) {
-                v = className[i];
-                if (v) {
-                    me.dom.className += (!me.hasClass(v) && v ? " " + v : "");
-                };
-            };
+            var me = this,
+                i,
+                len,
+                v,
+                cls = [];
+            // Separate case is for speed
+            if (!Ext.isArray(className)) {
+                if (typeof className == 'string' && !this.hasClass(className)) {
+                    me.dom.className += " " + className;
+                }
+            }
+            else {
+                for (i = 0, len = className.length; i < len; i++) {
+                    v = className[i];
+                    if (typeof v == 'string' && (' ' + me.dom.className + ' ').indexOf(' ' + v + ' ') == -1) {
+                        cls.push(v);
+                    }
+                }
+                if (cls.length) {
+                    me.dom.className += " " + cls.join(" ");
+                }
+            }
+            return me;
+        },
+
+        /**
+         * Removes one or more CSS classes from the element.
+         * @param {String/Array} className The CSS class to remove, or an array of classes
+         * @return {Ext.Element} this
+         */
+        removeClass : function(className){
+            var me = this,
+                i,
+                idx,
+                len,
+                cls,
+                elClasses;
+            if (!Ext.isArray(className)){
+                className = [className];
+            }
+            if (me.dom && me.dom.className) {
+                elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
+                for (i = 0, len = className.length; i < len; i++) {
+                    cls = className[i];
+                    if (typeof cls == 'string') {
+                        cls = cls.replace(trimRe, '');
+                        idx = elClasses.indexOf(cls);
+                        if (idx != -1) {
+                            elClasses.splice(idx, 1);
+                        }
+                    }
+                }
+                me.dom.className = elClasses.join(" ");
+            }
             return me;
         },
 
@@ -93,36 +141,18 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         radioClass : function(className){
-            var cn = this.dom.parentNode.childNodes, v;
+            var cn = this.dom.parentNode.childNodes,
+                v,
+                i,
+                len;
             className = Ext.isArray(className) ? className : [className];
-            for (var i=0, len = cn.length; i < len; i++) {
+            for (i = 0, len = cn.length; i < len; i++) {
                 v = cn[i];
-                if(v && v.nodeType == 1) {
+                if (v && v.nodeType == 1) {
                     Ext.fly(v, '_internal').removeClass(className);
                 }
             };
             return this.addClass(className);
-        },
-
-        /**
-         * Removes one or more CSS classes from the element.
-         * @param {String/Array} className The CSS class to remove, or an array of classes
-         * @return {Ext.Element} this
-         */
-        removeClass : function(className){
-            var me = this, v;
-            className = Ext.isArray(className) ? className : [className];
-            if (me.dom && me.dom.className) {
-                for (var i=0, len=className.length; i < len; i++) {
-                    v = className[i];
-                    if(v) {
-                        me.dom.className = me.dom.className.replace(
-                            classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), " "
-                        );
-                    }
-                };
-            }
-            return me;
         },
 
         /**
@@ -172,7 +202,7 @@ Ext.Element.addMethods(function(){
                         display,
                         wk = Ext.isWebKit,
                         display;
-                        
+
                     if(el == document){
                         return null;
                     }
@@ -227,7 +257,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = Ext.isDefined(prefix) ? prefix : '#',
+                color = (typeof prefix != 'undefined') ? prefix : '#',
                 h;
 
             if(!v || /transparent|inherit/.test(v)){
@@ -255,7 +285,7 @@ Ext.Element.addMethods(function(){
             var tmp,
                 style,
                 camel;
-            if (!Ext.isObject(prop)) {
+            if (typeof prop != 'object') {
                 tmp = {};
                 tmp[prop] = value;
                 prop = tmp;
@@ -456,16 +486,20 @@ Ext.fly('elId').setHeight(150, {
 
         // private
         addStyles : function(sides, styles){
-            var val = 0,
-                m = sides.match(/\w/g),
-                s;
-            for (var i=0, len=m.length; i<len; i++) {
-                s = m[i] && parseInt(this.getStyle(styles[m[i]]), 10);
-                if (s) {
-                    val += MATH.abs(s);
+            var ttlSize = 0,
+                sidesArr = sides.match(wordsRe),
+                side,
+                size,
+                i,
+                len = sidesArr.length;
+            for (i = 0; i < len; i++) {
+                side = sidesArr[i];
+                size = side && parseInt(this.getStyle(styles[side]), 10);
+                if (size) {
+                    ttlSize += MATH.abs(size);
                 }
             }
-            return val;
+            return ttlSize;
         },
 
         margins : margins

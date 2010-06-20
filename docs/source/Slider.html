@@ -7,7 +7,7 @@
 </head>
 <body  onload="prettyPrint();">
     <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -518,26 +518,29 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      * @param {Ext.EventObject} e The Event object
      */
     onKeyDown : function(e){
-        if(this.disabled){e.preventDefault();return;}
-        var k = e.getKey();
+        /*
+         * The behaviour for keyboard handling with multiple thumbs is currently undefined.
+         * There's no real sane default for it, so leave it like this until we come up
+         * with a better way of doing it.
+         */
+        if(this.disabled || this.thumbs.length !== 1){
+            e.preventDefault();
+            return;
+        }
+        var k = e.getKey(),
+            val;
         switch(k){
             case e.UP:
             case e.RIGHT:
                 e.stopEvent();
-                if(e.ctrlKey){
-                    this.setValue(this.maxValue, undefined, true);
-                }else{
-                    this.setValue(this.value+this.keyIncrement, undefined, true);
-                }
+                val = e.ctrlKey ? this.maxValue : this.getValue(0) + this.keyIncrement;
+                this.setValue(0, val, undefined, true);
             break;
             case e.DOWN:
             case e.LEFT:
                 e.stopEvent();
-                if(e.ctrlKey){
-                    this.setValue(this.minValue, undefined, true);
-                }else{
-                    this.setValue(this.value-this.keyIncrement, undefined, true);
-                }
+                val = e.ctrlKey ? this.minValue : this.getValue(0) - this.keyIncrement;
+                this.setValue(0, val, undefined, true);
             break;
             default:
                 e.preventDefault();
@@ -621,11 +624,16 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      */
     setMinValue : function(val){
         this.minValue = val;
-        this.syncThumb();
-
-        for (var i=0, j = this.thumbs.length; i < j; i++) {
-            if (this.thumbs[i].value < val) this.thumbs[i].value = val;
+        var i = 0,
+            thumbs = this.thumbs,
+            len = thumbs.length,
+            t;
+            
+        for(; i < len; ++i){
+            t = thumbs[i];
+            t.value = t.value < val ? val : t.value;
         }
+        this.syncThumb();
     },
 
     <div id="method-Ext.slider.MultiSlider-setMaxValue"></div>/**
@@ -635,11 +643,16 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      */
     setMaxValue : function(val){
         this.maxValue = val;
-        this.syncThumb();
-
-        for (var i=0; i < this.thumbs.length; i++) {
-            if (this.thumbs[i].value > val) this.thumbs[i].value = val;
+        var i = 0,
+            thumbs = this.thumbs,
+            len = thumbs.length,
+            t;
+            
+        for(; i < len; ++i){
+            t = thumbs[i];
+            t.value = t.value > val ? val : t.value;
         }
+        this.syncThumb();
     },
 
     <div id="method-Ext.slider.MultiSlider-setValue"></div>/**
@@ -655,12 +668,14 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
 
         v = this.normalizeValue(v);
 
-        if (v !== thumb.value && this.fireEvent('beforechange', this, v, thumb.value) !== false) {
+        if (v !== thumb.value && this.fireEvent('beforechange', this, v, thumb.value, thumb) !== false) {
             thumb.value = v;
-            this.moveThumb(index, this.translateValue(v), animate !== false);
-            this.fireEvent('change', this, v, thumb);
-            if(changeComplete){
-                this.fireEvent('changecomplete', this, v, thumb);
+            if(this.rendered){
+                this.moveThumb(index, this.translateValue(v), animate !== false);
+                this.fireEvent('change', this, v, thumb);
+                if(changeComplete){
+                    this.fireEvent('changecomplete', this, v, thumb);
+                }
             }
         }
     },

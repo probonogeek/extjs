@@ -451,6 +451,8 @@
 				,
                 {"href":"output/Ext.LoadMask.html","text":"LoadMask","id":"Ext.LoadMask","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				,
+                {"href":"output/Ext.Loader.html","text":"Loader","id":"Ext.Loader","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
+				,
                 {"href":"output/Ext.MessageBox.html","text":"MessageBox","id":"Ext.MessageBox","isClass":true,"iconCls":"icon-static","cls":"cls","leaf":true}
 				,
                 {"href":"output/Ext.PagingToolbar.html","text":"PagingToolbar","id":"Ext.PagingToolbar","isClass":true,"iconCls":"icon-cmp","cls":"cls","leaf":true}
@@ -955,6 +957,8 @@
 			"Ext.Layer":"icon-cls"
 			,
 			"Ext.LoadMask":"icon-cls"
+			,
+			"Ext.Loader":"icon-static"
 			,
 			"Ext.MessageBox":"icon-static"
 			,

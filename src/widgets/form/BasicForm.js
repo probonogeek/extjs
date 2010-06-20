@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -561,7 +561,7 @@ myFormPanel.getForm().submit({
                     if (f.dataIndex == id || f.id == id || f.getName() == id) {
                         field = f;
                         return false;
-                    } else if (f.isComposite) {
+                    } else if (f.isComposite && f.rendered) {
                         return f.items.each(findMatchingField);
                     }
                 }
@@ -735,6 +735,13 @@ myFormPanel.getForm().submit({
     remove : function(field){
         this.items.remove(field);
         return this;
+    },
+
+    /**
+     * Removes all fields from the collection that have been destroyed.
+     */
+    cleanDestroyed : function() {
+        this.items.filterBy(function(o) { return !!o.isDestroyed; }).each(this.remove, this);
     },
 
     /**

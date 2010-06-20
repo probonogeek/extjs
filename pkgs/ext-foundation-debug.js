@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -136,6 +136,10 @@ Ext.DomHelper = function(){
     var tempTableEl = null,
         emptyTags = /^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i,
         tableRe = /^table|tbody|tr|td$/i,
+        confRe = /tag|children|cn|html$/i,
+        tableElRe = /td|tr|tbody/i,
+        cssRe = /([a-z0-9-]+)\s*:\s*([^;\s]+(?:\s*[^;\s]+)*);?/gi,
+        endRe = /end/i,
         pub,
         // kill repeat to save bytes
         afterbegin = 'afterbegin',
@@ -164,7 +168,7 @@ Ext.DomHelper = function(){
             keyVal,
             cn;
 
-        if(Ext.isString(o)){
+        if(typeof o == "string"){
             b = o;
         } else if (Ext.isArray(o)) {
             for (var i=0; i < o.length; i++) {
@@ -174,19 +178,20 @@ Ext.DomHelper = function(){
             };
         } else {
             b += '<' + (o.tag = o.tag || 'div');
-            Ext.iterate(o, function(attr, val){
-                if(!/tag|children|cn|html$/i.test(attr)){
-                    if (Ext.isObject(val)) {
+            for (attr in o) {
+                val = o[attr];
+                if(!confRe.test(attr)){
+                    if (typeof val == "object") {
                         b += ' ' + attr + '="';
-                        Ext.iterate(val, function(key, keyVal){
-                            b += key + ':' + keyVal + ';';
-                        });
+                        for (key in val) {
+                            b += key + ':' + val[key] + ';';
+                        };
                         b += '"';
                     }else{
                         b += ' ' + ({cls : 'class', htmlFor : 'for'}[attr] || attr) + '="' + val + '"';
                     }
                 }
-            });
+            };
             // Now either just close the tag or try to add children and close the tag.
             if (emptyTags.test(o.tag)) {
                 b += '/>';
@@ -235,7 +240,7 @@ Ext.DomHelper = function(){
         tempTableEl = tempTableEl || document.createElement('div');
 
         if(tag == 'td' && (where == afterbegin || where == beforeend) ||
-           !/td|tr|tbody/i.test(tag) && (where == beforebegin || where == afterend)) {
+           !tableElRe.test(tag) && (where == beforebegin || where == afterend)) {
             return;
         }
         before = where == beforebegin ? el :
@@ -268,7 +273,7 @@ Ext.DomHelper = function(){
         markup : function(o){
             return createHtml(o);
         },
-        
+
         /**
          * Applies a style specification to an element.
          * @param {String/HTMLElement} el The element to apply styles to
@@ -279,18 +284,18 @@ Ext.DomHelper = function(){
             if(styles){
                 var i = 0,
                     len,
-                    style;
+                    style,
+                    matches;
 
                 el = Ext.fly(el);
-                if(Ext.isFunction(styles)){
+                if(typeof styles == "function"){
                     styles = styles.call();
                 }
-                if(Ext.isString(styles)){
-                    styles = styles.trim().split(/\s*(?::|;)\s*/);
-                    for(len = styles.length; i < len;){
-                        el.setStyle(styles[i++], styles[i++]);
+                if(typeof styles == "string"){
+                    while((matches = cssRe.exec(styles))){
+                        el.setStyle(matches[1], matches[2]);
                     }
-                }else if (Ext.isObject(styles)){
+                }else if (typeof styles == "object"){
                     el.setStyle(styles);
                 }
             }
@@ -330,7 +335,7 @@ Ext.DomHelper = function(){
                 }
             } else {
                 range = el.ownerDocument.createRange();
-                setStart = 'setStart' + (/end/i.test(where) ? 'After' : 'Before');
+                setStart = 'setStart' + (endRe.test(where) ? 'After' : 'Before');
                 if (hash[where]) {
                     range[setStart](el);
                     frag = range.createContextualFragment(html);
@@ -415,27 +420,29 @@ Ext.DomHelper = function(){
         createHtml : createHtml
     };
     return pub;
-}();/**
+}();
+/**
  * @class Ext.DomHelper
  */
 Ext.apply(Ext.DomHelper,
 function(){
-	var pub,
-		afterbegin = 'afterbegin',
-    	afterend = 'afterend',
-    	beforebegin = 'beforebegin',
-    	beforeend = 'beforeend';
+    var pub,
+        afterbegin = 'afterbegin',
+        afterend = 'afterend',
+        beforebegin = 'beforebegin',
+        beforeend = 'beforeend',
+        confRe = /tag|children|cn|html$/i;
 
-	// private
+    // private
     function doInsert(el, o, returnElement, pos, sibling, append){
         el = Ext.getDom(el);
         var newNode;
         if (pub.useDom) {
             newNode = createDom(o, null);
             if (append) {
-	            el.appendChild(newNode);
+                el.appendChild(newNode);
             } else {
-	        	(sibling == 'firstChild' ? el : el.parentNode).insertBefore(newNode, el[sibling] || el);
+                (sibling == 'firstChild' ? el : el.parentNode).insertBefore(newNode, el[sibling] || el);
             }
         } else {
             newNode = Ext.DomHelper.insertHtml(pos, el, Ext.DomHelper.createHtml(o));
@@ -443,39 +450,40 @@ function(){
         return returnElement ? Ext.get(newNode, true) : newNode;
     }
 
-	// build as dom
+    // build as dom
     /** @ignore */
     function createDom(o, parentNode){
         var el,
-        	doc = document,
-        	useSet,
-        	attr,
-        	val,
-        	cn;
+            doc = document,
+            useSet,
+            attr,
+            val,
+            cn;
 
         if (Ext.isArray(o)) {                       // Allow Arrays of siblings to be inserted
             el = doc.createDocumentFragment(); // in one shot using a DocumentFragment
-	        Ext.each(o, function(v) {
-                createDom(v, el);
-            });
-        } else if (Ext.isString(o)) {         // Allow a string as a child spec.
+            for (var i = 0, l = o.length; i < l; i++) {
+                createDom(o[i], el);
+            }
+        } else if (typeof o == 'string') {         // Allow a string as a child spec.
             el = doc.createTextNode(o);
         } else {
             el = doc.createElement( o.tag || 'div' );
             useSet = !!el.setAttribute; // In IE some elements don't have setAttribute
-            Ext.iterate(o, function(attr, val){
-                if(!/tag|children|cn|html|style/.test(attr)){
-	                if(attr == 'cls'){
-	                    el.className = val;
-	                }else{
+            for (var attr in o) {
+                if(!confRe.test(attr)){
+                    val = o[attr];
+                    if(attr == 'cls'){
+                        el.className = val;
+                    }else{
                         if(useSet){
                             el.setAttribute(attr, val);
                         }else{
                             el[attr] = val;
                         }
-	                }
+                    }
                 }
-            });
+            }
             Ext.DomHelper.applyStyles(el, o.style);
 
             if ((cn = o.children || o.cn)) {
@@ -490,82 +498,83 @@ function(){
         return el;
     }
 
-	pub = {
-		/**
-	     * Creates a new Ext.Template from the DOM object spec.
-	     * @param {Object} o The DOM object spec (and children)
-	     * @return {Ext.Template} The new template
-	     */
-	    createTemplate : function(o){
-	        var html = Ext.DomHelper.createHtml(o);
-	        return new Ext.Template(html);
-	    },
+    pub = {
+        /**
+         * Creates a new Ext.Template from the DOM object spec.
+         * @param {Object} o The DOM object spec (and children)
+         * @return {Ext.Template} The new template
+         */
+        createTemplate : function(o){
+            var html = Ext.DomHelper.createHtml(o);
+            return new Ext.Template(html);
+        },
 
-		/** True to force the use of DOM instead of html fragments @type Boolean */
-	    useDom : false,
+        /** True to force the use of DOM instead of html fragments @type Boolean */
+        useDom : false,
 
-	    /**
-	     * Creates new DOM element(s) and inserts them before el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
+        /**
+         * Creates new DOM element(s) and inserts them before el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          * @hide (repeat)
-	     */
-	    insertBefore : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, beforebegin);
-	    },
+         */
+        insertBefore : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, beforebegin);
+        },
 
-	    /**
-	     * Creates new DOM element(s) and inserts them after el.
-	     * @param {Mixed} el The context element
-	     * @param {Object} o The DOM object spec (and children)
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
+        /**
+         * Creates new DOM element(s) and inserts them after el.
+         * @param {Mixed} el The context element
+         * @param {Object} o The DOM object spec (and children)
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          * @hide (repeat)
-	     */
-	    insertAfter : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, afterend, 'nextSibling');
-	    },
+         */
+        insertAfter : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, afterend, 'nextSibling');
+        },
 
-	    /**
-	     * Creates new DOM element(s) and inserts them as the first child of el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
+        /**
+         * Creates new DOM element(s) and inserts them as the first child of el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          * @hide (repeat)
-	     */
-	    insertFirst : function(el, o, returnElement){
-	        return doInsert(el, o, returnElement, afterbegin, 'firstChild');
-	    },
+         */
+        insertFirst : function(el, o, returnElement){
+            return doInsert(el, o, returnElement, afterbegin, 'firstChild');
+        },
 
-	    /**
-	     * Creates new DOM element(s) and appends them to el.
-	     * @param {Mixed} el The context element
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @param {Boolean} returnElement (optional) true to return a Ext.Element
-	     * @return {HTMLElement/Ext.Element} The new node
+        /**
+         * Creates new DOM element(s) and appends them to el.
+         * @param {Mixed} el The context element
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          * @hide (repeat)
-	     */
-	    append: function(el, o, returnElement){
+         */
+        append: function(el, o, returnElement){
             return doInsert(el, o, returnElement, beforeend, '', true);
         },
 
-	    /**
-	     * Creates new DOM element(s) without inserting them to the document.
-	     * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-	     * @return {HTMLElement} The new uninserted node
-	     */
+        /**
+         * Creates new DOM element(s) without inserting them to the document.
+         * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
+         * @return {HTMLElement} The new uninserted node
+         */
         createDom: createDom
-	};
-	return pub;
-}());/**
+    };
+    return pub;
+}());
+/**
  * @class Ext.Template
  * <p>Represents an HTML fragment template. Templates may be {@link #compile precompiled}
  * for greater performance.</p>
  * <p>For example usage {@link #Template see the constructor}.</p>
- * 
+ *
  * @constructor
  * An instance of this class may be created by passing to the constructor either
  * a single argument, or multiple arguments:
@@ -601,7 +610,7 @@ var t = new Ext.Template(
     {
         compiled: true,      // {@link #compile} immediately
         disableFormats: true // See Notes below.
-    } 
+    }
 );
  * </code></pre>
  * <p><b>Notes</b>:</p>
@@ -617,19 +626,21 @@ var t = new Ext.Template(
  */
 Ext.Template = function(html){
     var me = this,
-    	a = arguments,
-    	buf = [];
+        a = arguments,
+        buf = [],
+        v;
 
     if (Ext.isArray(html)) {
         html = html.join("");
     } else if (a.length > 1) {
-	    Ext.each(a, function(v) {
-            if (Ext.isObject(v)) {
+        for(var i = 0, len = a.length; i < len; i++){
+            v = a[i];
+            if(typeof v == 'object'){
                 Ext.apply(me, v);
             } else {
                 buf.push(v);
             }
-        });
+        };
         html = buf.join('');
     }
 
@@ -667,14 +678,14 @@ Ext.Template.prototype = {
      * @return {String} The HTML fragment
      */
     applyTemplate : function(values){
-		var me = this;
+        var me = this;
 
         return me.compiled ?
-        		me.compiled(values) :
-				me.html.replace(me.re, function(m, name){
-		        	return values[name] !== undefined ? values[name] : "";
-		        });
-	},
+                me.compiled(values) :
+                me.html.replace(me.re, function(m, name){
+                    return values[name] !== undefined ? values[name] : "";
+                });
+    },
 
     /**
      * Sets the HTML used as the template and optionally compiles it.
@@ -683,7 +694,7 @@ Ext.Template.prototype = {
      * @return {Ext.Template} this
      */
     set : function(html, compile){
-	    var me = this;
+        var me = this;
         me.html = html;
         me.compiled = null;
         return compile ? me.compile() : me;
@@ -695,13 +706,13 @@ Ext.Template.prototype = {
      */
     compile : function(){
         var me = this,
-        	sep = Ext.isGecko ? "+" : ",";
+            sep = Ext.isGecko ? "+" : ",";
 
-        function fn(m, name){                        
-	        name = "values['" + name + "']";
-	        return "'"+ sep + '(' + name + " == undefined ? '' : " + name + ')' + sep + "'";
+        function fn(m, name){
+            name = "values['" + name + "']";
+            return "'"+ sep + '(' + name + " == undefined ? '' : " + name + ')' + sep + "'";
         }
-                
+
         eval("this.compiled = function(values){ return " + (Ext.isGecko ? "'" : "['") +
              me.html.replace(/\\/g, '\\\\').replace(/(\r\n|\n)/g, '\\n').replace(/'/g, "\\'").replace(this.re, fn) +
              (Ext.isGecko ?  "';};" : "'].join('');};"));
@@ -797,7 +808,8 @@ Ext.Template.prototype.apply = Ext.Template.prototype.applyTemplate;
 Ext.Template.from = function(el, config){
     el = Ext.getDom(el);
     return new Ext.Template(el.value || el.innerHTML, config || '');
-};/**
+};
+/**
  * @class Ext.Template
  */
 Ext.apply(Ext.Template.prototype, {
@@ -814,12 +826,12 @@ var t = new Ext.Template(
     {
         compiled: true,      // {@link #compile} immediately
         disableFormats: true // reduce <code>{@link #apply}</code> time since no formatting
-    }    
+    }
 );
      * </code></pre>
      * For a list of available format functions, see {@link Ext.util.Format}.
      */
-    disableFormats : false,				
+    disableFormats : false,
     /**
      * See <code>{@link #disableFormats}</code>.
      * @type Boolean
@@ -833,6 +845,10 @@ var t = new Ext.Template(
      * @hide repeat doc
      */
     re : /\{([\w-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g,
+    argsRe : /^\s*['"](.*)["']\s*$/,
+    compileARe : /\\/g,
+    compileBRe : /(\r\n|\n)/g,
+    compileCRe : /'/g,
 
     /**
      * Returns an HTML fragment of this template with the specified values applied.
@@ -841,11 +857,11 @@ var t = new Ext.Template(
      * @hide repeat doc
      */
     applyTemplate : function(values){
-		var me = this,
-			useF = me.disableFormats !== true,
-        	fm = Ext.util.Format, 
-        	tpl = me;	    
-	    
+        var me = this,
+            useF = me.disableFormats !== true,
+            fm = Ext.util.Format,
+            tpl = me;
+
         if(me.compiled){
             return me.compiled(values);
         }
@@ -858,7 +874,7 @@ var t = new Ext.Template(
                         // quoted values are required for strings in compiled templates,
                         // but for non compiled we need to strip them
                         // quoted reversed for jsmin
-                        var re = /^\s*['"](.*)["']\s*$/;
+                        var re = me.argsRe;
                         args = args.split(',');
                         for(var i = 0, len = args.length; i < len; i++){
                             args[i] = args[i].replace(re, "$1");
@@ -875,7 +891,7 @@ var t = new Ext.Template(
         }
         return me.html.replace(me.re, fn);
     },
-		
+
     /**
      * Compiles the template into an internal function, eliminating the RegEx overhead.
      * @return {Ext.Template} this
@@ -883,11 +899,11 @@ var t = new Ext.Template(
      */
     compile : function(){
         var me = this,
-        	fm = Ext.util.Format,
-        	useF = me.disableFormats !== true,
-        	sep = Ext.isGecko ? "+" : ",",
-        	body;
-        
+            fm = Ext.util.Format,
+            useF = me.disableFormats !== true,
+            sep = Ext.isGecko ? "+" : ",",
+            body;
+
         function fn(m, name, format, args){
             if(format && useF){
                 args = args ? ',' + args : "";
@@ -902,28 +918,29 @@ var t = new Ext.Template(
             }
             return "'"+ sep + format + "values['" + name + "']" + args + ")"+sep+"'";
         }
-        
+
         // branched to use + in gecko and [].join() in others
         if(Ext.isGecko){
             body = "this.compiled = function(values){ return '" +
-                   me.html.replace(/\\/g, '\\\\').replace(/(\r\n|\n)/g, '\\n').replace(/'/g, "\\'").replace(this.re, fn) +
+                   me.html.replace(me.compileARe, '\\\\').replace(me.compileBRe, '\\n').replace(me.compileCRe, "\\'").replace(me.re, fn) +
                     "';};";
         }else{
             body = ["this.compiled = function(values){ return ['"];
-            body.push(me.html.replace(/\\/g, '\\\\').replace(/(\r\n|\n)/g, '\\n').replace(/'/g, "\\'").replace(this.re, fn));
+            body.push(me.html.replace(me.compileARe, '\\\\').replace(me.compileBRe, '\\n').replace(me.compileCRe, "\\'").replace(me.re, fn));
             body.push("'].join('');};");
             body = body.join('');
         }
         eval(body);
         return me;
     },
-    
+
     // private function used to call members
     call : function(fnName, value, allValues){
         return this[fnName](value, allValues);
     }
 });
-Ext.Template.prototype.apply = Ext.Template.prototype.applyTemplate; /*
+Ext.Template.prototype.apply = Ext.Template.prototype.applyTemplate;
+/*
  * This is code is also distributed under MIT license for use
  * with jQuery and prototype JavaScript libraries.
  */
@@ -1909,9 +1926,7 @@ Ext.util.DelayedTask = function(fn, scope, args){
 };(function(){
 
 var EXTUTIL = Ext.util,
-    TOARRAY = Ext.toArray,
     EACH = Ext.each,
-    ISOBJECT = Ext.isObject,
     TRUE = true,
     FALSE = false;
 /**
@@ -2031,11 +2046,12 @@ EXTUTIL.Observable.prototype = {
      * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
      */
     fireEvent : function(){
-        var a = TOARRAY(arguments),
+        var a = Array.prototype.slice.call(arguments, 0),
             ename = a[0].toLowerCase(),
             me = this,
             ret = TRUE,
             ce = me.events[ename],
+            cc,
             q,
             c;
         if (me.eventsSuspended === TRUE) {
@@ -2043,20 +2059,21 @@ EXTUTIL.Observable.prototype = {
                 q.push(a);
             }
         }
-        else if(ISOBJECT(ce) && ce.bubble){
-            if(ce.fire.apply(ce, a.slice(1)) === FALSE) {
-                return FALSE;
-            }
-            c = me.getBubbleTarget && me.getBubbleTarget();
-            if(c && c.enableBubble) {
-                if(!c.events[ename] || !Ext.isObject(c.events[ename]) || !c.events[ename].bubble) {
-                    c.enableBubble(ename);
+        else if(typeof ce == 'object') {
+            if (ce.bubble){
+                if(ce.fire.apply(ce, a.slice(1)) === FALSE) {
+                    return FALSE;
                 }
-                return c.fireEvent.apply(c, a);
+                c = me.getBubbleTarget && me.getBubbleTarget();
+                if(c && c.enableBubble) {
+                    cc = c.events[ename];
+                    if(!cc || typeof cc != 'object' || !cc.bubble) {
+                        c.enableBubble(ename);
+                    }
+                    return c.fireEvent.apply(c, a);
+                }
             }
-        }
-        else {
-            if (ISOBJECT(ce)) {
+            else {
                 a.shift();
                 ret = ce.fire.apply(ce, a);
             }
@@ -2129,7 +2146,7 @@ myGridPanel.on({
             oe,
             isF,
         ce;
-        if (ISOBJECT(eventName)) {
+        if (typeof eventName == 'object') {
             o = eventName;
             for (e in o){
                 oe = o[e];
@@ -2140,10 +2157,10 @@ myGridPanel.on({
         } else {
             eventName = eventName.toLowerCase();
             ce = me.events[eventName] || TRUE;
-            if (Ext.isBoolean(ce)) {
+            if (typeof ce == 'boolean') {
                 me.events[eventName] = ce = new EXTUTIL.Event(me, eventName);
             }
-            ce.addListener(fn, scope, ISOBJECT(o) ? o : {});
+            ce.addListener(fn, scope, typeof o == 'object' ? o : {});
         }
     },
 
@@ -2155,7 +2172,7 @@ myGridPanel.on({
      */
     removeListener : function(eventName, fn, scope){
         var ce = this.events[eventName.toLowerCase()];
-        if (ISOBJECT(ce)) {
+        if (typeof ce == 'object') {
             ce.removeListener(fn, scope);
         }
     },
@@ -2169,7 +2186,7 @@ myGridPanel.on({
             key;
         for(key in events){
             evt = events[key];
-            if(ISOBJECT(evt)){
+            if(typeof evt == 'object'){
                 evt.clearListeners();
             }
         }
@@ -2187,7 +2204,7 @@ this.addEvents('storeloaded', 'storecleared');
     addEvents : function(o){
         var me = this;
         me.events = me.events || {};
-        if (Ext.isString(o)) {
+        if (typeof o == 'string') {
             var a = arguments,
                 i = a.length;
             while(i--) {
@@ -2205,7 +2222,7 @@ this.addEvents('storeloaded', 'storecleared');
      */
     hasListener : function(eventName){
         var e = this.events[eventName.toLowerCase()];
-        return ISOBJECT(e) && e.listeners.length > 0;
+        return typeof e == 'object' && e.listeners.length > 0;
     },
 
     /**
@@ -2268,7 +2285,7 @@ EXTUTIL.Observable.releaseCapture = function(o){
 function createTargeted(h, o, scope){
     return function(){
         if(o.target == arguments[0]){
-            h.apply(scope, TOARRAY(arguments));
+            h.apply(scope, Array.prototype.slice.call(arguments, 0));
         }
     };
 };
@@ -2276,7 +2293,7 @@ function createTargeted(h, o, scope){
 function createBuffered(h, o, l, scope){
     l.task = new EXTUTIL.DelayedTask();
     return function(){
-        l.task.delay(o.buffer, h, scope, TOARRAY(arguments));
+        l.task.delay(o.buffer, h, scope, Array.prototype.slice.call(arguments, 0));
     };
 };
 
@@ -2294,7 +2311,7 @@ function createDelayed(h, o, l, scope){
             l.tasks = [];
         }
         l.tasks.push(task);
-        task.delay(o.delay || 10, h, scope, TOARRAY(arguments));
+        task.delay(o.delay || 10, h, scope, Array.prototype.slice.call(arguments, 0));
     };
 };
 
@@ -2345,7 +2362,7 @@ EXTUTIL.Event.prototype = {
         var list = this.listeners,
             i = list.length,
             l;
-            
+
         scope = scope || this.obj;
         while(i--){
             l = list[i];
@@ -2402,7 +2419,6 @@ EXTUTIL.Event.prototype = {
 
     fire : function(){
         var me = this,
-            args = TOARRAY(arguments),
             listeners = me.listeners,
             len = listeners.length,
             i = 0,
@@ -2410,6 +2426,7 @@ EXTUTIL.Event.prototype = {
 
         if(len > 0){
             me.firing = TRUE;
+            var args = Array.prototype.slice.call(arguments, 0);
             for (; i < len; i++) {
                 l = listeners[i];
                 if(l && l.fireFn.apply(l.scope || me.obj || window, args) === FALSE) {
@@ -2420,8 +2437,10 @@ EXTUTIL.Event.prototype = {
         me.firing = FALSE;
         return TRUE;
     }
+
 };
-})();/**
+})();
+/**
  * @class Ext.util.Observable
  */
 Ext.apply(Ext.util.Observable.prototype, function(){
@@ -2440,9 +2459,13 @@ Ext.apply(Ext.util.Observable.prototype, function(){
             e.after = [];
 
             var makeCall = function(fn, scope, args){
-                if (!Ext.isEmpty(v = fn.apply(scope || obj, args))) {
-                    if (Ext.isObject(v)) {
-                        returnValue = !Ext.isEmpty(v.returnValue) ? v.returnValue : v;
+                if((v = fn.apply(scope || obj, args)) !== undefined){
+                    if (typeof v == 'object') {
+                        if(v.returnValue !== undefined){
+                            returnValue = v.returnValue;
+                        }else{
+                            returnValue = v;
+                        }
                         cancel = !!v.cancel;
                     }
                     else
@@ -2456,26 +2479,30 @@ Ext.apply(Ext.util.Observable.prototype, function(){
             };
 
             this[method] = function(){
-                var args = Ext.toArray(arguments);
+                var args = Array.prototype.slice.call(arguments, 0),
+                    b;
                 returnValue = v = undefined;
                 cancel = false;
 
-                Ext.each(e.before, function(b){
+                for(var i = 0, len = e.before.length; i < len; i++){
+                    b = e.before[i];
                     makeCall(b.fn, b.scope, args);
                     if (cancel) {
                         return returnValue;
                     }
-                });
+                }
 
-                if (!Ext.isEmpty(v = e.originalFn.apply(obj, args))) {
+                if((v = e.originalFn.apply(obj, args)) !== undefined){
                     returnValue = v;
                 }
-                Ext.each(e.after, function(a){
-                    makeCall(a.fn, a.scope, args);
+
+                for(var i = 0, len = e.after.length; i < len; i++){
+                    b = e.after[i];
+                    makeCall(b.fn, b.scope, args);
                     if (cancel) {
                         return returnValue;
                     }
-                });
+                }
                 return returnValue;
             };
         }
@@ -2502,21 +2529,18 @@ Ext.apply(Ext.util.Observable.prototype, function(){
         },
 
         removeMethodListener: function(method, fn, scope){
-            var e = getMethodEvent.call(this, method), found = false;
-            Ext.each(e.before, function(b, i, arr){
-                if (b.fn == fn && b.scope == scope) {
-                    arr.splice(i, 1);
-                    found = true;
-                    return false;
+            var e = this.getMethodEvent(method);
+            for(var i = 0, len = e.before.length; i < len; i++){
+                if(e.before[i].fn == fn && e.before[i].scope == scope){
+                    e.before.splice(i, 1);
+                    return;
                 }
-            });
-            if (!found) {
-                Ext.each(e.after, function(a, i, arr){
-                    if (a.fn == fn && a.scope == scope) {
-                        arr.splice(i, 1);
-                        return false;
-                    }
-                });
+            }
+            for(var i = 0, len = e.after.length; i < len; i++){
+                if(e.after[i].fn == fn && e.after[i].scope == scope){
+                    e.after.splice(i, 1);
+                    return;
+                }
             }
         },
 
@@ -2529,13 +2553,14 @@ Ext.apply(Ext.util.Observable.prototype, function(){
             var me = this;
             function createHandler(ename){
                 return function(){
-                    return me.fireEvent.apply(me, [ename].concat(Ext.toArray(arguments)));
+                    return me.fireEvent.apply(me, [ename].concat(Array.prototype.slice.call(arguments, 0)));
                 };
             }
-            Ext.each(events, function(ename){
+            for(var i = 0, len = events.length; i < len; i++){
+                var ename = events[i];
                 me.events[ename] = me.events[ename] || true;
                 o.on(ename, createHandler(ename), me);
-            });
+            }
         },
 
         /**
@@ -2578,16 +2603,17 @@ var myForm = new Ext.formPanel({
         enableBubble : function(events){
             var me = this;
             if(!Ext.isEmpty(events)){
-                events = Ext.isArray(events) ? events : Ext.toArray(arguments);
-                Ext.each(events, function(ename){
+                events = Ext.isArray(events) ? events : Array.prototype.slice.call(arguments, 0);
+                for(var i = 0, len = events.length; i < len; i++){
+                    var ename = events[i];
                     ename = ename.toLowerCase();
                     var ce = me.events[ename] || true;
-                    if (Ext.isBoolean(ce)) {
+                    if (typeof ce == 'boolean') {
                         ce = new Ext.util.Event(me, ename);
                         me.events[ename] = ce;
                     }
                     ce.bubble = true;
-                });
+                }
             }
         }
     };
@@ -2619,7 +2645,7 @@ Ext.data.Connection.on('beforerequest', function(con, options) {
     console.log('Ajax request made to ' + options.url);
 });</code></pre>
  * @param {Function} c The class constructor to make observable.
- * @param {Object} listeners An object containing a series of listeners to add. See {@link #addListener}. 
+ * @param {Object} listeners An object containing a series of listeners to add. See {@link #addListener}.
  * @static
  */
 Ext.util.Observable.observeClass = function(c, listeners){
@@ -2628,12 +2654,13 @@ Ext.util.Observable.observeClass = function(c, listeners){
           Ext.apply(c, new Ext.util.Observable());
           Ext.util.Observable.capture(c.prototype, c.fireEvent, c);
       }
-      if(Ext.isObject(listeners)){
+      if(typeof listeners == 'object'){
           c.on(listeners);
       }
       return c;
    }
-};/**
+};
+/**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
  * several useful events directly.
@@ -2877,7 +2904,7 @@ Ext.EventManager = function(){
     };
 
     function listen(element, ename, opt, fn, scope){
-        var o = !Ext.isObject(opt) ? {} : opt,
+        var o = (!opt || typeof opt == "boolean") ? {} : opt,
             el = Ext.getDom(element), task;
 
         fn = fn || o.fn;
@@ -2965,7 +2992,7 @@ Ext.EventManager = function(){
          * <p>See {@link Ext.Element#addListener} for examples of how to use these options.</p>
          */
         addListener : function(element, eventName, fn, scope, options){
-            if(Ext.isObject(eventName)){
+            if(typeof eventName == 'object'){
                 var o = eventName, e, val;
                 for(e in o){
                     val = o[e];
@@ -3145,7 +3172,7 @@ Ext.EventManager = function(){
                 conn,
                 tid,
                 ajax = Ext.lib.Ajax;
-            (Ext.isObject(ajax.conn)) ? conn = ajax.conn : conn = {};
+            (typeof ajax.conn == 'object') ? conn = ajax.conn : conn = {};
             for (tid in conn) {
                 c = conn[tid];
                 if (c) {
@@ -4910,7 +4937,7 @@ Ext.Element.addMethods({
 
         if(loadScripts !== true){
             this.dom.innerHTML = html;
-            if(Ext.isFunction(callback)){
+            if(typeof callback == 'function'){
                 callback();
             }
             return this;
@@ -4955,7 +4982,7 @@ Ext.Element.addMethods({
             }
             el = DOC.getElementById(id);
             if(el){Ext.removeNode(el);}
-            if(Ext.isFunction(callback)){
+            if(typeof callback == 'function'){
                 callback();
             }
         });
@@ -4978,7 +5005,7 @@ Ext.Element.addMethods({
      * @return {Ext.Element} The new proxy element
      */
     createProxy : function(config, renderTo, matchBox){
-        config = Ext.isObject(config) ? config : {tag : "div", cls: config};
+        config = (typeof config == 'object') ? config : {tag : "div", cls: config};
 
         var me = this,
             proxy = renderTo ? Ext.DomHelper.append(renderTo, config, true) :
@@ -5778,6 +5805,8 @@ Ext.Element.addMethods(function(){
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
+        spacesRe = /\s+/,
+        wordsRe = /\w/g,
         EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
@@ -5814,7 +5843,7 @@ Ext.Element.addMethods(function(){
         // private  ==> used by Fx
         adjustWidth : function(width) {
             var me = this;
-            var isNum = Ext.isNumber(width);
+            var isNum = (typeof width == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -5824,7 +5853,7 @@ Ext.Element.addMethods(function(){
         // private   ==> used by Fx
         adjustHeight : function(height) {
             var me = this;
-            var isNum = Ext.isNumber(height);
+            var isNum = (typeof height == "number");
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));
             }
@@ -5838,14 +5867,60 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         addClass : function(className){
-            var me = this, i, len, v;
-            className = Ext.isArray(className) ? className : [className];
-            for (i=0, len = className.length; i < len; i++) {
-                v = className[i];
-                if (v) {
-                    me.dom.className += (!me.hasClass(v) && v ? " " + v : "");
-                };
-            };
+            var me = this,
+                i,
+                len,
+                v,
+                cls = [];
+            // Separate case is for speed
+            if (!Ext.isArray(className)) {
+                if (typeof className == 'string' && !this.hasClass(className)) {
+                    me.dom.className += " " + className;
+                }
+            }
+            else {
+                for (i = 0, len = className.length; i < len; i++) {
+                    v = className[i];
+                    if (typeof v == 'string' && (' ' + me.dom.className + ' ').indexOf(' ' + v + ' ') == -1) {
+                        cls.push(v);
+                    }
+                }
+                if (cls.length) {
+                    me.dom.className += " " + cls.join(" ");
+                }
+            }
+            return me;
+        },
+
+        /**
+         * Removes one or more CSS classes from the element.
+         * @param {String/Array} className The CSS class to remove, or an array of classes
+         * @return {Ext.Element} this
+         */
+        removeClass : function(className){
+            var me = this,
+                i,
+                idx,
+                len,
+                cls,
+                elClasses;
+            if (!Ext.isArray(className)){
+                className = [className];
+            }
+            if (me.dom && me.dom.className) {
+                elClasses = me.dom.className.replace(trimRe, '').split(spacesRe);
+                for (i = 0, len = className.length; i < len; i++) {
+                    cls = className[i];
+                    if (typeof cls == 'string') {
+                        cls = cls.replace(trimRe, '');
+                        idx = elClasses.indexOf(cls);
+                        if (idx != -1) {
+                            elClasses.splice(idx, 1);
+                        }
+                    }
+                }
+                me.dom.className = elClasses.join(" ");
+            }
             return me;
         },
 
@@ -5855,36 +5930,18 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         radioClass : function(className){
-            var cn = this.dom.parentNode.childNodes, v;
+            var cn = this.dom.parentNode.childNodes,
+                v,
+                i,
+                len;
             className = Ext.isArray(className) ? className : [className];
-            for (var i=0, len = cn.length; i < len; i++) {
+            for (i = 0, len = cn.length; i < len; i++) {
                 v = cn[i];
-                if(v && v.nodeType == 1) {
+                if (v && v.nodeType == 1) {
                     Ext.fly(v, '_internal').removeClass(className);
                 }
             };
             return this.addClass(className);
-        },
-
-        /**
-         * Removes one or more CSS classes from the element.
-         * @param {String/Array} className The CSS class to remove, or an array of classes
-         * @return {Ext.Element} this
-         */
-        removeClass : function(className){
-            var me = this, v;
-            className = Ext.isArray(className) ? className : [className];
-            if (me.dom && me.dom.className) {
-                for (var i=0, len=className.length; i < len; i++) {
-                    v = className[i];
-                    if(v) {
-                        me.dom.className = me.dom.className.replace(
-                            classReCache[v] = classReCache[v] || new RegExp('(?:^|\\s+)' + v + '(?:\\s+|$)', "g"), " "
-                        );
-                    }
-                };
-            }
-            return me;
         },
 
         /**
@@ -5934,7 +5991,7 @@ Ext.Element.addMethods(function(){
                         display,
                         wk = Ext.isWebKit,
                         display;
-                        
+
                     if(el == document){
                         return null;
                     }
@@ -5989,7 +6046,7 @@ Ext.Element.addMethods(function(){
          */
         getColor : function(attr, defaultValue, prefix){
             var v = this.getStyle(attr),
-                color = Ext.isDefined(prefix) ? prefix : '#',
+                color = (typeof prefix != 'undefined') ? prefix : '#',
                 h;
 
             if(!v || /transparent|inherit/.test(v)){
@@ -6017,7 +6074,7 @@ Ext.Element.addMethods(function(){
             var tmp,
                 style,
                 camel;
-            if (!Ext.isObject(prop)) {
+            if (typeof prop != 'object') {
                 tmp = {};
                 tmp[prop] = value;
                 prop = tmp;
@@ -6218,16 +6275,20 @@ Ext.fly('elId').setHeight(150, {
 
         // private
         addStyles : function(sides, styles){
-            var val = 0,
-                m = sides.match(/\w/g),
-                s;
-            for (var i=0, len=m.length; i<len; i++) {
-                s = m[i] && parseInt(this.getStyle(styles[m[i]]), 10);
-                if (s) {
-                    val += MATH.abs(s);
+            var ttlSize = 0,
+                sidesArr = sides.match(wordsRe),
+                side,
+                size,
+                i,
+                len = sidesArr.length;
+            for (i = 0; i < len; i++) {
+                side = sidesArr[i];
+                size = side && parseInt(this.getStyle(styles[side]), 10);
+                if (size) {
+                    ttlSize += MATH.abs(size);
                 }
             }
-            return val;
+            return ttlSize;
         },
 
         margins : margins
@@ -6336,7 +6397,7 @@ Ext.Element.addMethods(function(){
          */
         setSize : function(width, height, animate){
             var me = this;
-            if(Ext.isObject(width)){ // in case of object from getSize()
+            if(typeof width == 'object'){ // in case of object from getSize()
                 height = width.height;
                 width = width.width;
             }
@@ -7418,7 +7479,7 @@ el.animate(
 
         // private legacy anim prep
         preanim : function(a, i){
-            return !a[i] ? false : (Ext.isObject(a[i]) ? a[i]: {duration: a[i+1], callback: a[i+2], easing: a[i+3]});
+            return !a[i] ? false : (typeof a[i] == 'object' ? a[i]: {duration: a[i+1], callback: a[i+2], easing: a[i+3]});
         },
 
         /**
@@ -7441,7 +7502,7 @@ el.animate(
                 dom = me.dom;
 
             // hideMode string override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 isDisplay = animate == DISPLAY;
                 isVisible = animate == VISIBILITY;
                 isOffsets = animate == OFFSETS;
@@ -7534,7 +7595,7 @@ el.animate(
          */
         hide : function(animate){
             // hideMode override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 this.setVisible(false, animate);
                 return this;
             }
@@ -7549,7 +7610,7 @@ el.animate(
          */
         show : function(animate){
             // hideMode override
-            if (Ext.isString(animate)){
+            if (typeof animate == 'string'){
                 this.setVisible(true, animate);
                 return this;
             }
@@ -7557,7 +7618,8 @@ el.animate(
             return this;
         }
     };
-}());/**
+}());
+/**
  * @class Ext.Element
  */
 Ext.Element.addMethods(
@@ -7714,7 +7776,7 @@ Ext.Element.addMethods({
      */
     addKeyListener : function(key, fn, scope){
         var config;
-        if(!Ext.isObject(key) || Ext.isArray(key)){
+        if(typeof key != 'object' || Ext.isArray(key)){
             config = {
                 key: key,
                 fn: fn,
@@ -7741,7 +7803,8 @@ Ext.Element.addMethods({
     addKeyMap : function(config){
         return new Ext.KeyMap(this, config);
     }
-});(function(){
+});
+(function(){
     // contants
     var NULL = null,
         UNDEFINED = undefined,
@@ -8898,8 +8961,8 @@ Ext.override(Ext.CompositeElementLite, {
 };
 
 Ext.CompositeElementLite.prototype = {
-    isComposite: true,    
-    
+    isComposite: true,
+
     // private
     getElement : function(el){
         // Set the shared flyweight dom property to the current element
@@ -8908,19 +8971,19 @@ Ext.CompositeElementLite.prototype = {
         e.id = el.id;
         return e;
     },
-    
+
     // private
     transformElement : function(el){
         return Ext.getDom(el);
     },
-    
+
     /**
      * Returns the number of elements in this Composite.
      * @return Number
      */
     getCount : function(){
         return this.elements.length;
-    },    
+    },
     /**
      * Adds elements to this Composite object.
      * @param {Mixed} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
@@ -8932,27 +8995,27 @@ Ext.CompositeElementLite.prototype = {
         if(!els){
             return this;
         }
-        if(Ext.isString(els)){
+        if(typeof els == "string"){
             els = Ext.Element.selectorFunction(els, root);
         }else if(els.isComposite){
             els = els.elements;
         }else if(!Ext.isIterable(els)){
             els = [els];
         }
-        
+
         for(var i = 0, len = els.length; i < len; ++i){
             elements.push(me.transformElement(els[i]));
         }
         return me;
     },
-    
+
     invoke : function(fn, args){
         var me = this,
             els = me.elements,
-            len = els.length, 
-            e, 
+            len = els.length,
+            e,
             i;
-            
+
         for(i = 0; i < len; i++) {
             e = els[i];
             if(e){
@@ -8982,7 +9045,7 @@ Ext.CompositeElementLite.prototype = {
         var els = this.elements,
             len = els.length,
             i, e;
-        
+
         for(i = 0; i<len; i++) {
             e = els[i];
             if(e) {
@@ -9003,12 +9066,12 @@ Ext.CompositeElementLite.prototype = {
      * @param {Object} scope (optional) The scope (<i>this</i> reference) in which the function is executed. (defaults to the Element)
      * @return {CompositeElement} this
      */
-    each : function(fn, scope){       
+    each : function(fn, scope){
         var me = this,
             els = me.elements,
             len = els.length,
             i, e;
-        
+
         for(i = 0; i<len; i++) {
             e = els[i];
             if(e){
@@ -9020,7 +9083,7 @@ Ext.CompositeElementLite.prototype = {
         }
         return me;
     },
-    
+
     /**
     * Clears this Composite and adds the elements passed.
     * @param {Mixed} els Either an array of DOM elements, or another Composite from which to fill this Composite.
@@ -9032,7 +9095,7 @@ Ext.CompositeElementLite.prototype = {
         me.add(els);
         return me;
     },
-    
+
     /**
      * Filters this composite to only elements that match the passed selector.
      * @param {String/Function} selector A string CSS selector or a comparison function.
@@ -9050,8 +9113,8 @@ Ext.CompositeElementLite.prototype = {
                 : function(el){
                     return el.is(selector);
                 };
-                
-        
+
+
         me.each(function(el, self, i){
             if(fn(el, i) !== false){
                 els[els.length] = me.transformElement(el);
@@ -9060,7 +9123,7 @@ Ext.CompositeElementLite.prototype = {
         me.elements = els;
         return me;
     },
-    
+
     /**
      * Find the index of the passed element within the composite collection.
      * @param el {Mixed} The id of an element, or an Ext.Element, or an HtmlElement to find within the composite collection.
@@ -9069,7 +9132,7 @@ Ext.CompositeElementLite.prototype = {
     indexOf : function(el){
         return this.elements.indexOf(this.transformElement(el));
     },
-    
+
     /**
     * Replaces the specified element with the passed element.
     * @param {Mixed} el The id of an element, the Element itself, the index of the element in this composite
@@ -9077,7 +9140,7 @@ Ext.CompositeElementLite.prototype = {
     * @param {Mixed} replacement The id of an element or the Element itself.
     * @param {Boolean} domReplace (Optional) True to remove and replace the element in the document too.
     * @return {CompositeElement} this
-    */    
+    */
     replaceElement : function(el, replacement, domReplace){
         var index = !isNaN(el) ? el : this.indexOf(el),
             d;
@@ -9092,7 +9155,7 @@ Ext.CompositeElementLite.prototype = {
         }
         return this;
     },
-    
+
     /**
      * Removes all elements.
      */
@@ -9107,22 +9170,22 @@ Ext.CompositeElementLite.prototype.on = Ext.CompositeElementLite.prototype.addLi
 var fnName,
     ElProto = Ext.Element.prototype,
     CelProto = Ext.CompositeElementLite.prototype;
-    
+
 for(fnName in ElProto){
     if(Ext.isFunction(ElProto[fnName])){
-        (function(fnName){ 
+        (function(fnName){
             CelProto[fnName] = CelProto[fnName] || function(){
                 return this.invoke(fnName, arguments);
             };
         }).call(CelProto, fnName);
-        
+
     }
 }
 })();
 
 if(Ext.DomQuery){
     Ext.Element.selectorFunction = Ext.DomQuery.select;
-} 
+}
 
 /**
  * Selects elements based on the passed CSS selector to enable {@link Ext.Element Element} methods
@@ -9155,32 +9218,33 @@ Ext.Element.select = function(selector, root){
  * @member Ext
  * @method select
  */
-Ext.select = Ext.Element.select;/**
+Ext.select = Ext.Element.select;
+/**
  * @class Ext.CompositeElementLite
  */
-Ext.apply(Ext.CompositeElementLite.prototype, {	
-	addElements : function(els, root){
+Ext.apply(Ext.CompositeElementLite.prototype, {
+    addElements : function(els, root){
         if(!els){
             return this;
         }
         if(typeof els == "string"){
             els = Ext.Element.selectorFunction(els, root);
         }
-        var yels = this.elements;        
-	    Ext.each(els, function(e) {
-        	yels.push(Ext.get(e));
+        var yels = this.elements;
+        Ext.each(els, function(e) {
+            yels.push(Ext.get(e));
         });
         return this;
     },
-    
+
     /**
      * Returns the first Element
      * @return {Ext.Element}
      */
     first : function(){
         return this.item(0);
-    },   
-    
+    },
+
     /**
      * Returns the last Element
      * @return {Ext.Element}
@@ -9188,7 +9252,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
     last : function(){
         return this.item(this.getCount()-1);
     },
-    
+
     /**
      * Returns true if this composite contains the passed element
      * @param el {Mixed} The id of an element, or an Ext.Element, or an HtmlElement to find within the composite collection.
@@ -9197,7 +9261,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
     contains : function(el){
         return this.indexOf(el) != -1;
     },
-    
+
     /**
     * Removes the specified element(s).
     * @param {Mixed} el The id of an element, the Element itself, the index of the element in this composite
@@ -9207,22 +9271,22 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
     */
     removeElement : function(keys, removeDom){
         var me = this,
-	        els = this.elements,	    
-	    	el;	    	
-	    Ext.each(keys, function(val){
-		    if ((el = (els[val] || els[val = me.indexOf(val)]))) {
-		    	if(removeDom){
+            els = this.elements,
+            el;
+        Ext.each(keys, function(val){
+            if ((el = (els[val] || els[val = me.indexOf(val)]))) {
+                if(removeDom){
                     if(el.dom){
                         el.remove();
                     }else{
                         Ext.removeNode(el);
                     }
                 }
-		    	els.splice(val, 1);		    	
-			}
-	    });
+                els.splice(val, 1);
+            }
+        });
         return this;
-    }    
+    }
 });
 /**
  * @class Ext.CompositeElement
@@ -9245,12 +9309,12 @@ els.hide(true); // all elements fade out and hide
 els.setWidth(100).hide(true);
 </code></pre>
  */
-Ext.CompositeElement = function(els, root){
-    this.elements = [];
-    this.add(els, root);
-};
-
-Ext.extend(Ext.CompositeElement, Ext.CompositeElementLite, {
+Ext.CompositeElement = Ext.extend(Ext.CompositeElementLite, {
+    
+    constructor : function(els, root){
+        this.elements = [];
+        this.add(els, root);
+    },
     
     // private
     getElement : function(el){
@@ -9326,7 +9390,7 @@ Ext.Element.select = function(selector, unique, root){
  * @param {Boolean} unique (optional) true to create a unique Ext.Element for each element (defaults to a shared flyweight object)
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
  * @return {CompositeElementLite/CompositeElement}
- * @member Ext.Element
+ * @member Ext
  * @method select
  */
 Ext.select = Ext.Element.select;(function(){
@@ -9680,19 +9744,19 @@ Ext.Ajax.request({
                     action: form.action
                 };
 
+            /*
+             * Originally this behaviour was modified for Opera 10 to apply the secure URL after
+             * the frame had been added to the document. It seems this has since been corrected in
+             * Opera so the behaviour has been reverted, the URL will be set before being added.
+             */
             Ext.fly(frame).set({
                 id: id,
                 name: id,
-                cls: 'x-hidden'
-
-            });
+                cls: 'x-hidden',
+                src: Ext.SSL_SECURE_URL
+            }); 
 
             doc.body.appendChild(frame);
-
-            //Reset the Frame to neutral domain
-            Ext.fly(frame).set({
-               src : Ext.SSL_SECURE_URL
-            });
 
             // This is required so that IE doesn't pop the response up in a new window.
             if(Ext.isIE){
@@ -12074,7 +12138,7 @@ mc.add(otherEl);
     item : function(key){
         var mk = this.map[key],
             item = mk !== undefined ? mk : (typeof key == 'number') ? this.items[key] : undefined;
-        return !Ext.isFunction(item) || this.allowFunctions ? item : null; // for prototype!
+        return typeof item != 'function' || this.allowFunctions ? item : null; // for prototype!
     },
 
     /**
@@ -12153,26 +12217,26 @@ mc.add(otherEl);
     _sort : function(property, dir, fn){
         var i, len,
             dsc   = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
-            
+
             //this is a temporary array used to apply the sorting function
             c     = [],
             keys  = this.keys,
             items = this.items;
-        
+
         //default to a simple sorter function if one is not provided
         fn = fn || function(a, b) {
             return a - b;
         };
-        
+
         //copy all the items into a temporary array, which we will sort
         for(i = 0, len = items.length; i < len; i++){
             c[c.length] = {
-                key  : keys[i], 
-                value: items[i], 
+                key  : keys[i],
+                value: items[i],
                 index: i
             };
         }
-        
+
         //sort the temporary array
         c.sort(function(a, b){
             var v = fn(a[property], b[property]) * dsc;
@@ -12181,13 +12245,13 @@ mc.add(otherEl);
             }
             return v;
         });
-        
+
         //copy the temporary array back into the main this.items and this.keys objects
         for(i = 0, len = c.length; i < len; i++){
             items[i] = c[i].value;
             keys[i]  = c[i].key;
         }
-        
+
         this.fireEvent('sort', this);
     },
 
@@ -12200,7 +12264,7 @@ mc.add(otherEl);
     sort : function(dir, fn){
         this._sort('value', dir, fn);
     },
-    
+
     /**
      * Reorders each of the items based on a mapping from old index to new index. Internally this
      * just translates into a sort. The 'sort' event is fired whenever reordering has occured.
@@ -12208,33 +12272,33 @@ mc.add(otherEl);
      */
     reorder: function(mapping) {
         this.suspendEvents();
-        
+
         var items     = this.items,
             index     = 0,
             length    = items.length,
             order     = [],
             remaining = [];
-        
+
         //object of {oldPosition: newPosition} reversed to {newPosition: oldPosition}
         for (oldIndex in mapping) {
             order[mapping[oldIndex]] = items[oldIndex];
-        } 
-        
+        }
+
         for (index = 0; index < length; index++) {
             if (mapping[index] == undefined) {
                 remaining.push(items[index]);
             }
         }
-        
+
         for (index = 0; index < length; index++) {
             if (order[index] == undefined) {
                 order[index] = remaining.shift();
             }
         }
-        
+
         this.clear();
         this.addAll(order);
-        
+
         this.resumeEvents();
         this.fireEvent('sort', this);
     },
@@ -12369,7 +12433,7 @@ mc.add(otherEl);
         if (!value.exec) { // not a regex
             var er = Ext.escapeRe;
             value = String(value);
-            
+
             if (anyMatch === true) {
                 value = er(value);
             } else {
@@ -12407,7 +12471,8 @@ mc.add(otherEl);
  * not found, returns <tt>undefined</tt>. If an item was found, but is a Class,
  * returns <tt>null</tt>.
  */
-Ext.util.MixedCollection.prototype.get = Ext.util.MixedCollection.prototype.item;/**
+Ext.util.MixedCollection.prototype.get = Ext.util.MixedCollection.prototype.item;
+/**
  * @class Ext.util.JSON
  * Modified version of Douglas Crockford"s json.js that doesn"t
  * mess with the Object prototype
@@ -12967,17 +13032,17 @@ Ext.util.Format = function(){
  * <li>{@link Ext.layout.MenuLayout}</li>
  * <li>{@link Ext.ColorPalette}</li>
  * </ul></div></p>
- * 
- * <p>For example usage {@link #XTemplate see the constructor}.</p>  
- *   
+ *
+ * <p>For example usage {@link #XTemplate see the constructor}.</p>
+ *
  * @constructor
  * The {@link Ext.Template#Template Ext.Template constructor} describes
  * the acceptable parameters to pass to the constructor. The following
  * examples demonstrate all of the supported features.</p>
- * 
+ *
  * <div class="mdetail-params"><ul>
- * 
- * <li><b><u>Sample Data</u></b> 
+ *
+ * <li><b><u>Sample Data</u></b>
  * <div class="sub-desc">
  * <p>This is the data object used for reference in each code example:</p>
  * <pre><code>
@@ -13005,9 +13070,9 @@ var data = {
  * </code></pre>
  * </div>
  * </li>
- * 
- * 
- * <li><b><u>Auto filling of arrays</u></b> 
+ *
+ *
+ * <li><b><u>Auto filling of arrays</u></b>
  * <div class="sub-desc">
  * <p>The <b><tt>tpl</tt></b> tag and the <b><tt>for</tt></b> operator are used
  * to process the provided data object:
@@ -13078,9 +13143,9 @@ tpl.overwrite(panel.body, data);
  * </code></pre>
  * </div>
  * </li>
- * 
- * 
- * <li><b><u>Conditional processing with basic comparison operators</u></b> 
+ *
+ *
+ * <li><b><u>Conditional processing with basic comparison operators</u></b>
  * <div class="sub-desc">
  * <p>The <b><tt>tpl</tt></b> tag and the <b><tt>if</tt></b> operator are used
  * to provide conditional checks for deciding whether or not to render specific
@@ -13115,9 +13180,9 @@ tpl.overwrite(panel.body, data);
  * </code></pre>
  * </div>
  * </li>
- * 
- * 
- * <li><b><u>Basic math support</u></b> 
+ *
+ *
+ * <li><b><u>Basic math support</u></b>
  * <div class="sub-desc">
  * <p>The following basic math operators may be applied directly on numeric
  * data values:</p><pre>
@@ -13141,8 +13206,8 @@ tpl.overwrite(panel.body, data);
  * </div>
  * </li>
  *
- * 
- * <li><b><u>Execute arbitrary inline code with special built-in template variables</u></b> 
+ *
+ * <li><b><u>Execute arbitrary inline code with special built-in template variables</u></b>
  * <div class="sub-desc">
  * <p>Anything between <code>{[ ... ]}</code> is considered code to be executed
  * in the scope of the template. There are some special variables available in that code:
@@ -13173,8 +13238,8 @@ tpl.overwrite(panel.body, data);
  * </code></pre>
  * </div>
  * </li>
- * 
- * <li><b><u>Template member functions</u></b> 
+ *
+ * <li><b><u>Template member functions</u></b>
  * <div class="sub-desc">
  * <p>One or more member functions can be specified in a configuration
  * object passed into the XTemplate constructor for more complex processing:</p>
@@ -13211,40 +13276,40 @@ tpl.overwrite(panel.body, data);
  * </code></pre>
  * </div>
  * </li>
- * 
+ *
  * </ul></div>
- * 
+ *
  * @param {Mixed} config
  */
 Ext.XTemplate = function(){
     Ext.XTemplate.superclass.constructor.apply(this, arguments);
 
     var me = this,
-    	s = me.html,
-    	re = /<tpl\b[^>]*>((?:(?=([^<]+))\2|<(?!tpl\b[^>]*>))*?)<\/tpl>/,
-    	nameRe = /^<tpl\b[^>]*?for="(.*?)"/,
-    	ifRe = /^<tpl\b[^>]*?if="(.*?)"/,
-    	execRe = /^<tpl\b[^>]*?exec="(.*?)"/,
-    	m,
-    	id = 0,
-    	tpls = [],
-    	VALUES = 'values',
-    	PARENT = 'parent',
-    	XINDEX = 'xindex',
-    	XCOUNT = 'xcount',
-    	RETURN = 'return ',
-    	WITHVALUES = 'with(values){ ';
+        s = me.html,
+        re = /<tpl\b[^>]*>((?:(?=([^<]+))\2|<(?!tpl\b[^>]*>))*?)<\/tpl>/,
+        nameRe = /^<tpl\b[^>]*?for="(.*?)"/,
+        ifRe = /^<tpl\b[^>]*?if="(.*?)"/,
+        execRe = /^<tpl\b[^>]*?exec="(.*?)"/,
+        m,
+        id = 0,
+        tpls = [],
+        VALUES = 'values',
+        PARENT = 'parent',
+        XINDEX = 'xindex',
+        XCOUNT = 'xcount',
+        RETURN = 'return ',
+        WITHVALUES = 'with(values){ ';
 
     s = ['<tpl>', s, '</tpl>'].join('');
 
     while((m = s.match(re))){
-       	var m2 = m[0].match(nameRe),
-			m3 = m[0].match(ifRe),
-       		m4 = m[0].match(execRe),
-       		exp = null,
-       		fn = null,
-       		exec = null,
-       		name = m2 && m2[1] ? m2[1] : '';
+        var m2 = m[0].match(nameRe),
+            m3 = m[0].match(ifRe),
+            m4 = m[0].match(execRe),
+            exp = null,
+            fn = null,
+            exec = null,
+            name = m2 && m2[1] ? m2[1] : '';
 
        if (m3) {
            exp = m3 && m3[1] ? m3[1] : null;
@@ -13275,9 +13340,9 @@ Ext.XTemplate = function(){
        s = s.replace(m[0], '{xtpl'+ id + '}');
        ++id;
     }
-	Ext.each(tpls, function(t) {
-        me.compileTpl(t);
-    });
+    for(var i = tpls.length-1; i >= 0; --i){
+        me.compileTpl(tpls[i]);
+    }
     me.master = tpls[tpls.length-1];
     me.tpls = tpls;
 };
@@ -13290,10 +13355,10 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
     // private
     applySubTemplate : function(id, values, parent, xindex, xcount){
         var me = this,
-        	len,
-        	t = me.tpls[id],
-        	vs,
-        	buf = [];
+            len,
+            t = me.tpls[id],
+            vs,
+            buf = [];
         if ((t.test && !t.test.call(me, values, parent, xindex, xcount)) ||
             (t.exec && t.exec.call(me, values, parent, xindex, xcount))) {
             return '';
@@ -13302,9 +13367,9 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
         len = vs.length;
         parent = t.target ? values : parent;
         if(t.target && Ext.isArray(vs)){
-	        Ext.each(vs, function(v, i) {
-                buf[buf.length] = t.compiled.call(me, v, parent, i+1, len);
-            });
+            for(var i = 0, len = vs.length; i < len; i++){
+                buf[buf.length] = t.compiled.call(me, vs[i], parent, i+1, len);
+            }
             return buf.join('');
         }
         return t.compiled.call(me, vs, parent, xindex, xcount);
@@ -13313,7 +13378,7 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
     // private
     compileTpl : function(tpl){
         var fm = Ext.util.Format,
-       		useF = this.disableFormats !== true,
+            useF = this.disableFormats !== true,
             sep = Ext.isGecko ? "+" : ",",
             body;
 
@@ -13416,7 +13481,8 @@ Ext.XTemplate.prototype.apply = Ext.XTemplate.prototype.applyTemplate;
 Ext.XTemplate.from = function(el){
     el = Ext.getDom(el);
     return new Ext.XTemplate(el.value || el.innerHTML);
-};/**
+};
+/**
  * @class Ext.util.CSS
  * Utility class for manipulating CSS rules
  * @singleton

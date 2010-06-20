@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -99,20 +99,22 @@ Ext.lib.Event = function() {
     function _tryPreloadAttach() {
         var ret = false,
             notAvail = [],
-            element, i, len, v,
+            element, i, v, override,
             tryAgain = !loadComplete || (retryCount > 0);
 
-        if (!locked) {
+        if(!locked){
             locked = true;
-
-            for (i = 0, len = onAvailStack.length; i < len; i++) {
+            
+            for(i = 0; i < onAvailStack.length; ++i){
                 v = onAvailStack[i];
                 if(v && (element = doc.getElementById(v.id))){
                     if(!v.checkReady || loadComplete || element.nextSibling || (doc && doc.body)) {
-                        element = v.override ? (v.override === true ? v.obj : v.override) : element;
+                        override = v.override;
+                        element = override ? (override === true ? v.obj : override) : element;
                         v.fn.call(element, v.obj);
                         onAvailStack.remove(v);
-                    } else {
+                        --i;
+                    }else{
                         notAvail.push(v);
                     }
                 }
@@ -126,7 +128,6 @@ Ext.lib.Event = function() {
                 clearInterval(_interval);
                 _interval = null;
             }
-
             ret = !(locked = false);
         }
         return ret;

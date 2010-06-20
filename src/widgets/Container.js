@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -465,8 +465,8 @@ items: [
         if(this.layout && this.layout != layout){
             this.layout.setContainer(null);
         }
-        this.initItems();
         this.layout = layout;
+        this.initItems();
         layout.setContainer(this);
     },
 
@@ -770,11 +770,10 @@ tb.{@link #doLayout}();             // refresh the layout
     },
 
     /**
-    * We can only lay out if there is a view area in which to layout.
-    * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
-    */
-
-    // private
+     * @private
+     * We can only lay out if there is a view area in which to layout.
+     * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
+     */
     canLayout : function() {
         var el = this.getVisibilityEl();
         return el && el.dom && !el.isStyle("display", "none");

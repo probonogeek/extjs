@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -169,7 +169,7 @@ Ext.data.GroupingStore = Ext.extend(Ext.data.Store, {
         } else if (fieldName == undefined) {
             //we preserve the existing sortInfo here because this.sort is called after
             //clearGrouping and there may be existing sorting
-            sorters = [this.sortInfo];
+            sorters = this.sortInfo ? [this.sortInfo] : [];
         } else {
             //TODO: this is lifted straight from Ext.data.Store's singleSort function. It should instead be
             //refactored into a common method if possible

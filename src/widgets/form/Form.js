@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -270,6 +270,9 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
             // If a Container, its already destroyed by the time it gets here.  Remove any references to destroyed fields.
             }else if (c.findBy){
                 Ext.each(c.findBy(this.isField), this.form.remove, this.form);
+                if (c.isDestroyed) {
+                    this.form.cleanDestroyed();
+                }
             }
         }
     },

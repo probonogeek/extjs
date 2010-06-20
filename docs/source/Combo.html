@@ -7,7 +7,7 @@
 </head>
 <body  onload="prettyPrint();">
     <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -751,7 +751,23 @@ var menu = new Ext.menu.Menu({
     initEvents : function(){
         Ext.form.ComboBox.superclass.initEvents.call(this);
 
-
+        <div id="prop-Ext.form.ComboBox-keyNav"></div>/**
+         * @property keyNav
+         * @type Ext.KeyNav
+         * <p>A {@link Ext.KeyNav KeyNav} object which handles navigation keys for this ComboBox. This performs actions
+         * based on keystrokes typed when the input field is focused.</p>
+         * <p><b>After the ComboBox has been rendered</b>, you may override existing navigation key functionality,
+         * or add your own based upon key names as specified in the {@link Ext.KeyNav KeyNav} class.</p>
+         * <p>The function is executed in the scope (<code>this</code> reference of the ComboBox. Example:</p><pre><code>
+myCombo.keyNav.esc = function(e) {  // Override ESC handling function
+    this.collapse();                // Standard behaviour of Ext's ComboBox.
+    this.setValue(this.startValue); // We reset to starting value on ESC
+};
+myCombo.keyNav.tab = function() {   // Override TAB handling function
+    this.onViewClick(false);        // Select the currently highlighted row
+};
+</code></pre>
+         */
         this.keyNav = new Ext.KeyNav(this.el, {
             "up" : function(e){
                 this.inKeyMode = true;

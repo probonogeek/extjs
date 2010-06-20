@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -1184,10 +1184,19 @@ var myField = new Ext.form.NumberField({
         
         value = value || this.processValue(this.getRawValue());        
         
-        if(Ext.isFunction(this.validator)){
+        if (Ext.isFunction(this.validator)) {
             var msg = this.validator(value);
             if (msg !== true) {
                 errors.push(msg);
+            }
+        }
+        
+        if (value.length < 1 || value === this.emptyText) {
+            if (this.allowBlank) {
+                //if value is blank and allowBlank is true, there cannot be any additional errors
+                return errors;
+            } else {
+                errors.push(this.blankText);
             }
         }
         
@@ -3191,7 +3200,23 @@ var menu = new Ext.menu.Menu({
     initEvents : function(){
         Ext.form.ComboBox.superclass.initEvents.call(this);
 
-
+        /**
+         * @property keyNav
+         * @type Ext.KeyNav
+         * <p>A {@link Ext.KeyNav KeyNav} object which handles navigation keys for this ComboBox. This performs actions
+         * based on keystrokes typed when the input field is focused.</p>
+         * <p><b>After the ComboBox has been rendered</b>, you may override existing navigation key functionality,
+         * or add your own based upon key names as specified in the {@link Ext.KeyNav KeyNav} class.</p>
+         * <p>The function is executed in the scope (<code>this</code> reference of the ComboBox. Example:</p><pre><code>
+myCombo.keyNav.esc = function(e) {  // Override ESC handling function
+    this.collapse();                // Standard behaviour of Ext's ComboBox.
+    this.setValue(this.startValue); // We reset to starting value on ESC
+};
+myCombo.keyNav.tab = function() {   // Override TAB handling function
+    this.onViewClick(false);        // Select the currently highlighted row
+};
+</code></pre>
+         */
         this.keyNav = new Ext.KeyNav(this.el, {
             "up" : function(e){
                 this.inKeyMode = true;
@@ -5644,7 +5669,7 @@ myFormPanel.getForm().submit({
                     if (f.dataIndex == id || f.id == id || f.getName() == id) {
                         field = f;
                         return false;
-                    } else if (f.isComposite) {
+                    } else if (f.isComposite && f.rendered) {
                         return f.items.each(findMatchingField);
                     }
                 }
@@ -5818,6 +5843,13 @@ myFormPanel.getForm().submit({
     remove : function(field){
         this.items.remove(field);
         return this;
+    },
+
+    /**
+     * Removes all fields from the collection that have been destroyed.
+     */
+    cleanDestroyed : function() {
+        this.items.filterBy(function(o) { return !!o.isDestroyed; }).each(this.remove, this);
     },
 
     /**
@@ -6137,6 +6169,9 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
             // If a Container, its already destroyed by the time it gets here.  Remove any references to destroyed fields.
             }else if (c.findBy){
                 Ext.each(c.findBy(this.isField), this.form.remove, this.form);
+                if (c.isDestroyed) {
+                    this.form.cleanDestroyed();
+                }
             }
         }
     },
@@ -6217,7 +6252,8 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
 });
 Ext.reg('form', Ext.FormPanel);
 
-Ext.form.FormPanel = Ext.FormPanel;/**
+Ext.form.FormPanel = Ext.FormPanel;
+/**
  * @class Ext.form.FieldSet
  * @extends Ext.Panel
  * Standard container used for grouping items within a {@link Ext.form.FormPanel form}.
@@ -6881,7 +6917,11 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
         Ext.form.HtmlEditor.superclass.setReadOnly.call(this, readOnly);
         if(this.initialized){
-            this.setDesignMode(!readOnly);
+            if(Ext.isIE){
+                this.getEditorBody().contentEditable = !readOnly;
+            }else{
+                this.setDesignMode(!readOnly);
+            }
             var bd = this.getEditorBody();
             if(bd){
                 bd.style.cursor = this.readOnly ? 'default' : 'text';
@@ -7060,20 +7100,23 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @param {Boolean} sourceEdit (optional) True for source edit, false for standard
      */
     toggleSourceEdit : function(sourceEditMode){
-        var iframeHeight, elHeight;
-        if(sourceEditMode === undefined){
+        var iframeHeight,
+            elHeight,
+            ls;
+
+        if (sourceEditMode === undefined) {
             sourceEditMode = !this.sourceEditMode;
         }
         this.sourceEditMode = sourceEditMode === true;
         var btn = this.tb.getComponent('sourceedit');
 
-        if(btn.pressed !== this.sourceEditMode){
+        if (btn.pressed !== this.sourceEditMode) {
             btn.toggle(this.sourceEditMode);
-            if(!btn.xtbHidden){
+            if (!btn.xtbHidden) {
                 return;
             }
         }
-        if(this.sourceEditMode){
+        if (this.sourceEditMode) {
             // grab the height of the containing panel before we hide the iframe
             ls = this.getSize();
 
@@ -7086,9 +7129,10 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             this.el.dom.removeAttribute('tabIndex');
             this.el.focus();
             this.el.dom.style.height = iframeHeight + 'px';
-        }else{
+        }
+        else {
             elHeight = parseInt(this.el.dom.style.height, 10);
-            if(this.initialized){
+            if (this.initialized) {
                 this.disableItems(this.readOnly);
             }
             this.pushValue();
@@ -7104,7 +7148,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     },
 
     // private used internally
-    createLink : function(){
+    createLink : function() {
         var url = prompt(this.createLinkText, this.defaultLinkValue);
         if(url && url != 'http:/'+'/'){
             this.relayCmd('createlink', url);
@@ -7202,9 +7246,8 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 if(Ext.isGecko){
                     // Gecko hack, see: https://bugzilla.mozilla.org/show_bug.cgi?id=232791#c8
                     this.setDesignMode(false);  //toggle off first
-
+                    this.setDesignMode(true);
                 }
-                this.setDesignMode(true);
                 this.fireEvent('push', this, v);
             }
 
@@ -7759,7 +7802,8 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @hide
      */
 });
-Ext.reg('htmleditor', Ext.form.HtmlEditor);/**
+Ext.reg('htmleditor', Ext.form.HtmlEditor);
+/**
  * @class Ext.form.TimeField
  * @extends Ext.form.ComboBox
  * Provides a time input field with a time dropdown and automatic time validation.  Example usage:
@@ -8001,6 +8045,7 @@ Ext.form.SliderField = Ext.extend(Ext.form.Field, {
         };
         Ext.form.SliderField.superclass.onRender.call(this, ct, position);
         this.wrap = this.el.wrap({cls: 'x-form-field-wrap'});
+        this.resizeEl = this.positionEl = this.wrap;
         this.slider.render(this.wrap);
     },
     
@@ -8960,7 +9005,7 @@ Ext.apply(Ext.form.VTypes, {
     timeMask: /[\d\s:amp]/i
 });
  * </code></pre>
- * Another example: 
+ * Another example:
  * <pre><code>
 // custom Vtype for vtype:'IPAddress'
 Ext.apply(Ext.form.VTypes, {
@@ -8986,7 +9031,7 @@ Ext.form.VTypes = function(){
          * The function used to validate email addresses.  Note that this is a very basic validation -- complete
          * validation per the email RFC specifications is very complex and beyond the scope of this class, although
          * this function can be overridden if a more comprehensive validation scheme is desired.  See the validation
-         * section of the <a href="http://en.wikipedia.org/wiki/E-mail_address">Wikipedia article on email addresses</a> 
+         * section of the <a href="http://en.wikipedia.org/wiki/E-mail_address">Wikipedia article on email addresses</a>
          * for additional information.  This implementation is intended to validate the following emails:<tt>
          * 'barney@example.de', 'barney.rubble@example.com', 'barney-rubble@example.coop', 'barney+rubble@example.com'
          * </tt>.
@@ -9003,12 +9048,12 @@ Ext.form.VTypes = function(){
          */
         'emailText' : 'This field should be an e-mail address in the format "user@example.com"',
         /**
-         * The keystroke filter mask to be applied on email input.  See the {@link #email} method for 
+         * The keystroke filter mask to be applied on email input.  See the {@link #email} method for
          * information about more complex email validation. Defaults to:
          * <tt>/[a-z0-9_\.\-@]/i</tt>
          * @type RegExp
          */
-        'emailMask' : /[a-z0-9_\.\-@]/i,
+        'emailMask' : /[a-z0-9_\.\-@\+]/i,
 
         /**
          * The function used to validate URLs
@@ -9024,7 +9069,7 @@ Ext.form.VTypes = function(){
          * @type String
          */
         'urlText' : 'This field should be a URL in the format "http:/'+'/www.example.com"',
-        
+
         /**
          * The function used to validate alpha values
          * @param {String} value The value

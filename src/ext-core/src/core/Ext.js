@@ -1,10 +1,9 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
-
 // for old browsers
 window.undefined = window.undefined;
 
@@ -19,7 +18,12 @@ Ext = {
      * The version of the framework
      * @type String
      */
-    version : '3.2.0'
+    version : '3.2.1',
+    versionDetail : {
+        major: 3,
+        minor: 2,
+        patch: 1
+    }
 };
 
 /**
@@ -227,7 +231,7 @@ MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
             var oc = Object.prototype.constructor;
 
             return function(sb, sp, overrides){
-                if(Ext.isObject(sp)){
+                if(typeof sp == 'object'){
                     overrides = sp;
                     sp = sb;
                     sb = overrides.constructor != oc ? overrides.constructor : function(){sp.apply(this, arguments);};
@@ -475,7 +479,7 @@ Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2"
             if(Ext.isIterable(obj)){
                 Ext.each(obj, fn, scope);
                 return;
-            }else if(Ext.isObject(obj)){
+            }else if(typeof obj == 'object'){
                 for(var prop in obj){
                     if(obj.hasOwnProperty(prop)){
                         if(fn.call(scope || obj, prop, obj[prop], obj) === false){
@@ -516,7 +520,7 @@ function(el){
             if (el.dom){
                 return el.dom;
             } else {
-                if (Ext.isString(el)) {
+                if (typeof el == 'string') {
                     var e = DOC.getElementById(el);
                     // IE returns elements with the 'name' and 'id' attribute.
                     // we do a strict check to return the element with only the id attribute

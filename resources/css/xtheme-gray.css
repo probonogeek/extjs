@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -1011,8 +1011,8 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 }
 
 .x-date-inner .x-date-selected a{
+    background-image: none;
     background-color:#D8D8D8;
-    background-image:url(../images/gray/glass-bg.gif);
 	border-color:#DCDCDC;
 }
 
@@ -1606,7 +1606,7 @@ body.x-body-masked .x-window-plain .x-window-mc {
 }
 
 .x-list-header-inner em.sort-asc, .x-list-header-inner em.sort-desc {
-    background-image:url(../images/gray/grid/sort-hd.gif);
+    background-image:none;
     border-color: #d0d0d0;
 }
 .x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {

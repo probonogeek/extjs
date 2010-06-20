@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -18,7 +18,7 @@ Ext.Element.addMethods({
      */
     addKeyListener : function(key, fn, scope){
         var config;
-        if(!Ext.isObject(key) || Ext.isArray(key)){
+        if(typeof key != 'object' || Ext.isArray(key)){
             config = {
                 key: key,
                 fn: fn,

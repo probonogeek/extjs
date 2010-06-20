@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -588,9 +588,6 @@ new Ext.TabPanel({
         if(this.rendered){
             var items = this.items;
             this.initTab(c, items.indexOf(c));
-            if(items.getCount() == 1 && !this.collapsed){
-                this.syncSize();
-            }
             this.delegateUpdates();
         }
     },
@@ -817,10 +814,10 @@ new Ext.TabPanel({
                     Ext.fly(oldEl).removeClass('x-tab-strip-active');
                 }
             }
+            this.activeTab = item;
             if(item){
                 var el = this.getTabEl(item);
                 Ext.fly(el).addClass('x-tab-strip-active');
-                this.activeTab = item;
                 this.stack.add(item);
 
                 this.layout.setActiveItem(item);

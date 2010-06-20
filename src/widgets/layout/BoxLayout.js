@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -428,12 +428,12 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                 switch (this.align) {
                     case 'stretch':
                         stretchWidth = availWidth - horizMargins;
-                        calcs.width  = stretchWidth.constrain(child.minHeight || 0, child.maxWidth || 1000000);
+                        calcs.width  = stretchWidth.constrain(child.minWidth || 0, child.maxWidth || 1000000);
                         calcs.dirtySize = true;
                         break;
                     case 'stretchmax':
                         stretchWidth = maxWidth - horizMargins;
-                        calcs.width  = stretchWidth.constrain(child.minHeight || 0, child.maxWidth || 1000000);
+                        calcs.width  = stretchWidth.constrain(child.minWidth || 0, child.maxWidth || 1000000);
                         calcs.dirtySize = true;
                         break;
                     case 'center':

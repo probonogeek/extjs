@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -1957,7 +1957,7 @@ Ext.grid.GridView.SplitDragZone = Ext.extend(Ext.dd.DDProxy, {
         if(t && this.allowHeaderDrag(e)){
             var xy = this.view.fly(t).getXY(), 
                 x = xy[0], 
-                y = xy[1];
+                y = xy[1],
                 exy = e.getXY(), ex = exy[0],
                 w = t.offsetWidth, adjust = false;
                 

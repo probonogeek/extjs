@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -185,6 +185,11 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
 
     onFieldShow: function(c){
         c.getItemCt().removeClass('x-hide-' + c.hideMode);
+
+        // Composite fields will need to layout after the container is made visible
+        if (c.isComposite) {
+            c.doLayout();
+        }
     },
 
     onFieldHide: function(c){
@@ -241,7 +246,7 @@ new Ext.Template(
 
     /**
      * @private
-     * 
+     *
      */
     renderItem : function(c, position, target){
         if(c && (c.isFormField || c.fieldLabel) && c.inputType != 'hidden'){
@@ -313,7 +318,7 @@ new Ext.Template(
      */
     getTemplateArgs: function(field) {
         var noLabelSep = !field.fieldLabel || field.hideLabel;
-        
+
         return {
             id            : field.id,
             label         : field.fieldLabel,

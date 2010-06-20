@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -355,19 +355,19 @@ Ext.Ajax.request({
                     action: form.action
                 };
 
+            /*
+             * Originally this behaviour was modified for Opera 10 to apply the secure URL after
+             * the frame had been added to the document. It seems this has since been corrected in
+             * Opera so the behaviour has been reverted, the URL will be set before being added.
+             */
             Ext.fly(frame).set({
                 id: id,
                 name: id,
-                cls: 'x-hidden'
-
-            });
+                cls: 'x-hidden',
+                src: Ext.SSL_SECURE_URL
+            }); 
 
             doc.body.appendChild(frame);
-
-            //Reset the Frame to neutral domain
-            Ext.fly(frame).set({
-               src : Ext.SSL_SECURE_URL
-            });
 
             // This is required so that IE doesn't pop the response up in a new window.
             if(Ext.isIE){

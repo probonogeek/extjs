@@ -348,13 +348,7 @@ should go based on the current sort information.<div class="mdetail-params"><str
                                         void<div class="mdesc"><div class="short">Commit all Records with outstanding changes. To handle updates for changes,
 subscribe to the Store's update event, an...</div><div class="long">Commit all Records with <a href="output/Ext.data.Store.html#Ext.data.Store-getModifiedRecords" ext:member="getModifiedRecords" ext:cls="Ext.data.Store">outstanding changes</a>. To handle updates for changes,
 subscribe to the Store's <a href="output/Ext.data.Store.html#Ext.data.Store-update" ext:member="update" ext:cls="Ext.data.Store">update event</a>, and perform updating when the third parameter is
-Ext.data.Record.COMMIT.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#commitChanges" ext:member="#commitChanges" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-createMultipleFilterFn"></a><b><a href="source/Store.html#method-Ext.data.Store-createMultipleFilterFn">createMultipleFilterFn</a></b>(&nbsp;<code>Array&nbsp;filters</code>&nbsp;)
-    :
-                                        Function<div class="mdesc"><div class="short">Given an array of filter functions (each with optional scope), constructs and returns a single function that returns
-...</div><div class="long">Given an array of filter functions (each with optional scope), constructs and returns a single function that returns
-the result of all of the filters ANDed together<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>filters</code> : Array<div class="sub-desc">The array of filter objects (each object should contain an 'fn' and optional scope)</div></li></ul><strong>Returns:</strong><ul><li><code>Function</code><div class="sub-desc">The multiple filter function</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#createMultipleFilterFn" ext:member="#createMultipleFilterFn" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-createSortFunction"></a><b><a href="source/Store.html#method-Ext.data.Store-createSortFunction">createSortFunction</a></b>(&nbsp;<code>String&nbsp;field</code>,&nbsp;<code>String&nbsp;direction</code>&nbsp;)
-    :
-                                        Function<div class="mdesc"><div class="short">Creates and returns a function which sorts an array by the given field and direction</div><div class="long">Creates and returns a function which sorts an array by the given field and direction<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>field</code> : String<div class="sub-desc">The field to create the sorter for</div></li><li><code>direction</code> : String<div class="sub-desc">The direction to sort by (defaults to "ASC")</div></li></ul><strong>Returns:</strong><ul><li><code>Function</code><div class="sub-desc">A function which sorts by the field/direction combination provided</div></li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#createSortFunction" ext:member="#createSortFunction" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-destroy"></a><b><a href="source/Store.html#method-Ext.data.Store-destroy">destroy</a></b>()
+Ext.data.Record.COMMIT.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#commitChanges" ext:member="#commitChanges" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-destroy"></a><b><a href="source/Store.html#method-Ext.data.Store-destroy">destroy</a></b>()
     :
                                         void<div class="mdesc"><div class="short">Destroys the store.</div><div class="long">Destroys the store.<div class="mdetail-params"><strong>Parameters:</strong><ul><li>None.</li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#destroy" ext:member="#destroy" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-each"></a><b><a href="source/Store.html#method-Ext.data.Store-each">each</a></b>(&nbsp;<code>Function&nbsp;fn</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>&nbsp;)
     :
@@ -402,21 +396,21 @@ options to filter by more than one property.
 Single filter example:
 store.filter('name', 'Ed', true, true); //finds all records containing the substring 'Ed'
 Multiple filter example:
-store.filter([
+<pre><code>store.filter([
 {
-property     : 'name',
-value        : 'Ed',
-anyMatch     : true, //optional, defaults to true
-caseSensitive: true  //optional, defaults to true
+property     : <em>'name'</em>,
+value        : <em>'Ed'</em>,
+anyMatch     : true, <i>//optional, defaults to true</i>
+caseSensitive: true  <i>//optional, defaults to true</i>
 },
-//filter functions can also be passed
+<i>//filter functions can also be passed</i>
 {
-fn   : function(record) {
-return record.get('age') == 24
+fn   : <b>function</b>(record) {
+<b>return</b> record.get(<em>'age'</em>) == 24
 },
 scope: this
 }
-]);<div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>field</code> : String|Array<div class="sub-desc">A field on your records, or an array containing multiple filter options</div></li><li><code>value</code> : String/RegExp<div class="sub-desc">Either a string that the field should begin with, or a RegExp to test
+]);</code></pre><div class="mdetail-params"><strong>Parameters:</strong><ul><li><code>field</code> : String|Array<div class="sub-desc">A field on your records, or an array containing multiple filter options</div></li><li><code>value</code> : String/RegExp<div class="sub-desc">Either a string that the field should begin with, or a RegExp to test
 against the field.</div></li><li><code>anyMatch</code> : Boolean<div class="sub-desc">(optional) <tt>true</tt> to match any part not just the beginning</div></li><li><code>caseSensitive</code> : Boolean<div class="sub-desc">(optional) <tt>true</tt> for case sensitive comparison</div></li><li><code>exactMatch</code> : Boolean<div class="sub-desc">True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.</div></li></ul><strong>Returns:</strong><ul><li>void</li></ul></div></div></div></td><td class="msource"><a href="output/Ext.data.Store.html#filter" ext:member="#filter" ext:cls="Ext.data.Store">Store</a></td></tr><tr class="method-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.data.Store-filterBy"></a><b><a href="source/Store.html#method-Ext.data.Store-filterBy">filterBy</a></b>(&nbsp;<code>Function&nbsp;fn</code>,&nbsp;<span title="Optional" class="optional">[<code>Object&nbsp;scope</code>]</span>&nbsp;)
     :
                                         void<div class="mdesc"><div class="short">Filter by a function. The specified function will be called for each

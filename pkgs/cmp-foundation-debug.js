@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.0
+ * Ext JS Library 3.2.1
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -4324,8 +4324,8 @@ items: [
         if(this.layout && this.layout != layout){
             this.layout.setContainer(null);
         }
-        this.initItems();
         this.layout = layout;
+        this.initItems();
         layout.setContainer(this);
     },
 
@@ -4629,11 +4629,10 @@ tb.{@link #doLayout}();             // refresh the layout
     },
 
     /**
-    * We can only lay out if there is a view area in which to layout.
-    * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
-    */
-
-    // private
+     * @private
+     * We can only lay out if there is a view area in which to layout.
+     * display:none on the layout target, *or any of its parent elements* will mean it has no view area.
+     */
     canLayout : function() {
         var el = this.getVisibilityEl();
         return el && el.dom && !el.isStyle("display", "none");
@@ -7106,6 +7105,11 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
 
     onFieldShow: function(c){
         c.getItemCt().removeClass('x-hide-' + c.hideMode);
+
+        // Composite fields will need to layout after the container is made visible
+        if (c.isComposite) {
+            c.doLayout();
+        }
     },
 
     onFieldHide: function(c){
@@ -7162,7 +7166,7 @@ new Ext.Template(
 
     /**
      * @private
-     * 
+     *
      */
     renderItem : function(c, position, target){
         if(c && (c.isFormField || c.fieldLabel) && c.inputType != 'hidden'){
@@ -7234,7 +7238,7 @@ new Ext.Template(
      */
     getTemplateArgs: function(field) {
         var noLabelSep = !field.fieldLabel || field.hideLabel;
-        
+
         return {
             id            : field.id,
             label         : field.fieldLabel,
@@ -7429,7 +7433,7 @@ Ext.layout.AccordionLayout = Ext.extend(Ext.layout.FitLayout, {
             var hh = 0, i, ct = this.getRenderedItems(this.container), len = ct.length, p;
             // Add up all the header heights
             for (i = 0; i < len; i++) {
-                if((p = ct[i]) != item){
+                if((p = ct[i]) != item && !p.hidden){
                     hh += p.header.getHeight();
                 }
             };
@@ -8168,12 +8172,12 @@ Ext.layout.VBoxLayout = Ext.extend(Ext.layout.BoxLayout, {
                 switch (this.align) {
                     case 'stretch':
                         stretchWidth = availWidth - horizMargins;
-                        calcs.width  = stretchWidth.constrain(child.minHeight || 0, child.maxWidth || 1000000);
+                        calcs.width  = stretchWidth.constrain(child.minWidth || 0, child.maxWidth || 1000000);
                         calcs.dirtySize = true;
                         break;
                     case 'stretchmax':
                         stretchWidth = maxWidth - horizMargins;
-                        calcs.width  = stretchWidth.constrain(child.minHeight || 0, child.maxWidth || 1000000);
+                        calcs.width  = stretchWidth.constrain(child.minWidth || 0, child.maxWidth || 1000000);
                         calcs.dirtySize = true;
                         break;
                     case 'center':
@@ -10160,7 +10164,7 @@ new Ext.Panel({
     getBottomToolbar : function(){
         return this.bottomToolbar;
     },
-    
+
     /**
      * Returns the {@link Ext.Toolbar toolbar} from the footer (<code>{@link #fbar}</code>) section of the panel.
      * @return {Ext.Toolbar} The toolbar
@@ -10441,7 +10445,7 @@ new Ext.Panel({
         // Reset lastSize of all sub-components so they KNOW they are in a collapsed container
         this.cascade(function(c) {
             if (c.lastSize) {
-                c.lastSize = { width: 0, height: 0 };
+                c.lastSize = { width: undefined, height: undefined };
             }
         });
         this.fireEvent('collapse', this);
@@ -10786,12 +10790,12 @@ panel.load({
                 this.ft,
                 this.header,
                 this.footer,
-                this.toolbars,
                 this.tbar,
                 this.bbar,
                 this.body,
                 this.mc,
-                this.bwrap
+                this.bwrap,
+                this.dd
             );
             if (this.fbar) {
                 Ext.destroy(
@@ -10799,12 +10803,8 @@ panel.load({
                     this.fbar.el
                 );
             }
-        }else{
-            Ext.destroy(
-                this.topToolbar,
-                this.bottomToolbar
-            );
         }
+        Ext.destroy(this.toolbars);
     },
 
     // private
@@ -11386,7 +11386,7 @@ cp.colors = ['000000', '993300', '333300'];
         if(this.value){
             var s = this.value;
             this.value = null;
-            this.select(s);
+            this.select(s, true);
         }
     },
 
@@ -11402,8 +11402,9 @@ cp.colors = ['000000', '993300', '333300'];
     /**
      * Selects the specified color in the palette (fires the {@link #select} event)
      * @param {String} color A valid 6-digit color hex code (# will be stripped if included)
+     * @param {Boolean} suppressEvent (optional) True to stop the select event from firing. Defaults to <tt>false</tt>.
      */
-    select : function(color){
+    select : function(color, suppressEvent){
         color = color.replace('#', '');
         if(color != this.value || this.allowReselect){
             var el = this.el;
@@ -11412,7 +11413,9 @@ cp.colors = ['000000', '993300', '333300'];
             }
             el.child('a.color-'+color).addClass('x-color-palette-sel');
             this.value = color;
-            this.fireEvent('select', this, color);
+            if(suppressEvent !== true){
+                this.fireEvent('select', this, color);
+            }
         }
     }
 
@@ -11420,8 +11423,7 @@ cp.colors = ['000000', '993300', '333300'];
      * @cfg {String} autoEl @hide
      */
 });
-Ext.reg('colorpalette', Ext.ColorPalette);
-/**
+Ext.reg('colorpalette', Ext.ColorPalette);/**
  * @class Ext.DatePicker
  * @extends Ext.Component
  * <p>A popup date picker. This class is used by the {@link Ext.form.DateField DateField} class
@@ -12838,26 +12840,29 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      * @param {Ext.EventObject} e The Event object
      */
     onKeyDown : function(e){
-        if(this.disabled){e.preventDefault();return;}
-        var k = e.getKey();
+        /*
+         * The behaviour for keyboard handling with multiple thumbs is currently undefined.
+         * There's no real sane default for it, so leave it like this until we come up
+         * with a better way of doing it.
+         */
+        if(this.disabled || this.thumbs.length !== 1){
+            e.preventDefault();
+            return;
+        }
+        var k = e.getKey(),
+            val;
         switch(k){
             case e.UP:
             case e.RIGHT:
                 e.stopEvent();
-                if(e.ctrlKey){
-                    this.setValue(this.maxValue, undefined, true);
-                }else{
-                    this.setValue(this.value+this.keyIncrement, undefined, true);
-                }
+                val = e.ctrlKey ? this.maxValue : this.getValue(0) + this.keyIncrement;
+                this.setValue(0, val, undefined, true);
             break;
             case e.DOWN:
             case e.LEFT:
                 e.stopEvent();
-                if(e.ctrlKey){
-                    this.setValue(this.minValue, undefined, true);
-                }else{
-                    this.setValue(this.value-this.keyIncrement, undefined, true);
-                }
+                val = e.ctrlKey ? this.minValue : this.getValue(0) - this.keyIncrement;
+                this.setValue(0, val, undefined, true);
             break;
             default:
                 e.preventDefault();
@@ -12941,11 +12946,16 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      */
     setMinValue : function(val){
         this.minValue = val;
-        this.syncThumb();
-
-        for (var i=0, j = this.thumbs.length; i < j; i++) {
-            if (this.thumbs[i].value < val) this.thumbs[i].value = val;
+        var i = 0,
+            thumbs = this.thumbs,
+            len = thumbs.length,
+            t;
+            
+        for(; i < len; ++i){
+            t = thumbs[i];
+            t.value = t.value < val ? val : t.value;
         }
+        this.syncThumb();
     },
 
     /**
@@ -12955,11 +12965,16 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
      */
     setMaxValue : function(val){
         this.maxValue = val;
-        this.syncThumb();
-
-        for (var i=0; i < this.thumbs.length; i++) {
-            if (this.thumbs[i].value > val) this.thumbs[i].value = val;
+        var i = 0,
+            thumbs = this.thumbs,
+            len = thumbs.length,
+            t;
+            
+        for(; i < len; ++i){
+            t = thumbs[i];
+            t.value = t.value > val ? val : t.value;
         }
+        this.syncThumb();
     },
 
     /**
@@ -12975,12 +12990,14 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
 
         v = this.normalizeValue(v);
 
-        if (v !== thumb.value && this.fireEvent('beforechange', this, v, thumb.value) !== false) {
+        if (v !== thumb.value && this.fireEvent('beforechange', this, v, thumb.value, thumb) !== false) {
             thumb.value = v;
-            this.moveThumb(index, this.translateValue(v), animate !== false);
-            this.fireEvent('change', this, v, thumb);
-            if(changeComplete){
-                this.fireEvent('changecomplete', this, v, thumb);
+            if(this.rendered){
+                this.moveThumb(index, this.translateValue(v), animate !== false);
+                this.fireEvent('change', this, v, thumb);
+                if(changeComplete){
+                    this.fireEvent('changecomplete', this, v, thumb);
+                }
             }
         }
     },

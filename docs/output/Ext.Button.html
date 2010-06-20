@@ -62,37 +62,11 @@ result in elements needing to be synchronized with the new height. Example:</p><
 necessary, false...</div><div class="long"><code>true</code> to use overflow:'auto' on the components layout element and show scroll bars automatically when
 necessary, <code>false</code> to clip any overflowing content (defaults to <code>false</code>).</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#autoScroll" ext:member="#autoScroll" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoShow"></a><b><a href="source/Component.html#cfg-Ext.Component-autoShow">autoShow</a></b> : Boolean<div class="mdesc"><div class="short">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
 them on render...</div><div class="long">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
-them on render (defaults to false).</div></div></td><td class="msource"><a href="output/Ext.Component.html#autoShow" ext:member="#autoShow" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-autoWidth"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-autoWidth">autoWidth</a></b> : Boolean<div class="mdesc"><div class="short">True to use width:'auto', false to use fixed width (or allow it to be managed by its parent
-Container's layout manage...</div><div class="long"><p>True to use width:'auto', false to use fixed width (or allow it to be managed by its parent
-Container's <a href="output/Ext.Container.html#Ext.Container-layout" ext:member="layout" ext:cls="Ext.Container">layout manager</a>. Defaults to false.</p>
-<p><b>Note</b>: Although many components  inherit this config option, not all will
-function as expected with a width of 'auto'. Setting autoWidth:true means that the
-browser will manage width based on the element's contents, and that Ext will not manage it at all.</p>
-<p>If the <i>browser</i> is managing the width, be aware that resizes performed by the browser in response
-to changes within the structure of the Component cannot be detected. Therefore changes to the width might
-result in elements needing to be synchronized with the new width. For example, where the target element is:</p><pre><code>&lt;div id=<em>'grid-container'</em> style=<em>'margin-left:25%;width:50%'</em>>&lt;/div></code></pre>
-A Panel rendered into that target element must listen for browser window resize in order to relay its
-child items when the browser changes its width:<pre><code><b>var</b> myPanel = <b>new</b> Ext.Panel({
-    renderTo: <em>'grid-container'</em>,
-    monitorResize: true, <i>// relay on browser resize</i>
-    title: <em>'Panel'</em>,
-    height: 400,
-    autoWidth: true,
-    layout: <em>'hbox'</em>,
-    layoutConfig: {
-        align: <em>'stretch'</em>
-    },
-    defaults: {
-        flex: 1
-    },
-    items: [{
-        title: <em>'Box 1'</em>,
-    }, {
-        title: <em>'Box 2'</em>
-    }, {
-        title: <em>'Box 3'</em>
-    }],
-});</code></pre></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#autoWidth" ext:member="#autoWidth" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-boxMaxHeight"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-boxMaxHeight">boxMaxHeight</a></b> : Number<div class="mdesc"><div class="short">The maximum value in pixels which this BoxComponent will set its height to.
+them on render (defaults to false).</div></div></td><td class="msource"><a href="output/Ext.Component.html#autoShow" ext:member="#autoShow" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable "><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Button-autoWidth"></a><b><a href="source/Button.html#cfg-Ext.Button-autoWidth">autoWidth</a></b> : Boolean<div class="mdesc"><div class="short">By default, if a width is not specified the button will attempt to stretch horizontally to fit its content.
+If the bu...</div><div class="long">By default, if a width is not specified the button will attempt to stretch horizontally to fit its content.
+If the button is being managed by a width sizing layout (hbox, fit, anchor), set this to false to prevent
+the button from doing this automatic sizing.
+Defaults to <tt>undefined</tt>.</div></div></td><td class="msource">Button</td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-boxMaxHeight"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-boxMaxHeight">boxMaxHeight</a></b> : Number<div class="mdesc"><div class="short">The maximum value in pixels which this BoxComponent will set its height to.
 Warning: This will override any size mana...</div><div class="long"><p>The maximum value in pixels which this BoxComponent will set its height to.</p>
 <p><b>Warning:</b> This will override any size management applied by layout managers.</p></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#boxMaxHeight" ext:member="#boxMaxHeight" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-boxMaxWidth"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-boxMaxWidth">boxMaxWidth</a></b> : Number<div class="mdesc"><div class="short">The maximum value in pixels which this BoxComponent will set its width to.
 Warning: This will override any size manag...</div><div class="long"><p>The maximum value in pixels which this BoxComponent will set its width to.</p>
