@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 (function(){
 
@@ -225,11 +225,11 @@ myGridPanel.on({
         var me = this,
             e,
             oe,
-            isF,
-        ce;
+            ce;
+            
         if (typeof eventName == 'object') {
             o = eventName;
-            for (e in o){
+            for (e in o) {
                 oe = o[e];
                 if (!me.filterOptRe.test(e)) {
                     me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
@@ -387,12 +387,16 @@ function createSingle(h, e, fn, scope){
 
 function createDelayed(h, o, l, scope){
     return function(){
-        var task = new EXTUTIL.DelayedTask();
+        var task = new EXTUTIL.DelayedTask(),
+            args = Array.prototype.slice.call(arguments, 0);
         if(!l.tasks) {
             l.tasks = [];
         }
         l.tasks.push(task);
-        task.delay(o.delay || 10, h, scope, Array.prototype.slice.call(arguments, 0));
+        task.delay(o.delay || 10, function(){
+            l.tasks.remove(task);
+            h.apply(scope, args);
+        }, scope);
     };
 };
 
@@ -417,7 +421,8 @@ EXTUTIL.Event.prototype = {
     },
 
     createListener: function(fn, scope, o){
-        o = o || {}, scope = scope || this.obj;
+        o = o || {};
+        scope = scope || this.obj;
         var l = {
             fn: fn,
             scope: scope,

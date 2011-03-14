@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.layout.ContainerLayout
@@ -127,7 +127,7 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         if (c) {
             if (!c.rendered) {
                 c.render(target, position);
-                this.configureItem(c, position);
+                this.configureItem(c);
             } else if (!this.isValidParent(c, target)) {
                 if (Ext.isNumber(position)) {
                     position = target.dom.childNodes[position];
@@ -135,7 +135,7 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
                 
                 target.dom.insertBefore(c.getPositionEl().dom, position || null);
                 c.container = target;
-                this.configureItem(c, position);
+                this.configureItem(c);
             }
         }
     },
@@ -145,7 +145,7 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
     getRenderedItems: function(ct){
         var t = ct.getLayoutTarget(), cti = ct.items.items, len = cti.length, i, c, items = [];
         for (i = 0; i < len; i++) {
-            if((c = cti[i]).rendered && this.isValidParent(c, t)){
+            if((c = cti[i]).rendered && this.isValidParent(c, t) && c.shouldLayout !== false){
                 items.push(c);
             }
         };
@@ -156,7 +156,7 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
      * @private
      * Applies extraCls and hides the item if renderHidden is true
      */
-    configureItem: function(c, position){
+    configureItem: function(c){
         if (this.extraCls) {
             var t = c.getPositionEl ? c.getPositionEl() : c;
             t.addClass(this.extraCls);
@@ -295,6 +295,9 @@ Ext.layout.ContainerLayout = Ext.extend(Object, {
         // Stop any buffered layout tasks
         if(this.resizeTask && this.resizeTask.cancel){
             this.resizeTask.cancel();
+        }
+        if(this.container) {
+            this.container.un(this.container.resizeEvent, this.onResize, this);
         }
         if(!Ext.isEmpty(this.targetCls)){
             var target = this.container.getLayoutTarget();

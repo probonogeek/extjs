@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.DomHelper
@@ -165,7 +165,6 @@ Ext.DomHelper = function(){
             attr,
             val,
             key,
-            keyVal,
             cn;
 
         if(typeof o == "string"){
@@ -281,21 +280,25 @@ Ext.DomHelper = function(){
          * a function which returns such a specification.
          */
         applyStyles : function(el, styles){
-            if(styles){
-                var i = 0,
-                    len,
-                    style,
-                    matches;
+            if (styles) {
+                var matches;
 
                 el = Ext.fly(el);
-                if(typeof styles == "function"){
+                if (typeof styles == "function") {
                     styles = styles.call();
                 }
-                if(typeof styles == "string"){
-                    while((matches = cssRe.exec(styles))){
+                if (typeof styles == "string") {
+                    /**
+                     * Since we're using the g flag on the regex, we need to set the lastIndex.
+                     * This automatically happens on some implementations, but not others, see:
+                     * http://stackoverflow.com/questions/2645273/javascript-regular-expression-literal-persists-between-function-calls
+                     * http://blog.stevenlevithan.com/archives/fixing-javascript-regexp
+                     */
+                    cssRe.lastIndex = 0;
+                    while ((matches = cssRe.exec(styles))) {
                         el.setStyle(matches[1], matches[2]);
                     }
-                }else if (typeof styles == "object"){
+                } else if (typeof styles == "object") {
                     el.setStyle(styles);
                 }
             }

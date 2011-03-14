@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 (function(){
 	var doc = document,
@@ -132,7 +132,7 @@
 		            ret = [x,y];
 	            }
          	}
-            return ret
+            return ret;
         },
 
         setXY : function(el, xy) {
@@ -143,7 +143,9 @@
             	pos;            	
             
             for (pos in pts) {	            
-	            if(!isNaN(pts[pos])) style[pos] = pts[pos] + "px"
+	            if (!isNaN(pts[pos])) {
+	                style[pos] = pts[pos] + "px";
+                }
             }
         },
 

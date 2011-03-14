@@ -391,7 +391,7 @@ Ext.onReady(function(){
         layout:'border',
         items:[ {
             cls: 'docs-header',
-            height: 36,
+            height: 44,
             region:'north',
             xtype:'box',
             el:'header',

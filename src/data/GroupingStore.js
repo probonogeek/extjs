@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.data.GroupingStore
@@ -85,6 +85,10 @@ Ext.data.GroupingStore = Ext.extend(Ext.data.Store, {
      */
     groupOnSort:false,
 
+    /**
+     * @cfg {String} groupDir
+     * The direction to sort the groups. Defaults to <tt>'ASC'</tt>.
+     */
     groupDir : 'ASC',
 
     /**
@@ -126,7 +130,7 @@ Ext.data.GroupingStore = Ext.extend(Ext.data.Store, {
 
         //check the contents of the first sorter. If the field matches the CURRENT groupField (before it is set to the new one),
         //remove the sorter as it is actually the grouper. The new grouper is added back in by this.sort
-        sorters = this.multiSortInfo.sorters;
+        var sorters = this.multiSortInfo.sorters;
         if (sorters.length > 0 && sorters[0].field == this.groupField) {
             sorters.shift();
         }

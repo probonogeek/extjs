@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 Ext.onReady(function(){
 
@@ -62,7 +62,7 @@ Ext.onReady(function(){
         plugins: new Ext.slider.Tip()
     });
     
-    new Ext.Slider({
+    new Ext.slider.MultiSlider({
         renderTo: 'multi-slider-horizontal',
         width   : 214,
         minValue: 0,
@@ -71,7 +71,7 @@ Ext.onReady(function(){
         plugins : new Ext.slider.Tip()
     });
     
-    new Ext.Slider({
+    new Ext.slider.MultiSlider({
         renderTo : 'multi-slider-vertical',
         vertical : true,
         height   : 214,

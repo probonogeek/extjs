@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.form.CompositeField
@@ -72,6 +72,15 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
      * True to combine errors from the individual fields into a single error message at the CompositeField level (defaults to true)
      */
     combineErrors: true,
+    
+    /**
+     * @cfg {String} labelConnector The string to use when joining segments of the built label together (defaults to ', ')
+     */
+    labelConnector: ', ',
+    
+    /**
+     * @cfg {Object} defaults Any default properties to assign to the child fields.
+     */
 
     //inherit docs
     //Builds the composite field label
@@ -82,11 +91,15 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
 
         for (var i=0, j = items.length; i < j; i++) {
             item = items[i];
+            
+            if (!Ext.isEmpty(item.ref)){
+                item.ref = '../' + item.ref;
+            }
 
             labels.push(item.fieldLabel);
 
             //apply any defaults
-            Ext.apply(item, this.defaults);
+            Ext.applyIf(item, this.defaults);
 
             //apply default margins to each item except the last
             if (!(i == j - 1 && this.skipLastItemMargin)) {
@@ -115,6 +128,28 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
         });
 
         Ext.form.CompositeField.superclass.initComponent.apply(this, arguments);
+        
+        this.innerCt = new Ext.Container({
+            layout  : 'hbox',
+            items   : this.items,
+            cls     : 'x-form-composite',
+            defaultMargins: '0 3 0 0',
+            ownerCt: this
+        });
+        this.innerCt.ownerCt = undefined;
+        
+        var fields = this.innerCt.findBy(function(c) {
+            return c.isFormField;
+        }, this);
+
+        /**
+         * @property items
+         * @type Ext.util.MixedCollection
+         * Internal collection of all of the subfields in this Composite
+         */
+        this.items = new Ext.util.MixedCollection();
+        this.items.addAll(fields);
+        
     },
 
     /**
@@ -128,27 +163,10 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
              * @type Ext.Container
              * A container configured with hbox layout which is responsible for laying out the subfields
              */
-            var innerCt = this.innerCt = new Ext.Container({
-                layout  : 'hbox',
-                renderTo: ct,
-                items   : this.items,
-                cls     : 'x-form-composite',
-                defaultMargins: '0 3 0 0'
-            });
+            var innerCt = this.innerCt;
+            innerCt.render(ct);
 
             this.el = innerCt.getEl();
-
-            var fields = innerCt.findBy(function(c) {
-                return c.isFormField;
-            }, this);
-
-            /**
-             * @property items
-             * @type Ext.util.MixedCollection
-             * Internal collection of all of the subfields in this Composite
-             */
-            this.items = new Ext.util.MixedCollection();
-            this.items.addAll(fields);
 
             //if we're combining subfield errors into a single message, override the markInvalid and clearInvalid
             //methods of each subfield and show them at the Composite level instead
@@ -179,7 +197,11 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
      */
     onFieldMarkInvalid: function(field, message) {
         var name  = field.getName(),
-            error = {field: name, error: message};
+            error = {
+                field: name, 
+                errorName: field.fieldLabel || name,
+                error: message
+            };
 
         this.fieldErrors.replace(name, error);
 
@@ -254,7 +276,7 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
         for (var i = 0, j = errors.length; i < j; i++) {
             error = errors[i];
 
-            combined.push(String.format("{0}: {1}", error.field, error.error));
+            combined.push(String.format("{0}: {1}", error.errorName, error.error));
         }
 
         return combined.join("<br />");
@@ -314,7 +336,7 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
      * @return {String} The built label
      */
     buildLabel: function(segments) {
-        return segments.join(", ");
+        return Ext.clean(segments).join(this.labelConnector);
     },
 
     /**
@@ -387,7 +409,10 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
 
     //override the behaviour to check sub items.
     setReadOnly : function(readOnly) {
-        readOnly = readOnly || true;
+        if (readOnly == undefined) {
+            readOnly = true;
+        }
+        readOnly = !!readOnly;
 
         if(this.rendered){
             this.eachItem(function(item){

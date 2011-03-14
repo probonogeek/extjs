@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.form.TextArea
@@ -77,6 +77,13 @@ Ext.form.TextArea = Ext.extend(Ext.form.TextField,  {
     // private
     doAutoSize : function(e){
         return !e.isNavKeyPress() || e.getKey() == e.ENTER;
+    },
+    
+    // inherit docs
+    filterValidation: function(e) {            
+        if(!e.isNavKeyPress() || (!this.enterIsSpecial && e.keyCode == e.ENTER)){
+            this.validationTask.delay(this.validationDelay);
+        }
     },
 
     /**

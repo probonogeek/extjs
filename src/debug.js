@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 Ext.debug = {};
 
@@ -464,7 +464,7 @@ Ext.debug.ComponentInspector = Ext.extend(Ext.tree.TreePanel, {
                 if (c.id != this.id && c.id != this.bottomToolbar.id) {
                     var newNode = this.createNode(n,c);
                     if (!newNode.leaf) {
-                        this.parseChildItems(newNode)
+                        this.parseChildItems(newNode);
                     }
                 }
             }
@@ -499,7 +499,7 @@ Ext.debug.ComponentInspector = Ext.extend(Ext.tree.TreePanel, {
         this.parseRootNode();
         var ci = Ext.getCmp('x-debug-compinfo');
         if (ci) {
-            ci.message('refreshed component tree - '+Ext.ComponentMgr.all.length)
+            ci.message('refreshed component tree - '+Ext.ComponentMgr.all.length);
         }
     }
 });

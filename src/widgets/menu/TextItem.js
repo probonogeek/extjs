@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.menu.TextItem
@@ -27,15 +27,17 @@ Ext.menu.TextItem = Ext.extend(Ext.menu.BaseItem, {
      */
     itemCls : "x-menu-text",
     
-    constructor : function(config){
-        if(typeof config == 'string'){
-            config = {text: config}
+    constructor : function(config) {
+        if (typeof config == 'string') {
+            config = {
+                text: config
+            };
         }
         Ext.menu.TextItem.superclass.constructor.call(this, config);
     },
 
     // private
-    onRender : function(){
+    onRender : function() {
         var s = document.createElement("span");
         s.className = this.itemCls;
         s.innerHTML = this.text;

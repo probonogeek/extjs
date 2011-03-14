@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.History
@@ -19,7 +19,7 @@ Ext.History = (function () {
     var currentToken;
 
     function getHash() {
-        var href = top.location.href, i = href.indexOf("#");
+        var href = location.href, i = href.indexOf("#");
         return i >= 0 ? href.substr(i + 1) : null;
     }
 

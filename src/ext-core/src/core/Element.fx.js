@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.Element
@@ -20,16 +20,38 @@ Ext.Element.VISIBILITY = 1;
  */
 Ext.Element.DISPLAY = 2;
 
+/**
+ * Visibility mode constant for use with {@link #setVisibilityMode}. Use offsets (x and y positioning offscreen)
+ * to hide element.
+ * @static
+ * @type Number
+ */
+Ext.Element.OFFSETS = 3;
+
+
+Ext.Element.ASCLASS = 4;
+
+/**
+ * Defaults to 'x-hide-nosize'
+ * @static
+ * @type String
+ */
+Ext.Element.visibilityCls = 'x-hide-nosize';
+
 Ext.Element.addMethods(function(){
-    var VISIBILITY = "visibility",
+    var El = Ext.Element,
+        OPACITY = "opacity",
+        VISIBILITY = "visibility",
         DISPLAY = "display",
         HIDDEN = "hidden",
         OFFSETS = "offsets",
+        ASCLASS = "asclass",
         NONE = "none",
+        NOSIZE = 'nosize',
         ORIGINALDISPLAY = 'originalDisplay',
         VISMODE = 'visibilityMode',
-        ELDISPLAY = Ext.Element.DISPLAY,
-        data = Ext.Element.data,
+        ISVISIBLE = 'isVisible',
+        data = El.data,
         getDisplay = function(dom){
             var d = data(dom, ORIGINALDISPLAY);
             if(d === undefined){
@@ -223,7 +245,20 @@ el.animate(
          * @return {Boolean} True if the element is currently visible, else false
          */
         isVisible : function() {
-            return !this.isStyle(VISIBILITY, HIDDEN) && !this.isStyle(DISPLAY, NONE);
+            var me = this,
+                dom = me.dom,
+                visible = data(dom, ISVISIBLE);
+
+            if(typeof visible == 'boolean'){ //return the cached value if registered
+                return visible;
+            }
+            //Determine the current state based on display states
+            visible = !me.isStyle(VISIBILITY, HIDDEN) &&
+                      !me.isStyle(DISPLAY, NONE) &&
+                      !((getVisMode(dom) == El.ASCLASS) && me.hasClass(me.visibilityCls || El.visibilityCls));
+
+            data(dom, ISVISIBLE, visible);
+            return visible;
         },
 
         /**
@@ -233,43 +268,63 @@ el.animate(
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
          * @return {Ext.Element} this
          */
-         setVisible : function(visible, animate){
-            var me = this, isDisplay, isVisible, isOffsets,
-                dom = me.dom;
+        setVisible : function(visible, animate){
+            var me = this, isDisplay, isVisibility, isOffsets, isNosize,
+                dom = me.dom,
+                visMode = getVisMode(dom);
+
 
             // hideMode string override
             if (typeof animate == 'string'){
-                isDisplay = animate == DISPLAY;
-                isVisible = animate == VISIBILITY;
-                isOffsets = animate == OFFSETS;
+                switch (animate) {
+                    case DISPLAY:
+                        visMode = El.DISPLAY;
+                        break;
+                    case VISIBILITY:
+                        visMode = El.VISIBILITY;
+                        break;
+                    case OFFSETS:
+                        visMode = El.OFFSETS;
+                        break;
+                    case NOSIZE:
+                    case ASCLASS:
+                        visMode = El.ASCLASS;
+                        break;
+                }
+                me.setVisibilityMode(visMode);
                 animate = false;
-            } else {
-                isDisplay = getVisMode(this.dom) == ELDISPLAY;
-                isVisible = !isDisplay;
             }
 
             if (!animate || !me.anim) {
-                if (isDisplay){
-                    me.setDisplayed(visible);
-                } else if (isOffsets){
+                if(visMode == El.ASCLASS ){
+
+                    me[visible?'removeClass':'addClass'](me.visibilityCls || El.visibilityCls);
+
+                } else if (visMode == El.DISPLAY){
+
+                    return me.setDisplayed(visible);
+
+                } else if (visMode == El.OFFSETS){
+
                     if (!visible){
                         me.hideModeStyles = {
                             position: me.getStyle('position'),
                             top: me.getStyle('top'),
                             left: me.getStyle('left')
                         };
-
                         me.applyStyles({position: 'absolute', top: '-10000px', left: '-10000px'});
                     } else {
                         me.applyStyles(me.hideModeStyles || {position: '', top: '', left: ''});
+                        delete me.hideModeStyles;
                     }
+
                 }else{
                     me.fixDisplay();
                     dom.style.visibility = visible ? "visible" : HIDDEN;
                 }
             }else{
                 // closure for composites
-                if (visible){
+                if(visible){
                     me.setOpacity(.01);
                     me.setVisible(true);
                 }
@@ -279,13 +334,22 @@ el.animate(
                         .35,
                         'easeIn',
                         function(){
-                             if(!visible){
-                                 dom.style[isDisplay ? DISPLAY : VISIBILITY] = (isDisplay) ? NONE : HIDDEN;
-                                 Ext.fly(dom).setOpacity(1);
-                             }
+                            visible || me.setVisible(false).setOpacity(1);
                         });
             }
+            data(dom, ISVISIBLE, visible);  //set logical visibility state
             return me;
+        },
+
+
+        /**
+         * @private
+         * Determine if the Element has a relevant height and width available based
+         * upon current logical visibility state
+         */
+        hasMetrics  : function(){
+            var dom = this.dom;
+            return this.isVisible() || (getVisMode(dom) == El.VISIBILITY);
         },
 
         /**

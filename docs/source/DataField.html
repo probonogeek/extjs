@@ -7,10 +7,10 @@
 </head>
 <body  onload="prettyPrint();">
     <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 <div id="cls-Ext.data.Field"></div>/**
  * @class Ext.data.Field
@@ -138,6 +138,14 @@ var myData = [
      * javascript millisecond timestamp. See {@link Date}</p>
      */
     dateFormat: null,
+    
+    <div id="cfg-Ext.data.Field-useNull"></div>/**
+     * @cfg {Boolean} useNull
+     * <p>(Optional) Use when converting received data into a Number type (either int or float). If the value cannot be parsed,
+     * null will be used if useNull is true, otherwise the value will be 0. Defaults to <tt>false</tt>
+     */
+    useNull: false,
+    
     <div id="cfg-Ext.data.Field-defaultValue"></div>/**
      * @cfg {Mixed} defaultValue
      * (Optional) The default value used <b>when a Record is being created by a {@link Ext.data.Reader Reader}</b>
