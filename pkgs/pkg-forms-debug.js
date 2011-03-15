@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.form.Field
@@ -3455,10 +3455,16 @@ myCombo.keyNav.tab = function() {   // Override TAB handling function
     },
 
     // private
-    assertValue  : function(){
+    assertValue : function(){
         var val = this.getRawValue(),
-            rec = this.findRecord(this.displayField, val);
+            rec;
 
+        if(this.valueField && Ext.isDefined(this.value)){
+            rec = this.findRecord(this.valueField, this.value);
+        }
+        if(!rec || rec.get(this.displayField) != val){
+            rec = this.findRecord(this.displayField, val);
+        }
         if(!rec && this.forceSelection){
             if(val.length > 0 && val != this.emptyText){
                 this.el.dom.value = Ext.value(this.lastSelectionText, '');
@@ -3467,11 +3473,11 @@ myCombo.keyNav.tab = function() {   // Override TAB handling function
                 this.clearValue();
             }
         }else{
-            if(rec){
+            if(rec && this.valueField){
                 // onSelect may have already set the value and by doing so
                 // set the display field properly.  Let's not wipe out the
                 // valueField here by just sending the displayField.
-                if (val == rec.get(this.displayField) && this.value == rec.get(this.valueField)){
+                if (this.value == val){
                     return;
                 }
                 val = rec.get(this.valueField || this.displayField);
@@ -3901,9 +3907,6 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * {tag: 'input', type: 'checkbox', autocomplete: 'off'})
      */
     defaultAutoCreate : { tag: 'input', type: 'checkbox', autocomplete: 'off'},
-    /**
-     * @cfg {String} boxLabel The text that appears beside the checkbox
-     */
     /**
      * @cfg {String} inputValue The value that should go into the generated input element's value attribute
      */
@@ -4622,6 +4625,10 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
 
         for (var i=0, j = items.length; i < j; i++) {
             item = items[i];
+            
+            if (!Ext.isEmpty(item.ref)){
+                item.ref = '../' + item.ref;
+            }
 
             labels.push(item.fieldLabel);
 
@@ -4660,8 +4667,10 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
             layout  : 'hbox',
             items   : this.items,
             cls     : 'x-form-composite',
-            defaultMargins: '0 3 0 0'
+            defaultMargins: '0 3 0 0',
+            ownerCt: this
         });
+        this.innerCt.ownerCt = undefined;
         
         var fields = this.innerCt.findBy(function(c) {
             return c.isFormField;
@@ -5662,12 +5671,14 @@ myFormPanel.getForm().submit({
      */
     updateRecord : function(record){
         record.beginEdit();
-        var fs = record.fields;
+        var fs = record.fields,
+            field,
+            value;
         fs.each(function(f){
-            var field = this.findField(f.name);
+            field = this.findField(f.name);
             if(field){
-                var value = field.getValue();
-                if ( value.getGroupValue ) {
+                value = field.getValue();
+                if (typeof value != undefined && value.getGroupValue) {
                     value = value.getGroupValue();
                 } else if ( field.eachItem ) {
                     value = [];

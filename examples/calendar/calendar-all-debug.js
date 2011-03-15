@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 Ext.ns('Ext.calendar');
 
@@ -2356,7 +2356,9 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
             // auto by month
             start = start.getFirstDateOfMonth();
             offset = start.getDay() - this.startDay;
-
+            if (offset < 0) {
+                offset += 7;
+            }
             this.viewStart = start.add(Date.DAY, -offset).clearTime(true);
 
             // start from current month start, not view start:
@@ -2640,7 +2642,8 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
     renderItems: function() {
         throw 'This method must be implemented by a subclass';
     }
-});/**
+});
+/**
  * @class Ext.calendar.MonthView
  * @extends Ext.calendar.CalendarView
  * <p>Displays a calendar view by month. This class does not usually need ot be used directly as you can

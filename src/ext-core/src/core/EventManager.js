@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.EventManager
@@ -637,14 +637,8 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
         Ext.fly(bd, '_internal').addClass(cls);
         return true;
     };
-
-    /*
-     * Assert Ext.isReady here. If Ext is loaded after the document is ready, none of the native 
-     * DOM onReady events will fire, because they have already passed.
-     */
-    Ext.isReady = initExtCss();
     
-    if (!Ext.isReady) {
+    if (!initExtCss()) {
         Ext.onReady(initExtCss);
     }
 })();

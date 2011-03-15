@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.calendar.CalendarView
@@ -734,7 +734,9 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
             // auto by month
             start = start.getFirstDateOfMonth();
             offset = start.getDay() - this.startDay;
-
+            if (offset < 0) {
+                offset += 7;
+            }
             this.viewStart = start.add(Date.DAY, -offset).clearTime(true);
 
             // start from current month start, not view start:

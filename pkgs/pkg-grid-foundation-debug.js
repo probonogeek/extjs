@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.grid.GridPanel
@@ -665,20 +665,21 @@ function(grid, rowIndex, columnIndex, e) {
             store = this.store,
             s,
             c,
-            oldIndex;
+            colIndex;
 
         if(cs){
             for(var i = 0, len = cs.length; i < len; i++){
                 s = cs[i];
                 c = cm.getColumnById(s.id);
                 if(c){
-                    cm.setState(s.id, {
+                    colIndex = cm.getIndexById(s.id);
+                    cm.setState(colIndex, {
                         hidden: s.hidden,
-                        width: s.width    
+                        width: s.width,
+                        sortable: s.sortable
                     });
-                    oldIndex = cm.getIndexById(s.id);
-                    if(oldIndex != i){
-                        cm.moveColumn(oldIndex, i);
+                    if(colIndex != i){
+                        cm.moveColumn(colIndex, i);
                     }
                 }
             }
@@ -717,6 +718,9 @@ function(grid, rowIndex, columnIndex, e) {
             };
             if(c.hidden){
                 o.columns[i].hidden = true;
+            }
+            if(c.sortable){
+                o.columns[i].sortable = true;
             }
         }
         if(store){
@@ -1609,11 +1613,14 @@ viewConfig: {
 
     /**
      * @cfg {Boolean} forceFit
-     * Defaults to <tt>false</tt>.  Specify <tt>true</tt> to have the column widths re-proportioned
-     * at <b>all times</b>.  The {@link Ext.grid.Column#width initially configured width}</tt> of each
+     * <p>Defaults to <tt>false</tt>.  Specify <tt>true</tt> to have the column widths re-proportioned
+     * at <b>all times</b>.</p>
+     * <p>The {@link Ext.grid.Column#width initially configured width}</tt> of each
      * column will be adjusted to fit the grid width and prevent horizontal scrolling. If columns are
      * later resized (manually or programmatically), the other columns in the grid <b>will</b> be resized
-     * to fit the grid width. See <tt>{@link #autoFill}</tt> also.
+     * to fit the grid width.</p>
+     * <p>Columns which are configured with <code>fixed: true</code> are omitted from being resized.</p>
+     * <p>See <tt>{@link #autoFill}</tt>.</p>
      */
     forceFit : false,
 
@@ -2910,8 +2917,8 @@ viewConfig: {
                 Ext.DomHelper.insertHtml('beforeEnd', this.mainBody.dom, html);
             }
             if (!isUpdate) {
-                this.fireEvent('rowsinserted', this, firstRow, lastRow);
                 this.processRows(firstRow);
+                this.fireEvent('rowsinserted', this, firstRow, lastRow);
             } else if (firstRow === 0 || firstRow >= last) {
                 //ensure first/last row is kept after an update.
                 Ext.fly(this.getRow(firstRow)).addClass(firstRow === 0 ? this.firstRowCls : this.lastRowCls);
@@ -5946,7 +5953,7 @@ Ext.grid.RowSelectionModel = Ext.extend(Ext.grid.AbstractSelectionModel,  {
             s = this.getSelections(),
             i = 0,
             len = s.length, 
-            index;
+            index, r;
             
         this.silent = true;
         this.clearSelections(true);
@@ -6341,9 +6348,7 @@ Ext.grid.RowSelectionModel = Ext.extend(Ext.grid.AbstractSelectionModel,  {
             r = newCell[0];
             c = newCell[1];
 
-            if(last.row != r){
-                this.selectRow(r); // *** highlight newly-selected cell and update selection
-            }
+            this.onEditorSelect(r, last.row);
 
             if(g.isEditor && g.editing){ // *** handle tabbing while editorgrid is in edit mode
                 ae = g.activeEditor;
@@ -6356,12 +6361,19 @@ Ext.grid.RowSelectionModel = Ext.extend(Ext.grid.AbstractSelectionModel,  {
         }
     },
     
+    onEditorSelect: function(row, lastRow){
+        if(lastRow != row){
+            this.selectRow(row); // *** highlight newly-selected cell and update selection
+        }
+    },
+    
     destroy : function(){
         Ext.destroy(this.rowNav);
         this.rowNav = null;
         Ext.grid.RowSelectionModel.superclass.destroy.call(this);
     }
-});/**
+});
+/**
  * @class Ext.grid.Column
  * <p>This class encapsulates column configuration data to be used in the initialization of a
  * {@link Ext.grid.ColumnModel ColumnModel}.</p>
@@ -6903,7 +6915,7 @@ Ext.grid.ActionColumn = Ext.extend(Ext.grid.Column, {
      */
     /**
      * @cfg {Function} getClass A function which returns the CSS class to apply to the icon image.
-     * The function is passed the following parameters:<ul>
+     * The function is passed the following parameters:<div class="mdetail-params"><ul>
      *     <li><b>v</b> : Object<p class="sub-desc">The value of the column's configured field (if any).</p></li>
      *     <li><b>metadata</b> : Object<p class="sub-desc">An object in which you may set the following attributes:<ul>
      *         <li><b>css</b> : String<p class="sub-desc">A CSS class name to add to the cell's TD element.</p></li>
@@ -6914,7 +6926,7 @@ Ext.grid.ActionColumn = Ext.extend(Ext.grid.Column, {
      *     <li><b>rowIndex</b> : Number<p class="sub-desc">The row index..</p></li>
      *     <li><b>colIndex</b> : Number<p class="sub-desc">The column index.</p></li>
      *     <li><b>store</b> : Ext.data.Store<p class="sub-desc">The Store which is providing the data Model.</p></li>
-     * </ul>
+     * </ul></div>
      */
     /**
      * @cfg {Array} items An Array which may contain multiple icon definitions, each element of which may contain:
@@ -7190,5 +7202,11 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
     // private
     renderer : function(v, p, record){
         return '<div class="x-grid3-row-checker">&#160;</div>';
+    },
+    
+    onEditorSelect: function(row, lastRow){
+        if(lastRow != row && !this.checkOnly){
+            this.selectRow(row); // *** highlight newly-selected cell and update selection
+        }
     }
 });

@@ -1,8 +1,8 @@
 /*!
- * Ext JS Library 3.3.0
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 /**
  * @class Ext.grid.GroupingView
@@ -287,9 +287,10 @@ var grid = new Ext.grid.GridPanel({
 
     // private
     onGroupByClick : function(){
+        var grid = this.grid;
         this.enableGrouping = true;
-        this.grid.store.groupBy(this.cm.getDataIndex(this.hdCtxIndex));
-        this.grid.fireEvent('groupchange', this, this.grid.store.getGroupState());
+        grid.store.groupBy(this.cm.getDataIndex(this.hdCtxIndex));
+        grid.fireEvent('groupchange', grid, grid.store.getGroupState());
         this.beforeMenuShow(); // Make sure the checkboxes get properly set when changing groups
         this.refresh();
     },
