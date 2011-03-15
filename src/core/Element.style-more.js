@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -255,7 +255,7 @@ Ext.Element.addMethods(function(){
                 return {
                     width : d.clientWidth,
                     height : d.clientHeight
-                }
+                };
             }
         },
 
@@ -282,7 +282,7 @@ Ext.Element.addMethods(function(){
                 return {
                     width : extdom.getViewWidth(),
                     height : extdom.getViewHeight()
-                }
+                };
             }
             // Use Styles if they are set
             if(s.width && s.width != 'auto'){

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -46,3 +46,7 @@ Ext.Element.addMethods({
         return new Ext.KeyMap(this, config);
     }
 });
+
+//Import the newly-added Ext.Element functions into CompositeElementLite. We call this here because
+//Element.keys.js is the last extra Ext.Element include in the ext-all.js build
+Ext.CompositeElementLite.importElementMethods();

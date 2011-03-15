@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -740,13 +740,14 @@ new Ext.TabPanel({
 
     // private
     delegateUpdates : function(){
+        var rendered = this.rendered;
         if(this.suspendUpdates){
             return;
         }
-        if(this.resizeTabs && this.rendered){
+        if(this.resizeTabs && rendered){
             this.autoSizeTabs();
         }
-        if(this.enableTabScroll && this.rendered){
+        if(this.enableTabScroll && rendered){
             this.autoScrollTabs();
         }
     },
@@ -821,6 +822,8 @@ new Ext.TabPanel({
                 this.stack.add(item);
 
                 this.layout.setActiveItem(item);
+                // Need to do this here, since setting the active tab slightly changes the size
+                this.delegateUpdates();
                 if(this.scrolling){
                     this.scrollToTab(item, this.animScroll);
                 }

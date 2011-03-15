@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -7,7 +7,7 @@
 /**
  * @class Ext.form.SliderField
  * @extends Ext.form.Field
- * Wraps a {@link Ext.Slider Slider} so it can be used as a form field.
+ * Wraps a {@link Ext.slider.MultiSlider Slider} so it can be used as a form field.
  * @constructor
  * Creates a new SliderField
  * @param {Object} config Configuration options. Note that you can pass in any slider configuration options, as well as

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -8,8 +8,8 @@
  * France (France) translation
  * By Thylia
  * 09-11-2007, 02:22 PM
- * updated to 2.2 by disizben (22 Sep 2008)
- * updated to 3.2 by Thylia (20 Apr 2010)
+ * updated by disizben (22 Sep 2008)
+ * updated by Thylia (20 Apr 2010)
  */
 
 Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">En cours de chargement...</div>';
@@ -153,7 +153,7 @@ if(Ext.PagingToolbar){
 }
 
 if(Ext.form.BasicForm){
-    Ext.form.BasicForm.prototype.waitTitle = "Veuillez patienter..."
+    Ext.form.BasicForm.prototype.waitTitle = "Veuillez patienter...";
 }
 
 if(Ext.form.Field){

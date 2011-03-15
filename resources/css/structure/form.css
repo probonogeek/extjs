@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -34,6 +34,10 @@ textarea.x-form-field {
     margin:-1px 0; /* ie bogus margin bug */
     height:22px; /* ie quirks */
     line-height:18px;
+}
+
+.ext-ie6 .x-form-field-wrap .x-form-file-btn, .ext-ie7 .x-form-field-wrap .x-form-file-btn {
+    top: -1px; /* because of all these margin hacks, these buttons are off by one pixel in IE6,7 */
 }
 
 .ext-ie6 textarea.x-form-field, .ext-ie7 textarea.x-form-field {

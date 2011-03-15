@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.2
+ * Ext JS Library 3.3.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -387,12 +387,16 @@ function createSingle(h, e, fn, scope){
 
 function createDelayed(h, o, l, scope){
     return function(){
-        var task = new EXTUTIL.DelayedTask();
+        var task = new EXTUTIL.DelayedTask(),
+            args = Array.prototype.slice.call(arguments, 0);
         if(!l.tasks) {
             l.tasks = [];
         }
         l.tasks.push(task);
-        task.delay(o.delay || 10, h, scope, Array.prototype.slice.call(arguments, 0));
+        task.delay(o.delay || 10, function(){
+            l.tasks.remove(task);
+            h.apply(scope, args);
+        }, scope);
     };
 };
 
