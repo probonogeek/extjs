@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -131,7 +131,7 @@ disabledDates: ["^03"]
         } else {
             // set time to 12 noon, then clear the time
             var parsedDate = Date.parseDate(value + ' ' + this.initTime, format + ' ' + this.initTimeFormat);
-            
+
             if (parsedDate) return parsedDate.clearTime();
         }
     },
@@ -234,7 +234,7 @@ disabledDates: ["^03"]
             this.menu.picker.setMaxDate(this.maxValue);
         }
     },
-    
+
     /**
      * Runs all of NumberFields validations and returns an array of any errors. Note that this first
      * runs TextField's validations, so the returned array is an amalgamation of all field errors.
@@ -246,32 +246,32 @@ disabledDates: ["^03"]
      */
     getErrors: function(value) {
         var errors = Ext.form.DateField.superclass.getErrors.apply(this, arguments);
-        
+
         value = this.formatDate(value || this.processValue(this.getRawValue()));
-        
+
         if (value.length < 1) { // if it's blank and textfield didn't flag it then it's valid
              return errors;
         }
-        
+
         var svalue = value;
         value = this.parseDate(value);
         if (!value) {
             errors.push(String.format(this.invalidText, svalue, this.format));
             return errors;
         }
-        
+
         var time = value.getTime();
-        if (this.minValue && time < this.minValue.getTime()) {
+        if (this.minValue && time < this.minValue.clearTime().getTime()) {
             errors.push(String.format(this.minText, this.formatDate(this.minValue)));
         }
-        
-        if (this.maxValue && time > this.maxValue.getTime()) {
+
+        if (this.maxValue && time > this.maxValue.clearTime().getTime()) {
             errors.push(String.format(this.maxText, this.formatDate(this.maxValue)));
         }
-        
+
         if (this.disabledDays) {
             var day = value.getDay();
-            
+
             for(var i = 0; i < this.disabledDays.length; i++) {
                 if (day === this.disabledDays[i]) {
                     errors.push(this.disabledDaysText);
@@ -279,12 +279,12 @@ disabledDates: ["^03"]
                 }
             }
         }
-        
+
         var fvalue = this.formatDate(value);
         if (this.disabledDatesRE && this.disabledDatesRE.test(fvalue)) {
             errors.push(String.format(this.disabledDatesText, fvalue));
         }
-        
+
         return errors;
     },
 

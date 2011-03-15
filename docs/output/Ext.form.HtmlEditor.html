@@ -36,7 +36,36 @@ based layout manager, for example:<div class="mdetail-params"><ul>
 <li><a href="output/Ext.form.FormPanel.html" ext:cls="Ext.form.FormPanel">Ext.form.FormPanel</a></li>
 <li>specifying <code>layout: <em>'anchor'</em> <i>// or <em>'form'</em>, or <em>'absolute'</em></i></code></li>
 </ul></div></p>
-<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#anchor" ext:member="#anchor" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-autoScroll"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-autoScroll">autoScroll</a></b> : Boolean<div class="mdesc"><div class="short">true to use overflow:'auto' on the components layout element and show scroll bars automatically when
+<p>See <a href="output/Ext.layout.AnchorLayout.html" ext:cls="Ext.layout.AnchorLayout">Ext.layout.AnchorLayout</a>.<a href="output/Ext.layout.AnchorLayout.html#Ext.layout.AnchorLayout-anchor" ext:member="anchor" ext:cls="Ext.layout.AnchorLayout">anchor</a> also.</p></div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#anchor" ext:member="#anchor" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoEl"></a><b><a href="source/Component.html#cfg-Ext.Component-autoEl">autoEl</a></b> : Mixed<div class="mdesc"><div class="short">A tag name or DomHelper spec used to create the Element which will
+encapsulate this Component.
+You do not normally ne...</div><div class="long"><p>A tag name or <a href="output/Ext.DomHelper.html" ext:cls="Ext.DomHelper">DomHelper</a> spec used to create the <a href="output/Ext.Component.html#Ext.Component-getEl" ext:member="getEl" ext:cls="Ext.Component">Element</a> which will
+encapsulate this Component.</p>
+<p>You do not normally need to specify this. For the base classes <a href="output/Ext.Component.html" ext:cls="Ext.Component">Ext.Component</a>, <a href="output/Ext.BoxComponent.html" ext:cls="Ext.BoxComponent">Ext.BoxComponent</a>,
+and <a href="output/Ext.Container.html" ext:cls="Ext.Container">Ext.Container</a>, this defaults to <b><tt>'div'</tt></b>. The more complex Ext classes use a more complex
+DOM structure created by their own onRender methods.</p>
+<p>This is intended to allow the developer to create application-specific utility Components encapsulated by
+different DOM elements. Example usage:</p><pre><code>{
+    xtype: <em>'box'</em>,
+    autoEl: {
+        tag: <em>'img'</em>,
+        src: <em>'http:<i>//www.example.com/example.jpg'</em></i>
+    }
+}, {
+    xtype: <em>'box'</em>,
+    autoEl: {
+        tag: <em>'blockquote'</em>,
+        html: <em>'autoEl is cool!'</em>
+    }
+}, {
+    xtype: <em>'container'</em>,
+    autoEl: <em>'ul'</em>,
+    cls: <em>'ux-unordered-list'</em>,
+    items: {
+        xtype: <em>'box'</em>,
+        autoEl: <em>'li'</em>,
+        html: <em>'First list item'</em>
+    }
+}</code></pre></div></div></td><td class="msource"><a href="output/Ext.Component.html#autoEl" ext:member="#autoEl" ext:cls="Ext.Component">Component</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.BoxComponent-autoScroll"></a><b><a href="source/BoxComponent.html#cfg-Ext.BoxComponent-autoScroll">autoScroll</a></b> : Boolean<div class="mdesc"><div class="short">true to use overflow:'auto' on the components layout element and show scroll bars automatically when
 necessary, false...</div><div class="long"><code>true</code> to use overflow:'auto' on the components layout element and show scroll bars automatically when
 necessary, <code>false</code> to clip any overflowing content (defaults to <code>false</code>).</div></div></td><td class="msource"><a href="output/Ext.BoxComponent.html#autoScroll" ext:member="#autoScroll" ext:cls="Ext.BoxComponent">BoxComponent</a></td></tr><tr class="config-row expandable inherited"><td class="micon"><a href="#expand" class="exi">&nbsp;</a></td><td class="sig"><a id="Ext.Component-autoShow"></a><b><a href="source/Component.html#cfg-Ext.Component-autoShow">autoShow</a></b> : Boolean<div class="mdesc"><div class="short">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove
 them on render...</div><div class="long">True if the component should check for hidden classes (e.g. 'x-hidden' or 'x-hide-display') and remove

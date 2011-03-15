@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -48,9 +48,11 @@ textarea.x-form-field {
     margin-bottom:-2px; /* another bogus margin bug, safari/mac only */
 }
 
+/*
 .ext-strict .ext-ie8 .x-form-text, .ext-strict .ext-ie8 textarea.x-form-field {
     margin-bottom: 1px;
 }
+*/
 
 .ext-gecko .x-form-text , .ext-ie8 .x-form-text {
     padding-top:2px; /* FF won't center the text vertically */
@@ -320,6 +322,10 @@ textarea {
     height:19px;
 }
 
+.ext-webkit .x-small-editor .x-form-field-wrap .x-form-trigger{
+    height:21px;
+}
+
 .ext-webkit .x-small-editor .x-form-text{padding-top:3px;font-size:100%;}
 
 .x-form-clear {
@@ -530,6 +536,10 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
     -moz-outline: none;
     outline: none;
     overflow: auto;
+}
+
+.ext-mac.ext-gecko .x-window-body .x-form-item {
+    overflow:hidden;
 }
 
 .ext-gecko .x-form-item {

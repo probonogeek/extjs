@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -119,7 +119,9 @@ function(){
 	            mask.remove();
                 data(dom, 'mask', undefined);
 	        }
-	        me.removeClass([XMASKED, XMASKEDRELATIVE]);
+	        if(me.isMasked()){
+                me.removeClass([XMASKED, XMASKEDRELATIVE]);
+            }
 	    },
 
 	    /**

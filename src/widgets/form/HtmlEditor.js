@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -562,8 +562,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      */
     toggleSourceEdit : function(sourceEditMode){
         var iframeHeight,
-            elHeight,
-            ls;
+            elHeight;
 
         if (sourceEditMode === undefined) {
             sourceEditMode = !this.sourceEditMode;
@@ -579,7 +578,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         }
         if (this.sourceEditMode) {
             // grab the height of the containing panel before we hide the iframe
-            ls = this.getSize();
+            this.previousSize = this.getSize();
 
             iframeHeight = Ext.get(this.iframe).getHeight();
 
@@ -602,7 +601,8 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             this.el.dom.setAttribute('tabIndex', -1);
             this.deferFocus();
 
-            this.setSize(ls);
+            this.setSize(this.previousSize);
+            delete this.previousSize;
             this.iframe.style.height = elHeight + 'px';
         }
         this.fireEvent('editmodechange', this, this.sourceEditMode);

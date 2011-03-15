@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -11,14 +11,12 @@ Ext.Element.addMethods(function(){
     // local style camelizing for speed
     var propCache = {},
         camelRe = /(-[a-z])/gi,
-        classReCache = {},
         view = document.defaultView,
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
         spacesRe = /\s+/,
         wordsRe = /\w/g,
-        EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
         BORDER = "border",
@@ -208,7 +206,7 @@ Ext.Element.addMethods(function(){
                     }
                     prop = chkCache(prop);
                     // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
-                    if(wk && /marginRight/.test(prop)){
+                    if(wk && (/marginRight/.test(prop))) {
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                     }
@@ -260,7 +258,7 @@ Ext.Element.addMethods(function(){
                 color = (typeof prefix != 'undefined') ? prefix : '#',
                 h;
 
-            if(!v || /transparent|inherit/.test(v)){
+            if(!v || (/transparent|inherit/.test(v))) {
                 return defaultValue;
             }
             if(/^r/.test(v)){
@@ -282,9 +280,8 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         setStyle : function(prop, value){
-            var tmp,
-                style,
-                camel;
+            var tmp, style;
+            
             if (typeof prop != 'object') {
                 tmp = {};
                 tmp[prop] = value;
@@ -503,6 +500,6 @@ Ext.fly('elId').setHeight(150, {
         },
 
         margins : margins
-    }
+    };
 }()
 );

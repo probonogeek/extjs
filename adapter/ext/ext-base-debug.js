@@ -6,11 +6,11 @@ window.undefined = window.undefined;
 
 Ext = {
     
-    version : '3.2.1',
+    version : '3.2.2',
     versionDetail : {
         major: 3,
         minor: 2,
-        patch: 1
+        patch: 2
     }
 };
 
@@ -233,7 +233,7 @@ Ext.apply = function(o, c, defaults){
                  } :
                  function(a, i, j){
                      return Array.prototype.slice.call(a, i || 0, j || a.length);
-                 }
+                 };
          }(),
 
         isIterable : function(v){
@@ -314,6 +314,19 @@ Ext.apply = function(o, c, defaults){
         getBody : function(){
             return Ext.get(DOC.body || DOC.documentElement);
         },
+        
+        
+        getHead : function() {
+            var head;
+            
+            return function() {
+                if (head == undefined) {
+                    head = Ext.get(DOC.getElementsByTagName("head")[0]);
+                }
+                
+                return head;
+            };
+        }(),
 
         
         
@@ -327,7 +340,7 @@ Ext.apply = function(o, c, defaults){
                     d.innerHTML = '';
                     delete Ext.elCache[n.id];
                 }
-            }
+            };
         }() : function(n){
             if(n && n.parentNode && n.tagName != 'BODY'){
                 (Ext.enableNestedListenerRemoval) ? Ext.EventManager.purgeElement(n, true) : Ext.EventManager.removeAll(n);
@@ -1190,10 +1203,8 @@ Ext.TaskMgr = new Ext.util.TaskRunner();(function(){
         
         POLL_RETRYS = 200,
         POLL_INTERVAL = 20,
-        EL = 0,
         TYPE = 0,
         FN = 1,
-        WFN = 2,
         OBJ = 2,
         ADJ_SCOPE = 3,
         SCROLLLEFT = 'scrollLeft',
@@ -1415,8 +1426,8 @@ Ext.TaskMgr = new Ext.util.TaskRunner();(function(){
         getRelatedTarget : function(ev) {
             ev = ev.browserEvent || ev;
             return this.resolveTextNode(ev.relatedTarget ||
-                    (ev.type == MOUSEOUT ? ev.toElement :
-                     ev.type == MOUSEOVER ? ev.fromElement : null));
+                (/(mouseout|mouseleave)/.test(ev.type) ? ev.toElement :
+                 /(mouseover|mouseenter)/.test(ev.type) ? ev.fromElement : null));
         },
 
         getPageX : function(ev) {
@@ -1488,18 +1499,17 @@ Ext.TaskMgr = new Ext.util.TaskRunner();(function(){
 
         _load : function(e) {
             loadComplete = true;
-            var EU = Ext.lib.Event;
+            
             if (Ext.isIE && e !== true) {
-        
-        
+                
+                
                 doRemove(win, "load", arguments.callee);
             }
         },
 
         _unload : function(e) {
              var EU = Ext.lib.Event,
-                i, j, l, v, ul, id, len, index, scope;
-
+                i, v, ul, id, len, scope;
 
             for (id in unloadListeners) {
                 ul = unloadListeners[id];
@@ -1610,7 +1620,7 @@ Ext.lib.Ajax = function() {
             status : isBrokenStatus ? 204 : conn.status,
             statusText : isBrokenStatus ? 'No Content' : conn.statusText,
             getResponseHeader : function(header){return headerObj[header.toLowerCase()];},
-            getAllResponseHeaders : function(){return headerStr},
+            getAllResponseHeaders : function(){return headerStr;},
             responseText : conn.responseText,
             responseXML : conn.responseXML,
             argument : callbackArg
@@ -1807,10 +1817,7 @@ Ext.lib.Ajax = function() {
             var fElements = form.elements || (document.forms[form] || Ext.getDom(form)).elements,
                 hasSubmit = false,
                 encoder = encodeURIComponent,
-                element,
-                options,
                 name,
-                val,
                 data = '',
                 type;
 
@@ -1825,7 +1832,7 @@ Ext.lib.Ajax = function() {
                                 data += String.format("{0}={1}&", encoder(name), encoder((opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttribute('value') !== null) ? opt.value : opt.text));
                             }
                         });
-                    } else if(!/file|undefined|reset|button/i.test(type)) {
+                    } else if(!(/file|undefined|reset|button/i.test(type))) {
                             if(!(/radio|checkbox/i.test(type) && !element.checked) && !(type == 'submit' && hasSubmit)){
 
                                 data += encoder(name) + '=' + encoder(element.value) + '&';
@@ -2354,7 +2361,6 @@ Ext.lib.Ajax = function() {
         Ext.extend(EXTLIB.Motion, Ext.lib.AnimBase);
 
         var superclass = EXTLIB.Motion.superclass,
-            proto = EXTLIB.Motion.prototype,
             pointsRe = /^points$/i;
 
         Ext.apply(EXTLIB.Motion.prototype, {

@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -101,7 +101,7 @@ Ext.list.ColumnResizer = Ext.extend(Ext.util.Observable, {
             len = cs.length,
             w = this.view.innerHd.getWidth(),
             minPct = this.minPct * 100,
-            pct = Math.ceil((nw * vw.maxWidth) / w),
+            pct = Math.ceil((nw * vw.maxColumnWidth) / w),
             diff = (cs[index].width * 100) - pct,
             eachItem = Math.floor(diff / (len-1-index)),
             mod = diff - (eachItem * (len-1-index));

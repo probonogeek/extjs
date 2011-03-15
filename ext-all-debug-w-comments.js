@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -165,7 +165,6 @@ Ext.DomHelper = function(){
             attr,
             val,
             key,
-            keyVal,
             cn;
 
         if(typeof o == "string"){
@@ -281,21 +280,18 @@ Ext.DomHelper = function(){
          * a function which returns such a specification.
          */
         applyStyles : function(el, styles){
-            if(styles){
-                var i = 0,
-                    len,
-                    style,
-                    matches;
+            if (styles) {
+                var matches;
 
                 el = Ext.fly(el);
-                if(typeof styles == "function"){
+                if (typeof styles == "function") {
                     styles = styles.call();
                 }
-                if(typeof styles == "string"){
-                    while((matches = cssRe.exec(styles))){
+                if (typeof styles == "string") {
+                    while ((matches = cssRe.exec(styles))) {
                         el.setStyle(matches[1], matches[2]);
                     }
-                }else if (typeof styles == "object"){
+                } else if (typeof styles == "object") {
                     el.setStyle(styles);
                 }
             }
@@ -1222,17 +1218,23 @@ Ext.DomQuery = function(){
             ri = -1, 
             useGetStyle = custom == "{",	    
             fn = Ext.DomQuery.operators[op],	    
-            a,	    
-            innerHTML;
+            a,
+            xml,
+            hasXml;
+            
         for(var i = 0, ci; ci = cs[i]; i++){
 	    // skip non-element nodes.
             if(ci.nodeType != 1){
                 continue;
             }
+            // only need to do this for the first node
+            if(!hasXml){
+                xml = Ext.DomQuery.isXml(ci);
+                hasXml = true;
+            }
 	    
-            innerHTML = ci.innerHTML;
             // we only need to change the property names if we're dealing with html nodes, not XML
-            if(innerHTML !== null && innerHTML !== undefined){
+            if(!xml){
                 if(useGetStyle){
                     a = Ext.DomQuery.getStyle(ci, attr);
                 } else if (attr == "class" || attr == "className"){
@@ -1372,10 +1374,10 @@ Ext.DomQuery = function(){
         compile : function(path, type){
             type = type || "select";
 
-	    // setup fn preamble
+    	    // setup fn preamble
             var fn = ["var f = function(root){\n var mode; ++batch; var n = root || document;\n"],
-		mode,		
-		lastPath,
+        		mode,		
+        		lastPath,
             	matchers = Ext.DomQuery.matchers,
             	matchersLn = matchers.length,
             	modeMatch,
@@ -2144,11 +2146,11 @@ myGridPanel.on({
         var me = this,
             e,
             oe,
-            isF,
-        ce;
+            ce;
+            
         if (typeof eventName == 'object') {
             o = eventName;
-            for (e in o){
+            for (e in o) {
                 oe = o[e];
                 if (!me.filterOptRe.test(e)) {
                     me.addListener(e, oe.fn || oe, oe.scope || o.scope, oe.fn ? oe : o);
@@ -2336,7 +2338,8 @@ EXTUTIL.Event.prototype = {
     },
 
     createListener: function(fn, scope, o){
-        o = o || {}, scope = scope || this.obj;
+        o = o || {};
+        scope = scope || this.obj;
         var l = {
             fn: fn,
             scope: scope,
@@ -3317,6 +3320,7 @@ Ext.EventManager.addListener("myDiv", 'click', handleClick);
  */
 Ext.EventObject = function(){
     var E = Ext.lib.Event,
+        clickRe = /(dbl)?click/,
         // safari keypress events for special keys return bad keycodes
         safariKeys = {
             3 : 13, // enter
@@ -3351,7 +3355,7 @@ Ext.EventObject = function(){
             if(e){
                 // normalize buttons
                 me.button = e.button ? btnMap[e.button] : (e.which ? e.which - 1 : -1);
-                if(e.type == 'click' && me.button == -1){
+                if(clickRe.test(e.type) && me.button == -1){
                     me.button = 0;
                 }
                 me.type = e.type;
@@ -3948,10 +3952,7 @@ Ext.Element = function(element, forceNew){
     this.id = id || Ext.id(dom);
 };
 
-var D = Ext.lib.Dom,
-    DH = Ext.DomHelper,
-    E = Ext.lib.Event,
-    A = Ext.lib.Anim,
+var DH = Ext.DomHelper,
     El = Ext.Element,
     EC = Ext.elCache;
 
@@ -3968,7 +3969,7 @@ El.prototype = {
             val,
             useSet = (useSet !== false) && !!el.setAttribute;
 
-        for(attr in o){
+        for (attr in o) {
             if (o.hasOwnProperty(attr)) {
                 val = o[attr];
                 if (attr == 'style') {
@@ -5321,12 +5322,13 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
             vw -= offsets.right;
             vh -= offsets.bottom;
 
-            var vr = vx+vw;
-            var vb = vy+vh;
-
-            var xy = proposedXY || (!local ? this.getXY() : [this.getLeft(true), this.getTop(true)]);
-            var x = xy[0], y = xy[1];
-            var w = this.dom.offsetWidth, h = this.dom.offsetHeight;
+            var vr = vx + vw,
+                vb = vy + vh,
+                xy = proposedXY || (!local ? this.getXY() : [this.getLeft(true), this.getTop(true)]),
+                x = xy[0], y = xy[1],
+                offset = this.getConstrainOffset(),
+                w = this.dom.offsetWidth + offset, 
+                h = this.dom.offsetHeight + offset;
 
             // only move it if it needs it
             var moved = false;
@@ -5407,6 +5409,11 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
 //         }
 //         return moved ? [x, y] : false;
 //    },
+
+    // private, used internally
+    getConstrainOffset : function(){
+        return 0;
+    },
     
     /**
     * Calculates the x, y to center this element on the screen
@@ -5800,14 +5807,12 @@ Ext.Element.addMethods(function(){
     // local style camelizing for speed
     var propCache = {},
         camelRe = /(-[a-z])/gi,
-        classReCache = {},
         view = document.defaultView,
         propFloat = Ext.isIE ? 'styleFloat' : 'cssFloat',
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
         spacesRe = /\s+/,
         wordsRe = /\w/g,
-        EL = Ext.Element,
         PADDING = "padding",
         MARGIN = "margin",
         BORDER = "border",
@@ -5997,7 +6002,7 @@ Ext.Element.addMethods(function(){
                     }
                     prop = chkCache(prop);
                     // Fix bug caused by this: https://bugs.webkit.org/show_bug.cgi?id=13343
-                    if(wk && /marginRight/.test(prop)){
+                    if(wk && (/marginRight/.test(prop))) {
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                     }
@@ -6049,7 +6054,7 @@ Ext.Element.addMethods(function(){
                 color = (typeof prefix != 'undefined') ? prefix : '#',
                 h;
 
-            if(!v || /transparent|inherit/.test(v)){
+            if(!v || (/transparent|inherit/.test(v))) {
                 return defaultValue;
             }
             if(/^r/.test(v)){
@@ -6071,9 +6076,8 @@ Ext.Element.addMethods(function(){
          * @return {Ext.Element} this
          */
         setStyle : function(prop, value){
-            var tmp,
-                style,
-                camel;
+            var tmp, style;
+            
             if (typeof prop != 'object') {
                 tmp = {};
                 tmp[prop] = value;
@@ -6292,7 +6296,7 @@ Ext.fly('elId').setHeight(150, {
         },
 
         margins : margins
-    }
+    };
 }()
 );
 /**
@@ -7174,18 +7178,21 @@ Ext.Element.addMethods({
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
      * @return {Element} this
      */
-    scrollTo : function(side, value, animate){
-        var top = /top/i.test(side), //check if we're scrolling top or left
-        	me = this,
-        	dom = me.dom,
+    scrollTo : function(side, value, animate) {
+        //check if we're scrolling top or left
+        var top = /top/i.test(side),
+            me = this,
+            dom = me.dom,
             prop;
         if (!animate || !me.anim) {
-            prop = 'scroll' + (top ? 'Top' : 'Left'), // just setting the value, so grab the direction
+            // just setting the value, so grab the direction
+            prop = 'scroll' + (top ? 'Top' : 'Left');
             dom[prop] = value;
-        }else{
-            prop = 'scroll' + (top ? 'Left' : 'Top'), // if scrolling top, we need to grab scrollLeft, if left, scrollTop
-            me.anim({scroll: {to: top ? [dom[prop], value] : [value, dom[prop]]}},
-            		 me.preanim(arguments, 2), 'scroll');
+        }
+        else {
+            // if scrolling top, we need to grab scrollLeft, if left, scrollTop
+            prop = 'scroll' + (top ? 'Left' : 'Top');
+            me.anim({scroll: {to: top ? [dom[prop], value] : [value, dom[prop]]}}, me.preanim(arguments, 2), 'scroll');
         }
         return me;
     },
@@ -7197,31 +7204,34 @@ Ext.Element.addMethods({
      * @param {Boolean} hscroll (optional) False to disable horizontal scroll (defaults to true)
      * @return {Ext.Element} this
      */
-    scrollIntoView : function(container, hscroll){
+    scrollIntoView : function(container, hscroll) {
         var c = Ext.getDom(container) || Ext.getBody().dom,
-        	el = this.dom,
-        	o = this.getOffsetsTo(c),
+            el = this.dom,
+            o = this.getOffsetsTo(c),
             l = o[0] + c.scrollLeft,
             t = o[1] + c.scrollTop,
             b = t + el.offsetHeight,
             r = l + el.offsetWidth,
-        	ch = c.clientHeight,
-        	ct = parseInt(c.scrollTop, 10),
-        	cl = parseInt(c.scrollLeft, 10),
-        	cb = ct + ch,
-        	cr = cl + c.clientWidth;
+            ch = c.clientHeight,
+            ct = parseInt(c.scrollTop, 10),
+            cl = parseInt(c.scrollLeft, 10),
+            cb = ct + ch,
+            cr = cl + c.clientWidth;
 
         if (el.offsetHeight > ch || t < ct) {
-        	c.scrollTop = t;
-        } else if (b > cb){
+            c.scrollTop = t;
+        }
+        else if (b > cb) {
             c.scrollTop = b-ch;
         }
-        c.scrollTop = c.scrollTop; // corrects IE, other browsers will ignore
+        // corrects IE, other browsers will ignore
+        c.scrollTop = c.scrollTop;
 
-        if(hscroll !== false){
-			if(el.offsetWidth > c.clientWidth || l < cl){
+        if (hscroll !== false) {
+            if (el.offsetWidth > c.clientWidth || l < cl) {
                 c.scrollLeft = l;
-            }else if(r > cr){
+            }
+            else if (r > cr) {
                 c.scrollLeft = r - c.clientWidth;
             }
             c.scrollLeft = c.scrollLeft;
@@ -7230,7 +7240,7 @@ Ext.Element.addMethods({
     },
 
     // private
-    scrollChildIntoView : function(child, hscroll){
+    scrollChildIntoView : function(child, hscroll) {
         Ext.fly(child, '_scrollChildIntoView').scrollIntoView(this, hscroll);
     },
     
@@ -7243,11 +7253,11 @@ Ext.Element.addMethods({
      * @return {Boolean} Returns true if a scroll was triggered or false if the element
      * was scrolled as far as it could go.
      */
-     scroll : function(direction, distance, animate){
-         if(!this.isScrollable()){
-             return;
-         }
-         var el = this.dom,
+     scroll : function(direction, distance, animate) {
+        if (!this.isScrollable()) {
+            return false;
+        }
+        var el = this.dom,
             l = el.scrollLeft, t = el.scrollTop,
             w = el.scrollWidth, h = el.scrollHeight,
             cw = el.clientWidth, ch = el.clientHeight,
@@ -7260,13 +7270,13 @@ Ext.Element.addMethods({
             };
             hash.d = hash.b;
             hash.u = hash.t;
-            
-         direction = direction.substr(0, 1);
-         if((v = hash[direction]) > -1){
+        
+        direction = direction.substr(0, 1);
+        if ((v = hash[direction]) > -1) {
             scrolled = true;
             this.scrollTo(direction == 'l' || direction == 'r' ? 'left' : 'top', v, this.preanim(arguments, 2));
-         }
-         return scrolled;
+        }
+        return scrolled;
     }
 });/**
  * @class Ext.Element
@@ -7734,7 +7744,9 @@ function(){
 	            mask.remove();
                 data(dom, 'mask', undefined);
 	        }
-	        me.removeClass([XMASKED, XMASKEDRELATIVE]);
+	        if(me.isMasked()){
+                me.removeClass([XMASKED, XMASKEDRELATIVE]);
+            }
 	    },
 
 	    /**
@@ -9108,18 +9120,17 @@ Ext.CompositeElementLite.prototype = {
     filter : function(selector){
         var els = [],
             me = this,
-            elements = me.elements,
             fn = Ext.isFunction(selector) ? selector
                 : function(el){
                     return el.is(selector);
                 };
 
-
-        me.each(function(el, self, i){
-            if(fn(el, i) !== false){
+        me.each(function(el, self, i) {
+            if (fn(el, i) !== false) {
                 els[els.length] = me.transformElement(el);
             }
         });
+        
         me.elements = els;
         return me;
     },
@@ -9432,6 +9443,7 @@ Ext.select = Ext.Element.select;(function(){
      * <p>Be aware that file upload packets are sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form</a>
      * and some server technologies (notably JEE) may require some custom processing in order to
      * retrieve parameter names and parameter values from the packet content.</p>
+     * <p>Also note that it's not possible to check the response code of the hidden iframe, so the success handler will ALWAYS fire.</p>
      * @constructor
      * @param {Object} config a configuration object.
      */
@@ -12273,11 +12285,12 @@ mc.add(otherEl);
     reorder: function(mapping) {
         this.suspendEvents();
 
-        var items     = this.items,
-            index     = 0,
-            length    = items.length,
-            order     = [],
-            remaining = [];
+        var items = this.items,
+            index = 0,
+            length = items.length,
+            order = [],
+            remaining = [],
+            oldIndex;
 
         //object of {oldPosition: newPosition} reversed to {newPosition: oldPosition}
         for (oldIndex in mapping) {
@@ -13665,48 +13678,51 @@ Ext.util.CSS = function(){
  @param {Mixed} el The element to listen on
  @param {Object} config
  */
-Ext.util.ClickRepeater = function(el, config)
-{
-    this.el = Ext.get(el);
-    this.el.unselectable();
+Ext.util.ClickRepeater = Ext.extend(Ext.util.Observable, {
+    
+    constructor : function(el, config){
+        this.el = Ext.get(el);
+        this.el.unselectable();
 
-    Ext.apply(this, config);
+        Ext.apply(this, config);
 
-    this.addEvents(
-    /**
-     * @event mousedown
-     * Fires when the mouse button is depressed.
-     * @param {Ext.util.ClickRepeater} this
-     */
+        this.addEvents(
+        /**
+         * @event mousedown
+         * Fires when the mouse button is depressed.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
         "mousedown",
-    /**
-     * @event click
-     * Fires on a specified interval during the time the element is pressed.
-     * @param {Ext.util.ClickRepeater} this
-     */
+        /**
+         * @event click
+         * Fires on a specified interval during the time the element is pressed.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
         "click",
-    /**
-     * @event mouseup
-     * Fires when the mouse key is released.
-     * @param {Ext.util.ClickRepeater} this
-     */
+        /**
+         * @event mouseup
+         * Fires when the mouse key is released.
+         * @param {Ext.util.ClickRepeater} this
+         * @param {Ext.EventObject} e
+         */
         "mouseup"
-    );
+        );
 
-    if(!this.disabled){
-        this.disabled = true;
-        this.enable();
-    }
+        if(!this.disabled){
+            this.disabled = true;
+            this.enable();
+        }
 
-    // allow inline handler
-    if(this.handler){
-        this.on("click", this.handler,  this.scope || this);
-    }
+        // allow inline handler
+        if(this.handler){
+            this.on("click", this.handler,  this.scope || this);
+        }
 
-    Ext.util.ClickRepeater.superclass.constructor.call(this);
-};
-
-Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
+        Ext.util.ClickRepeater.superclass.constructor.call(this);        
+    },
+    
     interval : 20,
     delay: 250,
     preventDefault : true,
@@ -13768,16 +13784,16 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
         this.purgeListeners();
     },
 
-    handleDblClick : function(){
+    handleDblClick : function(e){
         clearTimeout(this.timer);
         this.el.blur();
 
-        this.fireEvent("mousedown", this);
-        this.fireEvent("click", this);
+        this.fireEvent("mousedown", this, e);
+        this.fireEvent("click", this, e);
     },
 
     // private
-    handleMouseDown : function(){
+    handleMouseDown : function(e){
         clearTimeout(this.timer);
         this.el.blur();
         if(this.pressClass){
@@ -13788,25 +13804,25 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
         Ext.getDoc().on("mouseup", this.handleMouseUp, this);
         this.el.on("mouseout", this.handleMouseOut, this);
 
-        this.fireEvent("mousedown", this);
-        this.fireEvent("click", this);
+        this.fireEvent("mousedown", this, e);
+        this.fireEvent("click", this, e);
 
         // Do not honor delay or interval if acceleration wanted.
         if (this.accelerate) {
             this.delay = 400;
         }
-        this.timer = this.click.defer(this.delay || this.interval, this);
+        this.timer = this.click.defer(this.delay || this.interval, this, [e]);
     },
 
     // private
-    click : function(){
-        this.fireEvent("click", this);
+    click : function(e){
+        this.fireEvent("click", this, e);
         this.timer = this.click.defer(this.accelerate ?
             this.easeOutExpo(this.mousedownTime.getElapsed(),
                 400,
                 -390,
                 12000) :
-            this.interval, this);
+            this.interval, this, [e]);
     },
 
     easeOutExpo : function (t, b, c, d) {
@@ -13832,13 +13848,13 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
     },
 
     // private
-    handleMouseUp : function(){
+    handleMouseUp : function(e){
         clearTimeout(this.timer);
         this.el.un("mouseover", this.handleMouseReturn, this);
         this.el.un("mouseout", this.handleMouseOut, this);
         Ext.getDoc().un("mouseup", this.handleMouseUp, this);
         this.el.removeClass(this.pressClass);
-        this.fireEvent("mouseup", this);
+        this.fireEvent("mouseup", this, e);
     }
 });/**
  * @class Ext.KeyNav
@@ -16971,6 +16987,10 @@ Ext.extend(Ext.Layer, Ext.Element, {
             }
         }
         return this;
+    },
+    
+    getConstrainOffset : function(){
+        return this.shadowOffset;    
     },
 
     isVisible : function(){
@@ -20793,7 +20813,7 @@ Ext.layout.BorderLayout.Region.prototype = {
                 this.collapsedEl.on('click', this.onExpandClick, this, {stopEvent:true});
             }else {
                 if(this.collapsible !== false && !this.hideCollapseTool) {
-                    var t = this.toolTemplate.append(
+                    var t = this.expandToolEl = this.toolTemplate.append(
                             this.collapsedEl.dom,
                             {id:'expand-'+this.position}, true);
                     t.addClassOnOver('x-tool-expand-'+this.position+'-over');
@@ -21212,7 +21232,7 @@ Ext.layout.BorderLayout.Region.prototype = {
         if (this.autoHideSlideTask && this.autoHideSlideTask.cancel){
             this.autoHideSlideTask.cancel();
         }
-        Ext.destroy(this.miniCollapsedEl, this.collapsedEl);
+        Ext.destroyMembers(this, 'miniCollapsedEl', 'collapsedEl', 'expandToolEl');
     }
 };
 
@@ -21450,7 +21470,8 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
     }
 });
 
-Ext.Container.LAYOUTS['border'] = Ext.layout.BorderLayout;/**
+Ext.Container.LAYOUTS['border'] = Ext.layout.BorderLayout;
+/**
  * @class Ext.layout.FormLayout
  * @extends Ext.layout.AnchorLayout
  * <p>This layout manager is specifically designed for rendering and managing child Components of
@@ -21604,7 +21625,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
                 labelAdjust: 0
             });
         }else{
-            this.labelSeparator = ct.labelSeparator || this.labelSeparator;
+            this.labelSeparator = Ext.isDefined(ct.labelSeparator) ? ct.labelSeparator : this.labelSeparator;
             ct.labelWidth = ct.labelWidth || 100;
             if(Ext.isNumber(ct.labelWidth)){
                 var pad = Ext.isNumber(ct.labelPad) ? ct.labelPad : 5;
@@ -22189,6 +22210,11 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
     // private
     isValidParent : function(c, target){
         return c.getPositionEl().up('table', 5).dom.parentNode === (target.dom || target);
+    },
+    
+    destroy: function(){
+        delete this.table;
+        Ext.layout.TableLayout.superclass.destroy.call(this);
     }
 
     /**
@@ -23679,7 +23705,7 @@ new Ext.Panel({
     },
     footerCfg: {
         tag: 'h2',
-        cls: 'x-panel-footer'        // same as the Default class
+        cls: 'x-panel-footer',        // same as the Default class
         html: 'footer html'
     },
     footerCssClass: 'custom-footer', // additional css class, see {@link Ext.element#addClass addClass}
@@ -25651,7 +25677,8 @@ Ext.extend(Ext.Editor, Ext.Component, {
         delete this.field.lastSize;
         this.field.setSize(w, h);
         if(this.el){
-            if(Ext.isGecko2 || Ext.isOpera){
+            // IE7 in strict mode doesn't size properly.
+            if(Ext.isGecko2 || Ext.isOpera || (Ext.isIE7 && Ext.isStrict)){
                 // prevent layer scrollbars
                 this.el.setSize(w, h);
             }
@@ -27015,6 +27042,14 @@ Ext.slider.Thumb = Ext.extend(Object, {
         if (this.dragStartValue != value) {
             slider.fireEvent('changecomplete', slider, value, this);
         }
+    },
+    
+    /**
+     * @private
+     * Destroys the thumb
+     */
+    destroy: function(){
+        Ext.destroyMembers(this, 'tracker', 'el');
     }
 });
 
@@ -27581,7 +27616,10 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
         for(; i < len; ++i){
             thumbs[i].el.stopFx();    
         }
-        this.innerEl.setWidth(w - (this.el.getPadding('l') + this.endEl.getPadding('r')));
+        // check to see if we're using an auto width
+        if(Ext.isNumber(w)){
+            this.innerEl.setWidth(w - (this.el.getPadding('l') + this.endEl.getPadding('r')));
+        }
         this.syncThumb();
         Ext.slider.MultiSlider.superclass.onResize.apply(this, arguments);
     },
@@ -27673,7 +27711,12 @@ Ext.slider.MultiSlider = Ext.extend(Ext.BoxComponent, {
 
     // private
     beforeDestroy : function(){
-        Ext.destroyMembers(this, 'endEl', 'innerEl', 'thumb', 'halfThumb', 'focusEl', 'tracker', 'thumbHolder');
+        var thumbs = this.thumbs;
+        for(var i = 0, len = thumbs.length; i < len; ++i){
+            thumbs[i].destroy();
+            thumbs[i] = null;
+        }
+        Ext.destroyMembers(this, 'endEl', 'innerEl', 'focusEl', 'thumbHolder');
         Ext.slider.MultiSlider.superclass.beforeDestroy.call(this);
     }
 });
@@ -31341,6 +31384,7 @@ Ext.dd.DragTracker = Ext.extend(Ext.util.Observable,  {
 
     destroy : function(){
         this.el.un('mousedown', this.onMouseDown, this);
+        delete this.el;
     },
 
     onMouseDown: function(e, target){
@@ -32350,21 +32394,21 @@ Ext.extend(Ext.dd.DragSource, Ext.dd.DDProxy, {
  * @param {Mixed} el The container element
  * @param {Object} config
  */
-Ext.dd.DropTarget = function(el, config){
-    this.el = Ext.get(el);
+Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
     
-    Ext.apply(this, config);
+    constructor : function(el, config){
+        this.el = Ext.get(el);
     
-    if(this.containerScroll){
-        Ext.dd.ScrollManager.register(this.el);
-    }
+        Ext.apply(this, config);
     
-    Ext.dd.DropTarget.superclass.constructor.call(this, this.el.dom, this.ddGroup || this.group, 
-          {isTarget: true});
-
-};
-
-Ext.extend(Ext.dd.DropTarget, Ext.dd.DDTarget, {
+        if(this.containerScroll){
+            Ext.dd.ScrollManager.register(this.el);
+        }
+    
+        Ext.dd.DropTarget.superclass.constructor.call(this, this.el.dom, this.ddGroup || this.group, 
+              {isTarget: true});        
+    },
+    
     /**
      * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
@@ -32448,6 +32492,13 @@ Ext.extend(Ext.dd.DropTarget, Ext.dd.DDTarget, {
      */
     notifyDrop : function(dd, e, data){
         return false;
+    },
+    
+    destroy : function(){
+        Ext.dd.DropTarget.superclass.destroy.call(this);
+        if(this.containerScroll){
+            Ext.dd.ScrollManager.unregister(this.el);
+        }
     }
 });/**
  * @class Ext.dd.DragZone
@@ -32507,14 +32558,15 @@ myDataView.on('render', function(v) {
  * @param {Mixed} el The container element
  * @param {Object} config
  */
-Ext.dd.DragZone = function(el, config){
-    Ext.dd.DragZone.superclass.constructor.call(this, el, config);
-    if(this.containerScroll){
-        Ext.dd.ScrollManager.register(this.el);
-    }
-};
-
-Ext.extend(Ext.dd.DragZone, Ext.dd.DragSource, {
+Ext.dd.DragZone = Ext.extend(Ext.dd.DragSource, {
+    
+    constructor : function(el, config){
+        Ext.dd.DragZone.superclass.constructor.call(this, el, config);
+        if(this.containerScroll){
+            Ext.dd.ScrollManager.register(this.el);
+        }
+    },
+    
     /**
      * This property contains the data representing the dragged object. This data is set up by the implementation
      * of the {@link #getDragData} method. It must contain a <tt>ddel</tt> property, but can contain
@@ -32574,6 +32626,13 @@ Ext.extend(Ext.dd.DragZone, Ext.dd.DragSource, {
      */
     getRepairXY : function(e){
         return Ext.Element.fly(this.dragData.ddel).getXY();  
+    },
+    
+    destroy : function(){
+        Ext.dd.DragZone.superclass.destroy.call(this);
+        if(this.containerScroll){
+            Ext.dd.ScrollManager.unregister(this.el);
+        }
     }
 });/**
  * @class Ext.dd.DropZone
@@ -33961,15 +34020,13 @@ sortInfo: {
     },
 
     /**
-     * @property isDestroyed
-     * @type Boolean
+     * @property {Boolean} isDestroyed
      * True if the store has been destroyed already. Read only
      */
     isDestroyed: false,
 
     /**
-     * @property hasMultiSort
-     * @type Boolean
+     * @property {Boolean} hasMultiSort
      * True if this store is currently sorted by more than one field/direction combination.
      */
     hasMultiSort: false,
@@ -34155,7 +34212,7 @@ sortInfo: {
              * @event clear
              * Fires when the data cache has been cleared.
              * @param {Store} this
-             * @param {Record[]} The records that were cleared.
+             * @param {Record[]} records The records that were cleared.
              */
             'clear',
             /**
@@ -35192,9 +35249,9 @@ myStore.reload(lastOptions);
         }
 
         /**
+         * Object containing overall sort direction and an ordered array of sorter configs used when sorting on multiple fields
          * @property multiSortInfo
          * @type Object
-         * Object containing overall sort direction and an ordered array of sorter configs used when sorting on multiple fields
          */
         this.multiSortInfo = {
             sorters  : sorters,
@@ -37592,14 +37649,18 @@ Ext.data.Types = new function(){
  */
 Ext.data.JsonWriter = Ext.extend(Ext.data.DataWriter, {
     /**
-     * @cfg {Boolean} encode <tt>true</tt> to {@link Ext.util.JSON#encode encode} the
-     * {@link Ext.data.DataWriter#toHash hashed data}. Defaults to <tt>true</tt>.  When using
-     * {@link Ext.data.DirectProxy}, set this to <tt>false</tt> since Ext.Direct.JsonProvider will perform
+     * @cfg {Boolean} encode <p><tt>true</tt> to {@link Ext.util.JSON#encode JSON encode} the
+     * {@link Ext.data.DataWriter#toHash hashed data} into a standard HTTP parameter named after this
+     * Reader's <code>meta.root</code> property which, by default is imported from the associated Reader. Defaults to <tt>true</tt>.</p>
+     * <p>If set to <code>false</code>, the hashed data is {@link Ext.util.JSON#encode JSON encoded}, along with
+     * the associated {@link Ext.data.Store}'s {@link Ext.data.Store#baseParams baseParams}, into the POST body.</p>
+     * <p>When using {@link Ext.data.DirectProxy}, set this to <tt>false</tt> since Ext.Direct.JsonProvider will perform
      * its own json-encoding.  In addition, if you're using {@link Ext.data.HttpProxy}, setting to <tt>false</tt>
      * will cause HttpProxy to transmit data using the <b>jsonData</b> configuration-params of {@link Ext.Ajax#request}
-     * instead of <b>params</b>.  When using a {@link Ext.data.Store#restful} Store, some serverside frameworks are
+     * instead of <b>params</b>.</p>
+     * <p>When using a {@link Ext.data.Store#restful} Store, some serverside frameworks are
      * tuned to expect data through the jsonData mechanism.  In those cases, one will want to set <b>encode: <tt>false</tt></b>, as in
-     * let the lower-level connection object (eg: Ext.Ajax) do the encoding.
+     * let the lower-level connection object (eg: Ext.Ajax) do the encoding.</p>
      */
     encode : true,
     /**
@@ -37615,10 +37676,14 @@ Ext.data.JsonWriter = Ext.extend(Ext.data.DataWriter, {
     },
 
     /**
-     * Final action of a write event.  Apply the written data-object to params.
-     * @param {Object} http params-object to write-to.
+     * <p>This method should not need to be called by application code, however it may be useful on occasion to
+     * override it, or augment it with an {@link Function#createInterceptor interceptor} or {@link Function#createSequence sequence}.</p>
+     * <p>The provided implementation encodes the serialized data representing the Store's modified Records into the Ajax request's
+     * <code>params</code> according to the <code>{@link #encode}</code> setting.</p>
+     * @param {Object} Ajax request params object to write into.
      * @param {Object} baseParams as defined by {@link Ext.data.Store#baseParams}.  The baseParms must be encoded by the extending class, eg: {@link Ext.data.JsonWriter}, {@link Ext.data.XmlWriter}.
-     * @param {Object/Object[]} data Data-object representing compiled Store-recordset.
+     * @param {Object/Object[]} data Data object representing the serialized modified records from the Store. May be either a single object,
+     * or an Array of objects - user implementations must handle both cases.
      */
     render : function(params, baseParams, data) {
         if (this.encode === true) {
@@ -38317,7 +38382,7 @@ Ext.extend(Ext.data.XmlWriter, Ext.data.DataWriter, {
      * </ul>
      */
     // Encoding the ? here in case it's being included by some kind of page that will parse it (eg. PHP)
-    tpl: '<tpl for="."><\u003fxml version="{version}" encoding="{encoding}"\u003f><tpl if="documentRoot"><{documentRoot}><tpl for="baseParams"><tpl for="."><{name}>{value}</{name}</tpl></tpl></tpl><tpl if="records.length&gt;1"><{root}></tpl><tpl for="records"><{parent.record}><tpl for="."><{name}>{value}</{name}></tpl></{parent.record}></tpl><tpl if="records.length&gt;1"></{root}></tpl><tpl if="documentRoot"></{documentRoot}></tpl></tpl>',
+    tpl: '<tpl for="."><\u003fxml version="{version}" encoding="{encoding}"\u003f><tpl if="documentRoot"><{documentRoot}><tpl for="baseParams"><tpl for="."><{name}>{value}</{name}></tpl></tpl></tpl><tpl if="records.length&gt;1"><{root}></tpl><tpl for="records"><{parent.record}><tpl for="."><{name}>{value}</{name}></tpl></{parent.record}></tpl><tpl if="records.length&gt;1"></{root}></tpl><tpl if="documentRoot"></{documentRoot}></tpl></tpl>',
 
 
     /**
@@ -38492,15 +38557,16 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
      * @return {Ext.data.Response} An instance of {@link Ext.data.Response}
      */
     readResponse : function(action, response) {
-        var q   = Ext.DomQuery,
-        doc     = response.responseXML;
+        var q = Ext.DomQuery,
+            doc = response.responseXML,
+            root = doc.documentElement || doc;
 
         // create general Response instance.
         var res = new Ext.data.Response({
             action: action,
-            success : this.getSuccess(doc),
-            message: this.getMessage(doc),
-            data: this.extractData(q.select(this.meta.record, doc) || q.select(this.meta.root, doc), false),
+            success : this.getSuccess(root),
+            message: this.getMessage(root),
+            data: this.extractData(q.select(this.meta.record, root) || q.select(this.meta.root, root), false),
             raw: doc
         });
 
@@ -38809,7 +38875,7 @@ Ext.data.GroupingStore = Ext.extend(Ext.data.Store, {
 
         //check the contents of the first sorter. If the field matches the CURRENT groupField (before it is set to the new one),
         //remove the sorter as it is actually the grouper. The new grouper is added back in by this.sort
-        sorters = this.multiSortInfo.sorters;
+        var sorters = this.multiSortInfo.sorters;
         if (sorters.length > 0 && sorters[0].field == this.groupField) {
             sorters.shift();
         }
@@ -39840,6 +39906,7 @@ TestAction.multiply(
              * executing.
              * @param {Ext.direct.RemotingProvider} provider
              * @param {Ext.Direct.Transaction} transaction
+             * @param {Object} meta The meta data
              */            
             'beforecall',            
             /**
@@ -39848,6 +39915,7 @@ TestAction.multiply(
              * NOT fire after the response has come back from the call.
              * @param {Ext.direct.RemotingProvider} provider
              * @param {Ext.Direct.Transaction} transaction
+             * @param {Object} meta The meta data
              */            
             'call'
         );
@@ -40005,10 +40073,10 @@ TestAction.multiply(
             cb: scope && Ext.isFunction(hs) ? hs.createDelegate(scope) : hs
         });
 
-        if(this.fireEvent('beforecall', this, t) !== false){
+        if(this.fireEvent('beforecall', this, t, m) !== false){
             Ext.Direct.addTransaction(t);
             this.queueTransaction(t);
-            this.fireEvent('call', this, t);
+            this.fireEvent('call', this, t, m);
         }
     },
 
@@ -40022,7 +40090,7 @@ TestAction.multiply(
             isForm: true
         });
 
-        if(this.fireEvent('beforecall', this, t) !== false){
+        if(this.fireEvent('beforecall', this, t, m) !== false){
             Ext.Direct.addTransaction(t);
             var isUpload = String(form.getAttribute("enctype")).toLowerCase() == 'multipart/form-data',
                 params = {
@@ -40040,7 +40108,7 @@ TestAction.multiply(
                 isUpload: isUpload,
                 params: callback && Ext.isObject(callback.params) ? Ext.apply(params, callback.params) : params
             });
-            this.fireEvent('call', this, t);
+            this.fireEvent('call', this, t, m);
             this.processForm(t);
         }
     },
@@ -42433,7 +42501,7 @@ Ext.Msg.show({
                     d.focusEl = db;
                 }
             }
-            if(opt.iconCls){
+            if(Ext.isDefined(opt.iconCls)){
               d.setIconClass(opt.iconCls);
             }
             this.setIcon(Ext.isDefined(opt.icon) ? opt.icon : bufferIcon);
@@ -42866,19 +42934,21 @@ Ext.extend(Ext.Panel.DD, Ext.dd.DragSource, {
  * for encoding and decoding <b>typed</b> variables including dates and defines the
  * Provider interface.
  */
-Ext.state.Provider = function(){
-    /**
-     * @event statechange
-     * Fires when a state change occurs.
-     * @param {Provider} this This state provider
-     * @param {String} key The state key which was changed
-     * @param {String} value The encoded value for the state
-     */
-    this.addEvents("statechange");
-    this.state = {};
-    Ext.state.Provider.superclass.constructor.call(this);
-};
-Ext.extend(Ext.state.Provider, Ext.util.Observable, {
+Ext.state.Provider = Ext.extend(Ext.util.Observable, {
+    
+    constructor : function(){
+        /**
+         * @event statechange
+         * Fires when a state change occurs.
+         * @param {Provider} this This state provider
+         * @param {String} key The state key which was changed
+         * @param {String} value The encoded value for the state
+         */
+        this.addEvents("statechange");
+        this.state = {};
+        Ext.state.Provider.superclass.constructor.call(this);
+    },
+    
     /**
      * Returns the current value for a key
      * @param {String} name The key name
@@ -42915,31 +42985,48 @@ Ext.extend(Ext.state.Provider, Ext.util.Observable, {
      * @return {Mixed} The decoded value
      */
     decodeValue : function(cookie){
-        var re = /^(a|n|d|b|s|o)\:(.*)$/;
-        var matches = re.exec(unescape(cookie));
-        if(!matches || !matches[1]) return; // non state cookie
-        var type = matches[1];
-        var v = matches[2];
+        /**
+         * a -> Array
+         * n -> Number
+         * d -> Date
+         * b -> Boolean
+         * s -> String
+         * o -> Object
+         * -> Empty (null)
+         */
+        var re = /^(a|n|d|b|s|o|e)\:(.*)$/,
+            matches = re.exec(unescape(cookie)),
+            all,
+            type,
+            v,
+            kv;
+        if(!matches || !matches[1]){
+            return; // non state cookie
+        }
+        type = matches[1];
+        v = matches[2];
         switch(type){
-            case "n":
+            case 'e':
+                return null;
+            case 'n':
                 return parseFloat(v);
-            case "d":
+            case 'd':
                 return new Date(Date.parse(v));
-            case "b":
-                return (v == "1");
-            case "a":
-                var all = [];
+            case 'b':
+                return (v == '1');
+            case 'a':
+                all = [];
                 if(v != ''){
                     Ext.each(v.split('^'), function(val){
                         all.push(this.decodeValue(val));
                     }, this);
                 }
                 return all;
-           case "o":
-                var all = {};
+           case 'o':
+                all = {};
                 if(v != ''){
                     Ext.each(v.split('^'), function(val){
-                        var kv = val.split('=');
+                        kv = val.split('=');
                         all[kv[0]] = this.decodeValue(kv[1]);
                     }, this);
                 }
@@ -42955,30 +43042,36 @@ Ext.extend(Ext.state.Provider, Ext.util.Observable, {
      * @return {String} The encoded value
      */
     encodeValue : function(v){
-        var enc;
-        if(typeof v == "number"){
-            enc = "n:" + v;
-        }else if(typeof v == "boolean"){
-            enc = "b:" + (v ? "1" : "0");
+        var enc,
+            flat = '',
+            i = 0,
+            len,
+            key;
+        if(v == null){
+            return 'e:1';    
+        }else if(typeof v == 'number'){
+            enc = 'n:' + v;
+        }else if(typeof v == 'boolean'){
+            enc = 'b:' + (v ? '1' : '0');
         }else if(Ext.isDate(v)){
-            enc = "d:" + v.toGMTString();
+            enc = 'd:' + v.toGMTString();
         }else if(Ext.isArray(v)){
-            var flat = "";
-            for(var i = 0, len = v.length; i < len; i++){
+            for(len = v.length; i < len; i++){
                 flat += this.encodeValue(v[i]);
-                if(i != len-1) flat += "^";
-            }
-            enc = "a:" + flat;
-        }else if(typeof v == "object"){
-            var flat = "";
-            for(var key in v){
-                if(typeof v[key] != "function" && v[key] !== undefined){
-                    flat += key + "=" + this.encodeValue(v[key]) + "^";
+                if(i != len - 1){
+                    flat += '^';
                 }
             }
-            enc = "o:" + flat.substring(0, flat.length-1);
+            enc = 'a:' + flat;
+        }else if(typeof v == 'object'){
+            for(key in v){
+                if(typeof v[key] != 'function' && v[key] !== undefined){
+                    flat += key + '=' + this.encodeValue(v[key]) + '^';
+                }
+            }
+            enc = 'o:' + flat.substring(0, flat.length-1);
         }else{
-            enc = "s:" + v;
+            enc = 's:' + v;
         }
         return escape(enc);
     }
@@ -43070,17 +43163,18 @@ Ext.state.Manager = function(){
  * Create a new CookieProvider
  * @param {Object} config The configuration object
  */
-Ext.state.CookieProvider = function(config){
-    Ext.state.CookieProvider.superclass.constructor.call(this);
-    this.path = "/";
-    this.expires = new Date(new Date().getTime()+(1000*60*60*24*7)); //7 days
-    this.domain = null;
-    this.secure = false;
-    Ext.apply(this, config);
-    this.state = this.readCookies();
-};
-
-Ext.extend(Ext.state.CookieProvider, Ext.state.Provider, {
+Ext.state.CookieProvider = Ext.extend(Ext.state.Provider, {
+    
+    constructor : function(config){
+        Ext.state.CookieProvider.superclass.constructor.call(this);
+        this.path = "/";
+        this.expires = new Date(new Date().getTime()+(1000*60*60*24*7)); //7 days
+        this.domain = null;
+        this.secure = false;
+        Ext.apply(this, config);
+        this.state = this.readCookies();
+    },
+    
     // private
     set : function(name, value){
         if(typeof value == "undefined" || value === null){
@@ -43099,13 +43193,15 @@ Ext.extend(Ext.state.CookieProvider, Ext.state.Provider, {
 
     // private
     readCookies : function(){
-        var cookies = {};
-        var c = document.cookie + ";";
-        var re = /\s?(.*?)=(.*?);/g;
-    	var matches;
+        var cookies = {},
+            c = document.cookie + ";",
+            re = /\s?(.*?)=(.*?);/g,
+    	    matches,
+            name,
+            value;
     	while((matches = re.exec(c)) != null){
-            var name = matches[1];
-            var value = matches[2];
+            name = matches[1];
+            value = matches[2];
             if(name && name.substring(0,3) == "ys-"){
                 cookies[name.substr(3)] = this.decodeValue(value);
             }
@@ -44089,7 +44185,7 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
     /*
      * IE has issues when setting percentage based widths to 100%. Default to 99.
      */
-    maxWidth: Ext.isIE ? 99 : 100,
+    maxColumnWidth: Ext.isIE ? 99 : 100,
 
     initComponent : function(){
         if(this.columnResize){
@@ -44154,8 +44250,8 @@ Ext.list.ListView = Ext.extend(Ext.DataView, {
         // auto calculate missing column widths
         if(colsWithWidth < len){
             var remaining = len - colsWithWidth;
-            if(allocatedWidth < this.maxWidth){
-                var perCol = ((this.maxWidth-allocatedWidth) / remaining)/100;
+            if(allocatedWidth < this.maxColumnWidth){
+                var perCol = ((this.maxColumnWidth-allocatedWidth) / remaining)/100;
                 for(var j = 0; j < len; j++){
                     var c = cs[j];
                     if(!c.width){
@@ -44519,7 +44615,7 @@ Ext.list.ColumnResizer = Ext.extend(Ext.util.Observable, {
             len = cs.length,
             w = this.view.innerHd.getWidth(),
             minPct = this.minPct * 100,
-            pct = Math.ceil((nw * vw.maxWidth) / w),
+            pct = Math.ceil((nw * vw.maxColumnWidth) / w),
             diff = (cs[index].width * 100) - pct,
             eachItem = Math.floor(diff / (len-1-index)),
             mod = diff - (eachItem * (len-1-index));
@@ -45466,10 +45562,11 @@ new Ext.TabPanel({
             pos = this.getScrollPos(),
             l = this.edge.getOffsetsTo(this.stripWrap)[0] + pos;
 
-        if(!this.enableTabScroll || count < 1 || cw < 20){ // 20 to prevent display:none issues
+        if(!this.enableTabScroll || cw < 20){ // 20 to prevent display:none issues
             return;
         }
-        if(l <= tw){
+        if(count == 0 || l <= tw){
+            // ensure the width is set if there's no tabs
             wd.scrollLeft = 0;
             wrap.setWidth(tw);
             if(this.scrolling){
@@ -46102,9 +46199,10 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
 
         if(this.repeat){
             var repeater = new Ext.util.ClickRepeater(btn, Ext.isObject(this.repeat) ? this.repeat : {});
-            this.mon(repeater, 'click', this.onClick, this);
+            this.mon(repeater, 'click', this.onRepeatClick, this);
+        }else{
+            this.mon(btn, this.clickEvent, this.onClick, this);
         }
-        this.mon(btn, this.clickEvent, this.onClick, this);
     },
 
     // private
@@ -46172,7 +46270,7 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
             this.clearTip();
         }
         if(this.menu && this.destroyMenu !== false) {
-            Ext.destroy(this.menu);
+            Ext.destroy(this.btnEl, this.menu);
         }
         Ext.destroy(this.repeater);
     },
@@ -46335,6 +46433,11 @@ Ext.Button = Ext.extend(Ext.BoxComponent, {
      */
     hasVisibleMenu : function(){
         return this.menu && this.menu.ownerCt == this && this.menu.isVisible();
+    },
+    
+    // private
+    onRepeatClick : function(repeat, e){
+        this.onClick(e);
     },
 
     // private
@@ -48555,7 +48658,7 @@ myGrid.on('render', function(grid) {
     // private
     afterRender : function(){
         Ext.ToolTip.superclass.afterRender.call(this);
-        this.anchorEl.setStyle('z-index', this.el.getZIndex() + 1);
+        this.anchorEl.setStyle('z-index', this.el.getZIndex() + 1).setVisibilityMode(Ext.Element.DISPLAY);
     },
 
     /**
@@ -48841,6 +48944,8 @@ myGrid.on('render', function(grid) {
         if(this.anchor && !this.anchorEl.isVisible()){
             this.syncAnchor();
             this.anchorEl.show();
+        }else{
+            this.anchorEl.hide();
         }
     },
 
@@ -50022,6 +50127,12 @@ new Ext.tree.TreePanel({
      * (bSuccess, oLastNode) where bSuccess is if the expand was successful and oLastNode is the last node that was expanded.
      */
     expandPath : function(path, attr, callback){
+        if(Ext.isEmpty(path)){
+            if(callback){
+                callback(false, undefined);
+            }
+            return;
+        }
         attr = attr || 'id';
         var keys = path.split(this.pathSeparator);
         var curNode = this.root;
@@ -50060,6 +50171,12 @@ new Ext.tree.TreePanel({
      * (bSuccess, oSelNode) where bSuccess is if the selection was successful and oSelNode is the selected node.
      */
     selectPath : function(path, attr, callback){
+        if(Ext.isEmpty(path)){
+            if(callback){
+                callback(false, undefined);
+            }
+            return;
+        }
         attr = attr || 'id';
         var keys = path.split(this.pathSeparator),
             v = keys.pop();
@@ -59291,10 +59408,25 @@ Ext.form.TwinTriggerField = Ext.extend(Ext.form.TriggerField, {
     getTrigger : function(index){
         return this.triggers[index];
     },
+    
+    afterRender: function(){
+        Ext.form.TwinTriggerField.superclass.afterRender.call(this);
+        var triggers = this.triggers,
+            i = 0,
+            len = triggers.length;
+            
+        for(; i < len; ++i){
+            if(this['hideTrigger' + (i + 1)]){
+                    triggers[i].hide();
+                }
+
+        }    
+    },
 
     initTrigger : function(){
-        var ts = this.trigger.select('.x-form-trigger', true);
-        var triggerField = this;
+        var ts = this.trigger.select('.x-form-trigger', true),
+            triggerField = this;
+            
         ts.each(function(t, all, index){
             var triggerIndex = 'Trigger'+(index+1);
             t.hide = function(){
@@ -59309,11 +59441,6 @@ Ext.form.TwinTriggerField = Ext.extend(Ext.form.TriggerField, {
                 triggerField.el.setWidth(w-triggerField.trigger.getWidth());
                 this['hidden' + triggerIndex] = false;
             };
-
-            if(this['hide'+triggerIndex]){
-                t.dom.style.display = 'none';
-                this['hidden' + triggerIndex] = true;
-            }
             this.mon(t, 'click', this['on'+triggerIndex+'Click'], this, {preventDefault:true});
             t.addClassOnOver('x-form-trigger-over');
             t.addClassOnClick('x-form-trigger-click');
@@ -59581,6 +59708,7 @@ Ext.form.NumberField = Ext.extend(Ext.form.TextField,  {
     },
 
     setValue : function(v){
+        v = this.fixPrecision(v);
     	v = Ext.isNumber(v) ? v : parseFloat(String(v).replace(this.decimalSeparator, "."));
         v = isNaN(v) ? '' : String(v).replace(".", this.decimalSeparator);
         return Ext.form.NumberField.superclass.setValue.call(this, v);
@@ -59620,7 +59748,7 @@ Ext.form.NumberField = Ext.extend(Ext.form.TextField,  {
     beforeBlur : function(){
         var v = this.parseValue(this.getRawValue());
         if(!Ext.isEmpty(v)){
-            this.setValue(this.fixPrecision(v));
+            this.setValue(v);
         }
     }
 });
@@ -59751,7 +59879,7 @@ disabledDates: ["^03"]
         } else {
             // set time to 12 noon, then clear the time
             var parsedDate = Date.parseDate(value + ' ' + this.initTime, format + ' ' + this.initTimeFormat);
-            
+
             if (parsedDate) return parsedDate.clearTime();
         }
     },
@@ -59854,7 +59982,7 @@ disabledDates: ["^03"]
             this.menu.picker.setMaxDate(this.maxValue);
         }
     },
-    
+
     /**
      * Runs all of NumberFields validations and returns an array of any errors. Note that this first
      * runs TextField's validations, so the returned array is an amalgamation of all field errors.
@@ -59866,32 +59994,32 @@ disabledDates: ["^03"]
      */
     getErrors: function(value) {
         var errors = Ext.form.DateField.superclass.getErrors.apply(this, arguments);
-        
+
         value = this.formatDate(value || this.processValue(this.getRawValue()));
-        
+
         if (value.length < 1) { // if it's blank and textfield didn't flag it then it's valid
              return errors;
         }
-        
+
         var svalue = value;
         value = this.parseDate(value);
         if (!value) {
             errors.push(String.format(this.invalidText, svalue, this.format));
             return errors;
         }
-        
+
         var time = value.getTime();
-        if (this.minValue && time < this.minValue.getTime()) {
+        if (this.minValue && time < this.minValue.clearTime().getTime()) {
             errors.push(String.format(this.minText, this.formatDate(this.minValue)));
         }
-        
-        if (this.maxValue && time > this.maxValue.getTime()) {
+
+        if (this.maxValue && time > this.maxValue.clearTime().getTime()) {
             errors.push(String.format(this.maxText, this.formatDate(this.maxValue)));
         }
-        
+
         if (this.disabledDays) {
             var day = value.getDay();
-            
+
             for(var i = 0; i < this.disabledDays.length; i++) {
                 if (day === this.disabledDays[i]) {
                     errors.push(this.disabledDaysText);
@@ -59899,12 +60027,12 @@ disabledDates: ["^03"]
                 }
             }
         }
-        
+
         var fvalue = this.formatDate(value);
         if (this.disabledDatesRE && this.disabledDatesRE.test(fvalue)) {
             errors.push(String.format(this.disabledDatesText, fvalue));
         }
-        
+
         return errors;
     },
 
@@ -60053,7 +60181,8 @@ dateField.setValue('2006-05-04');
      * @method autoSize
      */
 });
-Ext.reg('datefield', Ext.form.DateField);/**
+Ext.reg('datefield', Ext.form.DateField);
+/**
  * @class Ext.form.DisplayField
  * @extends Ext.form.Field
  * A display-only text field which is not validated and not submitted.
@@ -60665,24 +60794,28 @@ var combo = new Ext.form.ComboBox({
         }
         return zindex;
     },
+    
+    getZIndex : function(listParent){
+        listParent = listParent || Ext.getDom(this.getListParent() || Ext.getBody());
+        var zindex = parseInt(Ext.fly(listParent).getStyle('z-index'), 10);
+        if(!zindex){
+            zindex = this.getParentZIndex();
+        }
+        return (zindex || 12000) + 5;
+    },
 
     // private
     initList : function(){
         if(!this.list){
             var cls = 'x-combo-list',
-                listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
-                zindex = parseInt(Ext.fly(listParent).getStyle('z-index'), 10);
-
-            if (!zindex) {
-                zindex = this.getParentZIndex();
-            }
+                listParent = Ext.getDom(this.getListParent() || Ext.getBody());
 
             this.list = new Ext.Layer({
                 parentEl: listParent,
                 shadow: this.shadow,
                 cls: [cls, this.listClass].join(' '),
                 constrain:false,
-                zindex: (zindex || 12000) + 5
+                zindex: this.getZIndex(listParent)
             });
 
             var lw = this.listWidth || Math.max(this.wrap.getWidth(), this.minListWidth);
@@ -61439,14 +61572,7 @@ myCombo.keyNav.tab = function() {   // Override TAB handling function
         this.list.alignTo.apply(this.list, [this.el].concat(this.listAlign));
 
         // zindex can change, re-check it and set it if necessary
-        var listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
-            zindex = parseInt(Ext.fly(listParent).getStyle('z-index') ,10);
-        if (!zindex){
-            zindex = this.getParentZIndex();
-        }
-        if (zindex) {
-            this.list.setZIndex(zindex + 5);
-        }
+        this.list.setZIndex(this.getZIndex());
         this.list.show();
         if(Ext.isGecko2){
             this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac
@@ -61613,7 +61739,7 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
             this.checked = this.el.dom.checked;
         }
         // Need to repaint for IE, otherwise positioning is broken
-        if(Ext.isIE){
+        if (Ext.isIE && !Ext.isStrict) {
             this.wrap.repaint();
         }
         this.resizeEl = this.positionEl = this.wrap;
@@ -62227,6 +62353,11 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
      * True to combine errors from the individual fields into a single error message at the CompositeField level (defaults to true)
      */
     combineErrors: true,
+    
+    /**
+     * @cfg {String} labelConnector The string to use when joining segments of the built label together (defaults to ', ')
+     */
+    labelConnector: ', ',
 
     //inherit docs
     //Builds the composite field label
@@ -62469,7 +62600,7 @@ Ext.form.CompositeField = Ext.extend(Ext.form.Field, {
      * @return {String} The built label
      */
     buildLabel: function(segments) {
-        return segments.join(", ");
+        return Ext.clean(segments).join(this.labelConnector);
     },
 
     /**
@@ -64785,8 +64916,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      */
     toggleSourceEdit : function(sourceEditMode){
         var iframeHeight,
-            elHeight,
-            ls;
+            elHeight;
 
         if (sourceEditMode === undefined) {
             sourceEditMode = !this.sourceEditMode;
@@ -64802,7 +64932,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         }
         if (this.sourceEditMode) {
             // grab the height of the containing panel before we hide the iframe
-            ls = this.getSize();
+            this.previousSize = this.getSize();
 
             iframeHeight = Ext.get(this.iframe).getHeight();
 
@@ -64825,7 +64955,8 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             this.el.dom.setAttribute('tabIndex', -1);
             this.deferFocus();
 
-            this.setSize(ls);
+            this.setSize(this.previousSize);
+            delete this.previousSize;
             this.iframe.style.height = elHeight + 'px';
         }
         this.fireEvent('editmodechange', this, this.sourceEditMode);
@@ -67449,8 +67580,10 @@ function(grid, rowIndex, columnIndex, e) {
                 s = cs[i];
                 c = cm.getColumnById(s.id);
                 if(c){
-                    c.hidden = s.hidden;
-                    c.width = s.width;
+                    cm.setState(i, {
+                        hidden: s.hidden,
+                        width: s.width    
+                    });
                     oldIndex = cm.getIndexById(s.id);
                     if(oldIndex != i){
                         cm.moveColumn(oldIndex, i);
@@ -69156,12 +69289,13 @@ viewConfig: {
         var width = 0;
         var w;
         for (i = 0; i < colCount; i++){
-            if(!cm.isHidden(i) && !cm.isFixed(i) && i !== omitColumn){
+            if(!cm.isFixed(i) && i !== omitColumn){
                 w = cm.getColumnWidth(i);
-                cols.push(i);
-                extraCol = i;
-                cols.push(w);
-                width += w;
+                cols.push(i, w);
+                if(!cm.isHidden(i)){
+                    extraCol = i;
+                    width += w;
+                }
             }
         }
         var frac = (aw - cm.getTotalWidth())/width;
@@ -70833,6 +70967,14 @@ myGrid.getColumnModel().setHidden(0, true); // hide column 0 (0 = the first colu
             }
         }
         this.purgeListeners();
+    },
+    
+    /**
+     * @private
+     * Setup any saved state for the column, ensures that defaults are applied.
+     */
+    setState : function(col, state){
+        Ext.applyIf(this.config[col], state);
     }
 });
 
@@ -73350,7 +73492,7 @@ var grid = new Ext.grid.GridPanel({
         }
         if((item = items.get('showGroups'))){
             item.setDisabled(disabled);
-            item.setChecked(this.enableGrouping, true);
+            item.setChecked(this.canGroup(), true);
         }
     },
 
@@ -73387,12 +73529,18 @@ var grid = new Ext.grid.GridPanel({
             // group value is at the end of the string
             var field = this.getGroupField(),
                 prefix = this.getPrefix(field),
-                groupValue = hd.id.substring(prefix.length);
+                groupValue = hd.id.substring(prefix.length),
+                emptyRe = new RegExp('gp-' + Ext.escapeRe(field) + '--hd');
 
             // remove trailing '-hd'
             groupValue = groupValue.substr(0, groupValue.length - 3);
-            if(groupValue){
+            
+            // also need to check for empty groups
+            if(groupValue || emptyRe.test(hd.id)){
                 this.grid.fireEvent('group' + name, this.grid, field, groupValue, e);
+            }
+            if(name == 'mousedown' && e.button == 0){
+                this.toggleGroup(hd.parentNode);
             }
         }
 

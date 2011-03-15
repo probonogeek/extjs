@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -601,6 +601,14 @@ myGrid.getColumnModel().setHidden(0, true); // hide column 0 (0 = the first colu
             }
         }
         this.purgeListeners();
+    },
+    
+    /**
+     * @private
+     * Setup any saved state for the column, ensures that defaults are applied.
+     */
+    setState : function(col, state){
+        Ext.applyIf(this.config[col], state);
     }
 });
 

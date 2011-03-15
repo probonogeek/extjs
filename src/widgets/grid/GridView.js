@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -1272,12 +1272,13 @@ viewConfig: {
         var width = 0;
         var w;
         for (i = 0; i < colCount; i++){
-            if(!cm.isHidden(i) && !cm.isFixed(i) && i !== omitColumn){
+            if(!cm.isFixed(i) && i !== omitColumn){
                 w = cm.getColumnWidth(i);
-                cols.push(i);
-                extraCol = i;
-                cols.push(w);
-                width += w;
+                cols.push(i, w);
+                if(!cm.isHidden(i)){
+                    extraCol = i;
+                    width += w;
+                }
             }
         }
         var frac = (aw - cm.getTotalWidth())/width;

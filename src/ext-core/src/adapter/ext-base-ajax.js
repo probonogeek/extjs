@@ -1,5 +1,5 @@
 /*!
- * Ext JS Library 3.2.1
+ * Ext JS Library 3.2.2
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
@@ -86,7 +86,7 @@ Ext.lib.Ajax = function() {
             status : isBrokenStatus ? 204 : conn.status,
             statusText : isBrokenStatus ? 'No Content' : conn.statusText,
             getResponseHeader : function(header){return headerObj[header.toLowerCase()];},
-            getAllResponseHeaders : function(){return headerStr},
+            getAllResponseHeaders : function(){return headerStr;},
             responseText : conn.responseText,
             responseXML : conn.responseXML,
             argument : callbackArg
@@ -283,10 +283,7 @@ Ext.lib.Ajax = function() {
             var fElements = form.elements || (document.forms[form] || Ext.getDom(form)).elements,
                 hasSubmit = false,
                 encoder = encodeURIComponent,
-                element,
-                options,
                 name,
-                val,
                 data = '',
                 type;
 
@@ -301,7 +298,7 @@ Ext.lib.Ajax = function() {
                                 data += String.format("{0}={1}&", encoder(name), encoder((opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttribute('value') !== null) ? opt.value : opt.text));
                             }
                         });
-                    } else if(!/file|undefined|reset|button/i.test(type)) {
+                    } else if(!(/file|undefined|reset|button/i.test(type))) {
                             if(!(/radio|checkbox/i.test(type) && !element.checked) && !(type == 'submit' && hasSubmit)){
 
                                 data += encoder(name) + '=' + encoder(element.value) + '&';
