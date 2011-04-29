@@ -1,52 +1,41 @@
 <html>
 <head>
-  <title>Complex Layout</title>
-    <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
-    
-    <style type="text/css">
-    html, body {
-        font:normal 12px verdana;
-        margin:0;
-        padding:0;
-        border:0 none;
-        overflow:hidden;
-        height:100%;
-    }
-    p {
-        margin:5px;
-    }
-    .settings {
-        background-image:url(../shared/icons/fam/folder_wrench.png);
-    }
-    .nav {
-        background-image:url(../shared/icons/fam/folder_go.png);
-    }
-    </style>
+<title>Complex Layout</title>
+<link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
+<style type="text/css">
+p {
+    margin:5px;
+}
+.settings {
+    background-image:url(../shared/icons/fam/folder_wrench.png);
+}
+.nav {
+    background-image:url(../shared/icons/fam/folder_go.png);
+}
+.info {
+    background-image:url(../shared/icons/fam/information.png);
+}
+</style>
+<script type="text/javascript" src="../../bootstrap.js"></script>
+<script type="text/javascript">
+    Ext.require(['*']);
 
-    <!-- GC -->
-    <!-- LIBS -->
-    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
-    <!-- ENDLIBS -->
+    Ext.onReady(function() {
 
-    <script type="text/javascript" src="../../ext-all.js"></script>
+        Ext.QuickTips.init();
 
-    <!-- EXAMPLES -->
-    <script type="text/javascript" src="../shared/examples.js"></script>
-  
-    <script type="text/javascript">
-    Ext.onReady(function(){
-    
         // NOTE: This is an example showing simple state management. During development,
         // it is generally best to disable state management as dynamically-generated ids
         // can change across page loads, leading to unpredictable results.  The developer
         // should ensure that stable state ids are set for stateful components in real apps.
-        Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-        
-        var viewport = new Ext.Viewport({
+        Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+
+        var viewport = Ext.create('Ext.Viewport', {
+            id: 'border-example',
             layout: 'border',
             items: [
             // create instance immediately
-            new Ext.BoxComponent({
+            Ext.create('Ext.Component', {
                 region: 'north',
                 height: 32, // give north and south regions a height
                 autoEl: {
@@ -62,28 +51,36 @@
                 minSize: 100,
                 maxSize: 200,
                 collapsible: true,
+                collapsed: true,
                 title: 'South',
                 margins: '0 0 0 0'
             }, {
+                xtype: 'tabpanel',
                 region: 'east',
                 title: 'East Side',
+                dockedItems: [{
+                    dock: 'top',
+                    xtype: 'toolbar',
+                    items: [ '->', {
+                       xtype: 'button',
+                       text: 'test',
+                       tooltip: 'Test Button'
+                    }]
+                }],
+                animCollapse: true,
                 collapsible: true,
                 split: true,
                 width: 225, // give east and west regions a width
                 minSize: 175,
                 maxSize: 400,
                 margins: '0 5 0 0',
-                layout: 'fit', // specify layout manager for items
-                items:            // this TabPanel is wrapped by another Panel so the title will be applied
-                new Ext.TabPanel({
-                    border: false, // already wrapped so don't add another border
-                    activeTab: 1, // second tab initially active
-                    tabPosition: 'bottom',
-                    items: [{
-                        html: '<p>A TabPanel component can be a region.</p>',
-                        title: 'A Tab',
-                        autoScroll: true
-                    }, new Ext.grid.PropertyGrid({
+                activeTab: 1,
+                tabPosition: 'bottom',
+                items: [{
+                    html: '<p>A TabPanel component can be a region.</p>',
+                    title: 'A Tab',
+                    autoScroll: true
+                }, Ext.create('Ext.grid.PropertyGrid', {
                         title: 'Property Grid',
                         closable: true,
                         source: {
@@ -91,43 +88,42 @@
                             "grouping": false,
                             "autoFitColumns": true,
                             "productionQuality": false,
-                            "created": new Date(Date.parse('10/15/2006')),
+                            "created": Ext.Date.parse('10/15/2006', 'm/d/Y'),
                             "tested": false,
                             "version": 0.01,
                             "borderWidth": 1
                         }
                     })]
-                })
             }, {
                 region: 'west',
                 id: 'west-panel', // see Ext.getCmp() below
                 title: 'West',
                 split: true,
                 width: 200,
-                minSize: 175,
-                maxSize: 400,
+                minWidth: 175,
+                maxWidth: 400,
                 collapsible: true,
+                animCollapse: true,
                 margins: '0 0 0 5',
-                layout: {
-                    type: 'accordion',
-                    animate: true
-                },
+                layout: 'accordion',
                 items: [{
                     contentEl: 'west',
                     title: 'Navigation',
-                    border: false,
                     iconCls: 'nav' // see the HEAD section for style used
                 }, {
                     title: 'Settings',
                     html: '<p>Some settings in here.</p>',
-                    border: false,
                     iconCls: 'settings'
+                }, {
+                    title: 'Information',
+                    html: '<p>Some info in here.</p>',
+                    iconCls: 'info'
                 }]
             },
             // in this instance the TabPanel is not wrapped by another panel
             // since no title is needed, this Panel is added directly
             // as a Container
-            new Ext.TabPanel({
+            Ext.create('Ext.tab.Panel', {
                 region: 'center', // a center region is ALWAYS required for border layout
                 deferredRender: false,
                 activeTab: 0,     // first tab initially active
@@ -143,9 +139,9 @@
                 }]
             })]
         });
-        // get a reference to the HTML element with id "hideit" and add a click listener to it 
+        // get a reference to the HTML element with id "hideit" and add a click listener to it
         Ext.get("hideit").on('click', function(){
-            // get a reference to the Panel that was created with id = 'west-panel' 
+            // get a reference to the Panel that was created with id = 'west-panel'
             var w = Ext.getCmp('west-panel');
             // expand or collapse that Panel based on its collapsed property state
             w.collapsed ? w.expand() : w.collapse();

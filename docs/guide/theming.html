@@ -1,0 +1,252 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Custom ExtJS 4 Theme</h1>
+
+<p>ExtJS 4 has a brand new theming system to customize the look of you application whicn still supporting all browsers.</p>
+
+<h2>A Brief Introdocution to SASS & Compass</h2>
+
+<p><iframe src="http://player.vimeo.com/video/18084338?byline=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p>SASS is a pre-processor which adds new syntax to CSS allowing for things like variables, mixins, nesting, and math/color functions. For example, in SASS we can write:</p>
+
+<pre class="prettyprint"><code>$blue: #3bbfce;
+$margin: 16px;
+
+.content-navigation {
+    border-color: $blue;
+    color: darken($blue, 9%);
+}
+
+.border {
+    padding: $margin / 2;
+    margin: $margin / 2;
+    border-color: $blue;
+}</code></pre>
+
+<p>And it will compile to:</p>
+
+<pre class="prettyprint"><code>.content-navigation {
+    border-color: #3bbfce;
+    color: #2b9eab;
+}
+
+.border {
+    padding: 8px;
+    margin: 8px;
+    border-color: #3bbfce;
+}</code></pre>
+
+<p>To see the wide variety of other features available in SASS, please see http://sass-lang.com/. Compass extends SASS by adding a variety of CSS3 mixins and providing the extension system that Sencha Touch leverages. With Compass, one can include rules like:</p>
+
+<pre class="prettyprint"><code>$boxheight: 10em;
+
+.mybox {
+    @include border-radius($boxheight/4);
+}</code></pre>
+
+<p>Which compiles into:</p>
+
+<pre class="prettyprint"><code>.mybox {
+    -webkit-border-radius: 2.5em;
+    -moz-border-radius: 2.5em;
+    -o-border-radius: 2.5em;
+    -ms-border-radius: 2.5em;
+    -khtml-border-radius: 2.5em;
+    border-radius: 2.5em;
+}</code></pre>
+
+<p>You can learn more about the pre-included mixins with Compass and the other tools which it provides here: http://compass-style.org/docs/.</p>
+
+<h2>Requirements</h2>
+
+<ul><li><p>Ruby</p><h3>Mac OSX</h3><p>> XCode installs Ruby and all nessecary dependancies onto your Mac when installed.</p><blockquote><p>Xcode can be found on the Apple Developer Website: <a href="http://developer.apple.com/xcode/">http://developer.apple.com/xcode/</a></p></blockquote><p>### Windows</p><blockquote><p>Visit http://rubyinstaller.org/ and download the latest packaged version of Ruby (1.9.2 at the time of writing this)</p></blockquote></li><li><p>Compass/SASS gem</p><h3>Mac OSX</h3><p>> In <strong>/Applications/Utilities/Terminal.app</strong>, run the following code (you will be asked for your password):</p><blockquote><p><code>sudo gem install compass</code></p></blockquote><p>> ExtJS 4 takes advantages of the funcality in beta versions of Compass and SASS, so you must install them after running the above command:</p><blockquote><p><code>sudo gem install compass</code></p></blockquote><p>> You can verify you have Compass and Sass installed by running the following in <strong>Terminal.app</strong>:</p><blockquote><p><code>compass -v</code></p></blockquote><p>> <code>sass -v</code></p><blockquote><p>At the time of writing this, the latest version of Compass is <code>0.11.0 (Antares)</code>. The latest version of Sass is <code>3.1.0.alpha.256</code></p></blockquote><p>### Windows</p><blockquote><p>Select <strong>Start Command Prompt with Ruby</strong> from the new Start Menu option.</p></blockquote><p>> Type the following:</p><blockquote><p><code>gem install compass</code></p></blockquote><p>> ExtJS 4 takes advantages of the funcality in beta versions of Compass and SASS, so you must install them after running the above command:</p><blockquote><p><code>gem install compass</code></p></blockquote><p>> You can verify you have Compass and Sass installed by running the following in <strong>Terminal.app</strong>:</p><blockquote><p><code>compass -v</code></p></blockquote><p>> <code>sass -v</code></p><blockquote><p>At the time of writing this, the latest version of <code>Compass is 0.11.beta.7</code>. The latest version of Sass is <code>3.1.0.alpha.256</code></p></blockquote></li></ul>
+
+<h2>Directory Structure</h2>
+
+<p>The ExtJS SDK comes with a template which can be used as a base for your new theme. You can find this in the <code>/resources/themes/templates</code> folder.</p>
+
+<p>Everything in the included <code>resources</code> directory should be moved into your applications root folder:</p>
+
+<pre class="prettyprint"><code><application-root>/
+<application-root>/resources/
+<application-root>/resources/css/
+<application-root>/resources/sass/
+<application-root>/resources/sass/config.rb
+<application-root>/resources/images/</code></pre>
+
+<p>You also must ensure the ExtJS SDK is in the correct location:</p>
+
+<pre class="prettyprint"><code><application-root>/lib/extjs
+<application-root>/lib/extjs/ext-all.js
+<application-root>/lib/extjs/resources/
+<application-root>/lib/extjs/...</code></pre>
+
+<p>If for some reason the ExtJS SDK is located elsewhere, you <em>must</em> also change the path in resources/sass/config.rb:</p>
+
+<pre class="prettyprint"><code># $ext_path: This should be the path of where the ExtJS SDK is installed
+# Generally this will be in a lib/extjs folder in your applications root
+# <root>/lib/extjs
+$ext_path = "../../lib/extjs"</code></pre>
+
+<h2>Compiling your CSS</h2>
+
+<p>Compiling your CSS is a very simple process using Compass.</p>
+
+<p>From applications root directory, run the following command in <strong>Terminal.app on Mac OSX</strong> or <strong>Command Prompt on Windows</strong>:</p>
+
+<blockquote><p>compass compile resources/sass</p></blockquote>
+
+<p>This should output the following:</p>
+
+<blockquote><p>create resources/sass/../css/my-ext-theme.css</p></blockquote>
+
+<p>That is your CSS compiled! You can now view it in the <code>resources/css</code> folder.</p>
+
+<p>You can also setup Compass to watch your SASS directory and compile the CSS when you make a change:</p>
+
+<blockquote><p>compass watch resources/sass</p></blockquote>
+
+<h2>Changing global ExtJS variables</h2>
+
+<p>The ExtJS theming system comes with a few basic global SASS variables which you can use to change the whole look of your application with just a few lines of code.</p>
+
+<h3>Where</h3>
+
+<p>These SASS variables can be added in your .scss file, but they <strong>must</strong> be inserted before the call to @import the ExtJS4 framework is called. You can see an example of this in the my-ext-theme.scss file, in the templates/resources/sass folder:</p>
+
+<pre class="prettyprint"><code>// Unless you want to include all components, you must set $include-default to false
+// IF you set this to true, you can also remove lines 10 to 38 of this file
+$include-default: false;
+
+// Insert your custom variables here.
+$base-color: #aa0000;
+
+@import 'ext4/default/all';</code></pre>
+
+<p>In this case, both<code> $include-default</code> and <code>$base-color</code> are being changed - and then the ExtJS4 theming files are being imported.</p>
+
+<h3>Available Variables</h3>
+
+<p>Unfortunately at this time there is not a complete list of all available variables in the theme, however you can easily find variables that are available by navigating to the <code>resources/themes/stylesheets/ext4/default/variables</code> directory. This directory contains all defined variables for each component in ExtJS4.</p>
+
+<p>The naming convention for variables follows CSS property names, prepends by the component name. For example:</p>
+
+<ul><li><p><strong>Panel border radius</strong><br></br><em>CSS Property:</em> border-radius<br></br><em>Variable:</em> $panel-border-radius</p></li><li><p><strong>Panel body background color</strong><br></br><em>CSS Property:</em> background-color<br></br><em>Variable:</em> $panel-body-background-color</p></li><li><p><strong>Toolbar background color</strong><br></br><em>CSS Property:</em> background-color<br></br><em>Variable:</em> $toolbar-background-color</p></li></ul>
+
+<h2>Component UIs</h2>
+
+<p>Every component in the ExtJS framework has a <code>ui</code> configuration (which defaults to <code>default</code>). This property can be changed to allow components in your application to have different styles.</p>
+
+<p>The <code>ui</code> of any component can be changed at anytime, even after render, by using the <code>setUI</code> method. An example of this can be found in <code>examples/panel/bubble-panel.html</code>.</p>
+
+<h3>Creating new ExtJS UIs</h3>
+
+<p>Some ExtJS components have SASS <code>@mixin</code>'s which allow you to quickly generate new UIs. These include: <code>Ext.panel.Panel</code>, <code>Ext.button.Button</code>, <code>Ext.Toolbar</code> and <code>Ext.window.Window</code>.</p>
+
+<p>To create these new UIs is extremely simple. Simple call the associated <code>@mixin</code> (found in the documentation) for the component you want to create a new UI for. </p>
+
+<p>Lets look at the Panel <code>@mixin</code> as an example (example can be found in <code>examples/panel/bubble-panel/sass/bubble-panel.scss</code>):</p>
+
+<pre class="prettyprint"><code>@include extjs-panel-ui(
+    'bubble',
+
+    $ui-header-font-size: 12px,
+    $ui-header-font-weight: bold,
+    $ui-header-color: #0D2A59,
+    $ui-header-background-color: #fff,
+    $ui-header-background-gradient: null,
+
+    $ui-border-color: #fff,
+    $ui-border-radius: 4px,
+    $ui-body-background-color: #fff,
+    $ui-body-font-size: 14px
+);</code></pre>
+
+<p>The above code will create a new <code>ui</code> for any Ext.panel.Panel component, which you can then use in your application by specifiying the <code>ui</code> configuration:</p>
+
+<pre class="prettyprint"><code>Ext.create('widget.panel', {
+    ui: 'bubble',
+    width: 300,
+    height: 300,
+    title: 'Panel with a bubble UI!'
+});</code></pre>
+
+<h2>Supporting Legacy Browsers</h2>
+
+<p>In most cases when creating new UI's, you will want to include background gradients or rounded corners. Unfortunately legacy browsers do not support the corresponding CSS3 properties to do this, so we must use images.</p>
+
+<p>Fortunately with ExtJS 4, we have included a Slicing tool which does this for you. You simply pass it a manifest file of your new UI's (if you have created any) and run the tool from the command line - and you're done!</p>
+
+<h3>How it works</h3>
+
+<p>The slicing tool creates a new browser instance, which loads ExtJS and a specified CSS file. Once loaded, it parses a JavaScript file which includes every ExtJS component that needs styled (panel, window, toolbar, etc.). It then analyzes each of those components and determines the size and location of each image that needs sliced. It then slices each of the images and sprites them together, and saves them in the location defined in the manifest.</p>
+
+<p>The slicer itself is a command line tool which is installed as part of the SDK Tools package, which can be run by calling <code>sencha slice theme</code> from the command line. Example usage:</p>
+
+<pre class="prettyprint"><code>sencha slice theme -d ~/Downloads/ext-4.0 -c mytheme.css -o mytheme -v</code></pre>
+
+<p>It accepts several arguments:</p>
+
+<ul><li><p><strong>--css[=]value, -c[=]value</strong>
+> The path to your theme's complete CSS file, e.g., ext-all-access.css. Uses 
+> the default Ext JS 4 theme CSS if not provided. </p></li><li><p><strong>--ext-dir[=]value, -d[=]value (required)</strong>
+> The path to the root of your Ext JS 4 SDK directory. </p></li><li><p><strong>--manifest[=]value, -m[=]value</strong>
+> The path to your Theme Generator JSON manifest file, e.g., manifest.json. 
+> Uses the default packaged manifest if not provided. </p></li><li><p><strong>--output-dir[=]value, -o[=]value</strong>
+> The destination path to save all generated theme images. This should be inside the <code>resources/themes/images/<themename>/</code> directory.
+> Defaults to the current working directory. </p></li><li><p><strong>--verbose, -v</strong>
+> Display a message for every image that is generated.</p></li></ul>
+
+<h3>Usage</h3>
+
+<ol><li><p><strong>Compile your CSS</strong></p><p>You must ensure your SASS theme file has been compiled as this is used for the slicer. Passing no CSS file would result in the slicer to revert to the default ext-all.css file, which would be pointless in most cases.</p></li><li><p><strong>Creating your manifest file (optional)</strong></p><p>The manifest file is a simple JavaScript file which tells the Slicing tool which custom UI's you want to slice. This step is only neseccary when you have created new UI's.</p><p>Let's look at the bubble panel example again:</p><pre class="prettyprint"><code>Ext.onReady(function() {
+    Ext.manifest = {
+        widgets: [
+            {
+                xtype: 'widget.header',
+                ui   : 'bubble'
+            },
+            {
+                xtype: 'widget.panel',
+                ui   : 'bubble'
+            }
+        ]
+    };
+});</code></pre><p>As you can see, you define an Object called <code>Ext.manifest</code> and give it an Array property called <code>widgets</code>. In this Array, you should insert an object containing the <code>xtype</code> and the <code>ui</code> of the component you want to generate the images for.</p><p><strong>It is important that the <code>Ext.manifest</code> Object is defined inside the <code>Ext.onReady</code> method.</strong></p></li><li><p><strong>Generating your images</strong></p><p>Now all that is left is to run the command, including the arguments to the ExtJS SDK folder, your theme CSS file and the output directory of the sliced images.</p><p>    sencha slice theme -d ~/Downloads/ext-4.0 -c mytheme.css -o mytheme -v</p></li></ol>
+
+<h2>FAQ</h2>
+
+<ul><li><p><strong>I am getting a '<code>error resources/sass/my-ext-theme.scss (Line 8: File to import not found or unreadable: ext4/default/all)</code>' error when I compile?</strong></p><blockquote><p>This is because Compass cannot file the ExtJS 4 theme files. Ensure the <code>$ext_path</code> in the <code>sass/config.rb</code> file is correct.</p></blockquote></li></ul>
+
+<h2>This guide is a work in progress.</h2>
+
+<p>Please check back soon</p></div></div></div></div></body></html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>I. Introduction</h1>
+
+<hr></hr>
+
+<p>Ext JS 4 is by far the biggest overhaul we’ve ever made to Ext JS, and constitutes the most advanced JavaScript framework ever created. Almost every area of the framework has been upgraded, from the generated HTML to the class system. We’ve unified APIs, added incredible new capabilities, and improved the performance of the entire framework.</p>
+
+<p>With Ext JS 4 we’ve been driven by three key goals: speed, robustness and ease of use. We wanted the framework to be as fast and as robust as possible on every browser, and to be easy to learn and use. To achieve this we took the whole framework back to the drawing board, and what we’ve come back with is the fastest, most bullet-proof version of Ext JS we’ve ever created. Best of all, we’ve managed to do it while staying true to the core experience of writing apps “the Ext JS way.”</p>
+
+<p><iframe src="http://player.vimeo.com/video/17666102?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p><iframe src="http://player.vimeo.com/video/17733892?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<h1>II. Getting Started</h1>
+
+<hr></hr>
+
+<h2>1. Requirements</h2>
+
+<h3>1.1 Web Browsers</h3>
+
+<p>Ext JS 4 supports almost any known web browsers, from Internet Explorer 6 to Chrome 11. During development, we recommend that you choose one of the following as the primary browsers for the best debugging experience:</p>
+
+<ul><li><a href="http://www.google.com/chrome/intl/en/landing_chrome_mac.html?hl=en">Google Chrome</a> 10+</li><li><a href="http://www.apple.com/safari/download/">Apple Safari</a> 5+</li><li><a href="http://www.mozilla.com/en-US/firefox/new/?from=getfirefox">Mozilla Firefox</a> 4+</li></ul>
+
+<h3>1.2 Debugging Tools</h3>
+
+<p>Please refer to the dedicated <a href="getting_started.html#">Debugging Handbook</a> guide on the recommended tools for each and every browser, as well as how to make use of them to aid development.</p>
+
+<h3>1.3 Web Server</h3>
+
+<p>Even though a local web server is not a requirement to use Ext JS 4, it is still highly recommended that you develop with one, since <a href="http://en.wikipedia.org/wiki/XHR">XHR</a> over local <a href="http://en.wikipedia.org/wiki/File_URI_scheme">file:// protocol</a> has <a href="http://en.wikipedia.org/wiki/Same_origin_policy">cross origin restriction</a> on most browsers.</p>
+
+<h3>1.4. Ext JS 4 SDK</h3>
+
+<p>Download <a href="http://www.sencha.com/products/extjs/">Ext JS 4 SDK</a> if you haven't done so. Unzip the package within your web root directory tree. This guide assumes that <code>http://localhost/ext-4.0</code> points to the top level directory of the downloaded SDK.</p>
+
+<p>Open <code>http://localhost/ext-4.0/index.html</code> on your web browser. If a welcome page appears, you are all set.</p>
+
+<h2>2. Application Structure</h2>
+
+<p>Although not being mandatory, all suggestions listed below should be considered as best-practice guidelines to keep your application well organized, extensible and maintainable.</p>
+
+<h3>2.1 Basic Structure</h3>
+
+<pre class="prettyprint"><code>- appname
+    - app
+        - namespace
+            - Class1.js
+            - Class2.js
+            - ...
+    - resources
+        - css
+        - images
+        - ...
+    - app.js
+    - index.html</code></pre>
+
+<p>in which:</p>
+
+<ul><li><code>appname</code> is a directory containing all your application's source files</li><li><code>app</code> contains all your classes, the naming style of which should follow the convention listed in the <a href="class_system.html">Class System</a> guide</li><li><code>resources</code> contains additional CSS and image files which are responsible for the look and feel of the application, as well as other static resources (XML, JSON, etc.)</li><li><code>index.html</code> is the entry-point HTML document</li><li><code>app.js</code> contains your own application's logics</li></ul>
+
+<p>An Ext JS application is self-contained in a single HTML document, the content of which has this format:</p>
+
+<pre class="prettyprint"><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Application Name&lt;/title&gt;
+
+    &lt;link rel="stylesheet" type="text/css" href="path/to/sdk/resources/css/ext-all.css"&gt;
+    &lt;script type="text/javascript" src="path/to/sdk/ext-debug.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="app.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>whereby:</p>
+
+<ul><li><code>path/to/sdk</code> points to Ext JS 4 SDK directory in section <em>1.4</em></li><li><code>path/to/sdk/resources/css/ext-all.css</code> contains all styling information needed for the whole framework</li><li><code>path/to/sdk/ext(-debug).js</code> contains Ext JS 4 Core library (or <code>path/to/sdk/ext-all(-debug).js</code>, as explained below)</li></ul>
+
+<p>From this point you need to choose between 2 different library inclusion methods. Each has its own pros and cons listed below:</p>
+
+<ol><li><p>Include <code>path/to/sdk/ext-all.js</code> (<code>path/to/sdk/ext-all-debug.js</code> during development), which contains the whole framework.</p><ul><li>Pros:<ul><li>There is no need to worry about dependencies when using default Ext JS components (but not your own custom classes)</li></ul></li><li><p>Cons:</p><ul><li>Deployment file size could be unnecessarily large if your application doesn't make use of everything the library has to offer. That, as a consequence, would lead to slower application initialization due to unnecessary script execution as well as network data transfer overheads.</li><li><p>Debugging is difficult due to the fact that all source code is confined into one big file.</p></li></ul></li></ul></li><li><p>Include <code>path/to/sdk/ext.js</code> (<code>path/to/sdk/ext-debug.js</code> during development) which contains just the minimum core library, and make use of <a href="../api/Ext.Loader.html">Ext.Loader</a> for automatic dependencies resolution.</p><ul><li>Pros:<ul><li>Your application only loads exactly what it needs as you develop. Deployed file size will be minimal.</li><li>Debugging is simple and straight-forward since all source files are loaded separated. Errors messages come with the exact line numbers and file names from which they occur.</li></ul></li><li>Cons:<ul><li>Attention to dependencies when using default components shipped with the SDK is needed</li></ul></li></ul></li></ol>
+
+<p>In summary, it is recommended that you should only use <code>ext-all(-debug).js</code> if you need to shorten the initial learning curve. Otherwise, <code>ext(-debug).js</code> is preferred in most cases for actual application development.</p>
+
+<p>Last but not least, <code>app.js</code> is the entry-point of your own application's logic. For a basic application, the typical format of which may look like this:</p>
+
+<pre class="prettyprint"><code>// Register namespaces and their corresponding paths to Ext.Loader
+Ext.Loader.setPath({
+    'AppName': 'app',
+    ... // Other namespaces
+});
+
+// Specify a list of classes your application your application needs
+Ext.require([
+    ...
+]);
+
+// Application's initialization
+Ext.onReady(function() {
+
+    ...
+
+});</code></pre>
+
+<h3>2.2 MVC (Model-View-Controller) Structure</h3>
+
+<p>Ext JS 4 shipped with a robust MVC architecture which maximize extensibility and maintainability for medium to large scale applications. Please refer to the <a href="application_architecture.html">MVC Application Architecture guide</a> for detailed instructions.</p>
+
+<h1>3. Deployment</h1>
+
+<p>The newly introduced Sencha SDK Tools (<a href="http://www.sencha.com/products/extjs/download/)">download here</a> makes deployment of any Ext JS 4 application easier than ever. The tools allows you to generate a manifest of all dependencies in the form of a JSB3 (JSBuilder file format) file, and create a minimal custom build of just what your application needs within minutes.</p>
+
+<p>Once you've installed the SDK Tools, open a terminal window and navigate into your application's directory.</p>
+
+<pre class="prettyprint"><code>cd path/to/application</code></pre>
+
+<p>From here you only need to run a couple of simple commands. The first one generates a JSB3 file:</p>
+
+<pre class="prettyprint"><code>sencha create jsb -a index.html -p app.jsb3</code></pre>
+
+<p>This scans your <code>index.html</code> file for all framework and application files that are actually used by the app, and then creates a JSB file called <code>app.jsb3</code>. Generating the JSB3 first gives us a chance to modify the generated <code>app.jsb3</code> before building - this can be helpful if you have custom resources to copy, but in most cases we can immediately proceed to build the application with the second command:</p>
+
+<pre class="prettyprint"><code>sencha build -p app.jsb3 -d .</code></pre>
+
+<p>This takes the JSB3 file and creates an <code>app-all.js</code>, which is a minimized build of your application plus all of the Ext JS classes required to run it. It also creates an <code>all-classes.js</code> file, which has the same classes as <code>app-all.js</code>, but is not minified so is very useful for debugging problems with your built application. In short, <code>app-all.js</code> is the minified and production-ready version of <code>all-classes.js + app.js</code>.</p>
+
+<p>Most applications will need a separate <code>index.html</code> for the deployed version of the app, for example to add Analytics includes or other production-only logic into that file. Typically you would end up with a production <code>index.html</code> file that looks like this:</p>
+
+<pre class="prettyprint"><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Application Name&lt;/title&gt;
+
+    &lt;link rel="stylesheet" type="text/css" href="path/to/sdk/resources/css/ext-all.css"&gt;
+    &lt;script type="text/javascript" src="path/to/sdk/ext.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="app-all.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>Notice that <code>path/to/sdk/ext-debug.js</code> has been replaced with <code>path/to/sdk/ext.js</code>, and <code>app.js</code> has been replaced with <code>app-all.js</code> in this production version, comparing with the development one described in section <em>2.1</em></p>
+
+<p>For applications built on top of a dynamic server-side language like PHP, Ruby, ASP, etc., you can simply replace <code>index.html</code> in the first command to the actual URL of your application. This URL should be the same with what is viewable on the browsers during development. For example:</p>
+
+<pre class="prettyprint"><code>sencha create jsb -a http://localhost/path/to/application/index.php -p app.jsb3</code></pre>
+
+<h2>This guide is a work in progress.</h2>
+
+<p>Please check back soon</p></div></div></div></div></body></html>

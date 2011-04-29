@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /**
  * @class Ext.dd.DropTarget
  * @extends Ext.dd.DDTarget
@@ -13,21 +7,23 @@
  * @param {Mixed} el The container element
  * @param {Object} config
  */
-Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
-    
+Ext.define('Ext.dd.DropTarget', {
+    extend: 'Ext.dd.DDTarget',
+    requires: ['Ext.dd.ScrollManager'],
+
     constructor : function(el, config){
         this.el = Ext.get(el);
-    
+
         Ext.apply(this, config);
-    
+
         if(this.containerScroll){
             Ext.dd.ScrollManager.register(this.el);
         }
-    
-        Ext.dd.DropTarget.superclass.constructor.call(this, this.el.dom, this.ddGroup || this.group, 
-              {isTarget: true});        
+
+        this.callParent([this.el.dom, this.ddGroup || this.group,
+              {isTarget: true}]);
     },
-    
+
     /**
      * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
@@ -41,12 +37,12 @@ Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
      * @cfg {String} dropAllowed
      * The CSS class returned to the drag source when drop is allowed (defaults to "x-dd-drop-ok").
      */
-    dropAllowed : "x-dd-drop-ok",
+    dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
     /**
      * @cfg {String} dropNotAllowed
      * The CSS class returned to the drag source when drop is not allowed (defaults to "x-dd-drop-nodrop").
      */
-    dropNotAllowed : "x-dd-drop-nodrop",
+    dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 
     // private
     isTarget : true,
@@ -66,7 +62,7 @@ Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
      */
     notifyEnter : function(dd, e, data){
         if(this.overClass){
-            this.el.addClass(this.overClass);
+            this.el.addCls(this.overClass);
         }
         return this.dropAllowed;
     },
@@ -95,7 +91,7 @@ Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
      */
     notifyOut : function(dd, e, data){
         if(this.overClass){
-            this.el.removeClass(this.overClass);
+            this.el.removeCls(this.overClass);
         }
     },
 
@@ -107,14 +103,14 @@ Ext.dd.DropTarget = Ext.extend(Ext.dd.DDTarget, {
      * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
      * @param {Event} e The event
      * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {Boolean} True if the drop was valid, else false
+     * @return {Boolean} False if the drop was invalid.
      */
     notifyDrop : function(dd, e, data){
         return false;
     },
-    
+
     destroy : function(){
-        Ext.dd.DropTarget.superclass.destroy.call(this);
+        this.callParent();
         if(this.containerScroll){
             Ext.dd.ScrollManager.unregister(this.el);
         }

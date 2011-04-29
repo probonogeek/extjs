@@ -1,0 +1,116 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Grid</h1>
+
+<hr></hr>
+
+<p>The grid is one of the centerpieces of Ext JS. It’s an incredibly versatile component that provides a great way to view lots of data at once, formatted exactly how you need it. With Ext JS 4 we have overhauled the grid, making it faster, lighter and easier to customize.</p>
+
+<h2>Grid Components</h2>
+
+<p>Original article: <a href="http://www.sencha.com/blog/ext-js-4-grid-components/">Grid Components</a></p>
+
+<h3>Intelligent Rendering</h3>
+
+<p>The Ext JS 3 grid works fantastically well, but it takes the "least common denominator" approach to its rich feature support by always generating the full markup needed by every grid feature (which is overly-heavy in most cases). In Ext JS 4, the default grid has very lightweight markup, and additional feature-specific markup is only rendered as developers enable different features. This is a huge boost both for page rendering speed and overall grid performance.</p>
+
+<h3>Standardized Layout</h3>
+
+<p>Along with a smarter rendering pipeline, many parts of the new grid have been made into proper Components and integrated into the standard layout management system rather than relying on custom internal markup and CSS. This enables us to unify the grid's rendering process with the rest of the framework, while still retaining a pixel-perfect UI experience.</p>
+
+<h3>DataView</h3>
+
+<p>The new GridView in Ext JS 4 extends the standard DataView class. This not only minimizes duplicated code internally, it also makes the new grid even easier to customize. Because it extends DataView, the new grid is also able to leverage the same selection models as any view, including non-contiguous selection via keyboard navigation.</p>
+
+<h3>Feature Support</h3>
+
+<p>In Ext JS 3, it was easy to add new functionality to grids, but there was no single strategy for doing it. Many added features were provided as plugins, but some were provided via subclassing. This made it very difficult (if not impossible) to combine certain features easily.</p>
+
+<p>Ext JS 4 includes a new grid base class called Ext.grid.Feature which provides the basis for creating extremely flexible optional grid features. The underlying grid templates can be modified by any Feature classes in order to decorate or mutate the markup that the grid's view generates. Features provide a powerful alternative to subclassing the old GridView because it makes it easy to mix and match compatible features. Some examples of Features in the new grid are RowWrap, RowBody and Grouping.</p>
+
+<h3>Virtual Scrolling</h3>
+
+<p>The Ext 4 grid now natively supports buffering its data during rendering, providing a virtual, load-on-demand view of its data. Grids will now easily support hundreds or even thousands of records without paging, which will be a massive improvement over the Ext JS 3 grid's data handling capacity.</p>
+
+<h3>Editing Improvements</h3>
+
+<p>In Ext JS 3, developers had to use the specialized EditorGrid class to provide an editable grid, which limited its flexibility. In Ext JS 4, there is now an Editing plugin that can be applied to any grid instance, making it completely reusable across all grids. In addition, the popular RowEditor extension from Ext JS 3 has been promoted to a first-class and fully-supported framework component in Ext JS 4.</p>
+
+<h3>An Example</h3>
+
+<p><img alt="Example grid" src="../image04.png"></img></p>
+
+<p>Here's the setup of a basic grid with grouping in Ext JS 4. It's impossible to cover all of the new functionality in only one example, but this should give you a good taste of the new grid in action. As you can see, the configuration is very similar to that in Ext JS 3, but the grouping functionality is now a simple feature config, rather than an entire custom GroupingView instance as required in Ext JS 3. This is but one example of the new flexibility in Ext JS 4. Also, grouping is now supported directly in the standard Store, so a separate GroupingStore is not needed either.</p>
+
+<pre class="prettyprint"><code>Ext.onReady(function() {
+   Ext.regModel('Teams', {
+       fields: ['name', 'sport']
+   });
+
+   var teamStore = new Ext.data.Store({
+       model: 'Teams',
+       sorters: ['sport','name'],
+       groupField: 'sport',
+       data: [
+           { name: 'Aaron', sport: 'Table Tennis' },
+           { name: 'Aaron', sport: 'Football' },
+           { name: 'Abe', sport: 'Basketball' },
+           { name: 'Tommy', sport: 'Football' },
+           { name: 'Tommy', sport: 'Basketball' },
+           { name: 'Jamie', sport: 'Table Tennis' },
+           { name: 'Brian', sport: 'Basketball' },
+           { name: 'Brian', sport: 'Table Tennis' }
+       ]
+   });
+
+   var grid = new Ext.grid.Panel({
+       renderTo: Ext.getBody(),
+       store: teamStore,
+       width: 400,
+       height: 300,
+       title: 'Sports Teams',
+       features: [{
+           ftype: 'grouping'
+       }],
+       headers: [{
+           text: 'Name',
+           flex: 1,
+           dataIndex: 'name'
+       },{
+           text: 'Sport',
+           dataIndex: 'sport'
+       }]
+   });
+});</code></pre>
+
+<h2>This guide is a work in progress.</h2>
+
+<p>Please check back soon</p></div></div></div></div></body></html>

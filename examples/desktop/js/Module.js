@@ -1,15 +1,19 @@
 /*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
+ * Ext JS Library 4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
  * licensing@sencha.com
  * http://www.sencha.com/license
  */
-Ext.app.Module = function(config){
-    Ext.apply(this, config);
-    Ext.app.Module.superclass.constructor.call(this);
-    this.init();
-}
 
-Ext.extend(Ext.app.Module, Ext.util.Observable, {
-    init : Ext.emptyFn
+Ext.define('Ext.ux.desktop.Module', {
+    mixins: {
+        observable: 'Ext.util.Observable'
+    },
+
+    constructor: function (config) {
+        this.mixins.observable.constructor.call(this, config);
+        this.init();
+    },
+
+    init: Ext.emptyFn
 });

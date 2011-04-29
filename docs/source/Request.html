@@ -1,52 +1,37 @@
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
-  <title>The source code</title>
-    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
-</head>
-<body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-<div id="cls-Ext.data.Request"></div>/**
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Request-method-constructor'><span id='Ext-data.Request'>/**
+</span></span> * @author Ed Spencer
  * @class Ext.data.Request
- * A simple Request class used internally to the data package to provide more generalized remote-requests
- * to a DataProxy.
- * TODO Not yet implemented.  Implement in Ext.data.Store#execute
+ * @extends Object
+ * 
+ * &lt;p&gt;Simple class that represents a Request that will be made by any {@link Ext.data.proxy.Server} subclass.
+ * All this class does is standardize the representation of a Request as used by any ServerProxy subclass,
+ * it does not contain any actual logic or perform the request itself.&lt;/p&gt;
+ * 
+ * @constructor
+ * @param {Object} config Optional config object
  */
-Ext.data.Request = function(params) {
-    Ext.apply(this, params);
-};
-Ext.data.Request.prototype = {
-    <div id="cfg-Ext.data.Request-action"></div>/**
-     * @cfg {String} action
+Ext.define('Ext.data.Request', {
+<span id='Ext-data.Request-cfg-action'>    /**
+</span>     * @cfg {String} action The name of the action this Request represents. Usually one of 'create', 'read', 'update' or 'destroy'
      */
-    action : undefined,
-    <div id="cfg-Ext.data.Request-rs"></div>/**
-     * @cfg {Ext.data.Record[]/Ext.data.Record} rs The Store recordset associated with the request.
-     */
-    rs : undefined,
-    <div id="cfg-Ext.data.Request-params"></div>/**
-     * @cfg {Object} params HTTP request params
+    action: undefined,
+    
+<span id='Ext-data.Request-cfg-params'>    /**
+</span>     * @cfg {Object} params HTTP request params. The Proxy and its Writer have access to and can modify this object.
      */
     params: undefined,
-    <div id="cfg-Ext.data.Request-callback"></div>/**
-     * @cfg {Function} callback The function to call when request is complete
+    
+<span id='Ext-data.Request-cfg-method'>    /**
+</span>     * @cfg {String} method The HTTP method to use on this Request (defaults to 'GET'). Should be one of 'GET', 'POST', 'PUT' or 'DELETE'
      */
-    callback : Ext.emptyFn,
-    <div id="cfg-Ext.data.Request-scope"></div>/**
-     * @cfg {Object} scope The scope of the callback funtion
+    method: 'GET',
+    
+<span id='Ext-data.Request-cfg-url'>    /**
+</span>     * @cfg {String} url The url to access on this Request
      */
-    scope : undefined,
-    <div id="cfg-Ext.data.Request-reader"></div>/**
-     * @cfg {Ext.data.DataReader} reader The DataReader instance which will parse the received response
-     */
-    reader : undefined
-};
-</pre>    
-</body>
-</html>
+    url: undefined,
+
+    constructor: function(config) {
+        Ext.apply(this, config);
+    }
+});</pre></pre></body></html>

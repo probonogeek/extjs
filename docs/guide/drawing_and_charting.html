@@ -1,0 +1,891 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Drawing and Charting</h1>
+
+<hr></hr>
+
+<p><iframe src="http://player.vimeo.com/video/17673342?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p>This document is intended to guide you through the overall design and implementation details
+of the Drawing and Charting packages. The drawing and charting packages enable you to create
+cross browser and cross device graphics in a versatile way.</p>
+
+<p>The structure of this document will cover three main topics:</p>
+
+<ul><li>Section I: <a href="drawing_and_charting.html#">"Draw"</a> a versatile cross-browser/device package to draw general purpose
+graphics and animations.</li><li>Section II: <a href="drawing_and_charting.html#">"Chart"</a> A high level presentation of the charting package and how classes are
+organized in it.</li><li>Section III: <a href="drawing_and_charting.html#">"Series"</a> A presentation of the available series and their use.</li></ul>
+
+<h2>I. The Draw Package</h2>
+
+<hr></hr>
+
+<p>The design choices in the graphics team concerning drawing were not just contrained to charting:
+we needed a versatile tool that would enable us to create custom graphics in a cross-browser/device manner and also perform rich animations with them.</p>
+
+<p>The Draw package contains a <a href="drawing_and_charting.html#">Surface</a> class that abstracts the underlying graphics implementation
+and enables the developer to create arbitrarily shaped <a href="drawing_and_charting.html#">Sprites</a> or <a href="drawing_and_charting.html#">SpriteGroups</a> that respond to
+interactions like mouse events and also provide rich animations on all attributes like shape, color, size,
+etc.</p>
+
+<p>The underlying/concrete implementations for the <a href="drawing_and_charting.html#">Surface</a> class are <a href="drawing_and_charting.html#">SVG</a> (for SVG capable browsers) and
+<a href="drawing_and_charting.html#">VML</a> (for the Internet Explorer family - < 9). <a href="drawing_and_charting.html#">Surface</a> can be considered as an interface for
+the <a href="drawing_and_charting.html#">SVG</a> and <a href="drawing_and_charting.html#">VML</a> rendering engines. Surface is agnostic to its underlying implementations. Most of the methods and ways
+to create sprites are heavily inspired by the <a href="http://www.w3.org/TR/SVG/">SVG standard</a>. </p>
+
+<h3>Creating a Drawing Surface</h3>
+
+<p>You can create a simple drawing surface without loading the Charting package at all. This can be useful
+to create arbitrary graphics that work on all browsers/devices and animate well. For example, you could
+create an interactive map of the United States where each state is a sprite, or also an infographic where
+each element is also a sprite. What's interesting about making sprites and not images is that the document
+acquires a new level of interactivity but also that being VML and SVG based the images will never loose quality
+and can be printed correctly.</p>
+
+<p>In order to use the Draw package directly you can create a <a href="drawing_and_charting.html#">Draw Component</a> and (for example) append it to an <code>Ext.Window</code>:</p>
+
+<pre class="prettyprint"><code>var drawComponent = Ext.create('Ext.draw.Component', {
+    viewBox: false,
+    items: [{
+        type: 'circle',
+        fill: '#ffc',
+        radius: 100,
+        x: 100,
+        y: 100
+    }]
+});
+
+Ext.create('Ext.Window', {
+    width: 230,
+    height: 230,
+    layout: 'fit',
+    items: [drawComponent]
+}).show();</code></pre>
+
+<p>In this case we created a draw component and added a sprite to it. The <em>type</em> of the sprite is <em>circle</em> so if you run this code
+you'll see a yellow-ish circle in a Window. When setting <code>viewBox</code> to <code>false</code> we are responsible for setting the object's position and
+dimensions accordingly.</p>
+
+<p>Sprites can have different types. Some of them are:</p>
+
+<ul><li><em>circle</em> - To draw circles. You can set the radius by using the <em>radius</em> parameter in the sprite configuration.</li><li><em>rect</em> - To render rectangles. You can set the width and height of the rectangle by using the <em>width</em> and <em>height</em> parameters
+in the sprite configuration.</li><li><em>text</em> - To render text as a sprite. You can set the font/font-size by using the <em>font</em> parameter.</li><li><em>path</em> - The most powerful sprite type. With it you can create arbitrary shapes by using the <a href="http://www.w3.org/TR/SVG/paths.html">SVG path syntax</a>.
+You can find a quick tutorial on to how to get started with
+the path syntax <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">here</a>.</li></ul>
+
+<p>A Sprite is an object rendered in a Drawing surface. There are different options and types of sprites.
+ The configuration of a Sprite is an object with the following properties:</p>
+
+<p> <ul>
+    <li>
+    <b>type </b> - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square'. 
+    </li>
+    <li>
+    <b>width </b> - (Number) Used in rectangle sprites, the width of the rectangle.
+    </li>
+    <li>
+    <b>height </b> - (Number) Used in rectangle sprites, the height of the rectangle.
+    </li>
+    <li>
+    <b>size </b> - (Number) Used in square sprites, the dimension of the square.
+    </li>
+    <li>
+    <b>radius </b> - (Number) Used in circle sprites, the radius of the circle.
+    </li>
+    <li>
+    <b>x </b> - (Number) The position along the x-axis.
+    </li>
+    <li>
+    <b>y </b> - (Number) The position along the y-axis.
+    </li>
+    <li>
+    <b>path </b> - (Array) Used in path sprites, the path of the sprite written in SVG-like path syntax.
+    </li>
+    <li>
+    <b>opacity </b> - (Number) The opacity of the sprite.
+    </li>
+    <li>
+    <b>fill </b> - (String) The fill color.
+    </li>
+    <li>
+    <b>stroke </b> - (String) The stroke color.
+    </li>
+    <li>
+    <b>stroke-width </b> - (Number) The width of the stroke.
+    </li>
+    <li>
+    <b>font </b> - (String) Used with text type sprites. The full font description. Uses the same syntax as the CSS <code>font</code> parameter.
+    </li>
+    <li>
+    <b>text </b> - (String) Used with text type sprites. The text itself.
+    </li>
+ </ul></p>
+
+<p> Additionally there are three transform objects that can be set with <code>setAttributes</code> which are <code>translate</code>, <code>rotate</code> and
+ <code>scale</code>.</p>
+
+<p> For translate, the configuration object contains x and y attributes for the translation. For example:</p>
+
+<p> <pre class="prettyprint"><code>
+ sprite.setAttributes({
+   translate: {
+    x: 10,
+    y: 10
+   }
+ }, true);
+ </code></pre></p>
+
+<p> For rotate, the configuration object contains x and y attributes for the center of the rotation (which are optional),
+ and a degrees attribute that specifies the rotation in degrees. For example:</p>
+
+<p> <pre class="prettyprint"><code>
+ sprite.setAttributes({
+   rotate: {
+    degrees: 90
+   }
+ }, true);
+</code></pre></p>
+
+<p> For scale, the configuration object contains x and y attributes for the x-axis and y-axis scaling. For example:</p>
+
+<p> <pre class="prettyprint"><code>
+ sprite.setAttributes({
+   scale: {
+    x: 10,
+    y: 3
+   }
+ }, true);
+ </code></pre></p>
+
+<h3>Interacting with a Sprite</h3>
+
+<p>Now that we've created a draw surface with a sprite in it, let's dive into how to interact with the sprite.
+We can get a handle to the sprite we want to modify by adding that sprite imperatively to the surface:</p>
+
+<pre class="prettyprint"><code>// Create a draw component    
+var drawComponent = Ext.create('Ext.draw.Component', {
+    viewBox: false
+});
+
+// Create a window to place the draw component in
+Ext.create('Ext.Window', {
+    width: 220,
+    height: 230,
+    layout: 'fit',
+    items: [drawComponent]
+}).show();
+
+// Add a circle sprite    
+var myCircle = drawComponent.surface.add({
+    type: 'circle',
+    x: 100,
+    y: 100,
+    radius: 100,
+    fill: '#cc5'
+});
+
+// Now do stuff with the sprite, like changing its properties:
+myCircle.setAttributes({
+    fill: '#ccc'
+}, true);
+
+// or animate an attribute on the sprite
+myCircle.animate({
+    to: {
+        fill: '#555'
+    },
+    duration: 2000
+});
+
+// Add a mouseup listener to the sprite
+myCircle.addListener('mouseup', function() {
+    alert('mouse upped!');
+});</code></pre>
+
+<p>In this example we've seen how we can add events, set sprite attributes and animate these attributes using the
+draw package. As you can see this package is a versatile abstraction layer over the graphics we can do. What's
+most interesting about this class is that we aren't tied to a specific shape or structure; also all elements
+support events, setting attributes and creating animations. Most important of all, all of this is compatible in all browsers and
+devices.</p>
+
+<h2>II. Charts</h2>
+
+<p>So now that we learnt about the expressive power of the draw package, let's dive into charts. The chart
+package consists of a hierarchy of classes that define a chart container (something like a surface but more specific for
+handling charts); axes, legends, series, labels, callouts, tips, cartesian and radial coordinates, and specific series
+like <a href="drawing_and_charting.html#">Pie</a>, <a href="drawing_and_charting.html#">Area</a>, <a href="drawing_and_charting.html#">Bar</a>, etc.</p>
+
+<p>In this section we will cover how these classes are tied together and what bits of functionality go into each of these
+classes. We won't cover each particular series, since that is done in the next section.</p>
+
+<h3>Chart</h3>
+
+<p>The Chart class is the main drawing surface for series. It manages the rendering of each series and also how axes are
+drawn and defined. Chart also delegates mouse events over to different areas of the Chart like Series, Axes, etc.
+The <a href="drawing_and_charting.html#">Chart class</a> extends <a href="drawing_and_charting.html#">Draw Component</a>.</p>
+
+<p>A Chart instance has access to:</p>
+
+<ul><li>axes - Accessed through <code>chart.axes</code>. All the axes being defined and drawn for this visualization. This is a mixed collection.</li><li>series - Accessed through <code>chart.series</code>. All the series being drawn for the chart. This could be line, bar, scatter, etc. This is also a mixed collection.</li><li>legend - The legend box object and its legend items.</li></ul>
+
+<p>The chart instance supports custom events that can be triggered right before and during the rendering of the visualization.
+We can add handlers for these events by using:</p>
+
+<pre class="prettyprint"><code>chart.on({
+  'refresh': function() {
+    alert('(re)drawing the chart');
+  }
+});</code></pre>
+
+<p>Chart also delegates events like <code>itemmousedown</code> and <code>itemmouseup</code> to the series so that we can append
+listeners to those objects and get the target sprite of the event.</p>
+
+<h3>Legend</h3>
+
+<p>The chart configuration object accepts a <code>legend</code> parameter to enable legend items for each series and
+to set the position of the legend. These options are passed into the constructor of the chart. For example:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    width: 200,
+    height: 200,
+
+    // Set a legend
+    legend: {
+        position: 'left'
+    },
+
+    // Define axes
+    axes: [/*set an axis configuration*/],
+
+    // Define series
+    series: [/*set series configuration*/]
+});</code></pre>
+
+<p>Each series object needs to have the <code>showInLegend</code> parameter set to <code>true</code> in order to be in the legend list.</p>
+
+<h3>Axis</h3>
+
+<p>The <code>axis</code> package contains an <code>Abstract</code> axis class that is extended by <code>Axis</code> and <code>Radial</code> axes. <code>Axis</code> represents 
+a <code>Cartesian</code> axis and <code>Radial</code> uses polar coordinates to represent the information for polar based visualizations like
+Pie and Radar series. Axes are bound to the type of data we're trying to represent. There are axes for categorical
+information (called <code>Category</code> axis) and also axis for quantitative information like <code>Numeric</code>. For time-based information
+we have the <code>Time</code> axis that enables us to render information over a specific period of time, and to update that period of time
+with smooth animations. If you'd like to know more about each axis please go to the axis package documentation. Also, you will find
+configuration examples for axis in the bottom series examples.</p>
+
+<p>An axis contains divisions and subdivisions of values, represented by major and minor ticks. These can be adjusted automatically
+or manually to some specified interval, maximum and minimum values. The configuration options <code>maximum</code>, <code>minimum</code>, <code>majorTickSteps</code> and
+<code>minorTickSteps</code> in the <code>Numeric</code> axis are used to change the configuration and placement of the major and minor ticks. For example, by 
+using:</p>
+
+<pre class="prettyprint"><code>        axes: [{
+            type: 'Numeric',
+            position: 'left',
+            fields: ['data1'],
+            title: 'Number of Hits',
+            minimum: 0,
+            //one minor tick between two major ticks
+            minorTickSteps: 1
+        }, {
+            type: 'Category',
+            position: 'bottom',
+            fields: ['name'],
+            title: 'Month of the Year'
+        }]</code></pre>
+
+<p>The following configuration will produce minor ticks in the left axis
+for the line series:</p>
+
+<p><img alt="Series Image" src="../Ticks.jpg"></img></p>
+
+<h3>Gradients</h3>
+
+<p>The drawing and charting package has also the power to create	 	
+linear gradients. The gradients can be defined in the Chart configuration
+object as an array of gradient configurations. For each gradient configuration
+the following parameters are specified:</p>
+
+<ul><li><strong>id</strong> - string - The unique name of the gradient.</li><li><strong>angle</strong> - number, optional - The angle of the gradient in degrees.</li><li><strong>stops</strong> - object - An object with numbers as keys (from 0 to 100) and style objects as values.</li></ul>
+
+<p>Each key in the stops object represents the percentage of the fill on the specified color for
+the gradient.</p>
+
+<p>For example:</p>
+
+<pre class="prettyprint"><code>    gradients: [{
+        id: 'gradientId',
+        angle: 45,
+        stops: {
+            0: {
+                color: '#555'
+            },
+            100: {
+                color: '#ddd'
+            }
+        }
+    },  {
+        id: 'gradientId2',
+        angle: 0,
+        stops: {
+            0: {
+                color: '#590'
+            },
+            20: {
+                color: '#599'
+            },
+            100: {
+                color: '#ddd'
+            }
+        }
+    }]</code></pre>
+
+<p>You can apply a gradient to a sprite by setting a reference to a gradient <strong>id</strong> in
+the fill property. This reference is done via a url syntax. For example:</p>
+
+<pre class="prettyprint"><code>    sprite.setAttributes({
+        fill: 'url(#gradientId)'
+    }, true);</code></pre>
+
+<h3>Series</h3>
+
+<p>A <code>Series</code> is an abstract class extended by concrete visualizations like
+<code>Line</code> or <code>Scatter</code>. The <code>Series</code> class contains code that is common to all of these series, like event handling, animation
+handling, shadows, gradients, common offsets, etc. The <code>Series</code> class is enhanced with a set of <em>mixins</em> that provide functionality
+like highlighting, callouts, tips, etc. A <code>Series</code> will contain an array of <code>items</code> where each item contains information about the
+positioning of each element, its associated <code>sprite</code> and a <code>storeItem</code>. The series also share the <code>drawSeries</code> method that updates
+all positions for the series and then renders the series.</p>
+
+<h3>Theming</h3>
+
+<p>The Chart configuration object may have a <code>theme</code> property with a string value that references a builtin theme name.</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    theme: 'Blue',
+    /* Other options... */
+});</code></pre>
+
+<p>A Theme defines the style of the shapes, color, font, axes and background
+of a chart. The theming configuration can be very rich and complex:</p>
+
+<pre class="prettyprint"><code>{
+    axis: {
+        fill: '#000',
+        'stroke-width': 1
+    },
+    axisLabelTop: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisLabelLeft: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisLabelRight: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisLabelBottom: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisTitleTop: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisTitleLeft: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisTitleRight: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    axisTitleBottom: {
+        fill: '#000',
+        font: '11px Arial'
+    },
+    series: {
+        'stroke-width': 1
+    },
+    seriesLabel: {
+        font: '12px Arial',
+        fill: '#333'
+    },
+    marker: {
+        stroke: '#555',
+        fill: '#000',
+        radius: 3,
+        size: 3
+    },
+    seriesThemes: [{
+        fill: '#C6DBEF'
+    }, {
+        fill: '#9ECAE1'
+    }, {
+        fill: '#6BAED6'
+    }, {
+        fill: '#4292C6'
+    }, {
+        fill: '#2171B5'
+    }, {
+        fill: '#084594'
+    }],
+    markerThemes: [{
+        fill: '#084594',
+        type: 'circle' 
+    }, {
+        fill: '#2171B5',
+        type: 'cross'
+    }, {
+        fill: '#4292C6',
+        type: 'plus'
+    }]
+}</code></pre>
+
+<p>We can also create a seed of colors that will be the base for the entire theme just by creating
+a simple array of colors in the configuration object like:</p>
+
+<pre class="prettyprint"><code>{
+  colors: ['#aaa', '#bcd', '#eee']
+}</code></pre>
+
+<p>When setting a base color the theme will generate an array of colors that match the base color:</p>
+
+<pre class="prettyprint"><code>{
+  baseColor: '#bce'
+}</code></pre>
+
+<p>You can create a custom theme by extending from the base theme. For example, to create a custom <code>Fancy</code> theme we can do:</p>
+
+<pre class="prettyprint"><code>var colors = ['#555',
+              '#666',
+              '#777',
+              '#888',
+              '#999'];
+
+var baseColor = '#eee';
+
+Ext.define('Ext.chart.theme.Fancy', {
+    extend: 'Ext.chart.theme.Base',
+
+    constructor: function(config) {
+        this.callParent([Ext.apply({
+            axis: {
+                fill: baseColor,
+                stroke: baseColor
+            },
+            axisLabelLeft: {
+                fill: baseColor
+            },
+            axisLabelBottom: {
+                fill: baseColor
+            },
+            axisTitleLeft: {
+                fill: baseColor
+            },
+            axisTitleBottom: {
+                fill: baseColor
+            },
+            colors: colors
+        }, config)]);
+    }
+}); 
+
+var chart = Ext.create('Ext.chart.Chart', {
+    theme: 'Fancy',
+
+    /* Other options here... */
+});</code></pre>
+
+<h2>III. Series</h2>
+
+<p>The following section will go through our available series/visualizations, introduce each
+one of them and show a complete configuration example of the series. The example will include the <code>Chart</code>,
+<code>Axis</code> and <code>Series</code> configuration options.</p>
+
+<h3>Area</h3>
+
+<p>Creates a Stacked Area Chart. The stacked area chart is useful when displaying multiple aggregated layers of information.
+As with all other series, the Area Series must be appended in the <em>series</em> Chart array configuration.</p>
+
+<p><img alt="Series Image" src="../Area.jpg"></img></p>
+
+<p>A typical configuration object for the area series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    renderTo: Ext.getBody(),
+    width: 800,
+    height: 600,
+    animate: true,
+    store: store,
+    legend: {
+        position: 'bottom'
+    },
+
+    // Add Numeric and Category axis
+    axes: [{
+        type: 'Numeric',
+        grid: true,
+        position: 'left',
+        fields: ['data1', 'data2', 'data3'],
+        title: 'Number of Hits',
+        grid: {
+            odd: {
+                opacity: 1,
+                fill: '#ddd',
+                stroke: '#bbb',
+                'stroke-width': 1
+            }
+        },
+        minimum: 0,
+        adjustMinimumByMajorUnit: 0
+    }, {
+        type: 'Category',
+        position: 'bottom',
+        fields: ['name'],
+        title: 'Month of the Year',
+        grid: true,
+        label: {
+            rotate: {
+                degrees: 315
+            }
+        }
+    }],
+
+    // Add the Area Series
+    series: [{
+        type: 'area',
+        highlight: true,
+        axis: 'left',
+        xField: 'name',
+        yField: ['data1', 'data2', 'data3'],
+        style: {
+            opacity: 0.93
+        }
+    }]
+}); </code></pre>
+
+<h3>Bar</h3>
+
+<p>Creates a Bar Chart. A Bar Chart is a useful visualization technique to display quantitative information for different 
+categories that can show some progression (or regression) in the dataset.
+As with all other series, the Bar Series must be appended in the <em>series</em> Chart array configuration. See the Chart 
+documentation for more information.</p>
+
+<p><img alt="Series Image" src="../Bar.jpg"></img></p>
+
+<p>A typical configuration object for the bar series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    renderTo: Ext.getBody(),
+    width: 800,
+    height: 600,
+    animate: true,
+    store: store,
+    theme: 'White',
+    axes: [{
+        type: 'Numeric',
+        position: 'bottom',
+        fields: ['data1'],
+        title: 'Number of Hits'
+    }, {
+        type: 'Category',
+        position: 'left',
+        fields: ['name'],
+        title: 'Month of the Year'
+    }],
+    //Add Bar series.
+    series: [{
+        type: 'bar',
+        axis: 'bottom',
+        xField: 'name',
+        yField: 'data1',
+        highlight: true,
+        label: {
+            display: 'insideEnd',
+            field: 'data1',
+            renderer: Ext.util.Format.numberRenderer('0'),
+            orientation: 'horizontal',
+            color: '#333',
+           'text-anchor': 'middle'
+        }
+    }]
+});</code></pre>
+
+<h3>Line</h3>
+
+<p>Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
+categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
+As with all other series, the Line Series must be appended in the <em>series</em> Chart array configuration. See the Chart 
+documentation for more information.</p>
+
+<p><img alt="Series Image" src="../Line.jpg"></img></p>
+
+<p>A typical configuration object for the line series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    renderTo: Ext.getBody(),
+    width: 800,
+    height: 600,
+    animate: true,
+    store: store,
+    shadow: true,
+    theme: 'Category1',
+    axes: [{
+        type: 'Numeric',
+        minimum: 0,
+        position: 'left',
+        fields: ['data1', 'data2', 'data3'],
+        title: 'Number of Hits'
+    }, {
+        type: 'Category',
+        position: 'bottom',
+        fields: ['name'],
+        title: 'Month of the Year'
+    }],
+
+    // Add two line series
+    series: [{
+        type: 'line',
+        axis: 'left',
+        xField: 'name',
+        yField: 'data1',
+        markerConfig: {
+            type: 'cross',
+            size: 4,
+            radius: 4,
+            'stroke-width': 0
+        }
+    }, {
+        type: 'line',
+        axis: 'left',
+        fill: true,
+        xField: 'name',
+        yField: 'data3',
+        markerConfig: {
+            type: 'circle',
+            size: 4,
+            radius: 4,
+            'stroke-width': 0
+        }
+    }]
+});</code></pre>
+
+<p>A marker configuration object contains the same properties used to create a Sprite.
+You can find the properties used to create a Sprite in the Sprite section above.</p>
+
+<h3>Pie</h3>
+
+<p>Creates a Pie Chart. A Pie Chart is a useful visualization technique to display quantitative information for different 
+categories that also have a meaning as a whole.
+As with all other series, the Pie Series must be appended in the <em>series</em> Chart array configuration. See the Chart 
+documentation for more information. A typical configuration object for the pie series could be:</p>
+
+<p><img alt="Series Image" src="../Pie.jpg"></img></p>
+
+<p>A typical configuration object for the pie series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    width: 800,
+    height: 600,
+    animate: true,
+    shadow: true,
+    store: store,
+    renderTo: Ext.getBody(),
+    legend: {
+        position: 'right'
+    },
+    insetPadding: 25,
+    theme: 'Base:gradients',
+    series: [{
+        type: 'pie',
+        field: 'data1',
+        showInLegend: true,
+        highlight: {
+          segment: {
+            margin: 20
+          }
+        },
+        label: {
+            field: 'name',
+            display: 'rotate',
+            contrast: true,
+            font: '18px Arial'
+        }
+    }]
+});</code></pre>
+
+<h3>Radar</h3>
+
+<p>Creates a Radar Chart. A Radar Chart is a useful visualization technique for comparing different quantitative values for 
+a constrained number of categories.
+As with all other series, the Radar series must be appended in the <em>series</em> Chart array configuration. See the Chart 
+documentation for more information.</p>
+
+<p><img alt="Series Image" src="../Radar.jpg"></img></p>
+
+<p>A typical configuration object for the radar series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    width: 800,
+    height: 600,
+    animate: true,
+    store: store,
+    renderTo: Ext.getBody(),
+    insetPadding: 20,
+    theme: 'Category2',
+    axes: [{
+        type: 'Radial',
+        position: 'radial',
+        label: {
+            display: true
+        }
+    }],
+
+    // Add two series for radar.
+    series: [{
+        type: 'radar',
+        xField: 'name',
+        yField: 'data1',
+        showMarkers: true,
+        markerConfig: {
+            radius: 5,
+            size: 5
+        },
+        style: {
+            'stroke-width': 2,
+            fill: 'none'
+        }
+    },{
+        type: 'radar',
+        xField: 'name',
+        yField: 'data3',
+        showMarkers: true,
+        markerConfig: {
+            radius: 5,
+            size: 5
+        },
+        style: {
+            'stroke-width': 2,
+            fill: 'none'
+        }
+    }]
+}); </code></pre>
+
+<h3>Scatter</h3>
+
+<p>Creates a Scatter Chart. The scatter plot is useful when trying to display more than two variables in the same visualization. 
+These variables can be mapped into x, y coordinates and also to an element's radius/size, color, etc.
+As with all other series, the Scatter Series must be appended in the <em>series</em> Chart array configuration. See the Chart 
+documentation for more information on creating charts.</p>
+
+<p><img alt="Series Image" src="../Scatter.jpg"></img></p>
+
+<p>A typical configuration object for the scatter series could be:</p>
+
+<pre class="prettyprint"><code>var chart = Ext.create('Ext.chart.Chart', {
+    width: 800,
+    height: 600,
+    animate: true,
+    store: store,
+    renderTo: Ext.getBody(),
+    axes: [{
+        type: 'Numeric',
+        position: 'left',
+        fields: ['data1', 'data2', 'data3'],
+        title: 'Number of Hits'
+    }],
+    series: [{
+        type: 'scatter',
+        markerConfig: {
+            radius: 5,
+            size: 5
+        },
+        axis: 'left',
+        xField: 'name',
+        yField: 'data1',
+        color: '#a00'
+    }, {
+        type: 'scatter',
+        markerConfig: {
+            radius: 5,
+            size: 5
+        },
+        axis: 'left',
+        xField: 'name',
+        yField: 'data2'
+    }, {
+        type: 'scatter',
+        markerConfig: {
+            radius: 5,
+            size: 5
+        },
+        axis: 'left',
+        xField: 'name',
+        yField: 'data3'
+    }]
+});</code></pre>
+
+<h3>Gauge</h3>
+
+<p>  Creates a Gauge Chart. Gauge Charts are used to show progress in a certain variable. There are two ways of using the Gauge chart.
+  One is setting a store element into the Gauge and selecting the field to be used from that store. Another one is instanciating the
+  visualization and using the <code>setValue</code> method to adjust the value you want.</p>
+
+<p> <img alt="Series Image" src="../Gauge.jpg"></img></p>
+
+<p>  A chart/series configuration for the Gauge visualization could look like this:</p>
+
+<p>  <pre class="prettyprint"><code>
+        {
+            xtype: 'chart',
+            store: store,
+            axes: [{
+                type: 'gauge',
+                position: 'gauge',
+                minimum: 0,
+                maximum: 100,
+                steps: 10,
+                margin: -10
+            }],
+            series: [{
+                type: 'gauge',
+                field: 'data1',
+                donut: false,
+                colorSet: ['#F49D10', '#ddd']
+            }]
+        }
+   </code></pre></p>
+
+<p>  In this configuration we create a special Gauge axis to be used with the gauge visualization (describing half-circle markers), and also we're
+  setting a maximum, minimum and steps configuration options into the axis. The Gauge series configuration contains the store field to be bound to
+  the visual display and the color set to be used with the visualization.
+  </p></div></div></div></div></body></html>

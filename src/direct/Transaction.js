@@ -1,24 +1,33 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /**
- * @class Ext.Direct.Transaction
+ * @class Ext.direct.Transaction
  * @extends Object
  * <p>Supporting Class for Ext.Direct (not intended to be used directly).</p>
  * @constructor
  * @param {Object} config
  */
-Ext.Direct.Transaction = function(config){
-    Ext.apply(this, config);
-    this.tid = ++Ext.Direct.TID;
-    this.retryCount = 0;
-};
-Ext.Direct.Transaction.prototype = {
+Ext.define('Ext.direct.Transaction', {
+    
+    /* Begin Definitions */
+   
+    alias: 'direct.transaction',
+    alternateClassName: 'Ext.Direct.Transaction',
+   
+    statics: {
+        TRANSACTION_ID: 0
+    },
+   
+    /* End Definitions */
+   
+    constructor: function(config){
+        var me = this;
+        
+        Ext.apply(me, config);
+        me.id = ++me.self.TRANSACTION_ID;
+        me.retryCount = 0;
+    },
+   
     send: function(){
-        this.provider.queueTransaction(this);
+         this.provider.queueTransaction(this);
     },
 
     retry: function(){
@@ -29,4 +38,4 @@ Ext.Direct.Transaction.prototype = {
     getProvider: function(){
         return this.provider;
     }
-};
+});

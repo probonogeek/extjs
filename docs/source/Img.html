@@ -1,0 +1,45 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-Img'>/**
+</span> * @class Ext.Img
+ * @extends Ext.Component
+ *
+ * Simple helper class for easily creating image components. This simply renders an image tag to the DOM
+ * with the configured src.
+ *
+ * {@img Ext.Img/Ext.Img.png Ext.Img component}
+ *
+ * ## Example usage: 
+ *
+ *     var changingImage = Ext.create('Ext.Img', {
+ *         src: 'http://www.sencha.com/img/20110215-feat-html5.png',
+ *         renderTo: Ext.getBody()
+ *     });
+ *      
+ *     // change the src of the image programmatically
+ *     changingImage.setSrc('http://www.sencha.com/img/20110215-feat-perf.png');
+*/
+Ext.define('Ext.Img', {
+    extend: 'Ext.Component',
+    alias: ['widget.image', 'widget.imagecomponent'],
+<span id='Ext-Img-cfg-src'>    /** @cfg {String} src The image src */
+</span>    src: '',
+
+    getElConfig: function() {
+        return {
+            tag: 'img',
+            src: this.src
+        };
+    },
+    
+<span id='Ext-Img-method-setSrc'>    /**
+</span>     * Updates the {@link #src} of the image
+     */
+    setSrc: function(src) {
+        var me = this,
+            img = me.el;
+        me.src = src;
+        if (img) {
+            img.dom.src = src;
+        }
+    }
+});
+</pre></pre></body></html>

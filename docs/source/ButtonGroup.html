@@ -1,117 +1,166 @@
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
-  <title>The source code</title>
-    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
-</head>
-<body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-<div id="cls-Ext.ButtonGroup"></div>/**
- * @class Ext.ButtonGroup
- * @extends Ext.Panel
- * Container for a group of buttons. Example usage:
- * <pre><code>
-var p = new Ext.Panel({
-    title: 'Panel with Button Group',
-    width: 300,
-    height:200,
-    renderTo: document.body,
-    html: 'whatever',
-    tbar: [{
-        xtype: 'buttongroup',
-        {@link #columns}: 3,
-        title: 'Clipboard',
-        items: [{
-            text: 'Paste',
-            scale: 'large',
-            rowspan: 3, iconCls: 'add',
-            iconAlign: 'top',
-            cls: 'x-btn-as-arrow'
-        },{
-            xtype:'splitbutton',
-            text: 'Menu Button',
-            scale: 'large',
-            rowspan: 3,
-            iconCls: 'add',
-            iconAlign: 'top',
-            arrowAlign:'bottom',
-            menu: [{text: 'Menu Item 1'}]
-        },{
-            xtype:'splitbutton', text: 'Cut', iconCls: 'add16', menu: [{text: 'Cut Menu Item'}]
-        },{
-            text: 'Copy', iconCls: 'add16'
-        },{
-            text: 'Format', iconCls: 'add16'
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-container.ButtonGroup-method-constructor'><span id='Ext-container.ButtonGroup'>/**
+</span></span> * @class Ext.container.ButtonGroup
+ * @extends Ext.panel.Panel
+ * &lt;p&gt;Provides a container for arranging a group of related Buttons in a tabular manner.&lt;/p&gt;
+ * Example usage:
+ * {@img Ext.container.ButtonGroup/Ext.container.ButtonGroup.png Ext.container.ButtonGroup component}
+ * &lt;pre&gt;&lt;code&gt;
+    Ext.create('Ext.panel.Panel', {
+        title: 'Panel with ButtonGroup',
+        width: 300,
+        height:200,
+        renderTo: document.body,
+        html: 'HTML Panel Content',
+        tbar: [{
+            xtype: 'buttongroup',
+            columns: 3,
+            title: 'Clipboard',
+            items: [{
+                text: 'Paste',
+                scale: 'large',
+                rowspan: 3,
+                iconCls: 'add',
+                iconAlign: 'top',
+                cls: 'x-btn-as-arrow'
+            },{
+                xtype:'splitbutton',
+                text: 'Menu Button',
+                scale: 'large',
+                rowspan: 3,
+                iconCls: 'add',
+                iconAlign: 'top',
+                arrowAlign:'bottom',
+                menu: [{text: 'Menu Item 1'}]
+            },{
+                xtype:'splitbutton', text: 'Cut', iconCls: 'add16', menu: [{text: 'Cut Menu Item'}]
+            },{
+                text: 'Copy', iconCls: 'add16'
+            },{
+                text: 'Format', iconCls: 'add16'
+            }]
         }]
-    }]
-});
- * </code></pre>
+    });
+ * &lt;/code&gt;&lt;/pre&gt;
  * @constructor
  * Create a new ButtonGroup.
  * @param {Object} config The config object
  * @xtype buttongroup
  */
-Ext.ButtonGroup = Ext.extend(Ext.Panel, {
-    <div id="cfg-Ext.ButtonGroup-columns"></div>/**
-     * @cfg {Number} columns The <tt>columns</tt> configuration property passed to the
-     * {@link #layout configured layout manager}. See {@link Ext.layout.TableLayout#columns}.
+Ext.define('Ext.container.ButtonGroup', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.buttongroup',
+    alternateClassName: 'Ext.ButtonGroup',
+
+<span id='Ext-container.ButtonGroup-cfg-columns'>    /**
+</span>     * @cfg {Number} columns The &lt;tt&gt;columns&lt;/tt&gt; configuration property passed to the
+     * {@link #layout configured layout manager}. See {@link Ext.layout.container.Table#columns}.
      */
-    <div id="cfg-Ext.ButtonGroup-baseCls"></div>/**
-     * @cfg {String} baseCls  Defaults to <tt>'x-btn-group'</tt>.  See {@link Ext.Panel#baseCls}.
+
+<span id='Ext-container.ButtonGroup-cfg-baseCls'>    /**
+</span>     * @cfg {String} baseCls  Defaults to &lt;tt&gt;'x-btn-group'&lt;/tt&gt;.  See {@link Ext.panel.Panel#baseCls}.
      */
-    baseCls: 'x-btn-group',
-    <div id="cfg-Ext.ButtonGroup-layout"></div>/**
-     * @cfg {String} layout  Defaults to <tt>'table'</tt>.  See {@link Ext.Container#layout}.
+    baseCls: Ext.baseCSSPrefix + 'btn-group',
+
+<span id='Ext-container.ButtonGroup-cfg-layout'>    /**
+</span>     * @cfg {Object} layout  Defaults to &lt;tt&gt;'table'&lt;/tt&gt;.  See {@link Ext.container.Container#layout}.
      */
-    layout:'table',
+    layout: {
+        type: 'table'
+    },
+
     defaultType: 'button',
-    <div id="cfg-Ext.ButtonGroup-frame"></div>/**
-     * @cfg {Boolean} frame  Defaults to <tt>true</tt>.  See {@link Ext.Panel#frame}.
+
+<span id='Ext-container.ButtonGroup-cfg-frame'>    /**
+</span>     * @cfg {Boolean} frame  Defaults to &lt;tt&gt;true&lt;/tt&gt;.  See {@link Ext.panel.Panel#frame}.
      */
     frame: true,
+    
+    frameHeader: false,
+    
     internalDefaults: {removeMode: 'container', hideParent: true},
 
     initComponent : function(){
-        this.layoutConfig = this.layoutConfig || {};
-        Ext.applyIf(this.layoutConfig, {
-            columns : this.columns
-        });
-        if(!this.title){
-            this.addClass('x-btn-group-notitle');
+        // Copy the component's columns config to the layout if specified
+        var me = this,
+            cols = me.columns;
+
+        me.noTitleCls = me.baseCls + '-notitle';
+        if (cols) {
+            me.layout = Ext.apply({}, {columns: cols}, me.layout);
         }
-        this.on('afterlayout', this.onAfterLayout, this);
-        Ext.ButtonGroup.superclass.initComponent.call(this);
+
+        if (!me.title) {
+            me.addCls(me.noTitleCls);
+        }
+        me.callParent(arguments);
     },
 
-    applyDefaults : function(c){
-        c = Ext.ButtonGroup.superclass.applyDefaults.call(this, c);
-        var d = this.internalDefaults;
-        if(c.events){
-            Ext.applyIf(c.initialConfig, d);
-            Ext.apply(c, d);
-        }else{
-            Ext.applyIf(c, d);
+    afterLayout: function() {
+        var me = this;
+        
+        me.callParent(arguments);
+
+        // Pugly hack for a pugly browser:
+        // If not an explicitly set width, then size the width to match the inner table
+        if (me.layout.table &amp;&amp; (Ext.isIEQuirks || Ext.isIE6) &amp;&amp; !me.width) {
+            var t = me.getTargetEl();
+            t.setWidth(me.layout.table.offsetWidth + t.getPadding('lr'));
+        }
+    },
+
+    afterRender: function() {
+        var me = this;
+        
+        //we need to add an addition item in here so the ButtonGroup title is centered
+        if (me.header) {
+            me.header.insert(0, {
+                xtype: 'component',
+                ui   : me.ui,
+                html : '&amp;nbsp;',
+                flex : 1
+            });
+        }
+        
+        me.callParent(arguments);
+    },
+    
+    // private
+    onBeforeAdd: function(component) {
+        if (component.is('button')) {
+            component.ui = component.ui + '-toolbar';
+        }
+        this.callParent(arguments);
+    },
+
+    //private
+    applyDefaults: function(c) {
+        if (!Ext.isString(c)) {
+            c = this.callParent(arguments);
+            var d = this.internalDefaults;
+            if (c.events) {
+                Ext.applyIf(c.initialConfig, d);
+                Ext.apply(c, d);
+            } else {
+                Ext.applyIf(c, d);
+            }
         }
         return c;
-    },
-
-    onAfterLayout : function(){
-        var bodyWidth = this.body.getFrameWidth('lr') + this.body.dom.firstChild.offsetWidth;
-        this.body.setWidth(bodyWidth);
-        this.el.setWidth(bodyWidth + this.getFrameWidth());
     }
-    <div id="cfg-Ext.ButtonGroup-tools"></div>/**
-     * @cfg {Array} tools  @hide
+
+<span id='Ext-container.ButtonGroup-cfg-tools'>    /**
+</span>     * @cfg {Array} tools  @hide
+     */
+<span id='Ext-container.ButtonGroup-cfg-collapsible'>    /**
+</span>     * @cfg {Boolean} collapsible  @hide
+     */
+<span id='Ext-container.ButtonGroup-cfg-collapseMode'>    /**
+</span>     * @cfg {Boolean} collapseMode  @hide
+     */
+<span id='Ext-container.ButtonGroup-cfg-animCollapse'>    /**
+</span>     * @cfg {Boolean} animCollapse  @hide
+     */
+<span id='Ext-container.ButtonGroup-cfg-closable'>    /**
+</span>     * @cfg {Boolean} closable  @hide
      */
 });
-
-Ext.reg('buttongroup', Ext.ButtonGroup);
-</pre>    
-</body>
-</html>
+</pre></pre></body></html>

@@ -1,14 +1,11 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /**
+ * @author Ed Spencer
  * @class Ext.data.XmlStore
  * @extends Ext.data.Store
+ * @private
+ * @ignore
  * <p>Small helper class to make creating {@link Ext.data.Store}s from XML data easier.
- * A XmlStore will be automatically configured with a {@link Ext.data.XmlReader}.</p>
+ * A XmlStore will be automatically configured with a {@link Ext.data.reader.Xml}.</p>
  * <p>A store configuration would be something like:<pre><code>
 var store = new Ext.data.XmlStore({
     // store configs
@@ -56,20 +53,32 @@ var store = new Ext.data.XmlStore({
 &#60/ItemSearchResponse>
  * </code></pre>
  * An object literal of this form could also be used as the {@link #data} config option.</p>
- * <p><b>Note:</b> Although not listed here, this class accepts all of the configuration options of 
- * <b>{@link Ext.data.XmlReader XmlReader}</b>.</p>
+ * <p><b>Note:</b> Although not listed here, this class accepts all of the configuration options of
+ * <b>{@link Ext.data.reader.Xml XmlReader}</b>.</p>
  * @constructor
  * @param {Object} config
  * @xtype xmlstore
  */
-Ext.data.XmlStore = Ext.extend(Ext.data.Store, {
+Ext.define('Ext.data.XmlStore', {
+    extend: 'Ext.data.Store',
+    alternateClassName: 'Ext.data.XmlStore',
+    alias: 'store.xml',
+
     /**
      * @cfg {Ext.data.DataReader} reader @hide
      */
     constructor: function(config){
-        Ext.data.XmlStore.superclass.constructor.call(this, Ext.apply(config, {
-            reader: new Ext.data.XmlReader(config)
-        }));
+        config = config || {};
+        config = config || {};
+
+        Ext.applyIf(config, {
+            proxy: {
+                type: 'ajax',
+                reader: 'xml',
+                writer: 'xml'
+            }
+        });
+
+        this.callParent([config]);
     }
 });
-Ext.reg('xmlstore', Ext.data.XmlStore);

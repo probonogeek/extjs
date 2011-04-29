@@ -1,0 +1,552 @@
+<!DOCTYPE html><html><head><title>Ext.chart.series.Bar | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.chart.series.Bar',
+        docClass: 'Ext.chart.series.Bar',
+        docReq: 'Ext.chart.series.Bar',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Bar2.html#Ext-chart.series.Bar';
+    clsInfo = {"methods":["Bar","addEvents","addListener","addManagedListener","capture","clearListeners","clearManagedListeners","drawSeries","enableBubble","fireEvent","getItemForPoint","getLegendColor","hasListener","hideAll","highlightItem","observe","on","relayEvents","releaseCapture","removeListener","removeManagedListener","resumeEvents","setTitle","showAll","suspendEvents","un","unHighlightItem"],"cfgs":["color","column","display","field","font","groupGutter","gutter","highlight","listeners","minMargin","orientation","renderer","shadowAttributes","showInLegend","style","tips","title","type","xPadding","yPadding"],"properties":["axis","highlight","xField","yField"],"events":["titlechange"],"subclasses":["Ext.chart.series.Column"]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Bar2.html#Ext-chart.series.Bar" target="_blank">Ext.chart.series.Bar</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.chart.series.Series.html" rel="Ext.chart.series.Series" class="cls docClass">Ext.chart.series.Series</a><div class="subclass"><a href="Ext.chart.series.Cartesian.html" rel="Ext.chart.series.Cartesian" class="cls docClass">Ext.chart.series.Cartesian</a><div class="subclass"><strong>Ext.chart.series.Bar</strong></div></div></div><h4>Mixins</h4><div class="mixin"><a href="Ext.util.Observable.html" rel="Ext.util.Observable" class="cls docClass">Ext.util.Observable</a></div><div class="mixin"><a href="Ext.chart.Label.html" rel="Ext.chart.Label" class="cls docClass">Ext.chart.Label</a></div><div class="mixin"><a href="Ext.chart.Highlight.html" rel="Ext.chart.Highlight" class="cls docClass">Ext.chart.Highlight</a></div><div class="mixin"><a href="Ext.chart.Tip.html" rel="Ext.chart.Tip" class="cls docClass">Ext.chart.Tip</a></div><div class="mixin"><a href="Ext.chart.Callout.html" rel="Ext.chart.Callout" class="cls docClass">Ext.chart.Callout</a></div></pre><p>Creates a Bar Chart. A Bar Chart is a useful visualization technique to display quantitative information for
+different categories that can show some progression (or regression) in the dataset. As with all other series, the Bar
+Series must be appended in the <em>series</em> Chart array configuration. See the Chart documentation for more information.
+A typical configuration object for the bar series could be:</p>
+
+<p><img class="screenshot" src="../Ext.chart.series.Bar.png" alt="Ext.chart.series.Bar chart series" /></p>
+
+<pre class="prettyprint"><code>var store = Ext.create('Ext.data.JsonStore', {
+    fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+    data: [
+        {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+        {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+        {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+        {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+        {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+    ]
+});
+
+Ext.create('Ext.chart.Chart', {
+    renderTo: Ext.getBody(),
+    width: 500,
+    height: 300,
+    animate: true,
+    store: store,
+    axes: [{
+        type: 'Numeric',
+        position: 'bottom',
+        fields: ['data1'],
+        label: {
+            renderer: Ext.util.Format.numberRenderer('0,0')
+        },
+        title: 'Sample Values',
+        grid: true,
+        minimum: 0
+    }, {
+        type: 'Category',
+        position: 'left',
+        fields: ['name'],
+        title: 'Sample Metrics'
+    }],
+    series: [{
+        type: 'bar',
+        axis: 'bottom',
+        highlight: true,
+        tips: {
+          trackMouse: true,
+          width: 140,
+          height: 28,
+          renderer: function(storeItem, item) {
+            this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' views');
+          }
+        },
+        label: {
+          display: 'insideEnd',
+            field: 'data1',
+            renderer: Ext.util.Format.numberRenderer('0'),
+            orientation: 'horizontal',
+            color: '#333',
+            'text-anchor': 'middle'
+        },
+        xField: 'name',
+        yField: ['data1']
+    }]
+});
+</code></pre>
+
+<p>In this configuration we set <code>bar</code> as the series type, bind the values of the bar to the bottom axis and set the
+xField or category field to the <code>name</code> parameter of the store. We also set <code>highlight</code> to true which enables smooth
+animations when bars are hovered. We also set some configuration for the bar labels to be displayed inside the bar,
+to display the information found in the <code>data1</code> property of each element store, to render a formated text with the
+<code>Ext.util.Format</code> we pass in, to have an <code>horizontal</code> orientation (as opposed to a vertical one) and we also set
+other styles like <code>color</code>, <code>text-anchor</code>, etc.</p>
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-color" class="member f inherited"><a href="Ext.chart.series.Bar.html#config-color" rel="config-color" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-color" class="viewSource">view source</a></div><a name="color"></a><a name="config-color"></a><a href="Ext.chart.series.Bar.html#" rel="config-color" class="cls expand">color</a><span> : String</span></div><div class="description"><div class="short"><p>The color of the label text.
+Default value: '#000' (black).</p>
+</div><div class="long"><p>The color of the label text.
+Default value: '#000' (black).</p>
+</div></div></div><div id="config-column" class="member ni"><a href="Ext.chart.series.Bar.html#config-column" rel="config-column" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-column" class="viewSource">view source</a></div><a name="column"></a><a name="config-column"></a><a href="Ext.chart.series.Bar.html#" rel="config-column" class="cls expand">column</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Whether to set the visualization as column chart or horizontal bar chart.</p>
+</div><div class="long"><p>Whether to set the visualization as column chart or horizontal bar chart.</p>
+</div></div></div><div id="config-display" class="member inherited"><a href="Ext.chart.series.Bar.html#config-display" rel="config-display" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-display" class="viewSource">view source</a></div><a name="display"></a><a name="config-display"></a><a href="Ext.chart.series.Bar.html#" rel="config-display" class="cls expand">display</a><span> : String</span></div><div class="description"><div class="short">Specifies the presence and position of labels for each pie slice. Either "rotate", "middle", "insideStart",
+"insideEn...</div><div class="long"><p>Specifies the presence and position of labels for each pie slice. Either "rotate", "middle", "insideStart",
+"insideEnd", "outside", "over", "under", or "none" to prevent label rendering.
+Default value: 'none'.</p>
+</div></div></div><div id="config-field" class="member inherited"><a href="Ext.chart.series.Bar.html#config-field" rel="config-field" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-field" class="viewSource">view source</a></div><a name="field"></a><a name="config-field"></a><a href="Ext.chart.series.Bar.html#" rel="config-field" class="cls expand">field</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the field to be displayed in the label.
+Default value: 'name'.</p>
+</div><div class="long"><p>The name of the field to be displayed in the label.
+Default value: 'name'.</p>
+</div></div></div><div id="config-font" class="member inherited"><a href="Ext.chart.series.Bar.html#config-font" rel="config-font" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-font" class="viewSource">view source</a></div><a name="font"></a><a name="config-font"></a><a href="Ext.chart.series.Bar.html#" rel="config-font" class="cls expand">font</a><span> : String</span></div><div class="description"><div class="short"><p>The font used for the labels.
+Defautl value: "11px Helvetica, sans-serif".</p>
+</div><div class="long"><p>The font used for the labels.
+Defautl value: "11px Helvetica, sans-serif".</p>
+</div></div></div><div id="config-groupGutter" class="member ni"><a href="Ext.chart.series.Bar.html#config-groupGutter" rel="config-groupGutter" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-groupGutter" class="viewSource">view source</a></div><a name="groupGutter"></a><a name="config-groupGutter"></a><a href="Ext.chart.series.Bar.html#" rel="config-groupGutter" class="cls expand">groupGutter</a><span> : Number</span></div><div class="description"><div class="short"><p>The gutter space between groups of bars, as a percentage of the bar width</p>
+</div><div class="long"><p>The gutter space between groups of bars, as a percentage of the bar width</p>
+</div></div></div><div id="config-gutter" class="member ni"><a href="Ext.chart.series.Bar.html#config-gutter" rel="config-gutter" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-gutter" class="viewSource">view source</a></div><a name="gutter"></a><a name="config-gutter"></a><a href="Ext.chart.series.Bar.html#" rel="config-gutter" class="cls expand">gutter</a><span> : Number</span></div><div class="description"><div class="short"><p>The gutter space between single bars, as a percentage of the bar width</p>
+</div><div class="long"><p>The gutter space between single bars, as a percentage of the bar width</p>
+</div></div></div><div id="config-highlight" class="member inherited"><a href="Ext.chart.series.Bar.html#config-highlight" rel="config-highlight" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-highlight" class="viewSource">view source</a></div><a name="highlight"></a><a name="config-highlight"></a><a href="Ext.chart.series.Bar.html#" rel="config-highlight" class="cls expand">highlight</a><span> : Boolean|Object</span></div><div class="description"><div class="short">If set to true it will highlight the markers or the series when hovering
+with the mouse. This parameter can also be a...</div><div class="long"><p>If set to <code>true</code> it will highlight the markers or the series when hovering
+with the mouse. This parameter can also be an object with the same style
+properties you would apply to a <a href="Ext.draw.Sprite.html" rel="Ext.draw.Sprite" class="docClass">Ext.draw.Sprite</a> to apply custom
+styles to markers and series.</p>
+</div></div></div><div id="config-listeners" class="member inherited"><a href="Ext.chart.series.Bar.html#config-listeners" rel="config-listeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-cfg-listeners" class="viewSource">view source</a></div><a name="listeners"></a><a name="config-listeners"></a><a href="Ext.chart.series.Bar.html#" rel="config-listeners" class="cls expand">listeners</a><span> : Object</span></div><div class="description"><div class="short">(optional) A config object containing one or more event handlers to be added to this
+object during initialization.  T...</div><div class="long"><p>(optional) <p>A config object containing one or more event handlers to be added to this
+object during initialization.  This should be a valid listeners config object as specified in the
+<a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a> example for attaching multiple handlers at once.</p></p>
+
+<br><p><b><u>DOM events from ExtJs <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a></u></b></p>
+
+
+<br><p>While <i>some</i> ExtJs Component classes export selected DOM events (e.g. "click", "mouseover" etc), this
+
+
+<p>is usually only done when extra value can be added. For example the <a href="Ext.view.View.html" rel="Ext.view.View" class="docClass">DataView</a>'s
+<b><code><a href="Ext.view.View.html#click" rel="Ext.view.View#click" class="docClass">click</a></code></b> event passing the node clicked on. To access DOM
+events directly from a child element of a Component, we need to specify the <code>element</code> option to
+identify the Component property to add a DOM listener to:</p>
+
+<pre><code>new Ext.panel.Panel({
+    width: 400,
+    height: 200,
+    dockedItems: [{
+        xtype: 'toolbar'
+    }],
+    listeners: {
+        click: {
+            element: 'el', //bind to the underlying el property on the panel
+            fn: function(){ console.log('click el'); }
+        },
+        dblclick: {
+            element: 'body', //bind to the underlying body property on the panel
+            fn: function(){ console.log('dblclick body'); }
+        }
+    }
+});
+</code></pre>
+
+
+<p></p></p>
+</div></div></div><div id="config-minMargin" class="member inherited"><a href="Ext.chart.series.Bar.html#config-minMargin" rel="config-minMargin" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-minMargin" class="viewSource">view source</a></div><a name="minMargin"></a><a name="config-minMargin"></a><a href="Ext.chart.series.Bar.html#" rel="config-minMargin" class="cls expand">minMargin</a><span> : Number</span></div><div class="description"><div class="short">Specifies the minimum distance from a label to the origin of the visualization.
+This parameter is useful when using P...</div><div class="long"><p>Specifies the minimum distance from a label to the origin of the visualization.
+This parameter is useful when using PieSeries width variable pie slice lengths.
+Default value: 50.</p>
+</div></div></div><div id="config-orientation" class="member inherited"><a href="Ext.chart.series.Bar.html#config-orientation" rel="config-orientation" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-orientation" class="viewSource">view source</a></div><a name="orientation"></a><a name="config-orientation"></a><a href="Ext.chart.series.Bar.html#" rel="config-orientation" class="cls expand">orientation</a><span> : String</span></div><div class="description"><div class="short"><p>Either "horizontal" or "vertical".
+Dafault value: "horizontal".</p>
+</div><div class="long"><p>Either "horizontal" or "vertical".
+Dafault value: "horizontal".</p>
+</div></div></div><div id="config-renderer" class="member inherited"><a href="Ext.chart.series.Bar.html#config-renderer" rel="config-renderer" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Label.html" class="definedIn docClass">Ext.chart.Label</a><br/><a href="../source/Label2.html#Ext-chart.Label-cfg-renderer" class="viewSource">view source</a></div><a name="renderer"></a><a name="config-renderer"></a><a href="Ext.chart.series.Bar.html#" rel="config-renderer" class="cls expand">renderer</a><span> : Function</span></div><div class="description"><div class="short"><p>Optional function for formatting the label into a displayable value.
+Default value: function(v) { return v; }</p>
+</div><div class="long"><p>Optional function for formatting the label into a displayable value.
+Default value: function(v) { return v; }</p>
+</div></div></div><div id="config-shadowAttributes" class="member inherited"><a href="Ext.chart.series.Bar.html#config-shadowAttributes" rel="config-shadowAttributes" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-shadowAttributes" class="viewSource">view source</a></div><a name="shadowAttributes"></a><a name="config-shadowAttributes"></a><a href="Ext.chart.series.Bar.html#" rel="config-shadowAttributes" class="cls expand">shadowAttributes</a><span> : Array</span></div><div class="description"><div class="short"><p>An array with shadow attributes</p>
+</div><div class="long"><p>An array with shadow attributes</p>
+</div></div></div><div id="config-showInLegend" class="member inherited"><a href="Ext.chart.series.Bar.html#config-showInLegend" rel="config-showInLegend" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-showInLegend" class="viewSource">view source</a></div><a name="showInLegend"></a><a name="config-showInLegend"></a><a href="Ext.chart.series.Bar.html#" rel="config-showInLegend" class="cls expand">showInLegend</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Whether to show this series in the legend.</p>
+</div><div class="long"><p>Whether to show this series in the legend.</p>
+</div></div></div><div id="config-style" class="member ni"><a href="Ext.chart.series.Bar.html#config-style" rel="config-style" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-style" class="viewSource">view source</a></div><a name="style"></a><a name="config-style"></a><a href="Ext.chart.series.Bar.html#" rel="config-style" class="cls expand">style</a><span> : Object</span></div><div class="description"><div class="short"><p>Style properties that will override the theming series styles.</p>
+</div><div class="long"><p>Style properties that will override the theming series styles.</p>
+</div></div></div><div id="config-tips" class="member inherited"><a href="Ext.chart.series.Bar.html#config-tips" rel="config-tips" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-tips" class="viewSource">view source</a></div><a name="tips"></a><a name="config-tips"></a><a href="Ext.chart.series.Bar.html#" rel="config-tips" class="cls expand">tips</a><span> : Object</span></div><div class="description"><div class="short">Add tooltips to the visualization's markers. The options for the tips are the
+same configuration used with Ext.tip.To...</div><div class="long"><p>Add tooltips to the visualization's markers. The options for the tips are the
+same configuration used with <a href="Ext.tip.ToolTip.html" rel="Ext.tip.ToolTip" class="docClass">Ext.tip.ToolTip</a>. For example:</p>
+
+<pre><code>tips: {
+  trackMouse: true,
+  width: 140,
+  height: 28,
+  renderer: function(storeItem, item) {
+    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' views');
+  }
+},
+</code></pre>
+</div></div></div><div id="config-title" class="member inherited"><a href="Ext.chart.series.Bar.html#config-title" rel="config-title" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-title" class="viewSource">view source</a></div><a name="title"></a><a name="config-title"></a><a href="Ext.chart.series.Bar.html#" rel="config-title" class="cls expand">title</a><span> : String</span></div><div class="description"><div class="short"><p>The human-readable name of the series.</p>
+</div><div class="long"><p>The human-readable name of the series.</p>
+</div></div></div><div id="config-type" class="member inherited"><a href="Ext.chart.series.Bar.html#config-type" rel="config-type" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-cfg-type" class="viewSource">view source</a></div><a name="type"></a><a name="config-type"></a><a href="Ext.chart.series.Bar.html#" rel="config-type" class="cls expand">type</a><span> : String</span></div><div class="description"><div class="short"><p>The type of series. Set in subclasses.</p>
+</div><div class="long"><p>The type of series. Set in subclasses.</p>
+</div></div></div><div id="config-xPadding" class="member ni"><a href="Ext.chart.series.Bar.html#config-xPadding" rel="config-xPadding" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-xPadding" class="viewSource">view source</a></div><a name="xPadding"></a><a name="config-xPadding"></a><a href="Ext.chart.series.Bar.html#" rel="config-xPadding" class="cls expand">xPadding</a><span> : Number</span></div><div class="description"><div class="short"><p>Padding between the left/right axes and the bars</p>
+</div><div class="long"><p>Padding between the left/right axes and the bars</p>
+</div></div></div><div id="config-yPadding" class="member ni"><a href="Ext.chart.series.Bar.html#config-yPadding" rel="config-yPadding" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-cfg-yPadding" class="viewSource">view source</a></div><a name="yPadding"></a><a name="config-yPadding"></a><a href="Ext.chart.series.Bar.html#" rel="config-yPadding" class="cls expand">yPadding</a><span> : Number</span></div><div class="description"><div class="short"><p>Padding between the top/bottom axes and the bars</p>
+</div><div class="long"><p>Padding between the top/bottom axes and the bars</p>
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-axis" class="member f inherited"><a href="Ext.chart.series.Bar.html#property-axis" rel="property-axis" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Cartesian.html" class="definedIn docClass">Ext.chart.series.Cartesian</a><br/><a href="../source/Cartesian.html#Ext-chart.series.Cartesian-property-axis" class="viewSource">view source</a></div><a name="axis"></a><a name="property-axis"></a><a href="Ext.chart.series.Bar.html#" rel="property-axis" class="cls expand">axis</a><span> : String</span></div><div class="description"><div class="short"><p>Indicates which axis the series will bind to</p>
+</div><div class="long"><p>Indicates which axis the series will bind to</p>
+</div></div></div><div id="property-highlight" class="member inherited"><a href="Ext.chart.series.Bar.html#property-highlight" rel="property-highlight" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Highlight.html" class="definedIn docClass">Ext.chart.Highlight</a><br/><a href="../source/Highlight.html#Ext-chart.Highlight-property-highlight" class="viewSource">view source</a></div><a name="highlight"></a><a name="property-highlight"></a><a href="Ext.chart.series.Bar.html#" rel="property-highlight" class="cls expand">highlight</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Highlight the given series item.</p>
+</div><div class="long"><p>Highlight the given series item.</p>
+</div></div></div><div id="property-xField" class="member inherited"><a href="Ext.chart.series.Bar.html#property-xField" rel="property-xField" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Cartesian.html" class="definedIn docClass">Ext.chart.series.Cartesian</a><br/><a href="../source/Cartesian.html#Ext-chart.series.Cartesian-property-xField" class="viewSource">view source</a></div><a name="xField"></a><a name="property-xField"></a><a href="Ext.chart.series.Bar.html#" rel="property-xField" class="cls expand">xField</a><span> : String</span></div><div class="description"><div class="short"><p>The field used to access the x axis value from the items from the data
+source.</p>
+</div><div class="long"><p>The field used to access the x axis value from the items from the data
+source.</p>
+</div></div></div><div id="property-yField" class="member inherited"><a href="Ext.chart.series.Bar.html#property-yField" rel="property-yField" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Cartesian.html" class="definedIn docClass">Ext.chart.series.Cartesian</a><br/><a href="../source/Cartesian.html#Ext-chart.series.Cartesian-property-yField" class="viewSource">view source</a></div><a name="yField"></a><a name="property-yField"></a><a href="Ext.chart.series.Bar.html#" rel="property-yField" class="cls expand">yField</a><span> : String</span></div><div class="description"><div class="short"><p>The field used to access the y-axis value from the items from the data
+source.</p>
+</div><div class="long"><p>The field used to access the y-axis value from the items from the data
+source.</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-Bar" class="member f inherited"><a href="Ext.chart.series.Bar.html#method-Bar" rel="method-Bar" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Cartesian.html" class="definedIn docClass">Ext.chart.series.Cartesian</a><br/><a href="../source/Cartesian.html#Ext-chart.series.Cartesian-method-constructor" class="viewSource">view source</a></div><a name="Bar"></a><a name="method-Bar"></a><a href="Ext.chart.series.Bar.html#" rel="method-Bar" class="cls expand">Bar</a> : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addEvents" class="member inherited"><a href="Ext.chart.series.Bar.html#method-addEvents" rel="method-addEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addEvents" class="viewSource">view source</a></div><a name="addEvents"></a><a name="method-addEvents"></a><a href="Ext.chart.series.Bar.html#" rel="method-addEvents" class="cls expand">addEvents</a>(
+<span class="pre">Object/String o, String </span>)
+ : void</div><div class="description"><div class="short"><p>Adds the specified events to the list of events which this Observable may fire.</p>
+</div><div class="long"><p>Adds the specified events to the list of events which this Observable may fire.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object/String<div class="sub-desc"><p>Either an object with event names as properties with a value of <code>true</code>
+or the first event name string if multiple event names are being passed as separate parameters.</p>
+</div></li><li><span class="pre"></span> : String<div class="sub-desc"><p>[additional] Optional additional event names if multiple event names are being passed as separate parameters.
+Usage:</p>
+
+<pre><code>this.addEvents('storeloaded', 'storecleared');
+</code></pre>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addListener" class="member inherited"><a href="Ext.chart.series.Bar.html#method-addListener" rel="method-addListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addListener" class="viewSource">view source</a></div><a name="addListener"></a><a name="method-addListener"></a><a href="Ext.chart.series.Bar.html#" rel="method-addListener" class="cls expand">addListener</a>(
+<span class="pre">String eventName, Function handler, [Object scope], [Object options]</span>)
+ : void</div><div class="description"><div class="short"><p>Appends an event handler to this object.</p>
+</div><div class="long"><p>Appends an event handler to this object.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to listen for. May also be an object who's property names are event names. See</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The method the event invokes.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc"><p>(optional) An object containing handler configuration.
+properties. This may contain any of the following properties:<ul>
+<li><b>scope</b> : Object<div class="sub-desc">The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></div></li>
+<li><b>delay</b> : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</div></li>
+<li><b>single</b> : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+<li><b>buffer</b> : Number<div class="sub-desc">Causes the handler to be scheduled to run in an <a href="Ext.util.DelayedTask.html" rel="Ext.util.DelayedTask" class="docClass">Ext.util.DelayedTask</a> delayed
+by the specified number of milliseconds. If the event fires again within that time, the original
+handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+<li><b>target</b> : Observable<div class="sub-desc">Only call the handler if the event was fired on the target Observable, <i>not</i>
+if the event was bubbled up from a child Observable.</div></li>
+<li><b>element</b> : String<div class="sub-desc"><b>This option is only valid for listeners bound to <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a>.</b>
+The name of a Component property which references an element to add a listener to.</p>
+
+<p>This option is useful during Component construction to add DOM event listeners to elements of <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a> which
+will exist only after the Component is rendered. For example, to add a click listener to a Panel's body:
+<pre><code>new Ext.panel.Panel({
+    title: 'The title',
+    listeners: {
+        click: this.handlePanelClick,
+        element: 'body'
+    }
+});
+</code></pre></p>
+
+
+<p>When added in this way, the options available are the options applicable to <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a></p>
+
+
+<p></div></li>
+</ul><br></p>
+
+<p>
+<b>Combining Options</b><br>
+Using the options argument, it is possible to combine different types of listeners:<br>
+<br>
+A delayed, one-time listener.
+<pre><code>myPanel.on('hide', this.handleClick, this, {
+single: true,
+delay: 100
+});</code></pre>
+<p>
+<b>Attaching multiple handlers in 1 call</b><br>
+The method also allows for a single argument to be passed which is a config object containing properties
+which specify multiple events. For example:
+<pre><code>myGridPanel.on({
+    cellClick: this.onCellClick,
+    mouseover: this.onMouseOver,
+    mouseout: this.onMouseOut,
+    scope: this // Important. Ensure "this" is correct during handler execution
+});
+</code></pre>.
+<p>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addManagedListener" class="member inherited"><a href="Ext.chart.series.Bar.html#method-addManagedListener" rel="method-addManagedListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addManagedListener" class="viewSource">view source</a></div><a name="addManagedListener"></a><a name="method-addManagedListener"></a><a href="Ext.chart.series.Bar.html#" rel="method-addManagedListener" class="cls expand">addManagedListener</a>(
+<span class="pre">Observable/Element item, Object/String ename, Function fn, Object scope, Object opt</span>)
+ : void</div><div class="description"><div class="short"><p>Adds listeners to any Observable object (or Element) which are automatically removed when this Component
+is destroyed.
+
+</div><div class="long"><p>Adds listeners to any Observable object (or Element) which are automatically removed when this Component
+is destroyed.
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Observable/Element<div class="sub-desc"><p>The item to which to add a listener/listeners.</p>
+</div></li><li><span class="pre">ename</span> : Object/String<div class="sub-desc"><p>The event name, or an object containing event name properties.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the handler function.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the scope (<code>this</code> reference) in which the handler function is executed.</p>
+</div></li><li><span class="pre">opt</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the <a href="Ext.util.Observable.html#addListener" rel="Ext.util.Observable#addListener" class="docClass">addListener</a> options.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-capture" class="member inherited"><a href="Ext.chart.series.Bar.html#method-capture" rel="method-capture" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-capture" class="viewSource">view source</a></div><a name="capture"></a><a name="method-capture"></a><a href="Ext.chart.series.Bar.html#" rel="method-capture" class="cls expand">capture</a>(
+<span class="pre">Observable o, Function fn, [Object scope]</span>)
+ : void</div><div class="description"><div class="short">Starts capture on the specified Observable. All events will be passed
+to the supplied function with the event name + ...</div><div class="long"><p>Starts capture on the specified Observable. All events will be passed
+to the supplied function with the event name + standard signature of the event
+<b>before</b> the event is fired. If the supplied function returns false,
+the event will not fire.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Observable<div class="sub-desc"><p>The Observable to capture events from.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to call when an event is fired.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Observable firing the event.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clearListeners" class="member inherited"><a href="Ext.chart.series.Bar.html#method-clearListeners" rel="method-clearListeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-clearListeners" class="viewSource">view source</a></div><a name="clearListeners"></a><a name="method-clearListeners"></a><a href="Ext.chart.series.Bar.html#" rel="method-clearListeners" class="cls expand">clearListeners</a> : void</div><div class="description"><div class="short"><p>Removes all listeners for this object including the managed listeners</p>
+</div><div class="long"><p>Removes all listeners for this object including the managed listeners</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clearManagedListeners" class="member inherited"><a href="Ext.chart.series.Bar.html#method-clearManagedListeners" rel="method-clearManagedListeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-clearManagedListeners" class="viewSource">view source</a></div><a name="clearManagedListeners"></a><a name="method-clearManagedListeners"></a><a href="Ext.chart.series.Bar.html#" rel="method-clearManagedListeners" class="cls expand">clearManagedListeners</a> : void</div><div class="description"><div class="short"><p>Removes all managed listeners for this object.</p>
+</div><div class="long"><p>Removes all managed listeners for this object.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-drawSeries" class="member ni"><a href="Ext.chart.series.Bar.html#method-drawSeries" rel="method-drawSeries" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-method-drawSeries" class="viewSource">view source</a></div><a name="drawSeries"></a><a name="method-drawSeries"></a><a href="Ext.chart.series.Bar.html#" rel="method-drawSeries" class="cls expand">drawSeries</a> : void</div><div class="description"><div class="short"><p>Draws the series for the current chart.</p>
+</div><div class="long"><p>Draws the series for the current chart.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-enableBubble" class="member inherited"><a href="Ext.chart.series.Bar.html#method-enableBubble" rel="method-enableBubble" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-enableBubble" class="viewSource">view source</a></div><a name="enableBubble"></a><a name="method-enableBubble"></a><a href="Ext.chart.series.Bar.html#" rel="method-enableBubble" class="cls expand">enableBubble</a>(
+<span class="pre">String/Array events</span>)
+ : void</div><div class="description"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling
+this.getBubbleTarget() if present....</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+<code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+
+
+<p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="Ext.Component.html#getBubbleTarget" rel="Ext.Component#getBubbleTarget" class="docClass">Ext.Component.getBubbleTarget</a>. The default
+implementation in <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Ext.Component</a> returns the Component's immediate owner. But if a known target is required, this can be overridden to
+access the required target more quickly.</p>
+
+
+<p>Example:</p>
+
+
+<pre><code>Ext.override(Ext.form.field.Base, {
+//  Add functionality to Field&#39;s initComponent to enable the change event to bubble
+initComponent : Ext.Function.createSequence(Ext.form.field.Base.prototype.initComponent, function() {
+    this.enableBubble('change');
+}),
+
+//  We know that we want Field&#39;s events to bubble directly to the FormPanel.
+getBubbleTarget : function() {
+    if (!this.formPanel) {
+        this.formPanel = this.findParentByType('form');
+    }
+    return this.formPanel;
+}
+});
+
+var myForm = new Ext.formPanel({
+title: 'User Details',
+items: [{
+    ...
+}],
+listeners: {
+    change: function() {
+        // Title goes red if form has been modified.
+        myForm.header.setStyle('color', 'red');
+    }
+}
+});
+</code></pre>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">events</span> : String/Array<div class="sub-desc"><p>The event name to bubble, or an Array of event names.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-fireEvent" class="member inherited"><a href="Ext.chart.series.Bar.html#method-fireEvent" rel="method-fireEvent" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-fireEvent" class="viewSource">view source</a></div><a name="fireEvent"></a><a name="method-fireEvent"></a><a href="Ext.chart.series.Bar.html#" rel="method-fireEvent" class="cls expand">fireEvent</a>(
+<span class="pre">String eventName, Object... args</span>)
+ : Boolean</div><div class="description"><div class="short">Fires the specified event with the passed parameters (minus the event name).
+
+
+An event may be set to bubble up an Ob...</div><div class="long"><p>Fires the specified event with the passed parameters (minus the event name).</p>
+
+
+<p>An event may be set to bubble up an Observable parent hierarchy (See <a href="Ext.Component.html#getBubbleTarget" rel="Ext.Component#getBubbleTarget" class="docClass">Ext.Component.getBubbleTarget</a>)
+by calling <a href="Ext.chart.series.Bar.html#enableBubble" rel="Ext.chart.series.Bar#enableBubble" class="docClass">enableBubble</a>.</p>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to fire.</p>
+</div></li><li><span class="pre">args</span> : Object...<div class="sub-desc"><p>Variable number of parameters are passed to handlers.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>returns false if any of the handlers return false otherwise it returns true.</p>
+</li></ul></div></div></div><div id="method-getItemForPoint" class="member inherited"><a href="Ext.chart.series.Bar.html#method-getItemForPoint" rel="method-getItemForPoint" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-method-getItemForPoint" class="viewSource">view source</a></div><a name="getItemForPoint"></a><a name="method-getItemForPoint"></a><a href="Ext.chart.series.Bar.html#" rel="method-getItemForPoint" class="cls expand">getItemForPoint</a>(
+<span class="pre">Number x, Number y</span>)
+ : Object</div><div class="description"><div class="short"><p>For a given x/y point relative to the Surface, find a corresponding item from this
+series, if any.</p>
+</div><div class="long"><p>For a given x/y point relative to the Surface, find a corresponding item from this
+series, if any.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">x</span> : Number<div class="sub-desc">
+</div></li><li><span class="pre">y</span> : Number<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>An object describing the item, or null if there is no matching item. The exact contents of</p>
+
+<pre><code>             this object will vary by series type, but should always contain at least the following:
+             &lt;ul&gt;
+               &lt;li&gt;{Ext.chart.series.Series} series - the Series object to which the item belongs&lt;/li&gt;
+               &lt;li&gt;{Object} value - the value(s) of the item's data point&lt;/li&gt;
+               &lt;li&gt;{Array} point - the x/y coordinates relative to the chart box of a single point
+                   for this data item, which can be used as e.g. a tooltip anchor point.&lt;/li&gt;
+               &lt;li&gt;{Ext.draw.Sprite} sprite - the item's rendering Sprite.
+             &lt;/ul&gt;
+</code></pre>
+</li></ul></div></div></div><div id="method-getLegendColor" class="member ni"><a href="Ext.chart.series.Bar.html#method-getLegendColor" rel="method-getLegendColor" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Bar.html" class="definedIn docClass">Ext.chart.series.Bar</a><br/><a href="../source/Bar2.html#Ext-chart.series.Bar-method-getLegendColor" class="viewSource">view source</a></div><a name="getLegendColor"></a><a name="method-getLegendColor"></a><a href="Ext.chart.series.Bar.html#" rel="method-getLegendColor" class="cls expand">getLegendColor</a>(
+<span class="pre">Object index</span>)
+ : void</div><div class="description"><div class="short"><p>Returns a string with the color to be used for the series legend item.</p>
+</div><div class="long"><p>Returns a string with the color to be used for the series legend item.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-hasListener" class="member inherited"><a href="Ext.chart.series.Bar.html#method-hasListener" rel="method-hasListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-hasListener" class="viewSource">view source</a></div><a name="hasListener"></a><a name="method-hasListener"></a><a href="Ext.chart.series.Bar.html#" rel="method-hasListener" class="cls expand">hasListener</a>(
+<span class="pre">String eventName</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Checks to see if this object has any listeners for a specified event</p>
+</div><div class="long"><p>Checks to see if this object has any listeners for a specified event</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to check for</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>True if the event is being listened for, else false</p>
+</li></ul></div></div></div><div id="method-hideAll" class="member inherited"><a href="Ext.chart.series.Bar.html#method-hideAll" rel="method-hideAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-method-hideAll" class="viewSource">view source</a></div><a name="hideAll"></a><a name="method-hideAll"></a><a href="Ext.chart.series.Bar.html#" rel="method-hideAll" class="cls expand">hideAll</a> : void</div><div class="description"><div class="short"><p>Hides all the elements in the series.</p>
+</div><div class="long"><p>Hides all the elements in the series.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-highlightItem" class="member inherited"><a href="Ext.chart.series.Bar.html#method-highlightItem" rel="method-highlightItem" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Highlight.html" class="definedIn docClass">Ext.chart.Highlight</a><br/><a href="../source/Highlight.html#Ext-chart.Highlight-method-highlightItem" class="viewSource">view source</a></div><a name="highlightItem"></a><a name="method-highlightItem"></a><a href="Ext.chart.series.Bar.html#" rel="method-highlightItem" class="cls expand">highlightItem</a>(
+<span class="pre">Object item</span>)
+ : void</div><div class="description"><div class="short"><p>Highlight the given series item.</p>
+</div><div class="long"><p>Highlight the given series item.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Object<div class="sub-desc"><p>Info about the item; same format as returned by #getItemForPoint.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-observe" class="member inherited"><a href="Ext.chart.series.Bar.html#method-observe" rel="method-observe" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-observe" class="viewSource">view source</a></div><a name="observe"></a><a name="method-observe"></a><a href="Ext.chart.series.Bar.html#" rel="method-observe" class="cls expand">observe</a>(
+<span class="pre">Function c, Object listeners</span>)
+ : void</div><div class="description"><div class="short">Sets observability on the passed class constructor.
+
+This makes any event fired on any instance of the passed class a...</div><div class="long"><p>Sets observability on the passed class constructor.</p>
+
+<p>This makes any event fired on any instance of the passed class also fire a single event through
+the <strong>class</strong> allowing for central handling of events on many instances at once.</p>
+
+<p>Usage:</p>
+
+<pre><code>Ext.util.Observable.observe(Ext.data.Connection);
+Ext.data.Connection.on('beforerequest', function(con, options) {
+    console.log('Ajax request made to ' + options.url);
+});
+</code></pre>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">c</span> : Function<div class="sub-desc"><p>The class constructor to make observable.</p>
+</div></li><li><span class="pre">listeners</span> : Object<div class="sub-desc"><p>An object containing a series of listeners to add. See <a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a>.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-on" class="member inherited"><a href="Ext.chart.series.Bar.html#method-on" rel="method-on" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-on" class="viewSource">view source</a></div><a name="on"></a><a name="method-on"></a><a href="Ext.chart.series.Bar.html#" rel="method-on" class="cls expand">on</a>(
+<span class="pre">String eventName, Function handler, [Object scope], [Object options]</span>)
+ : void</div><div class="description"><div class="short"><p>Appends an event handler to this object (shorthand for <a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a>.)</p>
+</div><div class="long"><p>Appends an event handler to this object (shorthand for <a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a>.)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event to listen for</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The method the event invokes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc"><p>(optional) An object containing handler configuration.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-relayEvents" class="member inherited"><a href="Ext.chart.series.Bar.html#method-relayEvents" rel="method-relayEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-relayEvents" class="viewSource">view source</a></div><a name="relayEvents"></a><a name="method-relayEvents"></a><a href="Ext.chart.series.Bar.html#" rel="method-relayEvents" class="cls expand">relayEvents</a>(
+<span class="pre">Object origin, Array events, Object prefix</span>)
+ : void</div><div class="description"><div class="short"><p>Relays selected events from the specified Observable as if the events were fired by <code><b>this</b></code>.</p>
+</div><div class="long"><p>Relays selected events from the specified Observable as if the events were fired by <code><b>this</b></code>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">origin</span> : Object<div class="sub-desc"><p>The Observable whose events this object is to relay.</p>
+</div></li><li><span class="pre">events</span> : Array<div class="sub-desc"><p>Array of event names to relay.</p>
+</div></li><li><span class="pre">prefix</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-releaseCapture" class="member inherited"><a href="Ext.chart.series.Bar.html#method-releaseCapture" rel="method-releaseCapture" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-releaseCapture" class="viewSource">view source</a></div><a name="releaseCapture"></a><a name="method-releaseCapture"></a><a href="Ext.chart.series.Bar.html#" rel="method-releaseCapture" class="cls expand">releaseCapture</a>(
+<span class="pre">Observable o</span>)
+ : void</div><div class="description"><div class="short"><p>Removes <b>all</b> added captures from the Observable.</p>
+</div><div class="long"><p>Removes <b>all</b> added captures from the Observable.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Observable<div class="sub-desc"><p>The Observable to release</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeListener" class="member inherited"><a href="Ext.chart.series.Bar.html#method-removeListener" rel="method-removeListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-removeListener" class="viewSource">view source</a></div><a name="removeListener"></a><a name="method-removeListener"></a><a href="Ext.chart.series.Bar.html#" rel="method-removeListener" class="cls expand">removeListener</a>(
+<span class="pre">String eventName, Function handler, [Object scope]</span>)
+ : void</div><div class="description"><div class="short"><p>Removes an event handler.</p>
+</div><div class="long"><p>Removes an event handler.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event the handler was associated with.</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The handler to remove. <b>This must be a reference to the function passed into the <a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a> call.</b></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope originally specified for the handler.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeManagedListener" class="member inherited"><a href="Ext.chart.series.Bar.html#method-removeManagedListener" rel="method-removeManagedListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-removeManagedListener" class="viewSource">view source</a></div><a name="removeManagedListener"></a><a name="method-removeManagedListener"></a><a href="Ext.chart.series.Bar.html#" rel="method-removeManagedListener" class="cls expand">removeManagedListener</a>(
+<span class="pre">Observable|Element item, Object|String ename, Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Removes listeners that were added by the <a href="Ext.chart.series.Bar.html#mon" rel="Ext.chart.series.Bar#mon" class="docClass">mon</a> method.</p>
+</div><div class="long"><p>Removes listeners that were added by the <a href="Ext.chart.series.Bar.html#mon" rel="Ext.chart.series.Bar#mon" class="docClass">mon</a> method.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Observable|Element<div class="sub-desc"><p>The item from which to remove a listener/listeners.</p>
+</div></li><li><span class="pre">ename</span> : Object|String<div class="sub-desc"><p>The event name, or an object containing event name properties.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the handler function.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the scope (<code>this</code> reference) in which the handler function is executed.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-resumeEvents" class="member inherited"><a href="Ext.chart.series.Bar.html#method-resumeEvents" rel="method-resumeEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-resumeEvents" class="viewSource">view source</a></div><a name="resumeEvents"></a><a name="method-resumeEvents"></a><a href="Ext.chart.series.Bar.html#" rel="method-resumeEvents" class="cls expand">resumeEvents</a> : void</div><div class="description"><div class="short">Resume firing events. (see suspendEvents)
+If events were suspended using the queueSuspended parameter, then all
+event...</div><div class="long"><p>Resume firing events. (see <a href="Ext.chart.series.Bar.html#suspendEvents" rel="Ext.chart.series.Bar#suspendEvents" class="docClass">suspendEvents</a>)
+If events were suspended using the <code><b>queueSuspended</b></code> parameter, then all
+events fired during event suspension will be sent to any listeners now.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-setTitle" class="member inherited"><a href="Ext.chart.series.Bar.html#method-setTitle" rel="method-setTitle" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-method-setTitle" class="viewSource">view source</a></div><a name="setTitle"></a><a name="method-setTitle"></a><a href="Ext.chart.series.Bar.html#" rel="method-setTitle" class="cls expand">setTitle</a>(
+<span class="pre">Number index, String title</span>)
+ : void</div><div class="description"><div class="short">Changes the value of the title for the series.
+Arguments can take two forms:
+
+
+A single String value: this will be us...</div><div class="long"><p>Changes the value of the <a href="Ext.chart.series.Bar.html#title" rel="Ext.chart.series.Bar#title" class="docClass">title</a> for the series.
+Arguments can take two forms:</p>
+
+<ul>
+<li>A single String value: this will be used as the new single title for the series (applies
+to series with only one yField)</li>
+<li>A numeric index and a String value: this will set the title for a single indexed yField.</li>
+</ul>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc">
+</div></li><li><span class="pre">title</span> : String<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-showAll" class="member inherited"><a href="Ext.chart.series.Bar.html#method-showAll" rel="method-showAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-method-showAll" class="viewSource">view source</a></div><a name="showAll"></a><a name="method-showAll"></a><a href="Ext.chart.series.Bar.html#" rel="method-showAll" class="cls expand">showAll</a> : void</div><div class="description"><div class="short"><p>Shows all the elements in the series.</p>
+</div><div class="long"><p>Shows all the elements in the series.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-suspendEvents" class="member inherited"><a href="Ext.chart.series.Bar.html#method-suspendEvents" rel="method-suspendEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-suspendEvents" class="viewSource">view source</a></div><a name="suspendEvents"></a><a name="method-suspendEvents"></a><a href="Ext.chart.series.Bar.html#" rel="method-suspendEvents" class="cls expand">suspendEvents</a>(
+<span class="pre">Boolean queueSuspended</span>)
+ : void</div><div class="description"><div class="short"><p>Suspend the firing of all events. (see <a href="Ext.chart.series.Bar.html#resumeEvents" rel="Ext.chart.series.Bar#resumeEvents" class="docClass">resumeEvents</a>)</p>
+</div><div class="long"><p>Suspend the firing of all events. (see <a href="Ext.chart.series.Bar.html#resumeEvents" rel="Ext.chart.series.Bar#resumeEvents" class="docClass">resumeEvents</a>)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">queueSuspended</span> : Boolean<div class="sub-desc"><p>Pass as true to queue up suspended events to be fired
+after the <a href="Ext.chart.series.Bar.html#resumeEvents" rel="Ext.chart.series.Bar#resumeEvents" class="docClass">resumeEvents</a> call instead of discarding all suspended events;</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-un" class="member inherited"><a href="Ext.chart.series.Bar.html#method-un" rel="method-un" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-un" class="viewSource">view source</a></div><a name="un"></a><a name="method-un"></a><a href="Ext.chart.series.Bar.html#" rel="method-un" class="cls expand">un</a>(
+<span class="pre">String eventName, Function handler, [Object scope]</span>)
+ : void</div><div class="description"><div class="short"><p>Removes an event handler (shorthand for <a href="Ext.chart.series.Bar.html#removeListener" rel="Ext.chart.series.Bar#removeListener" class="docClass">removeListener</a>.)</p>
+</div><div class="long"><p>Removes an event handler (shorthand for <a href="Ext.chart.series.Bar.html#removeListener" rel="Ext.chart.series.Bar#removeListener" class="docClass">removeListener</a>.)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event the handler was associated with.</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The handler to remove. <b>This must be a reference to the function passed into the <a href="Ext.chart.series.Bar.html#addListener" rel="Ext.chart.series.Bar#addListener" class="docClass">addListener</a> call.</b></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope originally specified for the handler.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-unHighlightItem" class="member inherited"><a href="Ext.chart.series.Bar.html#method-unHighlightItem" rel="method-unHighlightItem" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.Highlight.html" class="definedIn docClass">Ext.chart.Highlight</a><br/><a href="../source/Highlight.html#Ext-chart.Highlight-method-unHighlightItem" class="viewSource">view source</a></div><a name="unHighlightItem"></a><a name="method-unHighlightItem"></a><a href="Ext.chart.series.Bar.html#" rel="method-unHighlightItem" class="cls expand">unHighlightItem</a> : void</div><div class="description"><div class="short"><p>Un-highlight any existing highlights</p>
+</div><div class="long"><p>Un-highlight any existing highlights</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div><div class="m-events"><a name="events"></a><div class="definedBy">Defined By</div><h3 class="evt p">Events</h3><div id="event-titlechange" class="member f inherited"><a href="Ext.chart.series.Bar.html#event-titlechange" rel="event-titlechange" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.series.Series.html" class="definedIn docClass">Ext.chart.series.Series</a><br/><a href="../source/Series.html#Ext-chart.series.Series-event-titlechange" class="viewSource">view source</a></div><a name="titlechange"></a><a name="event-titlechange"></a><a href="Ext.chart.series.Bar.html#" rel="event-titlechange" class="cls expand">titlechange</a>(
+<span class="pre">String title, Number index</span>)
+</div><div class="description"><div class="short"><p>Fires when the series title is changed via <a href="Ext.chart.series.Bar.html#setTitle" rel="Ext.chart.series.Bar#setTitle" class="docClass">setTitle</a>.</p>
+</div><div class="long"><p>Fires when the series title is changed via <a href="Ext.chart.series.Bar.html#setTitle" rel="Ext.chart.series.Bar#setTitle" class="docClass">setTitle</a>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">title</span> : String<div class="sub-desc"><p>The new title value</p>
+</div></li><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index in the collection of titles</p>
+</div></li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

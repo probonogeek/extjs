@@ -1,46 +1,42 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require(['*']);
+
+// TODO: The "Users" menu containing buttons is completely screwed: ButtonGroup needs work.
+
 Ext.onReady(function(){
     Ext.QuickTips.init();
 
-    // Menus can be prebuilt and passed by reference
-    var dateMenu = new Ext.menu.DateMenu({
+    var dateMenu = Ext.create('Ext.menu.DatePicker', {
         handler: function(dp, date){
-            Ext.example.msg('Date Selected', 'You chose {0}.', date.format('M j, Y'));
+            Ext.example.msg('Date Selected', 'You choose {0}.', Ext.Date.format(date, 'M j, Y'));
+
         }
     });
 
-    var colorMenu = new Ext.menu.ColorMenu({
+    var colorMenu = Ext.create('Ext.menu.ColorPicker', {
         handler: function(cm, color){
-            Ext.example.msg('Color Selected', 'You chose {0}.', color);
+            Ext.example.msg('Color Selected', '<span style="color:#' + color + ';">You choose {0}.</span>', color);
         }
     });
 
-    var store = new Ext.data.ArrayStore({
+    var store = Ext.create('Ext.data.ArrayStore', {
         fields: ['abbr', 'state'],
-        data : Ext.exampledata.states // from states.js
+        data : Ext.example.states
     });
 
-    var combo = new Ext.form.ComboBox({
+    var combo = Ext.create('Ext.form.field.ComboBox', {
+        hideLabel: true,
         store: store,
         displayField: 'state',
         typeAhead: true,
-        mode: 'local',
+        queryMode: 'local',
         triggerAction: 'all',
         emptyText: 'Select a state...',
         selectOnFocus: true,
         width: 135,
-        getListParent: function() {
-            return this.el.up('.x-menu');
-        },
         iconCls: 'no-icon'
     });
 
-    var menu = new Ext.menu.Menu({
+    var menu = Ext.create('Ext.menu.Menu', {
         id: 'mainMenu',
         style: {
             overflow: 'visible'     // For the Combo popup
@@ -80,18 +76,19 @@ Ext.onReady(function(){
                         }
                     ]
                 }
-            },{
-                text: 'Choose a Date',
-                iconCls: 'calendar',
-                menu: dateMenu // <-- submenu by reference
-            },{
-                text: 'Choose a Color',
-                menu: colorMenu // <-- submenu by reference
-            }
+           },{
+               text: 'Choose a Date',
+               iconCls: 'calendar',
+               menu: dateMenu // <-- submenu by reference
+           },{
+               text: 'Choose a Color',
+               menu: colorMenu // <-- submenu by reference
+           }
         ]
     });
 
-    var tb = new Ext.Toolbar();
+    var tb = Ext.create('Ext.toolbar.Toolbar');
+    tb.suspendLayout = true;
     tb.render('toolbar');
 
     tb.add({
@@ -107,34 +104,36 @@ Ext.onReady(function(){
                 items: {
                     xtype: 'buttongroup',
                     title: 'User options',
-                    autoWidth: true,
                     columns: 2,
                     defaults: {
                         xtype: 'button',
                         scale: 'large',
-                        width: '100%',
                         iconAlign: 'left'
                     },
                     items: [{
                         text: 'User<br/>manager',
-                        iconCls: 'edit'
+                        iconCls: 'edit',
+                        width: 90
                     },{
                         iconCls: 'add',
                         width: 'auto',
-                        tooltip: 'Add user'
+                        tooltip: 'Add user',
+                        width: 40
                     },{
                         colspan: 2,
                         text: 'Import',
-                        scale: 'small'
+                        scale: 'small',
+                        width: 130
                     },{
                         colspan: 2,
                         text: 'Who is online?',
-                        scale: 'small'
+                        scale: 'small',
+                        width: 130
                     }]
                 }
             }
         },
-        new Ext.Toolbar.SplitButton({
+        Ext.create('Ext.button.Split', {
             text: 'Split Button',
             handler: onButtonClick,
             tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'},
@@ -151,8 +150,9 @@ Ext.onReady(function(){
                     text: 'Pick a Color',
                     handler: onItemClick,
                     menu: {
+                        showSeparator: false,
                         items: [
-                            new Ext.ColorPalette({
+                            Ext.create('Ext.ColorPalette', {
                                 listeners: {
                                     select: function(cp, color){
                                         Ext.example.msg('Color Selected', 'You chose {0}.', color);
@@ -177,7 +177,8 @@ Ext.onReady(function(){
         pressed: true
     });
 
-    menu.addSeparator();
+    menu.add(' ');
+
     // Menus have a rich api for
     // adding and removing elements dynamically
     var item = menu.add({
@@ -199,13 +200,17 @@ Ext.onReady(function(){
     tb.add('-', {
         icon: 'list-items.gif', // icons can also be specified inline
         cls: 'x-btn-icon',
-        tooltip: '<b>Quick Tips</b><br/>Icon only button with tooltip'
+        tooltip: '<b>Quick Tips</b><br/>Icon only button with tooltip',
+        handler: function(){
+            Ext.example.msg('Button Click','You clicked the "icon only" button.');
+        }
     }, '-');
 
-    var scrollMenu = new Ext.menu.Menu();
+    var scrollMenu = Ext.create('Ext.menu.Menu');
     for (var i = 0; i < 50; ++i){
         scrollMenu.add({
-            text: 'Item ' + (i + 1)
+            text: 'Item ' + (i + 1),
+            handler: onItemClick
         });
     }
     // scrollable menu
@@ -216,8 +221,18 @@ Ext.onReady(function(){
         menu: scrollMenu
     });
 
+    tb.add({
+        text: 'Link',
+        url: 'http://www.google.com/search',
+        baseParams: {
+            q: 'html+anchor+tag'
+        },
+        tooltip: 'This is a link. You can right click. You can see where it will take you'
+    });
+
     // add a combobox to the toolbar
-    var combo = new Ext.form.ComboBox({
+    var combo = Ext.create('Ext.form.field.ComboBox', {
+        hideLabel: true,
         store: store,
         displayField: 'state',
         typeAhead: true,
@@ -227,8 +242,8 @@ Ext.onReady(function(){
         selectOnFocus:true,
         width:135
     });
-    tb.addField(combo);
-
+    tb.add(combo);
+    tb.suspendLayout = false;
     tb.doLayout();
 
     // functions to display feedback

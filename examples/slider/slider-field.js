@@ -1,20 +1,17 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require([
+    'Ext.slider.*', 
+    'Ext.form.*',
+    'Ext.window.MessageBox'
+]);
+
 Ext.onReady(function(){
-    var form = new Ext.form.FormPanel({
-        width : 400,
+    Ext.create('Ext.form.Panel', {
+        width: 400,
         height: 160,
-        title : 'Sound Settings',
-        
-        bodyStyle  : 'padding: 10px;',
-        renderTo   : 'container',
+        title: 'Sound Settings',
+        bodyPadding: 10,
+        renderTo: 'container',
         defaultType: 'sliderfield',
-        buttonAlign: 'left',
-        
         defaults: {
             anchor: '95%',
             tipText: function(thumb){
@@ -34,29 +31,36 @@ Ext.onReady(function(){
             value: 25,
             name: 'iface'
         }],
-        fbar: {
+        dockedItems: {
             xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer',
             items: [{
                 text: 'Max All',
                 handler: function(){
-                    form.items.each(function(c){
+                    this.up('form').items.each(function(c){
                         c.setValue(100);
                     });
                 }
             }, '->', {
                 text: 'Save',
                 handler: function(){
-                    var values = form.getForm().getValues(),
+                    var values = this.up('form').getForm().getValues(),
                         s = ['Sounds Effects: <b>{0}%</b>',
                             'Ambient Sounds: <b>{1}%</b>',
                             'Interface Sounds: <b>{2}%</b>'];
-                            
-                    Ext.example.msg('Settings Saved', s.join('<br />'), values.fx, values.ambient, values.iface);
+                    
+                    Ext.Msg.alert({
+                        title: 'Settings Saved',
+                        msg: Ext.String.format(s.join('<br />'), values.fx, values.ambient, values.iface),
+                        icon: Ext.Msg.INFO,
+                        buttons: Ext.Msg.OK
+                    }); 
                 }
             },{
                 text: 'Reset',
                 handler: function(){
-                    form.getForm().reset();
+                    this.up('form').getForm().reset();
                 }
             }]
         }

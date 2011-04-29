@@ -1,0 +1,193 @@
+<!DOCTYPE html><html><head><title>Ext.EventManager | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.EventManager',
+        docClass: 'Ext.EventManager',
+        docReq: 'Ext.EventManager',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'EventManager.html#Ext-EventManager';
+    clsInfo = {"methods":["addListener","getId","getKeyEvent","getPageX","getPageXY","getPageY","getRelatedTarget","getTarget","on","onDocumentReady","onWindowResize","preventDefault","purgeElement","removeAll","removeListener","removeResizeListener","removeUnloadListener","stopEvent","stopPropagation","un"],"cfgs":[],"properties":[],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/EventManager.html#Ext-EventManager" target="_blank">Ext.EventManager</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
+several useful events directly.
+See <a href="Ext.EventObject.html" rel="Ext.EventObject" class="docClass">Ext.EventObject</a> for more details on normalized event objects.</p>
+<div class="members"><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-addListener" class="member f ni"><a href="Ext.EventManager.html#method-addListener" rel="method-addListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-addListener" class="viewSource">view source</a></div><a name="addListener"></a><a name="method-addListener"></a><a href="Ext.EventManager.html#" rel="method-addListener" class="cls expand">addListener</a>(
+<span class="pre">String/HTMLElement el, String eventName, Function handler, [Object scope], [Object options]</span>)
+ : void</div><div class="description"><div class="short">Appends an event handler to an element.  The shorthand version on is equivalent.  Typically you will
+use Ext.core.Ele...</div><div class="long"><p>Appends an event handler to an element.  The shorthand version <a href="Ext.EventManager.html#on" rel="Ext.EventManager#on" class="docClass">on</a> is equivalent.  Typically you will
+use <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a> directly on an Element in favor of calling this version.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : String/HTMLElement<div class="sub-desc"><p>The html element or id to assign the event handler to.</p>
+</div></li><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to listen for.</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The handler function the event invokes. This function is passed
+the following parameters:<ul>
+<li>evt : EventObject<div class="sub-desc">The <a href="Ext.EventObject.html" rel="Ext.EventObject" class="docClass">EventObject</a> describing the event.</div></li>
+<li>t : Element<div class="sub-desc">The <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Element</a> which was the target of the event.
+Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
+<li>o : Object<div class="sub-desc">The options object from the addListener call.</div></li>
+</ul></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.</p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc"><p>(optional) An object containing handler configuration properties.
+This may contain any of the following properties:<ul>
+<li>scope : Object<div class="sub-desc">The scope (<b><code>this</code></b> reference) in which the handler function is executed. <b>Defaults to the Element</b>.</div></li>
+<li>delegate : String<div class="sub-desc">A simple selector to filter the target or look for a descendant of the target</div></li>
+<li>stopEvent : Boolean<div class="sub-desc">True to stop the event. That is stop propagation, and prevent the default action.</div></li>
+<li>preventDefault : Boolean<div class="sub-desc">True to prevent the default action</div></li>
+<li>stopPropagation : Boolean<div class="sub-desc">True to prevent event propagation</div></li>
+<li>normalized : Boolean<div class="sub-desc">False to pass a browser event to the handler function instead of an Ext.EventObject</div></li>
+<li>delay : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after te event fires.</div></li>
+<li>single : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+<li>buffer : Number<div class="sub-desc">Causes the handler to be scheduled to run in an <a href="Ext.util.DelayedTask.html" rel="Ext.util.DelayedTask" class="docClass">Ext.util.DelayedTask</a> delayed
+by the specified number of milliseconds. If the event fires again within that time, the original
+handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+<li>target : Element<div class="sub-desc">Only call the handler if the event was fired on the target Element, <i>not</i> if the event was bubbled up from a child node.</div></li>
+</ul><br></p>
+
+<p>See <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a> for examples of how to use these options.</p>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getId" class="member ni"><a href="Ext.EventManager.html#method-getId" rel="method-getId" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getId" class="viewSource">view source</a></div><a name="getId"></a><a name="method-getId"></a><a href="Ext.EventManager.html#" rel="method-getId" class="cls expand">getId</a>(
+<span class="pre">Mixed element</span>)
+ : String</div><div class="description"><div class="short"><p>Get the id of the element. If one has not been assigned, automatically assign it.</p>
+</div><div class="long"><p>Get the id of the element. If one has not been assigned, automatically assign it.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">element</span> : Mixed<div class="sub-desc"><p>The element to get the id for.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">String</span>&nbsp; &nbsp;<p>id</p>
+</li></ul></div></div></div><div id="method-getKeyEvent" class="member ni"><a href="Ext.EventManager.html#method-getKeyEvent" rel="method-getKeyEvent" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getKeyEvent" class="viewSource">view source</a></div><a name="getKeyEvent"></a><a name="method-getKeyEvent"></a><a href="Ext.EventManager.html#" rel="method-getKeyEvent" class="cls expand">getKeyEvent</a> : String</div><div class="description"><div class="short"><p>Indicates which event to use for getting key presses.</p>
+</div><div class="long"><p>Indicates which event to use for getting key presses.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">String</span>&nbsp; &nbsp;<p>The appropriate event name.</p>
+</li></ul></div></div></div><div id="method-getPageX" class="member ni"><a href="Ext.EventManager.html#method-getPageX" rel="method-getPageX" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getPageX" class="viewSource">view source</a></div><a name="getPageX"></a><a name="method-getPageX"></a><a href="Ext.EventManager.html#" rel="method-getPageX" class="cls expand">getPageX</a>(
+<span class="pre">Object event</span>)
+ : Number</div><div class="description"><div class="short"><p>Gets the x coordinate from the event</p>
+</div><div class="long"><p>Gets the x coordinate from the event</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">event</span> : Object<div class="sub-desc"><p>The event</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The x coordinate</p>
+</li></ul></div></div></div><div id="method-getPageXY" class="member ni"><a href="Ext.EventManager.html#method-getPageXY" rel="method-getPageXY" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getPageXY" class="viewSource">view source</a></div><a name="getPageXY"></a><a name="method-getPageXY"></a><a href="Ext.EventManager.html#" rel="method-getPageXY" class="cls expand">getPageXY</a>(
+<span class="pre">Object event</span>)
+ : Array</div><div class="description"><div class="short"><p>Gets the x &amp; ycoordinate from the event</p>
+</div><div class="long"><p>Gets the x &amp; ycoordinate from the event</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">event</span> : Object<div class="sub-desc"><p>The event</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Array</span>&nbsp; &nbsp;<p>The x/y coordinate</p>
+</li></ul></div></div></div><div id="method-getPageY" class="member ni"><a href="Ext.EventManager.html#method-getPageY" rel="method-getPageY" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getPageY" class="viewSource">view source</a></div><a name="getPageY"></a><a name="method-getPageY"></a><a href="Ext.EventManager.html#" rel="method-getPageY" class="cls expand">getPageY</a>(
+<span class="pre">Object event</span>)
+ : Number</div><div class="description"><div class="short"><p>Gets the y coordinate from the event</p>
+</div><div class="long"><p>Gets the y coordinate from the event</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">event</span> : Object<div class="sub-desc"><p>The event</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The y coordinate</p>
+</li></ul></div></div></div><div id="method-getRelatedTarget" class="member ni"><a href="Ext.EventManager.html#method-getRelatedTarget" rel="method-getRelatedTarget" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getRelatedTarget" class="viewSource">view source</a></div><a name="getRelatedTarget"></a><a name="method-getRelatedTarget"></a><a href="Ext.EventManager.html#" rel="method-getRelatedTarget" class="cls expand">getRelatedTarget</a>(
+<span class="pre">Object event</span>)
+ : HTMLElement</div><div class="description"><div class="short"><p>Gets the related target from the event.</p>
+</div><div class="long"><p>Gets the related target from the event.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">event</span> : Object<div class="sub-desc"><p>The event</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement</span>&nbsp; &nbsp;<p>The related target.</p>
+</li></ul></div></div></div><div id="method-getTarget" class="member ni"><a href="Ext.EventManager.html#method-getTarget" rel="method-getTarget" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-getTarget" class="viewSource">view source</a></div><a name="getTarget"></a><a name="method-getTarget"></a><a href="Ext.EventManager.html#" rel="method-getTarget" class="cls expand">getTarget</a>(
+<span class="pre">Object event</span>)
+ : HTMLElement</div><div class="description"><div class="short"><p>Gets the target of the event.</p>
+</div><div class="long"><p>Gets the target of the event.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">event</span> : Object<div class="sub-desc"><p>The event</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement</span>&nbsp; &nbsp;<p>target</p>
+</li></ul></div></div></div><div id="method-on" class="member ni"><a href="Ext.EventManager.html#method-on" rel="method-on" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-on" class="viewSource">view source</a></div><a name="on"></a><a name="method-on"></a><a href="Ext.EventManager.html#" rel="method-on" class="cls expand">on</a> : void</div><div class="description"><div class="short"><p>Alias for <a href="Ext.EventManager.html#addListener" rel="Ext.EventManager#addListener" class="docClass">Ext.EventManager.addListener</a></p>
+</div><div class="long"><p>Alias for <a href="Ext.EventManager.html#addListener" rel="Ext.EventManager#addListener" class="docClass">Ext.EventManager.addListener</a></p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-onDocumentReady" class="member ni"><a href="Ext.EventManager.html#method-onDocumentReady" rel="method-onDocumentReady" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-onDocumentReady" class="viewSource">view source</a></div><a name="onDocumentReady"></a><a name="method-onDocumentReady"></a><a href="Ext.EventManager.html#" rel="method-onDocumentReady" class="cls expand">onDocumentReady</a>(
+<span class="pre">Function fn, [Object scope], [boolean options]</span>)
+ : void</div><div class="description"><div class="short">Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
+access...</div><div class="long"><p>Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
+accessed shorthanded as Ext.onReady().</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The method the event invokes.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.</p>
+</div></li><li><span class="pre">options</span> : boolean<div class="sub-desc"><p>(optional) Options object as passed to <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a>.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-onWindowResize" class="member ni"><a href="Ext.EventManager.html#method-onWindowResize" rel="method-onWindowResize" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-onWindowResize" class="viewSource">view source</a></div><a name="onWindowResize"></a><a name="method-onWindowResize"></a><a href="Ext.EventManager.html#" rel="method-onWindowResize" class="cls expand">onWindowResize</a>(
+<span class="pre">Function fn, Object scope, boolean options</span>)
+ : void</div><div class="description"><div class="short">Adds a listener to be notified when the browser window is resized and provides resize event buffering (100 millisecon...</div><div class="long"><p>Adds a listener to be notified when the browser window is resized and provides resize event buffering (100 milliseconds),
+passes new viewport width and height to handlers.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The handler function the window resize event invokes.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.</p>
+</div></li><li><span class="pre">options</span> : boolean<div class="sub-desc"><p>Options object as passed to <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a></p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-preventDefault" class="member ni"><a href="Ext.EventManager.html#method-preventDefault" rel="method-preventDefault" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-preventDefault" class="viewSource">view source</a></div><a name="preventDefault"></a><a name="method-preventDefault"></a><a href="Ext.EventManager.html#" rel="method-preventDefault" class="cls expand">preventDefault</a>(
+<span class="pre">Event The</span>)
+ : void</div><div class="description"><div class="short"><p>Prevents the browsers default handling of the event.</p>
+</div><div class="long"><p>Prevents the browsers default handling of the event.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">The</span> : Event<div class="sub-desc"><p>event to prevent the default</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-purgeElement" class="member ni"><a href="Ext.EventManager.html#method-purgeElement" rel="method-purgeElement" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-purgeElement" class="viewSource">view source</a></div><a name="purgeElement"></a><a name="method-purgeElement"></a><a href="Ext.EventManager.html#" rel="method-purgeElement" class="cls expand">purgeElement</a>(
+<span class="pre">String/HTMLElement el, [String eventName]</span>)
+ : void</div><div class="description"><div class="short">Recursively removes all previous added listeners from an element and its children. Typically you will use Ext.core.El...</div><div class="long"><p>Recursively removes all previous added listeners from an element and its children. Typically you will use <a href="Ext.core.Element.html#purgeAllListeners" rel="Ext.core.Element#purgeAllListeners" class="docClass">Ext.core.Element.purgeAllListeners</a>
+directly on an Element in favor of calling this version.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : String/HTMLElement<div class="sub-desc"><p>The id or html element from which to remove all event handlers.</p>
+</div></li><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>(optional) The name of the event.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeAll" class="member ni"><a href="Ext.EventManager.html#method-removeAll" rel="method-removeAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-removeAll" class="viewSource">view source</a></div><a name="removeAll"></a><a name="method-removeAll"></a><a href="Ext.EventManager.html#" rel="method-removeAll" class="cls expand">removeAll</a>(
+<span class="pre">String/HTMLElement el</span>)
+ : void</div><div class="description"><div class="short">Removes all event handers from an element.  Typically you will use Ext.core.Element.removeAllListeners
+directly on an...</div><div class="long"><p>Removes all event handers from an element.  Typically you will use <a href="Ext.core.Element.html#removeAllListeners" rel="Ext.core.Element#removeAllListeners" class="docClass">Ext.core.Element.removeAllListeners</a>
+directly on an Element in favor of calling this version.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : String/HTMLElement<div class="sub-desc"><p>The id or html element from which to remove all event handlers.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeListener" class="member ni"><a href="Ext.EventManager.html#method-removeListener" rel="method-removeListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-removeListener" class="viewSource">view source</a></div><a name="removeListener"></a><a name="method-removeListener"></a><a href="Ext.EventManager.html#" rel="method-removeListener" class="cls expand">removeListener</a>(
+<span class="pre">String/HTMLElement el, String eventName, Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short">Removes an event handler from an element.  The shorthand version un is equivalent.  Typically
+you will use Ext.core.E...</div><div class="long"><p>Removes an event handler from an element.  The shorthand version <a href="Ext.EventManager.html#un" rel="Ext.EventManager#un" class="docClass">un</a> is equivalent.  Typically
+you will use <a href="Ext.core.Element.html#removeListener" rel="Ext.core.Element#removeListener" class="docClass">Ext.core.Element.removeListener</a> directly on an Element in favor of calling this version.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : String/HTMLElement<div class="sub-desc"><p>The id or html element from which to remove the listener.</p>
+</div></li><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The handler function to remove. <b>This must be a reference to the function passed into the <a href="Ext.EventManager.html#addListener" rel="Ext.EventManager#addListener" class="docClass">addListener</a> call.</b></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>If a scope (<b><code>this</code></b> reference) was specified when the listener was added,
+then this must refer to the same object.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeResizeListener" class="member ni"><a href="Ext.EventManager.html#method-removeResizeListener" rel="method-removeResizeListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-removeResizeListener" class="viewSource">view source</a></div><a name="removeResizeListener"></a><a name="method-removeResizeListener"></a><a href="Ext.EventManager.html#" rel="method-removeResizeListener" class="cls expand">removeResizeListener</a>(
+<span class="pre">Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Removes the passed window resize listener.</p>
+</div><div class="long"><p>Removes the passed window resize listener.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The method the event invokes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope of handler</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeUnloadListener" class="member ni"><a href="Ext.EventManager.html#method-removeUnloadListener" rel="method-removeUnloadListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-removeUnloadListener" class="viewSource">view source</a></div><a name="removeUnloadListener"></a><a name="method-removeUnloadListener"></a><a href="Ext.EventManager.html#" rel="method-removeUnloadListener" class="cls expand">removeUnloadListener</a>(
+<span class="pre">Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Removes the passed window unload listener.</p>
+</div><div class="long"><p>Removes the passed window unload listener.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The method the event invokes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope of handler</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-stopEvent" class="member ni"><a href="Ext.EventManager.html#method-stopEvent" rel="method-stopEvent" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-stopEvent" class="viewSource">view source</a></div><a name="stopEvent"></a><a name="method-stopEvent"></a><a href="Ext.EventManager.html#" rel="method-stopEvent" class="cls expand">stopEvent</a>(
+<span class="pre">Event The</span>)
+ : void</div><div class="description"><div class="short"><p>Stop the event (preventDefault and stopPropagation)</p>
+</div><div class="long"><p>Stop the event (preventDefault and stopPropagation)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">The</span> : Event<div class="sub-desc"><p>event to stop</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-stopPropagation" class="member ni"><a href="Ext.EventManager.html#method-stopPropagation" rel="method-stopPropagation" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-stopPropagation" class="viewSource">view source</a></div><a name="stopPropagation"></a><a name="method-stopPropagation"></a><a href="Ext.EventManager.html#" rel="method-stopPropagation" class="cls expand">stopPropagation</a>(
+<span class="pre">Event The</span>)
+ : void</div><div class="description"><div class="short"><p>Cancels bubbling of the event.</p>
+</div><div class="long"><p>Cancels bubbling of the event.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">The</span> : Event<div class="sub-desc"><p>event to stop bubbling.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-un" class="member ni"><a href="Ext.EventManager.html#method-un" rel="method-un" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.EventManager.html" class="definedIn docClass">Ext.EventManager</a><br/><a href="../source/EventManager.html#Ext-EventManager-method-un" class="viewSource">view source</a></div><a name="un"></a><a name="method-un"></a><a href="Ext.EventManager.html#" rel="method-un" class="cls expand">un</a> : void</div><div class="description"><div class="short"><p>Alias for <a href="Ext.EventManager.html#removeListener" rel="Ext.EventManager#removeListener" class="docClass">Ext.EventManager.removeListener</a></p>
+</div><div class="long"><p>Alias for <a href="Ext.EventManager.html#removeListener" rel="Ext.EventManager#removeListener" class="docClass">Ext.EventManager.removeListener</a></p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

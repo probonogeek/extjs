@@ -1,0 +1,893 @@
+<!DOCTYPE html><html><head><title>Ext.chart.LegendItem | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.chart.LegendItem',
+        docClass: 'Ext.chart.LegendItem',
+        docReq: 'Ext.chart.LegendItem',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'LegendItem.html#Ext-chart.LegendItem';
+    clsInfo = {"methods":["LegendItem","add","addAll","addEvents","addListener","addManagedListener","animate","capture","clear","clearListeners","clearManagedListeners","clone","collect","contains","containsKey","createLegend","destroy","each","eachKey","enableBubble","filter","filterBy","findBy","findIndex","findIndexBy","fireEvent","first","get","getActiveAnimation","getAt","getBBox","getByKey","getCount","getKey","getRange","getSortState","hasListener","hide","indexOf","indexOfKey","initSortable","insert","last","observe","on","relayEvents","releaseCapture","remove","removeAll","removeAt","removeAtKey","removeListener","removeManagedListener","reorder","replace","resumeEvents","sequenceFx","setAttributes","show","sort","sortBy","sortByKey","stopAnimation","sum","suspendEvents","syncFx","un","updatePosition"],"cfgs":["allowFunctions","listeners"],"properties":["defaultSortDirection","hasActiveFx","isSortable","sortRoot","sorters","stopFx"],"events":["add","clear","remove","replace"],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/LegendItem.html#Ext-chart.LegendItem" target="_blank">Ext.chart.LegendItem</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.util.AbstractMixedCollection.html" rel="Ext.util.AbstractMixedCollection" class="cls docClass">Ext.util.AbstractMixedCollection</a><div class="subclass"><a href="Ext.util.MixedCollection.html" rel="Ext.util.MixedCollection" class="cls docClass">Ext.util.MixedCollection</a><div class="subclass"><a href="Ext.draw.CompositeSprite.html" rel="Ext.draw.CompositeSprite" class="cls docClass">Ext.draw.CompositeSprite</a><div class="subclass"><strong>Ext.chart.LegendItem</strong></div></div></div></div><h4>Mixins</h4><div class="mixin"><a href="Ext.util.Observable.html" rel="Ext.util.Observable" class="cls docClass">Ext.util.Observable</a></div><div class="mixin"><a href="Ext.util.Sortable.html" rel="Ext.util.Sortable" class="cls docClass">Ext.util.Sortable</a></div><div class="mixin"><a href="Ext.util.Animate.html" rel="Ext.util.Animate" class="cls docClass">Ext.util.Animate</a></div></pre><p>A single item of a legend (marker plus label)</p>
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-allowFunctions" class="member f inherited"><a href="Ext.chart.LegendItem.html#config-allowFunctions" rel="config-allowFunctions" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-cfg-allowFunctions" class="viewSource">view source</a></div><a name="allowFunctions"></a><a name="config-allowFunctions"></a><a href="Ext.chart.LegendItem.html#" rel="config-allowFunctions" class="cls expand">allowFunctions</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Specify <tt>true</tt> if the <a href="Ext.chart.LegendItem.html#addAll" rel="Ext.chart.LegendItem#addAll" class="docClass">addAll</a>
+function should add function references to the collection. Defaults to
+<tt>false</tt>.</p>
+</div><div class="long"><p>Specify <tt>true</tt> if the <a href="Ext.chart.LegendItem.html#addAll" rel="Ext.chart.LegendItem#addAll" class="docClass">addAll</a>
+function should add function references to the collection. Defaults to
+<tt>false</tt>.</p>
+</div></div></div><div id="config-listeners" class="member inherited"><a href="Ext.chart.LegendItem.html#config-listeners" rel="config-listeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-cfg-listeners" class="viewSource">view source</a></div><a name="listeners"></a><a name="config-listeners"></a><a href="Ext.chart.LegendItem.html#" rel="config-listeners" class="cls expand">listeners</a><span> : Object</span></div><div class="description"><div class="short">(optional) A config object containing one or more event handlers to be added to this
+object during initialization.  T...</div><div class="long"><p>(optional) <p>A config object containing one or more event handlers to be added to this
+object during initialization.  This should be a valid listeners config object as specified in the
+<a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a> example for attaching multiple handlers at once.</p></p>
+
+<br><p><b><u>DOM events from ExtJs <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a></u></b></p>
+
+
+<br><p>While <i>some</i> ExtJs Component classes export selected DOM events (e.g. "click", "mouseover" etc), this
+
+
+<p>is usually only done when extra value can be added. For example the <a href="Ext.view.View.html" rel="Ext.view.View" class="docClass">DataView</a>'s
+<b><code><a href="Ext.view.View.html#click" rel="Ext.view.View#click" class="docClass">click</a></code></b> event passing the node clicked on. To access DOM
+events directly from a child element of a Component, we need to specify the <code>element</code> option to
+identify the Component property to add a DOM listener to:</p>
+
+<pre><code>new Ext.panel.Panel({
+    width: 400,
+    height: 200,
+    dockedItems: [{
+        xtype: 'toolbar'
+    }],
+    listeners: {
+        click: {
+            element: 'el', //bind to the underlying el property on the panel
+            fn: function(){ console.log('click el'); }
+        },
+        dblclick: {
+            element: 'body', //bind to the underlying body property on the panel
+            fn: function(){ console.log('dblclick body'); }
+        }
+    }
+});
+</code></pre>
+
+
+<p></p></p>
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-defaultSortDirection" class="member f inherited"><a href="Ext.chart.LegendItem.html#property-defaultSortDirection" rel="property-defaultSortDirection" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-property-defaultSortDirection" class="viewSource">view source</a></div><a name="defaultSortDirection"></a><a name="property-defaultSortDirection"></a><a href="Ext.chart.LegendItem.html#" rel="property-defaultSortDirection" class="cls expand">defaultSortDirection</a><span> : String</span></div><div class="description"><div class="short"><p>The default sort direction to use if one is not specified (defaults to "ASC")</p>
+</div><div class="long"><p>The default sort direction to use if one is not specified (defaults to "ASC")</p>
+</div></div></div><div id="property-hasActiveFx" class="member inherited"><a href="Ext.chart.LegendItem.html#property-hasActiveFx" rel="property-hasActiveFx" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-property-hasActiveFx" class="viewSource">view source</a></div><a name="hasActiveFx"></a><a name="property-hasActiveFx"></a><a href="Ext.chart.LegendItem.html#" rel="property-hasActiveFx" class="cls expand">hasActiveFx</a><span> : Object</span></div><div class="description"><div class="short">@deprecated 4.0 Replaced by getActiveAnimation
+Returns thq current animation if this object has any effects actively ...</div><div class="long"><p>@deprecated 4.0 Replaced by <a href="Ext.chart.LegendItem.html#getActiveAnimation" rel="Ext.chart.LegendItem#getActiveAnimation" class="docClass">getActiveAnimation</a>
+Returns thq current animation if this object has any effects actively running or queued, else returns false.</p>
+</div></div></div><div id="property-isSortable" class="member inherited"><a href="Ext.chart.LegendItem.html#property-isSortable" rel="property-isSortable" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-property-isSortable" class="viewSource">view source</a></div><a name="isSortable"></a><a name="property-isSortable"></a><a href="Ext.chart.LegendItem.html#" rel="property-isSortable" class="cls expand">isSortable</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Flag denoting that this object is sortable. Always true.</p>
+</div><div class="long"><p>Flag denoting that this object is sortable. Always true.</p>
+</div></div></div><div id="property-sortRoot" class="member inherited"><a href="Ext.chart.LegendItem.html#property-sortRoot" rel="property-sortRoot" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-property-sortRoot" class="viewSource">view source</a></div><a name="sortRoot"></a><a name="property-sortRoot"></a><a href="Ext.chart.LegendItem.html#" rel="property-sortRoot" class="cls expand">sortRoot</a><span> : String</span></div><div class="description"><div class="short"><p>The property in each item that contains the data to sort. (defaults to null)</p>
+</div><div class="long"><p>The property in each item that contains the data to sort. (defaults to null)</p>
+</div></div></div><div id="property-sorters" class="member inherited"><a href="Ext.chart.LegendItem.html#property-sorters" rel="property-sorters" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-property-sorters" class="viewSource">view source</a></div><a name="sorters"></a><a name="property-sorters"></a><a href="Ext.chart.LegendItem.html#" rel="property-sorters" class="cls expand">sorters</a><span> : Ext.util.MixedCollection</span></div><div class="description"><div class="short"><p>The collection of <a href="Ext.util.Sorter.html" rel="Ext.util.Sorter" class="docClass">Sorters</a> currently applied to this Store</p>
+</div><div class="long"><p>The collection of <a href="Ext.util.Sorter.html" rel="Ext.util.Sorter" class="docClass">Sorters</a> currently applied to this Store</p>
+</div></div></div><div id="property-stopFx" class="member inherited"><a href="Ext.chart.LegendItem.html#property-stopFx" rel="property-stopFx" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-property-stopFx" class="viewSource">view source</a></div><a name="stopFx"></a><a name="property-stopFx"></a><a href="Ext.chart.LegendItem.html#" rel="property-stopFx" class="cls expand">stopFx</a><span> : Object</span></div><div class="description"><div class="short">Stops any running effects and clears this object's internal effects queue if it contains
+any additional effects that ...</div><div class="long"><p>Stops any running effects and clears this object's internal effects queue if it contains
+any additional effects that haven't started yet.</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-LegendItem" class="member f ni"><a href="Ext.chart.LegendItem.html#method-LegendItem" rel="method-LegendItem" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.LegendItem.html" class="definedIn docClass">Ext.chart.LegendItem</a><br/><a href="../source/LegendItem.html#Ext-chart.LegendItem-method-constructor" class="viewSource">view source</a></div><a name="LegendItem"></a><a name="method-LegendItem"></a><a href="Ext.chart.LegendItem.html#" rel="method-LegendItem" class="cls expand">LegendItem</a> : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-add" class="member inherited"><a href="Ext.chart.LegendItem.html#method-add" rel="method-add" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-add" class="viewSource">view source</a></div><a name="add"></a><a name="method-add"></a><a href="Ext.chart.LegendItem.html#" rel="method-add" class="cls expand">add</a>(
+<span class="pre">Object key, Object o</span>)
+ : void</div><div class="description"><div class="short"><p>Add a Sprite to the Group</p>
+</div><div class="long"><p>Add a Sprite to the Group</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : Object<div class="sub-desc">
+</div></li><li><span class="pre">o</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addAll" class="member inherited"><a href="Ext.chart.LegendItem.html#method-addAll" rel="method-addAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-addAll" class="viewSource">view source</a></div><a name="addAll"></a><a name="method-addAll"></a><a href="Ext.chart.LegendItem.html#" rel="method-addAll" class="cls expand">addAll</a>(
+<span class="pre">Object/Array objs</span>)
+ : void</div><div class="description"><div class="short"><p>Adds all elements of an Array or an Object to the collection.</p>
+</div><div class="long"><p>Adds all elements of an Array or an Object to the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">objs</span> : Object/Array<div class="sub-desc"><p>An Object containing properties which will be added
+to the collection, or an Array of values, each of which are added to the collection.
+Functions references will be added to the collection if <code><a href="Ext.chart.LegendItem.html#allowFunctions" rel="Ext.chart.LegendItem#allowFunctions" class="docClass">allowFunctions</a></code>
+has been set to <tt>true</tt>.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addEvents" class="member inherited"><a href="Ext.chart.LegendItem.html#method-addEvents" rel="method-addEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addEvents" class="viewSource">view source</a></div><a name="addEvents"></a><a name="method-addEvents"></a><a href="Ext.chart.LegendItem.html#" rel="method-addEvents" class="cls expand">addEvents</a>(
+<span class="pre">Object/String o, String </span>)
+ : void</div><div class="description"><div class="short"><p>Adds the specified events to the list of events which this Observable may fire.</p>
+</div><div class="long"><p>Adds the specified events to the list of events which this Observable may fire.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object/String<div class="sub-desc"><p>Either an object with event names as properties with a value of <code>true</code>
+or the first event name string if multiple event names are being passed as separate parameters.</p>
+</div></li><li><span class="pre"></span> : String<div class="sub-desc"><p>[additional] Optional additional event names if multiple event names are being passed as separate parameters.
+Usage:</p>
+
+<pre><code>this.addEvents('storeloaded', 'storecleared');
+</code></pre>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addListener" class="member inherited"><a href="Ext.chart.LegendItem.html#method-addListener" rel="method-addListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addListener" class="viewSource">view source</a></div><a name="addListener"></a><a name="method-addListener"></a><a href="Ext.chart.LegendItem.html#" rel="method-addListener" class="cls expand">addListener</a>(
+<span class="pre">String eventName, Function handler, [Object scope], [Object options]</span>)
+ : void</div><div class="description"><div class="short"><p>Appends an event handler to this object.</p>
+</div><div class="long"><p>Appends an event handler to this object.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to listen for. May also be an object who's property names are event names. See</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The method the event invokes.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc"><p>(optional) An object containing handler configuration.
+properties. This may contain any of the following properties:<ul>
+<li><b>scope</b> : Object<div class="sub-desc">The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></div></li>
+<li><b>delay</b> : Number<div class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</div></li>
+<li><b>single</b> : Boolean<div class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</div></li>
+<li><b>buffer</b> : Number<div class="sub-desc">Causes the handler to be scheduled to run in an <a href="Ext.util.DelayedTask.html" rel="Ext.util.DelayedTask" class="docClass">Ext.util.DelayedTask</a> delayed
+by the specified number of milliseconds. If the event fires again within that time, the original
+handler is <em>not</em> invoked, but the new handler is scheduled in its place.</div></li>
+<li><b>target</b> : Observable<div class="sub-desc">Only call the handler if the event was fired on the target Observable, <i>not</i>
+if the event was bubbled up from a child Observable.</div></li>
+<li><b>element</b> : String<div class="sub-desc"><b>This option is only valid for listeners bound to <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a>.</b>
+The name of a Component property which references an element to add a listener to.</p>
+
+<p>This option is useful during Component construction to add DOM event listeners to elements of <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Components</a> which
+will exist only after the Component is rendered. For example, to add a click listener to a Panel's body:
+<pre><code>new Ext.panel.Panel({
+    title: 'The title',
+    listeners: {
+        click: this.handlePanelClick,
+        element: 'body'
+    }
+});
+</code></pre></p>
+
+
+<p>When added in this way, the options available are the options applicable to <a href="Ext.core.Element.html#addListener" rel="Ext.core.Element#addListener" class="docClass">Ext.core.Element.addListener</a></p>
+
+
+<p></div></li>
+</ul><br></p>
+
+<p>
+<b>Combining Options</b><br>
+Using the options argument, it is possible to combine different types of listeners:<br>
+<br>
+A delayed, one-time listener.
+<pre><code>myPanel.on('hide', this.handleClick, this, {
+single: true,
+delay: 100
+});</code></pre>
+<p>
+<b>Attaching multiple handlers in 1 call</b><br>
+The method also allows for a single argument to be passed which is a config object containing properties
+which specify multiple events. For example:
+<pre><code>myGridPanel.on({
+    cellClick: this.onCellClick,
+    mouseover: this.onMouseOver,
+    mouseout: this.onMouseOut,
+    scope: this // Important. Ensure "this" is correct during handler execution
+});
+</code></pre>.
+<p>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-addManagedListener" class="member inherited"><a href="Ext.chart.LegendItem.html#method-addManagedListener" rel="method-addManagedListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-addManagedListener" class="viewSource">view source</a></div><a name="addManagedListener"></a><a name="method-addManagedListener"></a><a href="Ext.chart.LegendItem.html#" rel="method-addManagedListener" class="cls expand">addManagedListener</a>(
+<span class="pre">Observable/Element item, Object/String ename, Function fn, Object scope, Object opt</span>)
+ : void</div><div class="description"><div class="short"><p>Adds listeners to any Observable object (or Element) which are automatically removed when this Component
+is destroyed.
+
+</div><div class="long"><p>Adds listeners to any Observable object (or Element) which are automatically removed when this Component
+is destroyed.
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Observable/Element<div class="sub-desc"><p>The item to which to add a listener/listeners.</p>
+</div></li><li><span class="pre">ename</span> : Object/String<div class="sub-desc"><p>The event name, or an object containing event name properties.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the handler function.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the scope (<code>this</code> reference) in which the handler function is executed.</p>
+</div></li><li><span class="pre">opt</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the <a href="Ext.util.Observable.html#addListener" rel="Ext.util.Observable#addListener" class="docClass">addListener</a> options.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-animate" class="member inherited"><a href="Ext.chart.LegendItem.html#method-animate" rel="method-animate" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-method-animate" class="viewSource">view source</a></div><a name="animate"></a><a name="method-animate"></a><a href="Ext.chart.LegendItem.html#" rel="method-animate" class="cls expand">animate</a>(
+<span class="pre">Object config</span>)
+ : Object</div><div class="description"><div class="short">Perform custom animation on this object.
+This method is applicable to both the the Component class and the Element cl...</div><div class="long"><p>Perform custom animation on this object.<p>
+<p>This method is applicable to both the the <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Component</a> class and the <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Element</a> class.
+It performs animated transitions of certain properties of this object over a specified timeline.</p>
+<p>The sole parameter is an object which specifies start property values, end property values, and properties which
+describe the timeline. Of the properties listed below, only <b><code>to</code></b> is mandatory.</p>
+<p>Properties include<ul>
+<li><code>from</code> <div class="sub-desc">An object which specifies start values for the properties being animated.
+If not supplied, properties are animated from current settings. The actual properties which may be animated depend upon
+ths object being animated. See the sections below on Element and Component animation.<div></li>
+<li><code>to</code> <div class="sub-desc">An object which specifies end values for the properties being animated.</div></li>
+<li><code>duration</code><div class="sub-desc">The duration <b>in milliseconds</b> for which the animation will run.</div></li>
+<li><code>easing</code> <div class="sub-desc">A string value describing an easing type to modify the rate of change from the default linear to non-linear. Values may be one of:<code><ul>
+<li>ease</li>
+<li>easeIn</li>
+<li>easeOut</li>
+<li>easeInOut</li>
+<li>backIn</li>
+<li>backOut</li>
+<li>elasticIn</li>
+<li>elasticOut</li>
+<li>bounceIn</li>
+<li>bounceOut</li>
+</ul></code></div></li>
+<li><code>keyframes</code> <div class="sub-desc">This is an object which describes the state of animated properties at certain points along the timeline.
+it is an object containing properties who's names are the percentage along the timeline being described and who's values specify the animation state at that point.</div></li>
+<li><code>listeners</code> <div class="sub-desc">This is a standard <a href="Ext.util.Observable.html#listeners" rel="Ext.util.Observable#listeners" class="docClass">listeners</a> configuration object which may be used
+to inject behaviour at either the <code>beforeanimate</code> event or the <code>afteranimate</code> event.</div></li>
+</ul></p>
+<h3>Animating an <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Element</a></h3>
+When animating an Element, the following properties may be specified in <code>from</code>, <code>to</code>, and <code>keyframe</code> objects:<ul>
+<li><code>x</code> <div class="sub-desc">The page X position in pixels.</div></li>
+<li><code>y</code> <div class="sub-desc">The page Y position in pixels</div></li>
+<li><code>left</code> <div class="sub-desc">The element's CSS <code>left</code> value. Units must be supplied.</div></li>
+<li><code>top</code> <div class="sub-desc">The element's CSS <code>top</code> value. Units must be supplied.</div></li>
+<li><code>width</code> <div class="sub-desc">The element's CSS <code>width</code> value. Units must be supplied.</div></li>
+<li><code>height</code> <div class="sub-desc">The element's CSS <code>height</code> value. Units must be supplied.</div></li>
+<li><code>scrollLeft</code> <div class="sub-desc">The element's <code>scrollLeft</code> value.</div></li>
+<li><code>scrollTop</code> <div class="sub-desc">The element's <code>scrollLeft</code> value.</div></li>
+<li><code>opacity</code> <div class="sub-desc">The element's <code>opacity</code> value. This must be a value between <code>0</code> and <code>1</code>.</div></li>
+</ul>
+<p><b>Be aware than animating an Element which is being used by an <a href="Ext.html" rel="Ext" class="docClass">Ext</a> Component without in some way informing the Component about the changed element state
+will result in incorrect Component behaviour. This is because the Component will be using the old state of the element. To avoid this problem, it is now possible to
+directly animate certain properties of Components.</b></p>
+<h3>Animating a <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Component</a></h3>
+When animating an Element, the following properties may be specified in <code>from</code>, <code>to</code>, and <code>keyframe</code> objects:<ul>
+<li><code>x</code> <div class="sub-desc">The Component's page X position in pixels.</div></li>
+<li><code>y</code> <div class="sub-desc">The Component's page Y position in pixels</div></li>
+<li><code>left</code> <div class="sub-desc">The Component's <code>left</code> value in pixels.</div></li>
+<li><code>top</code> <div class="sub-desc">The Component's <code>top</code> value in pixels.</div></li>
+<li><code>width</code> <div class="sub-desc">The Component's <code>width</code> value in pixels.</div></li>
+<li><code>width</code> <div class="sub-desc">The Component's <code>width</code> value in pixels.</div></li>
+<li><code>dynamic</code> <div class="sub-desc">Specify as true to update the Component's layout (if it is a Container) at every frame
+of the animation. <i>Use sparingly as laying out on every intermediate size change is an expensive operation</i>.</div></li>
+</ul>
+<p>For example, to animate a Window to a new size, ensuring that its internal layout, and any shadow is correct:</p>
+<pre><code>myWindow = Ext.create('Ext.window.Window', {
+    title: 'Test Component animation',
+    width: 500,
+    height: 300,
+    layout: {
+        type: 'hbox',
+        align: 'stretch'
+    },
+    items: [{
+        title: 'Left: 33%',
+        margins: '5 0 5 5',
+        flex: 1
+    }, {
+        title: 'Left: 66%',
+        margins: '5 5 5 5',
+        flex: 2
+    }]
+});
+myWindow.show();
+myWindow.header.el.on('click', function() {
+    myWindow.animate({
+        to: {
+            width: (myWindow.getWidth() == 500) ? 700 : 500,
+            height: (myWindow.getHeight() == 300) ? 400 : 300,
+        }
+    });
+});
+</code></pre>
+<p>For performance reasons, by default, the internal layout is only updated when the Window reaches its final <code>"to"</code> size. If dynamic updating of the Window's child
+Components is required, then configure the animation with <code>dynamic: true</code> and the two child items will maintain their proportions during the animation.</p>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc"><p>An object containing properties which describe the animation's start and end states, and the timeline of the animation.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-capture" class="member inherited"><a href="Ext.chart.LegendItem.html#method-capture" rel="method-capture" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-capture" class="viewSource">view source</a></div><a name="capture"></a><a name="method-capture"></a><a href="Ext.chart.LegendItem.html#" rel="method-capture" class="cls expand">capture</a>(
+<span class="pre">Observable o, Function fn, [Object scope]</span>)
+ : void</div><div class="description"><div class="short">Starts capture on the specified Observable. All events will be passed
+to the supplied function with the event name + ...</div><div class="long"><p>Starts capture on the specified Observable. All events will be passed
+to the supplied function with the event name + standard signature of the event
+<b>before</b> the event is fired. If the supplied function returns false,
+the event will not fire.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Observable<div class="sub-desc"><p>The Observable to capture events from.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to call when an event is fired.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Observable firing the event.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clear" class="member inherited"><a href="Ext.chart.LegendItem.html#method-clear" rel="method-clear" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-clear" class="viewSource">view source</a></div><a name="clear"></a><a name="method-clear"></a><a href="Ext.chart.LegendItem.html#" rel="method-clear" class="cls expand">clear</a> : void</div><div class="description"><div class="short"><p>Removes all items from the collection.  Fires the <a href="Ext.chart.LegendItem.html#clear" rel="Ext.chart.LegendItem#clear" class="docClass">clear</a> event when complete.</p>
+</div><div class="long"><p>Removes all items from the collection.  Fires the <a href="Ext.chart.LegendItem.html#clear" rel="Ext.chart.LegendItem#clear" class="docClass">clear</a> event when complete.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clearListeners" class="member inherited"><a href="Ext.chart.LegendItem.html#method-clearListeners" rel="method-clearListeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-clearListeners" class="viewSource">view source</a></div><a name="clearListeners"></a><a name="method-clearListeners"></a><a href="Ext.chart.LegendItem.html#" rel="method-clearListeners" class="cls expand">clearListeners</a> : void</div><div class="description"><div class="short"><p>Removes all listeners for this object including the managed listeners</p>
+</div><div class="long"><p>Removes all listeners for this object including the managed listeners</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clearManagedListeners" class="member inherited"><a href="Ext.chart.LegendItem.html#method-clearManagedListeners" rel="method-clearManagedListeners" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-clearManagedListeners" class="viewSource">view source</a></div><a name="clearManagedListeners"></a><a name="method-clearManagedListeners"></a><a href="Ext.chart.LegendItem.html#" rel="method-clearManagedListeners" class="cls expand">clearManagedListeners</a> : void</div><div class="description"><div class="short"><p>Removes all managed listeners for this object.</p>
+</div><div class="long"><p>Removes all managed listeners for this object.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-clone" class="member inherited"><a href="Ext.chart.LegendItem.html#method-clone" rel="method-clone" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-clone" class="viewSource">view source</a></div><a name="clone"></a><a name="method-clone"></a><a href="Ext.chart.LegendItem.html#" rel="method-clone" class="cls expand">clone</a> : MixedCollection</div><div class="description"><div class="short"><p>Creates a shallow copy of this collection</p>
+</div><div class="long"><p>Creates a shallow copy of this collection</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">MixedCollection</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-collect" class="member inherited"><a href="Ext.chart.LegendItem.html#method-collect" rel="method-collect" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-collect" class="viewSource">view source</a></div><a name="collect"></a><a name="method-collect"></a><a href="Ext.chart.LegendItem.html#" rel="method-collect" class="cls expand">collect</a>(
+<span class="pre">String property, String root, [Boolean allowBlank]</span>)
+ : Array</div><div class="description"><div class="short"><p>Collects unique values of a particular property in this MixedCollection</p>
+</div><div class="long"><p>Collects unique values of a particular property in this MixedCollection</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">property</span> : String<div class="sub-desc"><p>The property to collect on</p>
+</div></li><li><span class="pre">root</span> : String<div class="sub-desc"><p>Optional 'root' property to extract the first argument from. This is used mainly when
+summing fields in records, where the fields are all stored inside the 'data' object</p>
+</div></li><li><span class="pre">allowBlank</span> : Boolean<div class="sub-desc"><p>(optional) Pass true to allow null, undefined or empty string values</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Array</span>&nbsp; &nbsp;<p>The unique values</p>
+</li></ul></div></div></div><div id="method-contains" class="member inherited"><a href="Ext.chart.LegendItem.html#method-contains" rel="method-contains" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-contains" class="viewSource">view source</a></div><a name="contains"></a><a name="method-contains"></a><a href="Ext.chart.LegendItem.html#" rel="method-contains" class="cls expand">contains</a>(
+<span class="pre">Object o</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Returns true if the collection contains the passed Object as an item.</p>
+</div><div class="long"><p>Returns true if the collection contains the passed Object as an item.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object<div class="sub-desc"><p>The Object to look for in the collection.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>True if the collection contains the Object as an item.</p>
+</li></ul></div></div></div><div id="method-containsKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-containsKey" rel="method-containsKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-containsKey" class="viewSource">view source</a></div><a name="containsKey"></a><a name="method-containsKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-containsKey" class="cls expand">containsKey</a>(
+<span class="pre">String key</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Returns true if the collection contains the passed Object as a key.</p>
+</div><div class="long"><p>Returns true if the collection contains the passed Object as a key.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key to look for in the collection.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>True if the collection contains the Object as a key.</p>
+</li></ul></div></div></div><div id="method-createLegend" class="member ni"><a href="Ext.chart.LegendItem.html#method-createLegend" rel="method-createLegend" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.LegendItem.html" class="definedIn docClass">Ext.chart.LegendItem</a><br/><a href="../source/LegendItem.html#Ext-chart.LegendItem-method-createLegend" class="viewSource">view source</a></div><a name="createLegend"></a><a name="method-createLegend"></a><a href="Ext.chart.LegendItem.html#" rel="method-createLegend" class="cls expand">createLegend</a>(
+<span class="pre">Object config</span>)
+ : void</div><div class="description"><div class="short"><p>Creates all the individual sprites for this legend item</p>
+</div><div class="long"><p>Creates all the individual sprites for this legend item</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-destroy" class="member inherited"><a href="Ext.chart.LegendItem.html#method-destroy" rel="method-destroy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-destroy" class="viewSource">view source</a></div><a name="destroy"></a><a name="method-destroy"></a><a href="Ext.chart.LegendItem.html#" rel="method-destroy" class="cls expand">destroy</a> : void</div><div class="description"><div class="short"><p>Destroys the SpriteGroup</p>
+</div><div class="long"><p>Destroys the SpriteGroup</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-each" class="member inherited"><a href="Ext.chart.LegendItem.html#method-each" rel="method-each" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-each" class="viewSource">view source</a></div><a name="each"></a><a name="method-each"></a><a href="Ext.chart.LegendItem.html#" rel="method-each" class="cls expand">each</a>(
+<span class="pre">Function fn, [Object scope]</span>)
+ : void</div><div class="description"><div class="short">Executes the specified function once for every item in the collection, passing the following arguments:
+
+
+item : Mixe...</div><div class="long"><p>Executes the specified function once for every item in the collection, passing the following arguments:</p>
+
+<div class="mdetail-params"><ul>
+<li><b>item</b> : Mixed<p class="sub-desc">The collection item</p></li>
+<li><b>index</b> : Number<p class="sub-desc">The item's index</p></li>
+<li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
+</ul></div>
+
+
+<p>The function should return a boolean value. Returning false from the function will stop the iteration.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to execute for each item.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current item in the iteration.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-eachKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-eachKey" rel="method-eachKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-eachKey" class="viewSource">view source</a></div><a name="eachKey"></a><a name="method-eachKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-eachKey" class="cls expand">eachKey</a>(
+<span class="pre">Function fn, [Object scope]</span>)
+ : void</div><div class="description"><div class="short">Executes the specified function once for every key in the collection, passing each
+key, and its associated item as th...</div><div class="long"><p>Executes the specified function once for every key in the collection, passing each
+key, and its associated item as the first two parameters.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to execute for each item.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-enableBubble" class="member inherited"><a href="Ext.chart.LegendItem.html#method-enableBubble" rel="method-enableBubble" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-enableBubble" class="viewSource">view source</a></div><a name="enableBubble"></a><a name="method-enableBubble"></a><a href="Ext.chart.LegendItem.html#" rel="method-enableBubble" class="cls expand">enableBubble</a>(
+<span class="pre">String/Array events</span>)
+ : void</div><div class="description"><div class="short">Enables events fired by this Observable to bubble up an owner hierarchy by calling
+this.getBubbleTarget() if present....</div><div class="long"><p>Enables events fired by this Observable to bubble up an owner hierarchy by calling
+<code>this.getBubbleTarget()</code> if present. There is no implementation in the Observable base class.</p>
+
+
+<p>This is commonly used by Ext.Components to bubble events to owner Containers. See <a href="Ext.Component.html#getBubbleTarget" rel="Ext.Component#getBubbleTarget" class="docClass">Ext.Component.getBubbleTarget</a>. The default
+implementation in <a href="Ext.Component.html" rel="Ext.Component" class="docClass">Ext.Component</a> returns the Component's immediate owner. But if a known target is required, this can be overridden to
+access the required target more quickly.</p>
+
+
+<p>Example:</p>
+
+
+<pre><code>Ext.override(Ext.form.field.Base, {
+//  Add functionality to Field&#39;s initComponent to enable the change event to bubble
+initComponent : Ext.Function.createSequence(Ext.form.field.Base.prototype.initComponent, function() {
+    this.enableBubble('change');
+}),
+
+//  We know that we want Field&#39;s events to bubble directly to the FormPanel.
+getBubbleTarget : function() {
+    if (!this.formPanel) {
+        this.formPanel = this.findParentByType('form');
+    }
+    return this.formPanel;
+}
+});
+
+var myForm = new Ext.formPanel({
+title: 'User Details',
+items: [{
+    ...
+}],
+listeners: {
+    change: function() {
+        // Title goes red if form has been modified.
+        myForm.header.setStyle('color', 'red');
+    }
+}
+});
+</code></pre>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">events</span> : String/Array<div class="sub-desc"><p>The event name to bubble, or an Array of event names.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-filter" class="member inherited"><a href="Ext.chart.LegendItem.html#method-filter" rel="method-filter" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-filter" class="viewSource">view source</a></div><a name="filter"></a><a name="method-filter"></a><a href="Ext.chart.LegendItem.html#" rel="method-filter" class="cls expand">filter</a>(
+<span class="pre">Array/String property, String/RegExp value, [Boolean anyMatch], [Boolean caseSensitive]</span>)
+ : MixedCollection</div><div class="description"><div class="short">Filters the objects in this collection by a set of Filters, or by a single
+property/value pair with optional paramete...</div><div class="long"><p>Filters the objects in this collection by a set of <a href="Ext.util.Filter.html" rel="Ext.util.Filter" class="docClass">Filter</a>s, or by a single
+property/value pair with optional parameters for substring matching and case sensitivity. See
+<a href="Ext.util.Filter.html" rel="Ext.util.Filter" class="docClass">Filter</a> for an example of using Filter objects (preferred). Alternatively,
+MixedCollection can be easily filtered by property like this:</p>
+
+
+<pre><code>//create a simple store with a few people defined
+var people = new Ext.util.MixedCollection();
+people.addAll([
+    {id: 1, age: 25, name: 'Ed'},
+    {id: 2, age: 24, name: 'Tommy'},
+    {id: 3, age: 24, name: 'Arne'},
+    {id: 4, age: 26, name: 'Aaron'}
+]);
+
+//a new MixedCollection containing only the items where age == 24
+var middleAged = people.filter('age', 24);
+</code></pre>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">property</span> : Array/String<div class="sub-desc"><p>A property on your objects, or an array of <a href="Ext.util.Filter.html" rel="Ext.util.Filter" class="docClass">Filter</a> objects</p>
+</div></li><li><span class="pre">value</span> : String/RegExp<div class="sub-desc"><p>Either string that the property values
+should start with or a RegExp to test against the property</p>
+</div></li><li><span class="pre">anyMatch</span> : Boolean<div class="sub-desc"><p>(optional) True to match any part of the string, not just the beginning</p>
+</div></li><li><span class="pre">caseSensitive</span> : Boolean<div class="sub-desc"><p>(optional) True for case sensitive comparison (defaults to False).</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">MixedCollection</span>&nbsp; &nbsp;<p>The new filtered collection</p>
+</li></ul></div></div></div><div id="method-filterBy" class="member inherited"><a href="Ext.chart.LegendItem.html#method-filterBy" rel="method-filterBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-filterBy" class="viewSource">view source</a></div><a name="filterBy"></a><a name="method-filterBy"></a><a href="Ext.chart.LegendItem.html#" rel="method-filterBy" class="cls expand">filterBy</a>(
+<span class="pre">Function fn, [Object scope]</span>)
+ : MixedCollection</div><div class="description"><div class="short">Filter by a function. Returns a new collection that has been filtered.
+The passed function will be called with each o...</div><div class="long"><p>Filter by a function. Returns a <i>new</i> collection that has been filtered.
+The passed function will be called with each object in the collection.
+If the function returns true, the value is included otherwise it is filtered.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to be called, it will receive the args o (the object), k (the key)</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">MixedCollection</span>&nbsp; &nbsp;<p>The new filtered collection</p>
+</li></ul></div></div></div><div id="method-findBy" class="member inherited"><a href="Ext.chart.LegendItem.html#method-findBy" rel="method-findBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-findBy" class="viewSource">view source</a></div><a name="findBy"></a><a name="method-findBy"></a><a href="Ext.chart.LegendItem.html#" rel="method-findBy" class="cls expand">findBy</a>(
+<span class="pre">Function fn, [Object scope]</span>)
+ : Object</div><div class="description"><div class="short"><p>Returns the first item in the collection which elicits a true return value from the
+passed selection function.</p>
+</div><div class="long"><p>Returns the first item in the collection which elicits a true return value from the
+passed selection function.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The selection function to execute for each item.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The first item in the collection which returned true from the selection function.</p>
+</li></ul></div></div></div><div id="method-findIndex" class="member inherited"><a href="Ext.chart.LegendItem.html#method-findIndex" rel="method-findIndex" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-findIndex" class="viewSource">view source</a></div><a name="findIndex"></a><a name="method-findIndex"></a><a href="Ext.chart.LegendItem.html#" rel="method-findIndex" class="cls expand">findIndex</a>(
+<span class="pre">String property, String/RegExp value, [Number start], [Boolean anyMatch], [Boolean caseSensitive]</span>)
+ : Number</div><div class="description"><div class="short"><p>Finds the index of the first matching object in this collection by a specific property/value.</p>
+</div><div class="long"><p>Finds the index of the first matching object in this collection by a specific property/value.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">property</span> : String<div class="sub-desc"><p>The name of a property on your objects.</p>
+</div></li><li><span class="pre">value</span> : String/RegExp<div class="sub-desc"><p>A string that the property values
+should start with or a RegExp to test against the property.</p>
+</div></li><li><span class="pre">start</span> : Number<div class="sub-desc"><p>(optional) The index to start searching at (defaults to 0).</p>
+</div></li><li><span class="pre">anyMatch</span> : Boolean<div class="sub-desc"><p>(optional) True to match any part of the string, not just the beginning.</p>
+</div></li><li><span class="pre">caseSensitive</span> : Boolean<div class="sub-desc"><p>(optional) True for case sensitive comparison.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The matched index or -1</p>
+</li></ul></div></div></div><div id="method-findIndexBy" class="member inherited"><a href="Ext.chart.LegendItem.html#method-findIndexBy" rel="method-findIndexBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-findIndexBy" class="viewSource">view source</a></div><a name="findIndexBy"></a><a name="method-findIndexBy"></a><a href="Ext.chart.LegendItem.html#" rel="method-findIndexBy" class="cls expand">findIndexBy</a>(
+<span class="pre">Function fn, [Object scope], [Number start]</span>)
+ : Number</div><div class="description"><div class="short">Find the index of the first matching object in this collection by a function.
+If the function returns true it is cons...</div><div class="long"><p>Find the index of the first matching object in this collection by a function.
+If the function returns <i>true</i> it is considered a match.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to be called, it will receive the args o (the object), k (the key).</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.</p>
+</div></li><li><span class="pre">start</span> : Number<div class="sub-desc"><p>(optional) The index to start searching at (defaults to 0).</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The matched index or -1</p>
+</li></ul></div></div></div><div id="method-fireEvent" class="member inherited"><a href="Ext.chart.LegendItem.html#method-fireEvent" rel="method-fireEvent" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-fireEvent" class="viewSource">view source</a></div><a name="fireEvent"></a><a name="method-fireEvent"></a><a href="Ext.chart.LegendItem.html#" rel="method-fireEvent" class="cls expand">fireEvent</a>(
+<span class="pre">String eventName, Object... args</span>)
+ : Boolean</div><div class="description"><div class="short">Fires the specified event with the passed parameters (minus the event name).
+
+
+An event may be set to bubble up an Ob...</div><div class="long"><p>Fires the specified event with the passed parameters (minus the event name).</p>
+
+
+<p>An event may be set to bubble up an Observable parent hierarchy (See <a href="Ext.Component.html#getBubbleTarget" rel="Ext.Component#getBubbleTarget" class="docClass">Ext.Component.getBubbleTarget</a>)
+by calling <a href="Ext.chart.LegendItem.html#enableBubble" rel="Ext.chart.LegendItem#enableBubble" class="docClass">enableBubble</a>.</p>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to fire.</p>
+</div></li><li><span class="pre">args</span> : Object...<div class="sub-desc"><p>Variable number of parameters are passed to handlers.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>returns false if any of the handlers return false otherwise it returns true.</p>
+</li></ul></div></div></div><div id="method-first" class="member inherited"><a href="Ext.chart.LegendItem.html#method-first" rel="method-first" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-first" class="viewSource">view source</a></div><a name="first"></a><a name="method-first"></a><a href="Ext.chart.LegendItem.html#" rel="method-first" class="cls expand">first</a> : Object</div><div class="description"><div class="short"><p>Returns the first item in the collection.</p>
+</div><div class="long"><p>Returns the first item in the collection.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>the first item in the collection..</p>
+</li></ul></div></div></div><div id="method-get" class="member inherited"><a href="Ext.chart.LegendItem.html#method-get" rel="method-get" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-get" class="viewSource">view source</a></div><a name="get"></a><a name="method-get"></a><a href="Ext.chart.LegendItem.html#" rel="method-get" class="cls expand">get</a>(
+<span class="pre">String/Number key</span>)
+ : Object</div><div class="description"><div class="short">Returns the item associated with the passed key OR index.
+Key has priority over index.  This is the equivalent
+of cal...</div><div class="long"><p>Returns the item associated with the passed key OR index.
+Key has priority over index.  This is the equivalent
+of calling <a href="Ext.chart.LegendItem.html#key" rel="Ext.chart.LegendItem#key" class="docClass">key</a> first, then if nothing matched calling <a href="Ext.chart.LegendItem.html#getAt" rel="Ext.chart.LegendItem#getAt" class="docClass">getAt</a>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String/Number<div class="sub-desc"><p>The key or index of the item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>If the item is found, returns the item.  If the item was not found, returns <tt>undefined</tt>.
+If an item was found, but is a Class, returns <tt>null</tt>.</p>
+</li></ul></div></div></div><div id="method-getActiveAnimation" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getActiveAnimation" rel="method-getActiveAnimation" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-method-getActiveAnimation" class="viewSource">view source</a></div><a name="getActiveAnimation"></a><a name="method-getActiveAnimation"></a><a href="Ext.chart.LegendItem.html#" rel="method-getActiveAnimation" class="cls expand">getActiveAnimation</a> : Mixed</div><div class="description"><div class="short"><p>Returns thq current animation if this object has any effects actively running or queued, else returns false.</p>
+</div><div class="long"><p>Returns thq current animation if this object has any effects actively running or queued, else returns false.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Mixed</span>&nbsp; &nbsp;<p>anim if element has active effects, else false</p>
+</li></ul></div></div></div><div id="method-getAt" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getAt" rel="method-getAt" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-getAt" class="viewSource">view source</a></div><a name="getAt"></a><a name="method-getAt"></a><a href="Ext.chart.LegendItem.html#" rel="method-getAt" class="cls expand">getAt</a>(
+<span class="pre">Number index</span>)
+ : Object</div><div class="description"><div class="short"><p>Returns the item at the specified index.</p>
+</div><div class="long"><p>Returns the item at the specified index.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index of the item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The item at the specified index.</p>
+</li></ul></div></div></div><div id="method-getBBox" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getBBox" rel="method-getBBox" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-getBBox" class="viewSource">view source</a></div><a name="getBBox"></a><a name="method-getBBox"></a><a href="Ext.chart.LegendItem.html#" rel="method-getBBox" class="cls expand">getBBox</a> : void</div><div class="description"><div class="short"><p>Returns the group bounding box.
+Behaves like <a href="Ext.draw.Sprite.html" rel="Ext.draw.Sprite" class="docClass">Ext.draw.Sprite</a> getBBox method.</p>
+</div><div class="long"><p>Returns the group bounding box.
+Behaves like <a href="Ext.draw.Sprite.html" rel="Ext.draw.Sprite" class="docClass">Ext.draw.Sprite</a> getBBox method.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getByKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getByKey" rel="method-getByKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-getByKey" class="viewSource">view source</a></div><a name="getByKey"></a><a name="method-getByKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-getByKey" class="cls expand">getByKey</a>(
+<span class="pre">String/Number key</span>)
+ : Object</div><div class="description"><div class="short"><p>Returns the item associated with the passed key.</p>
+</div><div class="long"><p>Returns the item associated with the passed key.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String/Number<div class="sub-desc"><p>The key of the item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The item associated with the passed key.</p>
+</li></ul></div></div></div><div id="method-getCount" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getCount" rel="method-getCount" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-getCount" class="viewSource">view source</a></div><a name="getCount"></a><a name="method-getCount"></a><a href="Ext.chart.LegendItem.html#" rel="method-getCount" class="cls expand">getCount</a> : Number</div><div class="description"><div class="short"><p>Returns the number of items in the collection.</p>
+</div><div class="long"><p>Returns the number of items in the collection.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>the number of items in the collection.</p>
+</li></ul></div></div></div><div id="method-getKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getKey" rel="method-getKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-getKey" class="viewSource">view source</a></div><a name="getKey"></a><a name="method-getKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-getKey" class="cls expand">getKey</a>(
+<span class="pre">Object item</span>)
+ : Object</div><div class="description"><div class="short">MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
+simply returns i...</div><div class="long"><p>MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
+simply returns <b><code>item.id</code></b> but you can provide your own implementation
+to return a different value as in the following examples:</p>
+
+<pre><code>// normal way
+var mc = new Ext.util.MixedCollection();
+mc.add(someEl.dom.id, someEl);
+mc.add(otherEl.dom.id, otherEl);
+//and so on
+
+// using getKey
+var mc = new Ext.util.MixedCollection();
+mc.getKey = function(el){
+   return el.dom.id;
+};
+mc.add(someEl);
+mc.add(otherEl);
+
+// or via the constructor
+var mc = new Ext.util.MixedCollection(false, function(el){
+   return el.dom.id;
+});
+mc.add(someEl);
+mc.add(otherEl);
+</code></pre>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Object<div class="sub-desc"><p>The item for which to find the key.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The key for the passed item.</p>
+</li></ul></div></div></div><div id="method-getRange" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getRange" rel="method-getRange" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-getRange" class="viewSource">view source</a></div><a name="getRange"></a><a name="method-getRange"></a><a href="Ext.chart.LegendItem.html#" rel="method-getRange" class="cls expand">getRange</a>(
+<span class="pre">[Number startIndex], [Number endIndex]</span>)
+ : Array</div><div class="description"><div class="short"><p>Returns a range of items in this collection</p>
+</div><div class="long"><p>Returns a range of items in this collection</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">startIndex</span> : Number<div class="sub-desc"><p>(optional) The starting index. Defaults to 0.</p>
+</div></li><li><span class="pre">endIndex</span> : Number<div class="sub-desc"><p>(optional) The ending index. Defaults to the last item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Array</span>&nbsp; &nbsp;<p>An array of items</p>
+</li></ul></div></div></div><div id="method-getSortState" class="member inherited"><a href="Ext.chart.LegendItem.html#method-getSortState" rel="method-getSortState" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-method-getSortState" class="viewSource">view source</a></div><a name="getSortState"></a><a name="method-getSortState"></a><a href="Ext.chart.LegendItem.html#" rel="method-getSortState" class="cls expand">getSortState</a> : Object</div><div class="description"><div class="short"><p>Returns an object describing the current sort state of this Store.</p>
+</div><div class="long"><p>Returns an object describing the current sort state of this Store.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The sort state of the Store. An object with two properties:<ul>
+<li><b>field</b> : String<p class="sub-desc">The name of the field by which the Records are sorted.</p></li>
+<li><b>direction</b> : String<p class="sub-desc">The sort order, 'ASC' or 'DESC' (case-sensitive).</p></li>
+</ul>
+See <tt><a href="Ext.chart.LegendItem.html#sortInfo" rel="Ext.chart.LegendItem#sortInfo" class="docClass">sortInfo</a></tt> for additional details.</p>
+</li></ul></div></div></div><div id="method-hasListener" class="member inherited"><a href="Ext.chart.LegendItem.html#method-hasListener" rel="method-hasListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-hasListener" class="viewSource">view source</a></div><a name="hasListener"></a><a name="method-hasListener"></a><a href="Ext.chart.LegendItem.html#" rel="method-hasListener" class="cls expand">hasListener</a>(
+<span class="pre">String eventName</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Checks to see if this object has any listeners for a specified event</p>
+</div><div class="long"><p>Checks to see if this object has any listeners for a specified event</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The name of the event to check for</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>True if the event is being listened for, else false</p>
+</li></ul></div></div></div><div id="method-hide" class="member inherited"><a href="Ext.chart.LegendItem.html#method-hide" rel="method-hide" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-hide" class="viewSource">view source</a></div><a name="hide"></a><a name="method-hide"></a><a href="Ext.chart.LegendItem.html#" rel="method-hide" class="cls expand">hide</a>(
+<span class="pre">Object attrs</span>)
+ : void</div><div class="description"><div class="short"><p>Hides all sprites. If the first parameter of the method is true
+then a redraw will be forced for each sprite.</p>
+</div><div class="long"><p>Hides all sprites. If the first parameter of the method is true
+then a redraw will be forced for each sprite.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">attrs</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-indexOf" class="member inherited"><a href="Ext.chart.LegendItem.html#method-indexOf" rel="method-indexOf" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-indexOf" class="viewSource">view source</a></div><a name="indexOf"></a><a name="method-indexOf"></a><a href="Ext.chart.LegendItem.html#" rel="method-indexOf" class="cls expand">indexOf</a>(
+<span class="pre">Object o</span>)
+ : Number</div><div class="description"><div class="short"><p>Returns index within the collection of the passed Object.</p>
+</div><div class="long"><p>Returns index within the collection of the passed Object.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object<div class="sub-desc"><p>The item to find the index of.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>index of the item. Returns -1 if not found.</p>
+</li></ul></div></div></div><div id="method-indexOfKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-indexOfKey" rel="method-indexOfKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-indexOfKey" class="viewSource">view source</a></div><a name="indexOfKey"></a><a name="method-indexOfKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-indexOfKey" class="cls expand">indexOfKey</a>(
+<span class="pre">String key</span>)
+ : Number</div><div class="description"><div class="short"><p>Returns index within the collection of the passed key.</p>
+</div><div class="long"><p>Returns index within the collection of the passed key.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key to find the index of.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>index of the key.</p>
+</li></ul></div></div></div><div id="method-initSortable" class="member inherited"><a href="Ext.chart.LegendItem.html#method-initSortable" rel="method-initSortable" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-method-initSortable" class="viewSource">view source</a></div><a name="initSortable"></a><a name="method-initSortable"></a><a href="Ext.chart.LegendItem.html#" rel="method-initSortable" class="cls expand">initSortable</a> : void</div><div class="description"><div class="short">Performs initialization of this mixin. Component classes using this mixin should call this method
+during their own in...</div><div class="long"><p>Performs initialization of this mixin. Component classes using this mixin should call this method
+during their own initialization.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-insert" class="member inherited"><a href="Ext.chart.LegendItem.html#method-insert" rel="method-insert" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-insert" class="viewSource">view source</a></div><a name="insert"></a><a name="method-insert"></a><a href="Ext.chart.LegendItem.html#" rel="method-insert" class="cls expand">insert</a>(
+<span class="pre">Number index, String key, [Object o]</span>)
+ : Object</div><div class="description"><div class="short"><p>Inserts an item at the specified index in the collection. Fires the <a href="Ext.chart.LegendItem.html#add" rel="Ext.chart.LegendItem#add" class="docClass">add</a> event when complete.</p>
+</div><div class="long"><p>Inserts an item at the specified index in the collection. Fires the <a href="Ext.chart.LegendItem.html#add" rel="Ext.chart.LegendItem#add" class="docClass">add</a> event when complete.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index to insert the item at.</p>
+</div></li><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key to associate with the new item, or the item itself.</p>
+</div></li><li><span class="pre">o</span> : Object<div class="sub-desc"><p>(optional) If the second parameter was a key, the new item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The item inserted.</p>
+</li></ul></div></div></div><div id="method-last" class="member inherited"><a href="Ext.chart.LegendItem.html#method-last" rel="method-last" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-last" class="viewSource">view source</a></div><a name="last"></a><a name="method-last"></a><a href="Ext.chart.LegendItem.html#" rel="method-last" class="cls expand">last</a> : Object</div><div class="description"><div class="short"><p>Returns the last item in the collection.</p>
+</div><div class="long"><p>Returns the last item in the collection.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>the last item in the collection..</p>
+</li></ul></div></div></div><div id="method-observe" class="member inherited"><a href="Ext.chart.LegendItem.html#method-observe" rel="method-observe" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-observe" class="viewSource">view source</a></div><a name="observe"></a><a name="method-observe"></a><a href="Ext.chart.LegendItem.html#" rel="method-observe" class="cls expand">observe</a>(
+<span class="pre">Function c, Object listeners</span>)
+ : void</div><div class="description"><div class="short">Sets observability on the passed class constructor.
+
+This makes any event fired on any instance of the passed class a...</div><div class="long"><p>Sets observability on the passed class constructor.</p>
+
+<p>This makes any event fired on any instance of the passed class also fire a single event through
+the <strong>class</strong> allowing for central handling of events on many instances at once.</p>
+
+<p>Usage:</p>
+
+<pre><code>Ext.util.Observable.observe(Ext.data.Connection);
+Ext.data.Connection.on('beforerequest', function(con, options) {
+    console.log('Ajax request made to ' + options.url);
+});
+</code></pre>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">c</span> : Function<div class="sub-desc"><p>The class constructor to make observable.</p>
+</div></li><li><span class="pre">listeners</span> : Object<div class="sub-desc"><p>An object containing a series of listeners to add. See <a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a>.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-on" class="member inherited"><a href="Ext.chart.LegendItem.html#method-on" rel="method-on" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-on" class="viewSource">view source</a></div><a name="on"></a><a name="method-on"></a><a href="Ext.chart.LegendItem.html#" rel="method-on" class="cls expand">on</a>(
+<span class="pre">String eventName, Function handler, [Object scope], [Object options]</span>)
+ : void</div><div class="description"><div class="short"><p>Appends an event handler to this object (shorthand for <a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a>.)</p>
+</div><div class="long"><p>Appends an event handler to this object (shorthand for <a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a>.)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event to listen for</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The method the event invokes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code><b>this</b></code> reference) in which the handler function is executed.
+<b>If omitted, defaults to the object which fired the event.</b></p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc"><p>(optional) An object containing handler configuration.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-relayEvents" class="member inherited"><a href="Ext.chart.LegendItem.html#method-relayEvents" rel="method-relayEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-relayEvents" class="viewSource">view source</a></div><a name="relayEvents"></a><a name="method-relayEvents"></a><a href="Ext.chart.LegendItem.html#" rel="method-relayEvents" class="cls expand">relayEvents</a>(
+<span class="pre">Object origin, Array events, Object prefix</span>)
+ : void</div><div class="description"><div class="short"><p>Relays selected events from the specified Observable as if the events were fired by <code><b>this</b></code>.</p>
+</div><div class="long"><p>Relays selected events from the specified Observable as if the events were fired by <code><b>this</b></code>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">origin</span> : Object<div class="sub-desc"><p>The Observable whose events this object is to relay.</p>
+</div></li><li><span class="pre">events</span> : Array<div class="sub-desc"><p>Array of event names to relay.</p>
+</div></li><li><span class="pre">prefix</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-releaseCapture" class="member inherited"><a href="Ext.chart.LegendItem.html#method-releaseCapture" rel="method-releaseCapture" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-releaseCapture" class="viewSource">view source</a></div><a name="releaseCapture"></a><a name="method-releaseCapture"></a><a href="Ext.chart.LegendItem.html#" rel="method-releaseCapture" class="cls expand">releaseCapture</a>(
+<span class="pre">Observable o</span>)
+ : void</div><div class="description"><div class="short"><p>Removes <b>all</b> added captures from the Observable.</p>
+</div><div class="long"><p>Removes <b>all</b> added captures from the Observable.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Observable<div class="sub-desc"><p>The Observable to release</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-remove" class="member inherited"><a href="Ext.chart.LegendItem.html#method-remove" rel="method-remove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-remove" class="viewSource">view source</a></div><a name="remove"></a><a name="method-remove"></a><a href="Ext.chart.LegendItem.html#" rel="method-remove" class="cls expand">remove</a>(
+<span class="pre">Object o</span>)
+ : void</div><div class="description"><div class="short"><p>Remove a Sprite from the Group</p>
+</div><div class="long"><p>Remove a Sprite from the Group</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeAll" class="member inherited"><a href="Ext.chart.LegendItem.html#method-removeAll" rel="method-removeAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-removeAll" class="viewSource">view source</a></div><a name="removeAll"></a><a name="method-removeAll"></a><a href="Ext.chart.LegendItem.html#" rel="method-removeAll" class="cls expand">removeAll</a>(
+<span class="pre">Array items</span>)
+ : Ext.util.MixedCollection</div><div class="description"><div class="short"><p>Remove all items in the passed array from the collection.</p>
+</div><div class="long"><p>Remove all items in the passed array from the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">items</span> : Array<div class="sub-desc"><p>An array of items to be removed.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.util.MixedCollection</span>&nbsp; &nbsp;<p>this object</p>
+</li></ul></div></div></div><div id="method-removeAt" class="member inherited"><a href="Ext.chart.LegendItem.html#method-removeAt" rel="method-removeAt" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-removeAt" class="viewSource">view source</a></div><a name="removeAt"></a><a name="method-removeAt"></a><a href="Ext.chart.LegendItem.html#" rel="method-removeAt" class="cls expand">removeAt</a>(
+<span class="pre">Number index</span>)
+ : Object</div><div class="description"><div class="short"><p>Remove an item from a specified index in the collection. Fires the <a href="Ext.chart.LegendItem.html#remove" rel="Ext.chart.LegendItem#remove" class="docClass">remove</a> event when complete.</p>
+</div><div class="long"><p>Remove an item from a specified index in the collection. Fires the <a href="Ext.chart.LegendItem.html#remove" rel="Ext.chart.LegendItem#remove" class="docClass">remove</a> event when complete.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index within the collection of the item to remove.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The item removed or false if no item was removed.</p>
+</li></ul></div></div></div><div id="method-removeAtKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-removeAtKey" rel="method-removeAtKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-removeAtKey" class="viewSource">view source</a></div><a name="removeAtKey"></a><a name="method-removeAtKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-removeAtKey" class="cls expand">removeAtKey</a>(
+<span class="pre">String key</span>)
+ : Object</div><div class="description"><div class="short"><p>Removed an item associated with the passed key fom the collection.</p>
+</div><div class="long"><p>Removed an item associated with the passed key fom the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key of the item to remove.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The item removed or false if no item was removed.</p>
+</li></ul></div></div></div><div id="method-removeListener" class="member inherited"><a href="Ext.chart.LegendItem.html#method-removeListener" rel="method-removeListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-removeListener" class="viewSource">view source</a></div><a name="removeListener"></a><a name="method-removeListener"></a><a href="Ext.chart.LegendItem.html#" rel="method-removeListener" class="cls expand">removeListener</a>(
+<span class="pre">String eventName, Function handler, [Object scope]</span>)
+ : void</div><div class="description"><div class="short"><p>Removes an event handler.</p>
+</div><div class="long"><p>Removes an event handler.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event the handler was associated with.</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The handler to remove. <b>This must be a reference to the function passed into the <a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a> call.</b></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope originally specified for the handler.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-removeManagedListener" class="member inherited"><a href="Ext.chart.LegendItem.html#method-removeManagedListener" rel="method-removeManagedListener" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-removeManagedListener" class="viewSource">view source</a></div><a name="removeManagedListener"></a><a name="method-removeManagedListener"></a><a href="Ext.chart.LegendItem.html#" rel="method-removeManagedListener" class="cls expand">removeManagedListener</a>(
+<span class="pre">Observable|Element item, Object|String ename, Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Removes listeners that were added by the <a href="Ext.chart.LegendItem.html#mon" rel="Ext.chart.LegendItem#mon" class="docClass">mon</a> method.</p>
+</div><div class="long"><p>Removes listeners that were added by the <a href="Ext.chart.LegendItem.html#mon" rel="Ext.chart.LegendItem#mon" class="docClass">mon</a> method.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Observable|Element<div class="sub-desc"><p>The item from which to remove a listener/listeners.</p>
+</div></li><li><span class="pre">ename</span> : Object|String<div class="sub-desc"><p>The event name, or an object containing event name properties.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the handler function.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>Optional. If the <code>ename</code> parameter was an event name, this
+is the scope (<code>this</code> reference) in which the handler function is executed.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-reorder" class="member inherited"><a href="Ext.chart.LegendItem.html#method-reorder" rel="method-reorder" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.MixedCollection.html" class="definedIn docClass">Ext.util.MixedCollection</a><br/><a href="../source/MixedCollection.html#Ext-util.MixedCollection-method-reorder" class="viewSource">view source</a></div><a name="reorder"></a><a name="method-reorder"></a><a href="Ext.chart.LegendItem.html#" rel="method-reorder" class="cls expand">reorder</a>(
+<span class="pre">Object mapping</span>)
+ : void</div><div class="description"><div class="short">Reorders each of the items based on a mapping from old index to new index. Internally this
+just translates into a sor...</div><div class="long"><p>Reorders each of the items based on a mapping from old index to new index. Internally this
+just translates into a sort. The 'sort' event is fired whenever reordering has occured.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">mapping</span> : Object<div class="sub-desc"><p>Mapping from old item index to new item index</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-replace" class="member inherited"><a href="Ext.chart.LegendItem.html#method-replace" rel="method-replace" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-replace" class="viewSource">view source</a></div><a name="replace"></a><a name="method-replace"></a><a href="Ext.chart.LegendItem.html#" rel="method-replace" class="cls expand">replace</a>(
+<span class="pre">String key, [Object o]</span>)
+ : Object</div><div class="description"><div class="short"><p>Replaces an item in the collection. Fires the <a href="Ext.chart.LegendItem.html#replace" rel="Ext.chart.LegendItem#replace" class="docClass">replace</a> event when complete.</p>
+</div><div class="long"><p>Replaces an item in the collection. Fires the <a href="Ext.chart.LegendItem.html#replace" rel="Ext.chart.LegendItem#replace" class="docClass">replace</a> event when complete.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key associated with the item to replace, or the replacement item.</p>
+
+
+<p>If you supplied a <a href="Ext.chart.LegendItem.html#getKey" rel="Ext.chart.LegendItem#getKey" class="docClass">getKey</a> implementation for this MixedCollection, or if the key
+of your stored items is in a property called <tt><b>id</b></tt>, then the MixedCollection
+will be able to <i>derive</i> the key of the replacement item. If you want to replace an item
+with one having the same key value, then just pass the replacement item in this parameter.</p>
+
+</div></li><li><span class="pre">o</span> : Object<div class="sub-desc"><p>{Object} o (optional) If the first parameter passed was a key, the item to associate
+with that key.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>The new item.</p>
+</li></ul></div></div></div><div id="method-resumeEvents" class="member inherited"><a href="Ext.chart.LegendItem.html#method-resumeEvents" rel="method-resumeEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-resumeEvents" class="viewSource">view source</a></div><a name="resumeEvents"></a><a name="method-resumeEvents"></a><a href="Ext.chart.LegendItem.html#" rel="method-resumeEvents" class="cls expand">resumeEvents</a> : void</div><div class="description"><div class="short">Resume firing events. (see suspendEvents)
+If events were suspended using the queueSuspended parameter, then all
+event...</div><div class="long"><p>Resume firing events. (see <a href="Ext.chart.LegendItem.html#suspendEvents" rel="Ext.chart.LegendItem#suspendEvents" class="docClass">suspendEvents</a>)
+If events were suspended using the <code><b>queueSuspended</b></code> parameter, then all
+events fired during event suspension will be sent to any listeners now.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-sequenceFx" class="member inherited"><a href="Ext.chart.LegendItem.html#method-sequenceFx" rel="method-sequenceFx" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-method-sequenceFx" class="viewSource">view source</a></div><a name="sequenceFx"></a><a name="method-sequenceFx"></a><a href="Ext.chart.LegendItem.html#" rel="method-sequenceFx" class="cls expand">sequenceFx</a> : Ext.core.Element</div><div class="description"><div class="short">Ensures that all effects queued after sequenceFx is called on this object are
+run in sequence.  This is the opposite ...</div><div class="long"><p>Ensures that all effects queued after sequenceFx is called on this object are
+run in sequence.  This is the opposite of <a href="Ext.chart.LegendItem.html#syncFx" rel="Ext.chart.LegendItem#syncFx" class="docClass">syncFx</a>.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;<p>The Element</p>
+</li></ul></div></div></div><div id="method-setAttributes" class="member inherited"><a href="Ext.chart.LegendItem.html#method-setAttributes" rel="method-setAttributes" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-setAttributes" class="viewSource">view source</a></div><a name="setAttributes"></a><a name="method-setAttributes"></a><a href="Ext.chart.LegendItem.html#" rel="method-setAttributes" class="cls expand">setAttributes</a>(
+<span class="pre">Object attrs, Object redraw</span>)
+ : void</div><div class="description"><div class="short">Iterates through all sprites calling
+ setAttributes on each one. For more information
+ Ext.draw.Sprite provides a des...</div><div class="long"><p>Iterates through all sprites calling
+ <code>setAttributes</code> on each one. For more information
+ <a href="Ext.draw.Sprite.html" rel="Ext.draw.Sprite" class="docClass">Ext.draw.Sprite</a> provides a description of the
+ attributes that can be set with this method.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">attrs</span> : Object<div class="sub-desc">
+</div></li><li><span class="pre">redraw</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-show" class="member inherited"><a href="Ext.chart.LegendItem.html#method-show" rel="method-show" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.draw.CompositeSprite.html" class="definedIn docClass">Ext.draw.CompositeSprite</a><br/><a href="../source/CompositeSprite.html#Ext-draw.CompositeSprite-method-show" class="viewSource">view source</a></div><a name="show"></a><a name="method-show"></a><a href="Ext.chart.LegendItem.html#" rel="method-show" class="cls expand">show</a>(
+<span class="pre">Object attrs</span>)
+ : void</div><div class="description"><div class="short"><p>Shows all sprites. If the first parameter of the method is true
+then a redraw will be forced for each sprite.</p>
+</div><div class="long"><p>Shows all sprites. If the first parameter of the method is true
+then a redraw will be forced for each sprite.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">attrs</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-sort" class="member inherited"><a href="Ext.chart.LegendItem.html#method-sort" rel="method-sort" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Sortable.html" class="definedIn docClass">Ext.util.Sortable</a><br/><a href="../source/Sortable.html#Ext-util.Sortable-method-sort" class="viewSource">view source</a></div><a name="sort"></a><a name="method-sort"></a><a href="Ext.chart.LegendItem.html#" rel="method-sort" class="cls expand">sort</a>(
+<span class="pre">String|Array sorters, String direction, Object where, Object doSort</span>)
+ : void</div><div class="description"><div class="short">Sorts the data in the Store by one or more of its properties. Example usage:
+
+
+//sort by a single field
+myStore.sort(...</div><div class="long"><p>Sorts the data in the Store by one or more of its properties. Example usage:</p>
+
+
+<pre><code>//sort by a single field
+myStore.sort('myField', 'DESC');
+
+//sorting by multiple fields
+myStore.sort([
+    {
+        property : 'age',
+        direction: 'ASC'
+    },
+    {
+        property : 'name',
+        direction: 'DESC'
+    }
+]);
+</code></pre>
+
+
+<p>Internally, Store converts the passed arguments into an array of <a href="Ext.util.Sorter.html" rel="Ext.util.Sorter" class="docClass">Ext.util.Sorter</a> instances, and delegates the actual
+sorting to its internal <a href="Ext.util.MixedCollection.html" rel="Ext.util.MixedCollection" class="docClass">Ext.util.MixedCollection</a>.</p>
+
+
+<p>When passing a single string argument to sort, Store maintains a ASC/DESC toggler per field, so this code:</p>
+
+
+<pre><code>store.sort('myField');
+store.sort('myField');
+     </code></pre>
+
+
+<p>Is equivalent to this code, because Store handles the toggling automatically:</p>
+
+
+<pre><code>store.sort('myField', 'ASC');
+store.sort('myField', 'DESC');
+</code></pre>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">sorters</span> : String|Array<div class="sub-desc"><p>Either a string name of one of the fields in this Store's configured <a href="Ext.data.Model.html" rel="Ext.data.Model" class="docClass">Model</a>,
+or an Array of sorter configurations.</p>
+</div></li><li><span class="pre">direction</span> : String<div class="sub-desc"><p>The overall direction to sort the data by. Defaults to "ASC".</p>
+</div></li><li><span class="pre">where</span> : Object<div class="sub-desc">
+</div></li><li><span class="pre">doSort</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-sortBy" class="member inherited"><a href="Ext.chart.LegendItem.html#method-sortBy" rel="method-sortBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.MixedCollection.html" class="definedIn docClass">Ext.util.MixedCollection</a><br/><a href="../source/MixedCollection.html#Ext-util.MixedCollection-method-sortBy" class="viewSource">view source</a></div><a name="sortBy"></a><a name="method-sortBy"></a><a href="Ext.chart.LegendItem.html#" rel="method-sortBy" class="cls expand">sortBy</a>(
+<span class="pre">Function sorterFn</span>)
+ : void</div><div class="description"><div class="short"><p>Sorts the collection by a single sorter function</p>
+</div><div class="long"><p>Sorts the collection by a single sorter function</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">sorterFn</span> : Function<div class="sub-desc"><p>The function to sort by</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-sortByKey" class="member inherited"><a href="Ext.chart.LegendItem.html#method-sortByKey" rel="method-sortByKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.MixedCollection.html" class="definedIn docClass">Ext.util.MixedCollection</a><br/><a href="../source/MixedCollection.html#Ext-util.MixedCollection-method-sortByKey" class="viewSource">view source</a></div><a name="sortByKey"></a><a name="method-sortByKey"></a><a href="Ext.chart.LegendItem.html#" rel="method-sortByKey" class="cls expand">sortByKey</a>(
+<span class="pre">[String direction], [Function fn]</span>)
+ : void</div><div class="description"><div class="short"><p>Sorts this collection by <b>key</b>s.</p>
+</div><div class="long"><p>Sorts this collection by <b>key</b>s.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">direction</span> : String<div class="sub-desc"><p>(optional) 'ASC' or 'DESC'. Defaults to 'ASC'.</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>(optional) Comparison function that defines the sort order.
+Defaults to sorting by case insensitive string.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-stopAnimation" class="member inherited"><a href="Ext.chart.LegendItem.html#method-stopAnimation" rel="method-stopAnimation" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-method-stopAnimation" class="viewSource">view source</a></div><a name="stopAnimation"></a><a name="method-stopAnimation"></a><a href="Ext.chart.LegendItem.html#" rel="method-stopAnimation" class="cls expand">stopAnimation</a> : Ext.core.Element</div><div class="description"><div class="short">@deprecated 4.0 Replaced by stopAnimation
+Stops any running effects and clears this object's internal effects queue i...</div><div class="long"><p>@deprecated 4.0 Replaced by <a href="Ext.chart.LegendItem.html#stopAnimation" rel="Ext.chart.LegendItem#stopAnimation" class="docClass">stopAnimation</a>
+Stops any running effects and clears this object's internal effects queue if it contains
+any additional effects that haven't started yet.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;<p>The Element</p>
+</li></ul></div></div></div><div id="method-sum" class="member inherited"><a href="Ext.chart.LegendItem.html#method-sum" rel="method-sum" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-method-sum" class="viewSource">view source</a></div><a name="sum"></a><a name="method-sum"></a><a href="Ext.chart.LegendItem.html#" rel="method-sum" class="cls expand">sum</a>(
+<span class="pre">String property, String root, [Number start], [Number end]</span>)
+ : Number</div><div class="description"><div class="short"><p>Collects all of the values of the given property and returns their sum</p>
+</div><div class="long"><p>Collects all of the values of the given property and returns their sum</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">property</span> : String<div class="sub-desc"><p>The property to sum by</p>
+</div></li><li><span class="pre">root</span> : String<div class="sub-desc"><p>Optional 'root' property to extract the first argument from. This is used mainly when
+summing fields in records, where the fields are all stored inside the 'data' object</p>
+</div></li><li><span class="pre">start</span> : Number<div class="sub-desc"><p>(optional) The record index to start at (defaults to <tt>0</tt>)</p>
+</div></li><li><span class="pre">end</span> : Number<div class="sub-desc"><p>(optional) The record index to end at (defaults to <tt>-1</tt>)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The total</p>
+</li></ul></div></div></div><div id="method-suspendEvents" class="member inherited"><a href="Ext.chart.LegendItem.html#method-suspendEvents" rel="method-suspendEvents" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-suspendEvents" class="viewSource">view source</a></div><a name="suspendEvents"></a><a name="method-suspendEvents"></a><a href="Ext.chart.LegendItem.html#" rel="method-suspendEvents" class="cls expand">suspendEvents</a>(
+<span class="pre">Boolean queueSuspended</span>)
+ : void</div><div class="description"><div class="short"><p>Suspend the firing of all events. (see <a href="Ext.chart.LegendItem.html#resumeEvents" rel="Ext.chart.LegendItem#resumeEvents" class="docClass">resumeEvents</a>)</p>
+</div><div class="long"><p>Suspend the firing of all events. (see <a href="Ext.chart.LegendItem.html#resumeEvents" rel="Ext.chart.LegendItem#resumeEvents" class="docClass">resumeEvents</a>)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">queueSuspended</span> : Boolean<div class="sub-desc"><p>Pass as true to queue up suspended events to be fired
+after the <a href="Ext.chart.LegendItem.html#resumeEvents" rel="Ext.chart.LegendItem#resumeEvents" class="docClass">resumeEvents</a> call instead of discarding all suspended events;</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-syncFx" class="member inherited"><a href="Ext.chart.LegendItem.html#method-syncFx" rel="method-syncFx" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Animate.html" class="definedIn docClass">Ext.util.Animate</a><br/><a href="../source/Animate.html#Ext-util.Animate-method-syncFx" class="viewSource">view source</a></div><a name="syncFx"></a><a name="method-syncFx"></a><a href="Ext.chart.LegendItem.html#" rel="method-syncFx" class="cls expand">syncFx</a> : Ext.core.Element</div><div class="description"><div class="short">Ensures that all effects queued after syncFx is called on this object are
+run concurrently.  This is the opposite of ...</div><div class="long"><p>Ensures that all effects queued after syncFx is called on this object are
+run concurrently.  This is the opposite of <a href="Ext.chart.LegendItem.html#sequenceFx" rel="Ext.chart.LegendItem#sequenceFx" class="docClass">sequenceFx</a>.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;<p>The Element</p>
+</li></ul></div></div></div><div id="method-un" class="member inherited"><a href="Ext.chart.LegendItem.html#method-un" rel="method-un" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.Observable.html" class="definedIn docClass">Ext.util.Observable</a><br/><a href="../source/Observable.html#Ext-util.Observable-method-un" class="viewSource">view source</a></div><a name="un"></a><a name="method-un"></a><a href="Ext.chart.LegendItem.html#" rel="method-un" class="cls expand">un</a>(
+<span class="pre">String eventName, Function handler, [Object scope]</span>)
+ : void</div><div class="description"><div class="short"><p>Removes an event handler (shorthand for <a href="Ext.chart.LegendItem.html#removeListener" rel="Ext.chart.LegendItem#removeListener" class="docClass">removeListener</a>.)</p>
+</div><div class="long"><p>Removes an event handler (shorthand for <a href="Ext.chart.LegendItem.html#removeListener" rel="Ext.chart.LegendItem#removeListener" class="docClass">removeListener</a>.)</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">eventName</span> : String<div class="sub-desc"><p>The type of event the handler was associated with.</p>
+</div></li><li><span class="pre">handler</span> : Function<div class="sub-desc"><p>The handler to remove. <b>This must be a reference to the function passed into the <a href="Ext.chart.LegendItem.html#addListener" rel="Ext.chart.LegendItem#addListener" class="docClass">addListener</a> call.</b></p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope originally specified for the handler.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-updatePosition" class="member ni"><a href="Ext.chart.LegendItem.html#method-updatePosition" rel="method-updatePosition" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.chart.LegendItem.html" class="definedIn docClass">Ext.chart.LegendItem</a><br/><a href="../source/LegendItem.html#Ext-chart.LegendItem-method-updatePosition" class="viewSource">view source</a></div><a name="updatePosition"></a><a name="method-updatePosition"></a><a href="Ext.chart.LegendItem.html#" rel="method-updatePosition" class="cls expand">updatePosition</a>(
+<span class="pre">[Object relativeTo]</span>)
+ : void</div><div class="description"><div class="short"><p>Update the positions of all this item's sprites to match the root position
+of the legend box.</p>
+</div><div class="long"><p>Update the positions of all this item's sprites to match the root position
+of the legend box.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">relativeTo</span> : Object<div class="sub-desc"><p>(optional) If specified, this object's 'x' and 'y' values will be used</p>
+
+<pre><code>            as the reference point for the relative positioning. Defaults to the Legend.
+</code></pre>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div><div class="m-events"><a name="events"></a><div class="definedBy">Defined By</div><h3 class="evt p">Events</h3><div id="event-add" class="member f inherited"><a href="Ext.chart.LegendItem.html#event-add" rel="event-add" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-event-add" class="viewSource">view source</a></div><a name="add"></a><a name="event-add"></a><a href="Ext.chart.LegendItem.html#" rel="event-add" class="cls expand">add</a>(
+<span class="pre">Number index, Object o, String key</span>)
+</div><div class="description"><div class="short"><p>Fires when an item is added to the collection.</p>
+</div><div class="long"><p>Fires when an item is added to the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index at which the item was added.</p>
+</div></li><li><span class="pre">o</span> : Object<div class="sub-desc"><p>The item added.</p>
+</div></li><li><span class="pre">key</span> : String<div class="sub-desc"><p>The key associated with the added item.</p>
+</div></li></ul></div></div></div><div id="event-clear" class="member inherited"><a href="Ext.chart.LegendItem.html#event-clear" rel="event-clear" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-event-clear" class="viewSource">view source</a></div><a name="clear"></a><a name="event-clear"></a><a href="Ext.chart.LegendItem.html#" rel="event-clear" class="cls expand">clear</a></div><div class="description"><div class="short"><p>Fires when the collection is cleared.</p>
+</div><div class="long"><p>Fires when the collection is cleared.</p>
+</div></div></div><div id="event-remove" class="member inherited"><a href="Ext.chart.LegendItem.html#event-remove" rel="event-remove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-event-remove" class="viewSource">view source</a></div><a name="remove"></a><a name="event-remove"></a><a href="Ext.chart.LegendItem.html#" rel="event-remove" class="cls expand">remove</a>(
+<span class="pre">Object o, [String key]</span>)
+</div><div class="description"><div class="short"><p>Fires when an item is removed from the collection.</p>
+</div><div class="long"><p>Fires when an item is removed from the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">o</span> : Object<div class="sub-desc"><p>The item being removed.</p>
+</div></li><li><span class="pre">key</span> : String<div class="sub-desc"><p>(optional) The key associated with the removed item.</p>
+</div></li></ul></div></div></div><div id="event-replace" class="member inherited"><a href="Ext.chart.LegendItem.html#event-replace" rel="event-replace" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.util.AbstractMixedCollection.html" class="definedIn docClass">Ext.util.AbstractMixedCollection</a><br/><a href="../source/AbstractMixedCollection.html#Ext-util.AbstractMixedCollection-event-replace" class="viewSource">view source</a></div><a name="replace"></a><a name="event-replace"></a><a href="Ext.chart.LegendItem.html#" rel="event-replace" class="cls expand">replace</a>(
+<span class="pre">String key, Object old, Object new</span>)
+</div><div class="description"><div class="short"><p>Fires when an item is replaced in the collection.</p>
+</div><div class="long"><p>Fires when an item is replaced in the collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">key</span> : String<div class="sub-desc"><p>he key associated with the new added.</p>
+</div></li><li><span class="pre">old</span> : Object<div class="sub-desc"><p>The item being replaced.</p>
+</div></li><li><span class="pre">new</span> : Object<div class="sub-desc"><p>The new item.</p>
+</div></li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

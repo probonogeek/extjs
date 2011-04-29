@@ -1,60 +1,52 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require([
+    'Ext.tree.*',
+    'Ext.data.*',
+    'Ext.window.MessageBox'
+]);
 
-Ext.onReady(function(){
-    var tree = new Ext.tree.TreePanel({
-        renderTo:'tree-div',
-        title: 'My Task List',
-        height: 300,
-        width: 400,
-        useArrows:true,
-        autoScroll:true,
-        animate:true,
-        enableDD:true,
-        containerScroll: true,
-        rootVisible: false,
-        frame: true,
-        root: {
-            nodeType: 'async'
+Ext.onReady(function() {
+    var store = Ext.create('Ext.data.TreeStore', {
+        proxy: {
+            type: 'ajax',
+            url: 'check-nodes.json'
         },
-        
-        // auto create TreeLoader
-        dataUrl: 'check-nodes.json',
-        
-        listeners: {
-            'checkchange': function(node, checked){
-                if(checked){
-                    node.getUI().addClass('complete');
-                }else{
-                    node.getUI().removeClass('complete');
-                }
-            }
-        },
-        
-        buttons: [{
-            text: 'Get Completed Tasks',
-            handler: function(){
-                var msg = '', selNodes = tree.getChecked();
-                Ext.each(selNodes, function(node){
-                    if(msg.length > 0){
-                        msg += ', ';
-                    }
-                    msg += node.text;
-                });
-                Ext.Msg.show({
-                    title: 'Completed Tasks', 
-                    msg: msg.length > 0 ? msg : 'None',
-                    icon: Ext.Msg.INFO,
-                    minWidth: 200,
-                    buttons: Ext.Msg.OK
-                });
-            }
+        sorters: [{
+            property: 'leaf',
+            direction: 'ASC'
+        }, {
+            property: 'text',
+            direction: 'ASC'
         }]
     });
 
-    tree.getRootNode().expand(true);
+    var tree = Ext.create('Ext.tree.Panel', {
+        store: store,
+        rootVisible: false,
+        useArrows: true,
+        frame: true,
+        title: 'Check Tree',
+        renderTo: 'tree-div',
+        width: 200,
+        height: 250,
+        dockedItems: [{
+            xtype: 'toolbar',
+            items: {
+                text: 'Get checked nodes',
+                handler: function(){
+                    var records = tree.getView().getChecked(),
+                        names = [];
+                    
+                    Ext.Array.each(records, function(rec){
+                        names.push(rec.get('text'));
+                    });
+                    
+                    Ext.MessageBox.show({
+                        title: 'Selected Nodes',
+                        msg: names.join('<br />'),
+                        icon: Ext.MessageBox.INFO
+                    });
+                }
+            }
+        }]
+    });
 });

@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-AbstractPlugin'>/**
+</span> * @class Ext.AbstractPlugin
+ * @extends Object
+ *
+ * Plugins are injected 
+ */
+Ext.define('Ext.AbstractPlugin', {
+    disabled: false,
+    
+    constructor: function(config) {
+        //&lt;debug&gt;
+        if (!config.cmp &amp;&amp; Ext.global.console) {
+            Ext.global.console.warn(&quot;Attempted to attach a plugin &quot;);
+        }
+        //&lt;/debug&gt;
+        Ext.apply(this, config);
+    },
+    
+    getCmp: function() {
+        return this.cmp;
+    },
+
+<span id='Ext-AbstractPlugin-property-init'>    /**
+</span>     * The init method is invoked after initComponent has been run for the
+     * component which we are injecting the plugin into.
+     */
+    init: Ext.emptyFn,
+
+<span id='Ext-AbstractPlugin-property-destroy'>    /**
+</span>     * The destroy method is invoked by the owning Component at the time the Component is being destroyed.
+     * Use this method to clean up an resources.
+     */
+    destroy: Ext.emptyFn,
+
+<span id='Ext-AbstractPlugin-method-enable'>    /**
+</span>     * Enable the plugin and set the disabled flag to false.
+     */
+    enable: function() {
+        this.disabled = false;
+    },
+
+<span id='Ext-AbstractPlugin-method-disable'>    /**
+</span>     * Disable the plugin and set the disabled flag to true.
+     */
+    disable: function() {
+        this.disabled = true;
+    }
+});
+</pre></pre></body></html>

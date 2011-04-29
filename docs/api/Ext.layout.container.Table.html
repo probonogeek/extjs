@@ -1,0 +1,157 @@
+<!DOCTYPE html><html><head><title>Ext.layout.container.Table | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.layout.container.Table',
+        docClass: 'Ext.layout.container.Table',
+        docReq: 'Ext.layout.container.Table',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Table.html#Ext-layout.container.Table';
+    clsInfo = {"methods":["getLayoutItems","getRenderTarget","getTarget"],"cfgs":["bindToOwnerCtComponent","bindToOwnerCtContainer","columns","itemCls","tableAttrs"],"properties":[],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Table.html#Ext-layout.container.Table" target="_blank">Ext.layout.container.Table</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.layout.Layout.html" rel="Ext.layout.Layout" class="cls docClass">Ext.layout.Layout</a><div class="subclass"><a href="Ext.layout.container.AbstractContainer.html" rel="Ext.layout.container.AbstractContainer" class="cls docClass">Ext.layout.container.AbstractContainer</a><div class="subclass"><a href="Ext.layout.container.Container.html" rel="Ext.layout.container.Container" class="cls docClass">Ext.layout.container.Container</a><div class="subclass"><a href="Ext.layout.container.Auto.html" rel="Ext.layout.container.Auto" class="cls docClass">Ext.layout.container.Auto</a><div class="subclass"><strong>Ext.layout.container.Table</strong></div></div></div></div></div></pre><p>This layout allows you to easily render content into an HTML table.  The total number of columns can be
+specified, and rowspan and colspan can be used to create complex layouts within the table.
+This class is intended to be extended or created via the <code>layout: {type: 'table'}</code>
+<a href="Ext.container.Container.html#layout" rel="Ext.container.Container#layout" class="docClass">Ext.container.Container.layout</a> config, and should generally not need to be created directly via the new keyword.</p>
+
+
+<p>Note that when creating a layout via config, the layout-specific config properties must be passed in via
+the <a href="Ext.container.Container.html#layout" rel="Ext.container.Container#layout" class="docClass">Ext.container.Container.layout</a> object which will then be applied internally to the layout.  In the
+case of TableLayout, the only valid layout config properties are <a href="Ext.layout.container.Table.html#columns" rel="Ext.layout.container.Table#columns" class="docClass">columns</a> and <a href="Ext.layout.container.Table.html#tableAttrs" rel="Ext.layout.container.Table#tableAttrs" class="docClass">tableAttrs</a>.
+However, the items added to a TableLayout can supply the following table-specific config properties:</p>
+
+
+<ul>
+<li><b>rowspan</b> Applied to the table cell containing the item.</li>
+<li><b>colspan</b> Applied to the table cell containing the item.</li>
+<li><b>cellId</b> An id applied to the table cell containing the item.</li>
+<li><b>cellCls</b> A CSS class name added to the table cell containing the item.</li>
+</ul>
+
+
+<p>The basic concept of building up a TableLayout is conceptually very similar to building up a standard
+HTML table.  You simply add each panel (or "cell") that you want to include along with any span attributes
+specified as the special config properties of rowspan and colspan which work exactly like their HTML counterparts.
+Rather than explicitly creating and nesting rows and columns as you would in HTML, you simply specify the
+total column count in the layoutConfig and start adding panels in their natural order from left to right,
+top to bottom.  The layout will automatically figure out, based on the column count, rowspans and colspans,
+how to position each panel within the table.  Just like with HTML tables, your rowspans and colspans must add
+up correctly in your overall layout or you'll end up with missing and/or extra cells!  Example usage:</p>
+
+
+<p><img class="screenshot" src="../Ext.layout.container.Table.png" alt="Ext.layout.container.Table container layout" /></p>
+
+<pre class="prettyprint"><code>// This code will generate a layout table that is 3 columns by 2 rows
+// with some spanning included.  The basic layout will be:
+// +--------+-----------------+
+// |   A    |   B             |
+// |        |--------+--------|
+// |        |   C    |   D    |
+// +--------+--------+--------+
+    Ext.create('Ext.panel.Panel', {
+        title: 'Table Layout',
+        width: 300,
+        height: 150,
+        layout: {
+            type: 'table',
+            // The total column count must be specified here
+            columns: 3
+        },
+        defaults: {
+            // applied to each contained panel
+            bodyStyle:'padding:20px'
+        },
+        items: [{
+            html: 'Cell A content',
+            rowspan: 2
+        },{
+            html: 'Cell B content',
+            colspan: 2
+        },{
+            html: 'Cell C content',
+            cellCls: 'highlight'
+        },{
+            html: 'Cell D content'
+        }],
+        renderTo: Ext.getBody()
+    });
+</code></pre>
+
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">CSS Class configs</h4><div id="config-itemCls" class="member f inherited"><a href="Ext.layout.container.Table.html#config-itemCls" rel="config-itemCls" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-cfg-itemCls" class="viewSource">view source</a></div><a name="itemCls"></a><a name="config-itemCls"></a><a href="Ext.layout.container.Table.html#" rel="config-itemCls" class="cls expand">itemCls</a><span> : String</span></div><div class="description"><div class="short">An optional extra CSS class that will be added to the container. This can be useful for adding
+customized styles to t...</div><div class="long"><p>An optional extra CSS class that will be added to the container. This can be useful for adding
+customized styles to the container or any of its children using standard CSS rules. See
+<a href="Ext.Component.html" rel="Ext.Component" class="docClass">Ext.Component</a>.<a href="Ext.Component.html#ctCls" rel="Ext.Component#ctCls" class="docClass">ctCls</a> also.</p>
+
+
+<p></p></p>
+</div></div></div><h4 class="cfgGroup">Other Configs</h4><div id="config-bindToOwnerCtComponent" class="member f inherited"><a href="Ext.layout.container.Table.html#config-bindToOwnerCtComponent" rel="config-bindToOwnerCtComponent" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-cfg-bindToOwnerCtComponent" class="viewSource">view source</a></div><a name="bindToOwnerCtComponent"></a><a name="config-bindToOwnerCtComponent"></a><a href="Ext.layout.container.Table.html#" rel="config-bindToOwnerCtComponent" class="cls expand">bindToOwnerCtComponent</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Flag to notify the ownerCt Component on afterLayout of a change</p>
+</div><div class="long"><p>Flag to notify the ownerCt Component on afterLayout of a change</p>
+</div></div></div><div id="config-bindToOwnerCtContainer" class="member inherited"><a href="Ext.layout.container.Table.html#config-bindToOwnerCtContainer" rel="config-bindToOwnerCtContainer" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-cfg-bindToOwnerCtContainer" class="viewSource">view source</a></div><a name="bindToOwnerCtContainer"></a><a name="config-bindToOwnerCtContainer"></a><a href="Ext.layout.container.Table.html#" rel="config-bindToOwnerCtContainer" class="cls expand">bindToOwnerCtContainer</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Flag to notify the ownerCt Container on afterLayout of a change</p>
+</div><div class="long"><p>Flag to notify the ownerCt Container on afterLayout of a change</p>
+</div></div></div><div id="config-columns" class="member ni"><a href="Ext.layout.container.Table.html#config-columns" rel="config-columns" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.Table.html" class="definedIn docClass">Ext.layout.container.Table</a><br/><a href="../source/Table.html#Ext-layout.container.Table-cfg-columns" class="viewSource">view source</a></div><a name="columns"></a><a name="config-columns"></a><a href="Ext.layout.container.Table.html#" rel="config-columns" class="cls expand">columns</a><span> : Number</span></div><div class="description"><div class="short">The total number of columns to create in the table for this layout.  If not specified, all Components added to
+this l...</div><div class="long"><p>The total number of columns to create in the table for this layout.  If not specified, all Components added to
+this layout will be rendered into a single row using one column per Component.</p>
+</div></div></div><div id="config-itemCls" class="member inherited"><a href="Ext.layout.container.Table.html#config-itemCls" rel="config-itemCls" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-cfg-itemCls" class="viewSource">view source</a></div><a name="itemCls"></a><a name="config-itemCls"></a><a href="Ext.layout.container.Table.html#" rel="config-itemCls" class="cls expand">itemCls</a><span> : String</span></div><div class="description"><div class="short">An optional extra CSS class that will be added to the container. This can be useful for adding
+customized styles to t...</div><div class="long"><p>An optional extra CSS class that will be added to the container. This can be useful for adding
+customized styles to the container or any of its children using standard CSS rules. See
+<a href="Ext.Component.html" rel="Ext.Component" class="docClass">Ext.Component</a>.<a href="Ext.Component.html#ctCls" rel="Ext.Component#ctCls" class="docClass">ctCls</a> also.</p>
+
+
+<p></p></p>
+</div></div></div><div id="config-tableAttrs" class="member ni"><a href="Ext.layout.container.Table.html#config-tableAttrs" rel="config-tableAttrs" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.Table.html" class="definedIn docClass">Ext.layout.container.Table</a><br/><a href="../source/Table.html#Ext-layout.container.Table-cfg-tableAttrs" class="viewSource">view source</a></div><a name="tableAttrs"></a><a name="config-tableAttrs"></a><a href="Ext.layout.container.Table.html#" rel="config-tableAttrs" class="cls expand">tableAttrs</a><span> : Object</span></div><div class="description"><div class="short">An object containing properties which are added to the DomHelper specification
+used to create the layout's &lt;table&...</div><div class="long"><p>An object containing properties which are added to the <a href="Ext.core.DomHelper.html" rel="Ext.core.DomHelper" class="docClass">DomHelper</a> specification
+used to create the layout's <tt>&lt;table&gt;</tt> element. Example:</p>
+
+
+<pre><code>{
+    xtype: 'panel',
+    layout: {
+        type: 'table',
+        columns: 3,
+        tableAttrs: {
+            style: {
+                width: '100%'
+            }
+        }
+    }
+}</code></pre>
+
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-getLayoutItems" class="member f inherited"><a href="Ext.layout.container.Table.html#method-getLayoutItems" rel="method-getLayoutItems" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-method-getLayoutItems" class="viewSource">view source</a></div><a name="getLayoutItems"></a><a name="method-getLayoutItems"></a><a href="Ext.layout.container.Table.html#" rel="method-getLayoutItems" class="cls expand">getLayoutItems</a> : Array</div><div class="description"><div class="short">Returns an array of child components either for a render phase (Performed in the beforeLayout method of the layout's
+...</div><div class="long"><p>Returns an array of child components either for a render phase (Performed in the beforeLayout method of the layout's
+base class), or the layout phase (onLayout).</p>
+
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Array</span>&nbsp; &nbsp;<p>of child components</p>
+</li></ul></div></div></div><div id="method-getRenderTarget" class="member inherited"><a href="Ext.layout.container.Table.html#method-getRenderTarget" rel="method-getRenderTarget" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-method-getRenderTarget" class="viewSource">view source</a></div><a name="getRenderTarget"></a><a name="method-getRenderTarget"></a><a href="Ext.layout.container.Table.html#" rel="method-getRenderTarget" class="cls expand">getRenderTarget</a> : Ext.core.Element</div><div class="description"><div class="short">Returns the element into which rendering must take place. Defaults to the owner Container's Ext.AbstractComponent.tar...</div><div class="long"><p>Returns the element into which rendering must take place. Defaults to the owner Container's <a href="Ext.AbstractComponent.html#targetEl" rel="Ext.AbstractComponent#targetEl" class="docClass">Ext.AbstractComponent.targetEl</a>.</p>
+
+
+<p>May be overridden in layout managers which implement an inner element.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getTarget" class="member inherited"><a href="Ext.layout.container.Table.html#method-getTarget" rel="method-getTarget" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.layout.container.AbstractContainer.html" class="definedIn docClass">Ext.layout.container.AbstractContainer</a><br/><a href="../source/AbstractContainer2.html#Ext-layout.container.AbstractContainer-method-getTarget" class="viewSource">view source</a></div><a name="getTarget"></a><a name="method-getTarget"></a><a href="Ext.layout.container.Table.html#" rel="method-getTarget" class="cls expand">getTarget</a> : Ext.core.Element</div><div class="description"><div class="short"><p>Returns the owner component's resize element.</p>
+</div><div class="long"><p>Returns the owner component's resize element.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

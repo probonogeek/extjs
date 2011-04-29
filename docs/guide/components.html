@@ -1,0 +1,74 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Components</h1>
+
+<hr></hr>
+
+<p>All components in Ext JS 4 are rendered with a base div element which provides a unique id, and baseline component classes (cls, cmpCls, baseCls, and ui). If additional elements are needed to create a component, they are now handled with an XTemplate (renderTpl). Data for the XTemplate is read from a renderData object and Ext.Element references can be placed on the component instance via renderSelectors. The renderSelector is scoped from the base div element and uses standard css selectors. These Ext.Element references are part of the component lifecycle and removed automatically when the component is destroyed. The following example will help illustrate the creation of a custom component:</p>
+
+<p>Simple custom icon component example:</p>
+
+<pre class="prettyprint"><code>IconComponent = Ext.extend(Ext.Component, {
+   iconCls: &#8216;myIcon&#8217;,
+   renderTpl: &#8216;&lt;img alt="" src="{blank}" class="{iconCls}"/&gt;&#8216;,
+   onRender: function() {
+       Ext.applyIf(this.renderData, {
+           blank: Ext.BLANK_IMAGE_URL,
+           iconCls: this.iconCls
+       });
+       Ext.applyIf(this.renderSelectors, {
+           iconEl: &#8216;.&#8217; + this.iconCls
+       });
+       IconComponent.superclass.onRender.call(this);
+   },
+   changeIconCls: function(newIconCls) {
+       if (this.rendered) {
+           this.iconEl.replaceClass(this.iconCls, newIconCls);
+       }
+       this.iconCls = newIconCls;
+   }
+});</code></pre>
+
+<p>The renderTpl defines an XTemplate with "blank" and "iconCls" variables which are read from renderData at render time. In addition, an "iconEl" reference to the Ext.Element is applied to the instance at render time. The changeIconCls method can now use the iconEl as soon as the component has been rendered.</p>
+
+<p><iframe src="http://player.vimeo.com/video/17905336?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p><iframe src="http://player.vimeo.com/video/17920271?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p><iframe src="http://player.vimeo.com/video/18777458?byline=0&amp;portrait=0" width="500" height="281" frameborder="0"></iframe></p>
+
+<p>See also:</p>
+
+<ul><li><a href="http://edspencer.net/2010/07/using-the-ext-js-pivotgrid.html">Using the Ext JS Pivot Grid</a></li></ul>
+
+<h2>This guide is a work in progress.</h2>
+
+<p>Please check back soon</p></div></div></div></div></body></html>

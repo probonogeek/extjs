@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><head><title>Ext.app.Application | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.app.Application',
+        docClass: 'Ext.app.Application',
+        docReq: 'Ext.app.Application',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Application.html#Ext-app.Application';
+    clsInfo = {"methods":["Application"],"cfgs":["appFolder","autoCreateViewport","defaultUrl","enableQuickTips","id","name","scope"],"properties":["launch"],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Application.html#Ext-app.Application" target="_blank">Ext.app.Application</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.app.Controller.html" rel="Ext.app.Controller" class="cls docClass">Ext.app.Controller</a><div class="subclass"><strong>Ext.app.Application</strong></div></div></pre><p>Represents an <a href="Ext.html" rel="Ext" class="docClass">Ext</a> JS 4 application, which is typically a single page app using a <a href="Ext.container.Viewport.html" rel="Ext.container.Viewport" class="docClass">Viewport</a>.
+A typical <a href="Ext.app.Application.html" rel="Ext.app.Application" class="docClass">Ext.app.Application</a> might look like this:</p>
+
+<pre class="prettyprint"><code>Ext.application({
+    name: 'MyApp',
+    launch: function() {
+        Ext.create('Ext.container.Viewport', {
+            items: {
+                html: 'My App'
+            }
+        });
+    }
+});
+</code></pre>
+
+<p>This does several things. First it creates a global variable called 'MyApp' - all of your Application's classes (such
+as its Models, Views and Controllers) will reside under this single namespace, which drastically lowers the chances
+of colliding global variables.</p>
+
+<p>When the page is ready and all of your JavaScript has loaded, your Application's <a href="Ext.app.Application.html#launch" rel="Ext.app.Application#launch" class="docClass">launch</a> function is called,
+at which time you can run the code that starts your app. Usually this consists of creating a Viewport, as we do in
+the example above.</p>
+
+<p><u>Telling Application about the rest of the app</u></p>
+
+<p>Because an <a href="Ext.app.Application.html" rel="Ext.app.Application" class="docClass">Ext.app.Application</a> represents an entire app, we should tell it about the other parts of the app - namely
+the Models, Views and Controllers that are bundled with the application. Let's say we have a blog management app; we
+might have Models and Controllers for Posts and Comments, and Views for listing, adding and editing Posts and Comments.
+Here's how we'd tell our Application about all these things:</p>
+
+<pre class="prettyprint"><code>Ext.application({
+    name: 'Blog',
+    models: ['Post', 'Comment'],
+    controllers: ['Posts', 'Comments'],
+
+    launch: function() {
+        ...
+    }
+});
+</code></pre>
+
+<p>Note that we didn't actually list the Views directly in the Application itself. This is because Views are managed by
+Controllers, so it makes sense to keep those dependencies there. The Application will load each of the specified
+Controllers using the pathing conventions laid out in the <a href="../guide/application_architecture.html">application
+architecture guide</a> - in this case expecting the controllers to reside in app/controller/Posts.js and
+app/controller/Comments.js. In turn, each Controller simply needs to list the Views it uses and they will be
+automatically loaded. Here's how our Posts controller like be defined:</p>
+
+<pre class="prettyprint"><code>Ext.define('MyApp.controller.Posts', {
+    extend: 'Ext.app.Controller',
+    views: ['posts.List', 'posts.Edit'],
+
+    //the rest of the Controller here
+});
+</code></pre>
+
+<p>Because we told our Application about our Models and Controllers, and our Controllers about their Views, Ext JS will
+automatically load all of our app files for us. This means we don't have to manually add script tags into our html
+files whenever we add a new class, but more importantly it enables us to create a minimized build of our entire
+application using the <a href="Ext.html" rel="Ext" class="docClass">Ext</a> JS 4 SDK Tools.</p>
+
+<p>For more information about writing <a href="Ext.html" rel="Ext" class="docClass">Ext</a> JS 4 applications, please see the <a href="../guide/application_architecture.html">
+application architecture guide</a>.</p>
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-appFolder" class="member f ni"><a href="Ext.app.Application.html#config-appFolder" rel="config-appFolder" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-appFolder" class="viewSource">view source</a></div><a name="appFolder"></a><a name="config-appFolder"></a><a href="Ext.app.Application.html#" rel="config-appFolder" class="cls expand">appFolder</a><span> : String</span></div><div class="description"><div class="short">The path to the directory which contains all application's classes.
+This path will be registered via Ext.Loader.setPa...</div><div class="long"><p>The path to the directory which contains all application's classes.
+This path will be registered via <a href="Ext.Loader.html#setPath" rel="Ext.Loader#setPath" class="docClass">Ext.Loader.setPath</a> for the namespace specified in the <a href="Ext.app.Application.html#name" rel="Ext.app.Application#name" class="docClass">name</a> config.
+Defaults to 'app'</p>
+</div></div></div><div id="config-autoCreateViewport" class="member ni"><a href="Ext.app.Application.html#config-autoCreateViewport" rel="config-autoCreateViewport" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-autoCreateViewport" class="viewSource">view source</a></div><a name="autoCreateViewport"></a><a name="config-autoCreateViewport"></a><a href="Ext.app.Application.html#" rel="config-autoCreateViewport" class="cls expand">autoCreateViewport</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Automatically loads and instantiates AppName.view.Viewport before firing the launch function.</p>
+</div><div class="long"><p>Automatically loads and instantiates AppName.view.Viewport before firing the launch function.</p>
+</div></div></div><div id="config-defaultUrl" class="member ni"><a href="Ext.app.Application.html#config-defaultUrl" rel="config-defaultUrl" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-defaultUrl" class="viewSource">view source</a></div><a name="defaultUrl"></a><a name="config-defaultUrl"></a><a href="Ext.app.Application.html#" rel="config-defaultUrl" class="cls expand">defaultUrl</a><span> : String</span></div><div class="description"><div class="short"><p>When the app is first loaded, this url will be redirected to. Defaults to undefined</p>
+</div><div class="long"><p>When the app is first loaded, this url will be redirected to. Defaults to undefined</p>
+</div></div></div><div id="config-enableQuickTips" class="member ni"><a href="Ext.app.Application.html#config-enableQuickTips" rel="config-enableQuickTips" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-enableQuickTips" class="viewSource">view source</a></div><a name="enableQuickTips"></a><a name="config-enableQuickTips"></a><a href="Ext.app.Application.html#" rel="config-enableQuickTips" class="cls expand">enableQuickTips</a><span> : Boolean</span></div><div class="description"><div class="short"><p>True to automatically set up <a href="Ext.tip.QuickTip.html" rel="Ext.tip.QuickTip" class="docClass">Ext.tip.QuickTip</a> support (defaults to true)</p>
+</div><div class="long"><p>True to automatically set up <a href="Ext.tip.QuickTip.html" rel="Ext.tip.QuickTip" class="docClass">Ext.tip.QuickTip</a> support (defaults to true)</p>
+</div></div></div><div id="config-id" class="member inherited"><a href="Ext.app.Application.html#config-id" rel="config-id" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Controller.html" class="definedIn docClass">Ext.app.Controller</a><br/><a href="../source/Controller.html#Ext-app.Controller-cfg-id" class="viewSource">view source</a></div><a name="id"></a><a name="config-id"></a><a href="Ext.app.Application.html#" rel="config-id" class="cls expand">id</a><span> : Object</span></div><div class="description"><div class="short"><p>The id of this controller. You can use this id when dispatching.</p>
+</div><div class="long"><p>The id of this controller. You can use this id when dispatching.</p>
+</div></div></div><div id="config-name" class="member ni"><a href="Ext.app.Application.html#config-name" rel="config-name" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-name" class="viewSource">view source</a></div><a name="name"></a><a name="config-name"></a><a href="Ext.app.Application.html#" rel="config-name" class="cls expand">name</a><span> : Object</span></div><div class="description"><div class="short">The name of your application. This will also be the namespace for your views, controllers
+models and stores. Don't us...</div><div class="long"><p>The name of your application. This will also be the namespace for your views, controllers
+models and stores. Don't use spaces or special characters in the name.</p>
+</div></div></div><div id="config-scope" class="member ni"><a href="Ext.app.Application.html#config-scope" rel="config-scope" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-cfg-scope" class="viewSource">view source</a></div><a name="scope"></a><a name="config-scope"></a><a href="Ext.app.Application.html#" rel="config-scope" class="cls expand">scope</a><span> : Object</span></div><div class="description"><div class="short"><p>The scope to execute the <a href="Ext.app.Application.html#launch" rel="Ext.app.Application#launch" class="docClass">launch</a> function in. Defaults to the Application
+instance.</p>
+</div><div class="long"><p>The scope to execute the <a href="Ext.app.Application.html#launch" rel="Ext.app.Application#launch" class="docClass">launch</a> function in. Defaults to the Application
+instance.</p>
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-launch" class="member f ni"><a href="Ext.app.Application.html#property-launch" rel="property-launch" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-property-launch" class="viewSource">view source</a></div><a name="launch"></a><a name="property-launch"></a><a href="Ext.app.Application.html#" rel="property-launch" class="cls expand">launch</a><span> : Function</span></div><div class="description"><div class="short">Called automatically when the page has completely loaded. This is an empty function that should be
+overridden by each...</div><div class="long"><p>Called automatically when the page has completely loaded. This is an empty function that should be
+overridden by each application that needs to take action on page load</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-Application" class="member f ni"><a href="Ext.app.Application.html#method-Application" rel="method-Application" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.app.Application.html" class="definedIn docClass">Ext.app.Application</a><br/><a href="../source/Application.html#Ext-app.Application-method-constructor" class="viewSource">view source</a></div><a name="Application"></a><a name="method-Application"></a><a href="Ext.app.Application.html#" rel="method-Application" class="cls expand">Application</a> : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

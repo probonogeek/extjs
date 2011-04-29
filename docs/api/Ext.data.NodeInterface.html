@@ -1,0 +1,359 @@
+<!DOCTYPE html><html><head><title>Ext.data.NodeInterface | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.data.NodeInterface',
+        docClass: 'Ext.data.NodeInterface',
+        docReq: 'Ext.data.NodeInterface',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'NodeInterface.html#Ext-data.NodeInterface';
+    clsInfo = {"methods":["appendChild","bubble","cascadeBy","collapse","collapseChildren","contains","copy","createNode","decorate","destroy","eachChild","expand","expandChildren","findChild","findChildBy","getChildAt","getDepth","hasChildNodes","indexOf","insertBefore","insertChild","isAncestor","isExpandable","isExpanded","isFirst","isLast","isLeaf","isLoaded","isLoading","isRoot","isVisible","remove","removeAll","removeChild","replaceChild","sort","updateInfo"],"cfgs":[],"properties":[],"events":["append","beforeappend","beforecollapse","beforeexpand","beforeinsert","beforemove","beforeremove","collapse","expand","insert","move","remove"],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/NodeInterface.html#Ext-data.NodeInterface" target="_blank">Ext.data.NodeInterface</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>This class is meant to be used as a set of methods that are applied to the prototype of a
+Record to decorate it with a Node API. This means that models used in conjunction with a tree
+will have all of the tree related methods available on the model. In general this class will
+not be used directly by the developer.</p>
+<div class="members"><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-appendChild" class="member f ni"><a href="Ext.data.NodeInterface.html#method-appendChild" rel="method-appendChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-appendChild" class="viewSource">view source</a></div><a name="appendChild"></a><a name="method-appendChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-appendChild" class="cls expand">appendChild</a>(
+<span class="pre">Node/Array node, Object suppressEvents, Object suppressNodeUpdate</span>)
+ : Node</div><div class="description"><div class="short">Insert node(s) as the last child node of this node.
+
+
+If the node was previously a child node of another parent node,...</div><div class="long"><p>Insert node(s) as the last child node of this node.</p>
+
+
+<p>If the node was previously a child node of another parent node, it will be removed from that node first.</p>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node/Array<div class="sub-desc"><p>The node or Array of nodes to append</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li><li><span class="pre">suppressNodeUpdate</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The appended node if single append, or null if an array was passed</p>
+</li></ul></div></div></div><div id="method-bubble" class="member ni"><a href="Ext.data.NodeInterface.html#method-bubble" rel="method-bubble" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-bubble" class="viewSource">view source</a></div><a name="bubble"></a><a name="method-bubble"></a><a href="Ext.data.NodeInterface.html#" rel="method-bubble" class="cls expand">bubble</a>(
+<span class="pre">Function fn, [Object scope], [Array args]</span>)
+ : void</div><div class="description"><div class="short">Bubbles up the tree from this node, calling the specified function with each node. The arguments to the function
+will...</div><div class="long"><p>Bubbles up the tree from this node, calling the specified function with each node. The arguments to the function
+will be the args provided or the current node. If the function returns false at any point,
+the bubble is stopped.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to call</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Node.</p>
+</div></li><li><span class="pre">args</span> : Array<div class="sub-desc"><p>(optional) The args to call the function with (default to passing the current Node)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-cascadeBy" class="member ni"><a href="Ext.data.NodeInterface.html#method-cascadeBy" rel="method-cascadeBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-cascadeBy" class="viewSource">view source</a></div><a name="cascadeBy"></a><a name="method-cascadeBy"></a><a href="Ext.data.NodeInterface.html#" rel="method-cascadeBy" class="cls expand">cascadeBy</a>(
+<span class="pre">Function fn, [Object scope], [Array args]</span>)
+ : void</div><div class="description"><div class="short">Cascades down the tree from this node, calling the specified function with each node. The arguments to the function
+w...</div><div class="long"><p>Cascades down the tree from this node, calling the specified function with each node. The arguments to the function
+will be the args provided or the current node. If the function returns false at any point,
+the cascade is stopped on that branch.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to call</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Node.</p>
+</div></li><li><span class="pre">args</span> : Array<div class="sub-desc"><p>(optional) The args to call the function with (default to passing the current Node)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-collapse" class="member ni"><a href="Ext.data.NodeInterface.html#method-collapse" rel="method-collapse" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-collapse" class="viewSource">view source</a></div><a name="collapse"></a><a name="method-collapse"></a><a href="Ext.data.NodeInterface.html#" rel="method-collapse" class="cls expand">collapse</a>(
+<span class="pre">Function recursive, Function callback, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Collapse this node.</p>
+</div><div class="long"><p>Collapse this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">recursive</span> : Function<div class="sub-desc"><p>(Optional) True to recursively collapse all the children</p>
+</div></li><li><span class="pre">callback</span> : Function<div class="sub-desc"><p>(Optional) The function to execute once the collapse completes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The scope to run the callback in</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-collapseChildren" class="member ni"><a href="Ext.data.NodeInterface.html#method-collapseChildren" rel="method-collapseChildren" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-collapseChildren" class="viewSource">view source</a></div><a name="collapseChildren"></a><a name="method-collapseChildren"></a><a href="Ext.data.NodeInterface.html#" rel="method-collapseChildren" class="cls expand">collapseChildren</a>(
+<span class="pre">Function recursive, Function callback, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Collapse all the children of this node.</p>
+</div><div class="long"><p>Collapse all the children of this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">recursive</span> : Function<div class="sub-desc"><p>(Optional) True to recursively collapse all the children</p>
+</div></li><li><span class="pre">callback</span> : Function<div class="sub-desc"><p>(Optional) The function to execute once all the children are collapsed</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The scope to run the callback in</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-contains" class="member ni"><a href="Ext.data.NodeInterface.html#method-contains" rel="method-contains" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-contains" class="viewSource">view source</a></div><a name="contains"></a><a name="method-contains"></a><a href="Ext.data.NodeInterface.html#" rel="method-contains" class="cls expand">contains</a>(
+<span class="pre">Node node</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is an ancestor (at any point) of the passed node.</p>
+</div><div class="long"><p>Returns true if this node is an ancestor (at any point) of the passed node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-copy" class="member ni"><a href="Ext.data.NodeInterface.html#method-copy" rel="method-copy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-copy" class="viewSource">view source</a></div><a name="copy"></a><a name="method-copy"></a><a href="Ext.data.NodeInterface.html#" rel="method-copy" class="cls expand">copy</a>(
+<span class="pre">[String id], [Boolean deep]</span>)
+ : Node</div><div class="description"><div class="short"><p>Creates a copy (clone) of this Node.</p>
+</div><div class="long"><p>Creates a copy (clone) of this Node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">id</span> : String<div class="sub-desc"><p>(optional) A new id, defaults to this Node's id. See <code><a href="Ext.data.NodeInterface.html#id" rel="Ext.data.NodeInterface#id" class="docClass">id</a></code>.</p>
+</div></li><li><span class="pre">deep</span> : Boolean<div class="sub-desc"><p>(optional) <p>If passed as <code>true</code>, all child Nodes are recursively copied into the new Node.</p></p>
+
+<p>If omitted or false, the copy will have no child Nodes.</p>
+
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>A copy of this Node.</p>
+</li></ul></div></div></div><div id="method-createNode" class="member ni"><a href="Ext.data.NodeInterface.html#method-createNode" rel="method-createNode" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-createNode" class="viewSource">view source</a></div><a name="createNode"></a><a name="method-createNode"></a><a href="Ext.data.NodeInterface.html#" rel="method-createNode" class="cls expand">createNode</a>(
+<span class="pre">Object node</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Ensures that the passed object is an instance of a Record with the NodeInterface applied</p>
+</div><div class="long"><p>Ensures that the passed object is an instance of a Record with the NodeInterface applied</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-decorate" class="member ni"><a href="Ext.data.NodeInterface.html#method-decorate" rel="method-decorate" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-decorate" class="viewSource">view source</a></div><a name="decorate"></a><a name="method-decorate"></a><a href="Ext.data.NodeInterface.html#" rel="method-decorate" class="cls expand">decorate</a>(
+<span class="pre">Ext.data.Record record</span>)
+ : void</div><div class="description"><div class="short">This method allows you to decorate a Record's prototype to implement the NodeInterface.
+This adds a set of methods, n...</div><div class="long"><p>This method allows you to decorate a Record's prototype to implement the NodeInterface.
+This adds a set of methods, new events, new properties and new fields on every Record
+with the same Model as the passed Record.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">record</span> : Ext.data.Record<div class="sub-desc"><p>The Record you want to decorate the prototype of.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-destroy" class="member ni"><a href="Ext.data.NodeInterface.html#method-destroy" rel="method-destroy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-destroy" class="viewSource">view source</a></div><a name="destroy"></a><a name="method-destroy"></a><a href="Ext.data.NodeInterface.html#" rel="method-destroy" class="cls expand">destroy</a>(
+<span class="pre">Object silent</span>)
+ : void</div><div class="description"><div class="short"><p>Destroys the node.</p>
+</div><div class="long"><p>Destroys the node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">silent</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-eachChild" class="member ni"><a href="Ext.data.NodeInterface.html#method-eachChild" rel="method-eachChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-eachChild" class="viewSource">view source</a></div><a name="eachChild"></a><a name="method-eachChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-eachChild" class="cls expand">eachChild</a>(
+<span class="pre">Function fn, [Object scope], [Array args]</span>)
+ : void</div><div class="description"><div class="short">Interates the child nodes of this node, calling the specified function with each node. The arguments to the function
+...</div><div class="long"><p>Interates the child nodes of this node, calling the specified function with each node. The arguments to the function
+will be the args provided or the current node. If the function returns false at any point,
+the iteration stops.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function to call</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current Node in the iteration.</p>
+</div></li><li><span class="pre">args</span> : Array<div class="sub-desc"><p>(optional) The args to call the function with (default to passing the current Node)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-expand" class="member ni"><a href="Ext.data.NodeInterface.html#method-expand" rel="method-expand" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-expand" class="viewSource">view source</a></div><a name="expand"></a><a name="method-expand"></a><a href="Ext.data.NodeInterface.html#" rel="method-expand" class="cls expand">expand</a>(
+<span class="pre">Function recursive, Function callback, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Expand this node.</p>
+</div><div class="long"><p>Expand this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">recursive</span> : Function<div class="sub-desc"><p>(Optional) True to recursively expand all the children</p>
+</div></li><li><span class="pre">callback</span> : Function<div class="sub-desc"><p>(Optional) The function to execute once the expand completes</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The scope to run the callback in</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-expandChildren" class="member ni"><a href="Ext.data.NodeInterface.html#method-expandChildren" rel="method-expandChildren" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-expandChildren" class="viewSource">view source</a></div><a name="expandChildren"></a><a name="method-expandChildren"></a><a href="Ext.data.NodeInterface.html#" rel="method-expandChildren" class="cls expand">expandChildren</a>(
+<span class="pre">Function recursive, Function callback, Object scope</span>)
+ : void</div><div class="description"><div class="short"><p>Expand all the children of this node.</p>
+</div><div class="long"><p>Expand all the children of this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">recursive</span> : Function<div class="sub-desc"><p>(Optional) True to recursively expand all the children</p>
+</div></li><li><span class="pre">callback</span> : Function<div class="sub-desc"><p>(Optional) The function to execute once all the children are expanded</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The scope to run the callback in</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-findChild" class="member ni"><a href="Ext.data.NodeInterface.html#method-findChild" rel="method-findChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-findChild" class="viewSource">view source</a></div><a name="findChild"></a><a name="method-findChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-findChild" class="cls expand">findChild</a>(
+<span class="pre">String attribute, Mixed value, Boolean deep</span>)
+ : Node</div><div class="description"><div class="short"><p>Finds the first child that has the attribute with the specified value.</p>
+</div><div class="long"><p>Finds the first child that has the attribute with the specified value.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">attribute</span> : String<div class="sub-desc"><p>The attribute name</p>
+</div></li><li><span class="pre">value</span> : Mixed<div class="sub-desc"><p>The value to search for</p>
+</div></li><li><span class="pre">deep</span> : Boolean<div class="sub-desc"><p>(Optional) True to search through nodes deeper than the immediate children</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The found child or null if none was found</p>
+</li></ul></div></div></div><div id="method-findChildBy" class="member ni"><a href="Ext.data.NodeInterface.html#method-findChildBy" rel="method-findChildBy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-findChildBy" class="viewSource">view source</a></div><a name="findChildBy"></a><a name="method-findChildBy"></a><a href="Ext.data.NodeInterface.html#" rel="method-findChildBy" class="cls expand">findChildBy</a>(
+<span class="pre">Function fn, [Object scope], Boolean deep</span>)
+ : Node</div><div class="description"><div class="short"><p>Finds the first child by a custom function. The child matches if the function passed returns <code>true</code>.</p>
+</div><div class="long"><p>Finds the first child by a custom function. The child matches if the function passed returns <code>true</code>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>A function which must return <code>true</code> if the passed Node is the required Node.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the Node being tested.</p>
+</div></li><li><span class="pre">deep</span> : Boolean<div class="sub-desc"><p>(Optional) True to search through nodes deeper than the immediate children</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The found child or null if none was found</p>
+</li></ul></div></div></div><div id="method-getChildAt" class="member ni"><a href="Ext.data.NodeInterface.html#method-getChildAt" rel="method-getChildAt" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-getChildAt" class="viewSource">view source</a></div><a name="getChildAt"></a><a name="method-getChildAt"></a><a href="Ext.data.NodeInterface.html#" rel="method-getChildAt" class="cls expand">getChildAt</a>(
+<span class="pre">Number index</span>)
+ : Node</div><div class="description"><div class="short"><p>Returns the child node at the specified index.</p>
+</div><div class="long"><p>Returns the child node at the specified index.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getDepth" class="member ni"><a href="Ext.data.NodeInterface.html#method-getDepth" rel="method-getDepth" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-getDepth" class="viewSource">view source</a></div><a name="getDepth"></a><a name="method-getDepth"></a><a href="Ext.data.NodeInterface.html#" rel="method-getDepth" class="cls expand">getDepth</a> : Number</div><div class="description"><div class="short"><p>Returns depth of this node (the root node has a depth of 0)</p>
+</div><div class="long"><p>Returns depth of this node (the root node has a depth of 0)</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-hasChildNodes" class="member ni"><a href="Ext.data.NodeInterface.html#method-hasChildNodes" rel="method-hasChildNodes" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-hasChildNodes" class="viewSource">view source</a></div><a name="hasChildNodes"></a><a name="method-hasChildNodes"></a><a href="Ext.data.NodeInterface.html#" rel="method-hasChildNodes" class="cls expand">hasChildNodes</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node has one or more child nodes, else false.</p>
+</div><div class="long"><p>Returns true if this node has one or more child nodes, else false.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-indexOf" class="member ni"><a href="Ext.data.NodeInterface.html#method-indexOf" rel="method-indexOf" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-indexOf" class="viewSource">view source</a></div><a name="indexOf"></a><a name="method-indexOf"></a><a href="Ext.data.NodeInterface.html#" rel="method-indexOf" class="cls expand">indexOf</a>(
+<span class="pre">Node node</span>)
+ : Number</div><div class="description"><div class="short"><p>Returns the index of a child node</p>
+</div><div class="long"><p>Returns the index of a child node</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The index of the node or -1 if it was not found</p>
+</li></ul></div></div></div><div id="method-insertBefore" class="member ni"><a href="Ext.data.NodeInterface.html#method-insertBefore" rel="method-insertBefore" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-insertBefore" class="viewSource">view source</a></div><a name="insertBefore"></a><a name="method-insertBefore"></a><a href="Ext.data.NodeInterface.html#" rel="method-insertBefore" class="cls expand">insertBefore</a>(
+<span class="pre">Node node, Node refNode, Object suppressEvents</span>)
+ : Node</div><div class="description"><div class="short"><p>Inserts the first node before the second node in this nodes childNodes collection.</p>
+</div><div class="long"><p>Inserts the first node before the second node in this nodes childNodes collection.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The node to insert</p>
+</div></li><li><span class="pre">refNode</span> : Node<div class="sub-desc"><p>The node to insert before (if null the node is appended)</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The inserted node</p>
+</li></ul></div></div></div><div id="method-insertChild" class="member ni"><a href="Ext.data.NodeInterface.html#method-insertChild" rel="method-insertChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-insertChild" class="viewSource">view source</a></div><a name="insertChild"></a><a name="method-insertChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-insertChild" class="cls expand">insertChild</a>(
+<span class="pre">Number index, Ext.data.Model node</span>)
+ : Ext.data.Record</div><div class="description"><div class="short"><p>Insert a node into this node</p>
+</div><div class="long"><p>Insert a node into this node</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The zero-based index to insert the node at</p>
+</div></li><li><span class="pre">node</span> : Ext.data.Model<div class="sub-desc"><p>The node to insert</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.data.Record</span>&nbsp; &nbsp;<p>The record you just inserted</p>
+</li></ul></div></div></div><div id="method-isAncestor" class="member ni"><a href="Ext.data.NodeInterface.html#method-isAncestor" rel="method-isAncestor" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isAncestor" class="viewSource">view source</a></div><a name="isAncestor"></a><a name="method-isAncestor"></a><a href="Ext.data.NodeInterface.html#" rel="method-isAncestor" class="cls expand">isAncestor</a>(
+<span class="pre">Node node</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Returns true if the passed node is an ancestor (at any point) of this node.</p>
+</div><div class="long"><p>Returns true if the passed node is an ancestor (at any point) of this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isExpandable" class="member ni"><a href="Ext.data.NodeInterface.html#method-isExpandable" rel="method-isExpandable" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isExpandable" class="viewSource">view source</a></div><a name="isExpandable"></a><a name="method-isExpandable"></a><a href="Ext.data.NodeInterface.html#" rel="method-isExpandable" class="cls expand">isExpandable</a> : Boolean</div><div class="description"><div class="short">Returns true if this node has one or more child nodes, or if the expandable
+node attribute is explicitly specified as...</div><div class="long"><p>Returns true if this node has one or more child nodes, or if the <tt>expandable</tt>
+node attribute is explicitly specified as true (see <a href="Ext.data.NodeInterface.html#attributes" rel="Ext.data.NodeInterface#attributes" class="docClass">attributes</a>), otherwise returns false.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isExpanded" class="member ni"><a href="Ext.data.NodeInterface.html#method-isExpanded" rel="method-isExpanded" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isExpanded" class="viewSource">view source</a></div><a name="isExpanded"></a><a name="method-isExpanded"></a><a href="Ext.data.NodeInterface.html#" rel="method-isExpanded" class="cls expand">isExpanded</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is expaned</p>
+</div><div class="long"><p>Returns true if this node is expaned</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isFirst" class="member ni"><a href="Ext.data.NodeInterface.html#method-isFirst" rel="method-isFirst" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isFirst" class="viewSource">view source</a></div><a name="isFirst"></a><a name="method-isFirst"></a><a href="Ext.data.NodeInterface.html#" rel="method-isFirst" class="cls expand">isFirst</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is the first child of its parent</p>
+</div><div class="long"><p>Returns true if this node is the first child of its parent</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isLast" class="member ni"><a href="Ext.data.NodeInterface.html#method-isLast" rel="method-isLast" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isLast" class="viewSource">view source</a></div><a name="isLast"></a><a name="method-isLast"></a><a href="Ext.data.NodeInterface.html#" rel="method-isLast" class="cls expand">isLast</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is the last child of its parent</p>
+</div><div class="long"><p>Returns true if this node is the last child of its parent</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isLeaf" class="member ni"><a href="Ext.data.NodeInterface.html#method-isLeaf" rel="method-isLeaf" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isLeaf" class="viewSource">view source</a></div><a name="isLeaf"></a><a name="method-isLeaf"></a><a href="Ext.data.NodeInterface.html#" rel="method-isLeaf" class="cls expand">isLeaf</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is a leaf</p>
+</div><div class="long"><p>Returns true if this node is a leaf</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isLoaded" class="member ni"><a href="Ext.data.NodeInterface.html#method-isLoaded" rel="method-isLoaded" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isLoaded" class="viewSource">view source</a></div><a name="isLoaded"></a><a name="method-isLoaded"></a><a href="Ext.data.NodeInterface.html#" rel="method-isLoaded" class="cls expand">isLoaded</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is loaded</p>
+</div><div class="long"><p>Returns true if this node is loaded</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isLoading" class="member ni"><a href="Ext.data.NodeInterface.html#method-isLoading" rel="method-isLoading" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isLoading" class="viewSource">view source</a></div><a name="isLoading"></a><a name="method-isLoading"></a><a href="Ext.data.NodeInterface.html#" rel="method-isLoading" class="cls expand">isLoading</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is loading</p>
+</div><div class="long"><p>Returns true if this node is loading</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isRoot" class="member ni"><a href="Ext.data.NodeInterface.html#method-isRoot" rel="method-isRoot" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isRoot" class="viewSource">view source</a></div><a name="isRoot"></a><a name="method-isRoot"></a><a href="Ext.data.NodeInterface.html#" rel="method-isRoot" class="cls expand">isRoot</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is the root node</p>
+</div><div class="long"><p>Returns true if this node is the root node</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isVisible" class="member ni"><a href="Ext.data.NodeInterface.html#method-isVisible" rel="method-isVisible" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-isVisible" class="viewSource">view source</a></div><a name="isVisible"></a><a name="method-isVisible"></a><a href="Ext.data.NodeInterface.html#" rel="method-isVisible" class="cls expand">isVisible</a> : Boolean</div><div class="description"><div class="short"><p>Returns true if this node is visible</p>
+</div><div class="long"><p>Returns true if this node is visible</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-remove" class="member ni"><a href="Ext.data.NodeInterface.html#method-remove" rel="method-remove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-remove" class="viewSource">view source</a></div><a name="remove"></a><a name="method-remove"></a><a href="Ext.data.NodeInterface.html#" rel="method-remove" class="cls expand">remove</a>(
+<span class="pre">Boolean destroy, Object suppressEvents</span>)
+ : Node</div><div class="description"><div class="short"><p>Removes this node from its parent</p>
+</div><div class="long"><p>Removes this node from its parent</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">destroy</span> : Boolean<div class="sub-desc"><p><tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-removeAll" class="member ni"><a href="Ext.data.NodeInterface.html#method-removeAll" rel="method-removeAll" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-removeAll" class="viewSource">view source</a></div><a name="removeAll"></a><a name="method-removeAll"></a><a href="Ext.data.NodeInterface.html#" rel="method-removeAll" class="cls expand">removeAll</a>(
+<span class="pre">Boolean destroy, Object suppressEvents</span>)
+ : Node</div><div class="description"><div class="short"><p>Removes all child nodes from this node.</p>
+</div><div class="long"><p>Removes all child nodes from this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">destroy</span> : Boolean<div class="sub-desc"><p><tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-removeChild" class="member ni"><a href="Ext.data.NodeInterface.html#method-removeChild" rel="method-removeChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-removeChild" class="viewSource">view source</a></div><a name="removeChild"></a><a name="method-removeChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-removeChild" class="cls expand">removeChild</a>(
+<span class="pre">Node node, Boolean destroy, Object suppressEvents, Object suppressNodeUpdate</span>)
+ : Node</div><div class="description"><div class="short"><p>Removes a child node from this node.</p>
+</div><div class="long"><p>Removes a child node from this node.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The node to remove</p>
+</div></li><li><span class="pre">destroy</span> : Boolean<div class="sub-desc"><p><tt>true</tt> to destroy the node upon removal. Defaults to <tt>false</tt>.</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li><li><span class="pre">suppressNodeUpdate</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The removed node</p>
+</li></ul></div></div></div><div id="method-replaceChild" class="member ni"><a href="Ext.data.NodeInterface.html#method-replaceChild" rel="method-replaceChild" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-replaceChild" class="viewSource">view source</a></div><a name="replaceChild"></a><a name="method-replaceChild"></a><a href="Ext.data.NodeInterface.html#" rel="method-replaceChild" class="cls expand">replaceChild</a>(
+<span class="pre">Node newChild, Node oldChild, Object suppressEvents</span>)
+ : Node</div><div class="description"><div class="short"><p>Replaces one child node in this node with another.</p>
+</div><div class="long"><p>Replaces one child node in this node with another.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">newChild</span> : Node<div class="sub-desc"><p>The replacement node</p>
+</div></li><li><span class="pre">oldChild</span> : Node<div class="sub-desc"><p>The node to replace</p>
+</div></li><li><span class="pre">suppressEvents</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Node</span>&nbsp; &nbsp;<p>The replaced node</p>
+</li></ul></div></div></div><div id="method-sort" class="member ni"><a href="Ext.data.NodeInterface.html#method-sort" rel="method-sort" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-sort" class="viewSource">view source</a></div><a name="sort"></a><a name="method-sort"></a><a href="Ext.data.NodeInterface.html#" rel="method-sort" class="cls expand">sort</a>(
+<span class="pre">Function fn, Boolean recursive, Boolean suppressEvent</span>)
+ : void</div><div class="description"><div class="short"><p>Sorts this nodes children using the supplied sort function.</p>
+</div><div class="long"><p>Sorts this nodes children using the supplied sort function.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>A function which, when passed two Nodes, returns -1, 0 or 1 depending upon required sort order.</p>
+</div></li><li><span class="pre">recursive</span> : Boolean<div class="sub-desc"><p>Whether or not to apply this sort recursively</p>
+</div></li><li><span class="pre">suppressEvent</span> : Boolean<div class="sub-desc"><p>Set to true to not fire a sort event.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-updateInfo" class="member ni"><a href="Ext.data.NodeInterface.html#method-updateInfo" rel="method-updateInfo" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-method-updateInfo" class="viewSource">view source</a></div><a name="updateInfo"></a><a name="method-updateInfo"></a><a href="Ext.data.NodeInterface.html#" rel="method-updateInfo" class="cls expand">updateInfo</a>(
+<span class="pre">Object silent</span>)
+ : Boolean</div><div class="description"><div class="short">Updates general data of this node like isFirst, isLast, depth. This
+method is internally called after a node is moved...</div><div class="long"><p>Updates general data of this node like isFirst, isLast, depth. This
+method is internally called after a node is moved. This shouldn't
+have to be called by the developer unless they are creating custom
+Tree plugins.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">silent</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div><div class="m-events"><a name="events"></a><div class="definedBy">Defined By</div><h3 class="evt p">Events</h3><div id="event-append" class="member f ni"><a href="Ext.data.NodeInterface.html#event-append" rel="event-append" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-append" class="viewSource">view source</a></div><a name="append"></a><a name="event-append"></a><a href="Ext.data.NodeInterface.html#" rel="event-append" class="cls expand">append</a>(
+<span class="pre">Node this, Node node, Number index</span>)
+</div><div class="description"><div class="short"><p>Fires when a new child node is appended</p>
+</div><div class="long"><p>Fires when a new child node is appended</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The newly appended node</p>
+</div></li><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index of the newly appended node</p>
+</div></li></ul></div></div></div><div id="event-beforeappend" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforeappend" rel="event-beforeappend" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforeappend" class="viewSource">view source</a></div><a name="beforeappend"></a><a name="event-beforeappend"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforeappend" class="cls expand">beforeappend</a>(
+<span class="pre">Node this, Node node</span>)
+</div><div class="description"><div class="short"><p>Fires before a new child is appended, return false to cancel the append.</p>
+</div><div class="long"><p>Fires before a new child is appended, return false to cancel the append.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The child node to be appended</p>
+</div></li></ul></div></div></div><div id="event-beforecollapse" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforecollapse" rel="event-beforecollapse" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforecollapse" class="viewSource">view source</a></div><a name="beforecollapse"></a><a name="event-beforecollapse"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforecollapse" class="cls expand">beforecollapse</a>(
+<span class="pre">Node this</span>)
+</div><div class="description"><div class="short"><p>Fires before this node is collapsed.</p>
+</div><div class="long"><p>Fires before this node is collapsed.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>The collapsing node</p>
+</div></li></ul></div></div></div><div id="event-beforeexpand" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforeexpand" rel="event-beforeexpand" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforeexpand" class="viewSource">view source</a></div><a name="beforeexpand"></a><a name="event-beforeexpand"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforeexpand" class="cls expand">beforeexpand</a>(
+<span class="pre">Node this</span>)
+</div><div class="description"><div class="short"><p>Fires before this node is expanded.</p>
+</div><div class="long"><p>Fires before this node is expanded.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>The expanding node</p>
+</div></li></ul></div></div></div><div id="event-beforeinsert" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforeinsert" rel="event-beforeinsert" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforeinsert" class="viewSource">view source</a></div><a name="beforeinsert"></a><a name="event-beforeinsert"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforeinsert" class="cls expand">beforeinsert</a>(
+<span class="pre">Node this, Node node, Node refNode</span>)
+</div><div class="description"><div class="short"><p>Fires before a new child is inserted, return false to cancel the insert.</p>
+</div><div class="long"><p>Fires before a new child is inserted, return false to cancel the insert.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The child node to be inserted</p>
+</div></li><li><span class="pre">refNode</span> : Node<div class="sub-desc"><p>The child node the node is being inserted before</p>
+</div></li></ul></div></div></div><div id="event-beforemove" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforemove" rel="event-beforemove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforemove" class="viewSource">view source</a></div><a name="beforemove"></a><a name="event-beforemove"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforemove" class="cls expand">beforemove</a>(
+<span class="pre">Node this, Node oldParent, Node newParent, Number index</span>)
+</div><div class="description"><div class="short"><p>Fires before this node is moved to a new location in the tree. Return false to cancel the move.</p>
+</div><div class="long"><p>Fires before this node is moved to a new location in the tree. Return false to cancel the move.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">oldParent</span> : Node<div class="sub-desc"><p>The parent of this node</p>
+</div></li><li><span class="pre">newParent</span> : Node<div class="sub-desc"><p>The new parent this node is moving to</p>
+</div></li><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index it is being moved to</p>
+</div></li></ul></div></div></div><div id="event-beforeremove" class="member ni"><a href="Ext.data.NodeInterface.html#event-beforeremove" rel="event-beforeremove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-beforeremove" class="viewSource">view source</a></div><a name="beforeremove"></a><a name="event-beforeremove"></a><a href="Ext.data.NodeInterface.html#" rel="event-beforeremove" class="cls expand">beforeremove</a>(
+<span class="pre">Node this, Node node</span>)
+</div><div class="description"><div class="short"><p>Fires before a child is removed, return false to cancel the remove.</p>
+</div><div class="long"><p>Fires before a child is removed, return false to cancel the remove.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The child node to be removed</p>
+</div></li></ul></div></div></div><div id="event-collapse" class="member ni"><a href="Ext.data.NodeInterface.html#event-collapse" rel="event-collapse" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-collapse" class="viewSource">view source</a></div><a name="collapse"></a><a name="event-collapse"></a><a href="Ext.data.NodeInterface.html#" rel="event-collapse" class="cls expand">collapse</a>(
+<span class="pre">Node this</span>)
+</div><div class="description"><div class="short"><p>Fires when this node is collapsed.</p>
+</div><div class="long"><p>Fires when this node is collapsed.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>The collapsing node</p>
+</div></li></ul></div></div></div><div id="event-expand" class="member ni"><a href="Ext.data.NodeInterface.html#event-expand" rel="event-expand" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-expand" class="viewSource">view source</a></div><a name="expand"></a><a name="event-expand"></a><a href="Ext.data.NodeInterface.html#" rel="event-expand" class="cls expand">expand</a>(
+<span class="pre">Node this</span>)
+</div><div class="description"><div class="short"><p>Fires when this node is expanded.</p>
+</div><div class="long"><p>Fires when this node is expanded.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>The expanding node</p>
+</div></li></ul></div></div></div><div id="event-insert" class="member ni"><a href="Ext.data.NodeInterface.html#event-insert" rel="event-insert" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-insert" class="viewSource">view source</a></div><a name="insert"></a><a name="event-insert"></a><a href="Ext.data.NodeInterface.html#" rel="event-insert" class="cls expand">insert</a>(
+<span class="pre">Node this, Node node, Node refNode</span>)
+</div><div class="description"><div class="short"><p>Fires when a new child node is inserted.</p>
+</div><div class="long"><p>Fires when a new child node is inserted.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The child node inserted</p>
+</div></li><li><span class="pre">refNode</span> : Node<div class="sub-desc"><p>The child node the node was inserted before</p>
+</div></li></ul></div></div></div><div id="event-move" class="member ni"><a href="Ext.data.NodeInterface.html#event-move" rel="event-move" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-move" class="viewSource">view source</a></div><a name="move"></a><a name="event-move"></a><a href="Ext.data.NodeInterface.html#" rel="event-move" class="cls expand">move</a>(
+<span class="pre">Node this, Node oldParent, Node newParent, Number index</span>)
+</div><div class="description"><div class="short"><p>Fires when this node is moved to a new location in the tree</p>
+</div><div class="long"><p>Fires when this node is moved to a new location in the tree</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">oldParent</span> : Node<div class="sub-desc"><p>The old parent of this node</p>
+</div></li><li><span class="pre">newParent</span> : Node<div class="sub-desc"><p>The new parent of this node</p>
+</div></li><li><span class="pre">index</span> : Number<div class="sub-desc"><p>The index it was moved to</p>
+</div></li></ul></div></div></div><div id="event-remove" class="member ni"><a href="Ext.data.NodeInterface.html#event-remove" rel="event-remove" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.NodeInterface.html" class="definedIn docClass">Ext.data.NodeInterface</a><br/><a href="../source/NodeInterface.html#Ext-data.NodeInterface-event-remove" class="viewSource">view source</a></div><a name="remove"></a><a name="event-remove"></a><a href="Ext.data.NodeInterface.html#" rel="event-remove" class="cls expand">remove</a>(
+<span class="pre">Node this, Node node</span>)
+</div><div class="description"><div class="short"><p>Fires when a child node is removed</p>
+</div><div class="long"><p>Fires when a child node is removed</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">this</span> : Node<div class="sub-desc"><p>This node</p>
+</div></li><li><span class="pre">node</span> : Node<div class="sub-desc"><p>The removed node</p>
+</div></li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

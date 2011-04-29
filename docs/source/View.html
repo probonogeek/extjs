@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.View'>/**
+</span> * @class Ext.grid.View
+ * @extends Ext.view.Table
+
+The grid View class provides extra {@link Ext.grid.Panel} specific functionality to the
+{@link Ext.view.Table}. In general, this class is not instanced directly, instead a viewConfig
+option is passed to the grid:
+
+    Ext.create('Ext.grid.Panel', {
+        // other options
+        viewConfig: {
+            stripeRows: false
+        }
+    });
+    
+__Drag Drop__
+Drag and drop functionality can be achieved in the grid by attaching a {@link Ext.grid.plugin.DragDrop} plugin
+when creating the view.
+
+    Ext.create('Ext.grid.Panel', {
+        // other options
+        viewConfig: {
+            plugins: {
+                ddGroup: 'people-group',
+                ptype: 'gridviewdragdrop',
+                enableDrop: false
+            }
+        }
+    });
+
+ * @markdown
+ */
+Ext.define('Ext.grid.View', {
+    extend: 'Ext.view.Table',
+    alias: 'widget.gridview',
+
+<span id='Ext-grid.View-cfg-stripeRows'>    /**
+</span>     * @cfg {Boolean} stripeRows &lt;tt&gt;true&lt;/tt&gt; to stripe the rows. Default is &lt;tt&gt;false&lt;/tt&gt;.
+     * &lt;p&gt;This causes the CSS class &lt;tt&gt;&lt;b&gt;x-grid-row-alt&lt;/b&gt;&lt;/tt&gt; to be added to alternate rows of
+     * the grid. A default CSS rule is provided which sets a background color, but you can override this
+     * with a rule which either overrides the &lt;b&gt;background-color&lt;/b&gt; style using the '!important'
+     * modifier, or which uses a CSS selector of higher specificity.&lt;/p&gt;
+     */
+    stripeRows: true,
+    
+    invalidateScrollerOnRefresh: true,
+    
+<span id='Ext-grid.View-method-scrollToTop'>    /**
+</span>     * Scroll the GridView to the top by scrolling the scroller.
+     * @private
+     */
+    scrollToTop : function(){
+        if (this.rendered) {
+            var section = this.ownerCt,
+                verticalScroller = section.verticalScroller;
+                
+            if (verticalScroller) {
+                verticalScroller.scrollToTop();
+            }
+        }
+    },
+
+    // after adding a row stripe rows from then on
+    onAdd: function(ds, records, index) {
+        this.callParent(arguments);
+        this.doStripeRows(index);
+    },
+    
+    // after removing a row stripe rows from then on
+    onRemove: function(ds, records, index) {
+        this.callParent(arguments);
+        this.doStripeRows(index);
+    },
+    
+<span id='Ext-grid.View-method-doStripeRows'>    /**
+</span>     * Stripe rows from a particular row index
+     * @param {Number} startRow
+     * @private
+     */
+    doStripeRows: function(startRow) {
+        // ensure stripeRows configuration is turned on
+        if (this.stripeRows) {
+            var rows   = this.getNodes(startRow),
+                rowsLn = rows.length,
+                i      = 0,
+                row;
+                
+            for (; i &lt; rowsLn; i++) {
+                row = rows[i];
+                // Remove prior applied row classes.
+                row.className = row.className.replace(this.rowClsRe, ' ');
+                // Every odd row will get an additional cls
+                if (i % 2 === 1) {
+                    row.className += (' ' + this.altRowCls);
+                }
+            }
+        }
+    },
+    
+    refresh: function(firstPass) {
+        this.callParent(arguments);
+        this.doStripeRows(0);
+        // TODO: Remove gridpanel dependency
+        var g = this.up('gridpanel');
+        if (g &amp;&amp; this.invalidateScrollerOnRefresh) {
+            g.invalidateScroller();
+        }
+    }
+});
+</pre></pre></body></html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Cartesian-method-constructor'><span id='Ext-chart.series.Cartesian'>/**
+</span></span> * @class Ext.chart.series.Cartesian
+ * @extends Ext.chart.series.Series
+ *
+ * Common base class for series implementations which plot values using x/y coordinates.
+ *
+ * @constructor
+ */
+Ext.define('Ext.chart.series.Cartesian', {
+
+    /* Begin Definitions */
+
+    extend: 'Ext.chart.series.Series',
+
+    alternateClassName: ['Ext.chart.CartesianSeries', 'Ext.chart.CartesianChart'],
+
+    /* End Definitions */
+
+<span id='Ext-chart.series.Cartesian-property-xField'>    /**
+</span>     * The field used to access the x axis value from the items from the data
+     * source.
+     *
+     * @cfg xField
+     * @type String
+     */
+    xField: null,
+
+<span id='Ext-chart.series.Cartesian-property-yField'>    /**
+</span>     * The field used to access the y-axis value from the items from the data
+     * source.
+     *
+     * @cfg yField
+     * @type String
+     */
+    yField: null,
+
+<span id='Ext-chart.series.Cartesian-property-axis'>    /**
+</span>     * Indicates which axis the series will bind to
+     *
+     * @property axis
+     * @type String
+     */
+    axis: 'left'
+});
+</pre></pre></body></html>

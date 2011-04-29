@@ -1,45 +1,35 @@
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
-  <title>The source code</title>
-    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
-</head>
-<body  onload="prettyPrint();">
-    <pre class="prettyprint lang-js">/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-direct.Event-method-constructor'><span id='Ext-direct.Event'>/**
+</span></span> * @class Ext.direct.Event
+ * A base class for all Ext.direct events. An event is
+ * created after some kind of interaction with the server.
+ * The event class is essentially just a data structure
+ * to hold a direct response.
+ * 
+ * @constructor
+ * @param {Object} config The config object
  */
-Ext.Direct.Event = function(config){
-    Ext.apply(this, config);
-};
-
-Ext.Direct.Event.prototype = {
+Ext.define('Ext.direct.Event', {
+    
+    /* Begin Definitions */
+   
+    alias: 'direct.event',
+    
+    requires: ['Ext.direct.Manager'],
+    
+    /* End Definitions */
+   
     status: true,
+    
+    constructor: function(config) {
+        Ext.apply(this, config);
+    },
+    
+<span id='Ext-direct.Event-method-getData'>    /**
+</span>     * Return the raw data for this event.
+     * @return {Object} The data from the event
+     */
     getData: function(){
         return this.data;
     }
-};
-
-Ext.Direct.RemotingEvent = Ext.extend(Ext.Direct.Event, {
-    type: 'rpc',
-    getTransaction: function(){
-        return this.transaction || Ext.Direct.getTransaction(this.tid);
-    }
 });
-
-Ext.Direct.ExceptionEvent = Ext.extend(Ext.Direct.RemotingEvent, {
-    status: false,
-    type: 'exception'
-});
-
-Ext.Direct.eventTypes = {
-    'rpc':  Ext.Direct.RemotingEvent,
-    'event':  Ext.Direct.Event,
-    'exception':  Ext.Direct.ExceptionEvent
-};
-</pre>    
-</body>
-</html>
+</pre></pre></body></html>

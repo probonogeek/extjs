@@ -1,0 +1,210 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Tree</h1>
+
+<hr></hr>
+
+<p>Ext JS 4.0 introduces a solid foundation for one of our most versatile components - Tree.  Tree and grid now both extend from the same base class. All of the benefits of grid - features, extensions, and plugins can now be used on trees. Things like columns, column resizing, dragging and dropping, renderers, sorting and filtering can now be expected to work similarly for both components. Additionally, we are planning on implementing new features to do things like paging and buffered rendering for very large trees.</p>
+
+<p>Lets start by creating a very simple Tree.</p>
+
+<pre class="prettyprint"><code>var tree = Ext.create('Ext.tree.Panel', {
+    title: 'Simple Tree',
+    root: {
+        text: 'Root',
+        expanded: true,
+        children: [{
+            text: 'Child 1',
+            leaf: true
+        }, {
+            text: 'Child 2',
+            leaf: true
+        }]
+    }
+});</code></pre>
+
+<p>We have defined a root node for our tree and told it to be expanded. We also defined two children inline, both of which we said are leaf nodes. Setting the <strong>*leaf</strong>* config to true indicates that the node won't be able to contain child nodes. The text property, like the name suggests, is used as the node's text label. The tree that this code produces looks like the following.</p>
+
+<p><img alt="Simple Tree" src="../simple-tree.png"></img></p>
+
+<p>The base class that Tree extends from, Ext.panel.Table, is responsible for several things.</p>
+
+<ul><li>Setting up and managing a (data)view</li><li>Binding to a store</li><li>Creating a header container</li><li>Creating a selection model</li></ul>
+
+<p>In the case of Ext.tree.Panel, the store has to be an instance of Ext.data.TreeStore, the view will be an instance of Ext.tree.View and the selection model by default is an instance of Ext.selection.TreeModel.</p>
+
+<p>In order to make setting up a tree as easy as possible, we make some assumptions internally. Sometimes you want your tree to behave or look differently. Fortunately, there are many configurations at our disposal to do so. We will start with visual configurations, and then dive into the data structures behind our tree.</p>
+
+<h2>Visually changing your tree</h2>
+
+<p>Let's try something simple. When you set the <strong>*useArrows</strong>* configuration to true, we hide the lines and use arrows as expand and collapse icons.</p>
+
+<p><img alt="Arrows" src="../arrows.png"></img></p>
+
+<p>Sometimes you don't want the root node to be visible. Setting the <strong>*rootVisible</strong><em> property to false visually removes the root node. By doing this, your root node will automatically be expanded. The following image shows the same tree with **</em>rootVisible<strong>* set to false. We have also set </strong><em>lines**</em> false.</p>
+
+<p><img alt="Root not visible and no lines" src="../root-lines.png"></img></p>
+
+<p>TODO: icon and iconCls</p>
+
+<h2>Multiple columns</h2>
+
+<p>Since our tree now extends a grid, adding more columns is very easy to do.</p>
+
+<pre class="prettyprint"><code>var tree = Ext.create('Ext.tree.Panel', {
+    title: 'TreeGrid',
+    fields: ['name', 'description'],
+    columns: [{
+        xtype: 'treecolumn',
+        text: 'Name',
+        dataIndex: 'name',
+        width: 150,
+        sortable: true
+    }, {
+        text: 'Description',
+        dataIndex: 'description',
+        flex: 1,
+        sortable: true
+    }],
+    root: {
+        name: 'Root',
+        description: 'Root description',
+        expanded: true,
+        children: [{
+            name: 'Child 1',
+            description: 'Description 1',
+            leaf: true
+        }, {
+            name: 'Child 2',
+            description: 'Description 2',
+            leaf: true
+        }]
+    }
+});</code></pre>
+
+<p>We have defined the columns configuration. The available configurations are exactly the same as those available for grid columns. You can use any type of column you would use in a grid. The only requirement when using multiple columns in a Tree is that you must supply at least one column with an xtype of <strong>*treecolumn</strong>*. This column decorates the column's renderer to visualize things like depth, lines and the expand and collapse icons. You usually want to create only one column of this type in your tree.</p>
+
+<p>We also specified the <strong>*fields</strong><em> configuration, which will be passed on to the internally created store. We will get into this in more detail later in the guide, but for now just notice how the **</em>dataIndex*** configurations on the columns map to the fields we specified - name and description.</p>
+
+<p><img alt="Tree and a Grid" src="../treegrid.png"></img></p>
+
+<p>It is also worth noting that when you don't specify columns, the tree will automatically create one single <strong>*treecolumn</strong><em> for you with a **</em>dataIndex<strong>* set to 'text'. It also hides the headers on the tree. If you want to show this header when using only a single column, you can set the </strong><em>hideHeaders**</em> configuration to 'false'.</p>
+
+<h2>Events</h2>
+
+<p>Info about tree events here</p>
+
+<h2>Adding nodes to the tree</h2>
+
+<p>So far we haven't specified a store in any of our code. Since we haven't done so the tree will create a TreeStore for you and pass the root configuration to this store. This internally created TreeStore will get a memory proxy by default. This means that you can't load nodes from the server asynchronously. Instead you are expected to append all the nodes to your tree programmatically. We will look at how to do this in a little bit.</p>
+
+<p>Note that when you create a tree this way, you don't necessarily have to specify a root node right away. The following will achieve the exact same result except now we dynamically set the root node after the tree has been created.</p>
+
+<pre class="prettyprint"><code>var tree = Ext.create('Ext.tree.Panel');
+tree.setRootNode({
+    text: 'Root',
+    expanded: true,
+    children: [{
+        text: 'Child 1',
+        leaf: true
+    }, {
+        text: 'Child 2',
+        leaf: true
+    }]
+});</code></pre>
+
+<p>Although this is useful for very small trees with only a few static nodes, usually your tree will contain many more nodes. So let's take a look at how we can programmatically add new nodes to the tree.</p>
+
+<pre class="prettyprint"><code>var root = tree.getRootNode();
+
+var parent = root.appendChild({
+    text: 'Parent 1'
+});
+
+parent.appendChild({
+    text: 'Child 3',
+    leaf: true
+});
+
+parent.expand();</code></pre>
+
+<p>When adding new nodes to the tree, you always need to get a reference to the parent you want to append the new node to. In this case we got a reference to the root node. You can call <em>appendChild</em> on any node in the tree that is not a leaf. It accepts a node instance or an object containing data that will be used to create a new node. The method always returns a fully instantiated node. In this example we programmatically call the <em>expand</em> method to expand our newly created parent.</p>
+
+<p><img alt="Appending to the tree" src="../append-children.png"></img>    </p>
+
+<p>We could have also just set the <strong>*expanded</strong>* configuration when defining the parent. Also useful is the ability to define children inline when creating the new parent nodes. The following code gives us the same result.</p>
+
+<pre class="prettyprint"><code>var parent = root.appendChild({
+    text: 'Parent 1',
+    expanded: true,
+    children: [{
+        text: 'Child 3',
+        leaf: true
+    }]
+});</code></pre>
+
+<p>Sometimes you will want to insert a node into a specific location in the tree instead of appending it. Besides the <em>appendChild</em> method, we also provide <em>insertBefore</em> and <em>insertChild</em> methods.</p>
+
+<pre class="prettyprint"><code>var child = parent.insertChild(0, {
+    text: 'Child 2.5',
+    leaf: true
+});
+
+parent.insertBefore({
+    text: 'Child 2.75',
+    leaf: true
+}, child.nextSibling);</code></pre>
+
+<p>As you can see the <em>insertChild</em> method expects an index at which the child will be inserted. The <em>insertBefore</em> method expects a reference node. Your new node will be inserted before that node.</p>
+
+<p><img alt="Inserting children into the tree" src="../insert-children.png"></img>   </p>
+
+<p>One other thing to note is the <strong>*nextSibling</strong>* property we used. There are several more properties on nodes that we can use to reference other nodes.</p>
+
+<ul><li>nextSibling</li><li>previousSibling</li><li>parentNode</li><li>lastChild         </li><li>firstChild</li><li>childNodes</li></ul>
+
+<h2>The Node Interface</h2>
+
+<p>So far we have come across several methods and properties on nodes. But what are nodes exactly? As we have mentioned before, the tree Panel is bound to a TreeStore. A store in Ext JS manages a collection of model instances. We created a NodeInterface that can be used to decorate any model with fields, methods and properties required to have to model be used in a tree. When we refer to a node, we essentially are referring to a model instance that is decorated with the NodeInterface. The following screenshot shows you by logging a node in the developer tools.</p>
+
+<p><img alt="A model instance decorated with the NodeInterface" src="../nodeinterface.png"></img>  </p>
+
+<p>In order to see the full set of fields, methods and properties available on nodes, you can check out the API documentation for the NodeInterface class.</p>
+
+<ul><li>list these fields and explain briefly what each one does</li></ul>
+
+<h2>The tree's Store</h2>
+
+<ul><li>introduction to specifying your own store</li><li>define your own model with a proxy to asynchronously retrieve nodes from the server</li><li>show the same model instances in tree and grid at the same time</li></ul>
+
+<h2>Editing, Drag & Drop, Sorting and Filtering</h2>
+
+<p>Stay tuned!</p></div></div></div></div></body></html>

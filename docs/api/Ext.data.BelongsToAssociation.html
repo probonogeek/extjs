@@ -1,0 +1,260 @@
+<!DOCTYPE html><html><head><title>Ext.data.BelongsToAssociation | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.data.BelongsToAssociation',
+        docClass: 'Ext.data.BelongsToAssociation',
+        docReq: 'Ext.data.BelongsToAssociation',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'BelongsToAssociation.html#Ext-data.BelongsToAssociation';
+    clsInfo = {"methods":["BelongsToAssociation","getReader"],"cfgs":["associatedModel","associationKey","foreignKey","getterName","ownerModel","primaryKey","reader","setterName","type"],"properties":["associatedName","ownerName"],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/BelongsToAssociation.html#Ext-data.BelongsToAssociation" target="_blank">Ext.data.BelongsToAssociation</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.data.Association.html" rel="Ext.data.Association" class="cls docClass">Ext.data.Association</a><div class="subclass"><strong>Ext.data.BelongsToAssociation</strong></div></div></pre><p>Represents a many to one association with another model. The owner model is expected to have
+a foreign key which references the primary key of the associated model:</p>
+
+
+
+
+<pre class="prettyprint"><code>Ext.define('Category', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',   type: 'int'},
+        {name: 'name', type: 'string'}
+    ]
+});
+
+Ext.define('Product', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',          type: 'int'},
+        {name: 'category_id', type: 'int'},
+        {name: 'name',        type: 'string'}
+    ],
+    // we can use the belongsTo shortcut on the model to create a belongsTo association
+    belongsTo: {type: 'belongsTo', model: 'Category'}
+});
+</code></pre>
+
+
+<p>In the example above we have created models for Products and Categories, and linked them together
+by saying that each Product belongs to a Category. This automatically links each Product to a Category
+based on the Product's category_id, and provides new functions on the Product model:</p>
+
+
+
+
+<p><u>Generated getter function</u></p>
+
+
+
+
+<p>The first function that is added to the owner model is a getter function:</p>
+
+
+
+
+<pre class="prettyprint"><code>var product = new Product({
+    id: 100,
+    category_id: 20,
+    name: 'Sneakers'
+});
+
+product.getCategory(function(category, operation) {
+    //do something with the category object
+    alert(category.get('id')); //alerts 20
+}, this);
+</code></pre>
+
+
+
+
+<p>The getCategory function was created on the Product model when we defined the association. This uses the
+Category's configured <a href="Ext.data.proxy.Proxy.html" rel="Ext.data.proxy.Proxy" class="docClass">proxy</a> to load the Category asynchronously, calling the provided
+callback when it has loaded.</p>
+
+
+
+
+<p>The new getCategory function will also accept an object containing success, failure and callback properties
+- callback will always be called, success will only be called if the associated model was loaded successfully
+and failure will only be called if the associatied model could not be loaded:</p>
+
+
+
+
+<pre class="prettyprint"><code>product.getCategory({
+    callback: function(category, operation) {}, //a function that will always be called
+    success : function(category, operation) {}, //a function that will only be called if the load succeeded
+    failure : function(category, operation) {}, //a function that will only be called if the load did not succeed
+    scope   : this //optionally pass in a scope object to execute the callbacks in
+});
+</code></pre>
+
+
+
+
+<p>In each case above the callbacks are called with two arguments - the associated model instance and the
+<a href="Ext.data.Operation.html" rel="Ext.data.Operation" class="docClass">operation</a> object that was executed to load that instance. The Operation object is
+useful when the instance could not be loaded.</p>
+
+
+
+
+<p><u>Generated setter function</u></p>
+
+
+
+
+<p>The second generated function sets the associated model instance - if only a single argument is passed to
+the setter then the following two calls are identical:</p>
+
+
+
+
+<pre class="prettyprint"><code>//this call
+product.setCategory(10);
+
+//is equivalent to this call:
+product.set('category_id', 10);
+</code></pre>
+
+
+<p>If we pass in a second argument, the model will be automatically saved and the second argument passed to
+the owner model's <a href="Ext.data.Model.html#save" rel="Ext.data.Model#save" class="docClass">save</a> method:</p>
+
+
+<pre class="prettyprint"><code>product.setCategory(10, function(product, operation) {
+    //the product has been saved
+    alert(product.get('category_id')); //now alerts 10
+});
+
+//alternative syntax:
+product.setCategory(10, {
+    callback: function(product, operation), //a function that will always be called
+    success : function(product, operation), //a function that will only be called if the load succeeded
+    failure : function(product, operation), //a function that will only be called if the load did not succeed
+    scope   : this //optionally pass in a scope object to execute the callbacks in
+})
+</code></pre>
+
+
+
+
+<p><u>Customisation</u></p>
+
+
+
+
+<p>Associations reflect on the models they are linking to automatically set up properties such as the
+<a href="Ext.data.BelongsToAssociation.html#primaryKey" rel="Ext.data.BelongsToAssociation#primaryKey" class="docClass">primaryKey</a> and <a href="Ext.data.BelongsToAssociation.html#foreignKey" rel="Ext.data.BelongsToAssociation#foreignKey" class="docClass">foreignKey</a>. These can alternatively be specified:</p>
+
+
+
+
+<pre class="prettyprint"><code>Ext.define('Product', {
+    fields: [...],
+
+    associations: [
+        {type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id'}
+    ]
+});
+ </code></pre>
+
+
+
+
+<p>Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
+with our own settings. Usually this will not be needed.</p>
+
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-associatedModel" class="member f inherited"><a href="Ext.data.BelongsToAssociation.html#config-associatedModel" rel="config-associatedModel" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-associatedModel" class="viewSource">view source</a></div><a name="associatedModel"></a><a name="config-associatedModel"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-associatedModel" class="cls expand">associatedModel</a><span> : String</span></div><div class="description"><div class="short"><p>The string name of the model that is being associated with. Required</p>
+</div><div class="long"><p>The string name of the model that is being associated with. Required</p>
+</div></div></div><div id="config-associationKey" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#config-associationKey" rel="config-associationKey" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-associationKey" class="viewSource">view source</a></div><a name="associationKey"></a><a name="config-associationKey"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-associationKey" class="cls expand">associationKey</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the property in the data to read the association from.
+Defaults to the name of the associated model.</p>
+</div><div class="long"><p>The name of the property in the data to read the association from.
+Defaults to the name of the associated model.</p>
+</div></div></div><div id="config-foreignKey" class="member ni"><a href="Ext.data.BelongsToAssociation.html#config-foreignKey" rel="config-foreignKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.BelongsToAssociation.html" class="definedIn docClass">Ext.data.BelongsToAssociation</a><br/><a href="../source/BelongsToAssociation.html#Ext-data.BelongsToAssociation-cfg-foreignKey" class="viewSource">view source</a></div><a name="foreignKey"></a><a name="config-foreignKey"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-foreignKey" class="cls expand">foreignKey</a><span> : String</span></div><div class="description"><div class="short">The name of the foreign key on the owner model that links it to the associated
+model. Defaults to the lowercased name...</div><div class="long"><p>The name of the foreign key on the owner model that links it to the associated
+model. Defaults to the lowercased name of the associated model plus "_id", e.g. an association with a
+model called Product would set up a product_id foreign key.</p>
+
+<pre><code>Ext.define('Order', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'date'],
+    hasMany: 'Product'
+});
+
+Ext.define('Product', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
+    belongsTo: 'Group'
+});
+var product = new Product({
+    id: 1,
+    name: 'Product 1',
+    order_id: 22
+}, 1);
+product.getOrder(); // Will make a call to the server asking for order_id 22
+
+</code></pre>
+
+</div></div></div><div id="config-getterName" class="member ni"><a href="Ext.data.BelongsToAssociation.html#config-getterName" rel="config-getterName" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.BelongsToAssociation.html" class="definedIn docClass">Ext.data.BelongsToAssociation</a><br/><a href="../source/BelongsToAssociation.html#Ext-data.BelongsToAssociation-cfg-getterName" class="viewSource">view source</a></div><a name="getterName"></a><a name="config-getterName"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-getterName" class="cls expand">getterName</a><span> : String</span></div><div class="description"><div class="short">The name of the getter function that will be added to the local model's prototype.
+Defaults to 'get' + the name of th...</div><div class="long"><p>The name of the getter function that will be added to the local model's prototype.
+Defaults to 'get' + the name of the foreign model, e.g. getCategory</p>
+</div></div></div><div id="config-ownerModel" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#config-ownerModel" rel="config-ownerModel" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-ownerModel" class="viewSource">view source</a></div><a name="ownerModel"></a><a name="config-ownerModel"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-ownerModel" class="cls expand">ownerModel</a><span> : String</span></div><div class="description"><div class="short"><p>The string name of the model that owns the association. Required</p>
+</div><div class="long"><p>The string name of the model that owns the association. Required</p>
+</div></div></div><div id="config-primaryKey" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#config-primaryKey" rel="config-primaryKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-primaryKey" class="viewSource">view source</a></div><a name="primaryKey"></a><a name="config-primaryKey"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-primaryKey" class="cls expand">primaryKey</a><span> : String</span></div><div class="description"><div class="short">The name of the primary key on the associated model. Defaults to 'id'.
+In general this will be the Ext.data.Model.idP...</div><div class="long"><p>The name of the primary key on the associated model. Defaults to 'id'.
+In general this will be the <a href="Ext.data.Model.html#idProperty" rel="Ext.data.Model#idProperty" class="docClass">Ext.data.Model.idProperty</a> of the Model.</p>
+</div></div></div><div id="config-reader" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#config-reader" rel="config-reader" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-reader" class="viewSource">view source</a></div><a name="reader"></a><a name="config-reader"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-reader" class="cls expand">reader</a><span> : Ext.data.reader.Reader</span></div><div class="description"><div class="short"><p>A special reader to read associated data</p>
+</div><div class="long"><p>A special reader to read associated data</p>
+</div></div></div><div id="config-setterName" class="member ni"><a href="Ext.data.BelongsToAssociation.html#config-setterName" rel="config-setterName" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.BelongsToAssociation.html" class="definedIn docClass">Ext.data.BelongsToAssociation</a><br/><a href="../source/BelongsToAssociation.html#Ext-data.BelongsToAssociation-cfg-setterName" class="viewSource">view source</a></div><a name="setterName"></a><a name="config-setterName"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-setterName" class="cls expand">setterName</a><span> : String</span></div><div class="description"><div class="short">The name of the setter function that will be added to the local model's prototype.
+Defaults to 'set' + the name of th...</div><div class="long"><p>The name of the setter function that will be added to the local model's prototype.
+Defaults to 'set' + the name of the foreign model, e.g. setCategory</p>
+</div></div></div><div id="config-type" class="member ni"><a href="Ext.data.BelongsToAssociation.html#config-type" rel="config-type" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.BelongsToAssociation.html" class="definedIn docClass">Ext.data.BelongsToAssociation</a><br/><a href="../source/BelongsToAssociation.html#Ext-data.BelongsToAssociation-cfg-type" class="viewSource">view source</a></div><a name="type"></a><a name="config-type"></a><a href="Ext.data.BelongsToAssociation.html#" rel="config-type" class="cls expand">type</a><span> : String</span></div><div class="description"><div class="short">The type configuration can be used when creating associations using a configuration object.
+Use 'belongsTo' to create...</div><div class="long"><p>The type configuration can be used when creating associations using a configuration object.
+Use 'belongsTo' to create a HasManyAssocation</p>
+
+<pre><code>associations: [{
+    type: 'belongsTo',
+    model: 'User'
+}]
+</code></pre>
+
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-associatedName" class="member f inherited"><a href="Ext.data.BelongsToAssociation.html#property-associatedName" rel="property-associatedName" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-property-associatedName" class="viewSource">view source</a></div><a name="associatedName"></a><a name="property-associatedName"></a><a href="Ext.data.BelongsToAssociation.html#" rel="property-associatedName" class="cls expand">associatedName</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the model is on the other end of the association (e.g. if a User model hasMany Orders, this is 'Order')</p>
+</div><div class="long"><p>The name of the model is on the other end of the association (e.g. if a User model hasMany Orders, this is 'Order')</p>
+</div></div></div><div id="property-ownerName" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#property-ownerName" rel="property-ownerName" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-property-ownerName" class="viewSource">view source</a></div><a name="ownerName"></a><a name="property-ownerName"></a><a href="Ext.data.BelongsToAssociation.html#" rel="property-ownerName" class="cls expand">ownerName</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the model that 'owns' the association</p>
+</div><div class="long"><p>The name of the model that 'owns' the association</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-BelongsToAssociation" class="member f inherited"><a href="Ext.data.BelongsToAssociation.html#method-BelongsToAssociation" rel="method-BelongsToAssociation" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-method-constructor" class="viewSource">view source</a></div><a name="BelongsToAssociation"></a><a name="method-BelongsToAssociation"></a><a href="Ext.data.BelongsToAssociation.html#" rel="method-BelongsToAssociation" class="cls expand">BelongsToAssociation</a>(
+<span class="pre">Object config</span>)
+ : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc"><p>Optional config object</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getReader" class="member inherited"><a href="Ext.data.BelongsToAssociation.html#method-getReader" rel="method-getReader" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-method-getReader" class="viewSource">view source</a></div><a name="getReader"></a><a name="method-getReader"></a><a href="Ext.data.BelongsToAssociation.html#" rel="method-getReader" class="cls expand">getReader</a> : Ext.data.reader.Reader</div><div class="description"><div class="short"><p>Get a specialized reader for reading associated data</p>
+</div><div class="long"><p>Get a specialized reader for reading associated data</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.data.reader.Reader</span>&nbsp; &nbsp;<p>The reader, null if not supplied</p>
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

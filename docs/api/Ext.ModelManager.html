@@ -1,0 +1,156 @@
+<!DOCTYPE html><html><head><title>Ext.ModelManager | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.ModelManager',
+        docClass: 'Ext.ModelManager',
+        docReq: 'Ext.ModelManager',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'ModelManager.html#Ext-ModelManager';
+    clsInfo = {"methods":["create","each","get","getCount","getModel","isRegistered","onAvailable","register","registerType","unregister"],"cfgs":[],"properties":["all","associationStack"],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/ModelManager.html#Ext-ModelManager" target="_blank">Ext.ModelManager</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.AbstractManager.html" rel="Ext.AbstractManager" class="cls docClass">Ext.AbstractManager</a><div class="subclass"><strong>Ext.ModelManager</strong></div></div></pre><p>The ModelManager keeps track of all <a href="Ext.data.Model.html" rel="Ext.data.Model" class="docClass">Ext.data.Model</a> types defined in your application.</p>
+
+<p><strong>Creating Model Instances</strong>
+Model instances can be created by using the <a href="Ext.ModelManager.html#create" rel="Ext.ModelManager#create" class="docClass">create</a> function. It is also possible to do
+this by using the Model type directly. The following snippets are equivalent:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['first', 'last']
+});
+
+// method 1, create through the manager
+Ext.ModelManager.create({
+    first: 'Ed',
+    last: 'Spencer'
+}, 'User');
+
+// method 2, create on the type directly
+new User({
+    first: 'Ed',
+    last: 'Spencer'
+});
+</code></pre>
+
+<p><strong>Accessing Model Types</strong>
+A reference to a Model type can be obtained by using the <a href="Ext.ModelManager.html#getModel" rel="Ext.ModelManager#getModel" class="docClass">getModel</a> function. Since models types
+are normal classes, you can access the type directly. The following snippets are equivalent:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['first', 'last']
+});
+
+// method 1, access model type through the manager
+var UserType = Ext.ModelManager.getModel('User');
+
+// method 2, reference the type directly
+var UserType = User;
+</code></pre>
+<div class="members"><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-all" class="member f inherited"><a href="Ext.ModelManager.html#property-all" rel="property-all" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-property-all" class="viewSource">view source</a></div><a name="all"></a><a name="property-all"></a><a href="Ext.ModelManager.html#" rel="property-all" class="cls expand">all</a><span> : Ext.util.MixedCollection</span></div><div class="description"><div class="short"><p>Contains all of the items currently managed</p>
+</div><div class="long"><p>Contains all of the items currently managed</p>
+</div></div></div><div id="property-associationStack" class="member ni"><a href="Ext.ModelManager.html#property-associationStack" rel="property-associationStack" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.ModelManager.html" class="definedIn docClass">Ext.ModelManager</a><br/><a href="../source/ModelManager.html#Ext-ModelManager-property-associationStack" class="viewSource">view source</a></div><a name="associationStack"></a><a name="property-associationStack"></a><a href="Ext.ModelManager.html#" rel="property-associationStack" class="cls expand">associationStack</a><span> : Array</span></div><div class="description"><div class="short"><p>Private stack of associations that must be created once their associated model has been defined</p>
+</div><div class="long"><p>Private stack of associations that must be created once their associated model has been defined</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-create" class="member f ni"><a href="Ext.ModelManager.html#method-create" rel="method-create" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.ModelManager.html" class="definedIn docClass">Ext.ModelManager</a><br/><a href="../source/ModelManager.html#Ext-ModelManager-method-create" class="viewSource">view source</a></div><a name="create"></a><a name="method-create"></a><a href="Ext.ModelManager.html#" rel="method-create" class="cls expand">create</a>(
+<span class="pre">Object data, String name, Number id</span>)
+ : void</div><div class="description"><div class="short"><p>Creates a new instance of a Model using the given data.</p>
+</div><div class="long"><p>Creates a new instance of a Model using the given data.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">data</span> : Object<div class="sub-desc"><p>Data to initialize the Model's fields with</p>
+</div></li><li><span class="pre">name</span> : String<div class="sub-desc"><p>The name of the model to create</p>
+</div></li><li><span class="pre">id</span> : Number<div class="sub-desc"><p>Optional unique id of the Model instance (see <a href="Ext.data.Model.html" rel="Ext.data.Model" class="docClass">Ext.data.Model</a>)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-each" class="member inherited"><a href="Ext.ModelManager.html#method-each" rel="method-each" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-each" class="viewSource">view source</a></div><a name="each"></a><a name="method-each"></a><a href="Ext.ModelManager.html#" rel="method-each" class="cls expand">each</a>(
+<span class="pre">Object fn, Object scope</span>)
+ : void</div><div class="description"><div class="short">Executes the specified function once for each item in the collection.
+Returning false from the function will cease it...</div><div class="long"><p>Executes the specified function once for each item in the collection.
+Returning false from the function will cease iteration.</p>
+
+<p>The paramaters passed to the function are:</p>
+
+<div class="mdetail-params"><ul>
+<li><b>key</b> : String<p class="sub-desc">The key of the item</p></li>
+<li><b>value</b> : Number<p class="sub-desc">The value of the item</p></li>
+<li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
+</ul></div>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Object<div class="sub-desc"><p>The function to execute.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope to execute in. Defaults to <tt>this</tt>.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-get" class="member inherited"><a href="Ext.ModelManager.html#method-get" rel="method-get" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-get" class="viewSource">view source</a></div><a name="get"></a><a name="method-get"></a><a href="Ext.ModelManager.html#" rel="method-get" class="cls expand">get</a>(
+<span class="pre">String id</span>)
+ : Mixed</div><div class="description"><div class="short"><p>Returns an item by id.
+For additional details see <a href="Ext.util.HashMap.html#get" rel="Ext.util.HashMap#get" class="docClass">Ext.util.HashMap.get</a>.</p>
+</div><div class="long"><p>Returns an item by id.
+For additional details see <a href="Ext.util.HashMap.html#get" rel="Ext.util.HashMap#get" class="docClass">Ext.util.HashMap.get</a>.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">id</span> : String<div class="sub-desc"><p>The id of the item</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Mixed</span>&nbsp; &nbsp;<p>The item, <code>undefined</code> if not found.</p>
+</li></ul></div></div></div><div id="method-getCount" class="member inherited"><a href="Ext.ModelManager.html#method-getCount" rel="method-getCount" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-getCount" class="viewSource">view source</a></div><a name="getCount"></a><a name="method-getCount"></a><a href="Ext.ModelManager.html#" rel="method-getCount" class="cls expand">getCount</a> : Number</div><div class="description"><div class="short"><p>Gets the number of items in the collection.</p>
+</div><div class="long"><p>Gets the number of items in the collection.</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Number</span>&nbsp; &nbsp;<p>The number of items in the collection.</p>
+</li></ul></div></div></div><div id="method-getModel" class="member ni"><a href="Ext.ModelManager.html#method-getModel" rel="method-getModel" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.ModelManager.html" class="definedIn docClass">Ext.ModelManager</a><br/><a href="../source/ModelManager.html#Ext-ModelManager-method-getModel" class="viewSource">view source</a></div><a name="getModel"></a><a name="method-getModel"></a><a href="Ext.ModelManager.html#" rel="method-getModel" class="cls expand">getModel</a>(
+<span class="pre">String/Object id</span>)
+ : void</div><div class="description"><div class="short"><p>Returns the <a href="Ext.data.Model.html" rel="Ext.data.Model" class="docClass">Ext.data.Model</a> for a given model name</p>
+</div><div class="long"><p>Returns the <a href="Ext.data.Model.html" rel="Ext.data.Model" class="docClass">Ext.data.Model</a> for a given model name</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">id</span> : String/Object<div class="sub-desc"><p>The id of the model or the model instance.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-isRegistered" class="member inherited"><a href="Ext.ModelManager.html#method-isRegistered" rel="method-isRegistered" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-isRegistered" class="viewSource">view source</a></div><a name="isRegistered"></a><a name="method-isRegistered"></a><a href="Ext.ModelManager.html#" rel="method-isRegistered" class="cls expand">isRegistered</a>(
+<span class="pre">String type</span>)
+ : Boolean</div><div class="description"><div class="short"><p>Checks if an item type is registered.</p>
+</div><div class="long"><p>Checks if an item type is registered.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">type</span> : String<div class="sub-desc"><p>The mnemonic string by which the class may be looked up</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Boolean</span>&nbsp; &nbsp;<p>Whether the type is registered.</p>
+</li></ul></div></div></div><div id="method-onAvailable" class="member inherited"><a href="Ext.ModelManager.html#method-onAvailable" rel="method-onAvailable" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-onAvailable" class="viewSource">view source</a></div><a name="onAvailable"></a><a name="method-onAvailable"></a><a href="Ext.ModelManager.html#" rel="method-onAvailable" class="cls expand">onAvailable</a>(
+<span class="pre">String id, Function fn, Object scope</span>)
+ : void</div><div class="description"><div class="short">Registers a function that will be called when an item with the specified id is added to the manager. This will happen...</div><div class="long"><p>Registers a function that will be called when an item with the specified id is added to the manager. This will happen on instantiation.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">id</span> : String<div class="sub-desc"><p>The item id</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The callback function. Called with a single parameter, the item.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope (<code>this</code> reference) in which the callback is executed. Defaults to the item.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-register" class="member inherited"><a href="Ext.ModelManager.html#method-register" rel="method-register" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-register" class="viewSource">view source</a></div><a name="register"></a><a name="method-register"></a><a href="Ext.ModelManager.html#" rel="method-register" class="cls expand">register</a>(
+<span class="pre">Mixed item</span>)
+ : void</div><div class="description"><div class="short"><p>Registers an item to be managed</p>
+</div><div class="long"><p>Registers an item to be managed</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Mixed<div class="sub-desc"><p>The item to register</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-registerType" class="member inherited"><a href="Ext.ModelManager.html#method-registerType" rel="method-registerType" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-registerType" class="viewSource">view source</a></div><a name="registerType"></a><a name="method-registerType"></a><a href="Ext.ModelManager.html#" rel="method-registerType" class="cls expand">registerType</a>(
+<span class="pre">String type, Constructor cls</span>)
+ : void</div><div class="description"><div class="short"><p>Registers a new item constructor, keyed by a type key.
+
+</div><div class="long"><p>Registers a new item constructor, keyed by a type key.
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">type</span> : String<div class="sub-desc"><p>The mnemonic string by which the class may be looked up.</p>
+</div></li><li><span class="pre">cls</span> : Constructor<div class="sub-desc"><p>The new instance class.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-unregister" class="member inherited"><a href="Ext.ModelManager.html#method-unregister" rel="method-unregister" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.AbstractManager.html" class="definedIn docClass">Ext.AbstractManager</a><br/><a href="../source/AbstractManager.html#Ext-AbstractManager-method-unregister" class="viewSource">view source</a></div><a name="unregister"></a><a name="method-unregister"></a><a href="Ext.ModelManager.html#" rel="method-unregister" class="cls expand">unregister</a>(
+<span class="pre">Mixed item</span>)
+ : void</div><div class="description"><div class="short"><p>Unregisters an item by removing it from this manager</p>
+</div><div class="long"><p>Unregisters an item by removing it from this manager</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">item</span> : Mixed<div class="sub-desc"><p>The item to unregister</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

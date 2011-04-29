@@ -1,0 +1,666 @@
+describe("Ext-mess", function() {
+    describe("Ext.id", function(){
+        var el;
+        describe("if element passed as first argument is different of document or window", function() {
+            beforeEach(function() {
+                el = document.createElement("div"); // do not use the Ext.getBody().createChild() method because it call Ext.id
+                Ext.getBody().appendChild(el);
+            });
+
+            it("should generate an unique id for the element with default prefix ext-gen", function() {
+                expect(Ext.id(el)).toEqual("ext-gen" + Ext.idSeed);
+            });
+
+            it("should generate an unique id for the element with custom prefix", function() {
+                var prefix = "nico-yhwh";
+                expect(Ext.id(el, prefix)).toEqual(prefix + Ext.idSeed);
+            });
+
+            it("should not override existing id", function() {
+                var id = "unchanged";
+                el.id = id;
+                expect(Ext.id(el)).toEqual(id);
+            });
+        });
+
+        describe("if element passed as first argument is document", function() {
+            it("should return Ext.documentId", function() {
+                expect(Ext.id(document)).toEqual(Ext.documentId);
+            });
+        });
+
+        describe("if element passed as first argument is window", function() {
+            it("should return Ext.windowId", function() {
+                expect(Ext.id(window)).toEqual(Ext.windowId);
+            });
+        });
+    });
+
+    xdescribe("Ext.repaint", function() {
+        it("should create a mask in the body", function(){
+            var body = Ext.getBody();
+
+            spyOn(Ext, "getBody").andCallThrough();
+            spyOn(body, "createChild").andCallThrough();
+
+            Ext.repaint();
+
+            expect(Ext.getBody).toHaveBeenCalled();
+            expect(body.createChild).toHaveBeenCalledWith({cls: "x-mask x-mask-transparent", tag: "div"});
+        });
+    });
+
+    describe("Ext.destroy", function() {
+        var o1, o2, o3;
+
+        beforeEach(function() {
+            o1 = jasmine.createSpyObj("o1", ["destroy"]);
+
+            o2 = jasmine.createSpyObj("o2", ["destroy"]);
+
+            o3 = jasmine.createSpyObj("o3", ["dest"]);
+
+        });
+
+        it("should destroy an object", function() {
+            Ext.destroy(o1);
+
+            expect(o1.destroy).toHaveBeenCalled();
+        });
+
+        it("should no destroy an object without a destroy method", function() {
+            Ext.destroy(o3);
+
+            expect(o3.dest).not.toHaveBeenCalled();
+        });
+
+        it("should destroy an array of objects", function() {
+            Ext.destroy([o1, o2, o3]);
+
+            expect(o1.destroy).toHaveBeenCalled();
+            expect(o2.destroy).toHaveBeenCalled();
+            expect(o3.dest).not.toHaveBeenCalled();
+        });
+
+        it("should destroy multiple objects", function() {
+            Ext.destroy(o1, o2, o3);
+
+            expect(o1.destroy).toHaveBeenCalled();
+            expect(o2.destroy).toHaveBeenCalled();
+            expect(o3.dest).not.toHaveBeenCalled();
+        });
+
+        it("should remove dom if object is an Ext.element", function() {
+           var el = Ext.getBody().createChild({id: "to_destroy"});
+
+           Ext.destroy(el);
+
+           expect(Ext.fly("to_destroy")).toBeNull();
+        });
+    });
+
+    describe("Ext.each", function() {
+         var itFn;
+
+        beforeEach(function() {
+            itFn = jasmine.createSpy("on itFn");
+        });
+
+        describe("each object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {
+                    n1: 11,
+                    n2: 13,
+                    n3: 18
+                };
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.each(o, itFn);
+                });
+
+                it("should call the each function 3 times", function () {
+                    expect(itFn.callCount).toEqual(3);
+                });
+
+                it("should call the each function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual(["n1", 11, o]);
+                    expect(itFn.calls[1].args).toEqual(["n2", 13, o]);
+                    expect(itFn.calls[2].args).toEqual(["n3", 18, o]);
+                });
+            });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.each(o, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {};
+                Ext.each(o, itFn);
+            });
+
+            it("should not call the each function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+
+        describe("each array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [6, 7, 8, 9];
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.each(arr, itFn);
+                });
+
+                it("should call the each function 4 times", function () {
+                    expect(itFn.callCount).toEqual(4);
+                });
+
+                it("should call the each function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual([6, 0, arr]);
+                    expect(itFn.calls[1].args).toEqual([7, 1, arr]);
+                    expect(itFn.calls[2].args).toEqual([8, 2, arr]);
+                    expect(itFn.calls[3].args).toEqual([9, 3, arr]);
+                });
+             });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.each(arr, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [];
+                Ext.each(arr, itFn);
+            });
+
+            it("should not call the each function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+
+        describe("simple cases", function() {
+            it("should work with an array of numbers", function() {
+                var sum = 0;
+
+                Ext.each([1, 2, 3, 4], function(val){
+                    sum += val;
+                });
+
+                expect(sum).toEqual(10);
+            });
+
+            it("should work with an array of strings", function() {
+                var str = '';
+
+                Ext.each(["S", "e", "n", "c", "h", "a"], function(s){
+                    str += s;
+                });
+
+                expect(str).toEqual("Sencha");
+            });
+
+            it("should pass index correctly", function() {
+                var arr = [];
+                Ext.each([1, 2, 3, 4, 5, 6], function(val, idx){
+                    arr.push(idx);
+                });
+                expect(arr).toEqual([0, 1, 2, 3, 4, 5]);
+            });
+
+            it("should work with a non array parameter", function() {
+                var sum = 0;
+
+                Ext.each(5, function(num){
+                    sum += num;
+                });
+
+                expect(sum).toEqual(5);
+            });
+        });
+
+        describe("more complex cases that need a spy", function() {
+            var eachFn;
+
+            beforeEach(function() {
+                eachFn = jasmine.createSpy();
+            });
+
+            it("should not run eachFn with an empty array", function() {
+                Ext.each([], eachFn);
+
+                expect(eachFn).not.toHaveBeenCalled();
+            });
+
+            it("should not run eachFn with null as first param", function() {
+                Ext.each(null, eachFn);
+
+                expect(eachFn).not.toHaveBeenCalled();
+            });
+
+            it("should iterate over NodeLists", function() {
+                Ext.each(document.getElementsByTagName('body'), eachFn);
+
+                expect(eachFn).toHaveBeenCalled();
+            });
+
+            it("should stop when function called with each item return false", function() {
+                eachFn.andCallFake(function(v) {
+                    if (v === 5) {
+                        return false;
+                    }
+                });
+
+                Ext.each([1, 2, 3, 4, 5, 6], eachFn);
+
+                expect(eachFn.callCount).toEqual(5);
+            });
+
+            it("should runfunction called with each item with correct scope", function() {
+
+                Ext.each([1, 2], eachFn, fakeScope);
+
+                expect(eachFn.calls[0].object).toBe(fakeScope);
+                expect(eachFn.calls[1].object).toBe(fakeScope);
+            });
+        });
+
+
+    });
+
+    describe("Ext.iterate", function() {
+        var itFn;
+
+        beforeEach(function() {
+            itFn = jasmine.createSpy();
+        });
+
+        describe("iterate object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {
+                    n1: 11,
+                    n2: 13,
+                    n3: 18
+                };
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.iterate(o, itFn);
+                });
+
+                it("should call the iterate function 3 times", function () {
+                    expect(itFn.callCount).toEqual(3);
+                });
+
+                it("should call the iterate function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual(["n1", 11, o]);
+                    expect(itFn.calls[1].args).toEqual(["n2", 13, o]);
+                    expect(itFn.calls[2].args).toEqual(["n3", 18, o]);
+                });
+            });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.iterate(o, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {};
+                Ext.iterate(o, itFn);
+            });
+
+            it("should not call the iterate function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+
+        describe("iterate array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [6, 7, 8, 9];
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.iterate(arr, itFn);
+                });
+
+                it("should call the iterate function 4 times", function () {
+                    expect(itFn.callCount).toEqual(4);
+                });
+
+                it("should call the iterate function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual([6, 0, arr]);
+                    expect(itFn.calls[1].args).toEqual([7, 1, arr]);
+                    expect(itFn.calls[2].args).toEqual([8, 2, arr]);
+                    expect(itFn.calls[3].args).toEqual([9, 3, arr]);
+                });
+             });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.iterate(arr, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [];
+                Ext.iterate(arr, itFn);
+            });
+
+            it("should not call the iterate function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+    });
+
+
+    describe("Ext.num", function() {
+        it("should work with an integer", function() {
+            expect(Ext.num(3)).toEqual(3);
+        });
+
+        it("should work with a negative integer", function() {
+            expect(Ext.num(-7)).toEqual(-7);
+        });
+
+        it("should work with a float", function() {
+            expect(Ext.num(5.43)).toEqual(5.43);
+        });
+
+        it("should work with a negative float", function() {
+            expect(Ext.num(-9.8)).toEqual(-9.8);
+        });
+
+        it("should work with Math.PI", function() {
+            expect(Ext.num(Math.PI)).toEqual(Math.PI);
+        });
+
+        it("should return undefined with null", function() {
+            expect(Ext.num(null)).toBeUndefined();
+        });
+
+        it("should work with null, with defaults", function() {
+            expect(Ext.num(null, 4)).toEqual(4);
+        });
+
+        it("should return undefined with undefined", function() {
+            expect(Ext.num(undefined)).toBeUndefined();
+        });
+
+        it("should work with undefined, with defaults", function() {
+            expect(Ext.num(undefined, 42)).toEqual(42);
+        });
+
+        it("should return undefined with boolean", function() {
+            expect(Ext.num(true)).toBeUndefined();
+        });
+
+        it("should work with boolean, with defaults", function() {
+            expect(Ext.num(true, 12)).toEqual(12);
+        });
+
+        it("should return undefined with empty string", function() {
+            expect(Ext.num("")).toBeUndefined();
+        });
+
+        it("should work with string argument in the form of a number", function() {
+            expect(Ext.num('666')).toEqual(666);
+        });
+
+        it("should return undefined with a string containing only spaces", function() {
+            expect(Ext.num("     ")).toBeUndefined();
+        });
+
+        it("should return undefined with non empty string", function() {
+            expect(Ext.num("foo")).toBeUndefined();
+        });
+
+        it("should return undefined with empty array", function() {
+            expect(Ext.num([])).toBeUndefined();
+        });
+
+        it("should return undefined with non empty array", function() {
+            expect(Ext.num([1, 2, 3])).toBeUndefined();
+        });
+
+        it("should return undefined with array with a single item", function() {
+            expect(Ext.num([3])).toBeUndefined();
+        });
+    });
+
+    describe("Ext.pluck", function() {
+        it("should return results", function() {
+            var results = Ext.pluck([{
+                n: 11,
+                c: 17
+            }, {
+                n: 13,
+                p: true
+            }, {
+                n: 18,
+                p: false
+            }], 'n');
+
+            expect(results).toEqual([11, 13, 18]);
+        });
+    });
+
+    describe("Ext.toArray", function() {
+        var span1,
+            span2,
+            span3,
+            span4,
+            div,
+            htmlCollection;
+
+        beforeEach(function() {
+            div = Ext.getBody().createChild({tag: "div"});
+            span1 = div.createChild({tag: "span"});
+            span2 = div.createChild({tag: "span"});
+            span3 = div.createChild({tag: "span"});
+            span4 = div.createChild({tag: "span"});
+            htmlCollection = div.dom.getElementsByTagName("span");
+        });
+
+        it("should convert iterable to an array", function() {
+           expect(Ext.toArray(htmlCollection)).toEqual([span1.dom, span2.dom, span3.dom, span4.dom]);
+        });
+
+        it("should convert a part of an iterable to an array", function() {
+           expect(Ext.toArray(htmlCollection, 1, 3)).toEqual([span2.dom, span3.dom]);
+        });
+    });
+
+    xdescribe("Ext.urlAppend", function() {
+        var url = "http://example.com/";
+
+        it("should manage question mark", function() {
+            expect(Ext.urlAppend(url, "test=1")).toEqual("http://example.com/?test=1");
+        });
+
+        it("should manage ampersand", function() {
+            expect(Ext.urlAppend(url+"?test=1","foo=2")).toEqual("http://example.com/?test=1&foo=2");
+        });
+
+        it("should return directly url if content is empty", function() {
+            expect(Ext.urlAppend(url)).toEqual(url);
+        });
+    });
+
+    xdescribe("Ext.urlDecode", function() {
+        it ("should return an empty object if string is empty", function (){
+            expect(Ext.urlDecode("")).toEqual({});
+        });
+
+        it("should decode 2 keys", function(){
+            expect(Ext.urlDecode("foo=1&bar=2")).toEqual({
+                foo: "1",
+                bar: "2"
+            });
+        });
+
+        it("should decode 2 keys, one of them an array (overwrite off)", function() {
+            expect(Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false)).toEqual({
+                foo: "1",
+                bar: ['2', '3', '4']
+            });
+        });
+
+        it("should decode 2 keys, one of them an array (overwrite on)", function() {
+            expect(Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", true)).toEqual({
+                foo: "1",
+                bar: "4"
+            });
+        });
+    });
+
+    xdescribe("Ext.urlEncode", function() {
+        it("should encode 2 keys", function() {
+            expect(Ext.urlEncode({
+                foo: "1",
+                bar: "2"
+            })).toEqual("foo=1&bar=2");
+        });
+
+        it("should encode 2 keys, one of them an array", function() {
+            expect(Ext.urlEncode({
+                foo: "1",
+                bar: ['2', '3', '4']
+            })).toEqual("foo=1&bar=2&bar=3&bar=4");
+        });
+
+        it("should encode 2 keys, one of them an array, with pre: test=1", function() {
+            expect(Ext.urlEncode({
+                foo: "1",
+                bar: ['2', '3', '4']
+            }, "test=1")).toEqual("test=1&foo=1&bar=2&bar=3&bar=4");
+        });
+    });
+
+    xdescribe("Ext.htmlEncode", function() {
+        it("should call Ext.String.htmlEncode", function() {
+            var val = '';
+            spyOn(Ext.util.Format, "htmlEncode");
+            Ext.htmlEncode(val);
+            expect(Ext.String.htmlEncode).toHaveBeenCalledWith(val);
+        });
+    });
+
+    xdescribe("Ext.htmlEncode", function() {
+        it("should call Ext.String.htmlDecode", function() {
+            var val = '';
+            spyOn(Ext.util.Format, "htmlDecode");
+
+            Ext.htmlDecode(val);
+            expect(Ext.String.htmlDecode).toHaveBeenCalledWith(val);
+        });
+    });
+
+    describe("Ext.getBody", function() {
+        it("should return current document body as an Ext.core.Element", function() {
+            expect(Ext.getBody()).toEqual(Ext.get(document.body)); // see initSandbox in DomSandBox.js for more info
+        });
+    });
+
+    describe("Ext.getHead", function() {
+        it("should return current document head as an Ext.core.Element", function() {
+            expect(Ext.getHead()).toEqual(Ext.get(document.getElementsByTagName("head")[0]));
+        });
+    });
+
+    describe("Ext.getDoc", function() {
+        it("should return the current HTML document object as an Ext.element", function() {
+            expect(Ext.getDoc()).toEqual(Ext.get(document));
+        });
+    });
+
+    describe("Ext.getOrientation", function() {
+        it("should return the current orientation of the mobile device", function() {
+            if (window.innerHeight > window.innerWidth) {
+                expect(Ext.getOrientation()).toEqual("portrait");
+            } else {
+                expect(Ext.getOrientation()).toEqual("landscape");
+            }
+        });
+    });
+
+    describe("Ext.getDom", function() {
+        var el1;
+
+        beforeEach(function() {
+            el1 = Ext.getBody().createChild({id: "elone"});
+        });
+
+        it("should return a dom element if an Ext.element is passed as first argument", function() {
+            expect(Ext.getDom(el1)).toEqual(el1.dom);
+        });
+
+        it("should return a dom element if the string (id) passed as first argument", function() {
+            expect(Ext.getDom("elone")).toEqual(el1.dom);
+        });
+    });
+});

@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><title>Ext.dd.StatusProxy | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.dd.StatusProxy',
+        docClass: 'Ext.dd.StatusProxy',
+        docReq: 'Ext.dd.StatusProxy',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'StatusProxy.html#Ext-dd.StatusProxy';
+    clsInfo = {"methods":["StatusProxy","getEl","getGhost","hide","repair","reset","setStatus","show","stop","sync","update"],"cfgs":["dropAllowed","dropNotAllowed"],"properties":[],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/StatusProxy.html#Ext-dd.StatusProxy" target="_blank">Ext.dd.StatusProxy</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>A specialized drag proxy that supports a drop status icon, <a href="Ext.Layer.html" rel="Ext.Layer" class="docClass">Ext.Layer</a> styles and auto-repair.  This is the
+default drag proxy used by all Ext.dd components.</p>
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-dropAllowed" class="member f ni"><a href="Ext.dd.StatusProxy.html#config-dropAllowed" rel="config-dropAllowed" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-cfg-dropAllowed" class="viewSource">view source</a></div><a name="dropAllowed"></a><a name="config-dropAllowed"></a><a href="Ext.dd.StatusProxy.html#" rel="config-dropAllowed" class="cls expand">dropAllowed</a><span> : String</span></div><div class="description"><div class="short"><p>The CSS class to apply to the status element when drop is allowed (defaults to "x-dd-drop-ok").</p>
+</div><div class="long"><p>The CSS class to apply to the status element when drop is allowed (defaults to "x-dd-drop-ok").</p>
+</div></div></div><div id="config-dropNotAllowed" class="member ni"><a href="Ext.dd.StatusProxy.html#config-dropNotAllowed" rel="config-dropNotAllowed" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-cfg-dropNotAllowed" class="viewSource">view source</a></div><a name="dropNotAllowed"></a><a name="config-dropNotAllowed"></a><a href="Ext.dd.StatusProxy.html#" rel="config-dropNotAllowed" class="cls expand">dropNotAllowed</a><span> : String</span></div><div class="description"><div class="short"><p>The CSS class to apply to the status element when drop is not allowed (defaults to "x-dd-drop-nodrop").</p>
+</div><div class="long"><p>The CSS class to apply to the status element when drop is not allowed (defaults to "x-dd-drop-nodrop").</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-StatusProxy" class="member f ni"><a href="Ext.dd.StatusProxy.html#method-StatusProxy" rel="method-StatusProxy" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-constructor" class="viewSource">view source</a></div><a name="StatusProxy"></a><a name="method-StatusProxy"></a><a href="Ext.dd.StatusProxy.html#" rel="method-StatusProxy" class="cls expand">StatusProxy</a>(
+<span class="pre">Object config</span>)
+ : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getEl" class="member ni"><a href="Ext.dd.StatusProxy.html#method-getEl" rel="method-getEl" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-getEl" class="viewSource">view source</a></div><a name="getEl"></a><a name="method-getEl"></a><a href="Ext.dd.StatusProxy.html#" rel="method-getEl" class="cls expand">getEl</a> : Ext.Layer</div><div class="description"><div class="short"><p>Returns the underlying proxy <a href="Ext.Layer.html" rel="Ext.Layer" class="docClass">Ext.Layer</a></p>
+</div><div class="long"><p>Returns the underlying proxy <a href="Ext.Layer.html" rel="Ext.Layer" class="docClass">Ext.Layer</a></p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Layer</span>&nbsp; &nbsp;<p>el</p>
+</li></ul></div></div></div><div id="method-getGhost" class="member ni"><a href="Ext.dd.StatusProxy.html#method-getGhost" rel="method-getGhost" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-getGhost" class="viewSource">view source</a></div><a name="getGhost"></a><a name="method-getGhost"></a><a href="Ext.dd.StatusProxy.html#" rel="method-getGhost" class="cls expand">getGhost</a> : Ext.core.Element</div><div class="description"><div class="short"><p>Returns the ghost element</p>
+</div><div class="long"><p>Returns the ghost element</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.core.Element</span>&nbsp; &nbsp;<p>el</p>
+</li></ul></div></div></div><div id="method-hide" class="member ni"><a href="Ext.dd.StatusProxy.html#method-hide" rel="method-hide" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-hide" class="viewSource">view source</a></div><a name="hide"></a><a name="method-hide"></a><a href="Ext.dd.StatusProxy.html#" rel="method-hide" class="cls expand">hide</a>(
+<span class="pre">Boolean clear</span>)
+ : void</div><div class="description"><div class="short"><p>Hides the proxy</p>
+</div><div class="long"><p>Hides the proxy</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">clear</span> : Boolean<div class="sub-desc"><p>True to reset the status and clear the ghost contents, false to preserve them</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-repair" class="member ni"><a href="Ext.dd.StatusProxy.html#method-repair" rel="method-repair" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-repair" class="viewSource">view source</a></div><a name="repair"></a><a name="method-repair"></a><a href="Ext.dd.StatusProxy.html#" rel="method-repair" class="cls expand">repair</a>(
+<span class="pre">Array xy, Function callback, Object scope</span>)
+ : void</div><div class="description"><div class="short">Causes the proxy to return to its position of origin via an animation.  Should be called after an
+invalid drop operat...</div><div class="long"><p>Causes the proxy to return to its position of origin via an animation.  Should be called after an
+invalid drop operation by the item being dragged.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">xy</span> : Array<div class="sub-desc"><p>The XY position of the element ([x, y])</p>
+</div></li><li><span class="pre">callback</span> : Function<div class="sub-desc"><p>The function to call after the repair is complete.</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-reset" class="member ni"><a href="Ext.dd.StatusProxy.html#method-reset" rel="method-reset" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-reset" class="viewSource">view source</a></div><a name="reset"></a><a name="method-reset"></a><a href="Ext.dd.StatusProxy.html#" rel="method-reset" class="cls expand">reset</a>(
+<span class="pre">Boolean clearGhost</span>)
+ : void</div><div class="description"><div class="short"><p>Resets the status indicator to the default dropNotAllowed value</p>
+</div><div class="long"><p>Resets the status indicator to the default dropNotAllowed value</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">clearGhost</span> : Boolean<div class="sub-desc"><p>True to also remove all content from the ghost, false to preserve it</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-setStatus" class="member ni"><a href="Ext.dd.StatusProxy.html#method-setStatus" rel="method-setStatus" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-setStatus" class="viewSource">view source</a></div><a name="setStatus"></a><a name="method-setStatus"></a><a href="Ext.dd.StatusProxy.html#" rel="method-setStatus" class="cls expand">setStatus</a>(
+<span class="pre">String cssClass</span>)
+ : void</div><div class="description"><div class="short">Updates the proxy's visual element to indicate the status of whether or not drop is allowed
+over the current target e...</div><div class="long"><p>Updates the proxy's visual element to indicate the status of whether or not drop is allowed
+over the current target element.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">cssClass</span> : String<div class="sub-desc"><p>The css class for the new drop status indicator image</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-show" class="member ni"><a href="Ext.dd.StatusProxy.html#method-show" rel="method-show" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-show" class="viewSource">view source</a></div><a name="show"></a><a name="method-show"></a><a href="Ext.dd.StatusProxy.html#" rel="method-show" class="cls expand">show</a> : void</div><div class="description"><div class="short"><p>Displays this proxy</p>
+</div><div class="long"><p>Displays this proxy</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-stop" class="member ni"><a href="Ext.dd.StatusProxy.html#method-stop" rel="method-stop" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-stop" class="viewSource">view source</a></div><a name="stop"></a><a name="method-stop"></a><a href="Ext.dd.StatusProxy.html#" rel="method-stop" class="cls expand">stop</a> : void</div><div class="description"><div class="short"><p>Stops the repair animation if it's currently running</p>
+</div><div class="long"><p>Stops the repair animation if it's currently running</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-sync" class="member ni"><a href="Ext.dd.StatusProxy.html#method-sync" rel="method-sync" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-sync" class="viewSource">view source</a></div><a name="sync"></a><a name="method-sync"></a><a href="Ext.dd.StatusProxy.html#" rel="method-sync" class="cls expand">sync</a> : void</div><div class="description"><div class="short"><p>Force the Layer to sync its shadow and shim positions to the element</p>
+</div><div class="long"><p>Force the Layer to sync its shadow and shim positions to the element</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-update" class="member ni"><a href="Ext.dd.StatusProxy.html#method-update" rel="method-update" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.dd.StatusProxy.html" class="definedIn docClass">Ext.dd.StatusProxy</a><br/><a href="../source/StatusProxy.html#Ext-dd.StatusProxy-method-update" class="viewSource">view source</a></div><a name="update"></a><a name="method-update"></a><a href="Ext.dd.StatusProxy.html#" rel="method-update" class="cls expand">update</a>(
+<span class="pre">String/HTMLElement html</span>)
+ : void</div><div class="description"><div class="short"><p>Updates the contents of the ghost element</p>
+</div><div class="long"><p>Updates the contents of the ghost element</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">html</span> : String/HTMLElement<div class="sub-desc"><p>The html that will replace the current innerHTML of the ghost element, or a
+DOM node to append as the child of the ghost element (in which case the innerHTML will be cleared first).</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

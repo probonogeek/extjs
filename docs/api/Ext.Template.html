@@ -1,0 +1,158 @@
+<!DOCTYPE html><html><head><title>Ext.Template | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.Template',
+        docClass: 'Ext.Template',
+        docReq: 'Ext.Template',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Template2.html#Ext-Template';
+    clsInfo = {"methods":["append","apply","from","insertAfter","insertBefore","insertFirst","overwrite","set"],"cfgs":["disableFormats"],"properties":[],"events":[],"subclasses":["Ext.XTemplate"]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Template2.html#Ext-Template" target="_blank">Ext.Template</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>Represents an HTML fragment template. Templates may be <a href="Ext.Template.html#compile" rel="Ext.Template#compile" class="docClass">precompiled</a>
+for greater performance.</p>
+
+
+<p>An instance of this class may be created by passing to the constructor either
+a single argument, or multiple arguments:</p>
+
+<div class="mdetail-params"><ul>
+<li><b>single argument</b> : String/Array
+<div class="sub-desc">
+The single argument may be either a String or an Array:<ul>
+<li><tt>String</tt> : </li>
+<pre class="prettyprint"><code>var t = new Ext.Template("&lt;div>Hello {0}.&lt;/div>");
+t.<a href="Ext.Template.html#append" rel="Ext.Template#append" class="docClass">append</a>('some-element', ['foo']);
+   </code></pre>
+<li><tt>Array</tt> : </li>
+An Array will be combined with <code>join('')</code>.
+<pre class="prettyprint"><code>var t = new Ext.Template([
+    '&lt;div name="{id}"&gt;',
+        '&lt;span class="{cls}"&gt;{name:trim} {value:ellipsis(10)}&lt;/span&gt;',
+    '&lt;/div&gt;',
+]);
+t.<a href="Ext.Template.html#compile" rel="Ext.Template#compile" class="docClass">compile</a>();
+t.<a href="Ext.Template.html#append" rel="Ext.Template#append" class="docClass">append</a>('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'});
+   </code></pre>
+</ul></div></li>
+<li><b>multiple arguments</b> : String, Object, Array, ...
+<div class="sub-desc">
+Multiple arguments will be combined with <code>join('')</code>.
+<pre class="prettyprint"><code>var t = new Ext.Template(
+    '&lt;div name="{id}"&gt;',
+        '&lt;span class="{cls}"&gt;{name} {value}&lt;/span&gt;',
+    '&lt;/div&gt;',
+    // a configuration object:
+    {
+        compiled: true,      // <a href="Ext.Template.html#compile" rel="Ext.Template#compile" class="docClass">compile</a> immediately
+    }
+);
+   </code></pre>
+<p><b>Notes</b>:</p>
+<div class="mdetail-params"><ul>
+<li>For a list of available format functions, see <a href="Ext.util.Format.html" rel="Ext.util.Format" class="docClass">Ext.util.Format</a>.</li>
+<li><code>disableFormats</code> reduces <code><a href="Ext.Template.html#apply" rel="Ext.Template#apply" class="docClass">apply</a></code> time
+when no formatting is required.</li>
+</ul></div>
+</div></li>
+</ul></div>
+
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-disableFormats" class="member f ni"><a href="Ext.Template.html#config-disableFormats" rel="config-disableFormats" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-cfg-disableFormats" class="viewSource">view source</a></div><a name="disableFormats"></a><a name="config-disableFormats"></a><a href="Ext.Template.html#" rel="config-disableFormats" class="cls expand">disableFormats</a><span> : Boolean</span></div><div class="description"><div class="short">true to disable format functions in the template. If the template doesn't contain format functions, setting
+disableFo...</div><div class="long"><p>true to disable format functions in the template. If the template doesn't contain format functions, setting
+disableFormats to true will reduce apply time (defaults to false)</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-append" class="member f ni"><a href="Ext.Template.html#method-append" rel="method-append" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-append" class="viewSource">view source</a></div><a name="append"></a><a name="method-append"></a><a href="Ext.Template.html#" rel="method-append" class="cls expand">append</a>(
+<span class="pre">Mixed el, Object/Array values, [Boolean returnElement]</span>)
+ : HTMLElement/Ext.core.Element</div><div class="description"><div class="short">Applies the supplied values to the template and appends
+the new node(s) to the specified el.
+
+For example usage see t...</div><div class="long"><p>Applies the supplied <code>values</code> to the template and appends
+the new node(s) to the specified <code>el</code>.</p>
+
+<p>For example usage <a href="Ext.Template.html#Template" rel="Ext.Template#Template" class="docClass">see the constructor</a>.</p>
+
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : Mixed<div class="sub-desc"><p>The context element</p>
+</div></li><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if the params are numeric (i.e. <code>{0}</code>)
+or an object (i.e. <code>{foo: 'bar'}</code>).</p>
+</div></li><li><span class="pre">returnElement</span> : Boolean<div class="sub-desc"><p>(optional) true to return an <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Ext.core.Element</a> (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement/Ext.core.Element</span>&nbsp; &nbsp;<p>The new node or Element</p>
+</li></ul></div></div></div><div id="method-apply" class="member ni"><a href="Ext.Template.html#method-apply" rel="method-apply" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-apply" class="viewSource">view source</a></div><a name="apply"></a><a name="method-apply"></a><a href="Ext.Template.html#" rel="method-apply" class="cls expand">apply</a>(
+<span class="pre">Object/Array values</span>)
+ : String</div><div class="description"><div class="short"><p>Alias for <a href="Ext.Template.html#applyTemplate" rel="Ext.Template#applyTemplate" class="docClass">applyTemplate</a>
+Returns an HTML fragment of this template with the specified <code>values</code> applied.</p>
+</div><div class="long"><p>Alias for <a href="Ext.Template.html#applyTemplate" rel="Ext.Template#applyTemplate" class="docClass">applyTemplate</a>
+Returns an HTML fragment of this template with the specified <code>values</code> applied.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if the params are numeric (i.e. <code>{0}</code>)
+or an object (i.e. <code>{foo: 'bar'}</code>).</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">String</span>&nbsp; &nbsp;<p>The HTML fragment</p>
+</li></ul></div></div></div><div id="method-from" class="member ni"><a href="Ext.Template.html#method-from" rel="method-from" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-from" class="viewSource">view source</a></div><a name="from"></a><a name="method-from"></a><a href="Ext.Template.html#" rel="method-from" class="cls expand">from</a>(
+<span class="pre">String/HTMLElement el, Object config</span>)
+ : Ext.Template</div><div class="description"><div class="short"><p>Creates a template from the passed element's value (<i>display:none</i> textarea, preferred) or innerHTML.</p>
+</div><div class="long"><p>Creates a template from the passed element's value (<i>display:none</i> textarea, preferred) or innerHTML.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : String/HTMLElement<div class="sub-desc"><p>A DOM element or its id</p>
+</div></li><li><span class="pre">config</span> : Object<div class="sub-desc"><p>A configuration object</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Template</span>&nbsp; &nbsp;<p>The created template</p>
+</li></ul></div></div></div><div id="method-insertAfter" class="member ni"><a href="Ext.Template.html#method-insertAfter" rel="method-insertAfter" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-insertAfter" class="viewSource">view source</a></div><a name="insertAfter"></a><a name="method-insertAfter"></a><a href="Ext.Template.html#" rel="method-insertAfter" class="cls expand">insertAfter</a>(
+<span class="pre">Mixed el, Object/Array values, [Boolean returnElement]</span>)
+ : HTMLElement/Ext.core.Element</div><div class="description"><div class="short"><p>Applies the supplied values to the template and inserts the new node(s) after el.</p>
+</div><div class="long"><p>Applies the supplied values to the template and inserts the new node(s) after el.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : Mixed<div class="sub-desc"><p>The context element</p>
+</div></li><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})</p>
+</div></li><li><span class="pre">returnElement</span> : Boolean<div class="sub-desc"><p>(optional) true to return a <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Ext.core.Element</a> (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement/Ext.core.Element</span>&nbsp; &nbsp;<p>The new node or Element</p>
+</li></ul></div></div></div><div id="method-insertBefore" class="member ni"><a href="Ext.Template.html#method-insertBefore" rel="method-insertBefore" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-insertBefore" class="viewSource">view source</a></div><a name="insertBefore"></a><a name="method-insertBefore"></a><a href="Ext.Template.html#" rel="method-insertBefore" class="cls expand">insertBefore</a>(
+<span class="pre">Mixed el, Object/Array values, [Boolean returnElement]</span>)
+ : HTMLElement/Ext.core.Element</div><div class="description"><div class="short"><p>Applies the supplied values to the template and inserts the new node(s) before el.</p>
+</div><div class="long"><p>Applies the supplied values to the template and inserts the new node(s) before el.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : Mixed<div class="sub-desc"><p>The context element</p>
+</div></li><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})</p>
+</div></li><li><span class="pre">returnElement</span> : Boolean<div class="sub-desc"><p>(optional) true to return a <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Ext.core.Element</a> (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement/Ext.core.Element</span>&nbsp; &nbsp;<p>The new node or Element</p>
+</li></ul></div></div></div><div id="method-insertFirst" class="member ni"><a href="Ext.Template.html#method-insertFirst" rel="method-insertFirst" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-insertFirst" class="viewSource">view source</a></div><a name="insertFirst"></a><a name="method-insertFirst"></a><a href="Ext.Template.html#" rel="method-insertFirst" class="cls expand">insertFirst</a>(
+<span class="pre">Mixed el, Object/Array values, [Boolean returnElement]</span>)
+ : HTMLElement/Ext.core.Element</div><div class="description"><div class="short"><p>Applies the supplied values to the template and inserts the new node(s) as the first child of el.</p>
+</div><div class="long"><p>Applies the supplied values to the template and inserts the new node(s) as the first child of el.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : Mixed<div class="sub-desc"><p>The context element</p>
+</div></li><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})</p>
+</div></li><li><span class="pre">returnElement</span> : Boolean<div class="sub-desc"><p>(optional) true to return a <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Ext.core.Element</a> (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement/Ext.core.Element</span>&nbsp; &nbsp;<p>The new node or Element</p>
+</li></ul></div></div></div><div id="method-overwrite" class="member ni"><a href="Ext.Template.html#method-overwrite" rel="method-overwrite" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-overwrite" class="viewSource">view source</a></div><a name="overwrite"></a><a name="method-overwrite"></a><a href="Ext.Template.html#" rel="method-overwrite" class="cls expand">overwrite</a>(
+<span class="pre">Mixed el, Object/Array values, [Boolean returnElement]</span>)
+ : HTMLElement/Ext.core.Element</div><div class="description"><div class="short"><p>Applies the supplied values to the template and overwrites the content of el with the new node(s).</p>
+</div><div class="long"><p>Applies the supplied values to the template and overwrites the content of el with the new node(s).</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">el</span> : Mixed<div class="sub-desc"><p>The context element</p>
+</div></li><li><span class="pre">values</span> : Object/Array<div class="sub-desc"><p>The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})</p>
+</div></li><li><span class="pre">returnElement</span> : Boolean<div class="sub-desc"><p>(optional) true to return a <a href="Ext.core.Element.html" rel="Ext.core.Element" class="docClass">Ext.core.Element</a> (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">HTMLElement/Ext.core.Element</span>&nbsp; &nbsp;<p>The new node or Element</p>
+</li></ul></div></div></div><div id="method-set" class="member ni"><a href="Ext.Template.html#method-set" rel="method-set" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Template.html" class="definedIn docClass">Ext.Template</a><br/><a href="../source/Template2.html#Ext-Template-method-set" class="viewSource">view source</a></div><a name="set"></a><a name="method-set"></a><a href="Ext.Template.html#" rel="method-set" class="cls expand">set</a>(
+<span class="pre">String html, [Boolean compile]</span>)
+ : Ext.Template</div><div class="description"><div class="short"><p>Sets the HTML used as the template and optionally compiles it.</p>
+</div><div class="long"><p>Sets the HTML used as the template and optionally compiles it.</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">html</span> : String<div class="sub-desc">
+</div></li><li><span class="pre">compile</span> : Boolean<div class="sub-desc"><p>(optional) True to compile the template (defaults to undefined)</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Template</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

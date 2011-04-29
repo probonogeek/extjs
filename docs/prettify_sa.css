@@ -1,0 +1,10 @@
+body {
+  color: #314E64; 
+/*  -webkit-font-smoothing: antialiased; */
+  font-size: 13px;
+  padding: 1em;
+}
+pre {
+  font-family: "Menlo", "Courier New", Courier,monospace; 
+  
+}

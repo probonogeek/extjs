@@ -1,0 +1,293 @@
+<!DOCTYPE html><html><head><title>Ext.Class | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.Class',
+        docClass: 'Ext.Class',
+        docReq: 'Ext.Class',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Class.html#Ext-Class';
+    clsInfo = {"methods":["getDefaultPreprocessors","getPreprocessor","registerPreprocessor","setDefaultPreprocessorPosition","setDefaultPreprocessors"],"cfgs":[],"properties":[],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Class.html#Ext-Class" target="_blank">Ext.Class</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>Handles class creation throughout the whole framework. Note that most of the time <a href="Ext.html#define" rel="Ext#define" class="docClass">Ext.define</a> should
+be used instead, since it's a higher level wrapper that aliases to <a href="Ext.ClassManager.html#create" rel="Ext.ClassManager#create" class="docClass">Ext.ClassManager.create</a>
+to enable namespacing and dynamic dependency resolution.</p>
+
+<h1>Basic syntax:</h1>
+
+<pre class="prettyprint"><code>Ext.define(className, properties);
+</code></pre>
+
+<p>in which <code>properties</code> is an object represent a collection of properties that apply to the class. See
+<a href="Ext.ClassManager.html#create" rel="Ext.ClassManager#create" class="docClass">Ext.ClassManager.create</a> for more detailed instructions.</p>
+
+<pre class="prettyprint"><code>Ext.define('Person', {
+     name: 'Unknown',
+
+     constructor: function(name) {
+         if (name) {
+             this.name = name;
+         }
+
+         return this;
+     },
+
+     eat: function(foodType) {
+         alert("I'm eating: " + foodType);
+
+         return this;
+     }
+});
+
+var aaron = new Person("Aaron");
+aaron.eat("Sandwich"); // alert("I'm eating: Sandwich");
+</code></pre>
+
+<p>Ext.Class has a powerful set of extensible <a href="Ext.Class.html#registerPreprocessor" rel="Ext.Class#registerPreprocessor" class="docClass">pre-processors</a> which takes care of
+everything related to class creation, including but not limited to inheritance, mixins, configuration, statics, etc.</p>
+
+<h1>Inheritance:</h1>
+
+<pre class="prettyprint"><code>Ext.define('Developer', {
+     extend: 'Person',
+
+     constructor: function(name, isGeek) {
+         this.isGeek = isGeek;
+
+         // Apply a method from the parent class' prototype
+         this.callParent([name]);
+
+         return this;
+
+     },
+
+     code: function(language) {
+         alert("I'm coding in: " + language);
+
+         this.eat("Bugs");
+
+         return this;
+     }
+});
+
+var jacky = new Developer("Jacky", true);
+jacky.code("JavaScript"); // alert("I'm coding in: JavaScript");
+                          // alert("I'm eating: Bugs");
+</code></pre>
+
+<p>See <a href="Ext.Base.html#callParent" rel="Ext.Base#callParent" class="docClass">Ext.Base.callParent</a> for more details on calling superclass' methods</p>
+
+<h1>Mixins:</h1>
+
+<pre class="prettyprint"><code>Ext.define('CanPlayGuitar', {
+     playGuitar: function() {
+        alert("F#...G...D...A");
+     }
+});
+
+Ext.define('CanComposeSongs', {
+     composeSongs: function() { ... }
+});
+
+Ext.define('CanSing', {
+     sing: function() {
+         alert("I'm on the highway to hell...")
+     }
+});
+
+Ext.define('Musician', {
+     extend: 'Person',
+
+     mixins: {
+         canPlayGuitar: 'CanPlayGuitar',
+         canComposeSongs: 'CanComposeSongs',
+         canSing: 'CanSing'
+     }
+})
+
+Ext.define('CoolPerson', {
+     extend: 'Person',
+
+     mixins: {
+         canPlayGuitar: 'CanPlayGuitar',
+         canSing: 'CanSing'
+     },
+
+     sing: function() {
+         alert("Ahem....");
+
+         this.mixins.canSing.sing.call(this);
+
+         alert("[Playing guitar at the same time...]");
+
+         this.playGuitar();
+     }
+});
+
+var me = new CoolPerson("Jacky");
+
+me.sing(); // alert("Ahem...");
+           // alert("I'm on the highway to hell...");
+           // alert("[Playing guitar at the same time...]");
+           // alert("F#...G...D...A");
+</code></pre>
+
+<h1>Config:</h1>
+
+<pre class="prettyprint"><code>Ext.define('SmartPhone', {
+     config: {
+         hasTouchScreen: false,
+         operatingSystem: 'Other',
+         price: 500
+     },
+
+     isExpensive: false,
+
+     constructor: function(config) {
+         this.initConfig(config);
+
+         return this;
+     },
+
+     applyPrice: function(price) {
+         this.isExpensive = (price &gt; 500);
+
+         return price;
+     },
+
+     applyOperatingSystem: function(operatingSystem) {
+         if (!(/^(iOS|Android|BlackBerry)$/i).test(operatingSystem)) {
+             return 'Other';
+         }
+
+         return operatingSystem;
+     }
+});
+
+var iPhone = new SmartPhone({
+     hasTouchScreen: true,
+     operatingSystem: 'iOS'
+});
+
+iPhone.getPrice(); // 500;
+iPhone.getOperatingSystem(); // 'iOS'
+iPhone.getHasTouchScreen(); // true;
+iPhone.hasTouchScreen(); // true
+
+iPhone.isExpensive; // false;
+iPhone.setPrice(600);
+iPhone.getPrice(); // 600
+iPhone.isExpensive; // true;
+
+iPhone.setOperatingSystem('AlienOS');
+iPhone.getOperatingSystem(); // 'Other'
+</code></pre>
+
+<h1>Statics:</h1>
+
+<pre class="prettyprint"><code>Ext.define('Computer', {
+     statics: {
+         factory: function(brand) {
+            // 'this' in static methods refer to the class itself
+             return new this(brand);
+         }
+     },
+
+     constructor: function() { ... }
+});
+
+var dellComputer = Computer.factory('Dell');
+</code></pre>
+
+<p>Also see <a href="Ext.Base.html#statics" rel="Ext.Base#statics" class="docClass">Ext.Base.statics</a> and <a href="Ext.Base.html#self" rel="Ext.Base#self" class="docClass">Ext.Base.self</a> for more details on accessing
+static properties within class methods</p>
+<div class="members"><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-getDefaultPreprocessors" class="member f ni"><a href="Ext.Class.html#method-getDefaultPreprocessors" rel="method-getDefaultPreprocessors" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Class.html" class="definedIn docClass">Ext.Class</a><br/><a href="../source/Class.html#Ext-Class-method-getDefaultPreprocessors" class="viewSource">view source</a></div><a name="getDefaultPreprocessors"></a><a name="method-getDefaultPreprocessors"></a><a href="Ext.Class.html#" rel="method-getDefaultPreprocessors" class="cls expand">getDefaultPreprocessors</a> : Function</div><div class="description"><div class="short"><p>Retrieve the array stack of default pre-processors</p>
+</div><div class="long"><p>Retrieve the array stack of default pre-processors</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Function</span>&nbsp; &nbsp;<p>defaultPreprocessors</p>
+</li></ul></div></div></div><div id="method-getPreprocessor" class="member ni"><a href="Ext.Class.html#method-getPreprocessor" rel="method-getPreprocessor" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Class.html" class="definedIn docClass">Ext.Class</a><br/><a href="../source/Class.html#Ext-Class-method-getPreprocessor" class="viewSource">view source</a></div><a name="getPreprocessor"></a><a name="method-getPreprocessor"></a><a href="Ext.Class.html#" rel="method-getPreprocessor" class="cls expand">getPreprocessor</a>(
+<span class="pre">String name</span>)
+ : Function</div><div class="description"><div class="short"><p>Retrieve a pre-processor callback function by its name, which has been registered before</p>
+</div><div class="long"><p>Retrieve a pre-processor callback function by its name, which has been registered before</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">name</span> : String<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Function</span>&nbsp; &nbsp;<p>preprocessor</p>
+</li></ul></div></div></div><div id="method-registerPreprocessor" class="member ni"><a href="Ext.Class.html#method-registerPreprocessor" rel="method-registerPreprocessor" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Class.html" class="definedIn docClass">Ext.Class</a><br/><a href="../source/Class.html#Ext-Class-method-registerPreprocessor" class="viewSource">view source</a></div><a name="registerPreprocessor"></a><a name="method-registerPreprocessor"></a><a href="Ext.Class.html#" rel="method-registerPreprocessor" class="cls expand">registerPreprocessor</a>(
+<span class="pre">String name, Function fn, Object always</span>)
+ : Ext.Class</div><div class="description"><div class="short"><p>Register a new pre-processor to be used during the class creation process registerPreprocessor</p>
+</div><div class="long"><p>Register a new pre-processor to be used during the class creation process registerPreprocessor</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">name</span> : String<div class="sub-desc"><p>The pre-processor's name</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The callback function to be executed. Typical format:</p>
+
+<pre><code>function(cls, data, fn) {
+    // Your code here
+
+    // Execute this when the processing is finished.
+    // Asynchronous processing is perfectly ok
+    if (fn) {
+        fn.call(this, cls, data);
+    }
+});
+</code></pre>
+
+<p>Passed arguments for this function are:</p>
+
+<ul>
+<li><code>{Function} cls</code>: The created class</li>
+<li><code>{Object} data</code>: The set of properties passed in <a href="Ext.Class.html" rel="Ext.Class" class="docClass">Ext.Class</a> constructor</li>
+<li><code>{Function} fn</code>: The callback function that <b>must</b> to be executed when this pre-processor finishes,
+regardless of whether the processing is synchronous or aynchronous</li>
+</ul>
+
+</div></li><li><span class="pre">always</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Class</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-setDefaultPreprocessorPosition" class="member ni"><a href="Ext.Class.html#method-setDefaultPreprocessorPosition" rel="method-setDefaultPreprocessorPosition" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Class.html" class="definedIn docClass">Ext.Class</a><br/><a href="../source/Class.html#Ext-Class-method-setDefaultPreprocessorPosition" class="viewSource">view source</a></div><a name="setDefaultPreprocessorPosition"></a><a name="method-setDefaultPreprocessorPosition"></a><a href="Ext.Class.html#" rel="method-setDefaultPreprocessorPosition" class="cls expand">setDefaultPreprocessorPosition</a>(
+<span class="pre">String name, String offset, String relativeName</span>)
+ : Ext.Class</div><div class="description"><div class="short">Insert this pre-processor at a specific position in the stack, optionally relative to
+any existing pre-processor. For...</div><div class="long"><p>Insert this pre-processor at a specific position in the stack, optionally relative to
+any existing pre-processor. For example:</p>
+
+<pre><code>Ext.Class.registerPreprocessor('debug', function(cls, data, fn) {
+    // Your code here
+
+    if (fn) {
+        fn.call(this, cls, data);
+    }
+}).insertDefaultPreprocessor('debug', 'last');
+</code></pre>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">name</span> : String<div class="sub-desc"><p>The pre-processor name. Note that it needs to be registered with
+<a href="Ext.html#registerPreprocessor" rel="Ext#registerPreprocessor" class="docClass">registerPreprocessor</a> before this</p>
+</div></li><li><span class="pre">offset</span> : String<div class="sub-desc"><p>The insertion position. Four possible values are:
+'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)</p>
+</div></li><li><span class="pre">relativeName</span> : String<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Class</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-setDefaultPreprocessors" class="member ni"><a href="Ext.Class.html#method-setDefaultPreprocessors" rel="method-setDefaultPreprocessors" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Class.html" class="definedIn docClass">Ext.Class</a><br/><a href="../source/Class.html#Ext-Class-method-setDefaultPreprocessors" class="viewSource">view source</a></div><a name="setDefaultPreprocessors"></a><a name="method-setDefaultPreprocessors"></a><a href="Ext.Class.html#" rel="method-setDefaultPreprocessors" class="cls expand">setDefaultPreprocessors</a>(
+<span class="pre">Array preprocessors</span>)
+ : Ext.Class</div><div class="description"><div class="short"><p>Set the default array stack of default pre-processors</p>
+</div><div class="long"><p>Set the default array stack of default pre-processors</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">preprocessors</span> : Array<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Class</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

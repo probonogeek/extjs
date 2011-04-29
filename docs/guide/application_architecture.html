@@ -1,0 +1,506 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>MVC Application Architecture</h1>
+
+<p>Large client side applications have always been hard to write, hard to organize and hard to maintain. They tend to quickly grow out of control as you add more functionality and developers to a project. Ext JS 4 comes with a new application architecture that not only organizes your code but reduces the amount you have to write.</p>
+
+<p>Our application architecture follows an MVC-like pattern with Models and Controllers being introduced for the first time. There are many MVC architectures, most of which are slightly different from one another. Here's how we define ours:</p>
+
+<ul><li><p><em>Model</em> is a collection of fields and their data (e.g. a User model with username and password fields). Models know how to persist themselves through the data package, and can be linked to other models through associations. Models work a lot like the Ext JS 3 Record class, and are normally used with <a href="../api/Ext.data.Store.html" rel="Ext.data.Store" class="docClass">Stores</a> to present data into grids and other components</p></li><li><p><em>View</em> is any type of component - grids, trees and panels are all views.</p></li><li><p><em>Controllers</em> are special places to put all of the code that makes your app work - whether that's rendering views, instantiating Models, or any other app logic.</p></li></ul>
+
+<p>In this guide we'll be creating a very simple application that manages User data. By the end you will know how to put simple applications together using the new Ext JS 4 application architecture.</p>
+
+<p>The application architecture is as much about providing structure and consistency as it is about actual classes and framework code. Following the conventions unlocks a number of important benefits:</p>
+
+<ul><li>Every application works the same way so you only have to learn it once</li><li>It's easy to share code between apps because they all work the same way</li><li>You can use our build tools to create optimized versions of your applications for production use</li></ul>
+
+<h2>File Structure</h2>
+
+<p>Ext JS 4 applications follow a unified directory structure that is the same for every app. Please check out the <a href="getting_started.html">Getting Started guide</a> for details explanation on the basic file structure of an application. In MVC layout, all classes are placed into the <code>app</code> folder, which in turn contains sub-folders to namespace your models, views, controllers and stores. Here is how the folder structure for the simple example app will look when we're done:</p>
+
+<p><img alt="Folder Structure" src="../folderStructure.png"></img></p>
+
+<p>In this example, we are encapsulating the whole application inside one folder called '<code>account_manager</code>'. Essential files from the <a href="http://www.sencha.com/products/extjs/">Ext JS 4 SDK</a> are wrapped inside <code>ext-4.0</code> folder. Hence the content of our <code>index.html</code> looks like this:</p>
+
+<pre class="prettyprint"><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Account Manager&lt;/title&gt;
+
+    &lt;link rel="stylesheet" type="text/css" href="ext-4.0/resources/css/ext-all.css"&gt;
+
+    &lt;script type="text/javascript" src="ext-4.0/ext-debug.js"&gt;&lt;/script&gt;
+
+    &lt;script type="text/javascript" src="app.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<h2>Creating the application in `app.js`</h2>
+
+<p>Every Ext JS 4 application starts with an instance of <a href="../api/Ext.app.Application.html" rel="Ext.app.Application" class="docClass">Application</a> class. The Application contains global settings for your application (such as the app's name), as well as maintains references to all of the models, views and controllers used by the app. An Application also contains a launch function, which is run automatically when everything is loaded.</p>
+
+<p>Let's create a simple Account Manager app that will help us manage User accounts. First we need to pick a global namespace for this application. All Ext JS 4 applications should only use a single global variable, with all of the application's classes nested inside it. Usually we want a short global variable so in this case we're going to use "AM":</p>
+
+<pre class="prettyprint"><code>Ext.application({
+    name: 'AM',
+
+    appFolder: 'app',
+
+    controllers: [
+        'Users'
+    ],
+
+    launch: function() {
+        Ext.create('Ext.container.Viewport', {
+            layout: 'fit',
+            items: [
+                {
+                    xtype: 'panel',
+                    title: 'Users',
+                    html : 'List of users will go here'
+                }
+            ]
+        });
+    }
+});</code></pre>
+
+<p>There are a few things going on here. First we invoked <code>Ext.application</code> to create a new instance of Application class, to which we passed the name "<code>AM</code>". This automatically sets up a global variable <code>AM</code> for us, and registers the namespace to <code>Ext.Loader</code>, with the corresponding path of '<code>app</code>' set via the <code>appFolder</code> config option. We also told our Application about the <code>Users</code> controller, which we'll come back to in a moment. Finally, we provided a simple launch function that just creates a <a href="../api/Ext.container.Viewport.html" rel="Ext.container.Viewport" class="docClass">Viewport</a> which contains a single <a href="../api/Ext.panel.Panel.html" rel="Ext.panel.Panel" class="docClass">Panel</a> that will fill the screen.</p>
+
+<p><img alt="Initial view with a simple Panel" src="../panelView.png"></img></p>
+
+<p>Most applications will have several controllers - usually one for each Model. By specifying an array of controllers your application is using, the corresponding classes of these controllers will automatically be loaded and initialized before the application is launched. This can be handy when setting up listeners to the Viewport, for example. In this example, our <code>Users</code> controller will be mapped to the <code>AM.controller.Users</code> class, the file of which is located in <code>app/controller/User.js</code></p>
+
+<h2>Defining a Controller</h2>
+
+<p>Controllers are the glue that binds an application together. All they really do is listening for events (usually from views) and take some actions. Continuing our Account Manager application, here's how we might start off our <code>Users</code> controller:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+
+    init: function() {
+        console.log('Initialized Users! This happens before the Application launch function is called');
+    }
+});</code></pre>
+
+<p>When we load our application by visiting <code>index.html</code> inside a browser, the <code>Users</code> controller is automatically loaded (because we specified it in the Application definition above), and its <code>init</code> function is called just before the Application's <code>launch</code> function.</p>
+
+<p>The <code>init</code> function is a great place to set up how your controller interacts with the view, and is usually used in conjunction with another Controller function - <a href="../api/Ext.app.Controller.html#control" rel="Ext.app.Controller#control" class="docClass">control</a>. The <code>control</code> function makes it easy to listen to events on your view classes and take some action with a handler function. Let's update our <code>Users</code> controller to tell us when the panel is rendered:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+
+    init: function() {
+        this.control({
+            'viewport > panel': {
+                render: this.onPanelRendered
+            }
+        });
+    },
+
+    onPanelRendered: function() {
+        console.log('The panel was rendered');
+    }
+});</code></pre>
+
+<p>We've updated the <code>init</code> function to use <code>this.control</code> to set up listeners on views in our application. The <code>control</code> function uses the new ComponentQuery engine to quickly and easily get references to components on the page. If you are not familiar with ComponentQuery yet, be sure to check out <a href="application_architecture.html#">this guide</a> for a full explanation. In brief though, it allows us to pass a CSS-like selector that will find every matching component on the page.</p>
+
+<p>In our init function above we supplied <code>'viewport > panel'</code>, which translates to "find me every Panel that is a direct child of a Viewport". We then supplied an object that maps event names (just <code>render</code> in this case) to handler functions. The overall effect is that whenever any component that matches our selector fires a <code>render</code> event, our <code>onPanelRendered</code> function is called.</p>
+
+<p>When we run our application now we see the following:</p>
+
+<p><img alt="Controller listener" src="../firstControllerListener.png"></img></p>
+
+<p>Not exactly the most exciting application ever, but it shows how easy it is to get started with organized code. Let's flesh the app out a little now by adding a grid.</p>
+
+<h2>Defining a View</h2>
+
+<p>Until now our application has only been a few lines long and only inhabits two files -  <code>app.js</code> and <code>app/controller/Users.js</code>. Now that we want to add a grid showing all of the users in our system, it's time to organize our logic a little better and start using views.</p>
+
+<p>A View is nothing more than a Component, usually defined as a subclass of an Ext JS component. We're going to create our Users grid now by creating a new file called <code>app/view/user/List.js</code> and putting the following into it:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.view.user.List' ,{
+    extend: 'Ext.grid.Panel',
+    alias : 'widget.userlist',
+
+    title : 'All Users',
+
+    initComponent: function() {
+        this.store = {
+            fields: ['name', 'email'],
+            data  : [
+                {name: 'Ed',    email: 'ed@sencha.com'},
+                {name: 'Tommy', email: 'tommy@sencha.com'}
+            ]
+        };
+
+        this.columns = [
+            {header: 'Name',  dataIndex: 'name',  flex: 1},
+            {header: 'Email', dataIndex: 'email', flex: 1}
+        ];
+
+        this.callParent(arguments);
+    }
+});</code></pre>
+
+<p>Our View class is nothing more than a normal class. In this case we happen to extend GridPanel and set up an alias so that we can use it as an xtype (more on that in a moment). We also passed in the <a href="../api/Ext.data.Store.html" rel="Ext.data.Store" class="docClass">store</a> configuration and the <a href="../api/Ext.grid.Panel.html" rel="Ext.grid.Panel" class="docClass">columns</a> columns that the grid should render.</p>
+
+<p>The only other change we need to make now is to update <code>app.js</code> to use our new view. Because we set an alias using the special <code>'widget.'</code> format, we can use 'userlist' as an xtype now, just like we had used <code>'panel'</code> previously. Let's add this view in our <code>Users</code> controller</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+
+    views: [
+        'user.List'
+    ],
+
+    init: ...
+
+    onPanelRendered: ...
+});</code></pre>
+
+<p>And then render it inside the main viewport by changing <code>app.js</code> to:</p>
+
+<pre class="prettyprint"><code>Ext.application({
+    name: 'AM',
+
+    controllers: [
+        'Users'
+    ],
+
+    launch: function() {
+        Ext.create('Ext.container.Viewport', {
+            layout: 'fit',
+            items: {
+                xtype: 'userlist'
+            }
+        });
+    }
+});</code></pre>
+
+<p>The only other thing to note here is that we specified <code>'user.List'</code> inside the views array. This tells the application to load that file automatically so that we can use it when we launch. The application uses Ext JS 4's new dynamic loading system to automatically pull this file from the server. Here's what we see when we refresh the page now:</p>
+
+<p><img alt="Our first View" src="../firstView.png"></img></p>
+
+<h2>Controlling the grid</h2>
+
+<p>Note that our <code>onPanelRendered</code> function is still being called. This is because our grid class still matches the <code>'viewport > panel'</code> selector. The reason for this is that our class extends GridPanel, which in turn extends Panel.</p>
+
+<p>At the moment, the listeners we add to this selector will actually be called for every Panel or Panel subclass that is a direct child of the viewport, so let's tighten that up a bit using our new xtype. While we're at it, let's instead listen for double clicks on rows in the grid so that we can later edit that User:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+
+    views: [
+        'user.List'
+    ],
+
+    init: function() {
+        this.control({
+            'userlist': {
+                itemdblclick: this.editUser
+            }
+        });
+    },
+
+    editUser: function(grid, record) {
+        console.log('Double clicked on ' + record.get('name'));
+    }
+});</code></pre>
+
+<p>Note that we changed the ComponentQuery selector (to simply <code>'userlist'</code>), the event name (to <code>'itemdblclick'</code>) and the handler function name (to <code>'editUser'</code>). For now we're just logging out the name of the User we double clicked:</p>
+
+<p><img alt="Double click handler" src="../doubleClickHandler.png"></img></p>
+
+<p>Logging to the console is all well and good but we really want to edit our Users. Let's do that now, starting with a new view in <code>app/view/user/Edit.js</code>:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.view.user.Edit', {
+    extend: 'Ext.window.Window',
+    alias : 'widget.useredit',
+
+    title : 'Edit User',
+    layout: 'fit',
+    autoShow: true,
+
+    initComponent: function() {
+        this.items = [
+            {
+                xtype: 'form',
+                items: [
+                    {
+                        xtype: 'textfield',
+                        name : 'name',
+                        fieldLabel: 'Name'
+                    },
+                    {
+                        xtype: 'textfield',
+                        name : 'email',
+                        fieldLabel: 'Email'
+                    }
+                ]
+            }
+        ];
+
+        this.buttons = [
+            {
+                text: 'Save',
+                action: 'save'
+            },
+            {
+                text: 'Cancel',
+                scope: this,
+                handler: this.close
+            }
+        ];
+
+        this.callParent(arguments);
+    }
+});</code></pre>
+
+<p>Again we're just defining a subclass of an existing component - this time <code>Ext.window.Window</code>. Once more we used <code>initComponent</code> to specify the complex objects <code>items</code> and <code>buttons</code>. We used a <code>'fit'</code> layout and a form as the single item, which contains fields to edit the name and the email address. Finally we created two buttons, one which just closes the window, and the other that will be used to save our changes.</p>
+
+<p>All we have to do now is adding the view to the controller, render it and load the User into it:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+
+    views: [
+        'user.List',
+        'user.Edit'
+    ],
+
+    init: ...
+
+    editUser: function(grid, record) {
+        var view = Ext.widget('useredit');
+
+        view.down('form').loadRecord(record);
+    }
+});</code></pre>
+
+<p>First we created the view using the convenient method <code>Ext.widget</code>, which is equivalent to <code>Ext.create('widget.useredit')</code>. Then we leveraged ComponentQuery once more to quickly get a reference to the edit window's form. Every component in Ext JS 4 has a <code>down</code> function, which accepts a ComponentQuery selector to quickly find any child component.</p>
+
+<p>Double clicking a row in our grid now yields something like this:</p>
+
+<p><img alt="Loading the form" src="../loadedForm.png"></img></p>
+
+<h2>Creating a Model and a Store</h2>
+
+<p>Now that we have our edit form it's almost time to start editing our users and saving those changes. Before we do that though, we should refactor our code a little.</p>
+
+<p>At the moment the <code>AM.view.user.List</code> component creates a Store inline. This works well but we'd like to be able to reference that Store elsewhere in the application so that we can update the data in it. We'll start by breaking the Store out into its own file - <code>app/store/Users.js</code>:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.store.Users', {
+    extend: 'Ext.data.Store',
+    fields: ['name', 'email'],
+    data: [
+        {name: 'Ed',    email: 'ed@sencha.com'},
+        {name: 'Tommy', email: 'tommy@sencha.com'}
+    ]
+});</code></pre>
+
+<p>Now we'll just make 2 small changes - first we'll ask our <code>Users</code> controller to include this Store when it loads:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+    stores: [
+        'Users'
+    ],
+    ...
+});</code></pre>
+
+<p>then we'll update <code>app/view/user/List.js</code> to simply reference the Store by id:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.view.user.List' ,{
+    extend: 'Ext.grid.Panel',
+    alias : 'widget.userlist',
+
+    //we no longer define the Users store inline
+    store: 'Users',
+
+    ...
+});</code></pre>
+
+<p>By including the stores that our <code>Users</code> controller cares about in its definition they are automatically loaded onto the page and given a <a href="../api/Ext.data.Store.html#storeId" rel="Ext.data.Store#storeId" class="docClass">storeId</a>, which makes them really easy to reference in our views (by simply configuring <code>store: 'Users'</code> in this case).</p>
+
+<p>At the moment we've just defined our fields (<code>'name'</code> and <code>'email'</code>) inline on the store. This works well enough but in Ext JS 4 we have a powerful <code>Ext.data.Model</code> class that we'd like to take advantage of when it comes to editing our Users. We'll finish this section by refactoring our Store to use a Model, which we'll put in <code>app/model/User.js</code>:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.model.User', {
+    extend: 'Ext.data.Model',
+    fields: ['name', 'email']
+});</code></pre>
+
+<p>That's all we need to do to define our Model, now we'll just update our Store to reference the Model name instead of providing fields inline, and ask the <code>Users</code> controller to get a reference to the model too:</p>
+
+<pre class="prettyprint"><code>//the Users controller will make sure that the User model is included on the page and available to our app
+Ext.define('AM.controller.Users', {
+    extend: 'Ext.app.Controller',
+    stores: ['Users'],
+    models: ['User'],
+    ...
+});
+
+// we now reference the Model instead of defining fields inline
+Ext.define('AM.store.Users', {
+    extend: 'Ext.data.Store',
+    model: 'User',
+
+    data: [
+        {name: 'Ed',    email: 'ed@sencha.com'},
+        {name: 'Tommy', email: 'tommy@sencha.com'}
+    ]
+});</code></pre>
+
+<p>Our refactoring will make the next section easier but should not have affected the application's current behavior. If we reload the page now and double click on a row we see that the edit User window still appears as expected. Now it's time to finish the editing functionality:</p>
+
+<p><img alt="Loading the form" src="../loadedForm.png"></img></p>
+
+<h2>Saving data with the Model</h2>
+
+<p>Now that we have our users grid loading data and opening an edit window when we double click each row, we'd like to save the changes that the user makes. The Edit User window that the defined above contains a form (with fields for name and email), and a save button. First let's update our controller's init function to listen for clicks to that save button:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.controller.Users', {
+    init: function() {
+        this.control({
+            'viewport > userlist': {
+                itemdblclick: this.editUser
+            },
+            'useredit button[action=save]': {
+                click: this.updateUser
+            }
+        });
+    },
+
+    updateUser: function(button) {
+        console.log('clicked the Save button');
+    }
+});</code></pre>
+
+<p>We added a second ComponentQuery selector to our <code>this.control</code> call - this time <code>'useredit button[action=save]'</code>. This works the same way as the first selector - it uses the <code>'useredit'</code> xtype that we defined above to focus in on our edit user window, and then looks for any buttons with the <code>'save'</code> action inside that window. When we defined our edit user window we passed <code>{action: 'save'}</code> to the save button, which gives us an easy way to target that button.</p>
+
+<p>We can satisfy ourselves that the <code>updateUser</code> function is called when we click the Save button:</p>
+
+<p><img alt="Seeing the save handler" src="../saveHandler.png"></img></p>
+
+<p>Now that we've seen our handler is correctly attached to the Save button's click event, let's fill in the real logic for the <code>updateUser</code> function. In this function we need to get the data out of the form, update our User with it and then save that back to the Users store we created above. Let's see how we might do that:</p>
+
+<pre class="prettyprint"><code>updateUser: function(button) {
+    var win    = button.up('window'),
+        form   = win.down('form'),
+        record = form.getRecord(),
+        values = form.getValues();
+
+    record.set(values);
+    win.close();
+}</code></pre>
+
+<p>Let's break down what's going on here. Our click event gave us a reference to the button that the user clicked on, but what we really want is access to the form that contains the data and the window itself. To get things working quickly we'll just use ComponentQuery again here, first using <code>button.up('window')</code> to get a reference to the Edit User window, then <code>win.down('form')</code> to get the form.</p>
+
+<p>After that we simply fetch the record that's currently loaded into the form and update it with whatever the user has typed into the form. Finally we close the window to bring attention back to the grid. Here's what we see when we run our app again, change the name field to <code>'Ed Spencer'</code> and click save:</p>
+
+<p><img alt="The record in the grid has been updated" src="../updatedGridRecord.png"></img></p>
+
+<h3>Saving to the server</h3>
+
+<p>Easy enough. Let's finish this up now by making it interact with our server side. At the moment we are hard coding the two User records into the Users Store, so let's start by reading those over AJAX instead:</p>
+
+<pre class="prettyprint"><code>Ext.define('AM.store.Users', {
+    extend: 'Ext.data.Store',
+    model: 'User',
+    autoLoad: true,
+
+    proxy: {
+        type: 'ajax',
+        url: 'data/users.json',
+        reader: {
+            type: 'json',
+            root: 'users',
+            successProperty: 'success'
+        }
+    }
+});</code></pre>
+
+<p>Here we removed the <code>'data'</code> property and replaced it with a <a href="../api/Ext.data.proxy.Proxy.html" rel="Ext.data.proxy.Proxy" class="docClass">Proxy</a>. Proxies are the way to load and save data from a Store or a Model in Ext JS 4. There are proxies for AJAX, JSON-P and HTML5 localStorage among others. Here we've used a simple AJAX proxy, which we've told to load data from the url <code>'data/users.json'</code>.</p>
+
+<p>We also attached a <a href="../api/Ext.data.Reader.html" rel="Ext.data.Reader" class="docClass">reader</a> to the Proxy. The reader is responsible for decoding the server response into a format the Store can understand. This time we used a JSON reader, and specified the root and <code>successProperty</code> configurations (see the <a href="../api/Ext.data.reader.Json.html" rel="Ext.data.reader.Json" class="docClass">Json Reader</a> docs for more on those configurations). Finally we'll create our <code>data/users.json</code> file and paste our previous data into it:</p>
+
+<pre class="prettyprint"><code>{
+    success: true,
+    users: [
+        {id: 1, name: 'Ed',    email: 'ed@sencha.com'},
+        {id: 2, name: 'Tommy', email: 'tommy@sencha.com'}
+    ]
+}</code></pre>
+
+<p>The only other change we made to the Store was to set <code>autoLoad</code> to <code>true</code>, which means the Store will ask its Proxy to load that data immediately. If we refresh the page now we'll see the same outcome as before, except that we're now no longer hard coding the data into our application.</p>
+
+<p>The last thing we want to do here is send our changes back to the server. For this example we're just using static JSON files on the server side so we won't see any database changes but we can at least verify that everything is plugged together correctly. First we'll make a small change to our new proxy to tell it to send updates back to a different url:</p>
+
+<pre class="prettyprint"><code>proxy: {
+    type: 'ajax',
+    api: {
+        read: 'data/users.json',
+        update: 'data/updateUsers.json'
+    },
+    reader: {
+        type: 'json',
+        root: 'users',
+        successProperty: 'success'
+    }
+}</code></pre>
+
+<p>We're still reading the data from <code>users.json</code>, but any updates will be sent to <code>updateUsers.json</code>. This is just so that we can return a dummy response so we know things are working. The <code>updateUsers.json</code> file just contains <code>{success: true}</code>. The only other change we need to make is to tell our Store to synchronize itself after editing, which we do by adding one more line inside the updateUser function, which now looks like this:</p>
+
+<pre class="prettyprint"><code>updateUser: function(button) {
+    var win    = button.up('window'),
+        form   = win.down('form'),
+        record = form.getRecord(),
+        values = form.getValues();
+
+    record.set(values);
+    win.close();
+    this.getUsersStore().sync();
+}</code></pre>
+
+<p>Now we can run through our full example and make sure that everything works. We'll edit a row, hit the Save button and see that the request is correctly sent to <code>updateUser.json</code></p>
+
+<p><img alt="The record in the grid has been updated" src="../postUpdatesToServer.png"></img></p>
+
+<h2>Deployment</h2>
+
+<p>The newly introduced Sencha SDK Tools (<a href="http://www.sencha.com/products/extjs/download/)">download here</a> makes deployment of any Ext JS 4 application easier than ever. The tools allows you to generate a manifest of all dependencies in the form of a JSB3 (JSBuilder file format) file, and create a minimal custom build of just what your application needs within minutes.</p>
+
+<p>Please refer to the <a href="getting_started.html">Getting Started</a> for detailed instructions.</p>
+
+<h2>Next Steps</h2>
+
+<p>We've created a very simple application that manages User data and sends any updates back to the server. We started out simple and gradually refactored our code to make it cleaner and more organized. At this point it's easy to add more functionality to our application without creating spaghetti code. The full source code for this application can be found in the Ext JS 4 SDK download, inside the examples/app/simple folder.</p>
+
+<p>In the next guide, we'll look at advanced Controller usage and patterns that can make your application code smaller and easier to maintain.</p></div></div></div></div></body></html>

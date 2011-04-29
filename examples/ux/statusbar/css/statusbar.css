@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /* StatusBar - structure */
 .x-statusbar .x-status-text {
     cursor: default;
@@ -15,7 +9,7 @@
 }
 .x-statusbar .x-status-busy {
     padding-left: 25px !important;
-    background: transparent no-repeat 3px 2px;
+    background: transparent no-repeat 3px 0;
 }
 
 .x-toolbar div.xtb-text
@@ -37,11 +31,11 @@
 }
 #word-status .x-status-busy {
     padding-left: 25px !important;
-    background: transparent no-repeat 3px 2px;
+    background: transparent no-repeat 3px 0;
 }
 #word-status .x-status-saved {
     padding-left: 25px !important;
-    background: transparent no-repeat 3px 2px;
+    background: transparent no-repeat 3px 0;
 }
 
 /* StatusBar form validation example styles */
@@ -49,11 +43,11 @@
 .x-statusbar .x-status-error {
     cursor: pointer;
     padding-left: 25px !important;
-    background: transparent no-repeat 3px 2px;
+    background: transparent no-repeat 3px 0;
 }
 .x-statusbar .x-status-valid {
     padding-left: 25px !important;
-    background: transparent no-repeat 3px 2px;
+    background: transparent no-repeat 3px 0;
 }
 .x-status-error-list {
     font: 11px tahoma,arial,verdana,sans-serif;

@@ -1,0 +1,255 @@
+<!DOCTYPE html><html><head><title>Ext.data.HasManyAssociation | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.data.HasManyAssociation',
+        docClass: 'Ext.data.HasManyAssociation',
+        docReq: 'Ext.data.HasManyAssociation',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'HasManyAssociation.html#Ext-data.HasManyAssociation';
+    clsInfo = {"methods":["HasManyAssociation","getReader"],"cfgs":["associatedModel","associationKey","autoLoad","filterProperty","foreignKey","name","ownerModel","primaryKey","reader","storeConfig","type"],"properties":["associatedName","ownerName"],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation" target="_blank">Ext.data.HasManyAssociation</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><pre class="subclasses"><h4>Hierarchy</h4><div class="subclass f"><a href="Ext.data.Association.html" rel="Ext.data.Association" class="cls docClass">Ext.data.Association</a><div class="subclass"><strong>Ext.data.HasManyAssociation</strong></div></div></pre><p>Represents a one-to-many relationship between two models. Usually created indirectly via a model definition:</p>
+
+
+
+
+<pre class="prettyprint"><code>Ext.define('Product', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',      type: 'int'},
+        {name: 'user_id', type: 'int'},
+        {name: 'name',    type: 'string'}
+    ]
+});
+
+Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',   type: 'int'},
+        {name: 'name', type: 'string'}
+    ],
+    // we can use the hasMany shortcut on the model to create a hasMany association
+    hasMany: {model: 'Product', name: 'products'}
+});
+</pre>
+
+
+<p></code></p>
+
+<p>Above we created Product and User models, and linked them by saying that a User hasMany Products. This gives
+us a new function on every User instance, in this case the function is called 'products' because that is the name
+we specified in the association configuration above.</p>
+
+
+
+
+<p>This new function returns a specialized <a href="Ext.data.Store.html" rel="Ext.data.Store" class="docClass">Store</a> which is automatically filtered to load
+only Products for the given model instance:</p>
+
+
+
+
+<pre class="prettyprint"><code>//first, we load up a User with id of 1
+var user = Ext.ModelManager.create({id: 1, name: 'Ed'}, 'User');
+
+//the user.products function was created automatically by the association and returns a <a href="Ext.data.Store.html" rel="Ext.data.Store" class="docClass">Store</a>
+//the created store is automatically scoped to the set of Products for the User with id of 1
+var products = user.products();
+
+//we still have all of the usual Store functions, for example it's easy to add a Product for this User
+products.add({
+    name: 'Another Product'
+});
+
+//saves the changes to the store - this automatically sets the new Product's user_id to 1 before saving
+products.sync();
+</code></pre>
+
+
+
+
+<p>The new Store is only instantiated the first time you call products() to conserve memory and processing time,
+though calling products() a second time returns the same store instance.</p>
+
+
+
+
+<p><u>Custom filtering</u></p>
+
+
+
+
+<p>The Store is automatically furnished with a filter - by default this filter tells the store to only return
+records where the associated model's foreign key matches the owner model's primary key. For example, if a User
+with ID = 100 hasMany Products, the filter loads only Products with user_id == 100.</p>
+
+
+
+
+<p>Sometimes we want to filter by another field - for example in the case of a Twitter search application we may
+have models for Search and Tweet:</p>
+
+
+
+
+<pre class="prettyprint"><code>Ext.define('Search', {
+    extend: 'Ext.data.Model',
+    fields: [
+        'id', 'query'
+    ],
+
+    hasMany: {
+        model: 'Tweet',
+        name : 'tweets',
+        filterProperty: 'query'
+    }
+});
+
+Ext.define('Tweet', {
+    extend: 'Ext.data.Model',
+    fields: [
+        'id', 'text', 'from_user'
+    ]
+});
+
+//returns a Store filtered by the filterProperty
+var store = new Search({query: 'Sencha Touch'}).tweets();
+</code></pre>
+
+
+
+
+<p>The tweets association above is filtered by the query property by setting the <a href="Ext.data.HasManyAssociation.html#filterProperty" rel="Ext.data.HasManyAssociation#filterProperty" class="docClass">filterProperty</a>, and is
+equivalent to this:</p>
+
+
+
+
+<pre class="prettyprint"><code>var store = new Ext.data.Store({
+    model: 'Tweet',
+    filters: [
+        {
+            property: 'query',
+            value   : 'Sencha Touch'
+        }
+    ]
+});
+</code></pre>
+
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-associatedModel" class="member f inherited"><a href="Ext.data.HasManyAssociation.html#config-associatedModel" rel="config-associatedModel" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-associatedModel" class="viewSource">view source</a></div><a name="associatedModel"></a><a name="config-associatedModel"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-associatedModel" class="cls expand">associatedModel</a><span> : String</span></div><div class="description"><div class="short"><p>The string name of the model that is being associated with. Required</p>
+</div><div class="long"><p>The string name of the model that is being associated with. Required</p>
+</div></div></div><div id="config-associationKey" class="member inherited"><a href="Ext.data.HasManyAssociation.html#config-associationKey" rel="config-associationKey" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-associationKey" class="viewSource">view source</a></div><a name="associationKey"></a><a name="config-associationKey"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-associationKey" class="cls expand">associationKey</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the property in the data to read the association from.
+Defaults to the name of the associated model.</p>
+</div><div class="long"><p>The name of the property in the data to read the association from.
+Defaults to the name of the associated model.</p>
+</div></div></div><div id="config-autoLoad" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-autoLoad" rel="config-autoLoad" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-autoLoad" class="viewSource">view source</a></div><a name="autoLoad"></a><a name="config-autoLoad"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-autoLoad" class="cls expand">autoLoad</a><span> : Boolean</span></div><div class="description"><div class="short"><p>True to automatically load the related store from a remote source when instantiated.
+Defaults to <tt>false</tt>.</p>
+</div><div class="long"><p>True to automatically load the related store from a remote source when instantiated.
+Defaults to <tt>false</tt>.</p>
+</div></div></div><div id="config-filterProperty" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-filterProperty" rel="config-filterProperty" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-filterProperty" class="viewSource">view source</a></div><a name="filterProperty"></a><a name="config-filterProperty"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-filterProperty" class="cls expand">filterProperty</a><span> : String</span></div><div class="description"><div class="short">Optionally overrides the default filter that is set up on the associated Store. If
+this is not set, a filter is autom...</div><div class="long"><p>Optionally overrides the default filter that is set up on the associated Store. If
+this is not set, a filter is automatically created which filters the association based on the configured
+<a href="Ext.data.HasManyAssociation.html#foreignKey" rel="Ext.data.HasManyAssociation#foreignKey" class="docClass">foreignKey</a>. See intro docs for more details. Defaults to undefined</p>
+</div></div></div><div id="config-foreignKey" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-foreignKey" rel="config-foreignKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-foreignKey" class="viewSource">view source</a></div><a name="foreignKey"></a><a name="config-foreignKey"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-foreignKey" class="cls expand">foreignKey</a><span> : String</span></div><div class="description"><div class="short">The name of the foreign key on the associated model that links it to the owner
+model. Defaults to the lowercased name...</div><div class="long"><p>The name of the foreign key on the associated model that links it to the owner
+model. Defaults to the lowercased name of the owner model plus "_id", e.g. an association with a where a
+model called Group hasMany Users would create 'group_id' as the foreign key. When the remote store is loaded,
+the store is automatically filtered so that only records with a matching foreign key are included in the
+resulting child store. This can be overridden by specifying the <a href="Ext.data.HasManyAssociation.html#filterProperty" rel="Ext.data.HasManyAssociation#filterProperty" class="docClass">filterProperty</a>.</p>
+
+<pre><code>Ext.define('Group', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+    hasMany: 'User'
+});
+
+Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name', 'group_id'], // refers to the id of the group that this user belongs to
+    belongsTo: 'Group'
+});
+</code></pre>
+
+</div></div></div><div id="config-name" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-name" rel="config-name" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-name" class="viewSource">view source</a></div><a name="name"></a><a name="config-name"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-name" class="cls expand">name</a><span> : String</span></div><div class="description"><div class="short">The name of the function to create on the owner model to retrieve the child store.
+If not specified, the pluralized n...</div><div class="long"><p>The name of the function to create on the owner model to retrieve the child store.
+If not specified, the pluralized name of the child model is used.</p>
+
+<pre><code>// This will create a users() method on any Group model instance
+Ext.define('Group', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+    hasMany: 'User'
+});
+var group = new Group();
+console.log(group.users());
+
+// The method to retrieve the users will now be getUserList
+Ext.define('Group', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+    hasMany: {model: 'User', name: 'getUserList'}
+});
+var group = new Group();
+console.log(group.getUserList());
+</code></pre>
+
+</div></div></div><div id="config-ownerModel" class="member inherited"><a href="Ext.data.HasManyAssociation.html#config-ownerModel" rel="config-ownerModel" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-ownerModel" class="viewSource">view source</a></div><a name="ownerModel"></a><a name="config-ownerModel"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-ownerModel" class="cls expand">ownerModel</a><span> : String</span></div><div class="description"><div class="short"><p>The string name of the model that owns the association. Required</p>
+</div><div class="long"><p>The string name of the model that owns the association. Required</p>
+</div></div></div><div id="config-primaryKey" class="member inherited"><a href="Ext.data.HasManyAssociation.html#config-primaryKey" rel="config-primaryKey" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-primaryKey" class="viewSource">view source</a></div><a name="primaryKey"></a><a name="config-primaryKey"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-primaryKey" class="cls expand">primaryKey</a><span> : String</span></div><div class="description"><div class="short">The name of the primary key on the associated model. Defaults to 'id'.
+In general this will be the Ext.data.Model.idP...</div><div class="long"><p>The name of the primary key on the associated model. Defaults to 'id'.
+In general this will be the <a href="Ext.data.Model.html#idProperty" rel="Ext.data.Model#idProperty" class="docClass">Ext.data.Model.idProperty</a> of the Model.</p>
+</div></div></div><div id="config-reader" class="member inherited"><a href="Ext.data.HasManyAssociation.html#config-reader" rel="config-reader" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-cfg-reader" class="viewSource">view source</a></div><a name="reader"></a><a name="config-reader"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-reader" class="cls expand">reader</a><span> : Ext.data.reader.Reader</span></div><div class="description"><div class="short"><p>A special reader to read associated data</p>
+</div><div class="long"><p>A special reader to read associated data</p>
+</div></div></div><div id="config-storeConfig" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-storeConfig" rel="config-storeConfig" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-storeConfig" class="viewSource">view source</a></div><a name="storeConfig"></a><a name="config-storeConfig"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-storeConfig" class="cls expand">storeConfig</a><span> : Object</span></div><div class="description"><div class="short"><p>Optional configuration object that will be passed to the generated Store. Defaults to
+undefined.</p>
+</div><div class="long"><p>Optional configuration object that will be passed to the generated Store. Defaults to
+undefined.</p>
+</div></div></div><div id="config-type" class="member ni"><a href="Ext.data.HasManyAssociation.html#config-type" rel="config-type" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.HasManyAssociation.html" class="definedIn docClass">Ext.data.HasManyAssociation</a><br/><a href="../source/HasManyAssociation.html#Ext-data.HasManyAssociation-cfg-type" class="viewSource">view source</a></div><a name="type"></a><a name="config-type"></a><a href="Ext.data.HasManyAssociation.html#" rel="config-type" class="cls expand">type</a><span> : String</span></div><div class="description"><div class="short">The type configuration can be used when creating associations using a configuration object.
+Use 'hasMany' to create a...</div><div class="long"><p>The type configuration can be used when creating associations using a configuration object.
+Use 'hasMany' to create a HasManyAssocation</p>
+
+<pre><code>associations: [{
+    type: 'hasMany',
+    model: 'User'
+}]
+</code></pre>
+
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-associatedName" class="member f inherited"><a href="Ext.data.HasManyAssociation.html#property-associatedName" rel="property-associatedName" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-property-associatedName" class="viewSource">view source</a></div><a name="associatedName"></a><a name="property-associatedName"></a><a href="Ext.data.HasManyAssociation.html#" rel="property-associatedName" class="cls expand">associatedName</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the model is on the other end of the association (e.g. if a User model hasMany Orders, this is 'Order')</p>
+</div><div class="long"><p>The name of the model is on the other end of the association (e.g. if a User model hasMany Orders, this is 'Order')</p>
+</div></div></div><div id="property-ownerName" class="member inherited"><a href="Ext.data.HasManyAssociation.html#property-ownerName" rel="property-ownerName" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-property-ownerName" class="viewSource">view source</a></div><a name="ownerName"></a><a name="property-ownerName"></a><a href="Ext.data.HasManyAssociation.html#" rel="property-ownerName" class="cls expand">ownerName</a><span> : String</span></div><div class="description"><div class="short"><p>The name of the model that 'owns' the association</p>
+</div><div class="long"><p>The name of the model that 'owns' the association</p>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-HasManyAssociation" class="member f inherited"><a href="Ext.data.HasManyAssociation.html#method-HasManyAssociation" rel="method-HasManyAssociation" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-method-constructor" class="viewSource">view source</a></div><a name="HasManyAssociation"></a><a name="method-HasManyAssociation"></a><a href="Ext.data.HasManyAssociation.html#" rel="method-HasManyAssociation" class="cls expand">HasManyAssociation</a>(
+<span class="pre">Object config</span>)
+ : void</div><div class="description"><div class="short"><p>&nbsp;</p></div><div class="long">
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc"><p>Optional config object</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getReader" class="member inherited"><a href="Ext.data.HasManyAssociation.html#method-getReader" rel="method-getReader" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.data.Association.html" class="definedIn docClass">Ext.data.Association</a><br/><a href="../source/Association.html#Ext-data.Association-method-getReader" class="viewSource">view source</a></div><a name="getReader"></a><a name="method-getReader"></a><a href="Ext.data.HasManyAssociation.html#" rel="method-getReader" class="cls expand">getReader</a> : Ext.data.reader.Reader</div><div class="description"><div class="short"><p>Get a specialized reader for reading associated data</p>
+</div><div class="long"><p>Get a specialized reader for reading associated data</p>
+<h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.data.reader.Reader</span>&nbsp; &nbsp;<p>The reader, null if not supplied</p>
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

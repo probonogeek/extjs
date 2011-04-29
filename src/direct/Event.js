@@ -1,34 +1,34 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/**
+ * @class Ext.direct.Event
+ * A base class for all Ext.direct events. An event is
+ * created after some kind of interaction with the server.
+ * The event class is essentially just a data structure
+ * to hold a direct response.
+ * 
+ * @constructor
+ * @param {Object} config The config object
  */
-Ext.Direct.Event = function(config){
-    Ext.apply(this, config);
-};
-
-Ext.Direct.Event.prototype = {
+Ext.define('Ext.direct.Event', {
+    
+    /* Begin Definitions */
+   
+    alias: 'direct.event',
+    
+    requires: ['Ext.direct.Manager'],
+    
+    /* End Definitions */
+   
     status: true,
+    
+    constructor: function(config) {
+        Ext.apply(this, config);
+    },
+    
+    /**
+     * Return the raw data for this event.
+     * @return {Object} The data from the event
+     */
     getData: function(){
         return this.data;
     }
-};
-
-Ext.Direct.RemotingEvent = Ext.extend(Ext.Direct.Event, {
-    type: 'rpc',
-    getTransaction: function(){
-        return this.transaction || Ext.Direct.getTransaction(this.tid);
-    }
 });
-
-Ext.Direct.ExceptionEvent = Ext.extend(Ext.Direct.RemotingEvent, {
-    status: false,
-    type: 'exception'
-});
-
-Ext.Direct.eventTypes = {
-    'rpc':  Ext.Direct.RemotingEvent,
-    'event':  Ext.Direct.Event,
-    'exception':  Ext.Direct.ExceptionEvent
-};

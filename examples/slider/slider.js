@@ -1,20 +1,20 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require('Ext.slider.*');
+
 Ext.onReady(function(){
 
-    new Ext.Slider({
+    Ext.create('Ext.slider.Single', {
         renderTo: 'basic-slider',
         width: 214,
         minValue: 0,
+        hideLabel: true,
+        useTips: false,
         maxValue: 100
     });
 
-    new Ext.Slider({
+    Ext.create('Ext.slider.Single', {
         renderTo: 'increment-slider',
+        hideLabel: true,
+        useTips: false,
         width: 214,
         value:50,
         increment: 10,
@@ -22,62 +22,63 @@ Ext.onReady(function(){
         maxValue: 100
     });
 
-    new Ext.Slider({
+    Ext.create('Ext.slider.Single', {
         renderTo: 'vertical-slider',
+        hideLabel: true,
+        useTips: false,
         height: 214,
         vertical: true,
         minValue: 0,
         maxValue: 100
     });
 
-    new Ext.Slider({
+    Ext.create('Ext.slider.Single', {
         renderTo: 'tip-slider',
+        hideLabel: true,
         width: 214,
         minValue: 0,
-        maxValue: 100,
-        plugins: new Ext.slider.Tip()
+        maxValue: 100
     });
 
-    var tip = new Ext.slider.Tip({
-        getText: function(thumb){
-            return String.format('<b>{0}% complete</b>', thumb.value);
+
+
+    Ext.create('Ext.slider.Single', {
+        renderTo: 'custom-tip-slider',
+        hideLabel: true,
+        width: 214,
+        increment: 10,
+        minValue: 0,
+        maxValue: 100,
+        tipText: function(thumb){
+            return Ext.String.format('<b>{0}% complete</b>', thumb.value);
         }
     });
 
-    new Ext.Slider({
-        renderTo: 'custom-tip-slider',
-        width: 214,
-        increment: 10,
-        minValue: 0,
-        maxValue: 100,
-        plugins: tip
-    });
-
-    new Ext.Slider({
+    Ext.create('Ext.slider.Single', {
         renderTo: 'custom-slider',
+        hideLabel: true,
         width: 214,
         increment: 10,
         minValue: 0,
-        maxValue: 100,
-        plugins: new Ext.slider.Tip()
+        maxValue: 100
     });
     
-    new Ext.slider.MultiSlider({
+    Ext.create('Ext.slider.Multi', {
         renderTo: 'multi-slider-horizontal',
-        width   : 214,
+        hideLabel: true,
+        width: 214,
         minValue: 0,
         maxValue: 100,
-        values  : [10, 50, 90],
-        plugins : new Ext.slider.Tip()
+        values: [10, 50, 90]
     });
     
-    new Ext.slider.MultiSlider({
-        renderTo : 'multi-slider-vertical',
-        vertical : true,
-        height   : 214,
+    Ext.create('Ext.slider.Multi', {
+        renderTo: 'multi-slider-vertical',
+        hideLabel: true,
+        vertical: true,
+        height: 214,
         minValue: 0,
         maxValue: 100,
-        values  : [10, 50, 90],
-        plugins : new Ext.slider.Tip()
+        values: [10, 50, 90]
     });
 });

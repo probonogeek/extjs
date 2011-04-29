@@ -1,44 +1,44 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require([
+    'Ext.panel.Panel',
+    'Ext.Action',
+    'Ext.button.Button',
+    'Ext.window.MessageBox'
+]);
+
 Ext.onReady(function(){
-    // The action
-    var action = new Ext.Action({
+    var action = Ext.create('Ext.Action', {
         text: 'Action 1',
+        iconCls: 'icon-add',
         handler: function(){
-            Ext.example.msg('Click','You clicked on "Action 1".');
-        },
-        iconCls: 'blist'
+            Ext.example.msg('Click', 'You clicked on "Action 1".');
+        }
     });
-
-
-    var panel = new Ext.Panel({
+    
+     var panel = Ext.create('Ext.panel.Panel', {
         title: 'Actions',
-        width:600,
-        height:300,
-        bodyStyle: 'padding:10px;',     // lazy inline style
-
-        tbar: [
-            action, {                   // <-- Add the action directly to a toolbar
-                text: 'Action Menu',
-                menu: [action]          // <-- Add the action directly to a menu
-            }
-        ],
-
-        items: [
-           new Ext.Button(action)       // <-- Add the action as a button
-        ],
-
-        renderTo: Ext.getBody()
+        renderTo: document.body,
+        width: 600,
+        height: 300,
+        bodyPadding: 10,
+        dockedItems: {
+            itemId: 'toolbar',
+            xtype: 'toolbar',
+            items: [
+                action, // Add the action directly to a toolbar
+                {
+                    text: 'Action menu',
+                    menu: [action] // Add the action directly to a menu
+                }
+            ]
+        },
+        items: Ext.create('Ext.button.Button', action)       // Add the action as a button
     });
-
-    var tb = panel.getTopToolbar();
-    // Buttons added to the toolbar of the Panel above
-    // to test/demo doing group operations with an action
-    tb.add('->', {
+    
+    /*
+     * Add toolbar items dynamically after creation
+     */
+    var toolbar = panel.child('#toolbar');
+    toolbar.add('->', {
         text: 'Disable',
         handler: function(){
             action.setDisabled(!action.isDisabled());
@@ -59,8 +59,7 @@ Ext.onReady(function(){
     }, {
         text: 'Change Icon',
         handler: function(){
-            action.setIconClass(action.getIconClass() == 'blist' ? 'bmenu' : 'blist');
+            action.setIconCls(action.getIconCls() == 'icon-add' ? 'icon-edit' : 'icon-add');
         }
     });
-    tb.doLayout();
 });

@@ -1,15 +1,17 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require([
+    'Ext.form.*',
+    'Ext.window.Window'
+]);
+
 Ext.onReady(function() {
-    var form = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        labelWidth: 55,
-        url:'save-form.php',
+    var form = Ext.create('Ext.form.Panel', {
+        border: false,
+        fieldDefaults: {
+            labelWidth: 55
+        },
+        url: 'save-form.php',
         defaultType: 'textfield',
+        bodyPadding: 5,
 
         items: [{
             fieldLabel: 'Send To',
@@ -23,20 +25,18 @@ Ext.onReady(function() {
             xtype: 'textarea',
             hideLabel: true,
             name: 'msg',
-            anchor: '100% -53'  // anchor width by percentage and height by raw adjustment
+            anchor: '100% -47'  // anchor width by percentage and height by raw adjustment
         }]
     });
 
-    var window = new Ext.Window({
+    var win = Ext.create('Ext.window.Window', {
         title: 'Resize Me',
         width: 500,
         height:300,
         minWidth: 300,
         minHeight: 200,
         layout: 'fit',
-        plain:true,
-        bodyStyle:'padding:5px;',
-        buttonAlign:'center',
+        plain: true,
         items: form,
 
         buttons: [{
@@ -46,5 +46,5 @@ Ext.onReady(function() {
         }]
     });
 
-    window.show();
+    win.show();
 });

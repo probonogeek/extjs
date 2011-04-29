@@ -1,13 +1,16 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.Loader.setConfig({enabled: true});
+Ext.Loader.setPath('Ext.ux', '../ux');
+Ext.require([
+    'Ext.grid.*',
+    'Ext.data.*',
+    'Ext.ux.grid.FiltersFeature',
+    'Ext.toolbar.Paging'
+]);
+
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
-    
+
     // for this demo configure local and remote urls for demo purposes
     var url = {
         local:  'grid-filter.json',  // static data file
@@ -20,41 +23,41 @@ Ext.onReady(function(){
     // configure whether filtering is performed locally or remotely (initially)
     var local = true;
 
-    store = new Ext.data.JsonStore({
+    var store = Ext.create('Ext.data.JsonStore', {
         // store configs
         autoDestroy: true,
-        url: (local ? url.local : url.remote),
+
+        proxy: {
+            type: 'ajax',
+            url: (local ? url.local : url.remote),
+            reader: {
+                type: 'json',
+                root: 'data',
+                idProperty: 'id',
+                totalProperty: 'total'
+            }
+        },
+
         remoteSort: false,
         sortInfo: {
             field: 'company',
             direction: 'ASC'
         },
+        pageSize: 50,
         storeId: 'myStore',
         
-        // reader configs
-        idProperty: 'id',
-        root: 'data',
-        totalProperty: 'total',
-        fields: [{
-            name: 'id'
-        }, {
-            name: 'company'
-        }, {
-            name: 'price',
-            type: 'float'
-        }, {
-            name: 'date',
-            type: 'date',
-            dateFormat: 'Y-m-d H:i:s'
-        }, {
-            name: 'visible',
-            type: 'boolean'
-        }, {
-            name: 'size'
-        }]
+        fields: [
+            { name: 'id' },
+            { name: 'company' }, 
+            { name: 'price', type: 'float' },
+            { name: 'date', type: 'date', dateFormat: 'Y-m-d' },
+            { name: 'visible', type: 'boolean' },
+            { name: 'size' }
+        ]
     });
 
-    var filters = new Ext.ux.grid.GridFilters({
+    var filters = {
+        ftype: 'filters',
         // encode and local configuration options defined previously for easier reuse
         encode: encode, // json encode the filter query
         local: local,   // defaults to false (remote filtering)
@@ -80,16 +83,16 @@ Ext.onReady(function(){
             type: 'boolean',
             dataIndex: 'visible'
         }]
-    });    
-    
+    };
+
     // use a factory method to reduce code while demonstrating
     // that the GridFilter plugin may be configured with or without
     // the filter types (the filters may be specified on the column model
-    var createColModel = function (finish, start) {
+    var createHeaders = function (finish, start) {
 
         var columns = [{
             dataIndex: 'id',
-            header: 'Id',
+            text: 'Id',
             // instead of specifying filter config just specify filterable=true
             // to use store's field's type property (if type property not
             // explicitly specified in store config it will be 'auto' which
@@ -98,8 +101,9 @@ Ext.onReady(function(){
             //,filter: {type: 'numeric'}
         }, {
             dataIndex: 'company',
-            header: 'Company',
+            text: 'Company',
             id: 'company',
+            flex: 1,
             filter: {
                 type: 'string'
                 // specify disabled to disable the filter menu
@@ -107,13 +111,13 @@ Ext.onReady(function(){
             }
         }, {
             dataIndex: 'price',
-            header: 'Price',
+            text: 'Price',
             filter: {
                 //type: 'numeric'  // specify type here or in store fields config
             }
         }, {
             dataIndex: 'size',
-            header: 'Size',
+            text: 'Size',
             filter: {
                 type: 'list',
                 options: ['small', 'medium', 'large', 'extra large']
@@ -121,89 +125,70 @@ Ext.onReady(function(){
             }
         }, {
             dataIndex: 'date',
-            header: 'Date',
+            text: 'Date',
             renderer: Ext.util.Format.dateRenderer('m/d/Y'),
             filter: {
                 //type: 'date'     // specify type here or in store fields config
             }            
         }, {
             dataIndex: 'visible',
-            header: 'Visible',
+            text: 'Visible',
             filter: {
                 //type: 'boolean'  // specify type here or in store fields config
             }
         }];
 
-        return new Ext.grid.ColumnModel({
-            columns: columns.slice(start || 0, finish),
-            defaults: {
-                sortable: true
-            }
-        });
+        return columns.slice(start || 0, finish);
     };
     
-    var grid = new Ext.grid.GridPanel({
+    var grid = Ext.create('Ext.grid.Panel', {
         border: false,
         store: store,
-        colModel: createColModel(4),
+        columns: createHeaders(4),
         loadMask: true,
-        plugins: [filters],
-        autoExpandColumn: 'company',
-        listeners: {
-            render: {
-                fn: function(){
-                    store.load({
-                        params: {
-                            start: 0,
-                            limit: 50
-                        }
-                    });
-                }
-            }
-        },
-        bbar: new Ext.PagingToolbar({
-            store: store,
-            pageSize: 50,
-            plugins: [filters]
+        features: [filters],
+        bbar: Ext.create('Ext.toolbar.Paging', {
+            store: store
         })
     });
 
     // add some buttons to bottom toolbar just for demonstration purposes
-    grid.getBottomToolbar().add([
+    grid.child('[dock=bottom]').add([
         '->',
         {
             text: 'Encode: ' + (encode ? 'On' : 'Off'),
             tooltip: 'Toggle Filter encoding on/off',
             enableToggle: true,
             handler: function (button, state) {
-                var encode = (grid.filters.encode===true) ? false : true;
+                var encode = (grid.filters.encode !== true);
                 var text = 'Encode: ' + (encode ? 'On' : 'Off'); 
-                // remove the prior parameters from the last load options
-                grid.filters.cleanParams(grid.getStore().lastOptions.params);
                 grid.filters.encode = encode;
+                grid.filters.reload();
                 button.setText(text);
-                grid.getStore().reload();
             } 
-        },{
+        },
+        {
             text: 'Local Filtering: ' + (local ? 'On' : 'Off'),
             tooltip: 'Toggle Filtering between remote/local',
             enableToggle: true,
             handler: function (button, state) {
-                var local = (grid.filters.local===true) ? false : true;
-                var text = 'Local Filtering: ' + (local ? 'On' : 'Off');
-                var newUrl = local ? url.local : url.remote;
+                var local = (grid.filters.local !== true),
+                    text = 'Local Filtering: ' + (local ? 'On' : 'Off'),
+                    newUrl = local ? url.local : url.remote,
+                    store = grid.view.getStore();
                  
                 // update the GridFilter setting
                 grid.filters.local = local;
                 // bind the store again so GridFilters is listening to appropriate store event
-                grid.filters.bindStore(grid.getStore());
+                grid.filters.bindStore(store);
                 // update the url for the proxy
-                grid.getStore().proxy.setApi('read', newUrl);
+                store.proxy.url = newUrl;
 
                 button.setText(text);
-                grid.getStore().reload();
+                store.load();
             } 
-        },{
+        },
+        {
             text: 'All Filter Data',
             tooltip: 'Get Filter Data for Grid',
             handler: function () {
@@ -216,19 +201,24 @@ Ext.onReady(function(){
                 grid.filters.clearFilters();
             } 
         },{
-            text: 'Reconfigure Grid',
+            text: 'Add Columns',
             handler: function () {
-                grid.reconfigure(store, createColModel(6));
-            } 
+                if (grid.headerCt.items.length < 6) {
+                    grid.headerCt.add(createHeaders(6, 4));
+                    grid.view.refresh();
+                    this.disable();
+                }
+            }
         }    
     ]);
 
-    var win = new Ext.Window({
+    var win = Ext.create('Ext.Window', {
         title: 'Grid Filters Example',
         height: 400,
         width: 700,
         layout: 'fit',
         items: grid
     }).show();
-    
+
+    store.load();
 });

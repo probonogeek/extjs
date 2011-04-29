@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-direct.RemotingEvent'>/**
+</span> * @class Ext.direct.RemotingEvent
+ * @extends Ext.direct.Event
+ * An event that is fired when data is received from a 
+ * {@link Ext.direct.RemotingProvider}. Contains a method to the
+ * related transaction for the direct request, see {@link #getTransaction}
+ */
+Ext.define('Ext.direct.RemotingEvent', {
+    
+    /* Begin Definitions */
+   
+    extend: 'Ext.direct.Event',
+    
+    alias: 'direct.rpc',
+    
+    /* End Definitions */
+    
+<span id='Ext-direct.RemotingEvent-method-getTransaction'>    /**
+</span>     * Get the transaction associated with this event.
+     * @return {Ext.direct.Transaction} The transaction
+     */
+    getTransaction: function(){
+        return this.transaction || Ext.direct.Manager.getTransaction(this.tid);
+    }
+});
+</pre></pre></body></html>

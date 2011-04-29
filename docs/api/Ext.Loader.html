@@ -1,0 +1,335 @@
+<!DOCTYPE html><html><head><title>Ext.Loader | Ext JS 4.0 Documentation</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'Ext.Loader',
+        docClass: 'Ext.Loader',
+        docReq: 'Ext.Loader',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<script type="text/javascript">
+    req.source = 'Loader.html#Ext-Loader';
+    clsInfo = {"methods":["exclude","getConfig","getPath","onReady","require","setConfig","syncRequire"],"cfgs":["disableCaching","disableCachingParam","enabled","paths"],"properties":["history","setPath"],"events":[],"subclasses":[]};
+    Ext.onReady(function() {
+        Ext.create('Docs.classPanel');
+    });
+</script><div id="top-block" class="top-block"><h1 id="clsTitle" class="cls"><a href="../source/Loader.html#Ext-Loader" target="_blank">Ext.Loader</a></h1></div><div id="docContent"><div id="doc-overview-content"><div class="lft"><p>Ext.Loader is the heart of the new dynamic dependency loading capability in <a href="Ext.html" rel="Ext" class="docClass">Ext</a> JS 4+. It is most commonly used
+via the <a href="Ext.html#require" rel="Ext#require" class="docClass">Ext.require</a> shorthand. <a href="Ext.Loader.html" rel="Ext.Loader" class="docClass">Ext.Loader</a> supports both asynchronous and synchronous loading
+approaches, and leverage their advantages for the best development flow. We'll discuss about the pros and cons of each approach:</p>
+
+<h1>Asynchronous Loading</h1>
+
+<ul>
+<li><p>Advantages:</p>
+
+<ul>
+<li>Cross-domain</li>
+<li>No web server needed: you can run the application via the file system protocol (i.e: <code>file://path/to/your/index
+.html</code>)</li>
+<li>Best possible debugging experience: error messages come with the exact file name and line number</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+
+<ul>
+<li>Dependencies need to be specified before-hand</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>Method 1: Explicitly include what you need:</h3>
+
+<pre class="prettyprint"><code>// Syntax
+Ext.require({String/Array} expressions);
+
+// Example: Single alias
+Ext.require('widget.window');
+
+// Example: Single class name
+Ext.require('Ext.window.Window');
+
+// Example: Multiple aliases / class names mix
+Ext.require(['widget.window', 'layout.border', 'Ext.data.Connection']);
+
+// Wildcards
+Ext.require(['widget.*', 'layout.*', 'Ext.data.*']);
+</code></pre>
+
+<h3>Method 2: Explicitly exclude what you don't need:</h3>
+
+<pre class="prettyprint"><code>// Syntax: Note that it must be in this chaining format.
+Ext.exclude({String/Array} expressions)
+   .require({String/Array} expressions);
+
+// Include everything except Ext.data.*
+Ext.exclude('Ext.data.*').require('*'); 
+
+// Include all widgets except widget.checkbox*,
+// which will match widget.checkbox, widget.checkboxfield, widget.checkboxgroup, etc.
+Ext.exclude('widget.checkbox*').require('widget.*');
+</code></pre>
+
+<h1>Synchronous Loading on Demand</h1>
+
+<ul>
+<li><p><em>Advantages:</em></p>
+
+<ul>
+<li>There's no need to specify dependencies before-hand, which is always the convenience of including ext-all.js
+before</li>
+</ul>
+</li>
+<li><p><em>Disadvantages:</em></p>
+
+<ul>
+<li>Not as good debugging experience since file name won't be shown (except in Firebug at the moment)</li>
+<li>Must be from the same domain due to XHR restriction</li>
+<li>Need a web server, same reason as above</li>
+</ul>
+</li>
+</ul>
+
+
+<p>There's one simple rule to follow: Instantiate everything with Ext.create instead of the <code>new</code> keyword</p>
+
+<pre class="prettyprint"><code>Ext.create('widget.window', { ... }); // Instead of new Ext.window.Window({...});
+
+Ext.create('Ext.window.Window', {}); // Same as above, using full class name instead of alias
+
+Ext.widget('window', {}); // Same as above, all you need is the traditional `xtype`
+</code></pre>
+
+<p>Behind the scene, <a href="Ext.ClassManager.html" rel="Ext.ClassManager" class="docClass">Ext.ClassManager</a> will automatically check whether the given class name / alias has already
+ existed on the page. If it's not, <a href="Ext.Loader.html" rel="Ext.Loader" class="docClass">Ext.Loader</a> will immediately switch itself to synchronous mode and automatic load the given
+ class and all its dependencies.</p>
+
+<h1>Hybrid Loading - The Best of Both Worlds</h1>
+
+<p>It has all the advantages combined from asynchronous and synchronous loading. The development flow is simple:</p>
+
+<h3>Step 1: Start writing your application using synchronous approach. <a href="Ext.Loader.html" rel="Ext.Loader" class="docClass">Ext.Loader</a> will automatically fetch all</h3>
+
+<p> dependencies on demand as they're needed during run-time. For example: ###</p>
+
+<pre class="prettyprint"><code>Ext.onReady(function(){
+    var window = Ext.createWidget('window', {
+        width: 500,
+        height: 300,
+        layout: {
+            type: 'border',
+            padding: 5
+        },
+        title: 'Hello Dialog',
+        items: [{
+            title: 'Navigation',
+            collapsible: true,
+            region: 'west',
+            width: 200,
+            html: 'Hello',
+            split: true
+        }, {
+            title: 'TabPanel',
+            region: 'center'
+        }]
+    });
+
+    window.show();
+})
+</code></pre>
+
+<h3>Step 2: Along the way, when you need better debugging ability, watch the console for warnings like these:</h3>
+
+<pre class="prettyprint"><code>[Ext.Loader] Synchronously loading 'Ext.window.Window'; consider adding Ext.require('Ext.window.Window') before your application's code
+ClassManager.js:432
+[Ext.Loader] Synchronously loading 'Ext.layout.container.Border'; consider adding Ext.require('Ext.layout.container.Border') before your application's code
+</code></pre>
+
+<p>Simply copy and paste the suggested code above <code>Ext.onReady</code>, i.e:</p>
+
+<pre class="prettyprint"><code>Ext.require('Ext.window.Window');
+Ext.require('Ext.layout.container.Border');
+
+Ext.onReady(...);
+</code></pre>
+
+<p>Everything should now load via asynchronous mode.</p>
+
+<h1>Deployment</h1>
+
+<p>It's important to note that dynamic loading should only be used during development on your local machines.
+During production, all dependencies should be combined into one single JavaScript file. <a href="Ext.Loader.html" rel="Ext.Loader" class="docClass">Ext.Loader</a> makes
+the whole process of transitioning from / to between development / maintenance and production as easy as
+possible. Internally <a href="Ext.Loader.html#history" rel="Ext.Loader#history" class="docClass">Ext.Loader.history</a> maintains the list of all dependencies your application
+needs in the exact loading sequence. It's as simple as concatenating all files in this array into one,
+then include it on top of your application.</p>
+
+<p>This process will be automated with Sencha Command, to be released and documented towards <a href="Ext.html" rel="Ext" class="docClass">Ext</a> JS 4 Final.</p>
+<div class="members"><div class="m-cfgs"><div class="definedBy">Defined By</div><a name="configs"></a><h3 class="cfg p">Config Options</h3><h4 class="cfgGroup">Other Configs</h4><div id="config-disableCaching" class="member f ni"><a href="Ext.Loader.html#config-disableCaching" rel="config-disableCaching" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-cfg-disableCaching" class="viewSource">view source</a></div><a name="disableCaching"></a><a name="config-disableCaching"></a><a href="Ext.Loader.html#" rel="config-disableCaching" class="cls expand">disableCaching</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Appends current timestamp to script files to prevent caching
+Defaults to true</p>
+</div><div class="long"><p>Appends current timestamp to script files to prevent caching
+Defaults to true</p>
+</div></div></div><div id="config-disableCachingParam" class="member ni"><a href="Ext.Loader.html#config-disableCachingParam" rel="config-disableCachingParam" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-cfg-disableCachingParam" class="viewSource">view source</a></div><a name="disableCachingParam"></a><a name="config-disableCachingParam"></a><a href="Ext.Loader.html#" rel="config-disableCachingParam" class="cls expand">disableCachingParam</a><span> : String</span></div><div class="description"><div class="short"><p>The get parameter name for the cache buster's timestamp.
+Defaults to '_dc'</p>
+</div><div class="long"><p>The get parameter name for the cache buster's timestamp.
+Defaults to '_dc'</p>
+</div></div></div><div id="config-enabled" class="member ni"><a href="Ext.Loader.html#config-enabled" rel="config-enabled" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-cfg-enabled" class="viewSource">view source</a></div><a name="enabled"></a><a name="config-enabled"></a><a href="Ext.Loader.html#" rel="config-enabled" class="cls expand">enabled</a><span> : Boolean</span></div><div class="description"><div class="short"><p>Whether or not to enable the dynamic dependency loading feature
+Defaults to false</p>
+</div><div class="long"><p>Whether or not to enable the dynamic dependency loading feature
+Defaults to false</p>
+</div></div></div><div id="config-paths" class="member ni"><a href="Ext.Loader.html#config-paths" rel="config-paths" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-cfg-paths" class="viewSource">view source</a></div><a name="paths"></a><a name="config-paths"></a><a href="Ext.Loader.html#" rel="config-paths" class="cls expand">paths</a><span> : Object</span></div><div class="description"><div class="short">The mapping from namespaces to file paths
+
+{
+    'Ext': '.', // This is set by default, Ext.layout.container.Containe...</div><div class="long"><p>The mapping from namespaces to file paths</p>
+
+<pre><code>{
+    'Ext': '.', // This is set by default, <a href="Ext.layout.container.Container.html" rel="Ext.layout.container.Container" class="docClass">Ext.layout.container.Container</a> will be
+                // loaded from ./layout/Container.js
+
+    'My': './src/my_own_folder' // My.layout.Container will be loaded from
+                                // ./src/my_own_folder/layout/Container.js
+}
+</code></pre>
+
+<p>Note that all relative paths are relative to the current HTML document.
+If not being specified, for example, <code>Other.awesome.Class</code>
+will simply be loaded from <code>./Other/awesome/Class.js</code></p>
+</div></div></div></div><div class="m-properties"><a name="properties"></a><div class="definedBy">Defined By</div><h3 class="prp p">Properties</h3><div id="property-history" class="member f ni"><a href="Ext.Loader.html#property-history" rel="property-history" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-property-history" class="viewSource">view source</a></div><a name="history"></a><a name="property-history"></a><a href="Ext.Loader.html#" rel="property-history" class="cls expand">history</a><span> : Array</span></div><div class="description"><div class="short">An array of class names to keep track of the dependency loading order.
+This is not guaranteed to be the same everytim...</div><div class="long"><p>An array of class names to keep track of the dependency loading order.
+This is not guaranteed to be the same everytime due to the asynchronous
+nature of the Loader.</p>
+</div></div></div><div id="property-setPath" class="member ni"><a href="Ext.Loader.html#property-setPath" rel="property-setPath" class="expand more"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-property-setPath" class="viewSource">view source</a></div><a name="setPath"></a><a name="property-setPath"></a><a href="Ext.Loader.html#" rel="property-setPath" class="cls expand">setPath</a><span> : Object</span></div><div class="description"><div class="short"><p>Sets the path of a namespace.
+For Example:</p>
+
+<pre><code>Ext.Loader.setPath('Ext', '.');
+</code></pre>
+</div><div class="long"><p>Sets the path of a namespace.
+For Example:</p>
+
+<pre><code>Ext.Loader.setPath('Ext', '.');
+</code></pre>
+</div></div></div></div><div class="m-methods"><a name="methods"></a><div class="definedBy">Defined By</div><h3 class="mth p">Methods</h3><div id="method-exclude" class="member f ni"><a href="Ext.Loader.html#method-exclude" rel="method-exclude" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-exclude" class="viewSource">view source</a></div><a name="exclude"></a><a name="method-exclude"></a><a href="Ext.Loader.html#" rel="method-exclude" class="cls expand">exclude</a>(
+<span class="pre">Array excludes</span>)
+ : Object</div><div class="description"><div class="short">Explicitly exclude files from being loaded. Useful when used in conjunction with a broad include expression.
+Can be c...</div><div class="long"><p>Explicitly exclude files from being loaded. Useful when used in conjunction with a broad include expression.
+Can be chained with more <code>require</code> and <code>exclude</code> methods, eg:</p>
+
+<pre><code>Ext.exclude('Ext.data.*').require('*');
+
+Ext.exclude('widget.button*').require('widget.*');
+</code></pre>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">excludes</span> : Array<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object</span>&nbsp; &nbsp;<p>object contains <code>require</code> method for chaining</p>
+</li></ul></div></div></div><div id="method-getConfig" class="member ni"><a href="Ext.Loader.html#method-getConfig" rel="method-getConfig" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-getConfig" class="viewSource">view source</a></div><a name="getConfig"></a><a name="method-getConfig"></a><a href="Ext.Loader.html#" rel="method-getConfig" class="cls expand">getConfig</a>(
+<span class="pre">String name</span>)
+ : Object/Mixed</div><div class="description"><div class="short"><p>Get the config value corresponding to the specified name. If no name is given, will return the config object</p>
+</div><div class="long"><p>Get the config value corresponding to the specified name. If no name is given, will return the config object</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">name</span> : String<div class="sub-desc"><p>The config property name</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Object/Mixed</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-getPath" class="member ni"><a href="Ext.Loader.html#method-getPath" rel="method-getPath" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-getPath" class="viewSource">view source</a></div><a name="getPath"></a><a name="method-getPath"></a><a href="Ext.Loader.html#" rel="method-getPath" class="cls expand">getPath</a>(
+<span class="pre">String className</span>)
+ : String</div><div class="description"><div class="short">Translates a className to a file path by adding the
+the proper prefix and converting the .'s to /'s. For example:
+
+Ex...</div><div class="long"><p>Translates a className to a file path by adding the
+the proper prefix and converting the .'s to /'s. For example:</p>
+
+<pre><code>Ext.Loader.setPath('My', '/path/to/My');
+
+alert(Ext.Loader.getPath('My.awesome.Class')); // alerts '/path/to/My/awesome/Class.js'
+</code></pre>
+
+<p>Note that the deeper namespace levels, if explicitly set, are always resolved first. For example:</p>
+
+<pre><code>Ext.Loader.setPath({
+    'My': '/path/to/lib',
+    'My.awesome': '/other/path/for/awesome/stuff',
+    'My.awesome.more': '/more/awesome/path'
+});
+
+alert(Ext.Loader.getPath('My.awesome.Class')); // alerts '/other/path/for/awesome/stuff/Class.js'
+
+alert(Ext.Loader.getPath('My.awesome.more.Class')); // alerts '/more/awesome/path/Class.js'
+
+alert(Ext.Loader.getPath('My.cool.Class')); // alerts '/path/to/lib/cool/Class.js'
+
+alert(Ext.Loader.getPath('Unknown.strange.Stuff')); // alerts 'Unknown/strange/Stuff.js'
+</code></pre>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">className</span> : String<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">String</span>&nbsp; &nbsp;<p>path</p>
+</li></ul></div></div></div><div id="method-onReady" class="member ni"><a href="Ext.Loader.html#method-onReady" rel="method-onReady" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-onReady" class="viewSource">view source</a></div><a name="onReady"></a><a name="method-onReady"></a><a href="Ext.Loader.html#" rel="method-onReady" class="cls expand">onReady</a>(
+<span class="pre">Function fn, Object scope, Boolean withDomReady, Object options</span>)
+ : void</div><div class="description"><div class="short"><p>Add a new listener to be executed when all required scripts are fully loaded</p>
+</div><div class="long"><p>Add a new listener to be executed when all required scripts are fully loaded</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>The function callback to be executed</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>The execution scope (<code>this</code>) of the callback function</p>
+</div></li><li><span class="pre">withDomReady</span> : Boolean<div class="sub-desc"><p>Whether or not to wait for document dom ready as well</p>
+</div></li><li><span class="pre">options</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-require" class="member ni"><a href="Ext.Loader.html#method-require" rel="method-require" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-require" class="viewSource">view source</a></div><a name="require"></a><a name="method-require"></a><a href="Ext.Loader.html#" rel="method-require" class="cls expand">require</a>(
+<span class="pre">String/Array expressions, Function fn, Object scope, String/Array excludes</span>)
+ : void</div><div class="description"><div class="short">Loads all classes by the given names and all their direct dependencies; optionally executes the given callback functi...</div><div class="long"><p>Loads all classes by the given names and all their direct dependencies; optionally executes the given callback function when
+finishes, within the optional scope. This method is aliased by <a href="Ext.html#require" rel="Ext#require" class="docClass">Ext.require</a> for convenience</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">expressions</span> : String/Array<div class="sub-desc"><p>Can either be a string or an array of string</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>(Optional) The callback function</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The execution scope (<code>this</code>) of the callback function</p>
+</div></li><li><span class="pre">excludes</span> : String/Array<div class="sub-desc"><p>(Optional) Classes to be excluded, useful when being used with expressions</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div><div id="method-setConfig" class="member ni"><a href="Ext.Loader.html#method-setConfig" rel="method-setConfig" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-setConfig" class="viewSource">view source</a></div><a name="setConfig"></a><a name="method-setConfig"></a><a href="Ext.Loader.html#" rel="method-setConfig" class="cls expand">setConfig</a>(
+<span class="pre">Object config, Object value</span>)
+ : Ext.Loader</div><div class="description"><div class="short">Set the configuration for the loader. This should be called right after ext-core.js
+(or ext-core-debug.js) is include...</div><div class="long"><p>Set the configuration for the loader. This should be called right after ext-core.js
+(or ext-core-debug.js) is included in the page, i.e:</p>
+
+<pre><code>&lt;script type="text/javascript" src="ext-core-debug.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+  Ext.Loader.setConfig({
+      enabled: true,
+      paths: {
+          'My': 'my_own_path'
+      }
+  });
+&lt;script&gt;
+&lt;script type="text/javascript"&gt;
+  Ext.require(...);
+
+  Ext.onReady(function() {
+      // application code here
+  });
+&lt;/script&gt;
+</code></pre>
+
+<p>Refer to <a href="Ext.Loader.html#configs" rel="Ext.Loader#configs" class="docClass">configs</a> for the list of possible properties</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">config</span> : Object<div class="sub-desc"><p>The config object to override the default values in <a href="Ext.Loader.html#config" rel="Ext.Loader#config" class="docClass">config</a></p>
+</div></li><li><span class="pre">value</span> : Object<div class="sub-desc">
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">Ext.Loader</span>&nbsp; &nbsp;<p>this</p>
+</li></ul></div></div></div><div id="method-syncRequire" class="member ni"><a href="Ext.Loader.html#method-syncRequire" rel="method-syncRequire" class="expand more ar"><span>&nbsp;</span></a><div class="title"><div class="meta"><a href="Ext.Loader.html" class="definedIn docClass">Ext.Loader</a><br/><a href="../source/Loader.html#Ext-Loader-method-syncRequire" class="viewSource">view source</a></div><a name="syncRequire"></a><a name="method-syncRequire"></a><a href="Ext.Loader.html#" rel="method-syncRequire" class="cls expand">syncRequire</a>(
+<span class="pre">String/Array expressions, Function fn, Object scope, String/Array excludes</span>)
+ : void</div><div class="description"><div class="short">Synchronously loads all classes by the given names and all their direct dependencies; optionally executes the given c...</div><div class="long"><p>Synchronously loads all classes by the given names and all their direct dependencies; optionally executes the given callback function when finishes, within the optional scope. This method is aliased by <a href="Ext.html#syncRequire" rel="Ext#syncRequire" class="docClass">Ext.syncRequire</a> for convenience</p>
+<h3 class="pa">Parameters</h3><ul><li><span class="pre">expressions</span> : String/Array<div class="sub-desc"><p>Can either be a string or an array of string</p>
+</div></li><li><span class="pre">fn</span> : Function<div class="sub-desc"><p>(Optional) The callback function</p>
+</div></li><li><span class="pre">scope</span> : Object<div class="sub-desc"><p>(Optional) The execution scope (<code>this</code>) of the callback function</p>
+</div></li><li><span class="pre">excludes</span> : String/Array<div class="sub-desc"><p>(Optional) Classes to be excluded, useful when being used with expressions</p>
+</div></li></ul><h3 class="pa">Returns</h3><ul><li><span class="pre">void</span>&nbsp; &nbsp;
+</li></ul></div></div></div></div></div></div></div><div id="pageContent"></div></div></div></div></body></html>

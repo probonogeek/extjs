@@ -1,77 +1,101 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-Ext.onReady(function(){
+Ext.require(['Ext.panel.Panel', 'Ext.layout.container.Table']);
 
-    var spot = new Ext.ux.Spotlight({
+Ext.onReady(function() {
+    //Create the spotlight component
+    var spot = Ext.create('Ext.ux.Spotlight', {
         easing: 'easeOut',
-        duration: .3
+        duration: 300
     });
 
-    var DemoPanel = Ext.extend(Ext.Panel, {
+    //Create a DemoPanel which is the base for each panel in the example
+    Ext.define('DemoPanel', {
+        extend: 'Ext.panel.Panel',
+
         title: 'Demo Panel',
         frame: true,
         width: 200,
         height: 150,
         html: 'Some panel content goes here!',
-        bodyStyle: 'padding:10px 15px;',
+        bodyStyle: 'padding:5px;',
 
-        toggle: function(on){
-            this.buttons[0].setDisabled(!on);
+        /**
+         * Custom method which toggles a Ext.Button for the current panel on/off depending on the only argument
+         */
+        toggle: function(on) {
+            var btns = this.dockedItems.items[1],
+                btn = btns.items.items[1];
+
+            if (btn) {
+                btn.setDisabled(!on);
+            }
         }
     });
 
     var p1, p2, p3;
-    var updateSpot = function(id){
-        if(typeof id == 'string'){
+
+    /**
+     * Method which changes the spotlight to be active on a spefied panel
+     */
+    var updateSpot = function(id) {
+        if (typeof id == 'string') {
             spot.show(id);
-        }else if (!id && spot.active){
+        } else if (!id && spot.active) {
             spot.hide();
         }
-        p1.toggle(id==p1.id);
-        p2.toggle(id==p2.id);
-        p3.toggle(id==p3.id);
+
+        p1.toggle(id == p1.id);
+        p2.toggle(id == p2.id);
+        p3.toggle(id == p3.id);
     };
 
-    new Ext.Panel({
+    Ext.createWidget('panel', {
         renderTo: Ext.getBody(),
+
         layout: 'table',
         id: 'demo-ct',
         border: false,
+
         layoutConfig: {
             columns: 3
         },
-        items: [p1 = new DemoPanel({
+
+        items: [
+        p1 = Ext.create('DemoPanel', {
             id: 'panel1',
             buttons: [{
                 text: 'Next Panel',
-                handler: updateSpot.createDelegate(this, ['panel2'])
+                disabled: true,
+                handler: function() {
+                    updateSpot('panel2');
+                }
             }]
-        }),
-        p2 = new DemoPanel({
+        }), p2 = Ext.create('DemoPanel', {
             id: 'panel2',
             buttons: [{
                 text: 'Next Panel',
-                handler: updateSpot.createDelegate(this, ['panel3'])
+                disabled: true,
+                handler: function() {
+                    updateSpot('panel3');
+                }
             }]
-        }),
-        p3 = new DemoPanel({
+        }), p3 = Ext.create('DemoPanel', {
             id: 'panel3',
             buttons: [{
                 text: 'Done',
-                handler: updateSpot.createDelegate(this, [false])
+                disabled: true,
+                handler: function() {
+                    updateSpot(false);
+                }
             }]
         })]
     });
 
-    new Ext.Button({
+    //The start button, which starts everything
+    Ext.create('Ext.button.Button', {
         text: 'Start',
         renderTo: 'start-ct',
-        handler: updateSpot.createDelegate(this, ['panel1'])
+        handler: function() {
+            updateSpot('panel1');
+        }
     });
-
-    updateSpot(false);
 });

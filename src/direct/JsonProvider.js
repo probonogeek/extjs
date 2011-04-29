@@ -1,45 +1,83 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /**
  * @class Ext.direct.JsonProvider
  * @extends Ext.direct.Provider
+
+A base provider for communicating using JSON. This is an abstract class
+and should not be instanced directly.
+
+ * @markdown
+ * @abstract
  */
-Ext.direct.JsonProvider = Ext.extend(Ext.direct.Provider, {
-    parseResponse: function(xhr){
-        if(!Ext.isEmpty(xhr.responseText)){
-            if(typeof xhr.responseText == 'object'){
-                return xhr.responseText;
+
+Ext.define('Ext.direct.JsonProvider', {
+    
+    /* Begin Definitions */
+    
+    extend: 'Ext.direct.Provider',
+    
+    alias: 'direct.jsonprovider',
+    
+    uses: ['Ext.direct.ExceptionEvent'],
+    
+    /* End Definitions */
+   
+   /**
+    * Parse the JSON response
+    * @private
+    * @param {Object} response The XHR response object
+    * @return {Object} The data in the response.
+    */
+   parseResponse: function(response){
+        if (!Ext.isEmpty(response.responseText)) {
+            if (Ext.isObject(response.responseText)) {
+                return response.responseText;
             }
-            return Ext.decode(xhr.responseText);
+            return Ext.decode(response.responseText);
         }
         return null;
     },
 
-    getEvents: function(xhr){
-        var data = null;
+    /**
+     * Creates a set of events based on the XHR response
+     * @private
+     * @param {Object} response The XHR response
+     * @return {Array} An array of Ext.direct.Event
+     */
+    createEvents: function(response){
+        var data = null,
+            events = [],
+            event,
+            i = 0,
+            len;
+            
         try{
-            data = this.parseResponse(xhr);
-        }catch(e){
-            var event = new Ext.Direct.ExceptionEvent({
+            data = this.parseResponse(response);
+        } catch(e) {
+            event = Ext.create('Ext.direct.ExceptionEvent', {
                 data: e,
-                xhr: xhr,
-                code: Ext.Direct.exceptions.PARSE,
+                xhr: response,
+                code: Ext.direct.Manager.self.exceptions.PARSE,
                 message: 'Error parsing json response: \n\n ' + data
             });
             return [event];
         }
-        var events = [];
-        if(Ext.isArray(data)){
-            for(var i = 0, len = data.length; i < len; i++){
-                events.push(Ext.Direct.createEvent(data[i]));
+        
+        if (Ext.isArray(data)) {
+            for (len = data.length; i < len; ++i) {
+                events.push(this.createEvent(data[i]));
             }
-        }else{
-            events.push(Ext.Direct.createEvent(data));
+        } else {
+            events.push(this.createEvent(data));
         }
         return events;
+    },
+    
+    /**
+     * Create an event from a response object
+     * @param {Object} response The XHR response object
+     * @return {Ext.direct.Event} The event
+     */
+    createEvent: function(response){
+        return Ext.create('direct.' + response.type, response);
     }
 });

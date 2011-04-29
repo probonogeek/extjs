@@ -1,9 +1,3 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 /**
  * @class Ext.direct.PollingProvider
  * @extends Ext.direct.JsonProvider
@@ -22,26 +16,32 @@ var pollA = new Ext.direct.PollingProvider({
     type:'polling',
     url: 'php/pollA.php',
 });
-Ext.Direct.addProvider(pollA);
+Ext.direct.Manager.addProvider(pollA);
 pollA.disconnect();
 
-Ext.Direct.addProvider(
+Ext.direct.Manager.addProvider(
     {
         type:'polling',
         url: 'php/pollB.php',
         id: 'pollB-provider'
     }
 );
-var pollB = Ext.Direct.getProvider('pollB-provider');
+var pollB = Ext.direct.Manager.getProvider('pollB-provider');
  * </code></pre>
  */
-Ext.direct.PollingProvider = Ext.extend(Ext.direct.JsonProvider, {
-    /**
-     * @cfg {Number} priority
-     * Priority of the request (defaults to <tt>3</tt>). See {@link Ext.direct.Provider#priority}.
-     */
-    // override default priority
-    priority: 3,
+Ext.define('Ext.direct.PollingProvider', {
+    
+    /* Begin Definitions */
+    
+    extend: 'Ext.direct.JsonProvider',
+    
+    alias: 'direct.pollingprovider',
+    
+    uses: ['Ext.direct.ExceptionEvent'],
+    
+    requires: ['Ext.Ajax', 'Ext.util.DelayedTask'],
+    
+    /* End Definitions */
     
     /**
      * @cfg {Number} interval
@@ -63,7 +63,7 @@ Ext.direct.PollingProvider = Ext.extend(Ext.direct.JsonProvider, {
 
     // private
     constructor : function(config){
-        Ext.direct.PollingProvider.superclass.constructor.call(this, config);
+        this.callParent(arguments);
         this.addEvents(
             /**
              * @event beforepoll
@@ -91,28 +91,32 @@ Ext.direct.PollingProvider = Ext.extend(Ext.direct.JsonProvider, {
      * response subscribe to the data event.
      */
     connect: function(){
-        if(this.url && !this.pollTask){
-            this.pollTask = Ext.TaskMgr.start({
+        var me = this, url = me.url;
+        
+        if (url && !me.pollTask) {
+            me.pollTask = Ext.TaskManager.start({
                 run: function(){
-                    if(this.fireEvent('beforepoll', this) !== false){
-                        if(typeof this.url == 'function'){
-                            this.url(this.baseParams);
-                        }else{
+                    if (me.fireEvent('beforepoll', me) !== false) {
+                        if (Ext.isFunction(url)) {
+                            url(me.baseParams);
+                        } else {
                             Ext.Ajax.request({
-                                url: this.url,
-                                callback: this.onData,
-                                scope: this,
-                                params: this.baseParams
+                                url: url,
+                                callback: me.onData,
+                                scope: me,
+                                params: me.baseParams
                             });
                         }
                     }
                 },
-                interval: this.interval,
-                scope: this
+                interval: me.interval,
+                scope: me
             });
-            this.fireEvent('connect', this);
-        }else if(!this.url){
-            throw 'Error initializing PollingProvider, no url configured.';
+            me.fireEvent('connect', me);
+        } else if (!url) {
+            //<debug>
+            Ext.Error.raise('Error initializing PollingProvider, no url configured.');
+            //</debug>
         }
     },
 
@@ -121,31 +125,34 @@ Ext.direct.PollingProvider = Ext.extend(Ext.direct.JsonProvider, {
      * event will be fired on a successful disconnect.
      */
     disconnect: function(){
-        if(this.pollTask){
-            Ext.TaskMgr.stop(this.pollTask);
-            delete this.pollTask;
-            this.fireEvent('disconnect', this);
+        var me = this;
+        
+        if (me.pollTask) {
+            Ext.TaskManager.stop(me.pollTask);
+            delete me.pollTask;
+            me.fireEvent('disconnect', me);
         }
     },
 
     // private
-    onData: function(opt, success, xhr){
-        if(success){
-            var events = this.getEvents(xhr);
-            for(var i = 0, len = events.length; i < len; i++){
-                var e = events[i];
-                this.fireEvent('data', this, e);
+    onData: function(opt, success, response){
+        var me = this, 
+            i = 0, 
+            len,
+            events;
+        
+        if (success) {
+            events = me.createEvents(response);
+            for (len = events.length; i < len; ++i) {
+                me.fireEvent('data', me, events[i]);
             }
-        }else{
-            var e = new Ext.Direct.ExceptionEvent({
-                data: e,
-                code: Ext.Direct.exceptions.TRANSPORT,
+        } else {
+            me.fireEvent('data', me, Ext.create('Ext.direct.ExceptionEvent', {
+                data: null,
+                code: Ext.direct.Manager.self.exceptions.TRANSPORT,
                 message: 'Unable to connect to the server.',
-                xhr: xhr
-            });
-            this.fireEvent('data', this, e);
+                xhr: response
+            }));
         }
     }
 });
-
-Ext.Direct.PROVIDERS['polling'] = Ext.direct.PollingProvider;

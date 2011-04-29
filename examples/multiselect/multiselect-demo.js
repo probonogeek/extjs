@@ -1,73 +1,101 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-Ext.onReady(function(){
+Ext.Loader.setConfig({enabled: true});
+Ext.Loader.setPath('Ext.ux', '../ux');
+Ext.require([
+    'Ext.form.Panel',
+    'Ext.ux.form.MultiSelect',
+    'Ext.ux.form.ItemSelector'
+]);
 
-    Ext.QuickTips.init();
-    Ext.form.Field.prototype.msgTarget = 'side';
+Ext.onReady(function(){
 
     /*
      * Ext.ux.form.MultiSelect Example Code
      */
-    var msForm = new Ext.form.FormPanel({
+    var msForm = Ext.widget('form', {
         title: 'MultiSelect Test',
-        width: 700,
-        bodyStyle: 'padding:10px;',
+        width: 400,
+        bodyPadding: 10,
         renderTo: 'multiselect',
         items:[{
+            anchor: '100%',
             xtype: 'multiselect',
-            fieldLabel: 'Multiselect<br />(Required)',
+            msgTarget: 'side',
+            fieldLabel: 'Multiselect',
             name: 'multiselect',
-            width: 250,
-            height: 200,
-            allowBlank:false,
+
+            allowBlank: false,
+            // minSelections: 2,
+            // maxSelections: 3,
+
             store: [[123,'One Hundred Twenty Three'],
                     ['1', 'One'], ['2', 'Two'], ['3', 'Three'], ['4', 'Four'], ['5', 'Five'],
                     ['6', 'Six'], ['7', 'Seven'], ['8', 'Eight'], ['9', 'Nine']],
-            tbar:[{
-                text: 'clear',
-                handler: function(){
-	                msForm.getForm().findField('multiselect').reset();
-	            }
-            }],
+
+            value: ['3', '4', '6'],
+
             ddReorder: true
         }],
+
         tbar:[{
             text: 'Options',
             menu: [{
-	            text: 'Set Value (2,3)',
-	            handler: function(){
-	                msForm.getForm().findField('multiselect').setValue('2,3');
-	            }
-	        },{
-	            text: 'Toggle Enabled',
-	            handler: function(){
-	                var m = msForm.getForm().findField('multiselect');
-	                if (!m.disabled) {
-	                    m.disable();
-	                } else {
-	                    m.enable();
-	                }
-	            }
+                text: 'Set value (2,3)',
+                handler: function(){
+                    msForm.getForm().findField('multiselect').setValue(['2', '3']);
+                }
+            },{
+                text: 'Toggle enabled',
+                handler: function(){
+                    var m = msForm.getForm().findField('multiselect');
+                    if (!m.disabled) {
+                        m.disable();
+                    } else {
+                        m.enable();
+                    }
+                }
+            },{
+                text: 'Toggle delimiter',
+                handler: function() {
+                    var m = msForm.getForm().findField('multiselect');
+                    if (m.delimiter) {
+                        m.delimiter = null;
+                        Ext.Msg.alert('Delimiter Changed', 'The delimiter is now set to <b>null</b>. Click Save to ' +
+                                      'see that values are now submitted as separate parameters.');
+                    } else {
+                        m.delimiter = ',';
+                        Ext.Msg.alert('Delimiter Changed', 'The delimiter is now set to <b>","</b>. Click Save to ' +
+                                      'see that values are now submitted as a single parameter separated by the delimiter.');
+                    }
+                }
             }]
         }],
 
         buttons: [{
+            text: 'Clear',
+            handler: function(){
+                var field = msForm.getForm().findField('multiselect');
+                if (!field.readOnly && !field.disabled) {
+                    field.clearValue();
+                }
+            }
+        }, {
+            text: 'Reset',
+            handler: function() {
+                msForm.getForm().reset();
+            }
+        }, {
             text: 'Save',
             handler: function(){
                 if(msForm.getForm().isValid()){
-	                Ext.Msg.alert('Submitted Values', 'The following will be sent to the server: <br />'+
-	                    msForm.getForm().getValues(true));
+                    Ext.Msg.alert('Submitted Values', 'The following will be sent to the server: <br />'+
+                        msForm.getForm().getValues(true));
                 }
             }
         }]
     });
 
 
-    var ds = new Ext.data.ArrayStore({
+    var ds = Ext.create('Ext.data.ArrayStore', {
         data: [[123,'One Hundred Twenty Three'],
             ['1', 'One'], ['2', 'Two'], ['3', 'Three'], ['4', 'Four'], ['5', 'Five'],
             ['6', 'Six'], ['7', 'Seven'], ['8', 'Eight'], ['9', 'Nine']],
@@ -81,36 +109,78 @@ Ext.onReady(function(){
     /*
      * Ext.ux.form.ItemSelector Example Code
      */
-    var isForm = new Ext.form.FormPanel({
+    var isForm = Ext.widget('form', {
         title: 'ItemSelector Test',
-        width:700,
-        bodyStyle: 'padding:10px;',
+        width: 700,
+        bodyPadding: 10,
         renderTo: 'itemselector',
-        items:[{
-            xtype: 'itemselector',
-            name: 'itemselector',
-            fieldLabel: 'ItemSelector',
-	        imagePath: '../ux/images/',
-            multiselects: [{
-                width: 250,
-                height: 200,
-                store: ds,
-                displayField: 'text',
-                valueField: 'value'
+
+        tbar:[{
+            text: 'Options',
+            menu: [{
+                text: 'Set value (2,3)',
+                handler: function(){
+                    isForm.getForm().findField('itemselector').setValue(['2', '3']);
+                }
             },{
-                width: 250,
-                height: 200,
-                store: [['10','Ten']],
-                tbar:[{
-                    text: 'clear',
-                    handler:function(){
-	                    isForm.getForm().findField('itemselector').reset();
-	                }
-                }]
+                text: 'Toggle enabled',
+                handler: function(){
+                    var m = isForm.getForm().findField('itemselector');
+                    if (!m.disabled) {
+                        m.disable();
+                    } else {
+                        m.enable();
+                    }
+                }
+            },{
+                text: 'Toggle delimiter',
+                handler: function() {
+                    var m = isForm.getForm().findField('itemselector');
+                    if (m.delimiter) {
+                        m.delimiter = null;
+                        Ext.Msg.alert('Delimiter Changed', 'The delimiter is now set to <b>null</b>. Click Save to ' +
+                                      'see that values are now submitted as separate parameters.');
+                    } else {
+                        m.delimiter = ',';
+                        Ext.Msg.alert('Delimiter Changed', 'The delimiter is now set to <b>","</b>. Click Save to ' +
+                                      'see that values are now submitted as a single parameter separated by the delimiter.');
+                    }
+                }
             }]
         }],
 
+        items:[{
+            xtype: 'itemselector',
+            name: 'itemselector',
+            anchor: '100%',
+            fieldLabel: 'ItemSelector',
+            imagePath: '../ux/images/',
+
+            store: ds,
+            displayField: 'text',
+            valueField: 'value',
+            value: ['3', '4', '6'],
+
+            allowBlank: false,
+            // minSelections: 2,
+            // maxSelections: 3,
+            msgTarget: 'side'
+        }],
+
         buttons: [{
+            text: 'Clear',
+            handler: function(){
+                var field = isForm.getForm().findField('itemselector');
+                if (!field.readOnly && !field.disabled) {
+                    field.clearValue();
+                }
+            }
+        }, {
+            text: 'Reset',
+            handler: function() {
+                isForm.getForm().reset();
+            }
+        }, {
             text: 'Save',
             handler: function(){
                 if(isForm.getForm().isValid()){

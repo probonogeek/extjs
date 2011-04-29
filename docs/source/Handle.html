@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-resizer.Handle'>/**
+</span> * @class Ext.resizer.Handle
+ * @extends Ext.Component
+ *
+ * Provides a handle for 9-point resizing of Elements or Components.
+ */
+Ext.define('Ext.resizer.Handle', {
+    extend: 'Ext.Component',
+    handleCls: '',
+    baseHandleCls: Ext.baseCSSPrefix + 'resizable-handle',
+    // Ext.resizer.Resizer.prototype.possiblePositions define the regions
+    // which will be passed in as a region configuration.
+    region: '',
+
+    onRender: function() {
+        this.addCls(
+            this.baseHandleCls,
+            this.baseHandleCls + '-' + this.region,
+            this.handleCls
+        );
+        this.callParent(arguments);
+        this.el.unselectable();
+    }
+});
+</pre></pre></body></html>

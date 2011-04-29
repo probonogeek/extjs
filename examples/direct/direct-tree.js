@@ -1,29 +1,32 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-Ext.onReady(function(){
-    Ext.Direct.addProvider(Ext.app.REMOTING_API);
+Ext.require([
+    'Ext.direct.*',
+    'Ext.data.*',
+    'Ext.tree.*',
+    'Ext.grid.Scroller'
+]);
 
-    var tree = new Ext.tree.TreePanel({
-        width: 400,
-        height: 400,
-        autoScroll: true,
-        renderTo: document.body,
+Ext.onReady(function() {
+    Ext.direct.Manager.addProvider(Ext.app.REMOTING_API);
+
+    var store = Ext.create('Ext.data.TreeStore', {
         root: {
-            id: 'root',
-            text: 'Root'
+            expanded: true
         },
-        loader: new Ext.tree.TreeLoader({
-            directFn: TestAction.getTree
-        }),
-        fbar: [{
-            text: 'Reload root',
-            handler: function(){
-                tree.getRootNode().reload();
-            }
-        }]
+        proxy: {
+            type: 'direct',
+            directFn: TestAction.getTree,
+            paramOrder: ['node']
+        }
+    });
+
+
+    // create the Tree
+    var tree = Ext.create('Ext.tree.Panel', {
+        store: store,
+        height: 350,
+        width: 600,
+        title: 'Tree Sample',
+        rootVisible: false,
+        renderTo: Ext.getBody()
     });
 });

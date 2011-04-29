@@ -1,0 +1,527 @@
+<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><script type="text/javascript" src="../ext-all.js"></script><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../scrollbars.css" type="text/css"><link rel="stylesheet" href="../docs.css" type="text/css"><link id="styleCss" rel="stylesheet" href="../style.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script><link rel="stylesheet" href="../prettify.css" type="text/css"><!-- link(rel: 'stylesheet', href: req.baseURL + '/css/ext4.css', type: 'text/css')--><link rel="shortcut icon" type="image/ico" href="../favicon.ico"><!--[if IE]>
+<style type="text/css">.head-band { display: none; }
+.header { border: 0; top: 0; left: 0px; background: url(../header.gif) repeat-x; }
+.doc-tab .members .member a.more { background-color: #efefef; }
+</style><link rel="stylesheet" href="/new/css/ie.css" type="text/css"><![endif]-->
+</head><body id="ext-body" class="iScroll"><div id="notice" class="notice">For up to date documentation and features, visit 
+<a href="http://docs.sencha.com/ext-js/4-0">http://docs.sencha.com/ext-js/4-0</a></div><div class="wrapper"><div class="head-band"></div><div class="header"><h2><a href="../index.html">Sencha Documentation</a></h2></div><div id="search"><form><input type="text" placeholder="Search" id="search-field" autocomplete="off" name="q"></form><div id="search-box"></div></div><div id="treePanel"></div><div id="container"><script type="text/javascript">
+
+    req = {
+        liveURL: '.',
+        standAloneMode: true,
+        origDocClass: 'undefined',
+        docClass: 'undefined',
+        docReq: 'undefined',
+        version: '4.0',
+        baseURL: '.',
+        baseDocURL: '.',
+        baseProdURL: '.'
+    };
+
+    clsInfo = {};
+
+
+
+</script>
+
+<script type="text/javascript" src="../search.js"></script>
+<!--script type="text/javascript" src="/new/javascripts/app/examples.js"></script-->
+<script type="text/javascript" src="../class_tree.js"></script>
+<script type="text/javascript" src="../class_doc.js"></script>
+<div id="top-block" class="top-block"></div><div id="docContent"><div class="guide"><h1>Data</h1>
+
+<hr></hr>
+
+<p>The data package is what loads and saves all of the data in your application, and it saw a massive upgrade for version 4. With the new Model class, it’s easy to handle almost any kind of data on the client side. Validations are performed at the Model level and the new Associations API makes it possible to set up relationships between your models.</p>
+
+<p>The expanded Proxy class can now be used directly on a Model, meaning you can load and save data without the need for a Store, and the new localStorage Proxy enables you to save data on the client with a single line of code. Multiple sorting, filtering and grouping is now all possible on the client side, and the new Readers even understand nested data sets. The data package underpins most of the components in the framework, and we’ve written extensively about it in recent posts:</p>
+
+<p>Original articles: <a href="http://www.sencha.com/blog/ext-js-4-anatomy-of-a-model/">Anatomy of a Model</a> and <a href="http://edspencer.net/2011/02/proxies-extjs-4.html">Proxies in ExtJS 4</a></p>
+
+<h2>What's New</h2>
+
+<p>The data package in Ext JS 4 consists of 43 classes, but there are three that are more important than all others - Model, Store and Proxy. These are used by almost every application, and are supported by a number of satellite classes:</p>
+
+<p><img alt="Data package overview" src="../data-package.png"></img></p>
+
+<h3>Models and Stores</h3>
+
+<p>The centerpiece of the data package is Ext.data.Model. A Model represents some type of data in an application - for example an e-commerce app might have models for Users, Products and Orders. At its simplest a Model is just a set of fields and their data. Anyone familiar with Ext JS 3 will have used Ext.data.Record, which was the precursor to Ext.data.Model. Let's look at how we create a model now:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'name', type: 'string'}
+    ]
+});</code></pre>
+
+<p>Models are typically used with a Store, which is basically a collection of Model instances. Setting up a Store and loading its data is simple:</p>
+
+<pre class="prettyprint"><code>Ext.create('Ext.data.Store', {
+    model: 'User',
+    proxy: {
+        type: 'ajax',
+        url : 'users.json',
+        reader: 'json'
+    },
+    autoLoad: true
+});</code></pre>
+
+<p>That's all we need to do to load a set of User model instances from the url 'users.json'. We configured our Store to use an AjaxProxy, telling it the url to load data from and the Ext.data.reader.Reader class used to decode the data. In this case our server is returning json, so we've set up a JsonReader to read the response. Stores are able to perform sorting, filtering and grouping locally, as well as supporting remote sorting, filtering and grouping. With Ext JS 4, there is no longer a separate GroupingStore - we can now do multi-sorting, filtering and grouping inside a standard Store:</p>
+
+<pre class="prettyprint"><code>Ext.create('Ext.data.Store', {
+    model: 'User',
+
+    sorters: ['name', 'id'],
+    filters: {
+        property: 'name',
+        value   : 'Ed'
+    },
+    groupers: {
+        property : 'age',
+        direction: 'ASC'
+    }
+});</code></pre>
+
+<p>In the store we just created, the data will be sorted first by name then id; it will be filtered to only include Users with the name 'Ed' and the data will be grouped by age. It's easy to change the sorting, filtering and grouping at any time through the Store API.</p>
+
+<h3>Proxies</h3>
+
+<p>We saw above how Store uses a Proxy to load its data, and how that Proxy could in turn be configured with a Reader to decode the server response. One structural change in Ext JS 4 is that Store no longer has a direct link to Reader and Writer - these are now handled by the Proxy. This gives us an enormous benefit - Proxies can now be defined directly on a Model:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',    
+    fields: ['id', 'name', 'age'],
+    proxy: {
+        type: 'rest',
+        url : '/users',
+        reader: {
+            type: 'json',
+            root: 'users'
+        }
+    }
+});
+
+// Uses the User Model's Proxy
+Ext.create('Ext.data.Store', {
+    model: 'User'
+});</code></pre>
+
+<p>This helps us in two ways. First, it's likely that every Store that uses the User model will need to load its data the same way, so we avoid having to duplicate the Proxy definition for each Store. Second, we can now load and save Model data without a Store:</p>
+
+<pre class="prettyprint"><code>// Gives us a reference to the User class
+var User = Ext.getModel('User');
+
+var ed = Ext.create('User', {
+    name: 'Ed Spencer',
+    age : 25
+});
+
+// We can save Ed directly without having to add him to a Store first because we
+// configured a RestProxy this will automatically send a POST request to the url /users
+ed.save({
+    success: function(ed) {
+        console.log("Saved Ed! His ID is "+ ed.getId());
+    }
+});
+
+// Load User 123 and do something with it (performs a GET request to /users/123)
+User.load(123, {
+    success: function(user) {
+        console.log("Loaded user 123: " + user.get('name'));
+    }
+});</code></pre>
+
+<p>We've also introduced some brand new Proxies that take advantage of the new capabilities of HTML5 - LocalStorageProxy and SessionStorageProxy. Although older browsers don't support these new HTML5 APIs, they're so useful that we know a lot of applications will benefit enormously from their presence. And if we don't have a Proxy that matches your needs it's easy to create your own.</p>
+
+<h3>Associations</h3>
+
+<p>Proxies aren't the only new capability added to Models; we can now link Models together with the new Associations API. Most applications deal with many different Models, and the Models are almost always related. A blog authoring application might have models for User, Post and Comment. Each User creates Posts and each Post receives Comments. We can express those relationships like so:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name'],
+
+    hasMany: 'Posts'
+});
+
+Ext.define('Post', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'user_id', 'title', 'body'],
+
+    belongsTo: 'User',
+    hasMany: 'Comments'
+});
+
+Ext.define('Comment', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'post_id', 'name', 'message'],
+
+    belongsTo: 'Post'
+});</code></pre>
+
+<p>It's easy to express rich relationships between different Models in your application. Each Model can have any number of associations with other Models and your Models can be defined in any order. Once we have a Model instance we can easily traverse the associated data - for example, if we wanted to log all Comments made on each Post for a given User, we can do something like this:</p>
+
+<pre class="prettyprint"><code>// Loads User with ID 123 using User's Proxy
+User.load(123, {
+    success: function(user) {
+        console.log("User: " + user.get('name'));
+
+        user.posts().each(function(post) {
+            console.log("Comments for post: " + post.get('title'));
+
+            post.comments().each(function(comment) {
+                console.log(comment.get('message'));
+            });
+        });
+    }
+});</code></pre>
+
+<p>Each of the hasMany associations we created above results in a new function being added to the Model. We declared that each User model hasMany Posts, which added the user.posts() function we used in the snippet above. Calling user.posts() returns a Store configured with the Post model. In turn, the Post model gets a comments() function because of the hasMany Comments association we set up. You may be wondering why we passed a 'success' function to the User.load call but didn't have to do so when accessing the User's posts and comments. All data is assumed to be loaded asynchronously because it usually has to be loaded from a server somewhere. This usually means passing in callbacks that are called when the data has been loaded, as with the 'success' function above.</p>
+
+<h3>Loading Nested Data</h3>
+
+<p>By setting up associations as we did above, the framework can automatically parse out nested data in a single request. Instead of making a request for the User data, another for the Posts data and then yet more requests to load the Comments for each Post, we can return all of the data in a single server response like this:</p>
+
+<pre class="prettyprint"><code>  {
+      id: 1
+      name: 'Ed',
+      posts: [
+          {
+              id   : 12,
+              title: 'All about data in Ext JS 4',
+              body : 'One areas that has seen the most improvement...',
+              comments: [
+                  {
+                      id: 123,
+                      name: 'S Jobs',
+                      message: 'One more thing'
+                  }
+              ]
+          }
+      ]
+  }</code></pre>
+
+<p>The data is all parsed out automatically by the framework. It's easy to configure your Models' Proxies to load data from almost anywhere, and their Readers to handle almost any response format. As with Ext JS 3, Models and Stores are used throughout the framework by many of the components such a Grids, Trees and Forms.</p>
+
+<h2>Validations and Associations</h2>
+
+<p>(orginal article at http://www.sencha.com/blog/using-validations-and-associations-in-sencha-touch/)</p>
+
+<p>Sencha Touch already has a rich Model layer which makes it easy to deal with different types of data. As of Sencha Touch 0.97β, Models became a lot richer with support for validating their data and associating them with other Models. These new capabilities make it easier to write client-side applications by reducing the amount of code you need to write. First up, let's look at using validations in a model. The example we're going to use an e-commerce management application, with models for Users and Products. Let's define the Product model first:</p>
+
+<pre class="prettyprint"><code>Ext.ns('MyApp');
+
+MyApp.Product = Ext.define('Product', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',      type: 'int'},
+        {name: 'user_id', type: 'int'},
+        {name: 'name',    type: 'string'},
+        {name: 'price',   type: 'float'},
+        {name: 'sku',     type: 'string'}
+    ],
+
+    validations: [
+        {type: 'presence', name: 'name'},
+        {type: 'format',   name: 'sku', matcher: /[0-9]{4}[A-Z]+/},
+        {type: 'length',   name: 'name', min: 3}
+    ],
+
+    proxy: {
+        type: 'localstorage',
+        id  : 'products'
+    }
+});</code></pre>
+
+<p>The model definition above is largely self-explanatory: we're defining a model called Product with four fields - id, name, price and sku, plus several validation rules about those fields. The field definitions have always been present in Sencha Touch and validations follow the same format. In each case, we specify a field and a type of validation. Some validations take additional optional configuration - for example the length validation can take min and max properties, format can take a matcher, etc. There are five validations built into Sencha Touch and adding custom rules is easy. First, let's meet the ones built right in:</p>
+
+<ul><li><code>presence</code> simply ensures that the field has a value. Zero counts as a valid value but empty strings do not.</li><li><code>length</code> ensures that a string is between a min and max length. Both constraints are optional.</li><li><code>format</code> ensures that a string matches a regular expression format. In the example above we ensure that the sku is 4 numbers followed by at least one letter.</li><li><code>inclusion</code> ensures that a value is within a specific set of values (e.g. ensuring gender is either male or female).</li><li><code>exclusion</code> ensures that a value is not one of the specific set of values (e.g. blacklisting usernames like 'admin').</li></ul>
+
+<p>Now that we have a grasp of what the different validations do, let's try using them against a Product instance. We'll create a product instance and run the validations against it, noting any failures:</p>
+
+<pre class="prettyprint"><code>var product = new MyApp.Product({
+    name : 'Sencha Touch',
+    sku  : 'not a valid sku',
+    price: 99
+});
+
+var errors = product.validate();
+
+errors.isValid()) //returns 'false' as there were validation errors
+errors.items; //returns the array of all errors found on this model instance
+
+errors.forField('sku'); //returns the errors for the sku field</code></pre>
+
+<p>The key function here is validate(), which runs all of the configured validations and returns an Ext.data.Errors object. This simple object is just a collection of any errors that were found, plus some convenience methods such as isValid() - which returns true if there were no errors on any field - and forField(), which returns all errors for a given field. In our e-commerce system each Product is created by a User, so let's set up the User model now:</p>
+
+<pre class="prettyprint"><code>MyApp.User = Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',       type: 'int'},
+        {name: 'name',     type: 'string'},
+        {name: 'gender',   type: 'string'},
+        {name: 'username', type: 'string'}
+    ],
+
+    validations: [
+        {type: 'inclusion', name: 'gender',   list: ['male', 'female']},
+        {type: 'exclusion', name: 'username', list: ['admin']}
+    ],
+
+    associations: [
+        {type: 'hasMany', model: 'Product', name: 'products'}
+    ],
+
+    proxy: {
+        type: 'localstorage',
+        id  : 'users'
+    }
+});</code></pre>
+
+<p>Defining the User follows the same pattern as we used for defining the Product - we set up the fields and a couple of validations. In this case, our validations are expecting the gender field to be either male or female, and the username to be anything but 'admin'. This time, however, we've also added an association to the model. There are two main types of association in Sencha Touch - hasMany and belongsTo. In our application each User creates many Products, so we create a hasMany association linking User to Product. Associations give us a powerful way to manipulate related data. For example, loading all of the Products for a particular User is very easy:</p>
+
+<pre class="prettyprint"><code>var user = new MyApp.User({id: 10});
+
+//loads all products where user_id = 10
+user.products().load({
+    callback: function(records, operation) {
+        alert(records.length);
+    }
+});</code></pre>
+
+<p>Let's break down what the code above is actually doing. The association that we defined have created a new method on the User object called products(). This method returns an Ext.data.Store that is automatically filtered to only load Products where the user_id is equal to the User instance's id (which is 10 in this case). Because we're in the browser and a long way from the database, all loading and saving operations are asynchronous, so we have to pass a callback function to the generated Products store's load method. This callback is given the records that are loaded as well as the Ext.data.Operation object that is used to load them. Associations aren't just helpful for loading data - they're useful for creating new records too:</p>
+
+<pre class="prettyprint"><code>user.products().add({
+    name: 'Ext JS 4.0',
+    sku : '1234A'
+});
+
+user.products().sync();</code></pre>
+
+<p>Here we instantiate a new Product, which is automatically given the User's id in the user_id field. Calling sync() saves the new Product via its configured Proxy - this, again, is an asynchronous operation to which you can pass a callback if you want to be notified when the operation completed. It's usually useful to have both sides of a relationship know about the association, so let's update our Product model definition:</p>
+
+<pre class="prettyprint"><code>MyApp.Product = Ext.define('Product', {
+    extend: 'Ext.data.Model',
+    // Same fields and validations as before
+    ...
+
+    associations: [
+        {type: 'belongsTo', model: 'User'}
+    ]
+});</code></pre>
+
+<p>The belongsTo association also generates new methods on the model, here's how we can use those:</p>
+
+<pre class="prettyprint"><code>var product = new MyApp.Product({id: 100});
+
+product.getUser(function(user) {
+    //do something with the loaded user model
+});
+
+product.setUser(100, {
+    callback: function(product, operation) {
+        if (operation.wasSuccessful()) {
+            alert('Product user updated');
+        } else {
+            alert('Product user could not be updated');
+        }
+    }
+});</code></pre>
+
+<p>Once more, the loading function (getUser) is asynchronous and requires a callback function to get at the user instance. The setUser method simply updates the foreign<em>key (user</em>id in this case) to 100 and saves the Product model. As usual, callbacks can be passed in that will be triggered when the save operation has completed - whether successful or not. The best way to find out more about validations and associations is to check out the updated Model documentation, as well as the docs on the hasMany and belongsTo associations. Finally, be aware that since we're still in beta, the API for this new functionality may change slightly before version 1.0.</p>
+
+<h2>Anatomy of a Model</h2>
+
+<p>A Model represents almost any type of persistable data in an application. For example, an e-commerce application might have models for User, Product, Order and so on. Each model contains a set of fields as well as functions that enable the application to operate on its data—for example an Order model might have a ‘shipToCustomer’ function that kicks off the shipping process.</p>
+
+<p>Ext JS 3.x and before had a class called Record, which was very similar to the new Model class. The difference is that whereas Record was only fields and functions, Model is much more powerful. Today, we’re going to look at four of the principal parts of Model—Fields, Proxies, Associations and Validations.</p>
+
+<p><img alt="Model architecture" src="../model.png"></img></p>
+
+<h3>Fields</h3>
+
+<p>Every model consists of one or more fields. At its simplest, a field is just a name: ‘id’, ‘email’ and ‘phone’ could all be fields on a User model. Fields can also do a lot more. They can have a type (int, float, string or auto) and even conversion functions that modify their values when set. For example, if we record our user’s height, we can have a function that converts it from inches to centimeters.</p>
+
+<p>Here’s how we would set up a simple User model with three fields. For the first field, we will specify type ‘int’—e.g. it should be an integer. For the second field, we won’t specify a type, which means it will use the ‘auto’ type by default. The auto type will accept anything passed to it. For the third field, we’ll specify type ‘int’ and also provide a conversion function that takes a number of inches and converts it to centimeters:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id', type: 'int'},
+        'name',
+        {
+            name: 'height',
+            type: 'int',
+            convert: function(inches) {
+                return Math.round(inches * 2.54);
+            }
+        }
+    ]
+});</code></pre>
+
+<p>It’s easy to create a new User instance now and see how our field definitions affect the data we pass into them:</p>
+
+<pre class="prettyprint"><code>var abe = new User({
+    id: 123,
+    name: 'Abe Elias',
+    height: 76
+});
+
+console.log(abe.get('id')); //logs 123 (a JavaScript Number object)
+console.log(abe.get('name')); //logs 'Abe Elias' (A JavaScript String object)
+console.log(abe.get('height')); //logs 193 (inches converted to centimeters)</code></pre>
+
+<p>Using simple instances of Models is very easy, but usually an application needs to load and save data. For this, we turn to Proxy.</p>
+
+<h3>Proxy</h3>
+
+<p>In Ext JS 4, a Proxy is responsible for loading and saving data from some source. This can be over AJAX, using HTML5 localStorage or even simply keeping data in memory. Ext JS 4 comes with a set of Proxies built in by default, but it’s easy to create your own. Let’s see how we might set up a Proxy for our User Model:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name', 'email'],
+
+    proxy: {
+        type: 'rest',
+        url : '/users',
+        reader: 'json'
+    }
+});</code></pre>
+
+<p>Defining Proxies directly on a Model is a new approach in version 4—its main benefit is that we can easily load and save Model data without creating a Store, as we did in Ext JS 3.</p>
+
+<p>Above we set up the User Model to use a RestProxy. This Proxy uses AJAX calls to load and save its data from a server. It’s smart enough that it knows how to build RESTful urls automatically given a base url (‘/users’ in this case). We also set up our Proxy with a JsonReader—this takes the server response and decodes it into User Model instances. In this case, we know that our server will respond with JSON, so a JsonReader makes sense.</p>
+
+<p>Let’s load up a User model now:</p>
+
+<pre class="prettyprint"><code>// GET /users/123
+User.load(123, {
+    success: function(user) {
+        console.log(user.get('name'));
+    }
+});</code></pre>
+
+<p>The code above loads data from the URL /users/123, which was constructed from the ID we passed to User.load. It then uses the JsonReader to decode the response into a User object. Our server sends back a response like this, which would make the code above log “Aaron Conran”:</p>
+
+<pre class="prettyprint"><code>// Response from GET /users/123
+{
+    "id": 123,
+    "name": "Aaron Conran",
+    "email": "aaron@sencha.com"
+}</code></pre>
+
+<p>Easy enough, but let’s take it to the next level with associations.</p>
+
+<h3>Associations</h3>
+
+<p>We usually have many Models in an application, but none of them exist in a vacuum. There are relationships between models—each User in our system makes Orders, and each Order is composed of Order Items. Ext JS 4 gives us the ability to represent these relationships on the client side with a simple and intuitive Associations API. Let’s see how we’d set those three Models up:</p>
+
+<pre class="prettyprint"><code>// each User hasMany Orders
+Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name', 'email'],
+    proxy : {
+        type: 'rest',
+        url : '/users',
+        reader: 'json'
+    },
+
+    hasMany: 'Orders'
+});
+
+// each Order belongsTo a User, and hasMany OrderItems
+Ext.define('Order', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'user_id', 'status'],
+    belongsTo: 'User',
+    hasMany: 'OrderItems'
+});
+
+// each OrderItem belongsTo an Order
+Ext.define('OrderItem', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'order_id', 'name', 'description', 'price', 'quantity'],
+    belongsTo: 'Order'
+});</code></pre>
+
+<p>Now that our application knows about its Models and their associations, let’s put them to use. Expanding on the example from the Proxy section above, let’s make our server response look like this:</p>
+
+<pre class="prettyprint"><code>{
+    "id": 123,
+    "name": "Aaron Conran",
+    "email": "aaron@sencha.com",
+    "orders": [
+        {
+            "id": 1,
+            "status": "shipped",
+            "orderItems": [
+                {
+                    "id": 2,
+                    "name": "Sencha Touch",
+                    "description": "The first HTML5 mobile framework",
+                    "price": 0,
+                    "quantity": 1
+                }
+            ]
+        }
+    ]
+}</code></pre>
+
+<p>When we load our User data now, the associated Orders and OrderItems are loaded along with it, enabling us to interact with them in our code:</p>
+
+<pre class="prettyprint"><code>User.load(123, {
+    success: function(user) {
+        console.log(user.get('name')); //"Aaron Conran"
+        console.log(user.orders().getCount()); //"1" -- there is only 1 order in the response above
+
+        //we can iterate over the orders easily using the Associations API
+        user.orders().each(function(order) {
+            console.log(order.get('status')); //"shipped"
+
+            //we can even iterate over each Order's OrderItems:
+            order.orderItems().each(function(orderItem) {
+                console.log(orderItem.get('title')); //"Sencha Touch"
+            });
+        });
+    }
+});</code></pre>
+
+<p>The Associations API is one of the most powerful new capabilities of Ext JS 4, and because the data package is shared with Sencha Touch, you can get a sneak peek at it by downloading Sencha Touch today or checking out the HasMany and BelongsTo API docs.</p>
+
+<h3>Validations</h3>
+
+<p>The last new feature we’re going to look at today is Validation. In Ext JS 3, the only place that validations could be performed was inside a form. In all of the examples above, we were manipulating data without a form, so we need to be able to validate at the Model level. Thankfully, Ext JS 4 has support for just that—let’s take a look:</p>
+
+<pre class="prettyprint"><code>Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['id', 'name', 'email', 'height'],
+
+    validations: [
+        {type: 'presence', field: 'id'},
+        {type: 'length', field: 'name', min: 2},
+        {type: 'format', field: 'email', matcher: /[a-z]@[a-z].com/}
+    ]
+});</code></pre>
+
+<p>We set up three simple validations on our User model. First, we say that the ‘id’ field must be present, then we say that the ‘name’ field must be at least 2 characters long, and finally we use a very simple regular expression to match the format of the ‘email’ field.</p>
+
+<p>We can use these validations to ensure that the data in our model is correct. Here we create a new User without a valid name and missing an ID, and ask it to validate itself:</p>
+
+<pre class="prettyprint"><code>var ed = new User({
+    email: "ed@sencha.com"
+});
+
+var validation = ed.validate();
+
+console.log(validation.isValid()); //false
+
+//we can easily output or manipulate any validation errors
+validation.each(function(error) {
+    console.log(error.field + " " + error.message);
+});
+
+//in this case, the output looks like this:
+"id must be present"
+"name is the wrong length"</code></pre></div></div></div></div></body></html>

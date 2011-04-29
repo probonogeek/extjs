@@ -1,22 +1,24 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.require([
+    'Ext.panel.*',
+    'Ext.toolbar.*',
+    'Ext.button.*',
+    'Ext.container.ButtonGroup',
+    'Ext.layout.container.Table'
+]);
 
-Ext.onReady(function(){
-   
+Ext.onReady(function() {
+    var fakeHTML = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    
     var SamplePanel = Ext.extend(Ext.Panel, {
-        width: 500,
-        height:250,
-        style: 'margin-top:15px',
+        width    : 500,
+        height   : 250,
+        style    : 'margin-top:15px',
         bodyStyle: 'padding:10px',
-        renderTo: 'docbody',
-        html: Ext.example.shortBogusMarkup,
+        renderTo : Ext.getBody(),
+        html     : fakeHTML,
         autoScroll: true
     });
-
+    
     new SamplePanel({
         title: 'Standard',
         tbar: [{
@@ -102,9 +104,7 @@ Ext.onReady(function(){
             }]
         }]
     });
-
-
-
+    
     new SamplePanel({
         title: 'Multi columns (No titles, double stack)',
         tbar: [{
@@ -163,7 +163,7 @@ Ext.onReady(function(){
             }]
         }]
     });
-
+    
     new SamplePanel({
         title: 'Mix and match icon sizes to create a huge unusable toolbar',
         tbar: [{
@@ -220,7 +220,7 @@ Ext.onReady(function(){
             }]
         }]
     });
-
+    
     new SamplePanel({
         title: 'Medium icons, arrows to the bottom',
         tbar: [{
@@ -290,8 +290,8 @@ Ext.onReady(function(){
             }]
         }]
     });
-
-
+    
+    
     new SamplePanel({
         title: 'Medium icons, text and arrows to the left',
         tbar: [{
@@ -319,7 +319,7 @@ Ext.onReady(function(){
             }]
         }]
     });
-
+    
     new SamplePanel({
         title: 'Small icons, text and arrows to the left',
         tbar: [{
@@ -347,5 +347,4 @@ Ext.onReady(function(){
             }]
         }]
     });
-
 });

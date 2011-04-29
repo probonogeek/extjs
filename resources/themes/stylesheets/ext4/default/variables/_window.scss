@@ -1,0 +1,17 @@
+$window-border-radius: 5px 5px !default;
+$window-border-width: 1px !default;
+$window-border-color: darken(desaturate($panel-border-color, 40%), 5%) !default;
+$window-inner-border-width: 1px !default;
+$window-inner-border-color: lighten($panel-border-color, 20%) !default;
+$window-background-color: #CED9E7 !default;
+
+$window-body-border-width: 1px !default;
+$window-body-border-style: solid !default;
+$window-body-border-color: $panel-body-border-color !default;
+$window-body-background-color: #DFE8F6 !default;
+$window-body-color: #000 !default;
+
+$window-header-padding: 5px 5px 0 !default;
+$window-header-font-size: ceil($font-size * .9) !default; //11px
+$window-header-color: $panel-header-color !default;
+$window-header-font-weight: bold !default;

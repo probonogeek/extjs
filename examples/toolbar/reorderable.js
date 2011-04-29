@@ -1,17 +1,22 @@
-/*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
+Ext.Loader.setConfig({enabled: true});
+
+Ext.Loader.setPath('Ext.ux', '../ux/');
+
+Ext.require([
+    'Ext.panel.*',
+    'Ext.fx.*',
+    'Ext.toolbar.*',
+    'Ext.button.*',
+    'Ext.ux.BoxReorderer'
+]);
+
 Ext.onReady(function() {
-    var toolbar = new Ext.Toolbar({
-        renderTo: 'docbody',
-        plugins : [
-            new Ext.ux.ToolbarReorderer({
-                defaultReorderable: true
-            })
-        ],
+    var toolbar = Ext.createWidget('toolbar', {
+        renderTo: Ext.getBody(),
+        defaults: {
+            reorderable: true
+        },
+        plugins : Ext.create('Ext.ux.BoxReorderer', {}),
         items   : [
             {
                 xtype:'splitbutton',
@@ -33,21 +38,20 @@ Ext.onReady(function() {
             {
                 text: 'Paste',
                 iconCls: 'add16',
-                menu: [{text: 'Paste Menu Item'}],
-                reorderable: true
+                menu: [{text: 'Paste Menu Item'}]
             },
             {
                 text: 'Format',
-                iconCls: 'add16',
-                reorderable: true
+                iconCls: 'add16'
             }
         ]
     });
     
-    new Ext.Panel({
-        renderTo: 'docbody',
+    Ext.createWidget('panel', {
+        renderTo: Ext.getBody(),
         tbar    : toolbar,
         border  : true,
-        width   : 600
+        width   : 600,
+        height  : 400
     });
 });
