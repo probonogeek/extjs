@@ -8,25 +8,25 @@
  * {@img Ext.button.Cycle/Ext.button.Cycle.png Ext.button.Cycle component}
  * Example usage:
  * <pre><code>
-    Ext.create('Ext.button.Cycle', {
-        showText: true,
-        prependText: 'View as ',
-        renderTo: Ext.getBody(),
-        menu: {
-            id: 'view-type-menu',
-            items: [{
-                text:'text only',
-                iconCls:'view-text',
-                checked:true
-            },{
-                text:'HTML',
-                iconCls:'view-html'
-            }]
-        },
-        changeHandler:function(cycleBtn, activeItem){
-            Ext.Msg.alert('Change View', activeItem.text);
-        }
-    });
+Ext.create('Ext.button.Cycle', {
+    showText: true,
+    prependText: 'View as ',
+    renderTo: Ext.getBody(),
+    menu: {
+        id: 'view-type-menu',
+        items: [{
+            text:'text only',
+            iconCls:'view-text',
+            checked:true
+        },{
+            text:'HTML',
+            iconCls:'view-html'
+        }]
+    },
+    changeHandler:function(cycleBtn, activeItem){
+        Ext.Msg.alert('Change View', activeItem.text);
+    }
+});
 </code></pre>
  * @constructor
  * Create a new split button

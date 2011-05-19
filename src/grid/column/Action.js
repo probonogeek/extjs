@@ -152,7 +152,7 @@ Ext.define('Ext.grid.column.Action', {
 
         // This is a Container. Delete the items config to be reinstated after construction.
         delete cfg.items;
-        this.callParent([cfg]);
+        me.callParent([cfg]);
 
         // Items is an array property of ActionColumns
         me.items = items;
@@ -188,19 +188,23 @@ Ext.define('Ext.grid.column.Action', {
      * Returns the event handler's status to allow canceling of GridView's bubbling process.
      */
     processEvent : function(type, view, cell, recordIndex, cellIndex, e){
-        var m = e.getTarget().className.match(this.actionIdRe),
+        var me = this,
+            match = e.getTarget().className.match(me.actionIdRe),
             item, fn;
-        if (m && (item = this.items[parseInt(m[1], 10)])) {
-            if (type == 'click') {
-                fn = item.handler;
-                if (fn || this.handler) {
-                    fn.call(item.scope||this.scope||this, view, recordIndex, cellIndex, item, e);
+        if (match) {
+            item = me.items[parseInt(match[1], 10)];
+            if (item) {
+                if (type == 'click') {
+                    fn = item.handler || me.handler;
+                    if (fn) {
+                        fn.call(item.scope || me.scope || me, view, recordIndex, cellIndex, item, e);
+                    }
+                } else if (type == 'mousedown' && item.stopSelection !== false) {
+                    return false;
                 }
-            } else if ((type == 'mousedown') && (item.stopSelection !== false)) {
-                return false;
             }
         }
-        return this.callParent(arguments);
+        return me.callParent(arguments);
     },
 
     cascade: function(fn, scope) {

@@ -47,14 +47,12 @@ Ext.define('Ext.data.Connection', {
 
     /**
      * @cfg {Boolean} disableCaching (Optional) True to add a unique cache-buster param to GET requests. (defaults to true)
-     * @type Boolean
      */
     disableCaching: true,
 
     /**
      * @cfg {String} disableCachingParam (Optional) Change the parameter which is sent went disabling caching
      * through a cache buster. Defaults to '_dc'
-     * @type String
      */
     disableCachingParam: '_dc',
 
@@ -64,7 +62,7 @@ Ext.define('Ext.data.Connection', {
     timeout : 30000,
 
     /**
-     * @param {Object} extraParams (Optional) Any parameters to be appended to the request.
+     * @cfg {Object} extraParams (Optional) Any parameters to be appended to the request.
      */
 
     useDefaultHeader : true,
@@ -645,7 +643,7 @@ failure: function(response, opts) {
             id;
 
         if (request && me.isLoading(request)) {
-            /**
+            /*
              * Clear out the onreadystatechange here, this allows us
              * greater control, the browser may/may not fire the function
              * depending on a series of conditions.

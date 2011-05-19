@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre>/*
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
  * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
@@ -7,7 +24,7 @@
  */
 
 
-<span id='Ext-dd.DragDropManager'>/**
+<span id='Ext-dd-DragDropManager'>/**
 </span> * @class Ext.dd.DragDropManager
  * DragDropManager is a singleton that tracks the element interaction for
  * all DragDrop items in the window.  Generally, you will not call
@@ -25,7 +42,7 @@ Ext.define('Ext.dd.DragDropManager', {
     // shorter ClassName, to save bytes and use internally
     alternateClassName: ['Ext.dd.DragDropMgr', 'Ext.dd.DDM'],
     
-<span id='Ext-dd.DragDropManager-property-ids'>    /**
+<span id='Ext-dd-DragDropManager-property-ids'>    /**
 </span>     * Two dimensional Array of registered DragDrop objects.  The first
      * dimension is the DragDrop item group, the second the DragDrop
      * object.
@@ -36,7 +53,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     ids: {},
 
-<span id='Ext-dd.DragDropManager-property-handleIds'>    /**
+<span id='Ext-dd-DragDropManager-property-handleIds'>    /**
 </span>     * Array of element ids defined as drag handles.  Used to determine
      * if the element that generated the mousedown event is actually the
      * handle and not the html element itself.
@@ -47,7 +64,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     handleIds: {},
 
-<span id='Ext-dd.DragDropManager-property-dragCurrent'>    /**
+<span id='Ext-dd-DragDropManager-property-dragCurrent'>    /**
 </span>     * the DragDrop object that is currently being dragged
      * @property dragCurrent
      * @type DragDrop
@@ -56,7 +73,7 @@ Ext.define('Ext.dd.DragDropManager', {
      **/
     dragCurrent: null,
 
-<span id='Ext-dd.DragDropManager-property-dragOvers'>    /**
+<span id='Ext-dd-DragDropManager-property-dragOvers'>    /**
 </span>     * the DragDrop object(s) that are being hovered over
      * @property dragOvers
      * @type Array
@@ -65,7 +82,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     dragOvers: {},
 
-<span id='Ext-dd.DragDropManager-property-deltaX'>    /**
+<span id='Ext-dd-DragDropManager-property-deltaX'>    /**
 </span>     * the X distance between the cursor and the object being dragged
      * @property deltaX
      * @type int
@@ -74,7 +91,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     deltaX: 0,
 
-<span id='Ext-dd.DragDropManager-property-deltaY'>    /**
+<span id='Ext-dd-DragDropManager-property-deltaY'>    /**
 </span>     * the Y distance between the cursor and the object being dragged
      * @property deltaY
      * @type int
@@ -83,7 +100,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     deltaY: 0,
 
-<span id='Ext-dd.DragDropManager-property-preventDefault'>    /**
+<span id='Ext-dd-DragDropManager-property-preventDefault'>    /**
 </span>     * Flag to determine if we should prevent the default behavior of the
      * events we define. By default this is true, but this can be set to
      * false if you need the default behavior (not recommended)
@@ -93,7 +110,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     preventDefault: true,
 
-<span id='Ext-dd.DragDropManager-property-stopPropagation'>    /**
+<span id='Ext-dd-DragDropManager-property-stopPropagation'>    /**
 </span>     * Flag to determine if we should stop the propagation of the events
      * we generate. This is true by default but you may want to set it to
      * false if the html element contains other features that require the
@@ -104,7 +121,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     stopPropagation: true,
 
-<span id='Ext-dd.DragDropManager-property-initialized'>    /**
+<span id='Ext-dd-DragDropManager-property-initialized'>    /**
 </span>     * Internal flag that is set to true when drag and drop has been
      * intialized
      * @property initialized
@@ -113,7 +130,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     initialized: false,
 
-<span id='Ext-dd.DragDropManager-property-locked'>    /**
+<span id='Ext-dd-DragDropManager-property-locked'>    /**
 </span>     * All drag and drop can be disabled.
      * @property locked
      * @private
@@ -121,7 +138,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     locked: false,
 
-<span id='Ext-dd.DragDropManager-method-init'>    /**
+<span id='Ext-dd-DragDropManager-method-init'>    /**
 </span>     * Called the first time an element is registered.
      * @method init
      * @private
@@ -131,7 +148,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.initialized = true;
     },
 
-<span id='Ext-dd.DragDropManager-property-POINT'>    /**
+<span id='Ext-dd-DragDropManager-property-POINT'>    /**
 </span>     * In point mode, drag and drop interaction is defined by the
      * location of the cursor during the drag/drop
      * @property POINT
@@ -140,7 +157,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     POINT: 0,
 
-<span id='Ext-dd.DragDropManager-property-INTERSECT'>    /**
+<span id='Ext-dd-DragDropManager-property-INTERSECT'>    /**
 </span>     * In intersect mode, drag and drop interaction is defined by the
      * overlap of two or more drag and drop objects.
      * @property INTERSECT
@@ -149,7 +166,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     INTERSECT: 1,
 
-<span id='Ext-dd.DragDropManager-property-mode'>    /**
+<span id='Ext-dd-DragDropManager-property-mode'>    /**
 </span>     * The current drag and drop mode.  Default: POINT
      * @property mode
      * @type int
@@ -157,7 +174,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     mode: 0,
 
-<span id='Ext-dd.DragDropManager-method-_execOnAll'>    /**
+<span id='Ext-dd-DragDropManager-method-_execOnAll'>    /**
 </span>     * Runs method on all drag and drop objects
      * @method _execOnAll
      * @private
@@ -175,7 +192,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager-method-_onLoad'>    /**
+<span id='Ext-dd-DragDropManager-method-_onLoad'>    /**
 </span>     * Drag and drop initialization.  Sets up the global event handlers
      * @method _onLoad
      * @private
@@ -194,7 +211,7 @@ Ext.define('Ext.dd.DragDropManager', {
 
     },
 
-<span id='Ext-dd.DragDropManager-method-_onResize'>    /**
+<span id='Ext-dd-DragDropManager-method-_onResize'>    /**
 </span>     * Reset constraints on all drag and drop objs
      * @method _onResize
      * @private
@@ -204,21 +221,21 @@ Ext.define('Ext.dd.DragDropManager', {
         this._execOnAll(&quot;resetConstraints&quot;, []);
     },
 
-<span id='Ext-dd.DragDropManager-method-lock'>    /**
+<span id='Ext-dd-DragDropManager-method-lock'>    /**
 </span>     * Lock all drag and drop functionality
      * @method lock
      * @static
      */
     lock: function() { this.locked = true; },
 
-<span id='Ext-dd.DragDropManager-method-unlock'>    /**
+<span id='Ext-dd-DragDropManager-method-unlock'>    /**
 </span>     * Unlock all drag and drop functionality
      * @method unlock
      * @static
      */
     unlock: function() { this.locked = false; },
 
-<span id='Ext-dd.DragDropManager-method-isLocked'>    /**
+<span id='Ext-dd-DragDropManager-method-isLocked'>    /**
 </span>     * Is drag and drop locked?
      * @method isLocked
      * @return {boolean} True if drag and drop is locked, false otherwise.
@@ -226,7 +243,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     isLocked: function() { return this.locked; },
 
-<span id='Ext-dd.DragDropManager-property-locationCache'>    /**
+<span id='Ext-dd-DragDropManager-property-locationCache'>    /**
 </span>     * Location cache that is set for all drag drop objects when a drag is
      * initiated, cleared when the drag is finished.
      * @property locationCache
@@ -235,7 +252,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     locationCache: {},
 
-<span id='Ext-dd.DragDropManager-property-useCache'>    /**
+<span id='Ext-dd-DragDropManager-property-useCache'>    /**
 </span>     * Set useCache to false if you want to force object the lookup of each
      * drag and drop linked element constantly during a drag.
      * @property useCache
@@ -244,7 +261,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     useCache: true,
 
-<span id='Ext-dd.DragDropManager-property-clickPixelThresh'>    /**
+<span id='Ext-dd-DragDropManager-property-clickPixelThresh'>    /**
 </span>     * The number of pixels that the mouse needs to move after the
      * mousedown before the drag is initiated.  Default=3;
      * @property clickPixelThresh
@@ -253,7 +270,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     clickPixelThresh: 3,
 
-<span id='Ext-dd.DragDropManager-property-clickTimeThresh'>    /**
+<span id='Ext-dd-DragDropManager-property-clickTimeThresh'>    /**
 </span>     * The number of milliseconds after the mousedown event to initiate the
      * drag if we don't get a mouseup event. Default=350
      * @property clickTimeThresh
@@ -262,7 +279,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     clickTimeThresh: 350,
 
-<span id='Ext-dd.DragDropManager-property-dragThreshMet'>    /**
+<span id='Ext-dd-DragDropManager-property-dragThreshMet'>    /**
 </span>     * Flag that indicates that either the drag pixel threshold or the
      * mousdown time threshold has been met
      * @property dragThreshMet
@@ -272,7 +289,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     dragThreshMet: false,
 
-<span id='Ext-dd.DragDropManager-property-clickTimeout'>    /**
+<span id='Ext-dd-DragDropManager-property-clickTimeout'>    /**
 </span>     * Timeout used for the click time threshold
      * @property clickTimeout
      * @type Object
@@ -281,7 +298,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     clickTimeout: null,
 
-<span id='Ext-dd.DragDropManager-property-startX'>    /**
+<span id='Ext-dd-DragDropManager-property-startX'>    /**
 </span>     * The X position of the mousedown event stored for later use when a
      * drag threshold is met.
      * @property startX
@@ -291,7 +308,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     startX: 0,
 
-<span id='Ext-dd.DragDropManager-property-startY'>    /**
+<span id='Ext-dd-DragDropManager-property-startY'>    /**
 </span>     * The Y position of the mousedown event stored for later use when a
      * drag threshold is met.
      * @property startY
@@ -301,7 +318,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     startY: 0,
 
-<span id='Ext-dd.DragDropManager-method-regDragDrop'>    /**
+<span id='Ext-dd-DragDropManager-method-regDragDrop'>    /**
 </span>     * Each DragDrop instance must be registered with the DragDropManager.
      * This is executed in DragDrop.init()
      * @method regDragDrop
@@ -318,7 +335,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.ids[sGroup][oDD.id] = oDD;
     },
 
-<span id='Ext-dd.DragDropManager-method-removeDDFromGroup'>    /**
+<span id='Ext-dd-DragDropManager-method-removeDDFromGroup'>    /**
 </span>     * Removes the supplied dd instance from the supplied group. Executed
      * by DragDrop.removeFromGroup, so don't call this function directly.
      * @method removeDDFromGroup
@@ -336,7 +353,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager-method-_remove'>    /**
+<span id='Ext-dd-DragDropManager-method-_remove'>    /**
 </span>     * Unregisters a drag and drop item.  This is executed in
      * DragDrop.unreg, use that method instead of calling this directly.
      * @method _remove
@@ -352,7 +369,7 @@ Ext.define('Ext.dd.DragDropManager', {
         delete this.handleIds[oDD.id];
     },
 
-<span id='Ext-dd.DragDropManager-method-regHandle'>    /**
+<span id='Ext-dd-DragDropManager-method-regHandle'>    /**
 </span>     * Each DragDrop handle element must be registered.  This is done
      * automatically when executing DragDrop.setHandleElId()
      * @method regHandle
@@ -368,7 +385,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.handleIds[sDDId][sHandleId] = sHandleId;
     },
 
-<span id='Ext-dd.DragDropManager-method-isDragDrop'>    /**
+<span id='Ext-dd-DragDropManager-method-isDragDrop'>    /**
 </span>     * Utility function to determine if a given element has been
      * registered as a drag drop item.
      * @method isDragDrop
@@ -381,7 +398,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return ( this.getDDById(id) ) ? true : false;
     },
 
-<span id='Ext-dd.DragDropManager-method-getRelated'>    /**
+<span id='Ext-dd-DragDropManager-method-getRelated'>    /**
 </span>     * Returns the drag and drop instances that are in all groups the
      * passed in instance belongs to.
      * @method getRelated
@@ -407,7 +424,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return oDDs;
     },
 
-<span id='Ext-dd.DragDropManager-method-isLegalTarget'>    /**
+<span id='Ext-dd-DragDropManager-method-isLegalTarget'>    /**
 </span>     * Returns true if the specified dd target is a legal target for
      * the specifice drag obj
      * @method isLegalTarget
@@ -428,7 +445,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return false;
     },
 
-<span id='Ext-dd.DragDropManager-method-isTypeOfDD'>    /**
+<span id='Ext-dd-DragDropManager-method-isTypeOfDD'>    /**
 </span>     * My goal is to be able to transparently determine if an object is
      * typeof DragDrop, and the exact subclass of DragDrop.  typeof
      * returns &quot;object&quot;, oDD.constructor.toString() always returns
@@ -443,7 +460,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return (oDD &amp;&amp; oDD.__ygDragDrop);
     },
 
-<span id='Ext-dd.DragDropManager-method-isHandle'>    /**
+<span id='Ext-dd-DragDropManager-method-isHandle'>    /**
 </span>     * Utility function to determine if a given element has been
      * registered as a drag drop handle for the given Drag Drop object.
      * @method isHandle
@@ -457,7 +474,7 @@ Ext.define('Ext.dd.DragDropManager', {
                         this.handleIds[sDDId][sHandleId] );
     },
 
-<span id='Ext-dd.DragDropManager-method-getDDById'>    /**
+<span id='Ext-dd-DragDropManager-method-getDDById'>    /**
 </span>     * Returns the DragDrop instance for a given id
      * @method getDDById
      * @param {String} id the id of the DragDrop object
@@ -473,7 +490,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return null;
     },
 
-<span id='Ext-dd.DragDropManager-method-handleMouseDown'>    /**
+<span id='Ext-dd-DragDropManager-method-handleMouseDown'>    /**
 </span>     * Fired after a registered DragDrop object gets the mousedown event.
      * Sets up the events required to track the object being dragged
      * @method handleMouseDown
@@ -514,7 +531,7 @@ Ext.define('Ext.dd.DragDropManager', {
                 this.clickTimeThresh );
     },
 
-<span id='Ext-dd.DragDropManager-method-startDrag'>    /**
+<span id='Ext-dd-DragDropManager-method-startDrag'>    /**
 </span>     * Fired when either the drag pixel threshol or the mousedown hold
      * time threshold has been met.
      * @method startDrag
@@ -531,7 +548,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.dragThreshMet = true;
     },
 
-<span id='Ext-dd.DragDropManager-method-handleMouseUp'>    /**
+<span id='Ext-dd-DragDropManager-method-handleMouseUp'>    /**
 </span>     * Internal function to handle the mouseup event.  Will be invoked
      * from the context of the document.
      * @method handleMouseUp
@@ -560,7 +577,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.stopEvent(e);
     },
 
-<span id='Ext-dd.DragDropManager-method-stopEvent'>    /**
+<span id='Ext-dd-DragDropManager-method-stopEvent'>    /**
 </span>     * Utility to stop event propagation and event default, if these
      * features are turned on.
      * @method stopEvent
@@ -577,7 +594,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager-method-stopDrag'>    /**
+<span id='Ext-dd-DragDropManager-method-stopDrag'>    /**
 </span>     * Internal function to clean up event handlers after the drag
      * operation is complete
      * @method stopDrag
@@ -600,7 +617,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.dragOvers = {};
     },
 
-<span id='Ext-dd.DragDropManager-method-handleMouseMove'>    /**
+<span id='Ext-dd-DragDropManager-method-handleMouseMove'>    /**
 </span>     * Internal function to handle the mousemove event.  Will be invoked
      * from the context of the html element.
      *
@@ -648,7 +665,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return true;
     },
 
-<span id='Ext-dd.DragDropManager-method-fireEvents'>    /**
+<span id='Ext-dd-DragDropManager-method-fireEvents'>    /**
 </span>     * Iterates over all of the DragDrop elements to find ones we are
      * hovering over or dropping on
      * @method fireEvents
@@ -784,7 +801,7 @@ Ext.define('Ext.dd.DragDropManager', {
 
     },
 
-<span id='Ext-dd.DragDropManager-method-getBestMatch'>    /**
+<span id='Ext-dd-DragDropManager-method-getBestMatch'>    /**
 </span>     * Helper function for getting the best match from the list of drag
      * and drop objects returned by the drag and drop events when we are
      * in INTERSECT mode.  It returns either the first object that the
@@ -831,7 +848,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return winner;
     },
 
-<span id='Ext-dd.DragDropManager-method-refreshCache'>    /**
+<span id='Ext-dd-DragDropManager-method-refreshCache'>    /**
 </span>     * Refreshes the cache of the top-left and bottom-right points of the
      * drag and drop objects in the specified group(s).  This is in the
      * format that is stored in the drag and drop instance, so typical
@@ -873,7 +890,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager-method-verifyEl'>    /**
+<span id='Ext-dd-DragDropManager-method-verifyEl'>    /**
 </span>     * This checks to make sure an element exists and is in the DOM.  The
      * main purpose is to handle cases where innerHTML is used to remove
      * drag and drop objects from the DOM.  IE provides an 'unspecified
@@ -901,7 +918,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return false;
     },
 
-<span id='Ext-dd.DragDropManager-method-getLocation'>    /**
+<span id='Ext-dd-DragDropManager-method-getLocation'>    /**
 </span>     * Returns a Region object containing the drag and drop element's position
      * and size, including the padding configured for it
      * @method getLocation
@@ -946,7 +963,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return Ext.create('Ext.util.Region', t, r, b, l);
     },
 
-<span id='Ext-dd.DragDropManager-method-isOverTarget'>    /**
+<span id='Ext-dd-DragDropManager-method-isOverTarget'>    /**
 </span>     * Checks the cursor location to see if it over the target
      * @method isOverTarget
      * @param {Ext.util.Point} pt The point to evaluate
@@ -1005,7 +1022,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager-method-_onUnload'>    /**
+<span id='Ext-dd-DragDropManager-method-_onUnload'>    /**
 </span>     * unload event handler
      * @method _onUnload
      * @private
@@ -1015,7 +1032,7 @@ Ext.define('Ext.dd.DragDropManager', {
         Ext.dd.DragDropManager.unregAll();
     },
 
-<span id='Ext-dd.DragDropManager-method-unregAll'>    /**
+<span id='Ext-dd-DragDropManager-method-unregAll'>    /**
 </span>     * Cleans up the drag and drop events and objects.
      * @method unregAll
      * @private
@@ -1038,7 +1055,7 @@ Ext.define('Ext.dd.DragDropManager', {
         this.ids = {};
     },
 
-<span id='Ext-dd.DragDropManager-property-elementCache'>    /**
+<span id='Ext-dd-DragDropManager-property-elementCache'>    /**
 </span>     * A cache of DOM elements
      * @property elementCache
      * @private
@@ -1046,7 +1063,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     elementCache: {},
 
-<span id='Ext-dd.DragDropManager-method-getElWrapper'>    /**
+<span id='Ext-dd-DragDropManager-method-getElWrapper'>    /**
 </span>     * Get the wrapper for the DOM element specified
      * @method getElWrapper
      * @param {String} id the id of the element to get
@@ -1064,7 +1081,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return oWrapper;
     },
 
-<span id='Ext-dd.DragDropManager-method-getElement'>    /**
+<span id='Ext-dd-DragDropManager-method-getElement'>    /**
 </span>     * Returns the actual DOM element
      * @method getElement
      * @param {String} id the id of the elment to get
@@ -1076,7 +1093,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return Ext.getDom(id);
     },
 
-<span id='Ext-dd.DragDropManager-method-getCss'>    /**
+<span id='Ext-dd-DragDropManager-method-getCss'>    /**
 </span>     * Returns the style property for the DOM element (i.e.,
      * document.getElById(id).style)
      * @method getCss
@@ -1089,7 +1106,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return (el) ? el.style : null;
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper'>    /**
 </span>     * Inner class for cached elements
      * @class Ext.dd.DragDropManager.ElementWrapper
      * @for DragDropManager
@@ -1097,24 +1114,24 @@ Ext.define('Ext.dd.DragDropManager', {
      * @deprecated
      */
     ElementWrapper: function(el) {
-<span id='Ext-dd.DragDropManager.ElementWrapper-property-el'>            /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-property-el'>            /**
 </span>             * The element
              * @property el
              */
             this.el = el || null;
-<span id='Ext-dd.DragDropManager.ElementWrapper-property-id'>            /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-property-id'>            /**
 </span>             * The element id
              * @property id
              */
             this.id = this.el &amp;&amp; el.id;
-<span id='Ext-dd.DragDropManager.ElementWrapper-property-css'>            /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-property-css'>            /**
 </span>             * A reference to the style property
              * @property css
              */
             this.css = this.el &amp;&amp; el.style;
         },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getPosX'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getPosX'>    /**
 </span>     * Returns the X position of an html element
      * @method getPosX
      * @param el the element for which to get the position
@@ -1126,7 +1143,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return Ext.core.Element.getX(el);
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getPosY'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getPosY'>    /**
 </span>     * Returns the Y position of an html element
      * @method getPosY
      * @param el the element for which to get the position
@@ -1137,7 +1154,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return Ext.core.Element.getY(el);
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-swapNode'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-swapNode'>    /**
 </span>     * Swap two nodes.  In IE, we use the native method, for others we
      * emulate the IE behavior
      * @method swapNode
@@ -1163,7 +1180,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getScroll'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getScroll'>    /**
 </span>     * Returns the current scroll position
      * @method getScroll
      * @private
@@ -1194,7 +1211,7 @@ Ext.define('Ext.dd.DragDropManager', {
         };
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getStyle'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getStyle'>    /**
 </span>     * Returns the specified element style property
      * @method getStyle
      * @param {HTMLElement} el          the element
@@ -1206,7 +1223,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return Ext.fly(el).getStyle(styleProp);
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getScrollTop'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getScrollTop'>    /**
 </span>     * Gets the scrollTop
      * @method getScrollTop
      * @return {int} the document's scrollTop
@@ -1216,7 +1233,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return this.getScroll().top;
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-getScrollLeft'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-getScrollLeft'>    /**
 </span>     * Gets the scrollLeft
      * @method getScrollLeft
      * @return {int} the document's scrollTop
@@ -1226,7 +1243,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return this.getScroll().left;
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-moveToEl'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-moveToEl'>    /**
 </span>     * Sets the x/y position of an element to the location of the
      * target element.
      * @method moveToEl
@@ -1239,7 +1256,7 @@ Ext.define('Ext.dd.DragDropManager', {
         Ext.core.Element.setXY(moveEl, aCoord);
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-numericSort'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-numericSort'>    /**
 </span>     * Numeric array sort function
      * @method numericSort
      * @static
@@ -1248,7 +1265,7 @@ Ext.define('Ext.dd.DragDropManager', {
         return (a - b);
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-property-_timeoutCount'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-property-_timeoutCount'>    /**
 </span>     * Internal counter
      * @property _timeoutCount
      * @private
@@ -1256,7 +1273,7 @@ Ext.define('Ext.dd.DragDropManager', {
      */
     _timeoutCount: 0,
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-_addListeners'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-_addListeners'>    /**
 </span>     * Trying to make the load order less important.  Without this we get
      * an error if this file is loaded before the Event Utility.
      * @method _addListeners
@@ -1277,7 +1294,7 @@ Ext.define('Ext.dd.DragDropManager', {
         }
     },
 
-<span id='Ext-dd.DragDropManager.ElementWrapper-method-handleWasClicked'>    /**
+<span id='Ext-dd-DragDropManager-ElementWrapper-method-handleWasClicked'>    /**
 </span>     * Recursively searches the immediate parent and all child nodes for
      * the handle element in order to determine wheter or not it was
      * clicked.
@@ -1306,4 +1323,6 @@ Ext.define('Ext.dd.DragDropManager', {
 }, function() {
     this._addListeners();
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

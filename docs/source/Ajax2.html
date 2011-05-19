@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.Ajax-method-constructor'><span id='Ext-data.proxy.Ajax'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Ajax-method-constructor'><span id='Ext-data-proxy-Ajax'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.proxy.Ajax
  * @extends Ext.data.proxy.Server
@@ -237,7 +254,7 @@ Ext.define('Ext.data.proxy.Ajax', {
     alias: 'proxy.ajax',
     alternateClassName: ['Ext.data.HttpProxy', 'Ext.data.AjaxProxy'],
     
-<span id='Ext-data.proxy.Ajax-property-actionMethods'>    /**
+<span id='Ext-data-proxy-Ajax-property-actionMethods'>    /**
 </span>     * @property actionMethods
      * Mapping of action name to HTTP request method. In the basic AjaxProxy these are set to 'GET' for 'read' actions and 'POST' 
      * for 'create', 'update' and 'destroy' actions. The {@link Ext.data.proxy.Rest} maps these to the correct RESTful methods.
@@ -249,11 +266,11 @@ Ext.define('Ext.data.proxy.Ajax', {
         destroy: 'POST'
     },
     
-<span id='Ext-data.proxy.Ajax-cfg-headers'>    /**
+<span id='Ext-data-proxy-Ajax-cfg-headers'>    /**
 </span>     * @cfg {Object} headers Any headers to add to the Ajax request. Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
      */
     
-<span id='Ext-data.proxy.Ajax-method-doRequest'>    /**
+<span id='Ext-data-proxy-Ajax-method-doRequest'>    /**
 </span>     * @ignore
      */
     doRequest: function(operation, callback, scope) {
@@ -278,7 +295,7 @@ Ext.define('Ext.data.proxy.Ajax', {
         return request;
     },
     
-<span id='Ext-data.proxy.Ajax-method-getMethod'>    /**
+<span id='Ext-data-proxy-Ajax-method-getMethod'>    /**
 </span>     * Returns the HTTP method name for a given request. By default this returns based on a lookup on {@link #actionMethods}.
      * @param {Ext.data.Request} request The request object
      * @return {String} The HTTP method to use (should be one of 'GET', 'POST', 'PUT' or 'DELETE')
@@ -287,7 +304,7 @@ Ext.define('Ext.data.proxy.Ajax', {
         return this.actionMethods[request.action];
     },
     
-<span id='Ext-data.proxy.Ajax-method-createRequestCallback'>    /**
+<span id='Ext-data-proxy-Ajax-method-createRequestCallback'>    /**
 </span>     * @private
      * TODO: This is currently identical to the JsonPProxy version except for the return function's signature. There is a lot
      * of code duplication inside the returned function so we need to find a way to DRY this up.
@@ -309,4 +326,6 @@ Ext.define('Ext.data.proxy.Ajax', {
     //backwards compatibility, remove in Ext JS 5.0
     Ext.data.HttpProxy = this;
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

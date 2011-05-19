@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.File-method-constructor'><span id='Ext-form.field.File'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-File-method-constructor'><span id='Ext-form-field-File'>/**
 </span></span> * @class Ext.form.field.File
  * @extends Ext.form.field.Text
 
@@ -61,30 +78,30 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
     alternateClassName: ['Ext.form.FileUploadField', 'Ext.ux.form.FileUploadField', 'Ext.form.File'],
     uses: ['Ext.button.Button', 'Ext.layout.component.field.File'],
 
-<span id='Ext-form.field.File-cfg-buttonText'>    /**
+<span id='Ext-form-field-File-cfg-buttonText'>    /**
 </span>     * @cfg {String} buttonText The button text to display on the upload button (defaults to
      * 'Browse...').  Note that if you supply a value for {@link #buttonConfig}, the buttonConfig.text
      * value will be used instead if available.
      */
     buttonText: 'Browse...',
 
-<span id='Ext-form.field.File-cfg-buttonOnly'>    /**
+<span id='Ext-form-field-File-cfg-buttonOnly'>    /**
 </span>     * @cfg {Boolean} buttonOnly True to display the file upload field as a button with no visible
      * text field (defaults to false).  If true, all inherited Text members will still be available.
      */
     buttonOnly: false,
 
-<span id='Ext-form.field.File-cfg-buttonMargin'>    /**
+<span id='Ext-form-field-File-cfg-buttonMargin'>    /**
 </span>     * @cfg {Number} buttonMargin The number of pixels of space reserved between the button and the text field
      * (defaults to 3).  Note that this only applies if {@link #buttonOnly} = false.
      */
     buttonMargin: 3,
 
-<span id='Ext-form.field.File-cfg-buttonConfig'>    /**
+<span id='Ext-form-field-File-cfg-buttonConfig'>    /**
 </span>     * @cfg {Object} buttonConfig A standard {@link Ext.button.Button} config object.
      */
 
-<span id='Ext-form.field.File-event-change'>    /**
+<span id='Ext-form-field-File-event-change'>    /**
 </span>     * @event change
      * Fires when the underlying file input field's value has changed from the user
      * selecting a new file from the system file selection dialog.
@@ -92,21 +109,21 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
      * @param {String} value The file value returned by the underlying file input field
      */
 
-<span id='Ext-form.field.File-property-fileInputEl'>    /**
+<span id='Ext-form-field-File-property-fileInputEl'>    /**
 </span>     * @property fileInputEl
      * @type {Ext.core.Element}
      * A reference to the invisible file input element created for this upload field. Only
      * populated after this component is rendered.
      */
 
-<span id='Ext-form.field.File-property-button'>    /**
+<span id='Ext-form-field-File-property-button'>    /**
 </span>     * @property button
      * @type {Ext.button.Button}
      * A reference to the trigger Button component created for this upload field. Only
      * populated after this component is rendered.
      */
 
-<span id='Ext-form.field.File-cfg-fieldBodyCls'>    /**
+<span id='Ext-form-field-File-cfg-fieldBodyCls'>    /**
 </span>     * @cfg {String} fieldBodyCls
      * An extra CSS class to be applied to the body content element in addition to {@link #fieldBodyCls}.
      * Defaults to 'x-form-file-wrap' for file upload field.
@@ -141,7 +158,7 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
         }
     },
 
-<span id='Ext-form.field.File-method-createButton'>    /**
+<span id='Ext-form-field-File-method-createButton'>    /**
 </span>     * @private
      * Creates the custom trigger Button component. The fileInput will be inserted into this.
      */
@@ -152,12 +169,11 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
             text: me.buttonText,
             cls: Ext.baseCSSPrefix + 'form-file-btn',
             preventDefault: false,
-            ownerCt: me,
             style: me.buttonOnly ? '' : 'margin-left:' + me.buttonMargin + 'px'
         }, me.buttonConfig));
     },
 
-<span id='Ext-form.field.File-method-createFileInput'>    /**
+<span id='Ext-form-field-File-method-createFileInput'>    /**
 </span>     * @private
      * Creates the file input element. It is inserted into the trigger button component, made
      * invisible, and floated on top of the button's other content so that it will receive the
@@ -174,7 +190,7 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
         }).on('change', me.onFileChange, me);
     },
 
-<span id='Ext-form.field.File-method-onFileChange'>    /**
+<span id='Ext-form-field-File-method-onFileChange'>    /**
 </span>     * @private Event handler fired when the user selects a file.
      */
     onFileChange: function() {
@@ -182,7 +198,7 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
         Ext.form.field.File.superclass.setValue.call(this, this.fileInputEl.dom.value);
     },
 
-<span id='Ext-form.field.File-property-setValue'>    /**
+<span id='Ext-form-field-File-property-setValue'>    /**
 </span>     * Overridden to do nothing
      * @hide
      */
@@ -235,4 +251,6 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
 
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

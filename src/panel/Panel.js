@@ -185,7 +185,13 @@ Ext.define('Ext.panel.Panel', {
      * clicking the expand button to see it again (defaults to <tt>true</tt>).
      */
     floatable: true,
-
+    
+    /**
+     * @cfg {Mixed} overlapHeader
+     * True to overlap the header in a panel over the framing of the panel itself. This is needed when frame:true (and is done automatically for you). Otherwise it is undefined.
+     * If you manually add rounded corners to a panel header which does not have frame:true, this will need to be set to true.
+     */
+    
     /**
      * @cfg {Boolean} collapsible
      * <p>True to make the panel collapsible and have an expand/collapse toggle Tool added into
@@ -1014,12 +1020,14 @@ each of the buttons in the fbar.
                 cls: me.baseCls + '-collapsed-placeholder ' + ' ' + Ext.baseCSSPrefix + 'docked ' + me.baseCls + '-' + me.ui + '-collapsed',
                 renderTo: me.el
             };
-            reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
-                xtype: 'tool',
-                type: 'expand-' + me.expandDirection,
-                handler: me.toggleCollapse,
-                scope: me
-            }];
+            if (!me.hideCollapseTool) {
+                reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
+                    xtype: 'tool',
+                    type: 'expand-' + me.expandDirection,
+                    handler: me.toggleCollapse,
+                    scope: me
+                }];
+            }
 
             // Capture the size of the re-expander.
             // For vertical headers in IE6 and IE7, this will be sized by a CSS rule in _panel.scss
@@ -1059,6 +1067,10 @@ each of the buttons in the fbar.
         if (animate) {
             me.animate(anim);
         } else {
+            // EXTJSIV-1937 (would like to use setCalculateSize)
+            // save width/height here, expand puts them back
+            me.uncollapsedSize = { width: me.width, height: me.height };
+
             me.setSize(anim.to.width, anim.to.height);
             if (Ext.isDefined(anim.to.left) || Ext.isDefined(anim.to.top)) {
                 me.setPosition(anim.to.left, anim.to.top);
@@ -1119,6 +1131,19 @@ each of the buttons in the fbar.
         if (!this.collapsed || this.fireEvent('beforeexpand', this, animate) === false) {
             return false;
         }
+
+        // EXTJSIV-1937 (would like to use setCalculateSize)
+        if (this.uncollapsedSize) {
+            Ext.Object.each(this.uncollapsedSize, function (name, value) {
+                if (Ext.isDefined(value)) {
+                    this[name] = value;
+                } else {
+                    delete this[name];
+                }
+            }, this);
+            delete this.uncollapsedSize;
+        }
+
         var me = this,
             i = 0,
             l = me.hiddenDocked.length,

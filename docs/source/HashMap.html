@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.HashMap-method-constructor'><span id='Ext-util.HashMap'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-HashMap-method-constructor'><span id='Ext-util-HashMap'>/**
 </span></span> * @class Ext.util.HashMap
  * &lt;p&gt;
  * Represents a collection of a set of key and value pairs. Each key in the HashMap
@@ -25,7 +42,7 @@ map.each(function(key, value, length){
  */
 Ext.define('Ext.util.HashMap', {
 
-<span id='Ext-util.HashMap-cfg-keyFn'>    /**
+<span id='Ext-util-HashMap-cfg-keyFn'>    /**
 </span>     * @cfg {Function} keyFn A function that is used to retrieve a default key for a passed object.
      * A default is provided that returns the &lt;b&gt;id&lt;/b&gt; property on the object. This function is only used
      * if the add method is called with a single argument.
@@ -39,7 +56,7 @@ Ext.define('Ext.util.HashMap', {
         var me = this;
 
         me.addEvents(
-<span id='Ext-util.HashMap-event-add'>            /**
+<span id='Ext-util-HashMap-event-add'>            /**
 </span>             * @event add
              * Fires when a new item is added to the hash
              * @param {Ext.util.HashMap} this.
@@ -47,13 +64,13 @@ Ext.define('Ext.util.HashMap', {
              * @param {Object} value The value of the added item.
              */
             'add',
-<span id='Ext-util.HashMap-event-clear'>            /**
+<span id='Ext-util-HashMap-event-clear'>            /**
 </span>             * @event clear
              * Fires when the hash is cleared.
              * @param {Ext.util.HashMap} this.
              */
             'clear',
-<span id='Ext-util.HashMap-event-remove'>            /**
+<span id='Ext-util-HashMap-event-remove'>            /**
 </span>             * @event remove
              * Fires when an item is removed from the hash.
              * @param {Ext.util.HashMap} this.
@@ -61,7 +78,7 @@ Ext.define('Ext.util.HashMap', {
              * @param {Object} value The value of the removed item.
              */
             'remove',
-<span id='Ext-util.HashMap-event-replace'>            /**
+<span id='Ext-util-HashMap-event-replace'>            /**
 </span>             * @event replace
              * Fires when an item is replaced in the hash.
              * @param {Ext.util.HashMap} this.
@@ -76,7 +93,7 @@ Ext.define('Ext.util.HashMap', {
         me.clear(true);
     },
 
-<span id='Ext-util.HashMap-method-getCount'>    /**
+<span id='Ext-util-HashMap-method-getCount'>    /**
 </span>     * Gets the number of items in the hash.
      * @return {Number} The number of items in the hash.
      */
@@ -84,7 +101,7 @@ Ext.define('Ext.util.HashMap', {
         return this.length;
     },
 
-<span id='Ext-util.HashMap-method-getData'>    /**
+<span id='Ext-util-HashMap-method-getData'>    /**
 </span>     * Implementation for being able to extract the key from an object if only
      * a single argument is passed.
      * @private
@@ -102,7 +119,7 @@ Ext.define('Ext.util.HashMap', {
         return [key, value];
     },
 
-<span id='Ext-util.HashMap-method-getKey'>    /**
+<span id='Ext-util-HashMap-method-getKey'>    /**
 </span>     * Extracts the key from an object. This is a default implementation, it may be overridden
      * @private
      * @param {Object} o The object to get the key from
@@ -112,7 +129,7 @@ Ext.define('Ext.util.HashMap', {
         return o.id;
     },
 
-<span id='Ext-util.HashMap-method-add'>    /**
+<span id='Ext-util-HashMap-method-add'>    /**
 </span>     * Adds an item to the collection. Fires the {@link #add} event when complete.
      * @param {String} key &lt;p&gt;The key to associate with the item, or the new item.&lt;/p&gt;
      * &lt;p&gt;If a {@link #getKey} implementation was specified for this HashMap,
@@ -144,7 +161,7 @@ Ext.define('Ext.util.HashMap', {
         return value;
     },
 
-<span id='Ext-util.HashMap-method-replace'>    /**
+<span id='Ext-util-HashMap-method-replace'>    /**
 </span>     * Replaces an item in the hash. If the key doesn't exist, the
      * {@link #add} method will be used.
      * @param {String} key The key of the item.
@@ -165,7 +182,7 @@ Ext.define('Ext.util.HashMap', {
         return value;
     },
 
-<span id='Ext-util.HashMap-method-remove'>    /**
+<span id='Ext-util-HashMap-method-remove'>    /**
 </span>     * Remove an item from the hash.
      * @param {Object} o The value of the item to remove.
      * @return {Boolean} True if the item was successfully removed.
@@ -178,7 +195,7 @@ Ext.define('Ext.util.HashMap', {
         return false;
     },
 
-<span id='Ext-util.HashMap-method-removeAtKey'>    /**
+<span id='Ext-util-HashMap-method-removeAtKey'>    /**
 </span>     * Remove an item from the hash.
      * @param {String} key The key to remove.
      * @return {Boolean} True if the item was successfully removed.
@@ -197,7 +214,7 @@ Ext.define('Ext.util.HashMap', {
         return false;
     },
 
-<span id='Ext-util.HashMap-method-get'>    /**
+<span id='Ext-util-HashMap-method-get'>    /**
 </span>     * Retrieves an item with a particular key.
      * @param {String} key The key to lookup.
      * @return {Object} The value at that key. If it doesn't exist, &lt;tt&gt;undefined&lt;/tt&gt; is returned.
@@ -206,7 +223,7 @@ Ext.define('Ext.util.HashMap', {
         return this.map[key];
     },
 
-<span id='Ext-util.HashMap-method-clear'>    /**
+<span id='Ext-util-HashMap-method-clear'>    /**
 </span>     * Removes all items from the hash.
      * @return {Ext.util.HashMap} this
      */
@@ -220,7 +237,7 @@ Ext.define('Ext.util.HashMap', {
         return me;
     },
 
-<span id='Ext-util.HashMap-method-containsKey'>    /**
+<span id='Ext-util-HashMap-method-containsKey'>    /**
 </span>     * Checks whether a key exists in the hash.
      * @param {String} key The key to check for.
      * @return {Boolean} True if they key exists in the hash.
@@ -229,7 +246,7 @@ Ext.define('Ext.util.HashMap', {
         return this.map[key] !== undefined;
     },
 
-<span id='Ext-util.HashMap-method-contains'>    /**
+<span id='Ext-util-HashMap-method-contains'>    /**
 </span>     * Checks whether a value exists in the hash.
      * @param {Object} value The value to check for.
      * @return {Boolean} True if the value exists in the dictionary.
@@ -238,7 +255,7 @@ Ext.define('Ext.util.HashMap', {
         return this.containsKey(this.findKey(value));
     },
 
-<span id='Ext-util.HashMap-method-getKeys'>    /**
+<span id='Ext-util-HashMap-method-getKeys'>    /**
 </span>     * Return all of the keys in the hash.
      * @return {Array} An array of keys.
      */
@@ -246,7 +263,7 @@ Ext.define('Ext.util.HashMap', {
         return this.getArray(true);
     },
 
-<span id='Ext-util.HashMap-method-getValues'>    /**
+<span id='Ext-util-HashMap-method-getValues'>    /**
 </span>     * Return all of the values in the hash.
      * @return {Array} An array of values.
      */
@@ -254,7 +271,7 @@ Ext.define('Ext.util.HashMap', {
         return this.getArray(false);
     },
 
-<span id='Ext-util.HashMap-method-getArray'>    /**
+<span id='Ext-util-HashMap-method-getArray'>    /**
 </span>     * Gets either the keys/values in an array from the hash.
      * @private
      * @param {Boolean} isKey True to extract the keys, otherwise, the value
@@ -272,7 +289,7 @@ Ext.define('Ext.util.HashMap', {
         return arr;
     },
 
-<span id='Ext-util.HashMap-method-each'>    /**
+<span id='Ext-util-HashMap-method-each'>    /**
 </span>     * Executes the specified function once for each item in the hash.
      * Returning false from the function will cease iteration.
      *
@@ -303,7 +320,7 @@ Ext.define('Ext.util.HashMap', {
         return this;
     },
 
-<span id='Ext-util.HashMap-method-clone'>    /**
+<span id='Ext-util-HashMap-method-clone'>    /**
 </span>     * Performs a shallow copy on this hash.
      * @return {Ext.util.HashMap} The new hash object.
      */
@@ -322,7 +339,7 @@ Ext.define('Ext.util.HashMap', {
         return hash;
     },
 
-<span id='Ext-util.HashMap-method-findKey'>    /**
+<span id='Ext-util-HashMap-method-findKey'>    /**
 </span>     * @private
      * Find the key for a value.
      * @param {Object} value The value to find.
@@ -340,4 +357,6 @@ Ext.define('Ext.util.HashMap', {
         return undefined;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

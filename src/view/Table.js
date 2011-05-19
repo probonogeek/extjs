@@ -88,15 +88,17 @@ viewConfig: {
     getRowClass: null,
 
     initComponent: function() {
-        this.scrollState = {};
-        this.selModel.view = this;
-        this.headerCt.view = this;
-        this.initFeatures();
-        this.setNewTemplate();
-        this.callParent();
-        this.mon(this.store, {
-            load: this.onStoreLoad,
-            scope: this
+        var me = this;
+        
+        me.scrollState = {};
+        me.selModel.view = me;
+        me.headerCt.view = me;
+        me.initFeatures();
+        me.tpl = '<div></div>';
+        me.callParent();
+        me.mon(me.store, {
+            load: me.onStoreLoad,
+            scope: me
         });
 
         // this.addEvents(
@@ -112,20 +114,32 @@ viewConfig: {
 
     // scroll to top of the grid when store loads
     onStoreLoad: function(){
-        if (this.invalidateScrollerOnRefresh) {
+        var me = this;
+        
+        if (me.invalidateScrollerOnRefresh) {
             if (Ext.isGecko) {
-                if (!this.scrollToTopTask) {
-                    this.scrollToTopTask = Ext.create('Ext.util.DelayedTask', this.scrollToTop, this);
+                if (!me.scrollToTopTask) {
+                    me.scrollToTopTask = Ext.create('Ext.util.DelayedTask', me.scrollToTop, me);
                 }
-                this.scrollToTopTask.delay(1);
+                me.scrollToTopTask.delay(1);
             } else {
-                this.scrollToTop();
+                me    .scrollToTop();
             }
         }
     },
 
     // scroll the view to the top
     scrollToTop: Ext.emptyFn,
+    
+    /**
+     * Add a listener to the main view element. It will be destroyed with the view.
+     * @private
+     */
+    addElListener: function(eventName, fn, scope){
+        this.mon(this, eventName, fn, scope, {
+            element: 'el'
+        });
+    },
     
     /**
      * Get the columns used for generating a template via TableChunker.
@@ -174,20 +188,24 @@ viewConfig: {
      * @private
      */
     initFeatures: function() {
-        this.features = this.features || [];
-        var features = this.features,
-            ln       = features.length,
-            i        = 0;
+        var me = this,
+            i = 0,
+            features,
+            len;
+            
+        me.features = me.features || [];
+        features = me.features;
+        len = features.length;
 
-        this.featuresMC = Ext.create('Ext.util.MixedCollection');
-        for (; i < ln; i++) {
+        me.featuresMC = Ext.create('Ext.util.MixedCollection');
+        for (; i < len; i++) {
             // ensure feature hasnt already been instantiated
             if (!features[i].isFeature) {
-                features[i] = Ext.create('feature.'+features[i].ftype, features[i]);
+                features[i] = Ext.create('feature.' + features[i].ftype, features[i]);
             }
             // inject a reference to view
-            features[i].view = this;
-            this.featuresMC.add(features[i]);
+            features[i].view = me;
+            me.featuresMC.add(features[i]);
         }
     },
 
@@ -209,12 +227,15 @@ viewConfig: {
     },
 
     afterRender: function() {
-        this.callParent();
-        this.mon(this.el, {
-            scroll: this.fireBodyScroll,
-            scope: this
+        var me = this;
+        
+        me.callParent();
+        me.mon(me.el, {
+            scroll: me.fireBodyScroll,
+            scope: me
         });
-        this.attachEventsForFeatures();
+        me.el.unselectable();
+        me.attachEventsForFeatures();
     },
 
     fireBodyScroll: function(e, t) {
@@ -229,8 +250,9 @@ viewConfig: {
      * @private
      */
     prepareData: function(data, idx, record) {
-        var orig     = this.headerCt.prepareData(data, idx, record, this),
-            features = this.features,
+        var me       = this,
+            orig     = me.headerCt.prepareData(data, idx, record, me, me.ownerCt),
+            features = me.features,
             ln       = features.length,
             i        = 0,
             node, feature;
@@ -238,7 +260,7 @@ viewConfig: {
         for (; i < ln; i++) {
             feature = features[i];
             if (feature.isFeature) {
-                Ext.apply(orig, feature.getAdditionalData(data, idx, record, orig, this));
+                Ext.apply(orig, feature.getAdditionalData(data, idx, record, orig, me));
             }
         }
 
@@ -312,18 +334,19 @@ viewConfig: {
      * @private
      */
     onHeaderResize: function(header, w, suppressFocus) {
-        var el = this.el;
+        var me = this,
+            el = me.el;
         if (el) {
-            this.saveScrollState();
+            me.saveScrollState();
             // Grab the col and set the width, css
             // class is generated in TableChunker.
             // Select composites because there may be several chunks.
             el.select('.' + Ext.baseCSSPrefix + 'grid-col-resizer-'+header.id).setWidth(w);
-            el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(this.headerCt.getFullWidth());
-            this.restoreScrollState();
-            this.setNewTemplate();
+            el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(me.headerCt.getFullWidth());
+            me.restoreScrollState();
+            me.setNewTemplate();
             if (!suppressFocus) {
-                this.el.focus();
+                me.el.focus();
             }
         }
     },
@@ -360,10 +383,12 @@ viewConfig: {
      * @private
      */
     setNewTemplate: function() {
-        var columns = this.headerCt.getColumnsForTpl(true);
-        this.tpl = this.getTableChunker().getTableTpl({
+        var me = this,
+            columns = me.headerCt.getColumnsForTpl(true);
+            
+        me.tpl = me.getTableChunker().getTableTpl({
             columns: columns,
-            features: this.features
+            features: me.features
         });
     },
 
@@ -405,8 +430,10 @@ viewConfig: {
 
     // GridSelectionModel invokes onRowDeselect as selection changes
     onRowDeselect : function(rowIdx) {
-        this.removeRowCls(rowIdx, this.selectedItemCls);
-        this.removeRowCls(rowIdx, this.focusedItemCls);
+        var me = this;
+        
+        me.removeRowCls(rowIdx, me.selectedItemCls);
+        me.removeRowCls(rowIdx, me.focusedItemCls);
     },
     
     onCellSelect: function(position) {
@@ -438,7 +465,7 @@ viewConfig: {
             cellSelector,
             cell = false;
             
-        if (header) {
+        if (header && node) {
             cellSelector = header.getCellSelector();
             cell = Ext.fly(node).down(cellSelector);
         }
@@ -448,16 +475,17 @@ viewConfig: {
     // GridSelectionModel invokes onRowFocus to 'highlight'
     // the last row focused
     onRowFocus: function(rowIdx, highlight, supressFocus) {
-        var row = this.getNode(rowIdx);
+        var me = this,
+            row = me.getNode(rowIdx);
 
         if (highlight) {
-            this.addRowCls(rowIdx, this.focusedItemCls);
+            me.addRowCls(rowIdx, me.focusedItemCls);
             if (!supressFocus) {
-                this.focusRow(rowIdx);
+                me.focusRow(rowIdx);
             }
             //this.el.dom.setAttribute('aria-activedescendant', row.id);
         } else {
-            this.removeRowCls(rowIdx, this.focusedItemCls);
+            me.removeRowCls(rowIdx, me.focusedItemCls);
         }
     },
 
@@ -467,15 +495,16 @@ viewConfig: {
      * id of a template node or the record associated with the node.
      */
     focusRow: function(rowIdx) {
-        var row        = this.getNode(rowIdx),
-            el         = this.el,
+        var me         = this,
+            row        = me.getNode(rowIdx),
+            el         = me.el,
             adjustment = 0,
-            panel      = this.ownerCt,
+            panel      = me.ownerCt,
             rowRegion,
             elRegion,
             record;
             
-        if (row && this.el) {
+        if (row && el) {
             elRegion  = el.getRegion();
             rowRegion = Ext.fly(row).getRegion();
             // row is above
@@ -485,24 +514,25 @@ viewConfig: {
             } else if (rowRegion.bottom > elRegion.bottom) {
                 adjustment = rowRegion.bottom - elRegion.bottom;
             }
-            record = this.getRecord(row);
-            rowIdx = this.store.indexOf(record);
+            record = me.getRecord(row);
+            rowIdx = me.store.indexOf(record);
 
             if (adjustment) {
                 // scroll the grid itself, so that all gridview's update.
                 panel.scrollByDeltaY(adjustment);
             }
-            this.fireEvent('rowfocus', record, row, rowIdx);
+            me.fireEvent('rowfocus', record, row, rowIdx);
         }
     },
 
     focusCell: function(position) {
-        var cell        = this.getCellByPosition(position),
-            el          = this.el,
+        var me          = this,
+            cell        = me.getCellByPosition(position),
+            el          = me.el,
             adjustmentY = 0,
             adjustmentX = 0,
             elRegion    = el.getRegion(),
-            panel       = this.ownerCt,
+            panel       = me.ownerCt,
             cellRegion,
             record;
 
@@ -532,7 +562,7 @@ viewConfig: {
                 panel.scrollByDeltaX(adjustmentX);
             }
             el.focus();
-            this.fireEvent('cellfocus', record, cell, position);
+            me.fireEvent('cellfocus', record, cell, position);
         }
     },
 
@@ -592,39 +622,23 @@ viewConfig: {
         //this.saveScrollState();
         me.setNewTemplate();
         
-        // The table.unselectable() call below adds a selectstart listener to the table element.
-        // Before we clear the whole dataview in the callParent, we remove all the listeners from the
-        // table. This prevents a big memory leak on IE6 and IE7.
-        if (me.rendered) {
-            table = me.el.child('table');
-            if (table) {
-                table.removeAllListeners();
-            }
-        }
-        
         me.callParent(arguments);
 
         //this.restoreScrollState();
-        if (me.rendered) {
-            // Make the table view unselectable
-            table = me.el.child('table');
-            if (table) {
-                table.unselectable();
-            }
-            
-            if (!firstPass) {
-                // give focus back to gridview
-                me.el.focus();
-            }
+
+        if (me.rendered && !firstPass) {
+            // give focus back to gridview
+            //me.el.focus();
         }
     },
 
-    processItemEvent: function(type, record, row, rowIndex, e) {
+    processItemEvent: function(record, row, rowIndex, e) {
         var me = this,
             cell = e.getTarget(me.cellSelector, row),
             cellIndex = cell ? cell.cellIndex : -1,
             map = me.statics().EventMap,
             selModel = me.getSelectionModel(),
+            type = e.type,
             result;
 
         if (type == 'keydown' && !cell && selModel.getCurrentPosition) {
@@ -658,15 +672,15 @@ viewConfig: {
 
     processSpecialEvent: function(e) {
         var me = this,
-            map = this.statics().EventMap,
-            features = this.features,
+            map = me.statics().EventMap,
+            features = me.features,
             ln = features.length,
             type = e.type,
             i, feature, prefix, featureTarget,
             beforeArgs, args,
             panel = me.ownerCt;
 
-        this.callParent(arguments);
+        me.callParent(arguments);
 
         if (type == 'mouseover' || type == 'mouseout') {
             return;
@@ -680,8 +694,8 @@ viewConfig: {
                     prefix = feature.eventPrefix;
                     // allows features to implement getFireEventArgs to change the
                     // fireEvent signature
-                    beforeArgs = feature.getFireEventArgs('before' + prefix + type, me, featureTarget);
-                    args = feature.getFireEventArgs(prefix + type, me, featureTarget);
+                    beforeArgs = feature.getFireEventArgs('before' + prefix + type, me, featureTarget, e);
+                    args = feature.getFireEventArgs(prefix + type, me, featureTarget, e);
                     
                     if (
                         // before view event
@@ -748,12 +762,13 @@ viewConfig: {
     },
 
     getPositionByEvent: function(e) {
-        var cellNode = e.getTarget(this.cellSelector),
-            rowNode  = e.getTarget(this.itemSelector),
-            record   = this.getRecord(rowNode),
-            header   = this.getHeaderByCell(cellNode);
+        var me       = this,
+            cellNode = e.getTarget(me.cellSelector),
+            rowNode  = e.getTarget(me.itemSelector),
+            record   = me.getRecord(rowNode),
+            header   = me.getHeaderByCell(cellNode);
 
-        return this.getPosition(record, header);
+        return me.getPosition(record, header);
     },
 
     getHeaderByCell: function(cell) {
@@ -783,13 +798,14 @@ viewConfig: {
      * @private
      */
     walkCells: function(pos, direction, e, preventWrap, verifierFn, scope) {
-        var row      = pos.row,
+        var me       = this,
+            row      = pos.row,
             column   = pos.column,
-            rowCount = this.store.getCount(),
-            firstCol = this.getFirstVisibleColumnIndex(),
-            lastCol  = this.getLastVisibleColumnIndex(),
+            rowCount = me.store.getCount(),
+            firstCol = me.getFirstVisibleColumnIndex(),
+            lastCol  = me.getLastVisibleColumnIndex(),
             newPos   = {row: row, column: column},
-            activeHeader = this.headerCt.getHeaderAtIndex(column);
+            activeHeader = me.headerCt.getHeaderAtIndex(column);
 
         // no active header or its currently hidden
         if (!activeHeader || activeHeader.hidden) {
@@ -814,7 +830,7 @@ viewConfig: {
                 // go right
                 } else {
                     if (!e.ctrlKey) {
-                        newPos.column = column + this.getRightGap(activeHeader);
+                        newPos.column = column + me.getRightGap(activeHeader);
                     } else {
                         newPos.column = lastCol;
                     }
@@ -836,7 +852,7 @@ viewConfig: {
                 // go left
                 } else {
                     if (!e.ctrlKey) {
-                        newPos.column = column + this.getLeftGap(activeHeader);
+                        newPos.column = column + me.getLeftGap(activeHeader);
                     } else {
                         newPos.column = firstCol;
                     }
@@ -935,10 +951,7 @@ viewConfig: {
 
     beforeDestroy: function() {
         if (this.rendered) {
-            table = this.el.child('table');
-            if (table) {
-                table.removeAllListeners();
-            }
+            this.el.removeAllListeners();
         }
         this.callParent(arguments);
     },

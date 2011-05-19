@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.Border'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-Border'>/**
 </span> * @class Ext.layout.container.Border
  * @extends Ext.layout.container.Container
  * &lt;p&gt;This is a multi-pane, application-oriented UI layout style that supports multiple
@@ -102,6 +119,7 @@ Ext.define('Ext.layout.container.Border', {
         }
 
         // Delegate this operation to the shadow &quot;V&quot; or &quot;H&quot; box layout, and then down to any embedded layout.
+        me.fixHeightConstraints();
         me.shadowLayout.onLayout();
         if (me.embeddedContainer) {
             me.embeddedContainer.layout.onLayout();
@@ -319,6 +337,17 @@ Ext.define('Ext.layout.container.Border', {
                     me.splitters.west.ownerCt = me.embeddedContainer;
                 }
 
+                // These spliiters need to be constrained by components one-level below
+                // the component in their vobx. We update the min/maxHeight on the helper
+                // (embeddedContainer) prior to starting the split/drag. This has to be
+                // done on-the-fly to allow min/maxHeight of the E/C/W regions to be set
+                // dynamically.
+                Ext.each([me.splitters.north, me.splitters.south], function (splitter) {
+                    if (splitter) {
+                        splitter.on('beforedragstart', me.fixHeightConstraints, me);
+                    }
+                });
+
                 // The east or west region wanted a percentage
                 if (horizontalFlex) {
                     regions.center.flex -= horizontalFlex;
@@ -377,7 +406,6 @@ Ext.define('Ext.layout.container.Border', {
         me.borderLayoutInitialized = true;
     },
 
-
     setupState: function(comp){
         var getState = comp.getState;
         comp.getState = function(){
@@ -396,7 +424,7 @@ Ext.define('Ext.layout.container.Border', {
         comp.addStateEvents(['collapse', 'expand', 'resize']);
     },
 
-<span id='Ext-layout.container.Border-method-createItems'>    /**
+<span id='Ext-layout-container-Border-method-createItems'>    /**
 </span>     * Create the items collection for our shadow/embedded containers
      * @private
      */
@@ -430,6 +458,7 @@ Ext.define('Ext.layout.container.Border', {
         // Mini collapse means that the splitter is the placeholder Component
         if (comp.collapseMode == 'mini') {
             comp.placeholder = resizer;
+            resizer.collapsedCls = comp.collapsedCls;
         }
 
         // Arrange to hide/show a region's associated splitter when the region is hidden/shown
@@ -439,6 +468,30 @@ Ext.define('Ext.layout.container.Border', {
             scope: me
         });
         return resizer;
+    },
+
+    // Private
+    // Propogates the min/maxHeight values from the inner hbox items to its container.
+    fixHeightConstraints: function () {
+        var me = this,
+            ct = me.embeddedContainer,
+            maxHeight = 1e99, minHeight = -1;
+
+        if (!ct) {
+            return;
+        }
+
+        ct.items.each(function (item) {
+            if (Ext.isNumber(item.maxHeight)) {
+                maxHeight = Math.max(maxHeight, item.maxHeight);
+            }
+            if (Ext.isNumber(item.minHeight)) {
+                minHeight = Math.max(minHeight, item.minHeight);
+            }
+        });
+
+        ct.maxHeight = maxHeight;
+        ct.minHeight = minHeight;
     },
 
     // Hide/show a region's associated splitter when the region is hidden/shown
@@ -458,7 +511,7 @@ Ext.define('Ext.layout.container.Border', {
         }
     },
 
-<span id='Ext-layout.container.Border-method-getPlaceholder'>    /**
+<span id='Ext-layout-container-Border-method-getPlaceholder'>    /**
 </span>     * &lt;p&gt;Return the {@link Ext.panel.Panel#placeholder placeholder} Component to which the passed child Panel of the layout will collapse.
      * By default, this will be a {@link Ext.panel.Header Header} component (Docked to the appropriate border). See {@link Ext.panel.Panel#placeholder placeholder}.
      * config to customize this.&lt;/p&gt;
@@ -507,7 +560,7 @@ Ext.define('Ext.layout.container.Border', {
                     baseCls: comp.baseCls + '-header',
                     ui: comp.ui,
                     indicateDrag: comp.draggable,
-                    cls: Ext.baseCSSPrefix + 'region-collapsed-placeholder ' + Ext.baseCSSPrefix + 'region-collapsed-' + comp.collapseDirection + '-placeholder',
+                    cls: Ext.baseCSSPrefix + 'region-collapsed-placeholder ' + Ext.baseCSSPrefix + 'region-collapsed-' + comp.collapseDirection + '-placeholder ' + comp.collapsedCls,
                     listeners: comp.floatable ? {
                         click: {
                             fn: function(e) {
@@ -521,13 +574,15 @@ Ext.define('Ext.layout.container.Border', {
                 if ((Ext.isIE6 || Ext.isIE7 || (Ext.isIEQuirks)) &amp;&amp; !horiz) {
                     placeholder.width = 25;
                 }
-                placeholder[horiz ? 'tools' : 'items'] = [{
-                    xtype: 'tool',
-                    client: comp,
-                    type: 'expand-' + oppositeDirection,
-                    handler: me.onPlaceHolderToolClick,
-                    scope: me
-                }];
+                if (!comp.hideCollapseTool) {
+                    placeholder[horiz ? 'tools' : 'items'] = [{
+                        xtype: 'tool',
+                        client: comp,
+                        type: 'expand-' + oppositeDirection,
+                        handler: me.onPlaceHolderToolClick,
+                        scope: me
+                    }];
+                }
             }
             placeholder = me.owner.createComponent(placeholder);
             if (comp.isXType('panel')) {
@@ -546,7 +601,7 @@ Ext.define('Ext.layout.container.Border', {
         return placeholder;
     },
 
-<span id='Ext-layout.container.Border-method-onRegionTitleChange'>    /**
+<span id='Ext-layout-container-Border-method-onRegionTitleChange'>    /**
 </span>     * @private
      * Update the placeholder title when panel title has been set or changed.
      */
@@ -554,7 +609,7 @@ Ext.define('Ext.layout.container.Border', {
         comp.placeholder.setTitle(newTitle);
     },
 
-<span id='Ext-layout.container.Border-method-onRegionIconChange'>    /**
+<span id='Ext-layout-container-Border-method-onRegionIconChange'>    /**
 </span>     * @private
      * Update the placeholder iconCls when panel iconCls has been set or changed.
      */
@@ -562,7 +617,7 @@ Ext.define('Ext.layout.container.Border', {
         comp.placeholder.setIconCls(newIconCls);
     },
 
-<span id='Ext-layout.container.Border-method-calculateChildBox'>    /**
+<span id='Ext-layout-container-Border-method-calculateChildBox'>    /**
 </span>     * @private
      * Calculates the size and positioning of the passed child item. Must be present because Panel's expand,
      * when configured with a flex, calls this method on its ownerCt's layout.
@@ -579,7 +634,7 @@ Ext.define('Ext.layout.container.Border', {
         }
     },
 
-<span id='Ext-layout.container.Border-method-onBeforeRegionCollapse'>    /**
+<span id='Ext-layout-container-Border-method-onBeforeRegionCollapse'>    /**
 </span>     * @private
      * Intercepts the Panel's own collapse event and perform's substitution of the Panel
      * with a placeholder Header orientated in the appropriate dimension.
@@ -591,12 +646,11 @@ Ext.define('Ext.layout.container.Border', {
     onBeforeRegionCollapse: function(comp, direction, animate) {
         var me = this,
             compEl = comp.el,
+            width,
             miniCollapse = comp.collapseMode == 'mini',
             shadowContainer = comp.shadowOwnerCt,
             shadowLayout = shadowContainer.layout,
             placeholder = comp.placeholder,
-            placeholderBox,
-            targetSize = shadowLayout.getLayoutTargetSize(),
             sl = me.owner.suspendLayout,
             scsl = shadowContainer.suspendLayout,
             isNorthOrWest = (comp.region == 'north' || comp.region == 'west'); // Flag to keep the placeholder non-adjacent to any Splitter
@@ -639,11 +693,21 @@ Ext.define('Ext.layout.container.Border', {
 
         if (!placeholder.rendered) {
             shadowLayout.renderItem(placeholder, shadowLayout.innerCt);
+
+            // The inserted placeholder does not have the proper size, so copy the width
+            // for N/S or the height for E/W from the component. This fixes EXTJSIV-1562
+            // without recursive layouts. This is only an issue initially. After this time,
+            // placeholder will have the correct width/height set by the layout (which has
+            // already happened when we get here initially).
+            if (comp.region == 'north' || comp.region == 'south') {
+                placeholder.setCalculatedSize(comp.getWidth());
+            } else {
+                placeholder.setCalculatedSize(undefined, comp.getHeight());
+            }
         }
 
         // Jobs to be done after the collapse has been done
         function afterCollapse() {
-
             // Reinstate automatic laying out.
             me.owner.suspendLayout = sl;
             shadowContainer.suspendLayout = scsl;
@@ -695,11 +759,6 @@ Ext.define('Ext.layout.container.Border', {
             compEl.setLeftTop(-10000, -10000);
             shadowLayout.layout();
             afterCollapse();
-
-            // Horrible workaround for https://sencha.jira.com/browse/EXTJSIV-1562
-            if (Ext.isIE) {
-                placeholder.setCalculatedSize(placeholder.el.getWidth());
-            }
         }
 
         return false;
@@ -1017,4 +1076,6 @@ Ext.define('Ext.layout.container.Border', {
         me.callParent(arguments);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.column.Date'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-column-Date'>/**
 </span> * @class Ext.grid.column.Date
  * @extends Ext.grid.column.Column
  *
@@ -49,7 +66,7 @@ Ext.define('Ext.grid.column.Date', {
     requires: ['Ext.Date'],
     alternateClassName: 'Ext.grid.DateColumn',
 
-<span id='Ext-grid.column.Date-cfg-format'>    /**
+<span id='Ext-grid-column-Date-cfg-format'>    /**
 </span>     * @cfg {String} format
      * A formatting string as used by {@link Date#format Date.format} to format a Date for this Column.
      * This defaults to the default date from {@link Ext.Date#defaultFormat} which itself my be overridden
@@ -61,4 +78,6 @@ Ext.define('Ext.grid.column.Date', {
         this.callParent(arguments);
         this.renderer = Ext.util.Format.dateRenderer(this.format);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

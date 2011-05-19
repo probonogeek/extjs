@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.Label-method-constructor'><span id='Ext-form.Label'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-Label-method-constructor'><span id='Ext-form-Label'>/**
 </span></span> * @class Ext.form.Label
  * @extends Ext.Component
 
@@ -58,17 +75,17 @@ Ext.define('Ext.form.Label', {
     alias: 'widget.label',
     requires: ['Ext.util.Format'],
 
-<span id='Ext-form.Label-cfg-text'>    /**
+<span id='Ext-form-Label-cfg-text'>    /**
 </span>     * @cfg {String} text The plain text to display within the label (defaults to ''). If you need to include HTML
      * tags within the label's innerHTML, use the {@link #html} config instead.
      */
-<span id='Ext-form.Label-cfg-forId'>    /**
+<span id='Ext-form-Label-cfg-forId'>    /**
 </span>     * @cfg {String} forId The id of the input element to which this label will be bound via the standard HTML 'for'
      * attribute. If not specified, the attribute will not be added to the label. In most cases you will be
      * associating the label with a {@link Ext.form.field.Base} component, so you should make sure this matches
      * the {@link Ext.form.field.Base#inputId inputId} of that field.
      */
-<span id='Ext-form.Label-cfg-html'>    /**
+<span id='Ext-form-Label-cfg-html'>    /**
 </span>     * @cfg {String} html An HTML fragment that will be used as the label's innerHTML (defaults to '').
      * Note that if {@link #text} is specified it will take precedence and this value will be ignored.
      */
@@ -84,7 +101,7 @@ Ext.define('Ext.form.Label', {
         };
     },
 
-<span id='Ext-form.Label-method-setText'>    /**
+<span id='Ext-form-Label-method-setText'>    /**
 </span>     * Updates the label's innerHTML with the specified string.
      * @param {String} text The new label text
      * @param {Boolean} encode (optional) False to skip HTML-encoding the text when rendering it
@@ -111,4 +128,6 @@ Ext.define('Ext.form.Label', {
     }
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

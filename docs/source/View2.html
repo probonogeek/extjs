@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tree.View'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tree-View'>/**
 </span> * @class Ext.tree.View
  * @extends Ext.view.Table
  */
@@ -15,12 +32,12 @@ Ext.define('Ext.tree.View', {
 
     blockRefresh: true,
 
-<span id='Ext-tree.View-cfg-rootVisible'>    /** 
+<span id='Ext-tree-View-cfg-rootVisible'>    /** 
 </span>     * @cfg {Boolean} rootVisible &lt;tt&gt;false&lt;/tt&gt; to hide the root node (defaults to &lt;tt&gt;true&lt;/tt&gt;)
      */
     rootVisible: true,
 
-<span id='Ext-tree.View-cfg-animate'>    /** 
+<span id='Ext-tree-View-cfg-animate'>    /** 
 </span>     * @cfg {Boolean} animate &lt;tt&gt;true&lt;/tt&gt; to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
      */
 
@@ -247,7 +264,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 
@@ -322,7 +339,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 
@@ -375,7 +392,7 @@ Ext.define('Ext.tree.View', {
         animWrap.isAnimating = true;
     },
     
-<span id='Ext-tree.View-method-isAnimating'>    /**
+<span id='Ext-tree-View-method-isAnimating'>    /**
 </span>     * Checks if a node is currently undergoing animation
      * @private
      * @param {Ext.data.Model} node The node
@@ -412,7 +429,7 @@ Ext.define('Ext.tree.View', {
         return data;
     },
     
-<span id='Ext-tree.View-method-expand'>    /**
+<span id='Ext-tree-View-method-expand'>    /**
 </span>     * Expand a record that is loaded in the view.
      * @param {Ext.data.Model} record The record to expand
      * @param {Boolean} deep (optional) True to expand nodes all the way down the tree hierarchy.
@@ -423,7 +440,7 @@ Ext.define('Ext.tree.View', {
         return record.expand(deep, callback, scope);
     },
     
-<span id='Ext-tree.View-method-collapse'>    /**
+<span id='Ext-tree-View-method-collapse'>    /**
 </span>     * Collapse a record that is loaded in the view.
      * @param {Ext.data.Model} record The record to collapse
      * @param {Boolean} deep (optional) True to collapse nodes all the way up the tree hierarchy.
@@ -434,7 +451,7 @@ Ext.define('Ext.tree.View', {
         return record.collapse(deep, callback, scope);
     },
     
-<span id='Ext-tree.View-method-toggle'>    /**
+<span id='Ext-tree-View-method-toggle'>    /**
 </span>     * Toggle a record between expanded and collapsed.
      * @param {Ext.data.Record} recordInstance
      */
@@ -472,7 +489,7 @@ Ext.define('Ext.tree.View', {
         e.getTarget(this.cellSelector, 10, true).removeCls(this.expanderIconOverCls);
     },
     
-<span id='Ext-tree.View-method-getTreeStore'>    /**
+<span id='Ext-tree-View-method-getTreeStore'>    /**
 </span>     * Gets the base TreeStore from the bound TreePanel.
      */
     getTreeStore: function() {
@@ -489,4 +506,6 @@ Ext.define('Ext.tree.View', {
             });
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

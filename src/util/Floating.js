@@ -139,23 +139,32 @@ Ext.define('Ext.util.Floating', {
      */
     doConstrain: function(constrainTo) {
         var me = this,
-            constrainEl,
-            vector,
+            vector = me.getConstrainVector(constrainTo),
             xy;
 
+        if (vector) {
+            xy = me.getPosition();
+            xy[0] += vector[0];
+            xy[1] += vector[1];
+            me.setPosition(xy);
+        }
+    },
+    
+    
+    /**
+     * Gets the x/y offsets to constrain this float
+     * @private
+     * @param {Mixed} constrainTo Optional. The Element or {@link Ext.util.Region Region} into which this Component is to be constrained.
+     * @return {Array} The x/y constraints
+     */
+    getConstrainVector: function(constrainTo){
+        var me = this,
+            el;
+            
         if (me.constrain || me.constrainHeader) {
-            if (me.constrainHeader) {
-                constrainEl = me.header.el;
-            } else {
-                constrainEl = me.el;
-            }
-            vector = constrainEl.getConstrainVector(constrainTo || (me.floatParent && me.floatParent.getTargetEl()) || me.container);
-            if (vector) {
-                xy = me.getPosition();
-                xy[0] += vector[0];
-                xy[1] += vector[1];
-                me.setPosition(xy);
-            }
+            el = me.constrainHeader ? me.header.el : me.el;
+            constrainTo = constrainTo || (me.floatParent && me.floatParent.getTargetEl()) || me.container;
+            return el.getConstrainVector(constrainTo);
         }
     },
 

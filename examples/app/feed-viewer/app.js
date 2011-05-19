@@ -10,5 +10,7 @@ Ext.application({
     controllers: [
         'Articles',
         'Feeds'
-    ]
+    ],
+    
+    autoCreateViewport: true
 });

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-menu.Menu-method-constructor'><span id='Ext-menu.Menu'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-menu-Menu-method-constructor'><span id='Ext-menu-Menu'>/**
 </span></span> * @class Ext.menu.Menu
  * @extends Ext.panel.Panel
  *
@@ -63,24 +80,24 @@ Ext.define('Ext.menu.Menu', {
         'Ext.menu.Separator'
     ],
 
-<span id='Ext-menu.Menu-cfg-allowOtherMenus'>    /**
+<span id='Ext-menu-Menu-cfg-allowOtherMenus'>    /**
 </span>     * @cfg {Boolean} allowOtherMenus
      * True to allow multiple menus to be displayed at the same time. Defaults to `false`.
      * @markdown
      */
     allowOtherMenus: false,
 
-<span id='Ext-menu.Menu-cfg-ariaRole'>    /**
+<span id='Ext-menu-Menu-cfg-ariaRole'>    /**
 </span>     * @cfg {String} ariaRole @hide
      */
     ariaRole: 'menu',
 
-<span id='Ext-menu.Menu-cfg-autoRender'>    /**
+<span id='Ext-menu-Menu-cfg-autoRender'>    /**
 </span>     * @cfg {Boolean} autoRender @hide
      * floating is true, so autoRender always happens
      */
 
-<span id='Ext-menu.Menu-cfg-defaultAlign'>    /**
+<span id='Ext-menu-Menu-cfg-defaultAlign'>    /**
 </span>     * @cfg {String} defaultAlign
      * The default {@link Ext.core.Element#getAlignToXY Ext.core.Element#getAlignToXY} anchor position value for this menu
      * relative to its element of origin. Defaults to `'tl-bl?'`.
@@ -88,7 +105,7 @@ Ext.define('Ext.menu.Menu', {
      */
     defaultAlign: 'tl-bl?',
 
-<span id='Ext-menu.Menu-cfg-floating'>    /**
+<span id='Ext-menu-Menu-cfg-floating'>    /**
 </span>     * @cfg {Boolean} floating
      * A Menu configured as `floating: true` (the default) will be rendered as an absolutely positioned,
      * {@link Ext.Component#floating floating} {@link Ext.Component Component}. If configured as `floating: false`, the Menu may be
@@ -97,13 +114,13 @@ Ext.define('Ext.menu.Menu', {
      */
     floating: true,
 
-<span id='Ext-menu.Menu-cfg-constrain'>    /**
+<span id='Ext-menu-Menu-cfg-constrain'>    /**
 </span>     * @cfg {Boolean} @hide
      * Menu performs its own size changing constraining, so ensure Component's constraining is not applied
      */
     constrain: false,
 
-<span id='Ext-menu.Menu-cfg-hidden'>    /**
+<span id='Ext-menu-Menu-cfg-hidden'>    /**
 </span>     * @cfg {Boolean} hidden
      * True to initially render the Menu as hidden, requiring to be shown manually.
      * Defaults to `true` when `floating: true`, and defaults to `false` when `floating: false`.
@@ -111,7 +128,7 @@ Ext.define('Ext.menu.Menu', {
      */
     hidden: true,
 
-<span id='Ext-menu.Menu-cfg-ignoreParentClicks'>    /**
+<span id='Ext-menu-Menu-cfg-ignoreParentClicks'>    /**
 </span>     * @cfg {Boolean} ignoreParentClicks
      * True to ignore clicks on any item in this menu that is a parent item (displays a submenu)
      * so that the submenu is not dismissed when clicking the parent item. Defaults to `false`.
@@ -121,23 +138,23 @@ Ext.define('Ext.menu.Menu', {
 
     isMenu: true,
 
-<span id='Ext-menu.Menu-cfg-layout'>    /**
+<span id='Ext-menu-Menu-cfg-layout'>    /**
 </span>     * @cfg {String/Object} layout @hide
      */
 
-<span id='Ext-menu.Menu-cfg-showSeparator'>    /**
+<span id='Ext-menu-Menu-cfg-showSeparator'>    /**
 </span>     * @cfg {Boolean} showSeparator True to show the icon separator. (defaults to true).
      */
     showSeparator : true,
 
-<span id='Ext-menu.Menu-cfg-minWidth'>    /**
+<span id='Ext-menu-Menu-cfg-minWidth'>    /**
 </span>     * @cfg {Number} minWidth
      * The minimum width of the Menu. Defaults to `120`.
      * @markdown
      */
     minWidth: 120,
 
-<span id='Ext-menu.Menu-cfg-plain'>    /**
+<span id='Ext-menu-Menu-cfg-plain'>    /**
 </span>     * @cfg {Boolean} plain
      * True to remove the incised line down the left side of the menu and to not
      * indent general Component items. Defaults to `false`.
@@ -146,10 +163,12 @@ Ext.define('Ext.menu.Menu', {
 
     initComponent: function() {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls = [prefix + 'menu'],
+            bodyCls = me.bodyCls ? [me.bodyCls] : [];
 
         me.addEvents(
-<span id='Ext-menu.Menu-event-click'>            /**
+<span id='Ext-menu-Menu-event-click'>            /**
 </span>             * @event click
              * Fires when this menu is clicked
              * @param {Ext.menu.Menu} menu The menu which has been clicked
@@ -159,7 +178,7 @@ Ext.define('Ext.menu.Menu', {
              */
             'click',
 
-<span id='Ext-menu.Menu-event-mouseenter'>            /**
+<span id='Ext-menu-Menu-event-mouseenter'>            /**
 </span>             * @event mouseenter
              * Fires when the mouse enters this menu
              * @param {Ext.menu.Menu} menu The menu
@@ -168,7 +187,7 @@ Ext.define('Ext.menu.Menu', {
              */
             'mouseenter',
 
-<span id='Ext-menu.Menu-event-mouseleave'>            /**
+<span id='Ext-menu-Menu-event-mouseleave'>            /**
 </span>             * @event mouseleave
              * Fires when the mouse leaves this menu
              * @param {Ext.menu.Menu} menu The menu
@@ -177,7 +196,7 @@ Ext.define('Ext.menu.Menu', {
              */
             'mouseleave',
 
-<span id='Ext-menu.Menu-event-mouseover'>            /**
+<span id='Ext-menu-Menu-event-mouseover'>            /**
 </span>             * @event mouseover
              * Fires when the mouse is hovering over this menu
              * @param {Ext.menu.Menu} menu The menu
@@ -190,14 +209,12 @@ Ext.define('Ext.menu.Menu', {
         Ext.menu.Manager.register(me);
 
         // Menu classes
-        var cls = [prefix + 'menu'];
         if (me.plain) {
             cls.push(prefix + 'menu-plain');
         }
         me.cls = cls.join(' ');
 
         // Menu body classes
-        var bodyCls = me.bodyCls ? [me.bodyCls] : [];
         bodyCls.unshift(prefix + 'menu-body');
         me.bodyCls = bodyCls.join(' ');
 
@@ -300,7 +317,7 @@ Ext.define('Ext.menu.Menu', {
         }
     },
 
-<span id='Ext-menu.Menu-method-canActivateItem'>    /**
+<span id='Ext-menu-Menu-method-canActivateItem'>    /**
 </span>     * Returns whether a menu item can be activated or not.
      * @return {Boolean}
      */
@@ -308,7 +325,7 @@ Ext.define('Ext.menu.Menu', {
         return item &amp;&amp; !item.isDisabled() &amp;&amp; item.isVisible() &amp;&amp; (item.canActivate || item.getXTypes().indexOf('menuitem') &lt; 0);
     },
 
-<span id='Ext-menu.Menu-method-deactivateActiveItem'>    /**
+<span id='Ext-menu-Menu-method-deactivateActiveItem'>    /**
 </span>     * Deactivates the current active item on the menu, if one exists.
      */
     deactivateActiveItem: function() {
@@ -363,7 +380,9 @@ Ext.define('Ext.menu.Menu', {
     // private
     lookupItemFromObject: function(cmp) {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls,
+            intercept;
 
         if (!cmp.isComponent) {
             if (!cmp.xtype) {
@@ -378,11 +397,8 @@ Ext.define('Ext.menu.Menu', {
         }
 
         if (!cmp.isMenuItem &amp;&amp; !cmp.dock) {
-            var cls = [
-                    prefix + 'menu-item',
-                    prefix + 'menu-item-cmp'
-                ],
-                intercept = Ext.Function.createInterceptor;
+            cls = [prefix + 'menu-item', prefix + 'menu-item-cmp'];
+            intercept = Ext.Function.createInterceptor;
 
             // Wrap focus/blur to control component focus
             cmp.focus = intercept(cmp.focus, function() {
@@ -516,7 +532,7 @@ Ext.define('Ext.menu.Menu', {
         }
     },
 
-<span id='Ext-menu.Menu-method-showBy'>    /**
+<span id='Ext-menu-Menu-method-showBy'>    /**
 </span>     * Shows the floating menu by the specified {@link Ext.Component Component} or {@link Ext.core.Element Element}.
      * @param {Mixed component} The {@link Ext.Component} or {@link Ext.core.Element} to show the menu by.
      * @param {String} position (optional) Alignment position as used by {@link Ext.core.Element#getAlignToXY Ext.core.Element.getAlignToXY}. Defaults to `{@link #defaultAlign}`.
@@ -525,7 +541,9 @@ Ext.define('Ext.menu.Menu', {
      * @markdown
      */
     showBy: function(cmp, pos, off) {
-        var me = this;
+        var me = this,
+            xy,
+            region;
 
         if (me.floating &amp;&amp; cmp) {
             me.layout.autoSize = true;
@@ -535,22 +553,30 @@ Ext.define('Ext.menu.Menu', {
             cmp = cmp.el || cmp;
 
             // Convert absolute to floatParent-relative coordinates if necessary.
-            var xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
+            xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
             if (me.floatParent) {
-                var r = me.floatParent.getTargetEl().getViewRegion();
-                xy[0] -= r.x;
-                xy[1] -= r.y;
+                region = me.floatParent.getTargetEl().getViewRegion();
+                xy[0] -= region.x;
+                xy[1] -= region.y;
             }
             me.showAt(xy);
-            me.doConstrain();
         }
         return me;
+    },
+    
+    // inherit docs
+    showAt: function(){
+        this.callParent(arguments);
+        if (this.floating) {
+            this.doConstrain();
+        }    
     },
 
     doConstrain : function() {
         var me = this,
-            y = this.el.getY(),
+            y = me.el.getY(),
             max, full,
+            vector,
             returnY = y, normalY, parentEl, scrollTop, viewHeight;
 
         delete me.height;
@@ -586,6 +612,12 @@ Ext.define('Ext.menu.Menu', {
                 me.iconSepEl.setHeight(me.layout.getRenderTarget().dom.scrollHeight);
             }
         }
+        vector = me.getConstrainVector();
+        if (vector) {
+            me.setPosition(me.getPosition()[0] + vector[0]);
+        }
         me.el.setY(returnY);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -5,7 +5,8 @@
  * with configured listeners defined.<br>
  * For example:
  * <pre><code>
-Employee = Ext.extend(Ext.util.Observable, {
+Ext.define('Employee', {
+    extend: 'Ext.util.Observable',
     constructor: function(config){
         this.name = config.name;
         this.addEvents({
@@ -206,7 +207,6 @@ new Ext.panel.Panel({
             options,
             config,
             managedListeners,
-            managedListener,
             length,
             i;
 
@@ -223,14 +223,9 @@ new Ext.panel.Panel({
         }
 
         managedListeners = me.managedListeners ? me.managedListeners.slice() : [];
-        length = managedListeners.length;
 
-        for (i = 0; i < length; i++) {
-            managedListener = managedListeners[i];
-            if (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope)) {
-                Ext.Array.remove(me.managedListeners, managedListener);
-                item.un(managedListener.ename, managedListener.fn, managedListener.scope);
-            }
+        for (i = 0, length = managedListeners.length; i < length; i++) {
+            me.removeManagedListenerItem(false, managedListeners[i], item, ename, fn, scope);
         }
     },
 
@@ -379,7 +374,7 @@ myGridPanel.on({
         } else {
             ename = ename.toLowerCase();
             event = me.events[ename];
-            if (event.isEvent) {
+            if (event && event.isEvent) {
                 event.removeListener(fn, scope);
             }
         }
@@ -407,7 +402,9 @@ myGridPanel.on({
 
     //<debug>
     purgeListeners : function() {
-        console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        }
         return this.clearListeners.apply(this, arguments);
     },
     //</debug>
@@ -418,20 +415,36 @@ myGridPanel.on({
     clearManagedListeners : function() {
         var managedListeners = this.managedListeners || [],
             i = 0,
-            len = managedListeners.length,
-            managedListener;
+            len = managedListeners.length;
 
         for (; i < len; i++) {
-            managedListener = managedListeners[i];
-            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            this.removeManagedListenerItem(true, managedListeners[i]);
         }
 
         this.managedListeners = [];
     },
+    
+    /**
+     * Remove a single managed listener item
+     * @private
+     * @param {Boolean} isClear True if this is being called during a clear
+     * @param {Object} managedListener The managed listener item
+     * See removeManagedListener for other args
+     */
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        if (isClear || (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope))) {
+            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            if (!isClear) {
+                Ext.Array.remove(this.managedListeners, managedListener);
+            }    
+        }
+    },
 
     //<debug>
     purgeManagedListeners : function() {
-        console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        }
         return this.clearManagedListeners.apply(this, arguments);
     },
     //</debug>

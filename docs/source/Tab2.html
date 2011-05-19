@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tab.Tab'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tab-Tab'>/**
 </span> * @author Ed Spencer
  * @class Ext.tab.Tab
  * @extends Ext.button.Button
@@ -24,43 +41,43 @@ Ext.define('Ext.tab.Tab', {
 
     baseCls: Ext.baseCSSPrefix + 'tab',
 
-<span id='Ext-tab.Tab-cfg-activeCls'>    /**
+<span id='Ext-tab-Tab-cfg-activeCls'>    /**
 </span>     * @cfg {String} activeCls
      * The CSS class to be applied to a Tab when it is active. Defaults to 'x-tab-active'.
      * Providing your own CSS for this class enables you to customize the active state.
      */
     activeCls: 'active',
     
-<span id='Ext-tab.Tab-cfg-disabledCls'>    /**
+<span id='Ext-tab-Tab-cfg-disabledCls'>    /**
 </span>     * @cfg {String} disabledCls
      * The CSS class to be applied to a Tab when it is disabled. Defaults to 'x-tab-disabled'.
      */
 
-<span id='Ext-tab.Tab-cfg-closableCls'>    /**
+<span id='Ext-tab-Tab-cfg-closableCls'>    /**
 </span>     * @cfg {String} closableCls
      * The CSS class which is added to the tab when it is closable
      */
     closableCls: 'closable',
 
-<span id='Ext-tab.Tab-cfg-closable'>    /**
+<span id='Ext-tab-Tab-cfg-closable'>    /**
 </span>     * @cfg {Boolean} closable True to make the Tab start closable (the close icon will be visible). Defaults to true
      */
     closable: true,
 
-<span id='Ext-tab.Tab-cfg-closeText'>    /**
+<span id='Ext-tab-Tab-cfg-closeText'>    /**
 </span>     * @cfg {String} closeText 
      * The accessible text label for the close button link; only used when {@link #closable} = true.
      * Defaults to 'Close Tab'.
      */
     closeText: 'Close Tab',
 
-<span id='Ext-tab.Tab-property-Boolean'>    /**
+<span id='Ext-tab-Tab-property-Boolean'>    /**
 </span>     * @property Boolean
      * Read-only property indicating that this tab is currently active. This is NOT a public configuration.
      */
     active: false,
 
-<span id='Ext-tab.Tab-property-closable'>    /**
+<span id='Ext-tab-Tab-property-closable'>    /**
 </span>     * @property closable
      * @type Boolean
      * True if the tab is currently closable
@@ -74,19 +91,19 @@ Ext.define('Ext.tab.Tab', {
         var me = this;
 
         me.addEvents(
-<span id='Ext-tab.Tab-event-activate'>            /**
+<span id='Ext-tab-Tab-event-activate'>            /**
 </span>             * @event activate
              * @param {Ext.tab.Tab} this
              */
             'activate',
 
-<span id='Ext-tab.Tab-event-deactivate'>            /**
+<span id='Ext-tab-Tab-event-deactivate'>            /**
 </span>             * @event deactivate
              * @param {Ext.tab.Tab} this
              */
             'deactivate',
 
-<span id='Ext-tab.Tab-event-beforeclose'>            /**
+<span id='Ext-tab-Tab-event-beforeclose'>            /**
 </span>             * @event beforeclose
              * Fires if the user clicks on the Tab's close button, but before the {@link #close} event is fired. Return
              * false from any listener to stop the close event being fired
@@ -94,7 +111,7 @@ Ext.define('Ext.tab.Tab', {
              */
             'beforeclose',
 
-<span id='Ext-tab.Tab-event-beforeclose'>            /**
+<span id='Ext-tab-Tab-event-beforeclose'>            /**
 </span>             * @event beforeclose
              * Fires to indicate that the tab is to be closed, usually because the user has clicked the close button.
              * @param {Ext.tab.Tab} tab The Tab object
@@ -109,7 +126,7 @@ Ext.define('Ext.tab.Tab', {
         }
     },
 
-<span id='Ext-tab.Tab-method-onRender'>    /**
+<span id='Ext-tab-Tab-method-onRender'>    /**
 </span>     * @ignore
      */
     onRender: function() {
@@ -159,7 +176,7 @@ Ext.define('Ext.tab.Tab', {
         return me;
     },
     
-<span id='Ext-tab.Tab-method-onDestroy'>    /**
+<span id='Ext-tab-Tab-method-onDestroy'>    /**
 </span>     * @ignore
      */
     onDestroy: function() {
@@ -176,7 +193,7 @@ Ext.define('Ext.tab.Tab', {
         me.callParent(arguments);
     },
 
-<span id='Ext-tab.Tab-method-setClosable'>    /**
+<span id='Ext-tab-Tab-method-setClosable'>    /**
 </span>     * Sets the tab as either closable or not
      * @param {Boolean} closable Pass false to make the tab not closable. Otherwise the tab will be made closable (eg a
      * close button will appear on the tab)
@@ -209,7 +226,7 @@ Ext.define('Ext.tab.Tab', {
         }
     },
 
-<span id='Ext-tab.Tab-method-syncClosableElements'>    /**
+<span id='Ext-tab-Tab-method-syncClosableElements'>    /**
 </span>     * This method ensures that the closeBtn element exists or not based on 'closable'.
      * @private
      */
@@ -236,7 +253,7 @@ Ext.define('Ext.tab.Tab', {
         }
     },
 
-<span id='Ext-tab.Tab-method-syncClosableUI'>    /**
+<span id='Ext-tab-Tab-method-syncClosableUI'>    /**
 </span>     * This method ensures that the UI classes are added or removed based on 'closable'.
      * @private
      */
@@ -250,7 +267,7 @@ Ext.define('Ext.tab.Tab', {
         }
     },
 
-<span id='Ext-tab.Tab-method-setCard'>    /**
+<span id='Ext-tab-Tab-method-setCard'>    /**
 </span>     * Sets this tab's attached card. Usually this is handled automatically by the {@link Ext.tab.Panel} that this Tab
      * belongs to and would not need to be done by the developer
      * @param {Ext.Component} card The card to set
@@ -263,7 +280,7 @@ Ext.define('Ext.tab.Tab', {
         me.setIconCls(me.iconCls || card.iconCls);
     },
 
-<span id='Ext-tab.Tab-method-onCloseClick'>    /**
+<span id='Ext-tab-Tab-method-onCloseClick'>    /**
 </span>     * @private
      * Listener attached to click events on the Tab's close button
      */
@@ -272,14 +289,26 @@ Ext.define('Ext.tab.Tab', {
 
         if (me.fireEvent('beforeclose', me) !== false) {
             if (me.tabBar) {
-                me.tabBar.closeTab(me);
+                if (me.tabBar.closeTab(me) === false) {
+                    // beforeclose on the panel vetoed the event, stop here
+                    return;
+                }
+            } else {
+                // if there's no tabbar, fire the close event
+                me.fireEvent('close', me);
             }
-
-            me.fireEvent('close', me);
         }
     },
     
-<span id='Ext-tab.Tab-method-onEnterKey'>    /**
+<span id='Ext-tab-Tab-method-fireClose'>    /**
+</span>     * Fires the close event on the tab.
+     * @private
+     */
+    fireClose: function(){
+        this.fireEvent('close', this);
+    },
+    
+<span id='Ext-tab-Tab-method-onEnterKey'>    /**
 </span>     * @private
      */
     onEnterKey: function(e) {
@@ -290,7 +319,7 @@ Ext.define('Ext.tab.Tab', {
         }
     },
     
-<span id='Ext-tab.Tab-method-onDeleteKey'>   /**
+<span id='Ext-tab-Tab-method-onDeleteKey'>   /**
 </span>     * @private
      */
     onDeleteKey: function(e) {
@@ -325,4 +354,6 @@ Ext.define('Ext.tab.Tab', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

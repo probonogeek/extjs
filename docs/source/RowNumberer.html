@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.RowNumberer-method-constructor'><span id='Ext-grid.RowNumberer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-RowNumberer-method-constructor'><span id='Ext-grid-RowNumberer'>/**
 </span></span> * @class Ext.grid.RowNumberer
  * @extends Ext.grid.column.Column
  * This is a utility class that can be passed into a {@link Ext.grid.column.Column} as a column config that provides
@@ -19,18 +36,18 @@ columns: [
 Ext.define('Ext.grid.RowNumberer', {
     extend: 'Ext.grid.column.Column',
     alias: 'widget.rownumberer',
-<span id='Ext-grid.RowNumberer-cfg-text'>    /**
+<span id='Ext-grid-RowNumberer-cfg-text'>    /**
 </span>     * @cfg {String} text Any valid text or HTML fragment to display in the header cell for the row
      * number column (defaults to '&amp;#160').
      */
     text: &quot;&amp;#160&quot;,
 
-<span id='Ext-grid.RowNumberer-cfg-width'>    /**
+<span id='Ext-grid-RowNumberer-cfg-width'>    /**
 </span>     * @cfg {Number} width The default width in pixels of the row number column (defaults to 23).
      */
     width: 23,
 
-<span id='Ext-grid.RowNumberer-cfg-sortable'>    /**
+<span id='Ext-grid-RowNumberer-cfg-sortable'>    /**
 </span>     * @cfg {Boolean} sortable True if the row number column is sortable (defaults to false).
      * @hide
      */
@@ -63,4 +80,6 @@ Ext.define('Ext.grid.RowNumberer', {
         return store.indexOfTotal(record) + 1;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

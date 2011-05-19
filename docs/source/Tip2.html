@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-slider.Tip'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-slider-Tip'>/**
 </span> * @class Ext.slider.Tip
  * @extends Ext.tip.Tip
  * Simple plugin for using an Ext.tip.Tip with a slider to show the slider value. In general this
@@ -48,7 +65,7 @@ Ext.define('Ext.slider.Tip', {
             destroy  : me.destroy
         });
     },
-<span id='Ext-slider.Tip-method-onSlide'>    /**
+<span id='Ext-slider-Tip-method-onSlide'>    /**
 </span>     * @private
      * Called whenever a dragstart or drag event is received on the associated Thumb. 
      * Aligns the Tip with the Thumb's new position.
@@ -64,7 +81,7 @@ Ext.define('Ext.slider.Tip', {
         me.el.alignTo(thumb.el, 'b-t?', me.offsets);
     },
 
-<span id='Ext-slider.Tip-method-getText'>    /**
+<span id='Ext-slider-Tip-method-getText'>    /**
 </span>     * Used to create the text that appears in the Tip's body. By default this just returns
      * the value of the Slider Thumb that the Tip is attached to. Override to customize.
      * @param {Ext.slider.Thumb} thumb The Thumb that the Tip is attached to
@@ -73,4 +90,6 @@ Ext.define('Ext.slider.Tip', {
     getText : function(thumb) {
         return String(thumb.value);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre>/*
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
  * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
@@ -7,7 +24,7 @@
  */
 
 
-<span id='Ext-dd.DD-method-constructor'><span id='Ext-dd.DD'>/**
+<span id='Ext-dd-DD-method-constructor'><span id='Ext-dd-DD'>/**
 </span></span> * @class Ext.dd.DD
  * A DragDrop implementation where the linked element follows the
  * mouse cursor during a drag.
@@ -29,7 +46,7 @@ Ext.define('Ext.dd.DD', {
         }
     },
 
-<span id='Ext-dd.DD-property-scroll'>    /**
+<span id='Ext-dd-DD-property-scroll'>    /**
 </span>     * When set to true, the utility automatically tries to scroll the browser
      * window when a drag and drop element is dragged near the viewport boundary.
      * Defaults to true.
@@ -38,7 +55,7 @@ Ext.define('Ext.dd.DD', {
      */
     scroll: true,
 
-<span id='Ext-dd.DD-method-autoOffset'>    /**
+<span id='Ext-dd-DD-method-autoOffset'>    /**
 </span>     * Sets the pointer offset to the distance between the linked element's top
      * left corner and the location the element was clicked
      * @method autoOffset
@@ -51,7 +68,7 @@ Ext.define('Ext.dd.DD', {
         this.setDelta(x, y);
     },
 
-<span id='Ext-dd.DD-method-setDelta'>    /**
+<span id='Ext-dd-DD-method-setDelta'>    /**
 </span>     * Sets the pointer offset.  You can call this directly to force the
      * offset to be in a particular location (e.g., pass in 0,0 to set it
      * to the center of the object)
@@ -64,7 +81,7 @@ Ext.define('Ext.dd.DD', {
         this.deltaY = iDeltaY;
     },
 
-<span id='Ext-dd.DD-method-setDragElPos'>    /**
+<span id='Ext-dd-DD-method-setDragElPos'>    /**
 </span>     * Sets the drag element to the location of the mousedown or click event,
      * maintaining the cursor location relative to the location on the element
      * that was clicked.  Override this if you want to place the element in a
@@ -81,7 +98,7 @@ Ext.define('Ext.dd.DD', {
         this.alignElWithMouse(el, iPageX, iPageY);
     },
 
-<span id='Ext-dd.DD-method-alignElWithMouse'>    /**
+<span id='Ext-dd-DD-method-alignElWithMouse'>    /**
 </span>     * Sets the element to the location of the mousedown or click event,
      * maintaining the cursor location relative to the location on the element
      * that was clicked.  Override this if you want to place the element in a
@@ -121,7 +138,7 @@ Ext.define('Ext.dd.DD', {
         return oCoord;
     },
 
-<span id='Ext-dd.DD-method-cachePosition'>    /**
+<span id='Ext-dd-DD-method-cachePosition'>    /**
 </span>     * Saves the most recent position so that we can reset the constraints and
      * tick marks on-demand.  We need to know this so that we can calculate the
      * number of pixels the element is offset from its original position.
@@ -142,7 +159,7 @@ Ext.define('Ext.dd.DD', {
         }
     },
 
-<span id='Ext-dd.DD-method-autoScroll'>    /**
+<span id='Ext-dd-DD-method-autoScroll'>    /**
 </span>     * Auto-scroll the window if the dragged object has been moved beyond the
      * visible window boundary.
      * @method autoScroll
@@ -217,7 +234,7 @@ Ext.define('Ext.dd.DD', {
         }
     },
 
-<span id='Ext-dd.DD-method-getTargetCoord'>    /**
+<span id='Ext-dd-DD-method-getTargetCoord'>    /**
 </span>     * Finds the location the element should be placed if we want to move
      * it to where the mouse location less the click offset would place us.
      * @method getTargetCoord
@@ -255,7 +272,7 @@ Ext.define('Ext.dd.DD', {
         return {x: x, y: y};
     },
 
-<span id='Ext-dd.DD-method-applyConfig'>    /**
+<span id='Ext-dd-DD-method-applyConfig'>    /**
 </span>     * Sets up config options specific to this class. Overrides
      * Ext.dd.DragDrop, but all versions of this method through the
      * inheritance chain are called
@@ -265,7 +282,7 @@ Ext.define('Ext.dd.DD', {
         this.scroll = (this.config.scroll !== false);
     },
 
-<span id='Ext-dd.DD-method-b4MouseDown'>    /**
+<span id='Ext-dd-DD-method-b4MouseDown'>    /**
 </span>     * Event that fires prior to the onMouseDown event.  Overrides
      * Ext.dd.DragDrop.
      */
@@ -274,7 +291,7 @@ Ext.define('Ext.dd.DD', {
         this.autoOffset(e.getPageX(), e.getPageY());
     },
 
-<span id='Ext-dd.DD-method-b4Drag'>    /**
+<span id='Ext-dd-DD-method-b4Drag'>    /**
 </span>     * Event that fires prior to the onDrag event.  Overrides
      * Ext.dd.DragDrop.
      */
@@ -314,4 +331,6 @@ Ext.define('Ext.dd.DD', {
     */
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

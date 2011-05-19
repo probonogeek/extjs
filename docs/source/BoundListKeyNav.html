@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-view.BoundListKeyNav'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-view-BoundListKeyNav'>/**
 </span> * @class Ext.view.BoundListKeyNav
  * @extends Ext.util.KeyNav
  * A specialized {@link Ext.util.KeyNav} implementation for navigating a {@link Ext.view.BoundList} using
@@ -9,7 +26,7 @@ Ext.define('Ext.view.BoundListKeyNav', {
     extend: 'Ext.util.KeyNav',
     requires: 'Ext.view.BoundList',
 
-<span id='Ext-view.BoundListKeyNav-cfg-boundList'>    /**
+<span id='Ext-view-BoundListKeyNav-cfg-boundList'>    /**
 </span>     * @cfg {Ext.view.BoundList} boundList
      * @required
      * The {@link Ext.view.BoundList} instance for which key navigation will be managed. This is required.
@@ -64,7 +81,7 @@ Ext.define('Ext.view.BoundListKeyNav', {
         }
     },
 
-<span id='Ext-view.BoundListKeyNav-method-highlightAt'>    /**
+<span id='Ext-view-BoundListKeyNav-method-highlightAt'>    /**
 </span>     * Highlights the item at the given index.
      * @param {Number} index
      */
@@ -78,7 +95,7 @@ Ext.define('Ext.view.BoundListKeyNav', {
         }
     },
 
-<span id='Ext-view.BoundListKeyNav-method-selectHighlighted'>    /**
+<span id='Ext-view-BoundListKeyNav-method-selectHighlighted'>    /**
 </span>     * Triggers selection of the currently highlighted item according to the behavior of
      * the configured SelectionModel.
      */
@@ -92,4 +109,6 @@ Ext.define('Ext.view.BoundListKeyNav', {
         }
     }
 
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

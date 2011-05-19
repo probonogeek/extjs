@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.TaskRunner-method-constructor'><span id='Ext-util.TaskRunner'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-TaskRunner-method-constructor'><span id='Ext-util-TaskRunner'>/**
 </span></span> * @class Ext.util.TaskRunner
  * Provides the ability to execute one or more arbitrary tasks in a multithreaded
  * manner.  Generally, you can use the singleton {@link Ext.TaskManager} instead, but
@@ -101,7 +118,7 @@ Ext.util.TaskRunner = function(interval) {
         }
     };
 
-<span id='Ext-util.TaskRunner-method-start'>    /**
+<span id='Ext-util-TaskRunner-method-start'>    /**
 </span>     * Starts a new task.
      * @method start
      * @param {Object} task &lt;p&gt;A config object that supports the following properties:&lt;ul&gt;
@@ -134,7 +151,7 @@ Ext.util.TaskRunner = function(interval) {
         return task;
     };
 
-<span id='Ext-util.TaskRunner-method-stop'>    /**
+<span id='Ext-util-TaskRunner-method-stop'>    /**
 </span>     * Stops an existing running task.
      * @method stop
      * @param {Object} task The task to stop
@@ -145,7 +162,7 @@ Ext.util.TaskRunner = function(interval) {
         return task;
     };
 
-<span id='Ext-util.TaskRunner-method-stopAll'>    /**
+<span id='Ext-util-TaskRunner-method-stopAll'>    /**
 </span>     * Stops all tasks that are currently running.
      * @method stopAll
      */
@@ -179,4 +196,6 @@ Ext.TaskManager.start(task);
  * &lt;p&gt;See the {@link #start} method for details about how to configure a task object.&lt;/p&gt;
  * @singleton
  */
-Ext.TaskManager = Ext.create('Ext.util.TaskRunner');</pre></pre></body></html>
+Ext.TaskManager = Ext.create('Ext.util.TaskRunner');</pre>
+</body>
+</html>

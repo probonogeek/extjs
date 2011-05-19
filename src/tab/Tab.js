@@ -272,11 +272,23 @@ Ext.define('Ext.tab.Tab', {
 
         if (me.fireEvent('beforeclose', me) !== false) {
             if (me.tabBar) {
-                me.tabBar.closeTab(me);
+                if (me.tabBar.closeTab(me) === false) {
+                    // beforeclose on the panel vetoed the event, stop here
+                    return;
+                }
+            } else {
+                // if there's no tabbar, fire the close event
+                me.fireEvent('close', me);
             }
-
-            me.fireEvent('close', me);
         }
+    },
+    
+    /**
+     * Fires the close event on the tab.
+     * @private
+     */
+    fireClose: function(){
+        this.fireEvent('close', this);
     },
     
     /**

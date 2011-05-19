@@ -46,6 +46,7 @@ Ext.define('FeedViewer.App', {
             width: 225,
             floatable: false,
             split: true,
+            minWidth: 175,
             feeds: [{
                 title: 'Sencha Blog',
                 url: 'http://feeds.feedburner.com/extblog'
@@ -71,7 +72,8 @@ Ext.define('FeedViewer.App', {
      */
     createFeedInfo: function(){
         this.feedInfo = Ext.create('widget.feedinfo', {
-            region: 'center'
+            region: 'center',
+            minWidth: 300
         });
         return this.feedInfo;
     },

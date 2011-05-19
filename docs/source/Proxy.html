@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-panel.Proxy-method-constructor'><span id='Ext-panel.Proxy'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Proxy-method-constructor'><span id='Ext-panel-Proxy'>/**
 </span></span> * @class Ext.panel.Proxy
  * @extends Object
  * A custom drag proxy implementation specific to {@link Ext.panel.Panel}s. This class
@@ -13,7 +30,7 @@ Ext.define('Ext.panel.Proxy', {
     alternateClassName: 'Ext.dd.PanelProxy',
     
     constructor: function(panel, config){
-<span id='Ext-panel.Proxy-property-panel'>        /**
+<span id='Ext-panel-Proxy-property-panel'>        /**
 </span>         * @property panel
          * @type Ext.panel.Panel
          */
@@ -22,7 +39,7 @@ Ext.define('Ext.panel.Proxy', {
         Ext.apply(this, config);
     },
 
-<span id='Ext-panel.Proxy-cfg-insertProxy'>    /**
+<span id='Ext-panel-Proxy-cfg-insertProxy'>    /**
 </span>     * @cfg {Boolean} insertProxy True to insert a placeholder proxy element
      * while dragging the panel, false to drag with no proxy (defaults to true).
      * Most Panels are not absolute positioned and therefore we need to reserve
@@ -37,7 +54,7 @@ Ext.define('Ext.panel.Proxy', {
     stop: Ext.emptyFn,
     sync: Ext.emptyFn,
 
-<span id='Ext-panel.Proxy-method-getEl'>    /**
+<span id='Ext-panel-Proxy-method-getEl'>    /**
 </span>     * Gets the proxy's element
      * @return {Element} The proxy's element
      */
@@ -45,7 +62,7 @@ Ext.define('Ext.panel.Proxy', {
         return this.ghost.el;
     },
 
-<span id='Ext-panel.Proxy-method-getGhost'>    /**
+<span id='Ext-panel-Proxy-method-getGhost'>    /**
 </span>     * Gets the proxy's ghost Panel
      * @return {Panel} The proxy's ghost Panel
      */
@@ -53,7 +70,7 @@ Ext.define('Ext.panel.Proxy', {
         return this.ghost;
     },
 
-<span id='Ext-panel.Proxy-method-getProxy'>    /**
+<span id='Ext-panel-Proxy-method-getProxy'>    /**
 </span>     * Gets the proxy element. This is the element that represents where the
      * Panel was before we started the drag operation.
      * @return {Element} The proxy's element
@@ -62,7 +79,7 @@ Ext.define('Ext.panel.Proxy', {
         return this.proxy;
     },
 
-<span id='Ext-panel.Proxy-method-hide'>    /**
+<span id='Ext-panel-Proxy-method-hide'>    /**
 </span>     * Hides the proxy
      */
     hide : function(){
@@ -78,7 +95,7 @@ Ext.define('Ext.panel.Proxy', {
         }
     },
 
-<span id='Ext-panel.Proxy-method-show'>    /**
+<span id='Ext-panel-Proxy-method-show'>    /**
 </span>     * Shows the proxy
      */
     show: function(){
@@ -103,7 +120,7 @@ Ext.define('Ext.panel.Proxy', {
         }
     },
 
-<span id='Ext-panel.Proxy-method-moveProxy'>    /**
+<span id='Ext-panel-Proxy-method-moveProxy'>    /**
 </span>     * Moves the proxy to a different position in the DOM.  This is typically
      * called while dragging the Panel to keep the proxy sync'd to the Panel's
      * location.
@@ -117,4 +134,6 @@ Ext.define('Ext.panel.Proxy', {
             parentNode.insertBefore(this.proxy.dom, before);
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

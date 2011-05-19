@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-Loader'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-Loader'>/**
 </span> * @author Jacky Nguyen &lt;jacky@sencha.com&gt;
  * @docauthor Jacky Nguyen &lt;jacky@sencha.com&gt;
  * @class Ext.Loader
@@ -315,7 +332,7 @@ This process will be automated with Sencha Command, to be released and documente
             return this.config;
         },
 
-<span id='Ext-Loader-property-setPath'>        /**
+<span id='Ext-Loader-method-setPath'>        /**
 </span>         * Sets the path of a namespace.
          * For Example:
 
@@ -324,6 +341,7 @@ This process will be automated with Sencha Command, to be released and documente
          * @param {String/Object} name See {@link Ext.Function#flexSetter flexSetter}
          * @param {String} path See {@link Ext.Function#flexSetter flexSetter}
          * @return {Ext.Loader} this
+         * @method
          * @markdown
          */
         setPath: flexSetter(function(name, path) {
@@ -1137,4 +1155,6 @@ This process will be automated with Sencha Command, to be released and documente
     Manager.setDefaultPostprocessorPosition('uses', 'last');
 
 })(Ext.ClassManager, Ext.Class, Ext.Function.flexSetter, Ext.Function.alias);
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

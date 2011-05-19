@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.Time-method-constructor'><span id='Ext-form.field.Time'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Time-method-constructor'><span id='Ext-form-field-Time'>/**
 </span></span> * @class Ext.form.field.Time
  * @extends Ext.form.field.Picker
  * &lt;p&gt;Provides a time input field with a time dropdown and automatic time validation.&lt;/p&gt;
@@ -46,7 +63,7 @@ Ext.define('Ext.form.field.Time', {
     requires: ['Ext.form.field.Date', 'Ext.picker.Time', 'Ext.view.BoundListKeyNav', 'Ext.Date'],
     alternateClassName: ['Ext.form.TimeField', 'Ext.form.Time'],
 
-<span id='Ext-form.field.Time-cfg-triggerCls'>    /**
+<span id='Ext-form-field-Time-cfg-triggerCls'>    /**
 </span>     * @cfg {String} triggerCls
      * An additional CSS class used to style the trigger button.  The trigger will always get the
      * {@link #triggerBaseCls} by default and &lt;tt&gt;triggerCls&lt;/tt&gt; will be &lt;b&gt;appended&lt;/b&gt; if specified.
@@ -54,40 +71,40 @@ Ext.define('Ext.form.field.Time', {
      */
     triggerCls: Ext.baseCSSPrefix + 'form-time-trigger',
 
-<span id='Ext-form.field.Time-cfg-minValue'>    /**
+<span id='Ext-form-field-Time-cfg-minValue'>    /**
 </span>     * @cfg {Date/String} minValue
      * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string
      * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
 
-<span id='Ext-form.field.Time-cfg-maxValue'>    /**
+<span id='Ext-form-field-Time-cfg-maxValue'>    /**
 </span>     * @cfg {Date/String} maxValue
      * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string
      * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
      */
 
-<span id='Ext-form.field.Time-cfg-minText'>    /**
+<span id='Ext-form-field-Time-cfg-minText'>    /**
 </span>     * @cfg {String} minText
      * The error text to display when the entered time is before {@link #minValue} (defaults to
      * 'The time in this field must be equal to or after {0}').
      */
     minText : &quot;The time in this field must be equal to or after {0}&quot;,
 
-<span id='Ext-form.field.Time-cfg-maxText'>    /**
+<span id='Ext-form-field-Time-cfg-maxText'>    /**
 </span>     * @cfg {String} maxText
      * The error text to display when the entered time is after {@link #maxValue} (defaults to
      * 'The time in this field must be equal to or before {0}').
      */
     maxText : &quot;The time in this field must be equal to or before {0}&quot;,
 
-<span id='Ext-form.field.Time-cfg-invalidText'>    /**
+<span id='Ext-form-field-Time-cfg-invalidText'>    /**
 </span>     * @cfg {String} invalidText
      * The error text to display when the time in the field is invalid (defaults to
      * '{value} is not a valid time').
      */
     invalidText : &quot;{0} is not a valid time&quot;,
 
-<span id='Ext-form.field.Time-cfg-format'>    /**
+<span id='Ext-form-field-Time-cfg-format'>    /**
 </span>     * @cfg {String} format
      * The default time format string which can be overriden for localization support.  The format must be
      * valid according to {@link Ext.Date#parse} (defaults to 'g:i A', e.g., '3:15 PM').  For 24-hour time
@@ -95,37 +112,37 @@ Ext.define('Ext.form.field.Time', {
      */
     format : &quot;g:i A&quot;,
 
-<span id='Ext-form.field.Time-cfg-submitFormat'>    /**
+<span id='Ext-form-field-Time-cfg-submitFormat'>    /**
 </span>     * @cfg {String} submitFormat The date format string which will be submitted to the server.
      * The format must be valid according to {@link Ext.Date#parse} (defaults to &lt;tt&gt;{@link #format}&lt;/tt&gt;).
      */
 
-<span id='Ext-form.field.Time-cfg-altFormats'>    /**
+<span id='Ext-form-field-Time-cfg-altFormats'>    /**
 </span>     * @cfg {String} altFormats
      * Multiple date formats separated by &quot;|&quot; to try when parsing a user input value and it doesn't match the defined
      * format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').
      */
     altFormats : &quot;g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A&quot;,
 
-<span id='Ext-form.field.Time-cfg-increment'>    /**
+<span id='Ext-form-field-Time-cfg-increment'>    /**
 </span>     * @cfg {Number} increment
      * The number of minutes between each time value in the list (defaults to 15).
      */
     increment: 15,
 
-<span id='Ext-form.field.Time-cfg-pickerMaxHeight'>    /**
+<span id='Ext-form-field-Time-cfg-pickerMaxHeight'>    /**
 </span>     * @cfg {Number} pickerMaxHeight
      * The maximum height of the {@link Ext.picker.Time} dropdown. Defaults to 300.
      */
     pickerMaxHeight: 300,
 
-<span id='Ext-form.field.Time-cfg-selectOnTab'>    /**
+<span id='Ext-form-field-Time-cfg-selectOnTab'>    /**
 </span>     * @cfg {Boolean} selectOnTab
      * Whether the Tab key should select the currently highlighted item. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     selectOnTab: true,
 
-<span id='Ext-form.field.Time-property-initDate'>    /**
+<span id='Ext-form-field-Time-property-initDate'>    /**
 </span>     * @private
      * This is the date to use when generating time values in the absence of either minValue
      * or maxValue.  Using the current date causes DST issues on DST boundary dates, so this is an
@@ -160,7 +177,7 @@ Ext.define('Ext.form.field.Time', {
         me.callParent();
     },
 
-<span id='Ext-form.field.Time-method-setMinValue'>    /**
+<span id='Ext-form-field-Time-method-setMinValue'>    /**
 </span>     * Replaces any existing {@link #minValue} with the new time and refreshes the picker's range.
      * @param {Date/String} value The minimum time that can be selected
      */
@@ -173,7 +190,7 @@ Ext.define('Ext.form.field.Time', {
         }
     },
 
-<span id='Ext-form.field.Time-method-setMaxValue'>    /**
+<span id='Ext-form-field-Time-method-setMaxValue'>    /**
 </span>     * Replaces any existing {@link #maxValue} with the new time and refreshes the picker's range.
      * @param {Date/String} value The maximum time that can be selected
      */
@@ -186,7 +203,7 @@ Ext.define('Ext.form.field.Time', {
         }
     },
 
-<span id='Ext-form.field.Time-method-setLimit'>    /**
+<span id='Ext-form-field-Time-method-setLimit'>    /**
 </span>     * @private
      * Updates either the min or max value. Converts the user's value into a Date object whose
      * year/month/day is set to the {@link #initDate} so that only the time fields are significant.
@@ -215,7 +232,7 @@ Ext.define('Ext.form.field.Time', {
         return this.formatDate(this.parseDate(value));
     },
 
-<span id='Ext-form.field.Time-method-getErrors'>    /**
+<span id='Ext-form-field-Time-method-getErrors'>    /**
 </span>     * Runs all of Time's validations and returns an array of any errors. Note that this first
      * runs Text's validations, so the returned array is an amalgamation of all field errors.
      * The additional validation checks are testing that the time format is valid, that the chosen
@@ -258,7 +275,7 @@ Ext.define('Ext.form.field.Time', {
         return Ext.form.field.Date.prototype.formatDate.apply(this, arguments);
     },
 
-<span id='Ext-form.field.Time-method-parseDate'>    /**
+<span id='Ext-form-field-Time-method-parseDate'>    /**
 </span>     * @private
      * Parses an input value into a valid Date object.
      * @param {String/Date} value
@@ -313,7 +330,7 @@ Ext.define('Ext.form.field.Time', {
         return value ? Ext.Date.format(value, format) : null;
     },
 
-<span id='Ext-form.field.Time-method-createPicker'>    /**
+<span id='Ext-form-field-Time-method-createPicker'>    /**
 </span>     * @private
      * Creates the {@link Ext.picker.Time}
      */
@@ -343,7 +360,7 @@ Ext.define('Ext.form.field.Time', {
         return picker;
     },
 
-<span id='Ext-form.field.Time-method-onExpand'>    /**
+<span id='Ext-form-field-Time-method-onExpand'>    /**
 </span>     * @private
      * Enables the key nav for the Time picker when it is expanded.
      * TODO this is largely the same logic as ComboBox, should factor out.
@@ -386,7 +403,7 @@ Ext.define('Ext.form.field.Time', {
         }
     },
 
-<span id='Ext-form.field.Time-method-onCollapse'>    /**
+<span id='Ext-form-field-Time-method-onCollapse'>    /**
 </span>     * @private
      * Disables the key nav for the Time picker when it is collapsed.
      */
@@ -399,7 +416,7 @@ Ext.define('Ext.form.field.Time', {
         }
     },
 
-<span id='Ext-form.field.Time-method-onListSelect'>    /**
+<span id='Ext-form-field-Time-method-onListSelect'>    /**
 </span>     * @private
      * Handles a time being selected from the Time picker.
      */
@@ -415,4 +432,6 @@ Ext.define('Ext.form.field.Time', {
     }
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Field'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Field'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.Field
  * @extends Object
@@ -135,7 +152,7 @@ Ext.define('Ext.data.Field', {
         }
     },
     
-<span id='Ext-data.Field-cfg-name'>    /**
+<span id='Ext-data-Field-cfg-name'>    /**
 </span>     * @cfg {String} name
      * The name by which the field is referenced within the Model. This is referenced by, for example,
      * the &lt;code&gt;dataIndex&lt;/code&gt; property in column definition objects passed to {@link Ext.grid.property.HeaderContainer}.
@@ -143,7 +160,7 @@ Ext.define('Ext.data.Field', {
      * definition may consist of just a String for the field name.&lt;/p&gt;
      */
     
-<span id='Ext-data.Field-cfg-type'>    /**
+<span id='Ext-data-Field-cfg-type'>    /**
 </span>     * @cfg {Mixed} type
      * (Optional) The data type for automatic conversion from received data to the &lt;i&gt;stored&lt;/i&gt; value if &lt;code&gt;{@link Ext.data.Field#convert convert}&lt;/code&gt;
      * has not been specified. This may be specified as a string value. Possible values are
@@ -159,7 +176,7 @@ Ext.define('Ext.data.Field', {
      * {@link Ext.data.Types} class.&lt;/p&gt;
      */
     
-<span id='Ext-data.Field-cfg-convert'>    /**
+<span id='Ext-data-Field-cfg-convert'>    /**
 </span>     * @cfg {Function} convert
      * (Optional) A function which converts the value provided by the Reader into an object that will be stored
      * in the Model. It is passed the following parameters:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -218,7 +235,7 @@ var myData = [
 ];
      * &lt;/code&gt;&lt;/pre&gt;
      */
-<span id='Ext-data.Field-cfg-dateFormat'>    /**
+<span id='Ext-data-Field-cfg-dateFormat'>    /**
 </span>     * @cfg {String} dateFormat
      * &lt;p&gt;(Optional) Used when converting received data into a Date when the {@link #type} is specified as &lt;code&gt;&quot;date&quot;&lt;/code&gt;.&lt;/p&gt;
      * &lt;p&gt;A format string for the {@link Ext.Date#parse Ext.Date.parse} function, or &quot;timestamp&quot; if the
@@ -227,21 +244,21 @@ var myData = [
      */
     dateFormat: null,
     
-<span id='Ext-data.Field-cfg-useNull'>    /**
+<span id='Ext-data-Field-cfg-useNull'>    /**
 </span>     * @cfg {Boolean} useNull
      * &lt;p&gt;(Optional) Use when converting received data into a Number type (either int or float). If the value cannot be parsed,
      * null will be used if useNull is true, otherwise the value will be 0. Defaults to &lt;tt&gt;false&lt;/tt&gt;
      */
     useNull: false,
     
-<span id='Ext-data.Field-cfg-defaultValue'>    /**
+<span id='Ext-data-Field-cfg-defaultValue'>    /**
 </span>     * @cfg {Mixed} defaultValue
      * (Optional) The default value used &lt;b&gt;when a Model is being created by a {@link Ext.data.reader.Reader Reader}&lt;/b&gt;
      * when the item referenced by the &lt;code&gt;{@link Ext.data.Field#mapping mapping}&lt;/code&gt; does not exist in the data
      * object (i.e. undefined). (defaults to &quot;&quot;)
      */
     defaultValue: &quot;&quot;,
-<span id='Ext-data.Field-cfg-mapping'>    /**
+<span id='Ext-data-Field-cfg-mapping'>    /**
 </span>     * @cfg {String/Number} mapping
      * &lt;p&gt;(Optional) A path expression for use by the {@link Ext.data.reader.Reader} implementation
      * that is creating the {@link Ext.data.Model Model} to extract the Field value from the data object.
@@ -260,7 +277,7 @@ var myData = [
      * return the desired data.&lt;/p&gt;
      */
     mapping: null,
-<span id='Ext-data.Field-cfg-sortType'>    /**
+<span id='Ext-data-Field-cfg-sortType'>    /**
 </span>     * @cfg {Function} sortType
      * (Optional) A function which converts a Field's value to a comparable value in order to ensure
      * correct sort ordering. Predefined functions are provided in {@link Ext.data.SortTypes}. A custom
@@ -283,13 +300,13 @@ sortType: function(value) {
      * &lt;/code&gt;&lt;/pre&gt;
      */
     sortType : null,
-<span id='Ext-data.Field-cfg-sortDir'>    /**
+<span id='Ext-data-Field-cfg-sortDir'>    /**
 </span>     * @cfg {String} sortDir
      * (Optional) Initial direction to sort (&lt;code&gt;&quot;ASC&quot;&lt;/code&gt; or  &lt;code&gt;&quot;DESC&quot;&lt;/code&gt;).  Defaults to
      * &lt;code&gt;&quot;ASC&quot;&lt;/code&gt;.
      */
     sortDir : &quot;ASC&quot;,
-<span id='Ext-data.Field-cfg-allowBlank'>    /**
+<span id='Ext-data-Field-cfg-allowBlank'>    /**
 </span>     * @cfg {Boolean} allowBlank
      * @private
      * (Optional) Used for validating a {@link Ext.data.Model model}, defaults to &lt;code&gt;true&lt;/code&gt;.
@@ -298,7 +315,7 @@ sortType: function(value) {
      */
     allowBlank : true,
     
-<span id='Ext-data.Field-cfg-persist'>    /**
+<span id='Ext-data-Field-cfg-persist'>    /**
 </span>     * @cfg {Boolean} persist
      * False to exclude this field from the {@link Ext.data.Model#modified} fields in a model. This 
      * will also exclude the field from being written using a {@link Ext.data.writer.Writer}. This option
@@ -307,4 +324,6 @@ sortType: function(value) {
      */
     persist: true
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

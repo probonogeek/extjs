@@ -17,7 +17,7 @@ __Some items have shortcut strings for creation:__
 {@img Ext.toolbar.Toolbar/Ext.toolbar.Toolbar1.png Toolbar component}
 Example usage:
 
-    Ext.create('Ext.toolbar.Toolbar", {
+    Ext.create('Ext.toolbar.Toolbar', {
         renderTo: document.body,
         width   : 500,
         items: [

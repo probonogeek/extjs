@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-panel.Panel-method-constructor'><span id='Ext-panel.Panel'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Panel-method-constructor'><span id='Ext-panel-Panel'>/**
 </span></span> * @class Ext.panel.Panel
  * @extends Ext.panel.AbstractPanel
  * &lt;p&gt;Panel is a container that has specific functionality and structural components that make
@@ -101,14 +118,14 @@ Ext.define('Ext.panel.Panel', {
     alias: 'widget.panel',
     alternateClassName: 'Ext.Panel',
 
-<span id='Ext-panel.Panel-cfg-collapsedCls'>    /**
+<span id='Ext-panel-Panel-cfg-collapsedCls'>    /**
 </span>     * @cfg {String} collapsedCls
      * A CSS class to add to the panel&amp;#39;s element after it has been collapsed (defaults to
      * &lt;code&gt;'collapsed'&lt;/code&gt;).
      */
     collapsedCls: 'collapsed',
 
-<span id='Ext-panel.Panel-cfg-animCollapse'>    /**
+<span id='Ext-panel-Panel-cfg-animCollapse'>    /**
 </span>     * @cfg {Boolean} animCollapse
      * &lt;code&gt;true&lt;/code&gt; to animate the transition when the panel is collapsed, &lt;code&gt;false&lt;/code&gt; to skip the
      * animation (defaults to &lt;code&gt;true&lt;/code&gt; if the {@link Ext.fx.Anim} class is available, otherwise &lt;code&gt;false&lt;/code&gt;).
@@ -116,7 +133,7 @@ Ext.define('Ext.panel.Panel', {
      */
     animCollapse: Ext.enableFx,
 
-<span id='Ext-panel.Panel-cfg-minButtonWidth'>    /**
+<span id='Ext-panel-Panel-cfg-minButtonWidth'>    /**
 </span>     * @cfg {Number} minButtonWidth
      * Minimum width of all footer toolbar buttons in pixels (defaults to &lt;tt&gt;75&lt;/tt&gt;). If set, this will
      * be used as the default value for the &lt;tt&gt;{@link Ext.button.Button#minWidth}&lt;/tt&gt; config of
@@ -126,28 +143,28 @@ Ext.define('Ext.panel.Panel', {
      */
     minButtonWidth: 75,
 
-<span id='Ext-panel.Panel-cfg-collapsed'>    /**
+<span id='Ext-panel-Panel-cfg-collapsed'>    /**
 </span>     * @cfg {Boolean} collapsed
      * &lt;code&gt;true&lt;/code&gt; to render the panel collapsed, &lt;code&gt;false&lt;/code&gt; to render it expanded (defaults to
      * &lt;code&gt;false&lt;/code&gt;).
      */
     collapsed: false,
 
-<span id='Ext-panel.Panel-cfg-collapseFirst'>    /**
+<span id='Ext-panel-Panel-cfg-collapseFirst'>    /**
 </span>     * @cfg {Boolean} collapseFirst
      * &lt;code&gt;true&lt;/code&gt; to make sure the collapse/expand toggle button always renders first (to the left of)
      * any other tools in the panel&amp;#39;s title bar, &lt;code&gt;false&lt;/code&gt; to render it last (defaults to &lt;code&gt;true&lt;/code&gt;).
      */
     collapseFirst: true,
 
-<span id='Ext-panel.Panel-cfg-hideCollapseTool'>    /**
+<span id='Ext-panel-Panel-cfg-hideCollapseTool'>    /**
 </span>     * @cfg {Boolean} hideCollapseTool
      * &lt;code&gt;true&lt;/code&gt; to hide the expand/collapse toggle button when &lt;code&gt;{@link #collapsible} == true&lt;/code&gt;,
      * &lt;code&gt;false&lt;/code&gt; to display it (defaults to &lt;code&gt;false&lt;/code&gt;).
      */
     hideCollapseTool: false,
 
-<span id='Ext-panel.Panel-cfg-titleCollapse'>    /**
+<span id='Ext-panel-Panel-cfg-titleCollapse'>    /**
 </span>     * @cfg {Boolean} titleCollapse
      * &lt;code&gt;true&lt;/code&gt; to allow expanding and collapsing the panel (when &lt;code&gt;{@link #collapsible} = true&lt;/code&gt;)
      * by clicking anywhere in the header bar, &lt;code&gt;false&lt;/code&gt;) to allow it only by clicking to tool button
@@ -155,7 +172,7 @@ Ext.define('Ext.panel.Panel', {
      */
     titleCollapse: false,
 
-<span id='Ext-panel.Panel-cfg-collapseMode'>    /**
+<span id='Ext-panel-Panel-cfg-collapseMode'>    /**
 </span>     * @cfg {String} collapseMode
      * &lt;p&gt;&lt;b&gt;Important: this config is only effective for {@link #collapsible} Panels which are direct child items of a {@link Ext.layout.container.Border border layout}.&lt;/b&gt;&lt;/p&gt;
      * &lt;p&gt;When &lt;i&gt;not&lt;/i&gt; a direct child item of a {@link Ext.layout.container.Border border layout}, then the Panel&amp;#39;s header remains visible, and the body is collapsed to zero dimensions.
@@ -168,7 +185,7 @@ Ext.define('Ext.panel.Panel', {
      * &lt;/ul&gt;&lt;/div&gt;&lt;/p&gt;
      */
 
-<span id='Ext-panel.Panel-cfg-placeholder'>    /**
+<span id='Ext-panel-Panel-cfg-placeholder'>    /**
 </span>     * @cfg {Mixed} placeholder
      * &lt;p&gt;&lt;b&gt;Important: This config is only effective for {@link #collapsible} Panels which are direct child items of a {@link Ext.layout.container.Border border layout}
      * when not using the &lt;code&gt;'header'&lt;/code&gt; {@link #collapseMode}.&lt;/b&gt;&lt;/p&gt;
@@ -177,7 +194,7 @@ Ext.define('Ext.panel.Panel', {
      * containing a {@link Ext.panel.Tool Tool} to re-expand the Panel.&lt;/p&gt;
      */
 
-<span id='Ext-panel.Panel-cfg-floatable'>    /**
+<span id='Ext-panel-Panel-cfg-floatable'>    /**
 </span>     * @cfg {Boolean} floatable
      * &lt;p&gt;&lt;b&gt;Important: This config is only effective for {@link #collapsible} Panels which are direct child items of a {@link Ext.layout.container.Border border layout}.&lt;/b&gt;&lt;/p&gt;
      * &lt;tt&gt;true&lt;/tt&gt; to allow clicking a collapsed Panel&amp;#39;s {@link #placeholder} to display the Panel floated
@@ -185,8 +202,14 @@ Ext.define('Ext.panel.Panel', {
      * clicking the expand button to see it again (defaults to &lt;tt&gt;true&lt;/tt&gt;).
      */
     floatable: true,
-
-<span id='Ext-panel.Panel-cfg-collapsible'>    /**
+    
+<span id='Ext-panel-Panel-cfg-overlapHeader'>    /**
+</span>     * @cfg {Mixed} overlapHeader
+     * True to overlap the header in a panel over the framing of the panel itself. This is needed when frame:true (and is done automatically for you). Otherwise it is undefined.
+     * If you manually add rounded corners to a panel header which does not have frame:true, this will need to be set to true.
+     */
+    
+<span id='Ext-panel-Panel-cfg-collapsible'>    /**
 </span>     * @cfg {Boolean} collapsible
      * &lt;p&gt;True to make the panel collapsible and have an expand/collapse toggle Tool added into
      * the header tool button area. False to keep the panel sized either statically, or by an owning layout manager, with no toggle Tool (defaults to false).&lt;/p&gt;
@@ -194,7 +217,7 @@ Ext.define('Ext.panel.Panel', {
      */
     collapsible: false,
 
-<span id='Ext-panel.Panel-cfg-collapseDirection'>    /**
+<span id='Ext-panel-Panel-cfg-collapseDirection'>    /**
 </span>     * @cfg {Boolean} collapseDirection
      * &lt;p&gt;The direction to collapse the Panel when the toggle button is clicked.&lt;/p&gt;
      * &lt;p&gt;Defaults to the {@link #headerPosition}&lt;/p&gt;
@@ -202,7 +225,7 @@ Ext.define('Ext.panel.Panel', {
      * &lt;p&gt;Specify as &lt;code&gt;'top'&lt;/code&gt;, &lt;code&gt;'bottom'&lt;/code&gt;, &lt;code&gt;'left'&lt;/code&gt; or &lt;code&gt;'right'&lt;/code&gt;.&lt;/p&gt;
      */
 
-<span id='Ext-panel.Panel-cfg-closable'>    /**
+<span id='Ext-panel-Panel-cfg-closable'>    /**
 </span>     * @cfg {Boolean} closable
      * &lt;p&gt;True to display the 'close' tool button and allow the user to close the window, false to
      * hide the button and disallow closing the window (defaults to &lt;code&gt;false&lt;/code&gt;).&lt;/p&gt;
@@ -214,7 +237,7 @@ Ext.define('Ext.panel.Panel', {
      */
     closable: false,
 
-<span id='Ext-panel.Panel-cfg-closeAction'>    /**
+<span id='Ext-panel-Panel-cfg-closeAction'>    /**
 </span>     * @cfg {String} closeAction
      * &lt;p&gt;The action to take when the close header tool is clicked:
      * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -233,7 +256,7 @@ Ext.define('Ext.panel.Panel', {
      */
     closeAction: 'destroy',
 
-<span id='Ext-panel.Panel-cfg-dockedItems'>    /**
+<span id='Ext-panel-Panel-cfg-dockedItems'>    /**
 </span>     * @cfg {Object/Array} dockedItems
      * A component or series of components to be added as docked items to this panel.
      * The docked items can be docked to either the top, right, left or bottom of a panel.
@@ -250,29 +273,29 @@ var panel = new Ext.panel.Panel({
 });&lt;/pre&gt;&lt;/code&gt;
      */
 
-<span id='Ext-panel.Panel-cfg-preventHeader'>    /**
+<span id='Ext-panel-Panel-cfg-preventHeader'>    /**
 </span>      * @cfg {Boolean} preventHeader Prevent a Header from being created and shown. Defaults to false.
       */
     preventHeader: false,
 
-<span id='Ext-panel.Panel-cfg-headerPosition'>     /**
+<span id='Ext-panel-Panel-cfg-headerPosition'>     /**
 </span>      * @cfg {String} headerPosition Specify as &lt;code&gt;'top'&lt;/code&gt;, &lt;code&gt;'bottom'&lt;/code&gt;, &lt;code&gt;'left'&lt;/code&gt; or &lt;code&gt;'right'&lt;/code&gt;. Defaults to &lt;code&gt;'top'&lt;/code&gt;.
       */
     headerPosition: 'top',
 
-<span id='Ext-panel.Panel-cfg-frame'>     /**
+<span id='Ext-panel-Panel-cfg-frame'>     /**
 </span>     * @cfg {Boolean} frame
      * True to apply a frame to the panel.
      */
     frame: false,
 
-<span id='Ext-panel.Panel-cfg-frameHeader'>    /**
+<span id='Ext-panel-Panel-cfg-frameHeader'>    /**
 </span>     * @cfg {Boolean} frameHeader
      * True to apply a frame to the panel panels header (if 'frame' is true).
      */
     frameHeader: true,
 
-<span id='Ext-panel.Panel-cfg-tools'>    /**
+<span id='Ext-panel-Panel-cfg-tools'>    /**
 </span>     * @cfg {Array} tools
      * An array of {@link Ext.panel.Tool} configs/instances to be added to the header tool area. The tools are stored as child
      * components of the header container. They can be accessed using {@link #down} and {#query}, as well as the other
@@ -306,7 +329,7 @@ tools:[{
             cls;
 
         me.addEvents(
-<span id='Ext-panel.Panel-event-titlechange'>        /**
+<span id='Ext-panel-Panel-event-titlechange'>        /**
 </span>         * @event titlechange
          * Fires after the Panel title has been set or changed.
          * @param {Ext.panel.Panel} p the Panel which has been resized.
@@ -314,7 +337,7 @@ tools:[{
          * @param {String} oldTitle The previous panel title.
          */
             'titlechange',
-<span id='Ext-panel.Panel-event-iconchange'>        /**
+<span id='Ext-panel-Panel-event-iconchange'>        /**
 </span>         * @event iconchange
          * Fires after the Panel iconCls has been set or changed.
          * @param {Ext.panel.Panel} p the Panel which has been resized.
@@ -386,7 +409,7 @@ tools:[{
         return this.header;
     },
 
-<span id='Ext-panel.Panel-method-setTitle'>    /**
+<span id='Ext-panel-Panel-method-setTitle'>    /**
 </span>     * Set a title for the panel&amp;#39;s header. See {@link Ext.panel.Header#title}.
      * @param {String} newTitle
      */
@@ -407,7 +430,7 @@ tools:[{
         me.fireEvent('titlechange', me, newTitle, oldTitle);
     },
 
-<span id='Ext-panel.Panel-method-setIconCls'>    /**
+<span id='Ext-panel-Panel-method-setIconCls'>    /**
 </span>     * Set the iconCls for the panel&amp;#39;s header. See {@link Ext.panel.Header#iconCls}.
      * @param {String} newIconCls
      */
@@ -448,7 +471,7 @@ tools:[{
 
         // Backwards compatibility
 
-<span id='Ext-panel.Panel-cfg-tbar'>        /**
+<span id='Ext-panel-Panel-cfg-tbar'>        /**
 </span>         * @cfg {Object/Array} tbar
 
 Convenience method. Short for 'Top Bar'.
@@ -474,7 +497,7 @@ is equivalent to
             me.tbar = null;
         }
 
-<span id='Ext-panel.Panel-cfg-bbar'>        /**
+<span id='Ext-panel-Panel-cfg-bbar'>        /**
 </span>         * @cfg {Object/Array} bbar
 
 Convenience method. Short for 'Bottom Bar'.
@@ -500,7 +523,7 @@ is equivalent to
             me.bbar = null;
         }
 
-<span id='Ext-panel.Panel-cfg-buttons'>        /**
+<span id='Ext-panel-Panel-cfg-buttons'>        /**
 </span>         * @cfg {Object/Array} buttons
 
 Convenience method used for adding buttons docked to the bottom right of the panel. This is a
@@ -532,7 +555,7 @@ each of the buttons in the buttons toolbar.
             me.buttons = null;
         }
 
-<span id='Ext-panel.Panel-cfg-fbar'>        /**
+<span id='Ext-panel-Panel-cfg-fbar'>        /**
 </span>         * @cfg {Object/Array} fbar
 
 Convenience method used for adding items to the bottom right of the panel. Short for Footer Bar.
@@ -584,7 +607,7 @@ each of the buttons in the fbar.
             me.fbar = null;
         }
 
-<span id='Ext-panel.Panel-cfg-lbar'>        /**
+<span id='Ext-panel-Panel-cfg-lbar'>        /**
 </span>         * @cfg {Object/Array} lbar
          *
          * Convenience method. Short for 'Left Bar' (left-docked, vertical toolbar).
@@ -610,7 +633,7 @@ each of the buttons in the fbar.
             me.lbar = null;
         }
 
-<span id='Ext-panel.Panel-cfg-rbar'>        /**
+<span id='Ext-panel-Panel-cfg-rbar'>        /**
 </span>         * @cfg {Object/Array} rbar
          *
          * Convenience method. Short for 'Right Bar' (right-docked, vertical toolbar).
@@ -637,7 +660,7 @@ each of the buttons in the fbar.
         }
     },
 
-<span id='Ext-panel.Panel-method-initTools'>    /**
+<span id='Ext-panel-Panel-method-initTools'>    /**
 </span>     * @private
      * Tools are a Panel-specific capabilty.
      * Panel uses initTools. Subclasses may contribute tools by implementing addTools.
@@ -683,13 +706,13 @@ each of the buttons in the fbar.
         }
     },
 
-<span id='Ext-panel.Panel-property-addTools'>    /**
+<span id='Ext-panel-Panel-property-addTools'>    /**
 </span>     * @private
      * Template method to be implemented in subclasses to add their tools after the collapsible tool.
      */
     addTools: Ext.emptyFn,
 
-<span id='Ext-panel.Panel-method-close'>    /**
+<span id='Ext-panel-Panel-method-close'>    /**
 </span>     * &lt;p&gt;Closes the Panel. By default, this method, removes it from the DOM, {@link Ext.Component#destroy destroy}s
      * the Panel object and all its descendant Components. The {@link #beforeclose beforeclose}
      * event is fired before the close happens and will cancel the close action if it returns false.&lt;p&gt;
@@ -745,7 +768,7 @@ each of the buttons in the fbar.
         me.callParent(arguments);
     },
 
-<span id='Ext-panel.Panel-method-updateHeader'>    /**
+<span id='Ext-panel-Panel-method-updateHeader'>    /**
 </span>     * Create, hide, or show the header component as appropriate based on the current config.
      * @private
      * @param {Boolean} force True to force the the header to be created
@@ -833,7 +856,7 @@ each of the buttons in the fbar.
         }
     },
 
-<span id='Ext-panel.Panel-method-collapse'>    /**
+<span id='Ext-panel-Panel-method-collapse'>    /**
 </span>     * Collapses the panel body so that the body becomes hidden. Docked Components parallel to the
      * border towards which the collapse takes place will remain visible.  Fires the {@link #beforecollapse} event which will
      * cancel the collapse action if it returns false.
@@ -1014,12 +1037,14 @@ each of the buttons in the fbar.
                 cls: me.baseCls + '-collapsed-placeholder ' + ' ' + Ext.baseCSSPrefix + 'docked ' + me.baseCls + '-' + me.ui + '-collapsed',
                 renderTo: me.el
             };
-            reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
-                xtype: 'tool',
-                type: 'expand-' + me.expandDirection,
-                handler: me.toggleCollapse,
-                scope: me
-            }];
+            if (!me.hideCollapseTool) {
+                reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
+                    xtype: 'tool',
+                    type: 'expand-' + me.expandDirection,
+                    handler: me.toggleCollapse,
+                    scope: me
+                }];
+            }
 
             // Capture the size of the re-expander.
             // For vertical headers in IE6 and IE7, this will be sized by a CSS rule in _panel.scss
@@ -1059,6 +1084,10 @@ each of the buttons in the fbar.
         if (animate) {
             me.animate(anim);
         } else {
+            // EXTJSIV-1937 (would like to use setCalculateSize)
+            // save width/height here, expand puts them back
+            me.uncollapsedSize = { width: me.width, height: me.height };
+
             me.setSize(anim.to.width, anim.to.height);
             if (Ext.isDefined(anim.to.left) || Ext.isDefined(anim.to.top)) {
                 me.setPosition(anim.to.left, anim.to.top);
@@ -1108,7 +1137,7 @@ each of the buttons in the fbar.
         }
     },
 
-<span id='Ext-panel.Panel-method-expand'>    /**
+<span id='Ext-panel-Panel-method-expand'>    /**
 </span>     * Expands the panel body so that it becomes visible.  Fires the {@link #beforeexpand} event which will
      * cancel the expand action if it returns false.
      * @param {Boolean} animate True to animate the transition, else false (defaults to the value of the
@@ -1119,6 +1148,19 @@ each of the buttons in the fbar.
         if (!this.collapsed || this.fireEvent('beforeexpand', this, animate) === false) {
             return false;
         }
+
+        // EXTJSIV-1937 (would like to use setCalculateSize)
+        if (this.uncollapsedSize) {
+            Ext.Object.each(this.uncollapsedSize, function (name, value) {
+                if (Ext.isDefined(value)) {
+                    this[name] = value;
+                } else {
+                    delete this[name];
+                }
+            }, this);
+            delete this.uncollapsedSize;
+        }
+
         var me = this,
             i = 0,
             l = me.hiddenDocked.length,
@@ -1285,7 +1327,7 @@ each of the buttons in the fbar.
         }
     },
 
-<span id='Ext-panel.Panel-method-toggleCollapse'>    /**
+<span id='Ext-panel-Panel-method-toggleCollapse'>    /**
 </span>     * Shortcut for performing an {@link #expand} or {@link #collapse} based on the current state of the panel.
      * @return {Ext.panel.Panel} this
      */
@@ -1308,7 +1350,7 @@ each of the buttons in the fbar.
 
     // private
     initDraggable : function(){
-<span id='Ext-panel.Panel-property-dd'>        /**
+<span id='Ext-panel-Panel-property-dd'>        /**
 </span>         * &lt;p&gt;If this Panel is configured {@link #draggable}, this property will contain
          * an instance of {@link Ext.dd.DragSource} which handles dragging the Panel.&lt;/p&gt;
          * The developer must provide implementations of the abstract methods of {@link Ext.dd.DragSource}
@@ -1410,4 +1452,6 @@ each of the buttons in the fbar.
         this.callParent([resizable]);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

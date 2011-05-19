@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-direct.Manager'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-direct-Manager'>/**
 </span> * @class Ext.direct.Manager
  * &lt;p&gt;&lt;b&gt;&lt;u&gt;Overview&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
  *
@@ -81,14 +98,14 @@ Ext.define('Ext.direct.Manager', {
         var me = this;
        
         me.addEvents(
-<span id='Ext-direct.Manager-event-event'>            /**
+<span id='Ext-direct-Manager-event-event'>            /**
 </span>             * @event event
              * Fires after an event.
              * @param {event} e The Ext.direct.Event type that occurred.
              * @param {Ext.direct.Provider} provider The {@link Ext.direct.Provider Provider}.
              */
             'event',
-<span id='Ext-direct.Manager-event-exception'>            /**
+<span id='Ext-direct-Manager-event-exception'>            /**
 </span>             * @event exception
              * Fires after an event exception.
              * @param {event} e The Ext.direct.Event type that occurred.
@@ -101,7 +118,7 @@ Ext.define('Ext.direct.Manager', {
         me.mixins.observable.constructor.call(me);
     },
     
-<span id='Ext-direct.Manager-method-addProvider'>    /**
+<span id='Ext-direct-Manager-method-addProvider'>    /**
 </span>     * Adds an Ext.Direct Provider and creates the proxy or stub methods to execute server-side methods.
      * If the provider is not already connected, it will auto-connect.
      * &lt;pre&gt;&lt;code&gt;
@@ -164,7 +181,7 @@ Ext.direct.Manager.addProvider({
         return provider;
     },
     
-<span id='Ext-direct.Manager-method-getProvider'>    /**
+<span id='Ext-direct-Manager-method-getProvider'>    /**
 </span>     * Retrieve a {@link Ext.direct.Provider provider} by the
      * &lt;b&gt;&lt;tt&gt;{@link Ext.direct.Provider#id id}&lt;/tt&gt;&lt;/b&gt; specified when the provider is
      * {@link #addProvider added}.
@@ -174,7 +191,7 @@ Ext.direct.Manager.addProvider({
         return id.isProvider ? id : this.providers.get(id);
     },
     
-<span id='Ext-direct.Manager-method-removeProvider'>    /**
+<span id='Ext-direct-Manager-method-removeProvider'>    /**
 </span>     * Removes the provider.
      * @param {String/Ext.direct.Provider} provider The provider instance or the id of the provider.
      * @return {Ext.direct.Provider} The provider, null if not found.
@@ -192,7 +209,7 @@ Ext.direct.Manager.addProvider({
         return null;
     },
     
-<span id='Ext-direct.Manager-method-addTransaction'>    /**
+<span id='Ext-direct-Manager-method-addTransaction'>    /**
 </span>     * Add a transaction to the manager.
      * @private
      * @param {Ext.direct.Transaction} transaction The transaction to add
@@ -203,7 +220,7 @@ Ext.direct.Manager.addProvider({
         return transaction;
     },
 
-<span id='Ext-direct.Manager-method-removeTransaction'>    /**
+<span id='Ext-direct-Manager-method-removeTransaction'>    /**
 </span>     * Remove a transaction from the manager.
      * @private
      * @param {String/Ext.direct.Transaction} transaction The transaction/id of transaction to remove
@@ -215,7 +232,7 @@ Ext.direct.Manager.addProvider({
         return transaction;
     },
 
-<span id='Ext-direct.Manager-method-getTransaction'>    /**
+<span id='Ext-direct-Manager-method-getTransaction'>    /**
 </span>     * Gets a transaction
      * @private
      * @param {String/Ext.direct.Transaction} transaction The transaction/id of transaction to get
@@ -247,4 +264,6 @@ Ext.direct.Manager.addProvider({
     // Backwards compatibility
     Ext.Direct = Ext.direct.Manager;
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

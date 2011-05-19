@@ -328,7 +328,9 @@ new Ext.Component({
             me.el.setVisibilityMode(Ext.core.Element[me.hideMode.toUpperCase()]);
         }
 
-        me.setAutoScroll(me.autoScroll);
+        if (Ext.isDefined(me.autoScroll)) {
+            me.setAutoScroll(me.autoScroll);
+        }
         me.callParent();
 
         if (!(me.x && me.y) && (me.pageX || me.pageY)) {
@@ -835,6 +837,7 @@ new Ext.Component({
                 me.container.remove();
             }
         }
+        delete me.focusTask;
         me.callParent();
     },
 
@@ -858,7 +861,10 @@ new Ext.Component({
                 focusEl;
 
         if (delay) {
-            me.focusTask.delay(Ext.isNumber(delay) ? delay: 10, null, me, [selectText, false]);
+            if (!me.focusTask) {
+                me.focusTask = Ext.create('Ext.util.DelayedTask', me.focus);
+            }
+            me.focusTask.delay(Ext.isNumber(delay) ? delay : 10, null, me, [selectText, false]);
             return me;
         }
 
@@ -1022,10 +1028,5 @@ alert(t.getXType());  // alerts 'textfield'
         }
         return this.proxy;
     }
-
-}, function() {
-
-    // A single focus delayer for all Components.
-    this.prototype.focusTask = Ext.create('Ext.util.DelayedTask', this.prototype.focus);
 
 });

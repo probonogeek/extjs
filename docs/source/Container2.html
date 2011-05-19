@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.header.Container'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-header-Container'>/**
 </span> * @class Ext.grid.header.Container
  * @extends Ext.container.Container
  * @private
@@ -28,14 +45,14 @@ Ext.define('Ext.grid.header.Container', {
     baseCls: Ext.baseCSSPrefix + 'grid-header-ct',
     dock: 'top',
 
-<span id='Ext-grid.header.Container-cfg-weight'>    /**
+<span id='Ext-grid-header-Container-cfg-weight'>    /**
 </span>     * @cfg {Number} weight
      * HeaderContainer overrides the default weight of 0 for all docked items to 100.
      * This is so that it has more priority over things like toolbars.
      */
     weight: 100,
     defaultType: 'gridcolumn',
-<span id='Ext-grid.header.Container-cfg-defaultWidth'>    /**
+<span id='Ext-grid-header-Container-cfg-defaultWidth'>    /**
 </span>     * @cfg {Number} defaultWidth
      * Width of the header if no width or flex is specified. Defaults to 100.
      */
@@ -58,13 +75,13 @@ Ext.define('Ext.grid.header.Container', {
 
     dragging: false,
 
-<span id='Ext-grid.header.Container-property-isGroupHeader'>    /**
+<span id='Ext-grid-header-Container-property-isGroupHeader'>    /**
 </span>     * &lt;code&gt;true&lt;/code&gt; if this HeaderContainer is in fact a group header which contains sub headers.
      * @type Boolean
      * @property isGroupHeader
      */
 
-<span id='Ext-grid.header.Container-cfg-sortable'>    /**
+<span id='Ext-grid-header-Container-cfg-sortable'>    /**
 </span>     * @cfg {Boolean} sortable
      * Provides the default sortable state for all Headers within this HeaderContainer.
      * Also turns on or off the menus in the HeaderContainer. Note that the menu is
@@ -117,7 +134,7 @@ Ext.define('Ext.grid.header.Container', {
         });
         me.callParent();
         me.addEvents(
-<span id='Ext-grid.header.Container-event-columnresize'>            /**
+<span id='Ext-grid-header-Container-event-columnresize'>            /**
 </span>             * @event columnresize
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
@@ -125,7 +142,7 @@ Ext.define('Ext.grid.header.Container', {
              */
             'columnresize',
 
-<span id='Ext-grid.header.Container-event-headerclick'>            /**
+<span id='Ext-grid-header-Container-event-headerclick'>            /**
 </span>             * @event headerclick
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
@@ -134,7 +151,7 @@ Ext.define('Ext.grid.header.Container', {
              */
             'headerclick',
 
-<span id='Ext-grid.header.Container-event-headertriggerclick'>            /**
+<span id='Ext-grid-header-Container-event-headertriggerclick'>            /**
 </span>             * @event headertriggerclick
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
@@ -143,7 +160,7 @@ Ext.define('Ext.grid.header.Container', {
              */
             'headertriggerclick',
 
-<span id='Ext-grid.header.Container-event-columnmove'>            /**
+<span id='Ext-grid-header-Container-event-columnmove'>            /**
 </span>             * @event columnmove
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
@@ -151,26 +168,26 @@ Ext.define('Ext.grid.header.Container', {
              * @param {Number} toIdx
              */
             'columnmove',
-<span id='Ext-grid.header.Container-event-columnhide'>            /**
+<span id='Ext-grid-header-Container-event-columnhide'>            /**
 </span>             * @event columnhide
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
              */
             'columnhide',
-<span id='Ext-grid.header.Container-event-columnshow'>            /**
+<span id='Ext-grid-header-Container-event-columnshow'>            /**
 </span>             * @event columnshow
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
              */
             'columnshow',
-<span id='Ext-grid.header.Container-event-sortchange'>            /**
+<span id='Ext-grid-header-Container-event-sortchange'>            /**
 </span>             * @event sortchange
              * @param {Ext.grid.header.Container} ct The grid's header Container which encapsulates all column headers.
              * @param {Ext.grid.column.Column} column The Column header Component which provides the column definition
              * @param {String} direction
              */
             'sortchange',
-<span id='Ext-grid.header.Container-event-menucreate'>            /**
+<span id='Ext-grid-header-Container-event-menucreate'>            /**
 </span>             * @event menucreate
              * Fired immediately after the column header menu is created.
              * @param {Ext.grid.header.Container} ct This instance
@@ -356,7 +373,7 @@ Ext.define('Ext.grid.header.Container', {
         }
     },
 
-<span id='Ext-grid.header.Container-method-tempLock'>    /**
+<span id='Ext-grid-header-Container-method-tempLock'>    /**
 </span>     * Temporarily lock the headerCt. This makes it so that clicking on headers
      * don't trigger actions like sorting or opening of the header menu. This is
      * done because extraneous events may be fired on the headers after interacting
@@ -447,7 +464,7 @@ Ext.define('Ext.grid.header.Container', {
         me.fireEvent(&quot;columnmove&quot;, me, header, fromIdx, toIdx);
     },
 
-<span id='Ext-grid.header.Container-method-getMenu'>    /**
+<span id='Ext-grid-header-Container-method-getMenu'>    /**
 </span>     * Gets the menu (and will create it if it doesn't already exist)
      * @private
      */
@@ -468,7 +485,7 @@ Ext.define('Ext.grid.header.Container', {
         return me.menu;
     },
 
-<span id='Ext-grid.header.Container-method-getMenuItems'>    /**
+<span id='Ext-grid-header-Container-method-getMenuItems'>    /**
 </span>     * Returns an array of menu items to be placed into the shared menu
      * across all headers in this header container.
      * @returns {Array} menuItems
@@ -516,7 +533,7 @@ Ext.define('Ext.grid.header.Container', {
         activeHeader.setSortState('DESC');
     },
 
-<span id='Ext-grid.header.Container-method-getColumnMenu'>    /**
+<span id='Ext-grid-header-Container-method-getColumnMenu'>    /**
 </span>     * Returns an array of menu CheckItems corresponding to all immediate children of the passed Container which have been configured as hideable.
      */
     getColumnMenu: function(headerContainer) {
@@ -557,7 +574,7 @@ Ext.define('Ext.grid.header.Container', {
         header[checked ? 'show' : 'hide']();
     },
 
-<span id='Ext-grid.header.Container-method-getColumnsForTpl'>    /**
+<span id='Ext-grid-header-Container-method-getColumnsForTpl'>    /**
 </span>     * Get the columns used for generating a template via TableChunker.
      * Returns an array of all columns and their
      *  - dataIndex
@@ -589,7 +606,7 @@ Ext.define('Ext.grid.header.Container', {
         return cols;
     },
 
-<span id='Ext-grid.header.Container-method-getColumnCount'>    /**
+<span id='Ext-grid-header-Container-method-getColumnCount'>    /**
 </span>     * Returns the number of &lt;b&gt;grid columns&lt;/b&gt; descended from this HeaderContainer.
      * Group Columns are HeaderContainers. All grid columns are returned, including hidden ones.
      */
@@ -597,7 +614,7 @@ Ext.define('Ext.grid.header.Container', {
         return this.getGridColumns().length;
     },
 
-<span id='Ext-grid.header.Container-method-getFullWidth'>    /**
+<span id='Ext-grid-header-Container-method-getFullWidth'>    /**
 </span>     * Gets the full width of all columns that are visible.
      */
     getFullWidth: function(flushCache) {
@@ -639,7 +656,7 @@ Ext.define('Ext.grid.header.Container', {
         }
     },
 
-<span id='Ext-grid.header.Container-method-getVisibleGridColumns'>    /**
+<span id='Ext-grid-header-Container-method-getVisibleGridColumns'>    /**
 </span>     * Returns an array of the &lt;b&gt;visible&lt;b&gt; columns in the grid. This goes down to the lowest column header
      * level, and does not return &lt;i&gt;grouped&lt;/i&gt; headers which contain sub headers.
      * @param {Boolean} refreshCache If omitted, the cached set of columns will be returned. Pass true to refresh the cache.
@@ -649,7 +666,7 @@ Ext.define('Ext.grid.header.Container', {
         return Ext.ComponentQuery.query(':not([hidden])', this.getGridColumns(refreshCache));
     },
 
-<span id='Ext-grid.header.Container-method-getGridColumns'>    /**
+<span id='Ext-grid-header-Container-method-getGridColumns'>    /**
 </span>     * Returns an array of all columns which map to Store fields. This goes down to the lowest column header
      * level, and does not return &lt;i&gt;grouped&lt;/i&gt; headers which contain sub headers.
      * @param {Boolean} refreshCache If omitted, the cached set of columns will be returned. Pass true to refresh the cache.
@@ -672,7 +689,7 @@ Ext.define('Ext.grid.header.Container', {
         return result;
     },
 
-<span id='Ext-grid.header.Container-method-getHeaderIndex'>    /**
+<span id='Ext-grid-header-Container-method-getHeaderIndex'>    /**
 </span>     * Get the index of a leaf level header regardless of what the nesting
      * structure is.
      */
@@ -681,7 +698,7 @@ Ext.define('Ext.grid.header.Container', {
         return Ext.Array.indexOf(columns, header);
     },
 
-<span id='Ext-grid.header.Container-method-getHeaderAtIndex'>    /**
+<span id='Ext-grid-header-Container-method-getHeaderAtIndex'>    /**
 </span>     * Get a leaf level header by index regardless of what the nesting
      * structure is.
      */
@@ -690,20 +707,22 @@ Ext.define('Ext.grid.header.Container', {
         return columns[index];
     },
 
-<span id='Ext-grid.header.Container-method-prepareData'>    /**
+<span id='Ext-grid-header-Container-method-prepareData'>    /**
 </span>     * Maps the record data to base it on the header id's.
      * This correlates to the markup/template generated by
      * TableChunker.
      */
-    prepareData: function(data, rowIdx, record, view) {
+    prepareData: function(data, rowIdx, record, view, panel) {
         var obj       = {},
-            headers   = this.getGridColumns(),
+            headers   = this.gridDataColumns || this.getGridColumns(),
             headersLn = headers.length,
             colIdx    = 0,
-            header, value,
+            header,
+            headerId,
+            renderer,
+            value,
             metaData,
-            g = this.up('tablepanel'),
-            store = g.store;
+            store = panel.store;
 
         for (; colIdx &lt; headersLn; colIdx++) {
             metaData = {
@@ -711,16 +730,18 @@ Ext.define('Ext.grid.header.Container', {
                 style: ''
             };
             header = headers[colIdx];
+            headerId = header.id;
+            renderer = header.renderer;
             value = data[header.dataIndex];
 
             // When specifying a renderer as a string, it always resolves
             // to Ext.util.Format
-            if (Ext.isString(header.renderer)) {
-                header.renderer = Ext.util.Format[header.renderer];
+            if (typeof renderer === &quot;string&quot;) {
+                header.renderer = renderer = Ext.util.Format[renderer];
             }
-
-            if (Ext.isFunction(header.renderer)) {
-                value = header.renderer.call(
+            
+            if (typeof renderer === &quot;function&quot;) {
+                value = renderer.call(
                     header.scope || this.ownerCt,
                     value,
                     // metadata per cell passing an obj by reference so that
@@ -742,14 +763,15 @@ Ext.define('Ext.grid.header.Container', {
                 delete metaData.css;
             }
             // &lt;/debug&gt;
-            obj[header.id+'-modified'] = record.isModified(header.dataIndex) ? Ext.baseCSSPrefix + 'grid-dirty-cell' : Ext.baseCSSPrefix + 'grid-clean-cell';
-            obj[header.id+'-tdCls'] = metaData.tdCls;
-            obj[header.id+'-tdAttr'] = metaData.tdAttr;
-            obj[header.id+'-style'] = metaData.style;
+            
+            obj[headerId+'-modified'] = record.modified[header.dataIndex] ? Ext.baseCSSPrefix + 'grid-dirty-cell' : Ext.baseCSSPrefix + 'grid-clean-cell';
+            obj[headerId+'-tdCls'] = metaData.tdCls;
+            obj[headerId+'-tdAttr'] = metaData.tdAttr;
+            obj[headerId+'-style'] = metaData.style;
             if (value === undefined || value === null || value === '') {
                 value = '&amp;#160;';
             }
-            obj[header.id] = value;
+            obj[headerId] = value;
         }
         return obj;
     },
@@ -760,4 +782,6 @@ Ext.define('Ext.grid.header.Container', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

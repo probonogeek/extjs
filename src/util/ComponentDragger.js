@@ -100,7 +100,7 @@ Ext.define('Ext.util.ComponentDragger', {
             comp = (me.proxy && !me.comp.liveDrag) ? me.proxy : me.comp,
             offset = me.getOffset(me.constrain || me.constrainDelegate ? 'dragTarget' : null);
 
-        comp.setPosition.apply(comp, [me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]]);
+        comp.setPosition(me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]);
     },
 
     onEnd: function(e) {

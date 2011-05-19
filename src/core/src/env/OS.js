@@ -36,7 +36,7 @@ Ext.define('Ext.env.OS', {
         }
     },
 
-    /*
+    /**
      * A "hybrid" property, can be either accessed as a method call, i.e:
      * <pre><code>
      * if (Ext.os.is('Android')) { ... }
@@ -61,17 +61,18 @@ Ext.define('Ext.env.OS', {
      *
      * @param {String} value The OS name to check
      * @return {Boolean}
+     * @method
      */
     is: Ext.emptyFn,
 
-    /*
+    /**
      * Read-only - the full name of the current operating system
      * Possible values are: iOS, Android, WebOS, BlackBerry, MacOSX, Windows, Linux and Other
      * @type String
      */
     name: null,
 
-    /*
+    /**
      * Read-only, refer to {@link Ext.Version}
      * @type Ext.Version
      */

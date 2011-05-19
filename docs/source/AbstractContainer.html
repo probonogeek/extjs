@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-container.AbstractContainer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-container-AbstractContainer'>/**
 </span> * @class Ext.container.AbstractContainer
  * @extends Ext.Component
  * &lt;p&gt;An abstract base class which provides shared methods for Containers across the Sencha product line.&lt;/p&gt;
@@ -17,7 +34,7 @@ Ext.define('Ext.container.AbstractContainer', {
     ],
 
     /* End Definitions */
-<span id='Ext-container.AbstractContainer-cfg-layout'>    /**
+<span id='Ext-container-AbstractContainer-cfg-layout'>    /**
 </span>     * @cfg {String/Object} layout
      * &lt;p&gt;&lt;b&gt;*Important&lt;/b&gt;: In order for child items to be correctly sized and
      * positioned, typically a layout manager &lt;b&gt;must&lt;/b&gt; be specified through
@@ -84,14 +101,14 @@ layout: {
      * &lt;/ul&gt;&lt;/div&gt;&lt;/ul&gt;&lt;/div&gt;
      */
 
-<span id='Ext-container.AbstractContainer-cfg-activeItem'>    /**
+<span id='Ext-container-AbstractContainer-cfg-activeItem'>    /**
 </span>     * @cfg {String/Number} activeItem
      * A string component id or the numeric index of the component that should be initially activated within the
      * container's layout on render.  For example, activeItem: 'item-1' or activeItem: 0 (index 0 = the first
      * item in the container's collection).  activeItem only applies to layout styles that can display
      * items one at a time (like {@link Ext.layout.container.Card} and {@link Ext.layout.container.Fit}).
      */
-<span id='Ext-container.AbstractContainer-cfg-items'>    /**
+<span id='Ext-container-AbstractContainer-cfg-items'>    /**
 </span>     * @cfg {Object/Array} items
      * &lt;p&gt;A single item, or an array of child Components to be added to this container&lt;/p&gt;
      * &lt;p&gt;&lt;b&gt;Unless configured with a {@link #layout}, a Container simply renders child Components serially into
@@ -123,7 +140,7 @@ layout: 'hbox', // The items are arranged horizontally
      * &lt;p&gt;Do not specify &lt;code&gt;{@link Ext.panel.Panel#contentEl contentEl}&lt;/code&gt; or 
      * &lt;code&gt;{@link Ext.panel.Panel#html html}&lt;/code&gt; with &lt;code&gt;items&lt;/code&gt;.&lt;/p&gt;
      */
-<span id='Ext-container.AbstractContainer-cfg-defaults'>    /**
+<span id='Ext-container-AbstractContainer-cfg-defaults'>    /**
 </span>     * @cfg {Object|Function} defaults
      * &lt;p&gt;This option is a means of applying default settings to all added items whether added through the {@link #items}
      * config or via the {@link #add} or {@link #insert} methods.&lt;/p&gt;
@@ -152,20 +169,20 @@ items: [
 ]&lt;/code&gt;&lt;/pre&gt;
      */
 
-<span id='Ext-container.AbstractContainer-cfg-suspendLayout'>    /** @cfg {Boolean} suspendLayout
+<span id='Ext-container-AbstractContainer-cfg-suspendLayout'>    /** @cfg {Boolean} suspendLayout
 </span>     * If true, suspend calls to doLayout.  Useful when batching multiple adds to a container and not passing them
      * as multiple arguments or an array.
      */
     suspendLayout : false,
 
-<span id='Ext-container.AbstractContainer-cfg-autoDestroy'>    /** @cfg {Boolean} autoDestroy
+<span id='Ext-container-AbstractContainer-cfg-autoDestroy'>    /** @cfg {Boolean} autoDestroy
 </span>     * If true the container will automatically destroy any contained component that is removed from it, else
      * destruction must be handled manually.
      * Defaults to true.
      */
     autoDestroy : true,
 
-<span id='Ext-container.AbstractContainer-cfg-defaultType'>     /** @cfg {String} defaultType
+<span id='Ext-container-AbstractContainer-cfg-defaultType'>     /** @cfg {String} defaultType
 </span>      * &lt;p&gt;The default {@link Ext.Component xtype} of child Components to create in this Container when
       * a child item is specified as a raw configuration object, rather than as an instantiated Component.&lt;/p&gt;
       * &lt;p&gt;Defaults to &lt;code&gt;'panel'&lt;/code&gt;.&lt;/p&gt;
@@ -176,7 +193,7 @@ items: [
 
     baseCls: Ext.baseCSSPrefix + 'container',
 
-<span id='Ext-container.AbstractContainer-cfg-bubbleEvents'>    /**
+<span id='Ext-container-AbstractContainer-cfg-bubbleEvents'>    /**
 </span>     * @cfg {Array} bubbleEvents
      * &lt;p&gt;An array of events that, when fired, should be bubbled to any parent container.
      * See {@link Ext.util.Observable#enableBubble}.
@@ -188,14 +205,14 @@ items: [
     initComponent : function(){
         var me = this;
         me.addEvents(
-<span id='Ext-container.AbstractContainer-event-afterlayout'>            /**
+<span id='Ext-container-AbstractContainer-event-afterlayout'>            /**
 </span>             * @event afterlayout
              * Fires when the components in this container are arranged by the associated layout manager.
              * @param {Ext.container.Container} this
              * @param {ContainerLayout} layout The ContainerLayout implementation for this container
              */
             'afterlayout',
-<span id='Ext-container.AbstractContainer-event-beforeadd'>            /**
+<span id='Ext-container-AbstractContainer-event-beforeadd'>            /**
 </span>             * @event beforeadd
              * Fires before any {@link Ext.Component} is added or inserted into the container.
              * A handler can return false to cancel the add.
@@ -204,7 +221,7 @@ items: [
              * @param {Number} index The index at which the component will be added to the container's items collection
              */
             'beforeadd',
-<span id='Ext-container.AbstractContainer-event-beforeremove'>            /**
+<span id='Ext-container-AbstractContainer-event-beforeremove'>            /**
 </span>             * @event beforeremove
              * Fires before any {@link Ext.Component} is removed from the container.  A handler can return
              * false to cancel the remove.
@@ -212,7 +229,7 @@ items: [
              * @param {Ext.Component} component The component being removed
              */
             'beforeremove',
-<span id='Ext-container.AbstractContainer-event-add'>            /**
+<span id='Ext-container-AbstractContainer-event-add'>            /**
 </span>             * @event add
              * @bubbles
              * Fires after any {@link Ext.Component} is added or inserted into the container.
@@ -221,7 +238,7 @@ items: [
              * @param {Number} index The index at which the component was added to the container's items collection
              */
             'add',
-<span id='Ext-container.AbstractContainer-event-remove'>            /**
+<span id='Ext-container-AbstractContainer-event-remove'>            /**
 </span>             * @event remove
              * @bubbles
              * Fires after any {@link Ext.Component} is removed from the container.
@@ -229,7 +246,7 @@ items: [
              * @param {Ext.Component} component The component that was removed
              */
             'remove',
-<span id='Ext-container.AbstractContainer-event-beforecardswitch'>            /**
+<span id='Ext-container-AbstractContainer-event-beforecardswitch'>            /**
 </span>             * @event beforecardswitch
              * Fires before this container switches the active card. This event
              * is only available if this container uses a CardLayout. Note that
@@ -243,7 +260,7 @@ items: [
              * @param {Boolean} animated True if this cardswitch will be animated
              */
             'beforecardswitch',
-<span id='Ext-container.AbstractContainer-event-cardswitch'>            /**
+<span id='Ext-container-AbstractContainer-event-cardswitch'>            /**
 </span>             * @event cardswitch
              * Fires after this container switches the active card. If the card
              * is switched using an animation, this event will fire after the
@@ -270,7 +287,7 @@ items: [
         var me = this,
             items = me.items;
 
-<span id='Ext-container.AbstractContainer-property-items'>        /**
+<span id='Ext-container-AbstractContainer-property-items'>        /**
 </span>         * The MixedCollection containing all the child items of this container.
          * @property items
          * @type Ext.util.MixedCollection
@@ -304,7 +321,7 @@ items: [
         layout.setOwner(this);
     },
 
-<span id='Ext-container.AbstractContainer-method-getLayout'>    /**
+<span id='Ext-container-AbstractContainer-method-getLayout'>    /**
 </span>     * Returns the {@link Ext.layout.container.AbstractContainer layout} instance currently associated with this Container.
      * If a layout has not been instantiated yet, that is done first
      * @return {Ext.layout.container.AbstractContainer} The layout
@@ -318,7 +335,7 @@ items: [
         return me.layout;
     },
 
-<span id='Ext-container.AbstractContainer-method-doLayout'>    /**
+<span id='Ext-container-AbstractContainer-method-doLayout'>    /**
 </span>     * Manually force this container's layout to be recalculated.  The framwork uses this internally to refresh layouts
      * form most cases.
      * @return {Ext.container.Container} this
@@ -420,7 +437,7 @@ items: [
         return comp.getItemId();
     },
 
-<span id='Ext-container.AbstractContainer-method-add'>    /**
+<span id='Ext-container-AbstractContainer-method-add'>    /**
 </span>
 Adds {@link Ext.Component Component}(s) to this Container.
 
@@ -525,7 +542,7 @@ for more details.
         return cmp;
     },
 
-<span id='Ext-container.AbstractContainer-method-registerFloatingItem'>    /**
+<span id='Ext-container-AbstractContainer-method-registerFloatingItem'>    /**
 </span>     * @private
      * &lt;p&gt;Called by Component#doAutoRender&lt;/p&gt;
      * &lt;p&gt;Register a Container configured &lt;code&gt;floating: true&lt;/code&gt; with this Container's {@link Ext.ZIndexManager ZIndexManager}.&lt;/p&gt;
@@ -544,7 +561,7 @@ for more details.
     onAdd : Ext.emptyFn,
     onRemove : Ext.emptyFn,
 
-<span id='Ext-container.AbstractContainer-method-insert'>    /**
+<span id='Ext-container-AbstractContainer-method-insert'>    /**
 </span>     * Inserts a Component into this Container at a specified index. Fires the
      * {@link #beforeadd} event before inserting, then fires the {@link #add} event after the
      * Component has been inserted.
@@ -566,7 +583,7 @@ for more details.
         return this.add(index, comp);
     },
 
-<span id='Ext-container.AbstractContainer-method-move'>    /**
+<span id='Ext-container-AbstractContainer-method-move'>    /**
 </span>     * Moves a Component within the Container
      * @param {Number} fromIdx The index the Component you wish to move is currently at.
      * @param {Number} toIdx The new index for the Component.
@@ -597,7 +614,7 @@ for more details.
         }
     },
 
-<span id='Ext-container.AbstractContainer-method-remove'>    /**
+<span id='Ext-container-AbstractContainer-method-remove'>    /**
 </span>     * Removes a component from this container.  Fires the {@link #beforeremove} event before removing, then fires
      * the {@link #remove} event after the component has been removed.
      * @param {Component/String} component The component reference or id to remove.
@@ -650,7 +667,7 @@ for more details.
         }
     },
 
-<span id='Ext-container.AbstractContainer-method-removeAll'>    /**
+<span id='Ext-container-AbstractContainer-method-removeAll'>    /**
 </span>     * Removes all components from this container.
      * @param {Boolean} autoDestroy (optional) True to automatically invoke the removed Component's {@link Ext.Component#destroy} function.
      * Defaults to the value of this Container's {@link #autoDestroy} config.
@@ -714,7 +731,7 @@ for more details.
         return result;
     },
 
-<span id='Ext-container.AbstractContainer-method-cascade'>    /**
+<span id='Ext-container-AbstractContainer-method-cascade'>    /**
 </span>     * Cascades down the component/container heirarchy from this component (passed in the first call), calling the specified function with
      * each component. The scope (&lt;code&gt;this&lt;/code&gt; reference) of the
      * function call will be the scope provided or the current component. The arguments to the function
@@ -748,7 +765,7 @@ for more details.
         return this;
     },
 
-<span id='Ext-container.AbstractContainer-method-getComponent'>    /**
+<span id='Ext-container-AbstractContainer-method-getComponent'>    /**
 </span>     * Examines this container's &lt;code&gt;{@link #items}&lt;/code&gt; &lt;b&gt;property&lt;/b&gt;
      * and gets a direct child component of this container.
      * @param {String/Number} comp This parameter may be any of the following:
@@ -769,7 +786,7 @@ for more details.
         return this.items.get(comp);
     },
 
-<span id='Ext-container.AbstractContainer-method-query'>    /**
+<span id='Ext-container-AbstractContainer-method-query'>    /**
 </span>     * Retrieves all descendant components which match the passed selector.
      * Executes an Ext.ComponentQuery.query using this container as its root.
      * @param {String} selector Selector complying to an Ext.ComponentQuery selector
@@ -779,7 +796,7 @@ for more details.
         return Ext.ComponentQuery.query(selector, this);
     },
 
-<span id='Ext-container.AbstractContainer-method-child'>    /**
+<span id='Ext-container-AbstractContainer-method-child'>    /**
 </span>     * Retrieves the first direct child of this container which matches the passed selector.
      * The passed in selector must comply with an Ext.ComponentQuery selector.
      * @param {String} selector An Ext.ComponentQuery selector
@@ -789,7 +806,7 @@ for more details.
         return this.query('&gt; ' + selector)[0] || null;
     },
 
-<span id='Ext-container.AbstractContainer-method-down'>    /**
+<span id='Ext-container-AbstractContainer-method-down'>    /**
 </span>     * Retrieves the first descendant of this container which matches the passed selector.
      * The passed in selector must comply with an Ext.ComponentQuery selector.
      * @param {String} selector An Ext.ComponentQuery selector
@@ -850,7 +867,7 @@ for more details.
         this.callParent();
     },
 
-<span id='Ext-container.AbstractContainer-method-beforeLayout'>    /**
+<span id='Ext-container-AbstractContainer-method-beforeLayout'>    /**
 </span>     * Occurs before componentLayout is run. Returning false from this method will prevent the containerLayout
      * from being executed.
      */
@@ -876,4 +893,6 @@ for more details.
         );
         me.callParent();
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

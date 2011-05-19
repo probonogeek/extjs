@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.HasManyAssociation'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-HasManyAssociation'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.HasManyAssociation
  * @extends Ext.data.Association
@@ -108,7 +125,7 @@ Ext.define('Ext.data.HasManyAssociation', {
 
     alias: 'association.hasmany',
 
-<span id='Ext-data.HasManyAssociation-cfg-foreignKey'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-foreignKey'>    /**
 </span>     * @cfg {String} foreignKey The name of the foreign key on the associated model that links it to the owner
      * model. Defaults to the lowercased name of the owner model plus &quot;_id&quot;, e.g. an association with a where a
      * model called Group hasMany Users would create 'group_id' as the foreign key. When the remote store is loaded,
@@ -129,7 +146,7 @@ Ext.define('User', {
      * &lt;/code&gt;&lt;/pre&gt;
      */
     
-<span id='Ext-data.HasManyAssociation-cfg-name'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-name'>    /**
 </span>     * @cfg {String} name The name of the function to create on the owner model to retrieve the child store.
      * If not specified, the pluralized name of the child model is used.
      * &lt;pre&gt;&lt;code&gt;
@@ -153,23 +170,23 @@ console.log(group.getUserList());
      * &lt;/code&gt;&lt;/pre&gt;
      */
     
-<span id='Ext-data.HasManyAssociation-cfg-storeConfig'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-storeConfig'>    /**
 </span>     * @cfg {Object} storeConfig Optional configuration object that will be passed to the generated Store. Defaults to 
      * undefined.
      */
     
-<span id='Ext-data.HasManyAssociation-cfg-filterProperty'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-filterProperty'>    /**
 </span>     * @cfg {String} filterProperty Optionally overrides the default filter that is set up on the associated Store. If
      * this is not set, a filter is automatically created which filters the association based on the configured 
      * {@link #foreignKey}. See intro docs for more details. Defaults to undefined
      */
     
-<span id='Ext-data.HasManyAssociation-cfg-autoLoad'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-autoLoad'>    /**
 </span>     * @cfg {Boolean} autoLoad True to automatically load the related store from a remote source when instantiated.
      * Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     
-<span id='Ext-data.HasManyAssociation-cfg-type'>    /**
+<span id='Ext-data-HasManyAssociation-cfg-type'>    /**
 </span>     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'hasMany' to create a HasManyAssocation
      * &lt;pre&gt;&lt;code&gt;
@@ -200,7 +217,7 @@ associations: [{
         ownerProto[name] = me.createStore();
     },
     
-<span id='Ext-data.HasManyAssociation-method-createStore'>    /**
+<span id='Ext-data-HasManyAssociation-method-createStore'>    /**
 </span>     * @private
      * Creates a function that returns an Ext.data.Store which is configured to load a set of data filtered
      * by the owner model's primary key - e.g. in a hasMany association where Group hasMany Users, this function
@@ -256,7 +273,7 @@ associations: [{
         };
     },
     
-<span id='Ext-data.HasManyAssociation-method-read'>    /**
+<span id='Ext-data-HasManyAssociation-method-read'>    /**
 </span>     * Read associated data
      * @private
      * @param {Ext.data.Model} record The record we're writing to
@@ -282,4 +299,6 @@ associations: [{
             });
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

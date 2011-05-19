@@ -75,7 +75,7 @@ Ext.define('Ext.form.Basic', {
     extend: 'Ext.util.Observable',
     alternateClassName: 'Ext.form.BasicForm',
     requires: ['Ext.util.MixedCollection', 'Ext.form.action.Load', 'Ext.form.action.Submit',
-               'Ext.window.MessageBox', 'Ext.data.Errors'],
+               'Ext.window.MessageBox', 'Ext.data.Errors', 'Ext.util.DelayedTask'],
 
     constructor: function(owner, config) {
         var me = this,
@@ -101,6 +101,8 @@ Ext.define('Ext.form.Basic', {
         if (Ext.isString(me.paramOrder)) {
             me.paramOrder = me.paramOrder.split(/[\s,|]/);
         }
+
+        me.checkValidityTask = Ext.create('Ext.util.DelayedTask', me.checkValidity, me);
 
         me.addEvents(
             /**
@@ -273,6 +275,7 @@ paramOrder: 'param1|param2|param'
      */
     destroy: function() {
         this.clearListeners();
+        this.checkValidityTask.cancel();
     },
 
     /**
@@ -309,9 +312,10 @@ paramOrder: 'param1|param2|param'
         // Flush the cached list of formBind components
         delete this._boundItems;
 
-        // Check form bind, but only after initial add
+        // Check form bind, but only after initial add. Batch it to prevent excessive validation
+        // calls when many fields are being added at once.
         if (me.initialized) {
-            me.onValidityChange(!me.hasInvalidField());
+            me.checkValidityTask.delay(10);
         }
     },
 

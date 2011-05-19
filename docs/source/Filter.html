@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Filter-method-constructor'><span id='Ext-util.Filter'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Filter-method-constructor'><span id='Ext-util-Filter'>/**
 </span></span> * @class Ext.util.Filter
  * @extends Object
  * &lt;p&gt;Represents a filter that can be applied to a {@link Ext.util.MixedCollection MixedCollection}. Can either simply
@@ -41,32 +58,32 @@ Ext.define('Ext.util.Filter', {
     /* Begin Definitions */
 
     /* End Definitions */
-<span id='Ext-util.Filter-cfg-property'>    /**
+<span id='Ext-util-Filter-cfg-property'>    /**
 </span>     * @cfg {String} property The property to filter on. Required unless a {@link #filter} is passed
      */
     
-<span id='Ext-util.Filter-cfg-filterFn'>    /**
+<span id='Ext-util-Filter-cfg-filterFn'>    /**
 </span>     * @cfg {Function} filterFn A custom filter function which is passed each item in the {@link Ext.util.MixedCollection} 
      * in turn. Should return true to accept each item or false to reject it
      */
     
-<span id='Ext-util.Filter-cfg-anyMatch'>    /**
+<span id='Ext-util-Filter-cfg-anyMatch'>    /**
 </span>     * @cfg {Boolean} anyMatch True to allow any match - no regex start/end line anchors will be added. Defaults to false
      */
     anyMatch: false,
     
-<span id='Ext-util.Filter-cfg-exactMatch'>    /**
+<span id='Ext-util-Filter-cfg-exactMatch'>    /**
 </span>     * @cfg {Boolean} exactMatch True to force exact match (^ and $ characters added to the regex). Defaults to false.
      * Ignored if anyMatch is true.
      */
     exactMatch: false,
     
-<span id='Ext-util.Filter-cfg-caseSensitive'>    /**
+<span id='Ext-util-Filter-cfg-caseSensitive'>    /**
 </span>     * @cfg {Boolean} caseSensitive True to make the regex case sensitive (adds 'i' switch to regex). Defaults to false.
      */
     caseSensitive: false,
     
-<span id='Ext-util.Filter-cfg-root'>    /**
+<span id='Ext-util-Filter-cfg-root'>    /**
 </span>     * @cfg {String} root Optional root property. This is mostly useful when filtering a Store, in which case we set the
      * root to 'data' to make the filter pull the {@link #property} out of the data object of each item
      */
@@ -92,7 +109,7 @@ Ext.define('Ext.util.Filter', {
         }
     },
     
-<span id='Ext-util.Filter-method-createFilterFn'>    /**
+<span id='Ext-util-Filter-method-createFilterFn'>    /**
 </span>     * @private
      * Creates a filter function for the configured property/value/anyMatch/caseSensitive options for this Filter
      */
@@ -106,7 +123,7 @@ Ext.define('Ext.util.Filter', {
         };
     },
     
-<span id='Ext-util.Filter-method-getRoot'>    /**
+<span id='Ext-util-Filter-method-getRoot'>    /**
 </span>     * @private
      * Returns the root property of the given item, based on the configured {@link #root} property
      * @param {Object} item The item
@@ -116,7 +133,7 @@ Ext.define('Ext.util.Filter', {
         return this.root == undefined ? item : item[this.root];
     },
     
-<span id='Ext-util.Filter-method-createValueMatcher'>    /**
+<span id='Ext-util-Filter-method-createValueMatcher'>    /**
 </span>     * @private
      * Returns a regular expression based on the given value and matching options
      */
@@ -144,4 +161,6 @@ Ext.define('Ext.util.Filter', {
          
          return value;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

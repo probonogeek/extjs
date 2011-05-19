@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.Basic-method-constructor'><span id='Ext-form.Basic'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-Basic-method-constructor'><span id='Ext-form-Basic'>/**
 </span></span> * @class Ext.form.Basic
  * @extends Ext.util.Observable
 
@@ -75,13 +92,13 @@ Ext.define('Ext.form.Basic', {
     extend: 'Ext.util.Observable',
     alternateClassName: 'Ext.form.BasicForm',
     requires: ['Ext.util.MixedCollection', 'Ext.form.action.Load', 'Ext.form.action.Submit',
-               'Ext.window.MessageBox', 'Ext.data.Errors'],
+               'Ext.window.MessageBox', 'Ext.data.Errors', 'Ext.util.DelayedTask'],
 
     constructor: function(owner, config) {
         var me = this,
             onItemAddOrRemove = me.onItemAddOrRemove;
 
-<span id='Ext-form.Basic-property-owner'>        /**
+<span id='Ext-form-Basic-property-owner'>        /**
 </span>         * @property owner
          * @type Ext.container.Container
          * The container component to which this BasicForm is attached.
@@ -102,36 +119,38 @@ Ext.define('Ext.form.Basic', {
             me.paramOrder = me.paramOrder.split(/[\s,|]/);
         }
 
+        me.checkValidityTask = Ext.create('Ext.util.DelayedTask', me.checkValidity, me);
+
         me.addEvents(
-<span id='Ext-form.Basic-event-beforeaction'>            /**
+<span id='Ext-form-Basic-event-beforeaction'>            /**
 </span>             * @event beforeaction
              * Fires before any action is performed. Return false to cancel the action.
              * @param {Ext.form.Basic} this
              * @param {Ext.form.action.Action} action The {@link Ext.form.action.Action} to be performed
              */
             'beforeaction',
-<span id='Ext-form.Basic-event-actionfailed'>            /**
+<span id='Ext-form-Basic-event-actionfailed'>            /**
 </span>             * @event actionfailed
              * Fires when an action fails.
              * @param {Ext.form.Basic} this
              * @param {Ext.form.action.Action} action The {@link Ext.form.action.Action} that failed
              */
             'actionfailed',
-<span id='Ext-form.Basic-event-actioncomplete'>            /**
+<span id='Ext-form-Basic-event-actioncomplete'>            /**
 </span>             * @event actioncomplete
              * Fires when an action is completed.
              * @param {Ext.form.Basic} this
              * @param {Ext.form.action.Action} action The {@link Ext.form.action.Action} that completed
              */
             'actioncomplete',
-<span id='Ext-form.Basic-event-validitychange'>            /**
+<span id='Ext-form-Basic-event-validitychange'>            /**
 </span>             * @event validitychange
              * Fires when the validity of the entire form changes.
              * @param {Ext.form.Basic} this
              * @param {Boolean} valid &lt;tt&gt;true&lt;/tt&gt; if the form is now valid, &lt;tt&gt;false&lt;/tt&gt; if it is now invalid.
              */
             'validitychange',
-<span id='Ext-form.Basic-event-dirtychange'>            /**
+<span id='Ext-form-Basic-event-dirtychange'>            /**
 </span>             * @event dirtychange
              * Fires when the dirty state of the entire form changes.
              * @param {Ext.form.Basic} this
@@ -142,7 +161,7 @@ Ext.define('Ext.form.Basic', {
         me.callParent();
     },
 
-<span id='Ext-form.Basic-method-initialize'>    /**
+<span id='Ext-form-Basic-method-initialize'>    /**
 </span>     * Do any post constructor initialization
      * @private
      */
@@ -151,17 +170,17 @@ Ext.define('Ext.form.Basic', {
         this.onValidityChange(!this.hasInvalidField());
     },
 
-<span id='Ext-form.Basic-cfg-method'>    /**
+<span id='Ext-form-Basic-cfg-method'>    /**
 </span>     * @cfg {String} method
      * The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
      */
-<span id='Ext-form.Basic-cfg-reader'>    /**
+<span id='Ext-form-Basic-cfg-reader'>    /**
 </span>     * @cfg {Ext.data.reader.Reader} reader
      * An Ext.data.DataReader (e.g. {@link Ext.data.reader.Xml}) to be used to read
      * data when executing 'load' actions. This is optional as there is built-in
      * support for processing JSON responses.
      */
-<span id='Ext-form.Basic-cfg-errorReader'>    /**
+<span id='Ext-form-Basic-cfg-errorReader'>    /**
 </span>     * @cfg {Ext.data.reader.Reader} errorReader
      * &lt;p&gt;An Ext.data.DataReader (e.g. {@link Ext.data.reader.Xml}) to be used to
      * read field error messages returned from 'submit' actions. This is optional
@@ -179,24 +198,24 @@ Ext.define('Ext.form.Basic', {
 &lt;/code&gt;&lt;/pre&gt;
      */
 
-<span id='Ext-form.Basic-cfg-url'>    /**
+<span id='Ext-form-Basic-cfg-url'>    /**
 </span>     * @cfg {String} url
      * The URL to use for form actions if one isn't supplied in the
      * {@link #doAction doAction} options.
      */
 
-<span id='Ext-form.Basic-cfg-baseParams'>    /**
+<span id='Ext-form-Basic-cfg-baseParams'>    /**
 </span>     * @cfg {Object} baseParams
      * &lt;p&gt;Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.&lt;/p&gt;
      * &lt;p&gt;Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode Ext.Object.toQueryString}.&lt;/p&gt;
      */
 
-<span id='Ext-form.Basic-cfg-timeout'>    /**
+<span id='Ext-form-Basic-cfg-timeout'>    /**
 </span>     * @cfg {Number} timeout Timeout for form actions in seconds (default is 30 seconds).
      */
     timeout: 30,
 
-<span id='Ext-form.Basic-cfg-api'>    /**
+<span id='Ext-form-Basic-cfg-api'>    /**
 </span>     * @cfg {Object} api (Optional) If specified, load and submit actions will be handled
      * with {@link Ext.form.action.DirectLoad} and {@link Ext.form.action.DirectLoad}.
      * Methods which have been imported by {@link Ext.direct.Manager} can be specified here to load and submit
@@ -213,7 +232,7 @@ api: {
      * be set on the associated server-side method which has been imported by {@link Ext.direct.Manager}.&lt;/p&gt;
      */
 
-<span id='Ext-form.Basic-cfg-paramOrder'>    /**
+<span id='Ext-form-Basic-cfg-paramOrder'>    /**
 </span>     * @cfg {Array/String} paramOrder &lt;p&gt;A list of params to be executed server side.
      * Defaults to &lt;tt&gt;undefined&lt;/tt&gt;. Only used for the &lt;code&gt;{@link #api}&lt;/code&gt;
      * &lt;code&gt;load&lt;/code&gt; configuration.&lt;/p&gt;
@@ -228,7 +247,7 @@ paramOrder: 'param1|param2|param'
      &lt;/code&gt;&lt;/pre&gt;
      */
 
-<span id='Ext-form.Basic-cfg-paramsAsHash'>    /**
+<span id='Ext-form-Basic-cfg-paramsAsHash'>    /**
 </span>     * @cfg {Boolean} paramsAsHash Only used for the &lt;code&gt;{@link #api}&lt;/code&gt;
      * &lt;code&gt;load&lt;/code&gt; configuration. If &lt;tt&gt;true&lt;/tt&gt;, parameters will be sent as a
      * single hash collection of named arguments (defaults to &lt;tt&gt;false&lt;/tt&gt;). Providing a
@@ -236,19 +255,19 @@ paramOrder: 'param1|param2|param'
      */
     paramsAsHash: false,
 
-<span id='Ext-form.Basic-cfg-waitTitle'>    /**
+<span id='Ext-form-Basic-cfg-waitTitle'>    /**
 </span>     * @cfg {String} waitTitle
      * The default title to show for the waiting message box (defaults to &lt;tt&gt;'Please Wait...'&lt;/tt&gt;)
      */
     waitTitle: 'Please Wait...',
 
-<span id='Ext-form.Basic-cfg-trackResetOnLoad'>    /**
+<span id='Ext-form-Basic-cfg-trackResetOnLoad'>    /**
 </span>     * @cfg {Boolean} trackResetOnLoad If set to &lt;tt&gt;true&lt;/tt&gt;, {@link #reset}() resets to the last loaded
      * or {@link #setValues}() data instead of when the form was first created.  Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     trackResetOnLoad: false,
 
-<span id='Ext-form.Basic-cfg-standardSubmit'>    /**
+<span id='Ext-form-Basic-cfg-standardSubmit'>    /**
 </span>     * @cfg {Boolean} standardSubmit
      * &lt;p&gt;If set to &lt;tt&gt;true&lt;/tt&gt;, a standard HTML form submit is used instead
      * of a XHR (Ajax) style form submission. Defaults to &lt;tt&gt;false&lt;/tt&gt;. All of
@@ -257,7 +276,7 @@ paramOrder: 'param1|param2|param'
      * values submitted in the form.&lt;/p&gt;
      */
 
-<span id='Ext-form.Basic-cfg-waitMsgTarget'>    /**
+<span id='Ext-form-Basic-cfg-waitMsgTarget'>    /**
 </span>     * @cfg {Mixed} waitMsgTarget
      * By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific
      * element by passing it or its id or mask the form itself by passing in true. Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
@@ -268,14 +287,15 @@ paramOrder: 'param1|param2|param'
     wasDirty: false,
 
 
-<span id='Ext-form.Basic-method-destroy'>    /**
+<span id='Ext-form-Basic-method-destroy'>    /**
 </span>     * Destroys this object.
      */
     destroy: function() {
         this.clearListeners();
+        this.checkValidityTask.cancel();
     },
 
-<span id='Ext-form.Basic-method-onItemAddOrRemove'>    /**
+<span id='Ext-form-Basic-method-onItemAddOrRemove'>    /**
 </span>     * @private
      * Handle addition or removal of descendant items. Invalidates the cached list of fields
      * so that {@link #getFields} will do a fresh query next time it is called. Also adds listeners
@@ -309,13 +329,14 @@ paramOrder: 'param1|param2|param'
         // Flush the cached list of formBind components
         delete this._boundItems;
 
-        // Check form bind, but only after initial add
+        // Check form bind, but only after initial add. Batch it to prevent excessive validation
+        // calls when many fields are being added at once.
         if (me.initialized) {
-            me.onValidityChange(!me.hasInvalidField());
+            me.checkValidityTask.delay(10);
         }
     },
 
-<span id='Ext-form.Basic-method-getFields'>    /**
+<span id='Ext-form-Basic-method-getFields'>    /**
 </span>     * Return all the {@link Ext.form.field.Field} components in the owner container.
      * @return {Ext.util.MixedCollection} Collection of the Field objects
      */
@@ -337,7 +358,7 @@ paramOrder: 'param1|param2|param'
         return boundItems;
     },
 
-<span id='Ext-form.Basic-method-hasInvalidField'>    /**
+<span id='Ext-form-Basic-method-hasInvalidField'>    /**
 </span>     * Returns true if the form contains any invalid fields. No fields will be marked as invalid
      * as a result of calling this; to trigger marking of fields use {@link #isValid} instead.
      */
@@ -352,7 +373,7 @@ paramOrder: 'param1|param2|param'
         });
     },
 
-<span id='Ext-form.Basic-method-isValid'>    /**
+<span id='Ext-form-Basic-method-isValid'>    /**
 </span>     * Returns true if client-side validation on the form is successful. Any invalid fields will be
      * marked as invalid. If you only want to determine overall form validity without marking anything,
      * use {@link #hasInvalidField} instead.
@@ -369,7 +390,7 @@ paramOrder: 'param1|param2|param'
         return invalid.length &lt; 1;
     },
 
-<span id='Ext-form.Basic-method-checkValidity'>    /**
+<span id='Ext-form-Basic-method-checkValidity'>    /**
 </span>     * Check whether the validity of the entire form has changed since it was last checked, and
      * if so fire the {@link #validitychange validitychange} event. This is automatically invoked
      * when an individual field's validity changes.
@@ -384,7 +405,7 @@ paramOrder: 'param1|param2|param'
         }
     },
 
-<span id='Ext-form.Basic-method-onValidityChange'>    /**
+<span id='Ext-form-Basic-method-onValidityChange'>    /**
 </span>     * @private
      * Handle changes in the form's validity. If there are any sub components with
      * formBind=true then they are enabled/disabled based on the new validity.
@@ -401,7 +422,7 @@ paramOrder: 'param1|param2|param'
         }
     },
 
-<span id='Ext-form.Basic-method-isDirty'>    /**
+<span id='Ext-form-Basic-method-isDirty'>    /**
 </span>     * &lt;p&gt;Returns true if any fields in this form have changed from their original values.&lt;/p&gt;
      * &lt;p&gt;Note that if this BasicForm was configured with {@link #trackResetOnLoad} then the
      * Fields' &lt;em&gt;original values&lt;/em&gt; are updated when the values are loaded by {@link #setValues}
@@ -414,7 +435,7 @@ paramOrder: 'param1|param2|param'
         });
     },
 
-<span id='Ext-form.Basic-method-checkDirty'>    /**
+<span id='Ext-form-Basic-method-checkDirty'>    /**
 </span>     * Check whether the dirty state of the entire form has changed since it was last checked, and
      * if so fire the {@link #dirtychange dirtychange} event. This is automatically invoked
      * when an individual field's dirty state changes.
@@ -427,7 +448,7 @@ paramOrder: 'param1|param2|param'
         }
     },
 
-<span id='Ext-form.Basic-method-hasUpload'>    /**
+<span id='Ext-form-Basic-method-hasUpload'>    /**
 </span>     * &lt;p&gt;Returns true if the form contains a file upload field. This is used to determine the
      * method for submitting the form: File uploads are not performed using normal 'Ajax' techniques,
      * that is they are &lt;b&gt;not&lt;/b&gt; performed using XMLHttpRequests. Instead a hidden &lt;tt&gt;&amp;lt;form&gt;&lt;/tt&gt;
@@ -455,7 +476,7 @@ paramOrder: 'param1|param2|param'
         });
     },
 
-<span id='Ext-form.Basic-method-doAction'>    /**
+<span id='Ext-form-Basic-method-doAction'>    /**
 </span>     * Performs a predefined action (an implementation of {@link Ext.form.action.Action})
      * to perform application-specific processing.
      * @param {String/Ext.form.action.Action} action The name of the predefined action type,
@@ -524,7 +545,7 @@ paramOrder: 'param1|param2|param'
         return this;
     },
 
-<span id='Ext-form.Basic-method-submit'>    /**
+<span id='Ext-form-Basic-method-submit'>    /**
 </span>     * Shortcut to {@link #doAction do} a {@link Ext.form.action.Submit submit action}. This will use the
      * {@link Ext.form.action.Submit AJAX submit action} by default. If the {@link #standardsubmit} config is
      * enabled it will use a standard form element to submit, or if the {@link #api} config is present it will
@@ -572,7 +593,7 @@ myFormPanel.getForm().submit({
         return this.doAction(this.standardSubmit ? 'standardsubmit' : this.api ? 'directsubmit' : 'submit', options);
     },
 
-<span id='Ext-form.Basic-method-load'>    /**
+<span id='Ext-form-Basic-method-load'>    /**
 </span>     * Shortcut to {@link #doAction do} a {@link Ext.form.action.Load load action}.
      * @param {Object} options The options to pass to the action (see {@link #doAction} for details)
      * @return {Ext.form.Basic} this
@@ -581,7 +602,7 @@ myFormPanel.getForm().submit({
         return this.doAction(this.api ? 'directload' : 'load', options);
     },
 
-<span id='Ext-form.Basic-method-updateRecord'>    /**
+<span id='Ext-form-Basic-method-updateRecord'>    /**
 </span>     * Persists the values in this form into the passed {@link Ext.data.Model} object in a beginEdit/endEdit block.
      * @param {Ext.data.Record} record The record to edit
      * @return {Ext.form.Basic} this
@@ -606,7 +627,7 @@ myFormPanel.getForm().submit({
         return this;
     },
 
-<span id='Ext-form.Basic-method-loadRecord'>    /**
+<span id='Ext-form-Basic-method-loadRecord'>    /**
 </span>     * Loads an {@link Ext.data.Model} into this form by calling {@link #setValues} with the
      * {@link Ext.data.Model#data record data}.
      * See also {@link #trackResetOnLoad}.
@@ -618,7 +639,7 @@ myFormPanel.getForm().submit({
         return this.setValues(record.data);
     },
     
-<span id='Ext-form.Basic-method-getRecord'>    /**
+<span id='Ext-form-Basic-method-getRecord'>    /**
 </span>     * Returns the last Ext.data.Model instance that was loaded via {@link #loadRecord}
      * @return {Ext.data.Model} The record
      */
@@ -626,7 +647,7 @@ myFormPanel.getForm().submit({
         return this._record;
     },
 
-<span id='Ext-form.Basic-method-beforeAction'>    /**
+<span id='Ext-form-Basic-method-beforeAction'>    /**
 </span>     * @private
      * Called before an action is performed via {@link #doAction}.
      * @param {Ext.form.action.Action} action The Action instance that was invoked
@@ -656,7 +677,7 @@ myFormPanel.getForm().submit({
         }
     },
 
-<span id='Ext-form.Basic-method-afterAction'>    /**
+<span id='Ext-form-Basic-method-afterAction'>    /**
 </span>     * @private
      * Called after an action is performed via {@link #doAction}.
      * @param {Ext.form.action.Action} action The Action instance that was invoked
@@ -688,7 +709,7 @@ myFormPanel.getForm().submit({
     },
 
 
-<span id='Ext-form.Basic-method-findField'>    /**
+<span id='Ext-form-Basic-method-findField'>    /**
 </span>     * Find a specific {@link Ext.form.field.Field} in this form by id or name.
      * @param {String} id The value to search for (specify either a {@link Ext.Component#id id} or
      * {@link Ext.form.field.Field#getName name or hiddenName}).
@@ -701,7 +722,7 @@ myFormPanel.getForm().submit({
     },
 
 
-<span id='Ext-form.Basic-method-markInvalid'>    /**
+<span id='Ext-form-Basic-method-markInvalid'>    /**
 </span>     * Mark fields in this form invalid in bulk.
      * @param {Array/Object} errors Either an array in the form &lt;code&gt;[{id:'fieldId', msg:'The message'}, ...]&lt;/code&gt;,
      * an object hash of &lt;code&gt;{id: msg, id2: msg2}&lt;/code&gt;, or a {@link Ext.data.Errors} object.
@@ -733,7 +754,7 @@ myFormPanel.getForm().submit({
         return this;
     },
 
-<span id='Ext-form.Basic-method-setValues'>    /**
+<span id='Ext-form-Basic-method-setValues'>    /**
 </span>     * Set values for fields in this form in bulk.
      * @param {Array/Object} values Either an array in the form:&lt;pre&gt;&lt;code&gt;
 [{id:'clientName', value:'Fred. Olsen Lines'},
@@ -772,7 +793,7 @@ myFormPanel.getForm().submit({
         return this;
     },
 
-<span id='Ext-form.Basic-method-getValues'>    /**
+<span id='Ext-form-Basic-method-getValues'>    /**
 </span>     * Retrieves the fields in the form as a set of key/value pairs, using their
      * {@link Ext.form.field.Field#getSubmitData getSubmitData()} method to collect the values.
      * If multiple fields return values under the same name those values will be combined into an Array.
@@ -822,7 +843,7 @@ myFormPanel.getForm().submit({
         return values;
     },
 
-<span id='Ext-form.Basic-method-getFieldValues'>    /**
+<span id='Ext-form-Basic-method-getFieldValues'>    /**
 </span>     * Retrieves the fields in the form as a set of key/value pairs, using their
      * {@link Ext.form.field.Field#getModelData getModelData()} method to collect the values.
      * If multiple fields return values under the same name those values will be combined into an Array.
@@ -836,7 +857,7 @@ myFormPanel.getForm().submit({
         return this.getValues(false, dirtyOnly, false, true);
     },
 
-<span id='Ext-form.Basic-method-clearInvalid'>    /**
+<span id='Ext-form-Basic-method-clearInvalid'>    /**
 </span>     * Clears all invalid field messages in this form.
      * @return {Ext.form.Basic} this
      */
@@ -850,7 +871,7 @@ myFormPanel.getForm().submit({
         return me;
     },
 
-<span id='Ext-form.Basic-method-reset'>    /**
+<span id='Ext-form-Basic-method-reset'>    /**
 </span>     * Resets all fields in this form.
      * @return {Ext.form.Basic} this
      */
@@ -864,7 +885,7 @@ myFormPanel.getForm().submit({
         return me;
     },
 
-<span id='Ext-form.Basic-method-applyToFields'>    /**
+<span id='Ext-form-Basic-method-applyToFields'>    /**
 </span>     * Calls {@link Ext#apply Ext.apply} for all fields in this form with the passed object.
      * @param {Object} obj The object to be applied
      * @return {Ext.form.Basic} this
@@ -876,7 +897,7 @@ myFormPanel.getForm().submit({
         return this;
     },
 
-<span id='Ext-form.Basic-method-applyIfToFields'>    /**
+<span id='Ext-form-Basic-method-applyIfToFields'>    /**
 </span>     * Calls {@link Ext#applyIf Ext.applyIf} for all field in this form with the passed object.
      * @param {Object} obj The object to be applied
      * @return {Ext.form.Basic} this
@@ -888,7 +909,7 @@ myFormPanel.getForm().submit({
         return this;
     },
 
-<span id='Ext-form.Basic-method-batchLayouts'>    /**
+<span id='Ext-form-Basic-method-batchLayouts'>    /**
 </span>     * @private
      * Utility wrapper that suspends layouts of all field parent containers for the duration of a given
      * function. Used during full-form validation and resets to prevent huge numbers of layouts.
@@ -921,4 +942,6 @@ myFormPanel.getForm().submit({
         me.owner.doComponentLayout();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

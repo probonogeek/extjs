@@ -56,6 +56,10 @@
                     "name": "Offset.js"
                 },
                 {
+                    "path": "../../../platform/src/layout/component/",
+                    "name": "Component.js"
+                },
+                {
                     "path": "../../../platform/src/chart/",
                     "name": "Callout.js"
                 },
@@ -78,10 +82,6 @@
                 {
                     "path": "../../../platform/src/fx/target/",
                     "name": "CompositeSprite.js"
-                },
-                {
-                    "path": "../../../platform/src/layout/component/",
-                    "name": "Component.js"
                 },
                 {
                     "path": "../../src/util/",
@@ -246,6 +246,10 @@
                 {
                     "path": "../../src/dd/",
                     "name": "DragDropManager.js"
+                },
+                {
+                    "path": "../../src/layout/component/",
+                    "name": "Body.js"
                 },
                 {
                     "path": "../../../platform/src/draw/",
@@ -826,10 +830,6 @@
                 {
                     "path": "../../src/grid/plugin/",
                     "name": "HeaderReorderer.js"
-                },
-                {
-                    "path": "../../src/layout/component/",
-                    "name": "Body.js"
                 }
             ]
         }

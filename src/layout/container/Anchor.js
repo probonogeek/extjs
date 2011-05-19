@@ -1,39 +1,44 @@
 /**
  * @class Ext.layout.container.Anchor
  * @extends Ext.layout.container.Container
- * <p>This is a layout that enables anchoring of contained elements relative to the container's dimensions.
+ * 
+ * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
- * <b><tt>{@link #anchor}</tt></b> rules.</p>
- * <p>This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
+ * <b><tt>{@link #anchor}</tt></b> rules.
+ *
+ * This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
  * config, and should generally not need to be created directly via the new keyword.</p>
- * <p>AnchorLayout does not have any direct config options (other than inherited ones). By default,
+ * 
+ * AnchorLayout does not have any direct config options (other than inherited ones). By default,
  * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
  * container using the AnchorLayout can supply an anchoring-specific config property of <b>anchorSize</b>.
  * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
  * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
  * logic if necessary.  
+ *
  * {@img Ext.layout.container.Anchor/Ext.layout.container.Anchor.png Ext.layout.container.Anchor container layout}
+ *
  * For example:
-	Ext.create('Ext.Panel', {
-		width: 500,
-		height: 400,
-		title: "AnchorLayout Panel",
-		layout: 'anchor',
-		renderTo: Ext.getBody(),
-		items: [{
-			xtype: 'panel',
-			title: '75% Width and 20% Height',
-			anchor: '75% 20%'
-		},{
-			xtype: 'panel',
-			title: 'Offset -300 Width & -200 Height',
-			anchor: '-300 -200'		
-		},{
-			xtype: 'panel',
-			title: 'Mixed Offset and Percent',
-			anchor: '-250 20%'
-		}]
-	});
+ *     Ext.create('Ext.Panel', {
+ *         width: 500,
+ *         height: 400,
+ *         title: "AnchorLayout Panel",
+ *         layout: 'anchor',
+ *         renderTo: Ext.getBody(),
+ *         items: [{
+ *             xtype: 'panel',
+ *             title: '75% Width and 20% Height',
+ *             anchor: '75% 20%'
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Offset -300 Width & -200 Height',
+ *             anchor: '-300 -200'		
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Mixed Offset and Percent',
+ *             anchor: '-250 20%'
+ *         }]
+ *     });
  */
 
 Ext.define('Ext.layout.container.Anchor', {
@@ -121,7 +126,7 @@ anchor: '-50 75%'
             len = components.length,
             boxes = [],
             box, newTargetSize, anchorWidth, anchorHeight, component, anchorSpec, calcWidth, calcHeight,
-            anchorsArray, anchor, i, el;
+            anchorsArray, anchor, i, el, cleaner;
 
         if (ownerWidth < 20 && ownerHeight < 20) {
             return;
@@ -154,6 +159,7 @@ anchor: '-50 75%'
 
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
+            cleaner = Ext.core.Element.getRightMarginFixCleaner(target);
             target.addCls(Ext.baseCSSPrefix + 'inline-children');
         }
 
@@ -196,6 +202,7 @@ anchor: '-50 75%'
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
             target.removeCls(Ext.baseCSSPrefix + 'inline-children');
+            cleaner();
         }
 
         for (i = 0; i < len; i++) {

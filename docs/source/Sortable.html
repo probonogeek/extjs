@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Sortable'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Sortable'>/**
 </span> * @class Ext.util.Sortable
 
 A mixin which allows a data component to be sorted. This is used by e.g. {@link Ext.data.Store} and {@link Ext.data.TreeStore}.
@@ -10,14 +27,14 @@ is more likely you will want to use one of the component classes that import thi
  * @docauthor Tommy Maintz &lt;tommy@sencha.com&gt;
  */
 Ext.define(&quot;Ext.util.Sortable&quot;, {
-<span id='Ext-util.Sortable-property-isSortable'>    /**
+<span id='Ext-util-Sortable-property-isSortable'>    /**
 </span>     * @property isSortable
      * @type Boolean
      * Flag denoting that this object is sortable. Always true.
      */
     isSortable: true,
     
-<span id='Ext-util.Sortable-property-defaultSortDirection'>    /**
+<span id='Ext-util-Sortable-property-defaultSortDirection'>    /**
 </span>     * The default sort direction to use if one is not specified (defaults to &quot;ASC&quot;)
      * @property defaultSortDirection
      * @type String
@@ -28,13 +45,13 @@ Ext.define(&quot;Ext.util.Sortable&quot;, {
         'Ext.util.Sorter'
     ],
 
-<span id='Ext-util.Sortable-property-sortRoot'>    /**
+<span id='Ext-util-Sortable-property-sortRoot'>    /**
 </span>     * The property in each item that contains the data to sort. (defaults to null)
      * @type String
      */    
     sortRoot: null,
     
-<span id='Ext-util.Sortable-method-initSortable'>    /**
+<span id='Ext-util-Sortable-method-initSortable'>    /**
 </span>     * Performs initialization of this mixin. Component classes using this mixin should call this method
      * during their own initialization.
      */
@@ -42,7 +59,7 @@ Ext.define(&quot;Ext.util.Sortable&quot;, {
         var me = this,
             sorters = me.sorters;
         
-<span id='Ext-util.Sortable-property-sorters'>        /**
+<span id='Ext-util-Sortable-property-sorters'>        /**
 </span>         * The collection of {@link Ext.util.Sorter Sorters} currently applied to this Store
          * @property sorters
          * @type Ext.util.MixedCollection
@@ -56,7 +73,7 @@ Ext.define(&quot;Ext.util.Sortable&quot;, {
         }
     },
 
-<span id='Ext-util.Sortable-method-sort'>    /**
+<span id='Ext-util-Sortable-method-sort'>    /**
 </span>     * &lt;p&gt;Sorts the data in the Store by one or more of its properties. Example usage:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
 //sort by a single field
@@ -173,7 +190,7 @@ store.sort('myField', 'DESC');
     
     onBeforeSort: Ext.emptyFn,
         
-<span id='Ext-util.Sortable-method-decodeSorters'>    /**
+<span id='Ext-util-Sortable-method-decodeSorters'>    /**
 </span>     * @private
      * Normalizes an array of sorter objects, ensuring that they are all Ext.util.Sorter instances
      * @param {Array} sorters The sorters array
@@ -235,17 +252,7 @@ store.sort('myField', 'DESC');
     
     getSorters: function() {
         return this.sorters.items;
-    },
-    
-<span id='Ext-util.Sortable-method-getSortState'>    /**
-</span>     * Returns an object describing the current sort state of this Store.
-     * @return {Object} The sort state of the Store. An object with two properties:&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;field&lt;/b&gt; : String&lt;p class=&quot;sub-desc&quot;&gt;The name of the field by which the Records are sorted.&lt;/p&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;direction&lt;/b&gt; : String&lt;p class=&quot;sub-desc&quot;&gt;The sort order, 'ASC' or 'DESC' (case-sensitive).&lt;/p&gt;&lt;/li&gt;
-     * &lt;/ul&gt;
-     * See &lt;tt&gt;{@link #sortInfo}&lt;/tt&gt; for additional details.
-     */
-    getSortState : function() {
-        return this.sortInfo;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

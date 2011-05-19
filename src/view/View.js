@@ -9,51 +9,52 @@
  * mouseover, mouseout, etc. as well as a built-in selection model. <b>In order to use these features, an {@link #itemSelector}
  * config must be provided for the DataView to determine what nodes it will be working with.</b>
  *
- * <p>The example below binds a DataView to a {@link Ext.data.Store} and renders it into an {@link Ext.panel.Panel}.</p>
+ * The example below binds a DataView to a {@link Ext.data.Store} and renders it into an {@link Ext.panel.Panel}.
+ *
  * {@img Ext.DataView/Ext.DataView.png Ext.DataView component}
- * <pre><code>
-    Ext.regModel('Image', {
-        Fields: [
-            {name:'src', type:'string'},
-            {name:'caption', type:'string'}
-        ]
-    });
-    
-    Ext.create('Ext.data.Store', {
-        id:'imagesStore',
-        model: 'Image',
-        data: [
-            {src:'http://www.sencha.com/img/20110215-feat-drawing.png', caption:'Drawing & Charts'},
-            {src:'http://www.sencha.com/img/20110215-feat-data.png', caption:'Advanced Data'},
-            {src:'http://www.sencha.com/img/20110215-feat-html5.png', caption:'Overhauled Theme'},
-            {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}            
-        ]
-    });
-    
-    var imageTpl = new Ext.XTemplate(
-        '<tpl for=".">',
-            '<div style="thumb-wrap">',
-              '<img src="{src}" />',
-              '<br/><span>{caption}</span>',
-            '</div>',
-        '</tpl>'
-    );
-    
-    Ext.create('Ext.DataView', {
-        store: Ext.data.StoreManager.lookup('imagesStore'),
-        tpl: imageTpl,
-        itemSelector: 'div.thumb-wrap',
-        emptyText: 'No images available',
-        renderTo: Ext.getBody()
-    });
- * </code></pre>
+ *
+ *     Ext.regModel('Image', {
+ *         Fields: [
+ *             {name:'src', type:'string'},
+ *             {name:'caption', type:'string'}
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.data.Store', {
+ *         id:'imagesStore',
+ *         model: 'Image',
+ *         data: [
+ *             {src:'http://www.sencha.com/img/20110215-feat-drawing.png', caption:'Drawing & Charts'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-data.png', caption:'Advanced Data'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-html5.png', caption:'Overhauled Theme'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}            
+ *         ]
+ *     });
+ *     
+ *     var imageTpl = new Ext.XTemplate(
+ *         '&lt;tpl for="."&gt;',
+ *             '&lt;div style="thumb-wrap"&gt;',
+ *               '&lt;img src="{src}" /&gt;',
+ *               '&lt;br/&gt;&lt;span&gt;{caption}&lt;/span&gt;',
+ *             '&lt;/div&gt;',
+ *         '&lt;/tpl&gt;'
+ *     );
+ *     
+ *     Ext.create('Ext.DataView', {
+ *         store: Ext.data.StoreManager.lookup('imagesStore'),
+ *         tpl: imageTpl,
+ *         itemSelector: 'div.thumb-wrap',
+ *         emptyText: 'No images available',
+ *         renderTo: Ext.getBody()
+ *     });
+ *
  * @xtype dataview
  */
 Ext.define('Ext.view.View', {
     extend: 'Ext.view.AbstractView',
     alternateClassName: 'Ext.view.View',
     alias: 'widget.dataview',
-    
+
     inheritableStatics: {
         EventMap: {
             mousedown: 'MouseDown',
@@ -68,7 +69,7 @@ Ext.define('Ext.view.View', {
             keydown: 'KeyDown'
         }
     },
-    
+
     addCmpEvents: function() {
         this.addEvents(
             /**
@@ -336,7 +337,7 @@ Ext.define('Ext.view.View', {
              * @param {Ext.EventObject} e The raw event object. Use {@link Ext.EventObject#getKey getKey()} to retrieve the key that was pressed.
              */
             'containerkeydown',
-            
+
             /**
              * @event selectionchange
              * Fires when the selected nodes change. Relayed event from the underlying selection model.
@@ -356,9 +357,9 @@ Ext.define('Ext.view.View', {
     },
     // private
     afterRender: function(){
-        var me = this, 
+        var me = this,
             listeners;
-        
+
         me.callParent();
 
         listeners = {
@@ -372,43 +373,61 @@ Ext.define('Ext.view.View', {
             mouseout: me.handleEvent,
             keydown: me.handleEvent
         };
-        
+
         me.mon(me.getTargetEl(), listeners);
-        
+
         if (me.store) {
             me.bindStore(me.store, true);
         }
     },
-    
+
     handleEvent: function(e) {
         if (this.processUIEvent(e) !== false) {
             this.processSpecialEvent(e);
         }
     },
-    
+
     // Private template method
     processItemEvent: Ext.emptyFn,
     processContainerEvent: Ext.emptyFn,
     processSpecialEvent: Ext.emptyFn,
-    
-    processUIEvent: function(e, type) {
-        type = type || e.type;
+
+    /*
+     * Returns true if this mouseover/out event is still over the overItem.
+     */
+    stillOverItem: function (event, overItem) {
+        var nowOver;
+
+        // There is this weird bug when you hover over the border of a cell it is saying
+        // the target is the table.
+        // BrowserBug: IE6 & 7. If me.mouseOverItem has been removed and is no longer
+        // in the DOM then accessing .offsetParent will throw an "Unspecified error." exception.
+        // typeof'ng and checking to make sure the offsetParent is an object will NOT throw
+        // this hard exception.
+        if (overItem && typeof(overItem.offsetParent) === "object") {
+            // mouseout : relatedTarget == nowOver, target == wasOver
+            // mouseover: relatedTarget == wasOver, target == nowOver
+            nowOver = (event.type == 'mouseout') ? event.getRelatedTarget() : event.getTarget();
+            return Ext.fly(overItem).contains(nowOver);
+        }
+
+        return false;
+    },
+
+    processUIEvent: function(e) {
         var me = this,
             item = e.getTarget(me.getItemSelector(), me.getTargetEl()),
             map = this.statics().EventMap,
-            index, record;
-        
+            index, record,
+            type = e.type,
+            overItem = me.mouseOverItem,
+            newType;
+
         if (!item) {
-            // There is this weird bug when you hover over the border of a cell it is saying
-            // the target is the table.
-            // BrowserBug: IE6 & 7. If me.mouseOverItem has been removed and is no longer
-            // in the DOM then accessing .offsetParent will throw an "Unspecified error." exception.
-            // typeof'ng and checking to make sure the offsetParent is an object will NOT throw
-            // this hard exception.
-            if (type == 'mouseover' && me.mouseOverItem && typeof me.mouseOverItem.offsetParent === "object" && Ext.fly(me.mouseOverItem).getRegion().contains(e.getPoint())) {
-                item = me.mouseOverItem;
+            if (type == 'mouseover' && me.stillOverItem(e, overItem)) {
+                item = overItem;
             }
-            
+
             // Try to get the selected item to handle the keydown event, otherwise we'll just fire a container keydown event
             if (type == 'keydown') {
                 record = me.getSelectionModel().getLastSelected();
@@ -417,54 +436,53 @@ Ext.define('Ext.view.View', {
                 }
             }
         }
-        
+
         if (item) {
             index = me.indexOf(item);
             if (!record) {
                 record = me.getRecord(item);
             }
-            
-            if (me.processItemEvent(type, record, item, index, e) === false) {
+
+            if (me.processItemEvent(record, item, index, e) === false) {
                 return false;
             }
-            
-            type = me.isNewItemEvent(type, item, e);
-            if (type === false) {
+
+            newType = me.isNewItemEvent(item, e);
+            if (newType === false) {
                 return false;
             }
-            
+
             if (
-                (me['onBeforeItem' + map[type]](record, item, index, e) === false) ||
-                (me.fireEvent('beforeitem' + type, me, record, item, index, e) === false) ||
-                (me['onItem' + map[type]](record, item, index, e) === false)
-            ) { 
+                (me['onBeforeItem' + map[newType]](record, item, index, e) === false) ||
+                (me.fireEvent('beforeitem' + newType, me, record, item, index, e) === false) ||
+                (me['onItem' + map[newType]](record, item, index, e) === false)
+            ) {
                 return false;
             }
-            
-            me.fireEvent('item' + type, me, record, item, index, e);
-        } 
+
+            me.fireEvent('item' + newType, me, record, item, index, e);
+        }
         else {
             if (
-                (me.processContainerEvent(type, e) === false) ||
+                (me.processContainerEvent(e) === false) ||
                 (me['onBeforeContainer' + map[type]](e) === false) ||
                 (me.fireEvent('beforecontainer' + type, me, e) === false) ||
                 (me['onContainer' + map[type]](e) === false)
             ) {
                 return false;
             }
-            
+
             me.fireEvent('container' + type, me, e);
         }
-        
+
         return true;
     },
-    
-    isNewItemEvent: function(type, item, e) {
+
+    isNewItemEvent: function (item, e) {
         var me = this,
             overItem = me.mouseOverItem,
-            contains,
-            isItem;
-            
+            type = e.type;
+
         switch (type) {
             case 'mouseover':
                 if (item === overItem) {
@@ -472,27 +490,18 @@ Ext.define('Ext.view.View', {
                 }
                 me.mouseOverItem = item;
                 return 'mouseenter';
-            break;
-            
+
             case 'mouseout':
-               /*
-                * Need an extra check here to see if it's the parent element. See the
-                * comment re: the browser bug at the start of processUIEvent
-                */
-                if (overItem && typeof overItem.offsetParent === "object") {
-                    contains = Ext.fly(me.mouseOverItem).getRegion().contains(e.getPoint());
-                    isItem = Ext.fly(e.getTarget()).hasCls(me.itemSelector);
-                    if (contains && isItem) {
-                        return false;
-                    }
+                // If the currently mouseovered item contains the mouseover target, it's *NOT* a mouseleave
+                if (me.stillOverItem(e, overItem)) {
+                    return false;
                 }
                 me.mouseOverItem = null;
                 return 'mouseleave';
-            break;
         }
         return type;
     },
-    
+
     // private
     onItemMouseEnter: function(record, item, index, e) {
         if (this.trackOver) {
@@ -522,7 +531,7 @@ Ext.define('Ext.view.View', {
     onBeforeItemDblClick: Ext.emptyFn,
     onBeforeItemContextMenu: Ext.emptyFn,
     onBeforeItemKeyDown: Ext.emptyFn,
-    
+
     // @private, template methods
     onContainerMouseDown: Ext.emptyFn,
     onContainerMouseUp: Ext.emptyFn,
@@ -540,7 +549,7 @@ Ext.define('Ext.view.View', {
     onBeforeContainerDblClick: Ext.emptyFn,
     onBeforeContainerContextMenu: Ext.emptyFn,
     onBeforeContainerKeyDown: Ext.emptyFn,
-    
+
     /**
      * Highlight a given item in the DataView. This is called by the mouseover handler if {@link #overItemCls}
      * and {@link #trackOver} are configured, but can also be called manually by other code, for instance to
@@ -560,7 +569,7 @@ Ext.define('Ext.view.View', {
     clearHighlight: function() {
         var me = this,
             highlighted = me.highlightedItem;
-            
+
         if (highlighted) {
             Ext.fly(highlighted).removeCls(me.overItemCls);
             delete me.highlightedItem;

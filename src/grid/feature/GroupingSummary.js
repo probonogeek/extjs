@@ -28,7 +28,7 @@
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage

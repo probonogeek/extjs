@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-menu.CheckItem-method-constructor'><span id='Ext-menu.CheckItem'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-menu-CheckItem-method-constructor'><span id='Ext-menu-CheckItem'>/**
 </span></span> * @class Ext.menu.CheckItem
  * @extends Ext.menu.Item
 
@@ -34,21 +51,21 @@ Ext.define('Ext.menu.CheckItem', {
     extend: 'Ext.menu.Item',
     alias: 'widget.menucheckitem',
 
-<span id='Ext-menu.CheckItem-cfg-checkedCls'>    /**
+<span id='Ext-menu-CheckItem-cfg-checkedCls'>    /**
 </span>     * @cfg {String} checkedCls
      * The CSS class used by {@link #cls} to show the checked state.
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-checked'`.
      * @markdown
      */
     checkedCls: Ext.baseCSSPrefix + 'menu-item-checked',
-<span id='Ext-menu.CheckItem-cfg-uncheckedCls'>    /**
+<span id='Ext-menu-CheckItem-cfg-uncheckedCls'>    /**
 </span>     * @cfg {String} uncheckedCls
      * The CSS class used by {@link #cls} to show the unchecked state.
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-unchecked'`.
      * @markdown
      */
     uncheckedCls: Ext.baseCSSPrefix + 'menu-item-unchecked',
-<span id='Ext-menu.CheckItem-cfg-groupCls'>    /**
+<span id='Ext-menu-CheckItem-cfg-groupCls'>    /**
 </span>     * @cfg {String} groupCls
      * The CSS class applied to this item's icon image to denote being a part of a radio group.
      * Defaults to `Ext.baseCSSClass + 'menu-group-icon'`.
@@ -57,7 +74,7 @@ Ext.define('Ext.menu.CheckItem', {
      */
     groupCls: Ext.baseCSSPrefix + 'menu-group-icon',
 
-<span id='Ext-menu.CheckItem-cfg-hideOnClick'>    /**
+<span id='Ext-menu-CheckItem-cfg-hideOnClick'>    /**
 </span>     * @cfg {Boolean} hideOnClick
      * Whether to not to hide the owning menu when this item is clicked.
      * Defaults to `false` for checkbox items, and to `true` for radio group items.
@@ -75,7 +92,7 @@ Ext.define('Ext.menu.CheckItem', {
     initComponent: function() {
         var me = this;
         me.addEvents(
-<span id='Ext-menu.CheckItem-event-beforecheckchange'>            /**
+<span id='Ext-menu-CheckItem-event-beforecheckchange'>            /**
 </span>             * @event beforecheckchange
              * Fires before a change event. Return false to cancel.
              * @param {Ext.menu.CheckItem} this
@@ -83,7 +100,7 @@ Ext.define('Ext.menu.CheckItem', {
              */
             'beforecheckchange',
 
-<span id='Ext-menu.CheckItem-event-checkchange'>            /**
+<span id='Ext-menu-CheckItem-event-checkchange'>            /**
 </span>             * @event checkchange
              * Fires after a change event.
              * @param {Ext.menu.CheckItem} this
@@ -106,7 +123,7 @@ Ext.define('Ext.menu.CheckItem', {
         }
     },
 
-<span id='Ext-menu.CheckItem-method-disableCheckChange'>    /**
+<span id='Ext-menu-CheckItem-method-disableCheckChange'>    /**
 </span>     * Disables just the checkbox functionality of this menu Item. If this menu item has a submenu, that submenu
      * will still be accessible
      */
@@ -117,7 +134,7 @@ Ext.define('Ext.menu.CheckItem', {
         me.checkChangeDisabled = true;
     },
 
-<span id='Ext-menu.CheckItem-method-enableCheckChange'>    /**
+<span id='Ext-menu-CheckItem-method-enableCheckChange'>    /**
 </span>     * Reenables the checkbox functionality of this menu item after having been disabled by {@link #disableCheckChange}
      */
     enableCheckChange: function() {
@@ -140,7 +157,7 @@ Ext.define('Ext.menu.CheckItem', {
         this.callParent(arguments);
     },
 
-<span id='Ext-menu.CheckItem-method-setChecked'>    /**
+<span id='Ext-menu-CheckItem-method-setChecked'>    /**
 </span>     * Sets the checked state of the item
      * @param {Boolean} checked True to check, false to uncheck
      * @param {Boolean} suppressEvents (optional) True to prevent firing the checkchange events. Defaults to `false`.
@@ -161,4 +178,6 @@ Ext.define('Ext.menu.CheckItem', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

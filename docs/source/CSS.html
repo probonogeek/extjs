@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.CSS'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-CSS'>/**
 </span> * @class Ext.util.CSS
  * Utility class for manipulating CSS rules
  * @singleton
@@ -19,7 +36,7 @@ Ext.define('Ext.util.CSS', function() {
             this.initialized = false;
         },
  
-<span id='Ext-util.CSS-method-createStyleSheet'>        /**
+<span id='Ext-util-CSS-method-createStyleSheet'>        /**
 </span>         * Creates a stylesheet from a text blob of rules.
          * These rules will be wrapped in a STYLE tag and appended to the HEAD of the document.
          * @param {String} cssText The text containing the css rules
@@ -53,7 +70,7 @@ Ext.define('Ext.util.CSS', function() {
             return ss;
         },
 
-<span id='Ext-util.CSS-method-removeStyleSheet'>        /**
+<span id='Ext-util-CSS-method-removeStyleSheet'>        /**
 </span>         * Removes a style or link tag by id
          * @param {String} id The id of the tag
          */
@@ -64,7 +81,7 @@ Ext.define('Ext.util.CSS', function() {
             }
         },
 
-<span id='Ext-util.CSS-method-swapStyleSheet'>        /**
+<span id='Ext-util-CSS-method-swapStyleSheet'>        /**
 </span>         * Dynamically swaps an existing stylesheet reference for a new one
          * @param {String} id The id of an existing link tag to remove
          * @param {String} url The href of the new stylesheet to include
@@ -80,7 +97,7 @@ Ext.define('Ext.util.CSS', function() {
             doc.getElementsByTagName(&quot;head&quot;)[0].appendChild(ss);
         },
 
-<span id='Ext-util.CSS-method-refreshCache'>        /**
+<span id='Ext-util-CSS-method-refreshCache'>        /**
 </span>         * Refresh the rule cache if you have dynamically added stylesheets
          * @return {Object} An object (hash) of rules indexed by selector
          */
@@ -115,7 +132,7 @@ Ext.define('Ext.util.CSS', function() {
             } catch(e) {}
         },
 
-<span id='Ext-util.CSS-method-getRules'>        /**
+<span id='Ext-util-CSS-method-getRules'>        /**
 </span>        * Gets all css rules for the document
         * @param {Boolean} refreshCache true to refresh the internal cache
         * @return {Object} An object (hash) of rules indexed by selector
@@ -138,7 +155,7 @@ Ext.define('Ext.util.CSS', function() {
             return rules;
         },
 
-<span id='Ext-util.CSS-method-getRule'>        /**
+<span id='Ext-util-CSS-method-getRule'>        /**
 </span>         * Gets an an individual CSS rule by selector(s)
          * @param {String/Array} selector The CSS selector or an array of selectors to try. The first selector that is found is returned.
          * @param {Boolean} refreshCache true to refresh the internal cache if you have recently updated any rules or added styles dynamically
@@ -157,7 +174,7 @@ Ext.define('Ext.util.CSS', function() {
             return null;
         },
 
-<span id='Ext-util.CSS-method-updateRule'>        /**
+<span id='Ext-util-CSS-method-updateRule'>        /**
 </span>         * Updates a rule property
          * @param {String/Array} selector If it's an array it tries each selector until it finds one. Stops immediately once one is found.
          * @param {String} property The css property
@@ -181,4 +198,6 @@ Ext.define('Ext.util.CSS', function() {
             return false;
         }
     };
-}());</pre></pre></body></html>
+}());</pre>
+</body>
+</html>

@@ -20,9 +20,9 @@
 
 For more information about how to use the Ext classes, see
 
-* <a href="http://www.sencha.com/learn/">The Learning Center</a>
-* <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
-* <a href="http://www.sencha.com/forum/">The forums</a>
+- <a href="http://www.sencha.com/learn/">The Learning Center</a>
+- <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
+- <a href="http://www.sencha.com/forum/">The forums</a>
 
  * @singleton
  * @markdown
@@ -85,6 +85,7 @@ Ext.apply(Ext, {
     /**
      * Returns the current document head as an {@link Ext.core.Element}.
      * @return Ext.core.Element The document head
+     * @method
      */
     getHead: function() {
         var head;
@@ -212,6 +213,7 @@ Ext.ns = Ext.namespace;
 
 // for old browsers
 window.undefined = window.undefined;
+
 /**
  * @class Ext
  * Ext core utilities and functions.
@@ -244,14 +246,15 @@ window.undefined = window.undefined;
         isWindows = check(/windows|win32/),
         isMac = check(/macintosh|mac os x/),
         isLinux = check(/linux/),
-        scrollWidth = null;
+        scrollWidth = null,
+        webKitVersion = isWebKit && (/webkit\/(\d+\.\d+)/.exec(Ext.userAgent));
 
     // remove css image flicker
     try {
         document.execCommand("BackgroundImageCache", false, true);
     } catch(e) {}
 
-    Ext.setVersion('extjs', '4.0.0');
+    Ext.setVersion('extjs', '4.0.1');
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
@@ -345,6 +348,7 @@ function(el){
          * <code>true</code>, then DOM event listeners are also removed from all child nodes. The body node
          * will be ignored if passed in.</p>
          * @param {HTMLElement} node The node to remove
+         * @method
          */
         removeNode : isIE6 || isIE7 ? function() {
             var d;
@@ -498,6 +502,12 @@ function(el){
         isMac : isMac,
 
         /**
+         * The current version of WebKit (-1 if the browser does not use WebKit).
+         * @type Float
+         */
+        webKitVersion: webKitVersion ? parseFloat(webKitVersion[1]) : -1,
+
+        /**
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with CSS background images.
          * In older versions of IE, this defaults to "http://sencha.com/s.gif" and you should change this to a URL on your server.
          * For other browsers it uses an inline data URL.
@@ -648,6 +658,128 @@ ImageComponent = Ext.extend(Ext.Component, {
         },
 
         /**
+         * Logs a message. If a console is present it will be used. On Opera, the method
+         * "opera.postError" is called. In other cases, the message is logged to an array
+         * "Ext.log.out". An attached debugger can watch this array and view the log. The
+         * log buffer is limited to a maximum of "Ext.log.max" entries (defaults to 100).
+         *
+         * If additional parameters are passed, they are joined and appended to the message.
+         * 
+         * This method does nothing in a release build.
+         *
+         * @param {String|Object} message The message to log or an options object with any
+         * of the following properties:
+         *
+         *  - `msg`: The message to log (required).
+         *  - `level`: One of: "error", "warn", "info" or "log" (the default is "log").
+         *  - `dump`: An object to dump to the log as part of the message.
+         *  - `stack`: True to include a stack trace in the log.
+         * @markdown
+         */
+        log : function (message) {
+            //<debug>
+            var options, dump,
+                con = Ext.global.console,
+                log = Ext.log,
+                level = 'log',
+                stack,
+                members,
+                member;
+
+            if (!Ext.isString(message)) {
+                options = message;
+                message = options.msg || '';
+                level = options.level || level;
+                dump = options.dump;
+                stack = options.stack;
+
+                if (dump && !(con && con.dir)) {
+                    members = [];
+
+                    // Cannot use Ext.encode since it can recurse endlessly (if we're lucky)
+                    // ...and the data could be prettier!
+                    Ext.Object.each(dump, function (name, value) {
+                        if (typeof(value) === "function") {
+                            return;
+                        }
+
+                        if (!Ext.isDefined(value) || value === null ||
+                                Ext.isDate(value) ||
+                                Ext.isString(value) || (typeof(value) == "number") ||
+                                Ext.isBoolean(value)) {
+                            member = Ext.encode(value);
+                        } else if (Ext.isArray(value)) {
+                            member = '[ ]';
+                        } else if (Ext.isObject(value)) {
+                            member = '{ }';
+                        } else {
+                            member = 'undefined';
+                        }
+                        members.push(Ext.encode(name) + ': ' + member);
+                    });
+
+                    if (members.length) {
+                        message += ' \nData: {\n  ' + members.join(',\n  ') + '\n}';
+                    }
+                    dump = null;
+                }
+            }
+
+            if (arguments.length > 1) {
+                message += Array.prototype.slice.call(arguments, 1).join('');
+            }
+
+            // Not obvious, but 'console' comes and goes when Firebug is turned on/off, so
+            // an early test may fail either direction if Firebug is toggled.
+            //
+            if (con) { // if (Firebug-like console)
+                if (con[level]) {
+                    con[level](message);
+                } else {
+                    con.log(message);
+                }
+
+                if (dump) {
+                    con.dir(dump);
+                }
+
+                if (stack && con.trace) {
+                    // Firebug's console.error() includes a trace already...
+                    if (!con.firebug || level != 'error') {
+                        con.trace();
+                    }
+                }
+            } else {
+                // w/o console, all messages are equal, so munge the level into the message:
+                if (level != 'log') {
+                    message = level.toUpperCase() + ': ' + message;
+                }
+
+                if (Ext.isOpera) {
+                    opera.postError(message);
+                } else {
+                    var out = log.out || (log.out = []),
+                        max = log.max || (log.max = 100);
+
+                    if (out.length >= max) {
+                        // this formula allows out.max to change (via debugger), where the
+                        // more obvious "max/4" would not quite be the same
+                        out.splice(0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
+                    }
+
+                    out.push(message);
+                }
+            }
+
+            // Mostly informational, but the Ext.Error notifier uses them:
+            var counters = log.counters ||
+                          (log.counters = { error: 0, warn: 0, info: 0, log: 0 });
+
+            ++counters[level];
+            //</debug>
+        },
+
+        /**
          * Partitions the set into two sets: a true set and a false set.
          * Example:
          * Example2:
@@ -778,8 +910,8 @@ Ext.zip(
 
 /**
  * TBD
- * @type Function
  * @param {Object} config
+ * @method
  */
 Ext.application = function(config) {
     Ext.require('Ext.app.Application');

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-menu.DatePicker'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-menu-DatePicker'>/**
 </span> * @class Ext.menu.DatePicker
  * @extends Ext.menu.Menu
  * &lt;p&gt;A menu containing an {@link Ext.picker.Date} Component.&lt;/p&gt;
@@ -47,35 +64,35 @@
         'Ext.picker.Date'
      ],
 
-<span id='Ext-menu.DatePicker-cfg-hideOnClick'>    /**
+<span id='Ext-menu-DatePicker-cfg-hideOnClick'>    /**
 </span>     * @cfg {Boolean} hideOnClick
      * False to continue showing the menu after a date is selected, defaults to true.
      */
     hideOnClick : true,
 
-<span id='Ext-menu.DatePicker-cfg-pickerId'>    /**
+<span id='Ext-menu-DatePicker-cfg-pickerId'>    /**
 </span>     * @cfg {String} pickerId
      * An id to assign to the underlying date picker. Defaults to &lt;tt&gt;null&lt;/tt&gt;.
      */
     pickerId : null,
 
-<span id='Ext-menu.DatePicker-cfg-maxHeight'>    /**
+<span id='Ext-menu-DatePicker-cfg-maxHeight'>    /**
 </span>     * @cfg {Number} maxHeight
      * @hide
      */
 
-<span id='Ext-menu.DatePicker-property-picker'>    /**
+<span id='Ext-menu-DatePicker-property-picker'>    /**
 </span>     * The {@link Ext.picker.Date} instance for this DateMenu
      * @property picker
      * @type Ext.picker.Date
      */
 
-<span id='Ext-menu.DatePicker-event-click'>    /**
+<span id='Ext-menu-DatePicker-event-click'>    /**
 </span>     * @event click
      * @hide
      */
 
-<span id='Ext-menu.DatePicker-event-itemclick'>    /**
+<span id='Ext-menu-DatePicker-event-itemclick'>    /**
 </span>     * @event itemclick
      * @hide
      */
@@ -96,7 +113,7 @@
         me.callParent(arguments);
 
         me.picker = me.down('datepicker');
-<span id='Ext-menu.DatePicker-event-select'>        /**
+<span id='Ext-menu-DatePicker-event-select'>        /**
 </span>         * @event select
          * Fires when a date is selected from the {@link #picker Ext.picker.Date}
          * @param {Ext.picker.Date} picker The {@link #picker Ext.picker.Date}
@@ -112,4 +129,6 @@
     hidePickerOnSelect: function() {
         Ext.menu.Manager.hideAll();
     }
- });</pre></pre></body></html>
+ });</pre>
+</body>
+</html>

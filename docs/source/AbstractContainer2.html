@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.AbstractContainer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-AbstractContainer'>/**
 </span> * @class Ext.layout.container.AbstractContainer
  * @extends Ext.layout.Layout
  * Please refer to sub classes documentation
@@ -21,19 +38,19 @@ Ext.define('Ext.layout.container.AbstractContainer', {
     // @private
     managedWidth: true,
 
-<span id='Ext-layout.container.AbstractContainer-cfg-bindToOwnerCtComponent'>    /**
+<span id='Ext-layout-container-AbstractContainer-cfg-bindToOwnerCtComponent'>    /**
 </span>     * @cfg {Boolean} bindToOwnerCtComponent
      * Flag to notify the ownerCt Component on afterLayout of a change
      */
     bindToOwnerCtComponent: false,
 
-<span id='Ext-layout.container.AbstractContainer-cfg-bindToOwnerCtContainer'>    /**
+<span id='Ext-layout-container-AbstractContainer-cfg-bindToOwnerCtContainer'>    /**
 </span>     * @cfg {Boolean} bindToOwnerCtContainer
      * Flag to notify the ownerCt Container on afterLayout of a change
      */
     bindToOwnerCtContainer: false,
 
-<span id='Ext-layout.container.AbstractContainer-cfg-itemCls'>    /**
+<span id='Ext-layout-container-AbstractContainer-cfg-itemCls'>    /**
 </span>     * @cfg {String} itemCls
      * &lt;p&gt;An optional extra CSS class that will be added to the container. This can be useful for adding
      * customized styles to the container or any of its children using standard CSS rules. See
@@ -72,7 +89,7 @@ Ext.define('Ext.layout.container.AbstractContainer', {
         me.callParent(arguments);
     },
 
-<span id='Ext-layout.container.AbstractContainer-method-setItemSize'>    /**
+<span id='Ext-layout-container-AbstractContainer-method-setItemSize'>    /**
 </span>    * Set the size of an item within the Container.  We should always use setCalculatedSize.
     * @private
     */
@@ -84,7 +101,7 @@ Ext.define('Ext.layout.container.AbstractContainer', {
         item.setCalculatedSize(width, height, this.owner);
     },
 
-<span id='Ext-layout.container.AbstractContainer-method-getLayoutItems'>    /**
+<span id='Ext-layout-container-AbstractContainer-method-getLayoutItems'>    /**
 </span>     * &lt;p&gt;Returns an array of child components either for a render phase (Performed in the beforeLayout method of the layout's
      * base class), or the layout phase (onLayout).&lt;/p&gt;
      * @return {Array} of child components
@@ -96,14 +113,14 @@ Ext.define('Ext.layout.container.AbstractContainer', {
     afterLayout: function() {
         this.owner.afterLayout(this);
     },
-<span id='Ext-layout.container.AbstractContainer-method-getTarget'>    /**
+<span id='Ext-layout-container-AbstractContainer-method-getTarget'>    /**
 </span>     * Returns the owner component's resize element.
      * @return {Ext.core.Element}
      */
      getTarget: function() {
          return this.owner.getTargetEl();
      },
-<span id='Ext-layout.container.AbstractContainer-method-getRenderTarget'>    /**
+<span id='Ext-layout-container-AbstractContainer-method-getRenderTarget'>    /**
 </span>     * &lt;p&gt;Returns the element into which rendering must take place. Defaults to the owner Container's {@link Ext.AbstractComponent#targetEl}.&lt;/p&gt;
      * May be overridden in layout managers which implement an inner element.
      * @return {Ext.core.Element}
@@ -112,4 +129,6 @@ Ext.define('Ext.layout.container.AbstractContainer', {
          return this.owner.getTargetEl();
      }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

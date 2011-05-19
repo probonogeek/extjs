@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-dd.DragZone-method-constructor'><span id='Ext-dd.DragZone'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-dd-DragZone-method-constructor'><span id='Ext-dd-DragZone'>/**
 </span></span> * @class Ext.dd.DragZone
  * @extends Ext.dd.DragSource
  * &lt;p&gt;This class provides a container DD instance that allows dragging of multiple child source nodes.&lt;/p&gt;
@@ -67,7 +84,7 @@ Ext.define('Ext.dd.DragZone', {
         }
     },
 
-<span id='Ext-dd.DragZone-property-dragData'>    /**
+<span id='Ext-dd-DragZone-property-dragData'>    /**
 </span>     * This property contains the data representing the dragged object. This data is set up by the implementation
      * of the {@link #getDragData} method. It must contain a &lt;tt&gt;ddel&lt;/tt&gt; property, but can contain
      * any other data according to the application's needs.
@@ -75,12 +92,12 @@ Ext.define('Ext.dd.DragZone', {
      * @property dragData
      */
 
-<span id='Ext-dd.DragZone-cfg-containerScroll'>    /**
+<span id='Ext-dd-DragZone-cfg-containerScroll'>    /**
 </span>     * @cfg {Boolean} containerScroll True to register this container with the Scrollmanager
      * for auto scrolling during drag operations.
      */
 
-<span id='Ext-dd.DragZone-method-getDragData'>    /**
+<span id='Ext-dd-DragZone-method-getDragData'>    /**
 </span>     * Called when a mousedown occurs in this container. Looks in {@link Ext.dd.Registry}
      * for a valid target to drag based on the mouse down. Override this method
      * to provide your own lookup logic (e.g. finding a child by class name). Make sure your returned
@@ -92,7 +109,7 @@ Ext.define('Ext.dd.DragZone', {
         return Ext.dd.Registry.getHandleFromEvent(e);
     },
 
-<span id='Ext-dd.DragZone-method-onInitDrag'>    /**
+<span id='Ext-dd-DragZone-method-onInitDrag'>    /**
 </span>     * Called once drag threshold has been reached to initialize the proxy element. By default, it clones the
      * this.dragData.ddel
      * @param {Number} x The x position of the click on the dragged object
@@ -105,7 +122,7 @@ Ext.define('Ext.dd.DragZone', {
         return true;
     },
 
-<span id='Ext-dd.DragZone-method-afterRepair'>    /**
+<span id='Ext-dd-DragZone-method-afterRepair'>    /**
 </span>     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
      */
     afterRepair : function(){
@@ -116,7 +133,7 @@ Ext.define('Ext.dd.DragZone', {
         me.dragging = false;
     },
 
-<span id='Ext-dd.DragZone-method-getRepairXY'>    /**
+<span id='Ext-dd-DragZone-method-getRepairXY'>    /**
 </span>     * Called before a repair of an invalid drop to get the XY to animate to. By default returns
      * the XY of this.dragData.ddel
      * @param {EventObject} e The mouse up event
@@ -133,4 +150,6 @@ Ext.define('Ext.dd.DragZone', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Model-method-constructor'><span id='Ext-data.Model'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Model-method-constructor'><span id='Ext-data-Model'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.Model
  *
@@ -369,11 +386,11 @@ Ext.define('Ext.data.Model', {
                 // Fire the onModelDefined template method on ModelManager
                 Ext.ModelManager.onModelDefined(cls);
             });
-        }
+        };
     },
 
     inheritableStatics: {
-<span id='Ext-data.Model-method-setProxy'>        /**
+<span id='Ext-data-Model-method-setProxy'>        /**
 </span>         * Sets the Proxy to use for this model. Accepts any options that can be accepted by {@link Ext#createByAlias Ext.createByAlias}
          * @param {String/Object/Ext.data.proxy.Proxy} proxy The proxy
          * @static
@@ -394,7 +411,7 @@ Ext.define('Ext.data.Model', {
             return proxy;
         },
 
-<span id='Ext-data.Model-method-getProxy'>        /**
+<span id='Ext-data-Model-method-getProxy'>        /**
 </span>         * Returns the configured Proxy for this Model
          * @return {Ext.data.proxy.Proxy} The proxy
          */
@@ -402,7 +419,7 @@ Ext.define('Ext.data.Model', {
             return this.proxy;
         },
 
-<span id='Ext-data.Model-method-load'>        /**
+<span id='Ext-data-Model-method-load'>        /**
 </span>         * &lt;b&gt;Static&lt;/b&gt;. Asynchronously loads a model instance by id. Sample usage:
     &lt;pre&gt;&lt;code&gt;
     MyApp.User = Ext.define('User', {
@@ -465,7 +482,7 @@ Ext.define('Ext.data.Model', {
         REJECT : 'reject',
         COMMIT : 'commit',
 
-<span id='Ext-data.Model-method-id'>        /**
+<span id='Ext-data-Model-method-id'>        /**
 </span>         * Generates a sequential id. This method is typically called when a record is {@link #create}d
          * and {@link #Record no id has been specified}. The id will automatically be assigned
          * to the record. The returned id takes the form:
@@ -487,20 +504,20 @@ Ext.define('Ext.data.Model', {
         }
     },
     
-<span id='Ext-data.Model-property-editing'>    /**
+<span id='Ext-data-Model-property-editing'>    /**
 </span>     * Internal flag used to track whether or not the model instance is currently being edited. Read-only
      * @property editing
      * @type Boolean
      */
     editing : false,
 
-<span id='Ext-data.Model-property-dirty'>    /**
+<span id='Ext-data-Model-property-dirty'>    /**
 </span>     * Readonly flag - true if this Record has been modified.
      * @type Boolean
      */
     dirty : false,
 
-<span id='Ext-data.Model-cfg-persistanceProperty'>    /**
+<span id='Ext-data-Model-cfg-persistanceProperty'>    /**
 </span>     * @cfg {String} persistanceProperty The property on this Persistable object that its data is saved to.
      * Defaults to 'data' (e.g. all persistable data resides in this.data.)
      */
@@ -509,7 +526,7 @@ Ext.define('Ext.data.Model', {
     evented: false,
     isModel: true,
 
-<span id='Ext-data.Model-property-phantom'>    /**
+<span id='Ext-data-Model-property-phantom'>    /**
 </span>     * &lt;tt&gt;true&lt;/tt&gt; when the record does not yet exist in a server-side database (see
      * {@link #setDirty}).  Any record which has a real database pk set as its id property
      * is NOT a phantom -- it's real.
@@ -518,25 +535,26 @@ Ext.define('Ext.data.Model', {
      */
     phantom : false,
 
-<span id='Ext-data.Model-cfg-idProperty'>    /**
+<span id='Ext-data-Model-cfg-idProperty'>    /**
 </span>     * @cfg {String} idProperty The name of the field treated as this Model's unique id (defaults to 'id').
      */
     idProperty: 'id',
 
-<span id='Ext-data.Model-property-defaultProxyType'>    /**
+<span id='Ext-data-Model-property-defaultProxyType'>    /**
 </span>     * The string type of the default Model Proxy. Defaults to 'ajax'
      * @property defaultProxyType
      * @type String
      */
     defaultProxyType: 'ajax',
 
-<span id='Ext-data.Model-property-fields'>    /**
+<span id='Ext-data-Model-property-fields'>    /**
 </span>     * An array of the fields defined on this model
      * @property fields
      * @type {Array}
      */
 
-    constructor: function(data, id) {
+    // raw not documented intentionally, meant to be used internally.
+    constructor: function(data, id, raw) {
         data = data || {};
         
         var me = this,
@@ -548,19 +566,26 @@ Ext.define('Ext.data.Model', {
             isArray = Ext.isArray(data),
             newData = isArray ? {} : null; // to hold mapped array data if needed
 
-<span id='Ext-data.Model-property-internalId'>        /**
+<span id='Ext-data-Model-property-internalId'>        /**
 </span>         * An internal unique ID for each Model instance, used to identify Models that don't have an ID yet
          * @property internalId
          * @type String
          * @private
          */
         me.internalId = (id || id === 0) ? id : Ext.data.Model.id(me);
+        
+<span id='Ext-data-Model-property-raw'>        /**
+</span>         * The raw data used to create this model if created via a reader.
+         * @property raw
+         * @type Object
+         */
+        me.raw = raw;
 
         Ext.applyIf(me, {
             data: {}    
         });
         
-<span id='Ext-data.Model-property-modified'>        /**
+<span id='Ext-data-Model-property-modified'>        /**
 </span>         * Key: value pairs of all fields whose values have changed
          * @property modified
          * @type Object
@@ -607,7 +632,7 @@ Ext.define('Ext.data.Model', {
         Ext.ModelManager.register(me);
     },
     
-<span id='Ext-data.Model-method-get'>    /**
+<span id='Ext-data-Model-method-get'>    /**
 </span>     * Returns the value of the given field
      * @param {String} fieldName The field to fetch the value for
      * @return {Mixed} The value
@@ -616,7 +641,7 @@ Ext.define('Ext.data.Model', {
         return this[this.persistanceProperty][field];
     },
     
-<span id='Ext-data.Model-method-set'>    /**
+<span id='Ext-data-Model-method-set'>    /**
 </span>     * Sets the given field to the given value, marks the instance as dirty
      * @param {String|Object} fieldName The field to set, or an object containing key/value pairs
      * @param {Mixed} value The value to set
@@ -675,7 +700,7 @@ Ext.define('Ext.data.Model', {
         }
     },
     
-<span id='Ext-data.Model-method-isEqual'>    /**
+<span id='Ext-data-Model-method-isEqual'>    /**
 </span>     * Checks if two values are equal, taking into account certain
      * special factors, for example dates.
      * @private
@@ -690,7 +715,7 @@ Ext.define('Ext.data.Model', {
         return a === b;
     },
     
-<span id='Ext-data.Model-method-beginEdit'>    /**
+<span id='Ext-data-Model-method-beginEdit'>    /**
 </span>     * Begin an edit. While in edit mode, no events (e.g.. the &lt;code&gt;update&lt;/code&gt; event)
      * are relayed to the containing store. When an edit has begun, it must be followed
      * by either {@link #endEdit} or {@link #cancelEdit}.
@@ -705,7 +730,7 @@ Ext.define('Ext.data.Model', {
         }
     },
     
-<span id='Ext-data.Model-method-cancelEdit'>    /**
+<span id='Ext-data-Model-method-cancelEdit'>    /**
 </span>     * Cancels all changes made in the current edit operation.
      */
     cancelEdit : function(){
@@ -722,7 +747,7 @@ Ext.define('Ext.data.Model', {
         }
     },
     
-<span id='Ext-data.Model-method-endEdit'>    /**
+<span id='Ext-data-Model-method-endEdit'>    /**
 </span>     * End an edit. If any data was modified, the containing store is notified
      * (ie, the store's &lt;code&gt;update&lt;/code&gt; event will fire).
      * @param {Boolean} silent True to not notify the store of the change
@@ -740,7 +765,7 @@ Ext.define('Ext.data.Model', {
         }
     },
     
-<span id='Ext-data.Model-method-getChanges'>    /**
+<span id='Ext-data-Model-method-getChanges'>    /**
 </span>     * Gets a hash of only the fields that have been modified since this Model was created or commited.
      * @return Object
      */
@@ -758,7 +783,7 @@ Ext.define('Ext.data.Model', {
         return changes;
     },
     
-<span id='Ext-data.Model-method-isModified'>    /**
+<span id='Ext-data-Model-method-isModified'>    /**
 </span>     * Returns &lt;tt&gt;true&lt;/tt&gt; if the passed field name has been &lt;code&gt;{@link #modified}&lt;/code&gt;
      * since the load or last commit.
      * @param {String} fieldName {@link Ext.data.Field#name}
@@ -768,7 +793,7 @@ Ext.define('Ext.data.Model', {
         return this.modified.hasOwnProperty(fieldName);
     },
     
-<span id='Ext-data.Model-method-setDirty'>    /**
+<span id='Ext-data-Model-method-setDirty'>    /**
 </span>     * &lt;p&gt;Marks this &lt;b&gt;Record&lt;/b&gt; as &lt;code&gt;{@link #dirty}&lt;/code&gt;.  This method
      * is used interally when adding &lt;code&gt;{@link #phantom}&lt;/code&gt; records to a
      * {@link Ext.data.Store#writer writer enabled store}.&lt;/p&gt;
@@ -800,7 +825,7 @@ Ext.define('Ext.data.Model', {
     },
     //&lt;/debug&gt;
     
-<span id='Ext-data.Model-method-reject'>    /**
+<span id='Ext-data-Model-method-reject'>    /**
 </span>     * Usually called by the {@link Ext.data.Store} to which this model instance has been {@link #join joined}.
      * Rejects all changes made to the model instance since either creation, or the last commit operation.
      * Modified fields are reverted to their original values.
@@ -831,7 +856,7 @@ Ext.define('Ext.data.Model', {
         }
     },
 
-<span id='Ext-data.Model-method-commit'>    /**
+<span id='Ext-data-Model-method-commit'>    /**
 </span>     * Usually called by the {@link Ext.data.Store} which owns the model instance.
      * Commits all changes made to the instance since either creation or the last commit operation.
      * &lt;p&gt;Developers should subscribe to the {@link Ext.data.Store#update} event
@@ -852,7 +877,7 @@ Ext.define('Ext.data.Model', {
         }
     },
 
-<span id='Ext-data.Model-method-copy'>    /**
+<span id='Ext-data-Model-method-copy'>    /**
 </span>     * Creates a copy (clone) of this Model instance.
      * @param {String} id (optional) A new id, defaults to the id
      * of the instance being copied. See &lt;code&gt;{@link #id}&lt;/code&gt;.
@@ -868,7 +893,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return new me.self(Ext.apply({}, me[me.persistanceProperty]), newId || me.internalId);
     },
 
-<span id='Ext-data.Model-method-setProxy'>    /**
+<span id='Ext-data-Model-method-setProxy'>    /**
 </span>     * Sets the Proxy to use for this model. Accepts any options that can be accepted by {@link Ext#createByAlias Ext.createByAlias}
      * @param {String/Object/Ext.data.proxy.Proxy} proxy The proxy
      * @static
@@ -889,7 +914,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return proxy;
     },
 
-<span id='Ext-data.Model-method-getProxy'>    /**
+<span id='Ext-data-Model-method-getProxy'>    /**
 </span>     * Returns the configured Proxy for this Model
      * @return {Ext.data.proxy.Proxy} The proxy
      */
@@ -897,7 +922,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return this.proxy;
     },
 
-<span id='Ext-data.Model-method-validate'>    /**
+<span id='Ext-data-Model-method-validate'>    /**
 </span>     * Validates the current data against all of its configured {@link #validations} and returns an
      * {@link Ext.data.Errors Errors} object
      * @return {Ext.data.Errors} The errors object
@@ -929,7 +954,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return errors;
     },
 
-<span id='Ext-data.Model-method-isValid'>    /**
+<span id='Ext-data-Model-method-isValid'>    /**
 </span>     * Checks if the model is valid. See {@link #validate}.
      * @return {Boolean} True if the model is valid.
      */
@@ -937,7 +962,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return this.validate().isValid();
     },
 
-<span id='Ext-data.Model-method-save'>    /**
+<span id='Ext-data-Model-method-save'>    /**
 </span>     * Saves the model instance using the configured proxy
      * @param {Object} options Options to pass to the proxy
      * @return {Ext.data.Model} The Model instance
@@ -980,7 +1005,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return me;
     },
 
-<span id='Ext-data.Model-method-destroy'>    /**
+<span id='Ext-data-Model-method-destroy'>    /**
 </span>     * Destroys the model using the configured proxy
      * @param {Object} options Options to pass to the proxy
      * @return {Ext.data.Model} The Model instance
@@ -1013,7 +1038,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return me;
     },
 
-<span id='Ext-data.Model-method-getId'>    /**
+<span id='Ext-data-Model-method-getId'>    /**
 </span>     * Returns the unique ID allocated to this model instance as defined by {@link #idProperty}
      * @return {Number} The id
      */
@@ -1021,7 +1046,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return this.get(this.idProperty);
     },
 
-<span id='Ext-data.Model-method-setId'>    /**
+<span id='Ext-data-Model-method-setId'>    /**
 </span>     * Sets the model instance's id field to the given id
      * @param {Number} id The new id
      */
@@ -1029,12 +1054,12 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         this.set(this.idProperty, id);
     },
 
-<span id='Ext-data.Model-method-join'>    /**
+<span id='Ext-data-Model-method-join'>    /**
 </span>     * Tells this model instance that it has been added to a store
      * @param {Ext.data.Store} store The store that the model has been added to
      */
     join : function(store) {
-<span id='Ext-data.Model-property-store'>        /**
+<span id='Ext-data-Model-property-store'>        /**
 </span>         * The {@link Ext.data.Store} to which this Record belongs.
          * @property store
          * @type {Ext.data.Store}
@@ -1042,14 +1067,14 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         this.store = store;
     },
 
-<span id='Ext-data.Model-method-unjoin'>    /**
+<span id='Ext-data-Model-method-unjoin'>    /**
 </span>     * Tells this model instance that it has been removed from the store
      */
     unjoin: function() {
         delete this.store;
     },
 
-<span id='Ext-data.Model-method-afterEdit'>    /**
+<span id='Ext-data-Model-method-afterEdit'>    /**
 </span>     * @private
      * If this Model instance has been {@link #join joined} to a {@link Ext.data.Store store}, the store's
      * afterEdit method is called
@@ -1058,7 +1083,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         this.callStore('afterEdit');
     },
 
-<span id='Ext-data.Model-method-afterReject'>    /**
+<span id='Ext-data-Model-method-afterReject'>    /**
 </span>     * @private
      * If this Model instance has been {@link #join joined} to a {@link Ext.data.Store store}, the store's
      * afterReject method is called
@@ -1067,7 +1092,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         this.callStore(&quot;afterReject&quot;);
     },
 
-<span id='Ext-data.Model-method-afterCommit'>    /**
+<span id='Ext-data-Model-method-afterCommit'>    /**
 </span>     * @private
      * If this Model instance has been {@link #join joined} to a {@link Ext.data.Store store}, the store's
      * afterCommit method is called
@@ -1076,7 +1101,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         this.callStore('afterCommit');
     },
 
-<span id='Ext-data.Model-method-callStore'>    /**
+<span id='Ext-data-Model-method-callStore'>    /**
 </span>     * @private
      * Helper function used by afterEdit, afterReject and afterCommit. Calls the given method on the
      * {@link Ext.data.Store store} that this instance has {@link #join joined}, if any. The store function
@@ -1091,7 +1116,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         }
     },
 
-<span id='Ext-data.Model-method-getAssociatedData'>    /**
+<span id='Ext-data-Model-method-getAssociatedData'>    /**
 </span>     * Gets all of the data from this Models *loaded* associations.
      * It does this recursively - for example if we have a User which
      * hasMany Orders, and each Order hasMany OrderItems, it will return an object like this:
@@ -1112,7 +1137,7 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return this.prepareAssociatedData(this, [], null);
     },
 
-<span id='Ext-data.Model-method-prepareAssociatedData'>    /**
+<span id='Ext-data-Model-method-prepareAssociatedData'>    /**
 </span>     * @private
      * This complex-looking method takes a given Model instance and returns an object containing all data from
      * all of that Model's *loaded* associations. See (@link #getAssociatedData}
@@ -1181,4 +1206,6 @@ Ext.data.Model.id(rec); // automatically generate a unique sequential id
         return associationData;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

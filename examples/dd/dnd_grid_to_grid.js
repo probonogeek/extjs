@@ -40,6 +40,7 @@ Ext.onReady(function(){
 
     // declare the source Grid
     var firstGrid = Ext.create('Ext.grid.Panel', {
+        multiSelect: true,
         viewConfig: {
             plugins: {
                 ptype: 'gridviewdragdrop',

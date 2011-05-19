@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.action.Action-method-constructor'><span id='Ext-form.action.Action'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-action-Action-method-constructor'><span id='Ext-form-action-Action'>/**
 </span></span> * @class Ext.form.action.Action
  * @extends Ext.Base
  * &lt;p&gt;The subclasses of this class provide actions to perform upon {@link Ext.form.Basic Form}s.&lt;/p&gt;
@@ -17,48 +34,48 @@
 Ext.define('Ext.form.action.Action', {
     alternateClassName: 'Ext.form.Action',
 
-<span id='Ext-form.action.Action-cfg-form'>    /**
+<span id='Ext-form-action-Action-cfg-form'>    /**
 </span>     * @cfg {Ext.form.Basic} form The {@link Ext.form.Basic BasicForm} instance that
      * is invoking this Action. Required.
      */
 
-<span id='Ext-form.action.Action-cfg-url'>    /**
+<span id='Ext-form-action-Action-cfg-url'>    /**
 </span>     * @cfg {String} url The URL that the Action is to invoke. Will default to the {@link Ext.form.Basic#url url}
      * configured on the {@link #form}.
      */
 
-<span id='Ext-form.action.Action-cfg-reset'>    /**
+<span id='Ext-form-action-Action-cfg-reset'>    /**
 </span>     * @cfg {Boolean} reset When set to &lt;tt&gt;&lt;b&gt;true&lt;/b&gt;&lt;/tt&gt;, causes the Form to be
      * {@link Ext.form.Basic#reset reset} on Action success. If specified, this happens
      * before the {@link #success} callback is called and before the Form's
      * {@link Ext.form.Basic#actioncomplete actioncomplete} event fires.
      */
 
-<span id='Ext-form.action.Action-cfg-method'>    /**
+<span id='Ext-form-action-Action-cfg-method'>    /**
 </span>     * @cfg {String} method The HTTP method to use to access the requested URL. Defaults to the
      * {@link Ext.form.Basic#method BasicForm's method}, or 'POST' if not specified.
      */
 
-<span id='Ext-form.action.Action-cfg-params'>    /**
+<span id='Ext-form-action-Action-cfg-params'>    /**
 </span>     * @cfg {Object/String} params &lt;p&gt;Extra parameter values to pass. These are added to the Form's
      * {@link Ext.form.Basic#baseParams} and passed to the specified URL along with the Form's
      * input fields.&lt;/p&gt;
      * &lt;p&gt;Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode Ext.Object.toQueryString}.&lt;/p&gt;
      */
 
-<span id='Ext-form.action.Action-cfg-headers'>    /**
+<span id='Ext-form-action-Action-cfg-headers'>    /**
 </span>     * @cfg {Object} headers &lt;p&gt;Extra headers to be sent in the AJAX request for submit and load actions. See
      * {@link Ext.data.Connection#headers}.&lt;/p&gt;
      */
 
-<span id='Ext-form.action.Action-cfg-timeout'>    /**
+<span id='Ext-form-action-Action-cfg-timeout'>    /**
 </span>     * @cfg {Number} timeout The number of seconds to wait for a server response before
      * failing with the {@link #failureType} as {@link Ext.form.action.Action#CONNECT_FAILURE}. If not specified,
      * defaults to the configured &lt;tt&gt;{@link Ext.form.Basic#timeout timeout}&lt;/tt&gt; of the
      * {@link #form}.
      */
 
-<span id='Ext-form.action.Action-cfg-success'>    /**
+<span id='Ext-form-action-Action-cfg-success'>    /**
 </span>     * @cfg {Function} success The function to call when a valid success return packet is received.
      * The function is passed the following parameters:&lt;ul class=&quot;mdetail-params&quot;&gt;
      * &lt;li&gt;&lt;b&gt;form&lt;/b&gt; : Ext.form.Basic&lt;div class=&quot;sub-desc&quot;&gt;The form that requested the action&lt;/div&gt;&lt;/li&gt;
@@ -67,7 +84,7 @@ Ext.define('Ext.form.action.Action', {
      * &lt;/ul&gt;
      */
 
-<span id='Ext-form.action.Action-cfg-failure'>    /**
+<span id='Ext-form-action-Action-cfg-failure'>    /**
 </span>     * @cfg {Function} failure The function to call when a failure packet was received, or when an
      * error ocurred in the Ajax communication.
      * The function is passed the following parameters:&lt;ul class=&quot;mdetail-params&quot;&gt;
@@ -78,34 +95,34 @@ Ext.define('Ext.form.action.Action', {
      * &lt;/ul&gt;
      */
 
-<span id='Ext-form.action.Action-cfg-scope'>    /**
+<span id='Ext-form-action-Action-cfg-scope'>    /**
 </span>     * @cfg {Object} scope The scope in which to call the configured &lt;tt&gt;success&lt;/tt&gt; and &lt;tt&gt;failure&lt;/tt&gt;
      * callback functions (the &lt;tt&gt;this&lt;/tt&gt; reference for the callback functions).
      */
 
-<span id='Ext-form.action.Action-cfg-waitMsg'>    /**
+<span id='Ext-form-action-Action-cfg-waitMsg'>    /**
 </span>     * @cfg {String} waitMsg The message to be displayed by a call to {@link Ext.window.MessageBox#wait}
      * during the time the action is being processed.
      */
 
-<span id='Ext-form.action.Action-cfg-waitTitle'>    /**
+<span id='Ext-form-action-Action-cfg-waitTitle'>    /**
 </span>     * @cfg {String} waitTitle The title to be displayed by a call to {@link Ext.window.MessageBox#wait}
      * during the time the action is being processed.
      */
 
-<span id='Ext-form.action.Action-cfg-submitEmptyText'>    /**
+<span id='Ext-form-action-Action-cfg-submitEmptyText'>    /**
 </span>     * @cfg {Boolean} submitEmptyText If set to &lt;tt&gt;true&lt;/tt&gt;, the emptyText value will be sent with the form
      * when it is submitted. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
 
-<span id='Ext-form.action.Action-property-type'>    /**
+<span id='Ext-form-action-Action-property-type'>    /**
 </span>     * @property type
      * The type of action this Action instance performs.
      * Currently only &quot;submit&quot; and &quot;load&quot; are supported.
      * @type {String}
      */
 
-<span id='Ext-form.action.Action-property-failureType'>    /**
+<span id='Ext-form-action-Action-property-failureType'>    /**
 </span>     * The type of failure detected will be one of these: {@link Ext.form.action.Action#CLIENT_INVALID},
      * {@link Ext.form.action.Action#SERVER_INVALID}, {@link Ext.form.action.Action#CONNECT_FAILURE}, or
      * {@link Ext.form.action.Action#LOAD_FAILURE}.  Usage:
@@ -149,13 +166,13 @@ buttons: [{
      * @type {String}
      */
 
-<span id='Ext-form.action.Action-property-response'>    /**
+<span id='Ext-form-action-Action-property-response'>    /**
 </span>     * The raw XMLHttpRequest object used to perform the action.
      * @property response
      * @type {Object}
      */
 
-<span id='Ext-form.action.Action-property-result'>    /**
+<span id='Ext-form-action-Action-property-result'>    /**
 </span>     * The decoded response object containing a boolean &lt;tt&gt;success&lt;/tt&gt; property and
      * other, action-specific properties.
      * @property result
@@ -176,26 +193,26 @@ buttons: [{
         }
     },
 
-<span id='Ext-form.action.Action-property-run'>    /**
+<span id='Ext-form-action-Action-property-run'>    /**
 </span>     * Invokes this action using the current configuration.
      */
     run: Ext.emptyFn,
 
-<span id='Ext-form.action.Action-method-onSuccess'>    /**
+<span id='Ext-form-action-Action-method-onSuccess'>    /**
 </span>     * @private
      * @method onSuccess
      * Callback method that gets invoked when the action completes successfully. Must be implemented by subclasses.
      * @param {Object} response
      */
 
-<span id='Ext-form.action.Action-method-handleResponse'>    /**
+<span id='Ext-form-action-Action-method-handleResponse'>    /**
 </span>     * @private
      * @method handleResponse
      * Handles the raw response and builds a result object from it. Must be implemented by subclasses.
      * @param {Object} response
      */
 
-<span id='Ext-form.action.Action-method-onFailure'>    /**
+<span id='Ext-form-action-Action-method-onFailure'>    /**
 </span>     * @private
      * Handles a failure response.
      * @param {Object} response
@@ -206,7 +223,7 @@ buttons: [{
         this.form.afterAction(this, false);
     },
 
-<span id='Ext-form.action.Action-method-processResponse'>    /**
+<span id='Ext-form-action-Action-method-processResponse'>    /**
 </span>     * @private
      * Validates that a response contains either responseText or responseXML and invokes
      * {@link #handleResponse} to build the result object.
@@ -222,7 +239,7 @@ buttons: [{
         return (this.result = this.handleResponse(response));
     },
 
-<span id='Ext-form.action.Action-method-getUrl'>    /**
+<span id='Ext-form-action-Action-method-getUrl'>    /**
 </span>     * @private
      * Build the URL for the AJAX request. Used by the standard AJAX submit and load actions.
      * @return {String} The URL.
@@ -231,7 +248,7 @@ buttons: [{
         return this.url || this.form.url;
     },
 
-<span id='Ext-form.action.Action-method-getMethod'>    /**
+<span id='Ext-form-action-Action-method-getMethod'>    /**
 </span>     * @private
      * Determine the HTTP method to be used for the request.
      * @return {String} The HTTP method
@@ -240,7 +257,7 @@ buttons: [{
         return (this.method || this.form.method || 'POST').toUpperCase();
     },
 
-<span id='Ext-form.action.Action-method-getParams'>    /**
+<span id='Ext-form-action-Action-method-getParams'>    /**
 </span>     * @private
      * Get the set of parameters specified in the BasicForm's baseParams and/or the params option.
      * Items in params override items of the same name in baseParams.
@@ -250,7 +267,7 @@ buttons: [{
         return Ext.apply({}, this.params, this.form.baseParams);
     },
 
-<span id='Ext-form.action.Action-method-createCallback'>    /**
+<span id='Ext-form-action-Action-method-createCallback'>    /**
 </span>     * @private
      * Creates a callback object.
      */
@@ -268,7 +285,7 @@ buttons: [{
     },
 
     statics: {
-<span id='Ext-form.action.Action-property-CLIENT_INVALID'>        /**
+<span id='Ext-form-action-Action-property-CLIENT_INVALID'>        /**
 </span>         * @property CLIENT_INVALID
          * Failure type returned when client side validation of the Form fails
          * thus aborting a submit action. Client side validation is performed unless
@@ -278,7 +295,7 @@ buttons: [{
          */
         CLIENT_INVALID: 'client',
 
-<span id='Ext-form.action.Action-property-SERVER_INVALID'>        /**
+<span id='Ext-form-action-Action-property-SERVER_INVALID'>        /**
 </span>         * @property SERVER_INVALID
          * &lt;p&gt;Failure type returned when server side processing fails and the {@link #result}'s
          * &lt;tt&gt;success&lt;/tt&gt; property is set to &lt;tt&gt;false&lt;/tt&gt;.&lt;/p&gt;
@@ -289,7 +306,7 @@ buttons: [{
          */
         SERVER_INVALID: 'server',
 
-<span id='Ext-form.action.Action-property-CONNECT_FAILURE'>        /**
+<span id='Ext-form-action-Action-property-CONNECT_FAILURE'>        /**
 </span>         * @property CONNECT_FAILURE
          * Failure type returned when a communication error happens when attempting
          * to send a request to the remote server. The {@link #response} may be examined to
@@ -299,7 +316,7 @@ buttons: [{
          */
         CONNECT_FAILURE: 'connect',
 
-<span id='Ext-form.action.Action-property-LOAD_FAILURE'>        /**
+<span id='Ext-form-action-Action-property-LOAD_FAILURE'>        /**
 </span>         * @property LOAD_FAILURE
          * Failure type returned when the response's &lt;tt&gt;success&lt;/tt&gt;
          * property is set to &lt;tt&gt;false&lt;/tt&gt;, or no field values are returned in the response's
@@ -312,4 +329,6 @@ buttons: [{
 
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

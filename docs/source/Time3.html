@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.axis.Time-method-constructor'><span id='Ext-chart.axis.Time'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-axis-Time-method-constructor'><span id='Ext-chart-axis-Time'>/**
 </span></span> * @class Ext.chart.axis.Time
  * @extends Ext.chart.axis.Axis
  *
@@ -47,7 +64,7 @@ Ext.define('Ext.chart.axis.Time', {
 
     /* End Definitions */
 
-<span id='Ext-chart.axis.Time-property-calculateByLabelSize'>     /**
+<span id='Ext-chart-axis-Time-property-calculateByLabelSize'>     /**
 </span>      * The minimum value drawn by the axis. If not set explicitly, the axis
       * minimum will be calculated automatically.
       * @property calculateByLabelSize
@@ -55,7 +72,7 @@ Ext.define('Ext.chart.axis.Time', {
       */
     calculateByLabelSize: true,
     
-<span id='Ext-chart.axis.Time-property-dateFormat'>     /**
+<span id='Ext-chart-axis-Time-property-dateFormat'>     /**
 </span>     * Indicates the format the date will be rendered on. 
      * For example: 'M d' will render the dates as 'Jan 30', etc.
       *
@@ -64,7 +81,7 @@ Ext.define('Ext.chart.axis.Time', {
       */
     dateFormat: false,
     
-<span id='Ext-chart.axis.Time-property-timeUnit'>     /**
+<span id='Ext-chart-axis-Time-property-timeUnit'>     /**
 </span>     * Indicates the time unit to use for each step. Can be 'day', 'month', 'year' or a comma-separated combination of all of them.
      * Default's 'year,month,day'.
      *
@@ -73,7 +90,7 @@ Ext.define('Ext.chart.axis.Time', {
      */
     groupBy: 'year,month,day',
     
-<span id='Ext-chart.axis.Time-property-aggregateOp'>    /**
+<span id='Ext-chart-axis-Time-property-aggregateOp'>    /**
 </span>     * Aggregation operation when grouping. Possible options are 'sum', 'avg', 'max', 'min'. Default's 'sum'.
      * 
      * @property aggregateOp
@@ -81,21 +98,21 @@ Ext.define('Ext.chart.axis.Time', {
       */
     aggregateOp: 'sum',
     
-<span id='Ext-chart.axis.Time-property-fromDate'>    /**
+<span id='Ext-chart-axis-Time-property-fromDate'>    /**
 </span>     * The starting date for the time axis.
      * @property fromDate
      * @type Date
      */
     fromDate: false,
     
-<span id='Ext-chart.axis.Time-property-toDate'>    /**
+<span id='Ext-chart-axis-Time-property-toDate'>    /**
 </span>     * The ending date for the time axis.
      * @property toDate
      * @type Date
      */
     toDate: false,
     
-<span id='Ext-chart.axis.Time-property-step'>    /**
+<span id='Ext-chart-axis-Time-property-step'>    /**
 </span>     * An array with two components: The first is the unit of the step (day, month, year, etc). The second one is the number of units for the step (1, 2, etc.).
      * Default's [Ext.Date.DAY, 1].
      * 
@@ -104,7 +121,7 @@ Ext.define('Ext.chart.axis.Time', {
      */
     step: [Ext.Date.DAY, 1],
     
-<span id='Ext-chart.axis.Time-property-constrain'>    /**
+<span id='Ext-chart-axis-Time-property-constrain'>    /**
 </span>     * If true, the values of the chart will be rendered only if they belong between the fromDate and toDate. 
      * If false, the time axis will adapt to the new values by adding/removing steps.
      * Default's [Ext.Date.DAY, 1].
@@ -349,4 +366,6 @@ Ext.define('Ext.chart.axis.Time', {
      }
  });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

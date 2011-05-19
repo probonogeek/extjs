@@ -1,5 +1,11 @@
 describe("Ext", function() {
-
+    
+    describe("Ext.global", function() {
+        it("should return the global scope", function() {
+            expect(Ext.global).toBe((function(){ return this;}).call());
+        });
+    });
+    
     describe("Ext.apply", function() {
         var origin, o;
 
@@ -157,6 +163,131 @@ describe("Ext", function() {
         });
     });
 
+    describe("Ext.emptyFn", function() {
+        it("should return undefined without params", function() {
+            expect(Ext.emptyFn()).toBeUndefined();
+        });
+        
+        it("should return undefined if you pass params", function() {
+           expect(Ext.emptyFn('aaaa', 'bbbbb')).toBeUndefined(); 
+        });
+    });
+
+    describe("Ext.iterate", function() {
+        var itFn;
+
+        beforeEach(function() {
+            itFn = jasmine.createSpy();
+        });
+
+        describe("iterate object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {
+                    n1: 11,
+                    n2: 13,
+                    n3: 18
+                };
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.iterate(o, itFn);
+                });
+
+                it("should call the iterate function 3 times", function () {
+                    expect(itFn.callCount).toEqual(3);
+                });
+
+                it("should call the iterate function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual(["n1", 11, o]);
+                    expect(itFn.calls[1].args).toEqual(["n2", 13, o]);
+                    expect(itFn.calls[2].args).toEqual(["n3", 18, o]);
+                });
+            });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.iterate(o, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty object", function() {
+            var o;
+
+            beforeEach(function() {
+                o = {};
+                Ext.iterate(o, itFn);
+            });
+
+            it("should not call the iterate function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+
+        describe("iterate array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [6, 7, 8, 9];
+            });
+
+            describe("if itFn does not return false", function() {
+                beforeEach(function() {
+                    Ext.iterate(arr, itFn);
+                });
+
+                it("should call the iterate function 4 times", function () {
+                    expect(itFn.callCount).toEqual(4);
+                });
+
+                it("should call the iterate function with correct arguments", function () {
+                    expect(itFn.calls[0].args).toEqual([6, 0, arr]);
+                    expect(itFn.calls[1].args).toEqual([7, 1, arr]);
+                    expect(itFn.calls[2].args).toEqual([8, 2, arr]);
+                    expect(itFn.calls[3].args).toEqual([9, 3, arr]);
+                });
+             });
+
+            describe("if itFn return false", function() {
+                beforeEach(function() {
+                    itFn.andReturn(false);
+                    Ext.iterate(arr, itFn);
+                });
+
+                it("should stop iteration if function return false", function() {
+                    itFn.andReturn(false);
+
+                    expect(itFn.calls.length).toEqual(1);
+                });
+            });
+        });
+
+        describe("do nothing on an empty array", function() {
+            var arr;
+
+            beforeEach(function() {
+                arr = [];
+                Ext.iterate(arr, itFn);
+            });
+
+            it("should not call the iterate function", function () {
+                expect(itFn).not.toHaveBeenCalled();
+            });
+
+        });
+    });
+
     describe("Ext.applyIf", function(){
         var o;
 
@@ -291,6 +422,74 @@ describe("Ext", function() {
         });
     });
 
+    describe("Ext.valueFrom", function() {
+        var value, defaultValue;
+        
+        describe("with allowBlank", function() {
+            describe("and an empty string", function() {
+                it("should return the value", function() {
+                    expect(Ext.valueFrom('', 'aaa', true)).toBe('');
+                });
+            });
+            
+            describe("and a string", function() {
+                it("should return the value", function() {
+                    expect(Ext.valueFrom('bbb', 'aaa', true)).toBe('bbb');
+                });
+            });
+            
+            describe("and an undefined value", function() {
+                it("should return the default value", function() {
+                    expect(Ext.valueFrom(undefined, 'aaa', true)).toBe('aaa');
+                });
+            });
+            
+            describe("and a null value", function() {
+                it("should return the default value", function() {
+                    expect(Ext.valueFrom(null, 'aaa', true)).toBe('aaa');
+                });
+            });
+            
+            describe("and a 0 value", function() {
+                it("should return the value", function() {
+                    expect(Ext.valueFrom(0, 'aaa', true)).toBe(0);
+                });
+            });
+        });
+        
+        describe("without allowBlank", function() {
+            describe("and an empty string", function() {
+                it("should return the default value", function() {
+                    expect(Ext.valueFrom('', 'aaa')).toBe('aaa');
+                });
+            });
+            
+            describe("and a string", function() {
+                it("should return the value", function() {
+                    expect(Ext.valueFrom('bbb', 'aaa')).toBe('bbb');
+                });
+            });
+            
+            describe("and an undefined value", function() {
+                it("should return the default value", function() {
+                    expect(Ext.valueFrom(undefined, 'aaa')).toBe('aaa');
+                });
+            });
+            
+            describe("and a null value", function() {
+                it("should return the default value", function() {
+                    expect(Ext.valueFrom(null, 'aaa')).toBe('aaa');
+                });
+            });
+            
+            describe("and a 0 value", function() {
+                it("should return the value", function() {
+                    expect(Ext.valueFrom(0, 'aaa')).toBe(0);
+                });
+            });
+        });
+    });
+    
     describe("Ext.typeOf", function() {
         it("should return null", function() {
             expect(Ext.typeOf(null)).toEqual('null');
@@ -494,9 +693,9 @@ describe("Ext", function() {
             expect(Ext.isArray(new C())).toBe(false);
         });
 
-        //it("should return false with element", function() {
-        //    expect(Ext.isElement(Ext.getBody().dom)).toBe(false);
-        //});
+        it("should return false with element", function() {
+           expect(Ext.isArray(Ext.getBody().dom)).toBe(false);
+        });
     });
 
     describe("Ext.isBoolean", function() {
@@ -548,9 +747,9 @@ describe("Ext", function() {
             expect(Ext.isBoolean(document.getElementsByTagName('body'))).toBe(false);
         });
 
-        //it("should return false with element", function() {
-        //    expect(Ext.isElement(Ext.getBody().dom)).toBe(false);
-        //});
+        it("should return false with element", function() {
+           expect(Ext.isArray(Ext.getBody().dom)).toBe(false);
+        });
     });
 
     describe("Ext.isDate", function() {
@@ -656,9 +855,9 @@ describe("Ext", function() {
             expect(Ext.isDefined(document.getElementsByTagName('body'))).toBe(true);
         });
 
-        //it("should return true with element", function() {
-        //    expect(Ext.isElement(Ext.getBody().dom)).toBe(true);
-        //});
+        it("should return true with element", function() {
+           expect(Ext.isDefined(Ext.getBody().dom)).toBe(true);
+        });
     });
 
     describe("Ext.isElement", function() {
@@ -710,13 +909,20 @@ describe("Ext", function() {
             expect(Ext.isElement(document.getElementsByTagName('body'))).toBe(false);
         });
 
-        //it("should return true with element", function() {
-        //    expect(Ext.isElement(Ext.getBody().dom)).toBe(true);
-        //});
+        it("should return true with element", function() {
+           expect(Ext.isElement(Ext.getBody().dom)).toBe(true);
+        });
 
-        //it("should return false with Ext.core.Element", function() {
-        //    expect(Ext.isElement(Ext.getBody().dom)).toBe(true);
-        //});
+        it("should return false with Ext.core.Element", function() {
+           expect(Ext.isElement(Ext.getBody())).toBe(false);
+        });
+        
+        it("should return false with TextNode", function() {
+            var textNode = document.createTextNode('foobar');
+            document.body.appendChild(textNode);
+            expect(Ext.isElement(textNode)).toBe(false);
+            document.body.removeChild(textNode);
+        });
     });
 
     describe("Ext.isEmpty", function() {
@@ -948,6 +1154,100 @@ describe("Ext", function() {
         });
     });
 
+    describe("Ext.isNumeric", function() {
+        it("should return true with zero", function() {
+            expect(Ext.isNumeric(0)).toBe(true);
+        });
+
+        it("should return true with non zero", function() {
+            expect(Ext.isNumeric(4)).toBe(true);
+        });
+
+        it("should return true with negative integer", function() {
+            expect(Ext.isNumeric(-3)).toBe(true);
+        });
+
+        it("should return true with float", function() {
+            expect(Ext.isNumeric(1.75)).toBe(true);
+        });
+
+        it("should return true with negative float", function() {
+            expect(Ext.isNumeric(-4.75)).toBe(true);
+        });
+
+        it("should return true with Number.MAX_VALUE", function() {
+            expect(Ext.isNumeric(Number.MAX_VALUE)).toBe(true);
+        });
+
+        it("should return true with Number.MIN_VALUE", function() {
+            expect(Ext.isNumeric(Number.MIN_VALUE)).toBe(true);
+        });
+
+        it("should return true with Math.PI", function() {
+            expect(Ext.isNumeric(Math.PI)).toBe(true);
+        });
+
+        it("should return true with Number() contructor", function() {
+            expect(Ext.isNumeric(Number('3.1'))).toBe(true);
+        });
+
+        it("should return false with NaN", function() {
+            expect(Ext.isNumeric(Number.NaN)).toBe(false);
+        });
+
+        it("should return false with Number.POSITIVE_INFINITY", function() {
+            expect(Ext.isNumeric(Number.POSITIVE_INFINITY)).toBe(false);
+        });
+
+        it("should return false with Number.NEGATIVE_INFINITY", function() {
+            expect(Ext.isNumeric(Number.NEGATIVE_INFINITY)).toBe(false);
+        });
+
+        it("should return false with empty array", function() {
+            expect(Ext.isNumeric([])).toBe(false);
+        });
+
+        it("should return false with filled array", function() {
+            expect(Ext.isNumeric([1, 2, 3, 4])).toBe(false);
+        });
+
+        it("should return false with boolean true", function() {
+            expect(Ext.isNumeric(true)).toBe(false);
+        });
+
+        it("should return false with boolean false", function() {
+            expect(Ext.isNumeric(false)).toBe(false);
+        });
+
+        it("should return false with string", function() {
+            expect(Ext.isNumeric("foo")).toBe(false);
+        });
+
+        it("should return false with empty string", function() {
+            expect(Ext.isNumeric("")).toBe(false);
+        });
+
+        it("should return true with string containing a number", function() {
+            expect(Ext.isNumeric("1.0")).toBe(true);
+        });
+
+        it("should return false with undefined", function() {
+            expect(Ext.isNumeric(undefined)).toBe(false);
+        });
+
+        it("should return false with date", function() {
+            expect(Ext.isNumeric(new Date())).toBe(false);
+        });
+
+        it("should return false with empty object", function() {
+            expect(Ext.isNumeric({})).toBe(false);
+        });
+
+        it("should return false with node list", function() {
+            expect(Ext.isNumeric(document.getElementsByTagName('body'))).toBe(false);
+        });
+    });
+    
     describe("Ext.isObject", function() {
         it("should return false with empty array", function() {
             expect(Ext.isObject([])).toBe(false);
@@ -1127,105 +1427,118 @@ describe("Ext", function() {
         });
     });
 
-    describe("Ext.namespace", function() {
-        var w = window;
-
-        it("should have an alias named ns", function() {
-            expect(Ext.ns).toEqual(Ext.namespace);
+    describe("Ext.isTextNode", function() {
+        it("should return false with empty array", function() {
+            expect(Ext.isTextNode([])).toBe(false);
         });
 
-        it("should create a single top level namespace", function() {
-            Ext.namespace('FooTest1');
-
-            expect(w.FooTest1).toBeDefined();
-
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest1 = undefined;
-            } else {
-                delete w.FooTest1;
-            }
+        it("should return false with filled array", function() {
+            expect(Ext.isTextNode([1, 2, 3, 4])).toBe(false);
         });
 
-        it("should create multiple top level namespace", function() {
-            Ext.namespace('FooTest2', 'FooTest3', 'FooTest4');
-
-            expect(w.FooTest2).toBeDefined();
-            expect(w.FooTest3).toBeDefined();
-            expect(w.FooTest4).toBeDefined();
-
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest2 = undefined;
-                w.FooTest3 = undefined;
-                w.FooTest4 = undefined;
-            } else {
-                delete w.FooTest2;
-                delete w.FooTest3;
-                delete w.FooTest4;
-            }
+        it("should return false with boolean true", function() {
+            expect(Ext.isTextNode(true)).toBe(false);
         });
 
-        it("should create a chain of namespaces, starting from a top level", function() {
-            Ext.namespace('FooTest5', 'FooTest5.ns1', 'FooTest5.ns1.ns2', 'FooTest5.ns1.ns2.ns3');
-
-            expect(w.FooTest5).toBeDefined();
-            expect(w.FooTest5.ns1).toBeDefined();
-            expect(w.FooTest5.ns1.ns2).toBeDefined();
-            expect(w.FooTest5.ns1.ns2.ns3).toBeDefined();
-
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest5 = undefined;
-            } else {
-                delete w.FooTest5;
-            }
+        it("should return false with boolean false", function() {
+            expect(Ext.isTextNode(false)).toBe(false);
         });
 
-        it("should create lower level namespaces without first defining the top level", function() {
-            Ext.namespace('FooTest6.ns1', 'FooTest7.ns2');
-
-            expect(w.FooTest6).toBeDefined();
-            expect(w.FooTest6.ns1).toBeDefined();
-            expect(w.FooTest7).toBeDefined();
-            expect(w.FooTest7.ns2).toBeDefined();
-
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest6 = undefined;
-                w.FooTest7 = undefined;
-            } else {
-                delete w.FooTest6;
-                delete w.FooTest7;
-            }
+        it("should return false with string", function() {
+            expect(Ext.isTextNode("foo")).toBe(false);
         });
 
-        it("should create a lower level namespace without defining the middle level", function() {
-            Ext.namespace('FooTest8', 'FooTest8.ns1.ns2');
-
-            expect(w.FooTest8).toBeDefined();
-            expect(w.FooTest8.ns1).toBeDefined();
-            expect(w.FooTest8.ns1.ns2).toBeDefined();
-
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest8 = undefined;
-            } else {
-                delete w.FooTest8;
-            }
+        it("should return false with empty string", function() {
+            expect(Ext.isTextNode("")).toBe(false);
         });
 
-        it ("should not overwritte existing namespace", function() {
-            Ext.namespace('FooTest9');
+        it("should return false with number", function() {
+            expect(Ext.isTextNode(1)).toBe(false);
+        });
 
-            FooTest9.prop1 = 'foo';
+        it("should return false with null", function() {
+            expect(Ext.isTextNode(null)).toBe(false);
+        });
 
-            Ext.namespace('FooTest9');
+        it("should return false with undefined", function() {
+            expect(Ext.isTextNode(undefined)).toBe(false);
+        });
 
-            expect(FooTest9.prop1).toEqual("foo");
+        it("should return false with date", function() {
+            expect(Ext.isTextNode(new Date())).toBe(false);
+        });
 
-            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
-                w.FooTest9 = undefined;
-            } else {
-                delete w.FooTest9;
-            }
+        it("should return false with empty object", function() {
+            expect(Ext.isTextNode({})).toBe(false);
+        });
+
+        it("should return false with node list", function() {
+            expect(Ext.isTextNode(document.getElementsByTagName('body'))).toBe(false);
+        }); 
+        
+        it("should return false with element", function() {
+           expect(Ext.isTextNode(Ext.getBody().dom)).toBe(false);
+        });
+
+        it("should return false with Ext.core.Element", function() {
+           expect(Ext.isTextNode(Ext.getBody())).toBe(false);
+        });
+        
+        it("should return true with TextNode", function() {
+            var textNode = document.createTextNode('foobar');
+            document.body.appendChild(textNode);
+            expect(Ext.isTextNode(textNode)).toBe(true);
+            document.body.removeChild(textNode);
+        });    
+    });
+    
+    describe("Ext.clone", function() {
+        var clone;
+        
+        afterEach(function() {
+            clone = null;
+        });
+        
+        it("should clone an array", function() {
+            var array = [2,'5',[1,3,4]];
+            clone = Ext.clone(array);
+            expect(clone).toEqual(array);
+            expect(clone).not.toBe(array);
+        });
+        
+        it("should clone an object", function() {
+            var object = {
+                fn: function() {
+                    return 1;
+                },
+                b: 2
+            };
+            clone = Ext.clone(object);
+            expect(clone).toEqual(object);
+            expect(clone).not.toBe(object);
+        });
+        
+        it("should clone a date", function(){
+            var date = new Date(); 
+            clone = Ext.clone(date);
+            expect(clone).toEqual(date);
+            expect(clone).not.toBe(date);
+        });
+        
+        it("should clone a dom node", function(){
+            var node = document.createElement('DIV');
+            document.body.appendChild(node); 
+            clone = Ext.clone(node);
+            expect(clone.tagName).toEqual(clone.tagName);
+            expect(clone.innerHTML).toEqual(clone.innerHTML);
+            expect(clone).not.toBe(node);
+            document.body.removeChild(node);
         });
     });
-
-
+    
+    describe('getUniqueGlobalNamespace', function() {
+        it("should return an unique global namespace", function() {
+            expect(Ext.getUniqueGlobalNamespace()).toBe("ExtSandbox1"); 
+        });
+    });
 });

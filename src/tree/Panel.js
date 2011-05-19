@@ -132,16 +132,17 @@ Ext.define('Ext.tree.Panel', {
         } else if (!me.useArrows) {
             cls.push(Ext.baseCSSPrefix + 'tree-no-lines');
         }
-
-        if (!me.store || Ext.isObject(me.store) && !me.store.isStore) {
+        
+        if (Ext.isString(me.store)) {
+            me.store = Ext.StoreMgr.lookup(me.store);
+        } else if (!me.store || Ext.isObject(me.store) && !me.store.isStore) {
             me.store = Ext.create('Ext.data.TreeStore', Ext.apply({}, me.store || {}, {
                 root: me.root,
                 fields: me.fields,
                 model: me.model,
                 folderSort: me.folderSort
             }));
-        }
-        else if (me.root) {
+        } else if (me.root) {
             me.store = Ext.data.StoreManager.lookup(me.store);
             me.store.setRootNode(me.root);
             if (me.folderSort !== undefined) {
@@ -393,7 +394,7 @@ Ext.define('Ext.tree.Panel', {
 
     /**
      * Expand the tree to the path of a particular node.
-     * @param {String} path The path to expand
+     * @param {String} path The path to expand. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
      * @param {Function} callback (optional) A function to execute when the expand finishes. The callback will be called with
@@ -441,7 +442,7 @@ Ext.define('Ext.tree.Panel', {
     
     /**
      * Expand the tree to the path of a particular node, then selecti t.
-     * @param {String} path The path to select
+     * @param {String} path The path to select. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
      * @param {Function} callback (optional) A function to execute when the select finishes. The callback will be called with

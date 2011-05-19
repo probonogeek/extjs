@@ -1,7 +1,12 @@
 /**
  * @class Ext.data.writer.Json
  * @extends Ext.data.writer.Writer
- * @ignore
+
+This class is used to write {@link Ext.data.Model} data to the server in a JSON format.
+The {@link #allowSingle} configuration can be set to false to force the records to always be
+encoded in an array, even if there is only a single record being sent.
+
+ * @markdown
  */
 Ext.define('Ext.data.writer.Json', {
     extend: 'Ext.data.writer.Writer',

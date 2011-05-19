@@ -265,7 +265,7 @@ var panel = new Ext.panel.Panel({
             item.onAdded(me, i);
             me.onDockedAdd(item);
         }
-        if (me.rendered) {
+        if (me.rendered && !me.suspendLayout) {
             me.doComponentLayout();
         }
         return items;

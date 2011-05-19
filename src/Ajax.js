@@ -18,7 +18,7 @@ is used to communicate with your server side code. It can be used as follows:
         }
     });
 
-Default options for all requests can be set be changing a property on the Ext.Ajax class:
+Default options for all requests can be set by changing a property on the Ext.Ajax class:
 
     Ext.Ajax.timeout = 60000; // 60 seconds
 

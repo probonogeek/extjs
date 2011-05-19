@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.SortTypes'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-SortTypes'>/**
 </span> * @class Ext.data.SortTypes
  * This class defines a series of static methods that are used on a
  * {@link Ext.data.Field} for performing sorting. The methods cast the 
@@ -45,7 +62,7 @@ Ext.define('Ext.data.SortTypes', {
     
     singleton: true,
     
-<span id='Ext-data.SortTypes-method-none'>    /**
+<span id='Ext-data-SortTypes-method-none'>    /**
 </span>     * Default sort that does nothing
      * @param {Mixed} s The value being converted
      * @return {Mixed} The comparison value
@@ -54,14 +71,14 @@ Ext.define('Ext.data.SortTypes', {
         return s;
     },
 
-<span id='Ext-data.SortTypes-property-stripTagsRE'>    /**
+<span id='Ext-data-SortTypes-property-stripTagsRE'>    /**
 </span>     * The regular expression used to strip tags
      * @type {RegExp}
      * @property
      */
     stripTagsRE : /&lt;\/?[^&gt;]+&gt;/gi,
 
-<span id='Ext-data.SortTypes-method-asText'>    /**
+<span id='Ext-data-SortTypes-method-asText'>    /**
 </span>     * Strips all HTML tags to sort on text only
      * @param {Mixed} s The value being converted
      * @return {String} The comparison value
@@ -70,7 +87,7 @@ Ext.define('Ext.data.SortTypes', {
         return String(s).replace(this.stripTagsRE, &quot;&quot;);
     },
 
-<span id='Ext-data.SortTypes-method-asUCText'>    /**
+<span id='Ext-data-SortTypes-method-asUCText'>    /**
 </span>     * Strips all HTML tags to sort on text only - Case insensitive
      * @param {Mixed} s The value being converted
      * @return {String} The comparison value
@@ -79,7 +96,7 @@ Ext.define('Ext.data.SortTypes', {
         return String(s).toUpperCase().replace(this.stripTagsRE, &quot;&quot;);
     },
 
-<span id='Ext-data.SortTypes-method-asUCString'>    /**
+<span id='Ext-data-SortTypes-method-asUCString'>    /**
 </span>     * Case insensitive string
      * @param {Mixed} s The value being converted
      * @return {String} The comparison value
@@ -88,7 +105,7 @@ Ext.define('Ext.data.SortTypes', {
         return String(s).toUpperCase();
     },
 
-<span id='Ext-data.SortTypes-method-asDate'>    /**
+<span id='Ext-data-SortTypes-method-asDate'>    /**
 </span>     * Date sorting
      * @param {Mixed} s The value being converted
      * @return {Number} The comparison value
@@ -103,7 +120,7 @@ Ext.define('Ext.data.SortTypes', {
         return Date.parse(String(s));
     },
 
-<span id='Ext-data.SortTypes-method-asFloat'>    /**
+<span id='Ext-data-SortTypes-method-asFloat'>    /**
 </span>     * Float sorting
      * @param {Mixed} s The value being converted
      * @return {Float} The comparison value
@@ -113,7 +130,7 @@ Ext.define('Ext.data.SortTypes', {
         return isNaN(val) ? 0 : val;
     },
 
-<span id='Ext-data.SortTypes-method-asInt'>    /**
+<span id='Ext-data-SortTypes-method-asInt'>    /**
 </span>     * Integer sorting
      * @param {Mixed} s The value being converted
      * @return {Number} The comparison value
@@ -122,4 +139,6 @@ Ext.define('Ext.data.SortTypes', {
         var val = parseInt(String(s).replace(/,/g, &quot;&quot;), 10);
         return isNaN(val) ? 0 : val;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

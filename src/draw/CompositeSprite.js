@@ -177,13 +177,13 @@ Ext.define('Ext.draw.CompositeSprite', {
      * Hides all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    hide: function(attrs) {
+    hide: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].hide();
+            items[i].hide(redraw);
         }
         return this;
     },
@@ -192,13 +192,13 @@ Ext.define('Ext.draw.CompositeSprite', {
      * Shows all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    show: function(attrs) {
+    show: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].show();
+            items[i].show(redraw);
         }
         return this;
     },

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.feature.Summary'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-feature-Summary'>/**
 </span> * @class Ext.grid.feature.Summary
  * @extends Ext.grid.feature.AbstractSummary
  * 
@@ -27,7 +44,7 @@
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage
@@ -67,7 +84,7 @@
  *             dataIndex: 'student',
  *             text: 'Name',
  *             summaryType: 'count',
- *             summaryRenderer: function(value){
+ *             summaryRenderer: function(value, summaryData, dataIndex) {
  *                 return Ext.String.format('{0} student{1}', value, value !== 1 ? 's' : ''); 
  *             }
  *         }, {
@@ -87,7 +104,7 @@ Ext.define('Ext.grid.feature.Summary', {
     
     /* End Definitions */
     
-<span id='Ext-grid.feature.Summary-method-getFragmentTpl'>    /**
+<span id='Ext-grid-feature-Summary-method-getFragmentTpl'>    /**
 </span>     * Gets any fragments needed for the template.
      * @private
      * @return {Object} The fragments
@@ -98,7 +115,7 @@ Ext.define('Ext.grid.feature.Summary', {
         return this.getSummaryFragments();
     },
     
-<span id='Ext-grid.feature.Summary-method-getTableFragments'>    /**
+<span id='Ext-grid-feature-Summary-method-getTableFragments'>    /**
 </span>     * Overrides the closeRows method on the template so we can include our own custom
      * footer.
      * @private
@@ -112,7 +129,7 @@ Ext.define('Ext.grid.feature.Summary', {
         }
     },
     
-<span id='Ext-grid.feature.Summary-method-closeRows'>    /**
+<span id='Ext-grid-feature-Summary-method-closeRows'>    /**
 </span>     * Provide our own custom footer for the grid.
      * @private
      * @return {String} The custom footer
@@ -121,7 +138,7 @@ Ext.define('Ext.grid.feature.Summary', {
         return '&lt;/tpl&gt;{[this.printSummaryRow()]}';
     },
     
-<span id='Ext-grid.feature.Summary-method-getPrintData'>    /**
+<span id='Ext-grid-feature-Summary-method-getPrintData'>    /**
 </span>     * Gets the data for printing a template row
      * @private
      * @param {Number} index The index in the template
@@ -144,7 +161,7 @@ Ext.define('Ext.grid.feature.Summary', {
         return data;
     },
     
-<span id='Ext-grid.feature.Summary-method-generateSummaryData'>    /**
+<span id='Ext-grid-feature-Summary-method-generateSummaryData'>    /**
 </span>     * Generates all of the summary data to be used when processing the template
      * @private
      * @return {Object} The summary data
@@ -166,4 +183,6 @@ Ext.define('Ext.grid.feature.Summary', {
         }
         return data;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

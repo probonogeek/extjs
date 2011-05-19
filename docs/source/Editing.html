@@ -1,5 +1,22 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre>
-<span id='Ext-grid.plugin.Editing'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='Ext-grid-plugin-Editing'>/**
 </span> * @class Ext.grid.plugin.Editing
 
 This class provides an abstract grid editing plugin on selected {@link Ext.grid.column.Column columns}.
@@ -23,7 +40,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         observable: 'Ext.util.Observable'
     },
 
-<span id='Ext-grid.plugin.Editing-cfg-clicksToEdit'>    /**
+<span id='Ext-grid-plugin-Editing-cfg-clicksToEdit'>    /**
 </span>     * @cfg {Number} clicksToEdit
      * The number of clicks on a grid required to display the editor (defaults to 2).
      */
@@ -70,7 +87,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         grid.editingPlugin = grid.view.editingPlugin = me;
     },
 
-<span id='Ext-grid.plugin.Editing-method-destroy'>    /**
+<span id='Ext-grid-plugin-Editing-method-destroy'>    /**
 </span>     * @private
      * AbstractComponent calls destroy on all its plugins at destroy time.
      */
@@ -233,7 +250,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         this.startEdit(record, view.getHeaderAtIndex(colIdx));
     },
 
-<span id='Ext-grid.plugin.Editing-property-beforeEdit'>    /**
+<span id='Ext-grid-plugin-Editing-property-beforeEdit'>    /**
 </span>     * @private
      * @abstract. Template method called before editing begins.
      * @param {Object} context The current editing context
@@ -241,7 +258,7 @@ Ext.define('Ext.grid.plugin.Editing', {
      */
     beforeEdit: Ext.emptyFn,
 
-<span id='Ext-grid.plugin.Editing-method-startEdit'>    /**
+<span id='Ext-grid-plugin-Editing-method-startEdit'>    /**
 </span>     * Start editing the specified record, using the specified Column definition to define which field is being edited.
      * @param {Model} record The Store data record which backs the row to be edited.
      * @param {Model} columnHeader The Column object defining the column to be edited.
@@ -258,7 +275,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         me.editing = true;
     },
 
-<span id='Ext-grid.plugin.Editing-method-getEditingContext'>    /**
+<span id='Ext-grid-plugin-Editing-method-getEditingContext'>    /**
 </span>     * @private Collects all information necessary for any subclasses to perform their editing functions.
      * @param record
      * @param columnHeader
@@ -300,14 +317,14 @@ Ext.define('Ext.grid.plugin.Editing', {
         };
     },
 
-<span id='Ext-grid.plugin.Editing-method-cancelEdit'>    /**
+<span id='Ext-grid-plugin-Editing-method-cancelEdit'>    /**
 </span>     * Cancel any active edit that is in progress.
      */
     cancelEdit: function() {
         this.editing = false;
     },
 
-<span id='Ext-grid.plugin.Editing-method-completeEdit'>    /**
+<span id='Ext-grid-plugin-Editing-method-completeEdit'>    /**
 </span>     * Complete the edit if there is an active edit in progress.
      */
     completeEdit: function() {
@@ -328,4 +345,6 @@ Ext.define('Ext.grid.plugin.Editing', {
 
         return me.fireEvent('validateedit', me, context) !== false &amp;&amp; !context.cancel;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

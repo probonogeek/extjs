@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-resizer.ResizeTracker'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-resizer-ResizeTracker'>/**
 </span> * @class Ext.resizer.ResizeTracker
  * @extends Ext.dd.DragTracker
  */
@@ -59,7 +76,7 @@ Ext.define('Ext.resizer.ResizeTracker', {
         this.startBox = this.el.getBox();
     },
 
-<span id='Ext-resizer.ResizeTracker-method-getDynamicTarget'>    /**
+<span id='Ext-resizer-ResizeTracker-method-getDynamicTarget'>    /**
 </span>     * @private
      * Returns the object that will be resized on every mousemove event.
      * If dynamic is false, this will be a proxy, otherwise it will be our actual target.
@@ -171,13 +188,21 @@ Ext.define('Ext.resizer.ResizeTracker', {
         // out of bounds
         if (newBox.width &lt; me.minWidth || newBox.width &gt; me.maxWidth) {
             newBox.width = Ext.Number.constrain(newBox.width, me.minWidth, me.maxWidth);
-            newBox.x = me.lastX || newBox.x;
+
+            // Re-adjust the X position if we were dragging the west side
+            if (adjustX) {
+                newBox.x = box.x + (box.width - newBox.width);
+            }
         } else {
             me.lastX = newBox.x;
         }
         if (newBox.height &lt; me.minHeight || newBox.height &gt; me.maxHeight) {
             newBox.height = Ext.Number.constrain(newBox.height, me.minHeight, me.maxHeight);
-            newBox.y = me.lastY || newBox.y;
+
+            // Re-adjust the Y position if we were dragging the north side
+            if (adjustY) {
+                newBox.y = box.y + (box.height - newBox.height);
+            }
         } else {
             me.lastY = newBox.y;
         }
@@ -267,4 +292,6 @@ Ext.define('Ext.resizer.ResizeTracker', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

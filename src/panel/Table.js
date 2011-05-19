@@ -119,6 +119,7 @@ Ext.define('Ext.panel.Table', {
 
         // Set our determinScrollbars method to reference a buffered call to determinScrollbars which fires on a 30ms buffer.
         me.determineScrollbars = Ext.Function.createBuffered(me.determineScrollbars, 30);
+        me.invalidateScroller = Ext.Function.createBuffered(me.invalidateScroller, 30);
         me.injectView = Ext.Function.createBuffered(me.injectView, 30);
 
         if (me.hideHeaders) {
@@ -755,6 +756,8 @@ Ext.define('Ext.panel.Table', {
 
             clientHeight = viewElDom.clientHeight;
 
+            me.suspendLayout = true;
+            me.scrollbarChanged = false;
             if (!me.collapsed && scrollHeight > clientHeight) {
                 me.showVerticalScroller();
             } else {
@@ -765,6 +768,10 @@ Ext.define('Ext.panel.Table', {
                 me.showHorizontalScroller();
             } else {
                 me.hideHorizontalScroller();
+            }
+            me.suspendLayout = false;
+            if (me.scrollbarChanged) {
+                me.doComponentLayout();
             }
         }
     },
@@ -783,6 +790,7 @@ Ext.define('Ext.panel.Table', {
         var me = this;
 
         if (me.horizontalScroller && me.horizontalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.verticalScroller.offsets.bottom = 0;
             me.removeDocked(me.horizontalScroller, false);
             me.removeCls(me.horizontalScrollerPresentCls);
@@ -801,6 +809,7 @@ Ext.define('Ext.panel.Table', {
             me.verticalScroller.offsets.bottom = Ext.getScrollBarWidth() - 2;
         }
         if (me.horizontalScroller && me.horizontalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.horizontalScroller);
             me.addCls(me.horizontalScrollerPresentCls);
             me.fireEvent('scrollershow', me.horizontalScroller, 'horizontal');
@@ -820,6 +829,7 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller && me.verticalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.removeDocked(me.verticalScroller, false);
             me.removeCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollerhide', me.verticalScroller, 'vertical');
@@ -839,6 +849,7 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller && me.verticalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.verticalScroller);
             me.addCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollershow', me.verticalScroller, 'vertical');
@@ -892,55 +903,52 @@ Ext.define('Ext.panel.Table', {
             scrollDelta = me.scrollDelta,
             deltaY, deltaX,
             vertScrollerEl, horizScrollerEl,
-            origScrollLeft, origScrollTop,
-            newScrollLeft, newScrollTop;
+            vertScrollerElDom, horizScrollerElDom,
+            horizontalCanScrollLeft, horizontalCanScrollRight,
+            verticalCanScrollDown, verticalCanScrollUp;
 
-        // Track original scroll values, so we can see if we've
-        // reached the end of our scroll height/width.
+        // calculate whether or not both scrollbars can scroll right/left and up/down
         if (horizScroller) {
             horizScrollerEl = horizScroller.el;
             if (horizScrollerEl) {
-                origScrollLeft = horizScrollerEl.dom.scrollLeft;
+                horizScrollerElDom = horizScrollerEl.dom;
+                horizontalCanScrollRight = horizScrollerElDom.scrollLeft !== horizScrollerElDom.scrollWidth - horizScrollerElDom.clientWidth;
+                horizontalCanScrollLeft  = horizScrollerElDom.scrollLeft !== 0;
             }
         }
         if (vertScroller) {
             vertScrollerEl = vertScroller.el;
             if (vertScrollerEl) {
-                origScrollTop = vertScrollerEl.dom.scrollTop;
+                vertScrollerElDom = vertScrollerEl.dom;
+                verticalCanScrollDown = vertScrollerElDom.scrollTop !== vertScrollerElDom.scrollHeight - vertScrollerElDom.clientHeight;
+                verticalCanScrollUp   = vertScrollerElDom.scrollTop !== 0;
             }
         }
 
         // Webkit Horizontal Axis
-        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {
+        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {        
             deltaX = -browserEvent.wheelDeltaX / 120 * scrollDelta / 3;
             deltaY = -browserEvent.wheelDeltaY / 120 * scrollDelta / 3;
-            if (horizScroller) {
-                newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-            }
-            if (vertScroller) {
-                newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-            }
         } else {
             // Gecko Horizontal Axis
             if (browserEvent.axis && browserEvent.axis === 1) {
-                if (horizScroller) {
-                    deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
-                    newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-                }
+                deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
             } else {
-                if (vertScroller) {
-
-                    deltaY = -(scrollDelta * e.getWheelDelta() / 3);
-                    newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-                }
+                deltaY = -(scrollDelta * e.getWheelDelta() / 3);
             }
         }
-
-        // If after given our delta, the scroller has not progressed, then we're
-        // at the end of our scroll range and shouldn't stop the browser event.
-        if ((deltaX !== 0 && newScrollLeft !== origScrollLeft) ||
-            (deltaY !== 0 && newScrollTop !== origScrollTop)) {
-            e.stopEvent();
+        
+        if (horizScroller) {
+            if ((deltaX < 0 && horizontalCanScrollLeft) || (deltaX > 0 && horizontalCanScrollRight)) {
+                e.stopEvent();
+                horizScroller.scrollByDeltaX(deltaX);
+            }
+        }
+        if (vertScroller) {
+            if ((deltaY < 0 && verticalCanScrollUp) || (deltaY > 0 && verticalCanScrollDown)) {
+                e.stopEvent();
+                vertScroller.scrollByDeltaY(deltaY);    
+            }
         }
     },
 
@@ -1193,10 +1201,11 @@ Ext.define('Ext.panel.Table', {
             me.getView().refresh();
         }
     },
-
+    
     afterComponentLayout: function() {
-        this.callParent(arguments);
-        this.determineScrollbars();
-        this.invalidateScroller();
+        var me = this;
+        me.callParent(arguments);
+        me.determineScrollbars();
+        me.invalidateScroller();
     }
 });

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Bar'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-series-Bar'>/**
 </span> * Creates a Bar Chart. A Bar Chart is a useful visualization technique to display quantitative information for
  * different categories that can show some progression (or regression) in the dataset. As with all other series, the Bar
  * Series must be appended in the *series* Chart array configuration. See the Chart documentation for more information.
@@ -86,32 +103,32 @@ Ext.define('Ext.chart.series.Bar', {
     type: 'bar',
 
     alias: 'series.bar',
-<span id='Ext-chart.series.Bar-cfg-column'>    /**
+<span id='Ext-chart-series-Bar-cfg-column'>    /**
 </span>     * @cfg {Boolean} column Whether to set the visualization as column chart or horizontal bar chart.
      */
     column: false,
     
-<span id='Ext-chart.series.Bar-cfg-style'>    /**
+<span id='Ext-chart-series-Bar-cfg-style'>    /**
 </span>     * @cfg style Style properties that will override the theming series styles.
      */
     style: {},
     
-<span id='Ext-chart.series.Bar-cfg-gutter'>    /**
+<span id='Ext-chart-series-Bar-cfg-gutter'>    /**
 </span>     * @cfg {Number} gutter The gutter space between single bars, as a percentage of the bar width
      */
     gutter: 38.2,
 
-<span id='Ext-chart.series.Bar-cfg-groupGutter'>    /**
+<span id='Ext-chart-series-Bar-cfg-groupGutter'>    /**
 </span>     * @cfg {Number} groupGutter The gutter space between groups of bars, as a percentage of the bar width
      */
     groupGutter: 38.2,
 
-<span id='Ext-chart.series.Bar-cfg-xPadding'>    /**
+<span id='Ext-chart-series-Bar-cfg-xPadding'>    /**
 </span>     * @cfg {Number} xPadding Padding between the left/right axes and the bars
      */
     xPadding: 0,
 
-<span id='Ext-chart.series.Bar-cfg-yPadding'>    /**
+<span id='Ext-chart-series-Bar-cfg-yPadding'>    /**
 </span>     * @cfg {Number} yPadding Padding between the top/bottom axes and the bars
      */
     yPadding: 10,
@@ -484,7 +501,7 @@ Ext.define('Ext.chart.series.Bar', {
         return shadows;
     },
 
-<span id='Ext-chart.series.Bar-method-drawSeries'>    /**
+<span id='Ext-chart-series-Bar-method-drawSeries'>    /**
 </span>     * Draws the series for the current chart.
      */
     drawSeries: function() {
@@ -596,7 +613,7 @@ Ext.define('Ext.chart.series.Bar', {
     },
     
     // @private callback used when placing a label.
-    onPlaceLabel: function(label, storeItem, item, i, display, animate, index) {
+    onPlaceLabel: function(label, storeItem, item, i, display, animate, j, index) {
         // Determine the label's final position. Starts with the configured preferred value but
         // may get flipped from inside to outside or vice-versa depending on space.
         var me = this,
@@ -785,7 +802,7 @@ Ext.define('Ext.chart.series.Bar', {
         }
     },
     
-<span id='Ext-chart.series.Bar-method-getLegendColor'>    /**
+<span id='Ext-chart-series-Bar-method-getLegendColor'>    /**
 </span>     * Returns a string with the color to be used for the series legend item.
      * @param index
      */
@@ -793,4 +810,6 @@ Ext.define('Ext.chart.series.Bar', {
         var me = this;
         return me.colorArrayStyle[index % me.colorArrayStyle.length];
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -207,6 +207,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     create: Ext.emptyFn,
     
@@ -215,6 +216,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     read: Ext.emptyFn,
     
@@ -223,6 +225,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     update: Ext.emptyFn,
     
@@ -231,6 +234,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     destroy: Ext.emptyFn,
     

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.column.Number'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-column-Number'>/**
 </span> * @class Ext.grid.column.Number
  * @extends Ext.grid.column.Column
  *
@@ -45,7 +62,7 @@ Ext.define('Ext.grid.column.Number', {
     requires: ['Ext.util.Format'],
     alternateClassName: 'Ext.grid.NumberColumn',
 
-<span id='Ext-grid.column.Number-cfg-format'>    /**
+<span id='Ext-grid-column-Number-cfg-format'>    /**
 </span>     * @cfg {String} format
      * A formatting string as used by {@link Ext.util.Format#number} to format a numeric value for this Column
      * (defaults to &lt;code&gt;'0,000.00'&lt;/code&gt;).
@@ -55,4 +72,6 @@ Ext.define('Ext.grid.column.Number', {
         this.callParent(arguments);
         this.renderer = Ext.util.Format.numberRenderer(this.format);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

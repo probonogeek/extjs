@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-draw.Component'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-draw-Component'>/**
 </span> * @class Ext.draw.Component
  * @extends Ext.Component
  *
@@ -60,7 +77,7 @@ Ext.define('Ext.draw.Component', {
 
     /* End Definitions */
 
-<span id='Ext-draw.Component-cfg-enginePriority'>    /**
+<span id='Ext-draw-Component-cfg-enginePriority'>    /**
 </span>     * @cfg {Array} enginePriority
      * Defines the priority order for which Surface implementation to use. The first
      * one supported by the current environment will be used.
@@ -71,20 +88,20 @@ Ext.define('Ext.draw.Component', {
 
     componentLayout: 'draw',
 
-<span id='Ext-draw.Component-cfg-viewBox'>    /**
+<span id='Ext-draw-Component-cfg-viewBox'>    /**
 </span>     * @cfg {Boolean} viewBox
      * Turn on view box support which will scale and position items in the draw component to fit to the component while
      * maintaining aspect ratio. Note that this scaling can override other sizing settings on yor items. Defaults to true.
      */
     viewBox: true,
 
-<span id='Ext-draw.Component-cfg-autoSize'>    /**
+<span id='Ext-draw-Component-cfg-autoSize'>    /**
 </span>     * @cfg {Boolean} autoSize
      * Turn on autoSize support which will set the bounding div's size to the natural size of the contents. Defaults to false.
      */
     autoSize: false,
     
-<span id='Ext-draw.Component-cfg-gradients'>    /**
+<span id='Ext-draw-Component-cfg-gradients'>    /**
 </span>     * @cfg {Array} gradients (optional) Define a set of gradients that can be used as `fill` property in sprites.
      * The gradients array is an array of objects with the following properties:
      *
@@ -150,7 +167,7 @@ Ext.define('Ext.draw.Component', {
         );
     },
 
-<span id='Ext-draw.Component-method-onRender'>    /**
+<span id='Ext-draw-Component-method-onRender'>    /**
 </span>     * @private
      *
      * Create the Surface on initial render
@@ -198,6 +215,7 @@ Ext.define('Ext.draw.Component', {
         }, true);
         if (me.rendered) {
             me.setSize(width, height);
+            me.surface.setSize(width, height);
         }
         else {
             me.surface.setSize(width, height);
@@ -205,7 +223,7 @@ Ext.define('Ext.draw.Component', {
         me.el.setSize(width, height);
     },
 
-<span id='Ext-draw.Component-method-createSurface'>    /**
+<span id='Ext-draw-Component-method-createSurface'>    /**
 </span>     * Create the Surface instance. Resolves the correct Surface implementation to
      * instantiate based on the 'enginePriority' config. Once the Surface instance is
      * created you can use the handle to that instance to add sprites. For example:
@@ -240,7 +258,7 @@ Ext.define('Ext.draw.Component', {
     },
 
 
-<span id='Ext-draw.Component-method-onDestroy'>    /**
+<span id='Ext-draw-Component-method-onDestroy'>    /**
 </span>     * @private
      * 
      * Clean up the Surface instance on component destruction
@@ -254,4 +272,6 @@ Ext.define('Ext.draw.Component', {
     }
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

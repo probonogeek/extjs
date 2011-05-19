@@ -388,6 +388,7 @@ Ext.define('Ext.form.field.Field', {
      * will not prevent submission of forms submitted with the {@link Ext.form.action.Submit#clientValidation}
      * option set.</p>
      * @param {String/Array} errors The error message(s) for the field.
+     * @method
      */
     markInvalid: Ext.emptyFn,
 
@@ -398,6 +399,7 @@ Ext.define('Ext.form.field.Field', {
      * return <code>true</code> if the value does not <i>pass</i> validation. So simply clearing a field's errors
      * will not necessarily allow submission of forms submitted with the {@link Ext.form.action.Submit#clientValidation}
      * option set.</p>
+     * @method
      */
     clearInvalid: Ext.emptyFn
 

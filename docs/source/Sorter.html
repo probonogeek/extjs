@@ -1,30 +1,47 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Sorter'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Sorter'>/**
 </span> * @class Ext.util.Sorter
  * @extends Object
  * Represents a single sorter that can be applied to a Store
  */
 Ext.define('Ext.util.Sorter', {
 
-<span id='Ext-util.Sorter-cfg-property'>    /**
+<span id='Ext-util-Sorter-cfg-property'>    /**
 </span>     * @cfg {String} property The property to sort by. Required unless {@link #sorter} is provided
      */
     
-<span id='Ext-util.Sorter-cfg-sorterFn'>    /**
+<span id='Ext-util-Sorter-cfg-sorterFn'>    /**
 </span>     * @cfg {Function} sorterFn A specific sorter function to execute. Can be passed instead of {@link #property}
      */
     
-<span id='Ext-util.Sorter-cfg-root'>    /**
+<span id='Ext-util-Sorter-cfg-root'>    /**
 </span>     * @cfg {String} root Optional root property. This is mostly useful when sorting a Store, in which case we set the
      * root to 'data' to make the filter pull the {@link #property} out of the data object of each item
      */
     
-<span id='Ext-util.Sorter-cfg-transform'>    /**
+<span id='Ext-util-Sorter-cfg-transform'>    /**
 </span>     * @cfg {Function} transform A function that will be run on each value before
      * it is compared in the sorter. The function will receive a single argument,
      * the value.
      */
     
-<span id='Ext-util.Sorter-cfg-direction'>    /**
+<span id='Ext-util-Sorter-cfg-direction'>    /**
 </span>     * @cfg {String} direction The direction to sort by. Defaults to ASC
      */
     direction: &quot;ASC&quot;,
@@ -43,7 +60,7 @@ Ext.define('Ext.util.Sorter', {
         me.updateSortFunction();
     },
     
-<span id='Ext-util.Sorter-method-createSortFunction'>    /**
+<span id='Ext-util-Sorter-method-createSortFunction'>    /**
 </span>     * @private
      * Creates and returns a function which sorts an array by the given property and direction
      * @return {Function} A function which sorts by the property/direction combination provided
@@ -61,7 +78,7 @@ Ext.define('Ext.util.Sorter', {
         };
     },
     
-<span id='Ext-util.Sorter-method-defaultSorterFn'>    /**
+<span id='Ext-util-Sorter-method-defaultSorterFn'>    /**
 </span>     * @private
      * Basic default sorter function that just compares the defined property of each object
      */
@@ -79,7 +96,7 @@ Ext.define('Ext.util.Sorter', {
         return v1 &gt; v2 ? 1 : (v1 &lt; v2 ? -1 : 0);
     },
     
-<span id='Ext-util.Sorter-method-getRoot'>    /**
+<span id='Ext-util-Sorter-method-getRoot'>    /**
 </span>     * @private
      * Returns the root property of the given item, based on the configured {@link #root} property
      * @param {Object} item The item
@@ -106,4 +123,6 @@ Ext.define('Ext.util.Sorter', {
         var me = this;
         me.sort = me.createSortFunction(me.sorterFn || me.defaultSorterFn);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

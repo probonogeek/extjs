@@ -72,15 +72,22 @@ Ext.define('Ext.grid.View', {
         this.doStripeRows(index);
     },
     
+    onUpdate: function(ds, record, operation) {
+        var index = ds.indexOf(record);
+        this.callParent(arguments);
+        this.doStripeRows(index, index);
+    },
+    
     /**
      * Stripe rows from a particular row index
      * @param {Number} startRow
+     * @param {Number} endRow Optional argument specifying the last row to process. By default process up to the last row.
      * @private
      */
-    doStripeRows: function(startRow) {
+    doStripeRows: function(startRow, endRow) {
         // ensure stripeRows configuration is turned on
         if (this.stripeRows) {
-            var rows   = this.getNodes(startRow),
+            var rows   = this.getNodes(startRow, endRow),
                 rowsLn = rows.length,
                 i      = 0,
                 row;
@@ -89,8 +96,9 @@ Ext.define('Ext.grid.View', {
                 row = rows[i];
                 // Remove prior applied row classes.
                 row.className = row.className.replace(this.rowClsRe, ' ');
+                startRow++;
                 // Every odd row will get an additional cls
-                if (i % 2 === 1) {
+                if (startRow % 2 === 0) {
                     row.className += (' ' + this.altRowCls);
                 }
             }

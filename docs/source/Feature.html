@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.feature.Feature'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-feature-Feature'>/**
 </span> * @class Ext.grid.feature.Feature
  * @extends Ext.util.Observable
  * 
@@ -31,39 +48,39 @@ Ext.define('Ext.grid.feature.Feature', {
     isFeature: true,
     disabled: false,
     
-<span id='Ext-grid.feature.Feature-property-hasFeatureEvent'>    /**
+<span id='Ext-grid-feature-Feature-property-hasFeatureEvent'>    /**
 </span>     * @property {Boolean}
      * Most features will expose additional events, some may not and will
      * need to change this to false.
      */
     hasFeatureEvent: true,
     
-<span id='Ext-grid.feature.Feature-property-eventPrefix'>    /**
+<span id='Ext-grid-feature-Feature-property-eventPrefix'>    /**
 </span>     * @property {String}
      * Prefix to use when firing events on the view.
      * For example a prefix of group would expose &quot;groupclick&quot;, &quot;groupcontextmenu&quot;, &quot;groupdblclick&quot;.
      */
     eventPrefix: null,
     
-<span id='Ext-grid.feature.Feature-property-eventSelector'>    /**
+<span id='Ext-grid-feature-Feature-property-eventSelector'>    /**
 </span>     * @property {String}
      * Selector used to determine when to fire the event with the eventPrefix.
      */
     eventSelector: null,
     
-<span id='Ext-grid.feature.Feature-property-view'>    /**
+<span id='Ext-grid-feature-Feature-property-view'>    /**
 </span>     * @property {Ext.view.Table}
      * Reference to the TableView.
      */
     view: null,
     
-<span id='Ext-grid.feature.Feature-property-grid'>    /**
+<span id='Ext-grid-feature-Feature-property-grid'>    /**
 </span>     * @property {Ext.grid.Panel}
      * Reference to the grid panel
      */
     grid: null,
     
-<span id='Ext-grid.feature.Feature-property-collectData'>    /**
+<span id='Ext-grid-feature-Feature-property-collectData'>    /**
 </span>     * Most features will not modify the data returned to the view.
      * This is limited to one feature that manipulates the data per grid view.
      */
@@ -73,7 +90,7 @@ Ext.define('Ext.grid.feature.Feature', {
         return '';
     },
     
-<span id='Ext-grid.feature.Feature-method-getFireEventArgs'>    /**
+<span id='Ext-grid-feature-Feature-method-getFireEventArgs'>    /**
 </span>     * Abstract method to be overriden when a feature should add additional
      * arguments to its event signature. By default the event will fire:
      * - view - The underlying Ext.view.Table
@@ -82,11 +99,11 @@ Ext.define('Ext.grid.feature.Feature', {
      * The method must also return the eventName as the first index of the array
      * to be passed to fireEvent.
      */
-    getFireEventArgs: function(eventName, view, featureTarget) {
-        return [eventName, view, featureTarget];
+    getFireEventArgs: function(eventName, view, featureTarget, e) {
+        return [eventName, view, featureTarget, e];
     },
     
-<span id='Ext-grid.feature.Feature-method-attachEvents'>    /**
+<span id='Ext-grid-feature-Feature-method-attachEvents'>    /**
 </span>     * Approriate place to attach events to the view, selectionmodel, headerCt, etc
      */
     attachEvents: function() {
@@ -97,7 +114,7 @@ Ext.define('Ext.grid.feature.Feature', {
         return;
     },
     
-<span id='Ext-grid.feature.Feature-method-mutateMetaRowTpl'>    /**
+<span id='Ext-grid-feature-Feature-method-mutateMetaRowTpl'>    /**
 </span>     * Allows a feature to mutate the metaRowTpl.
      * The array received as a single argument can be manipulated to add things
      * on the end/begining of a particular row.
@@ -106,7 +123,7 @@ Ext.define('Ext.grid.feature.Feature', {
         
     },
     
-<span id='Ext-grid.feature.Feature-method-getMetaRowTplFragments'>    /**
+<span id='Ext-grid-feature-Feature-method-getMetaRowTplFragments'>    /**
 </span>     * Allows a feature to inject member methods into the metaRowTpl. This is
      * important for embedding functionality which will become part of the proper
      * row tpl.
@@ -119,7 +136,7 @@ Ext.define('Ext.grid.feature.Feature', {
         return {};
     },
     
-<span id='Ext-grid.feature.Feature-method-getAdditionalData'>    /**
+<span id='Ext-grid-feature-Feature-method-getAdditionalData'>    /**
 </span>     * Provide additional data to the prepareData call within the grid view.
      * @param {Object} data The data for this particular record.
      * @param {Number} idx The row index for this record.
@@ -130,18 +147,20 @@ Ext.define('Ext.grid.feature.Feature', {
         return {};
     },
     
-<span id='Ext-grid.feature.Feature-method-enable'>    /**
+<span id='Ext-grid-feature-Feature-method-enable'>    /**
 </span>     * Enable a feature
      */
     enable: function() {
         this.disabled = false;
     },
     
-<span id='Ext-grid.feature.Feature-method-disable'>    /**
+<span id='Ext-grid-feature-Feature-method-disable'>    /**
 </span>     * Disable a feature
      */
     disable: function() {
         this.disabled = true;
     }
     
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

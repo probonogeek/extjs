@@ -11,29 +11,29 @@
  * {@img Ext.form.Time/Ext.form.Time.png Ext.form.Time component}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.form.Panel', {
-        title: 'Time Card',
-        width: 300,
-        bodyPadding: 10,
-        renderTo: Ext.getBody(),        
-        items: [{
-            xtype: 'timefield',
-            name: 'in',
-            fieldLabel: 'Time In',
-            minValue: '6:00 AM',
-            maxValue: '8:00 PM',
-            increment: 30,
-            anchor: '100%'
-        }, {
-            xtype: 'timefield',
-            name: 'out',
-            fieldLabel: 'Time Out',
-            minValue: '6:00 AM',
-            maxValue: '8:00 PM',
-            increment: 30,
-            anchor: '100%'
-       }]
-    });
+Ext.create('Ext.form.Panel', {
+    title: 'Time Card',
+    width: 300,
+    bodyPadding: 10,
+    renderTo: Ext.getBody(),        
+    items: [{
+        xtype: 'timefield',
+        name: 'in',
+        fieldLabel: 'Time In',
+        minValue: '6:00 AM',
+        maxValue: '8:00 PM',
+        increment: 30,
+        anchor: '100%'
+    }, {
+        xtype: 'timefield',
+        name: 'out',
+        fieldLabel: 'Time Out',
+        minValue: '6:00 AM',
+        maxValue: '8:00 PM',
+        increment: 30,
+        anchor: '100%'
+   }]
+});
 </code></pre>
  * @constructor
  * Create a new Time field

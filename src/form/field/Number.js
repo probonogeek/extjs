@@ -178,23 +178,25 @@ Ext.define('Ext.form.field.Number', {
         var me = this,
             allowed;
 
-        this.callParent();
+        me.callParent();
 
         me.setMinValue(me.minValue);
         me.setMaxValue(me.maxValue);
 
         // Build regexes for masking and stripping based on the configured options
-        allowed = me.baseChars + '';
-        if (me.allowDecimals) {
-            allowed += me.decimalSeparator;
-        }
-        if (me.minValue < 0) {
-            allowed += '-';
-        }
-        allowed = Ext.String.escapeRegex(allowed);
-        me.maskRe = new RegExp('[' + allowed + ']');
-        if (me.autoStripChars) {
-            me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+        if (me.disableKeyFilter !== true) {
+            allowed = me.baseChars + '';
+            if (me.allowDecimals) {
+                allowed += me.decimalSeparator;
+            }
+            if (me.minValue < 0) {
+                allowed += '-';
+            }
+            allowed = Ext.String.escapeRegex(allowed);
+            me.maskRe = new RegExp('[' + allowed + ']');
+            if (me.autoStripChars) {
+                me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+            }
         }
     },
 

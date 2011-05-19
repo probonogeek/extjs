@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-dd.Registry'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-dd-Registry'>/**
 </span> * @class Ext.dd.Registry
  * Provides easy access to all drag drop components that are registered on a page.  Items can be retrieved either
  * directly by DOM node id, or by passing in the drag drop event that occurred and looking up the event target.
@@ -24,7 +41,7 @@ Ext.define('Ext.dd.Registry', {
         return id;
     },
     
-<span id='Ext-dd.Registry-method-register'>    /**
+<span id='Ext-dd-Registry-method-register'>    /**
 </span>     * Resgister a drag drop element
      * @param {String/HTMLElement} element The id or DOM node to register
      * @param {Object} data (optional) An custom data object that will be passed between the elements that are involved
@@ -58,7 +75,7 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         }
     },
 
-<span id='Ext-dd.Registry-method-unregister'>    /**
+<span id='Ext-dd-Registry-method-unregister'>    /**
 </span>     * Unregister a drag drop element
      * @param {String/HTMLElement} element The id or DOM node to unregister
      */
@@ -76,7 +93,7 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         }
     },
 
-<span id='Ext-dd.Registry-method-getHandle'>    /**
+<span id='Ext-dd-Registry-method-getHandle'>    /**
 </span>     * Returns the handle registered for a DOM Node by id
      * @param {String/HTMLElement} id The DOM node or id to look up
      * @return {Object} handle The custom handle data
@@ -88,7 +105,7 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         return this.handles[id];
     },
 
-<span id='Ext-dd.Registry-method-getHandleFromEvent'>    /**
+<span id='Ext-dd-Registry-method-getHandleFromEvent'>    /**
 </span>     * Returns the handle that is registered for the DOM node that is the target of the event
      * @param {Event} e The event
      * @return {Object} handle The custom handle data
@@ -98,7 +115,7 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         return t ? this.handles[t.id] : null;
     },
 
-<span id='Ext-dd.Registry-method-getTarget'>    /**
+<span id='Ext-dd-Registry-method-getTarget'>    /**
 </span>     * Returns a custom data object that is registered for a DOM node by id
      * @param {String/HTMLElement} id The DOM node or id to look up
      * @return {Object} data The custom data
@@ -110,7 +127,7 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         return this.elements[id];
     },
 
-<span id='Ext-dd.Registry-method-getTargetFromEvent'>    /**
+<span id='Ext-dd-Registry-method-getTargetFromEvent'>    /**
 </span>     * Returns a custom data object that is registered for the DOM node that is the target of the event
      * @param {Event} e The event
      * @return {Object} data The custom data
@@ -119,4 +136,6 @@ isHandle   True if the element passed in triggers&lt;br /&gt;
         var t = e.getTarget();
         return t ? this.elements[t.id] || this.handles[t.id] : null;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.Legend-method-constructor'><span id='Ext-chart.Legend'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-Legend-method-constructor'><span id='Ext-chart-Legend'>/**
 </span></span> * @class Ext.chart.Legend
  *
  * Defines a legend for a chart's series.
@@ -90,13 +107,13 @@ Ext.define('Ext.chart.Legend', {
 
     /* End Definitions */
 
-<span id='Ext-chart.Legend-cfg-visible'>    /**
+<span id='Ext-chart-Legend-cfg-visible'>    /**
 </span>     * @cfg {Boolean} visible
      * Whether or not the legend should be displayed.
      */
     visible: true,
 
-<span id='Ext-chart.Legend-cfg-position'>    /**
+<span id='Ext-chart-Legend-cfg-position'>    /**
 </span>     * @cfg {String} position
      * The position of the legend in relation to the chart. One of: &quot;top&quot;,
      * &quot;bottom&quot;, &quot;left&quot;, &quot;right&quot;, or &quot;float&quot;. If set to &quot;float&quot;, then the legend
@@ -104,51 +121,51 @@ Ext.define('Ext.chart.Legend', {
      */
     position: 'bottom',
 
-<span id='Ext-chart.Legend-cfg-x'>    /**
+<span id='Ext-chart-Legend-cfg-x'>    /**
 </span>     * @cfg {Number} x
      * X-position of the legend box. Used directly if position is set to &quot;float&quot;, otherwise 
      * it will be calculated dynamically.
      */
     x: 0,
 
-<span id='Ext-chart.Legend-cfg-y'>    /**
+<span id='Ext-chart-Legend-cfg-y'>    /**
 </span>     * @cfg {Number} y
      * Y-position of the legend box. Used directly if position is set to &quot;float&quot;, otherwise
      * it will be calculated dynamically.
      */
     y: 0,
 
-<span id='Ext-chart.Legend-cfg-labelFont'>    /**
+<span id='Ext-chart-Legend-cfg-labelFont'>    /**
 </span>     * @cfg {String} labelFont
      * Font to be used for the legend labels, eg '12px Helvetica'
      */
     labelFont: '12px Helvetica, sans-serif',
 
-<span id='Ext-chart.Legend-cfg-boxStroke'>    /**
+<span id='Ext-chart-Legend-cfg-boxStroke'>    /**
 </span>     * @cfg {String} boxStroke
      * Style of the stroke for the legend box
      */
     boxStroke: '#000',
 
-<span id='Ext-chart.Legend-cfg-boxStrokeWidth'>    /**
+<span id='Ext-chart-Legend-cfg-boxStrokeWidth'>    /**
 </span>     * @cfg {String} boxStrokeWidth
      * Width of the stroke for the legend box
      */
     boxStrokeWidth: 1,
 
-<span id='Ext-chart.Legend-cfg-boxFill'>    /**
+<span id='Ext-chart-Legend-cfg-boxFill'>    /**
 </span>     * @cfg {String} boxFill
      * Fill style for the legend box
      */
     boxFill: '#FFF',
 
-<span id='Ext-chart.Legend-cfg-itemSpacing'>    /**
+<span id='Ext-chart-Legend-cfg-itemSpacing'>    /**
 </span>     * @cfg {Number} itemSpacing
      * Amount of space between legend items
      */
     itemSpacing: 10,
 
-<span id='Ext-chart.Legend-cfg-padding'>    /**
+<span id='Ext-chart-Legend-cfg-padding'>    /**
 </span>     * @cfg {Number} padding
      * Amount of padding between the legend box's border and its items
      */
@@ -159,7 +176,7 @@ Ext.define('Ext.chart.Legend', {
     // @private
     height: 0,
 
-<span id='Ext-chart.Legend-cfg-boxZIndex'>    /**
+<span id='Ext-chart-Legend-cfg-boxZIndex'>    /**
 </span>     * @cfg {Number} boxZIndex
      * Sets the z-index for the legend. Defaults to 100.
      */
@@ -171,7 +188,7 @@ Ext.define('Ext.chart.Legend', {
             Ext.apply(me, config);
         }
         me.items = [];
-<span id='Ext-chart.Legend-property-isVertical'>        /**
+<span id='Ext-chart-Legend-property-isVertical'>        /**
 </span>         * Whether the legend box is oriented vertically, i.e. if it is on the left or right side or floating.
          * @type {Boolean}
          */
@@ -182,7 +199,7 @@ Ext.define('Ext.chart.Legend', {
         me.origY = me.y;
     },
 
-<span id='Ext-chart.Legend-method-create'>    /**
+<span id='Ext-chart-Legend-method-create'>    /**
 </span>     * @private Create all the sprites for the legend
      */
     create: function() {
@@ -202,7 +219,7 @@ Ext.define('Ext.chart.Legend', {
         }
     },
 
-<span id='Ext-chart.Legend-method-isDisplayed'>    /**
+<span id='Ext-chart-Legend-method-isDisplayed'>    /**
 </span>     * @private Determine whether the legend should be displayed. Looks at the legend's 'visible' config,
      * and also the 'showInLegend' config for each of the series.
      */
@@ -210,7 +227,7 @@ Ext.define('Ext.chart.Legend', {
         return this.visible &amp;&amp; this.chart.series.findIndex('showInLegend', true) !== -1;
     },
 
-<span id='Ext-chart.Legend-method-createItems'>    /**
+<span id='Ext-chart-Legend-method-createItems'>    /**
 </span>     * @private Create the series markers and labels
      */
     createItems: function() {
@@ -289,7 +306,7 @@ Ext.define('Ext.chart.Legend', {
         me.itemHeight = maxHeight;
     },
 
-<span id='Ext-chart.Legend-method-getBBox'>    /**
+<span id='Ext-chart-Legend-method-getBBox'>    /**
 </span>     * @private Get the bounds for the legend's outer box
      */
     getBBox: function() {
@@ -302,7 +319,7 @@ Ext.define('Ext.chart.Legend', {
         };
     },
 
-<span id='Ext-chart.Legend-method-createBox'>    /**
+<span id='Ext-chart-Legend-method-createBox'>    /**
 </span>     * @private Create the box around the legend items
      */
     createBox: function() {
@@ -317,7 +334,7 @@ Ext.define('Ext.chart.Legend', {
         box.redraw();
     },
 
-<span id='Ext-chart.Legend-method-updatePosition'>    /**
+<span id='Ext-chart-Legend-method-updatePosition'>    /**
 </span>     * @private Update the position of all the legend's sprites to match its current x/y values
      */
     updatePosition: function() {
@@ -370,4 +387,6 @@ Ext.define('Ext.chart.Legend', {
             me.boxSprite.setAttributes(me.getBBox(), true);
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

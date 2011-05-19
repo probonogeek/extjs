@@ -90,6 +90,7 @@ Ext.define('Ext.util.Point', {
      * Or the x value is using the two argument form.
      * @param {Number} The y value unless using an Offset object.
      * @return {Ext.util.Region} this This Region
+     * @method
      */
     this.prototype.translate = Ext.util.Region.prototype.translateBy;
 });

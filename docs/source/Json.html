@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.reader.Json'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-reader-Json'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.reader.Json
  * @extends Ext.data.reader.Reader
@@ -164,12 +181,12 @@ Ext.define('Ext.data.reader.Json', {
     
     root: '',
     
-<span id='Ext-data.reader.Json-cfg-record'>    /**
+<span id='Ext-data-reader-Json-cfg-record'>    /**
 </span>     * @cfg {String} record The optional location within the JSON response that the record data itself can be found at.
      * See the JsonReader intro docs for more details. This is not often needed and defaults to undefined.
      */
     
-<span id='Ext-data.reader.Json-cfg-useSimpleAccessors'>    /**
+<span id='Ext-data-reader-Json-cfg-useSimpleAccessors'>    /**
 </span>     * @cfg {Boolean} useSimpleAccessors True to ensure that field names/mappings are treated as literals when
      * reading values. Defalts to &lt;tt&gt;false&lt;/tt&gt;.
      * For example, by default, using the mapping &quot;foo.bar.baz&quot; will try and read a property foo from the root, then a property bar
@@ -178,7 +195,7 @@ Ext.define('Ext.data.reader.Json', {
      */
     useSimpleAccessors: false,
     
-<span id='Ext-data.reader.Json-method-readRecords'>    /**
+<span id='Ext-data-reader-Json-method-readRecords'>    /**
 </span>     * Reads a JSON object and returns a ResultSet. Uses the internal getTotal and getSuccess extractors to
      * retrieve meta data from the response, and extractData to turn the JSON data into model instances.
      * @param {Object} data The raw JSON data
@@ -190,7 +207,7 @@ Ext.define('Ext.data.reader.Json', {
             this.onMetaChange(data.metaData);
         }
 
-<span id='Ext-data.reader.Json-property-jsonData'>        /**
+<span id='Ext-data-reader-Json-property-jsonData'>        /**
 </span>         * DEPRECATED - will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead
          * @property jsonData
          * @type Mixed
@@ -236,7 +253,7 @@ Ext.define('Ext.data.reader.Json', {
         }
     },
     
-<span id='Ext-data.reader.Json-method-extractData'>    /**
+<span id='Ext-data-reader-Json-method-extractData'>    /**
 </span>     * @private
      * We're just preparing the data for the superclass by pulling out the record objects we want. If a {@link #record}
      * was specified we have to pull those out of the larger JSON object, which is most of what this function is doing
@@ -260,7 +277,7 @@ Ext.define('Ext.data.reader.Json', {
         return this.callParent([data]);
     },
 
-<span id='Ext-data.reader.Json-method-createAccessor'>    /**
+<span id='Ext-data-reader-Json-method-createAccessor'>    /**
 </span>     * @private
      * Returns an accessor function for the given property string. Gives support for properties such as the following:
      * 'someProperty'
@@ -289,4 +306,6 @@ Ext.define('Ext.data.reader.Json', {
             };
         };
     }()
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

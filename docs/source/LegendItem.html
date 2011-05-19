@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.LegendItem-method-constructor'><span id='Ext-chart.LegendItem'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-LegendItem-method-constructor'><span id='Ext-chart-LegendItem'>/**
 </span></span> * @class Ext.chart.LegendItem
  * @extends Ext.draw.CompositeSprite
  * A single item of a legend (marker plus label)
@@ -24,7 +41,7 @@ Ext.define('Ext.chart.LegendItem', {
         this.createLegend(config);
     },
 
-<span id='Ext-chart.LegendItem-method-createLegend'>    /**
+<span id='Ext-chart-LegendItem-method-createLegend'>    /**
 </span>     * Creates all the individual sprites for this legend item
      */
     createLegend: function(config) {
@@ -166,7 +183,7 @@ Ext.define('Ext.chart.LegendItem', {
         me.updatePosition({x:0, y:0}); //Relative to 0,0 at first so that the bbox is calculated correctly
     },
 
-<span id='Ext-chart.LegendItem-method-updatePosition'>    /**
+<span id='Ext-chart-LegendItem-method-updatePosition'>    /**
 </span>     * Update the positions of all this item's sprites to match the root position
      * of the legend box.
      * @param {Object} relativeTo (optional) If specified, this object's 'x' and 'y' values will be used
@@ -208,4 +225,6 @@ Ext.define('Ext.chart.LegendItem', {
             }
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

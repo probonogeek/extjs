@@ -68,8 +68,14 @@ Ext.define('Ext.draw.Draw', {
         }
     },
 
+    // To be deprecated, converts itself (an arrayPath) to a proper SVG path string
     path2string: function () {
         return this.join(",").replace(Ext.draw.Draw.pathToStringRE, "$1");
+    },
+
+    // Convert the passed arrayPath to a proper SVG path string (d attribute)
+    pathToString: function(arrayPath) {
+        return arrayPath.join(",").replace(Ext.draw.Draw.pathToStringRE, "$1");
     },
 
     parsePathString: function (pathString) {
@@ -126,10 +132,7 @@ Ext.define('Ext.draw.Draw', {
 
     pathClone: function(pathArray) {
         var res = [],
-            j,
-            jj,
-            i,
-            ii;
+            j, jj, i, ii;
         if (!this.is(pathArray, "array") || !this.is(pathArray && pathArray[0], "array")) { // rough assumption
             pathArray = this.parsePathString(pathArray);
         }
@@ -152,80 +155,93 @@ Ext.define('Ext.draw.Draw', {
             y = 0,
             mx = 0,
             my = 0,
-            start = 0,
-            i,
-            ii,
-            r,
-            pa,
-            j,
-            jj,
-            k,
-            kk;
-        if (pathArray[0][0] == "M") {
+            i = 0,
+            ln = pathArray.length,
+            r, pathSegment, j, ln2;
+        // MoveTo initial x/y position
+        if (ln && pathArray[0][0] == "M") {
             x = +pathArray[0][1];
             y = +pathArray[0][2];
             mx = x;
             my = y;
-            start++;
+            i++;
             res[0] = ["M", x, y];
         }
-        for (i = start, ii = pathArray.length; i < ii; i++) {
+        for (; i < ln; i++) {
             r = res[i] = [];
-            pa = pathArray[i];
-            if (pa[0] != pa[0].toUpperCase()) {
-                r[0] = pa[0].toUpperCase();
+            pathSegment = pathArray[i];
+            if (pathSegment[0] != pathSegment[0].toUpperCase()) {
+                r[0] = pathSegment[0].toUpperCase();
                 switch (r[0]) {
+                    // Elliptical Arc
                     case "A":
-                        r[1] = pa[1];
-                        r[2] = pa[2];
-                        r[3] = pa[3];
-                        r[4] = pa[4];
-                        r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
+                        r[1] = pathSegment[1];
+                        r[2] = pathSegment[2];
+                        r[3] = pathSegment[3];
+                        r[4] = pathSegment[4];
+                        r[5] = pathSegment[5];
+                        r[6] = +(pathSegment[6] + x);
+                        r[7] = +(pathSegment[7] + y);
                         break;
+                    // Vertical LineTo
                     case "V":
-                        r[1] = +pa[1] + y;
+                        r[1] = +pathSegment[1] + y;
                         break;
+                    // Horizontal LineTo
                     case "H":
-                        r[1] = +pa[1] + x;
+                        r[1] = +pathSegment[1] + x;
                         break;
                     case "M":
-                        mx = +pa[1] + x;
-                        my = +pa[2] + y;
+                    // MoveTo
+                        mx = +pathSegment[1] + x;
+                        my = +pathSegment[2] + y;
                     default:
-                        for (j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +pa[j] + ((j % 2) ? x : y);
+                        j = 1;
+                        ln2 = pathSegment.length;
+                        for (; j < ln2; j++) {
+                            r[j] = +pathSegment[j] + ((j % 2) ? x : y);
                         }
                 }
-            } else {
-                for (k = 0, kk = pa.length; k < kk; k++) {
-                    res[i][k] = pa[k];
+            }
+            else {
+                j = 0;
+                ln2 = pathSegment.length;
+                for (; j < ln2; j++) {
+                    res[i][j] = pathSegment[j];
                 }
             }
             switch (r[0]) {
+                // ClosePath
                 case "Z":
                     x = mx;
                     y = my;
                     break;
+                // Horizontal LineTo
                 case "H":
                     x = r[1];
                     break;
+                // Vertical LineTo
                 case "V":
                     y = r[1];
                     break;
+                // MoveTo
                 case "M":
-                    mx = res[i][res[i].length - 2];
-                    my = res[i][res[i].length - 1];
+                    pathSegment = res[i];
+                    ln2 = pathSegment.length;
+                    mx = pathSegment[ln2 - 2];
+                    my = pathSegment[ln2 - 1];
                 default:
-                    x = res[i][res[i].length - 2];
-                    y = res[i][res[i].length - 1];
+                    pathSegment = res[i];
+                    ln2 = pathSegment.length;
+                    x = pathSegment[ln2 - 2];
+                    y = pathSegment[ln2 - 1];
             }
         }
         res.toString = this.path2string;
         return res;
     },
 
+    // TO BE DEPRECATED
     pathToRelative: function (pathArray) {
         if (!this.is(pathArray, "array") || !this.is(pathArray && pathArray[0], "array")) {
             pathArray = this.parsePathString(pathArray);
@@ -301,7 +317,7 @@ Ext.define('Ext.draw.Draw', {
         return res;
     },
 
-    //Returns a path converted to a set of curveto commands
+    // Returns a path converted to a set of curveto commands
     path2curve: function (path) {
         var me = this,
             points = me.pathToAbsolute(path),
@@ -548,27 +564,8 @@ Ext.define('Ext.draw.Draw', {
             return newres;
         }
     },
-    
-    rotatePoint: function (x, y, alpha, cx, cy) {
-        if (!alpha) {
-            return {
-                x: x,
-                y: y
-            };
-        }
-        cx = cx || 0;
-        cy = cy || 0;
-        x = x - cx;
-        y = y - cy;
-        alpha = alpha * this.radian;
-        var cos = Math.cos(alpha),
-            sin = Math.sin(alpha);
-        return {
-            x: x * cos - y * sin + cx,
-            y: x * sin + y * cos + cy
-        };
-    },
 
+    // TO BE DEPRECATED
     rotateAndTranslatePath: function (sprite) {
         var alpha = sprite.rotation.degrees,
             cx = sprite.rotation.x,
@@ -605,7 +602,28 @@ Ext.define('Ext.draw.Draw', {
         }
         return res;
     },
-    
+
+    // TO BE DEPRECATED
+    rotatePoint: function (x, y, alpha, cx, cy) {
+        if (!alpha) {
+            return {
+                x: x,
+                y: y
+            };
+        }
+        cx = cx || 0;
+        cy = cy || 0;
+        x = x - cx;
+        y = y - cy;
+        alpha = alpha * this.radian;
+        var cos = Math.cos(alpha),
+            sin = Math.sin(alpha);
+        return {
+            x: x * cos - y * sin + cx,
+            y: x * sin + y * cos + cy
+        };
+    },
+
     pathDimensions: function (path) {
         if (!path || !(path + "")) {
             return {x: 0, y: 0, width: 0, height: 0};
@@ -615,13 +633,10 @@ Ext.define('Ext.draw.Draw', {
             y = 0,
             X = [],
             Y = [],
-            p,
-            i,
-            ii,
-            xmin,
-            ymin,
-            dim;
-        for (i = 0, ii = path.length; i < ii; i++) {
+            i = 0,
+            ln = path.length,
+            p, xmin, ymin, dim;
+        for (; i < ln; i++) {
             p = path[i];
             if (p[0] == "M") {
                 x = p[1];
@@ -647,42 +662,50 @@ Ext.define('Ext.draw.Draw', {
             height: Math.max.apply(0, Y) - ymin
         };
     },
-    
-    intersect: function(subjectPolygon, clipPolygon) {
-        var cp1, cp2, s, e, point;
-        var inside = function(p) {
-            return (cp2[0]-cp1[0]) * (p[1]-cp1[1]) > (cp2[1]-cp1[1]) * (p[0]-cp1[0]);
-        };
-        var intersection = function() {
-            var p = [];
-            var dcx = cp1[0]-cp2[0],
-                dcy = cp1[1]-cp2[1],
-                dpx = s[0]-e[0],
-                dpy = s[1]-e[1],
-                n1 = cp1[0]*cp2[1] - cp1[1]*cp2[0],
-                n2 = s[0]*e[1] - s[1]*e[0],
-                n3 = 1 / (dcx*dpy - dcy*dpx);
 
-            p[0] = (n1*dpx - n2*dcx) * n3;
-            p[1] = (n1*dpy - n2*dcy) * n3;
-            return p;
-        };
-        var outputList = subjectPolygon;
-        cp1 = clipPolygon[clipPolygon.length -1];
-        for (var i = 0, l = clipPolygon.length; i < l; ++i) {
+    intersectInside: function(path, cp1, cp2) {
+        return (cp2[0] - cp1[0]) * (path[1] - cp1[1]) > (cp2[1] - cp1[1]) * (path[0] - cp1[0]);
+    },
+
+    intersectIntersection: function(s, e, cp1, cp2) {
+        var p = [],
+            dcx = cp1[0] - cp2[0],
+            dcy = cp1[1] - cp2[1],
+            dpx = s[0] - e[0],
+            dpy = s[1] - e[1],
+            n1 = cp1[0] * cp2[1] - cp1[1] * cp2[0],
+            n2 = s[0] * e[1] - s[1] * e[0],
+            n3 = 1 / (dcx * dpy - dcy * dpx);
+
+        p[0] = (n1 * dpx - n2 * dcx) * n3;
+        p[1] = (n1 * dpy - n2 * dcy) * n3;
+        return p;
+    },
+
+    intersect: function(subjectPolygon, clipPolygon) {
+        var me = this,
+            i = 0,
+            ln = clipPolygon.length,
+            cp1 = clipPolygon[ln - 1],
+            outputList = subjectPolygon,
+            cp2, s, e, point, ln2, inputList, j;
+        for (; i < ln; ++i) {
             cp2 = clipPolygon[i];
-            var inputList = outputList;
+            inputList = outputList;
             outputList = [];
-            s = inputList[inputList.length -1];
-            for (var j = 0, ln = inputList.length; j < ln; j++) {
+            s = inputList[inputList.length - 1];
+            j = 0;
+            ln2 = inputList.length;
+            for (; j < ln2; j++) {
                 e = inputList[j];
-                if (inside(e)) {
-                    if (!inside(s)) {
-                        outputList.push(intersection());
+                if (me.intersectInside(e, cp1, cp2)) {
+                    if (!me.intersectInside(s, cp1, cp2)) {
+                        outputList.push(me.intersectIntersection(s, e, cp1, cp2));
                     }
                     outputList.push(e);
-                } else if (inside(s)) {
-                    outputList.push(intersection());
+                }
+                else if (me.intersectInside(s, cp1, cp2)) {
+                    outputList.push(me.intersectIntersection(s, e, cp1, cp2));
                 }
                 s = e;
             }
@@ -690,7 +713,7 @@ Ext.define('Ext.draw.Draw', {
         }
         return outputList;
     },
-    
+
     curveDim: function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
         var a = (c2x - 2 * c1x + p1x) - (p2x - 2 * c2x + c1x),
             b = 2 * (c1x - p1x) - 2 * (c2x - c1x),

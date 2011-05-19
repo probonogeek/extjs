@@ -82,8 +82,8 @@ Ext.define('Ext.grid.feature.Feature', {
      * The method must also return the eventName as the first index of the array
      * to be passed to fireEvent.
      */
-    getFireEventArgs: function(eventName, view, featureTarget) {
-        return [eventName, view, featureTarget];
+    getFireEventArgs: function(eventName, view, featureTarget, e) {
+        return [eventName, view, featureTarget, e];
     },
     
     /**

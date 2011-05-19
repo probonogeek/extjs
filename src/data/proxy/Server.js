@@ -451,6 +451,7 @@ api: {
      * Optional callback function which can be used to clean up after a request has been completed.
      * @param {Ext.data.Request} request The Request object
      * @param {Boolean} success True if the request was successful
+     * @method
      */
     afterRequest: Ext.emptyFn,
     

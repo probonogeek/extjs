@@ -16,8 +16,8 @@ var errors = myModel.validate();
 errors.isValid(); //false
 
 errors.length; //2
-errors.getByField('name');  // [{field: 'name',  error: 'must be present'}]
-errors.getByField('title'); // [{field: 'title', error: 'is too short'}]
+errors.getByField('name');  // [{field: 'name',  message: 'must be present'}]
+errors.getByField('title'); // [{field: 'title', message: 'is too short'}]
 </code></pre>
  */
 Ext.define('Ext.data.Errors', {

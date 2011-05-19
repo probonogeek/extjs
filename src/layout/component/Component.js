@@ -50,13 +50,13 @@ Ext.define('Ext.layout.component.Component', {
             ownerElChild = owner.el.child,
             layoutCollection;
 
-        /**
-        * Do not layout calculatedSized components for fixedLayouts unless the ownerCt == layoutOwner
-        * fixedLayouts means layouts which are never auto/auto in the sizing that comes from their ownerCt.
-        * Currently 3 layouts MAY be auto/auto (Auto, Border, and Box)
-        * The reason for not allowing component layouts is to stop component layouts from things such as Updater and
-        * form Validation.
-        */
+        /*
+         * Do not layout calculatedSized components for fixedLayouts unless the ownerCt == layoutOwner
+         * fixedLayouts means layouts which are never auto/auto in the sizing that comes from their ownerCt.
+         * Currently 3 layouts MAY be auto/auto (Auto, Border, and Box)
+         * The reason for not allowing component layouts is to stop component layouts from things such as Updater and
+         * form Validation.
+         */
         if (!isSetSize && !(Ext.isNumber(width) && Ext.isNumber(height)) && ownerCt && ownerCt.layout && ownerCt.layout.fixedLayout && ownerCt != layoutOwner) {
             me.doContainerLayout();
             return false;

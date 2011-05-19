@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.Number-method-constructor'><span id='Ext-form.field.Number'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Number-method-constructor'><span id='Ext-form-field-Number'>/**
 </span></span> * @class Ext.form.field.Number
  * @extends Ext.form.field.Spinner
 
@@ -98,78 +115,78 @@ Ext.define('Ext.form.field.Number', {
     alias: 'widget.numberfield',
     alternateClassName: ['Ext.form.NumberField', 'Ext.form.Number'],
 
-<span id='Ext-form.field.Number-cfg-stripCharsRe'>    /**
+<span id='Ext-form-field-Number-cfg-stripCharsRe'>    /**
 </span>     * @cfg {RegExp} stripCharsRe @hide
      */
-<span id='Ext-form.field.Number-cfg-maskRe'>    /**
+<span id='Ext-form-field-Number-cfg-maskRe'>    /**
 </span>     * @cfg {RegExp} maskRe @hide
      */
 
-<span id='Ext-form.field.Number-cfg-allowDecimals'>    /**
+<span id='Ext-form-field-Number-cfg-allowDecimals'>    /**
 </span>     * @cfg {Boolean} allowDecimals False to disallow decimal values (defaults to true)
      */
     allowDecimals : true,
 
-<span id='Ext-form.field.Number-cfg-decimalSeparator'>    /**
+<span id='Ext-form-field-Number-cfg-decimalSeparator'>    /**
 </span>     * @cfg {String} decimalSeparator Character(s) to allow as the decimal separator (defaults to '.')
      */
     decimalSeparator : '.',
 
-<span id='Ext-form.field.Number-cfg-decimalPrecision'>    /**
+<span id='Ext-form-field-Number-cfg-decimalPrecision'>    /**
 </span>     * @cfg {Number} decimalPrecision The maximum precision to display after the decimal separator (defaults to 2)
      */
     decimalPrecision : 2,
 
-<span id='Ext-form.field.Number-cfg-minValue'>    /**
+<span id='Ext-form-field-Number-cfg-minValue'>    /**
 </span>     * @cfg {Number} minValue The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by
      * the field's validation logic, and for
      * {@link Ext.form.field.Spinner#setSpinUpEnabled enabling/disabling the down spinner button}.
      */
     minValue: Number.NEGATIVE_INFINITY,
 
-<span id='Ext-form.field.Number-cfg-maxValue'>    /**
+<span id='Ext-form-field-Number-cfg-maxValue'>    /**
 </span>     * @cfg {Number} maxValue The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by
      * the field's validation logic, and for
      * {@link Ext.form.field.Spinner#setSpinUpEnabled enabling/disabling the up spinner button}.
      */
     maxValue: Number.MAX_VALUE,
 
-<span id='Ext-form.field.Number-cfg-step'>    /**
+<span id='Ext-form-field-Number-cfg-step'>    /**
 </span>     * @cfg {Number} step Specifies a numeric interval by which the field's value will be incremented or
      * decremented when the user invokes the spinner. Defaults to &lt;tt&gt;1&lt;/tt&gt;.
      */
     step: 1,
 
-<span id='Ext-form.field.Number-cfg-minText'>    /**
+<span id='Ext-form-field-Number-cfg-minText'>    /**
 </span>     * @cfg {String} minText Error text to display if the minimum value validation fails (defaults to 'The minimum
      * value for this field is {minValue}')
      */
     minText : 'The minimum value for this field is {0}',
 
-<span id='Ext-form.field.Number-cfg-maxText'>    /**
+<span id='Ext-form-field-Number-cfg-maxText'>    /**
 </span>     * @cfg {String} maxText Error text to display if the maximum value validation fails (defaults to 'The maximum
      * value for this field is {maxValue}')
      */
     maxText : 'The maximum value for this field is {0}',
 
-<span id='Ext-form.field.Number-cfg-nanText'>    /**
+<span id='Ext-form-field-Number-cfg-nanText'>    /**
 </span>     * @cfg {String} nanText Error text to display if the value is not a valid number.  For example, this can happen
      * if a valid character like '.' or '-' is left in the field with no number (defaults to '{value} is not a valid number')
      */
     nanText : '{0} is not a valid number',
 
-<span id='Ext-form.field.Number-cfg-negativeText'>    /**
+<span id='Ext-form-field-Number-cfg-negativeText'>    /**
 </span>     * @cfg {String} negativeText Error text to display if the value is negative and {@link #minValue} is set to
      * &lt;tt&gt;0&lt;/tt&gt;. This is used instead of the {@link #minText} in that circumstance only.
      */
     negativeText : 'The value cannot be negative',
 
-<span id='Ext-form.field.Number-cfg-baseChars'>    /**
+<span id='Ext-form-field-Number-cfg-baseChars'>    /**
 </span>     * @cfg {String} baseChars The base set of characters to evaluate as valid numbers (defaults to '0123456789').
      */
     baseChars : '0123456789',
 
-<span id='Ext-form.field.Number-cfg-autoStripChars'>    /**
+<span id='Ext-form-field-Number-cfg-autoStripChars'>    /**
 </span>     * @cfg {Boolean} autoStripChars True to automatically strip not allowed characters from the field. Defaults to &lt;tt&gt;false&lt;/tt&gt;
      */
     autoStripChars: false,
@@ -178,27 +195,29 @@ Ext.define('Ext.form.field.Number', {
         var me = this,
             allowed;
 
-        this.callParent();
+        me.callParent();
 
         me.setMinValue(me.minValue);
         me.setMaxValue(me.maxValue);
 
         // Build regexes for masking and stripping based on the configured options
-        allowed = me.baseChars + '';
-        if (me.allowDecimals) {
-            allowed += me.decimalSeparator;
-        }
-        if (me.minValue &lt; 0) {
-            allowed += '-';
-        }
-        allowed = Ext.String.escapeRegex(allowed);
-        me.maskRe = new RegExp('[' + allowed + ']');
-        if (me.autoStripChars) {
-            me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+        if (me.disableKeyFilter !== true) {
+            allowed = me.baseChars + '';
+            if (me.allowDecimals) {
+                allowed += me.decimalSeparator;
+            }
+            if (me.minValue &lt; 0) {
+                allowed += '-';
+            }
+            allowed = Ext.String.escapeRegex(allowed);
+            me.maskRe = new RegExp('[' + allowed + ']');
+            if (me.autoStripChars) {
+                me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+            }
         }
     },
 
-<span id='Ext-form.field.Number-method-getErrors'>    /**
+<span id='Ext-form-field-Number-method-getErrors'>    /**
 </span>     * Runs all of Number's validations and returns an array of any errors. Note that this first
      * runs Text's validations, so the returned array is an amalgamation of all field errors.
      * The additional validations run test that the value is a number, and that it is within the
@@ -242,7 +261,11 @@ Ext.define('Ext.form.field.Number', {
     },
 
     rawToValue: function(rawValue) {
-        return this.fixPrecision(this.parseValue(rawValue)) || rawValue || null;
+        var value = this.fixPrecision(this.parseValue(rawValue));
+        if (value === null) {
+            value = rawValue || null;
+        }
+        return  value;
     },
 
     valueToRaw: function(value) {
@@ -267,7 +290,7 @@ Ext.define('Ext.form.field.Number', {
         me.setSpinDownEnabled(valueIsNull || value &gt; me.minValue);
     },
 
-<span id='Ext-form.field.Number-method-setMinValue'>    /**
+<span id='Ext-form-field-Number-method-setMinValue'>    /**
 </span>     * Replaces any existing {@link #minValue} with the new value.
      * @param {Number} value The minimum value
      */
@@ -275,7 +298,7 @@ Ext.define('Ext.form.field.Number', {
         this.minValue = Ext.Number.from(value, Number.NEGATIVE_INFINITY);
     },
 
-<span id='Ext-form.field.Number-method-setMaxValue'>    /**
+<span id='Ext-form-field-Number-method-setMaxValue'>    /**
 </span>     * Replaces any existing {@link #maxValue} with the new value.
      * @param {Number} value The maximum value
      */
@@ -289,7 +312,7 @@ Ext.define('Ext.form.field.Number', {
         return isNaN(value) ? null : value;
     },
 
-<span id='Ext-form.field.Number-method-fixPrecision'>    /**
+<span id='Ext-form-field-Number-method-fixPrecision'>    /**
 </span>     * @private
      *
      */
@@ -330,4 +353,6 @@ Ext.define('Ext.form.field.Number', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

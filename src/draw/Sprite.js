@@ -5,7 +5,7 @@
  * A Sprite is an object rendered in a Drawing surface. There are different options and types of sprites.
  * The configuration of a Sprite is an object with the following properties:
  *
- * - **type** - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square'. 
+ * - **type** - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'. 
  * - **width** - (Number) Used in rectangle sprites, the width of the rectangle.
  * - **height** - (Number) Used in rectangle sprites, the height of the rectangle.
  * - **size** - (Number) Used in square sprites, the dimension of the square.
@@ -188,7 +188,7 @@ Ext.define('Ext.draw.Sprite', {
         me.draggable = true;
         //create element if it doesn't exist.
         if (!me.el) {
-            me.surface.createSprite(me);
+            me.surface.createSpriteElement(me);
         }
         me.dd = Ext.create('Ext.draw.SpriteDD', me, Ext.isBoolean(me.draggable) ? null : me.draggable);
         me.on('beforedestroy', me.dd.destroy, me.dd);
@@ -211,6 +211,7 @@ Ext.define('Ext.draw.Sprite', {
             spriteAttrs = me.attr,
             attr, i, translate, translation, rotate, rotation, scale, scaling;
 
+        attrs = Ext.apply({}, attrs);
         for (attr in custom) {
             if (attrs.hasOwnProperty(attr) && typeof custom[attr] == "function") {
                 Ext.apply(attrs, custom[attr].apply(me, [].concat(attrs[attr])));

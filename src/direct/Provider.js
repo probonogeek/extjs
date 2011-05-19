@@ -85,11 +85,13 @@ p.disconnect();
 
     /**
      * Abstract methods for subclasses to implement.
+     * @method
      */
     connect: Ext.emptyFn,
     
     /**
      * Abstract methods for subclasses to implement.
+     * @method
      */
     disconnect: Ext.emptyFn
 });

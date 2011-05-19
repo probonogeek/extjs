@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Inflector'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Inflector'>/**
 </span> * @class Ext.util.Inflector
  * @extends Object
  * &lt;p&gt;General purpose inflector class that {@link #pluralize pluralizes}, {@link #singularize singularizes} and 
@@ -52,7 +69,7 @@ Ext.define('Ext.util.Inflector', {
 
     /* End Definitions */
 
-<span id='Ext-util.Inflector-property-plurals'>    /**
+<span id='Ext-util-Inflector-property-plurals'>    /**
 </span>     * @private
      * The registered plural tuples. Each item in the array should contain two items - the first must be a regular
      * expression that matchers the singular form of a word, the second must be a String that replaces the matched
@@ -83,7 +100,7 @@ Ext.define('Ext.util.Inflector', {
         [(/$/),                       &quot;s&quot;      ]
     ],
     
-<span id='Ext-util.Inflector-property-singulars'>    /**
+<span id='Ext-util-Inflector-property-singulars'>    /**
 </span>     * @private
      * The set of registered singular matchers. Each item in the array should contain two items - the first must be a 
      * regular expression that matches the plural form of a word, the second must be a String that replaces the 
@@ -119,7 +136,7 @@ Ext.define('Ext.util.Inflector', {
       [(/s$/i),                                                            &quot;&quot;       ]
     ],
     
-<span id='Ext-util.Inflector-property-uncountable'>    /**
+<span id='Ext-util-Inflector-property-uncountable'>    /**
 </span>     * @private
      * The registered uncountable words
      * @property uncountable
@@ -141,7 +158,7 @@ Ext.define('Ext.util.Inflector', {
         &quot;means&quot;
     ],
     
-<span id='Ext-util.Inflector-method-singular'>    /**
+<span id='Ext-util-Inflector-method-singular'>    /**
 </span>     * Adds a new singularization rule to the Inflector. See the intro docs for more information
      * @param {RegExp} matcher The matcher regex
      * @param {String} replacer The replacement string, which can reference matches from the matcher argument
@@ -150,7 +167,7 @@ Ext.define('Ext.util.Inflector', {
         this.singulars.unshift([matcher, replacer]);
     },
     
-<span id='Ext-util.Inflector-method-plural'>    /**
+<span id='Ext-util-Inflector-method-plural'>    /**
 </span>     * Adds a new pluralization rule to the Inflector. See the intro docs for more information
      * @param {RegExp} matcher The matcher regex
      * @param {String} replacer The replacement string, which can reference matches from the matcher argument
@@ -159,21 +176,21 @@ Ext.define('Ext.util.Inflector', {
         this.plurals.unshift([matcher, replacer]);
     },
     
-<span id='Ext-util.Inflector-method-clearSingulars'>    /**
+<span id='Ext-util-Inflector-method-clearSingulars'>    /**
 </span>     * Removes all registered singularization rules
      */
     clearSingulars: function() {
         this.singulars = [];
     },
     
-<span id='Ext-util.Inflector-method-clearPlurals'>    /**
+<span id='Ext-util-Inflector-method-clearPlurals'>    /**
 </span>     * Removes all registered pluralization rules
      */
     clearPlurals: function() {
         this.plurals = [];
     },
     
-<span id='Ext-util.Inflector-method-isTransnumeral'>    /**
+<span id='Ext-util-Inflector-method-isTransnumeral'>    /**
 </span>     * Returns true if the given word is transnumeral (the word is its own singular and plural form - e.g. sheep, fish)
      * @param {String} word The word to test
      * @return {Boolean} True if the word is transnumeral
@@ -182,7 +199,7 @@ Ext.define('Ext.util.Inflector', {
         return Ext.Array.indexOf(this.uncountable, word) != -1;
     },
 
-<span id='Ext-util.Inflector-method-pluralize'>    /**
+<span id='Ext-util-Inflector-method-pluralize'>    /**
 </span>     * Returns the pluralized form of a word (e.g. Ext.util.Inflector.pluralize('word') returns 'words')
      * @param {String} word The word to pluralize
      * @return {String} The pluralized form of the word
@@ -208,7 +225,7 @@ Ext.define('Ext.util.Inflector', {
         return word;
     },
     
-<span id='Ext-util.Inflector-method-singularize'>    /**
+<span id='Ext-util-Inflector-method-singularize'>    /**
 </span>     * Returns the singularized form of a word (e.g. Ext.util.Inflector.singularize('words') returns 'word')
      * @param {String} word The word to singularize
      * @return {String} The singularized form of the word
@@ -234,7 +251,7 @@ Ext.define('Ext.util.Inflector', {
         return word;
     },
     
-<span id='Ext-util.Inflector-method-classify'>    /**
+<span id='Ext-util-Inflector-method-classify'>    /**
 </span>     * Returns the correct {@link Ext.data.Model Model} name for a given string. Mostly used internally by the data 
      * package
      * @param {String} word The word to classify
@@ -244,7 +261,7 @@ Ext.define('Ext.util.Inflector', {
         return Ext.String.capitalize(this.singularize(word));
     },
     
-<span id='Ext-util.Inflector-method-ordinalize'>    /**
+<span id='Ext-util-Inflector-method-ordinalize'>    /**
 </span>     * Ordinalizes a given number by adding a prefix such as 'st', 'nd', 'rd' or 'th' based on the last digit of the 
      * number. 21 -&gt; 21st, 22 -&gt; 22nd, 23 -&gt; 23rd, 24 -&gt; 24th etc
      * @param {Number} number The number to ordinalize
@@ -308,4 +325,6 @@ Ext.define('Ext.util.Inflector', {
         this.plural(singular, irregulars[singular]);
         this.singular(irregulars[singular], singular);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

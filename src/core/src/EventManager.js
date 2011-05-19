@@ -480,74 +480,79 @@ Ext.EventManager = {
      * @param {String} ename The event name
      * @param {Function} fn The function to execute
      * @param {Object} scope The scope to execute callback in
-     * @param {Object} o The options
+     * @param {Object} options The options
+     * @return {Function} the wrapper function
      */
     createListenerWrap : function(dom, ename, fn, scope, options) {
         options = !Ext.isObject(options) ? {} : options;
 
-        var f = ['if(!Ext) {return;}'],
-            gen;
-
-        if(options.buffer || options.delay || options.freezeEvent) {
-            f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
-        } else {
-            f.push('e = Ext.EventObject.setEvent(e);');
-        }
-
-        if (options.delegate) {
-            f.push('var t = e.getTarget("' + options.delegate + '", this);');
-            f.push('if(!t) {return;}');
-        } else {
-            f.push('var t = e.target;');
-        }
-
-        if (options.target) {
-            f.push('if(e.target !== options.target) {return;}');
-        }
-
-        if(options.stopEvent) {
-            f.push('e.stopEvent();');
-        } else {
-            if(options.preventDefault) {
-                f.push('e.preventDefault();');
-            }
-            if(options.stopPropagation) {
-                f.push('e.stopPropagation();');
-            }
-        }
-
-        if(options.normalized === false) {
-            f.push('e = e.browserEvent;');
-        }
-
-        if(options.buffer) {
-            f.push('(wrap.task && clearTimeout(wrap.task));');
-            f.push('wrap.task = setTimeout(function(){');
-        }
-
-        if(options.delay) {
-            f.push('wrap.tasks = wrap.tasks || [];');
-            f.push('wrap.tasks.push(setTimeout(function(){');
-        }
-
-        // finally call the actual handler fn
-        f.push('fn.call(scope || dom, e, t, options);');
-
-        if(options.single) {
-            f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
-        }
-
-        if(options.delay) {
-            f.push('}, ' + options.delay + '));');
-        }
-
-        if(options.buffer) {
-            f.push('}, ' + options.buffer + ');');
-        }
-
-        gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+        var f, gen;
 
         return function wrap(e, args) {
+            // Compile the implementation upon first firing
+            if (!gen) {
+                f = ['if(!Ext) {return;}'];
+
+                if(options.buffer || options.delay || options.freezeEvent) {
+                    f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
+                } else {
+                    f.push('e = Ext.EventObject.setEvent(e);');
+                }
+
+                if (options.delegate) {
+                    f.push('var t = e.getTarget("' + options.delegate + '", this);');
+                    f.push('if(!t) {return;}');
+                } else {
+                    f.push('var t = e.target;');
+                }
+
+                if (options.target) {
+                    f.push('if(e.target !== options.target) {return;}');
+                }
+
+                if(options.stopEvent) {
+                    f.push('e.stopEvent();');
+                } else {
+                    if(options.preventDefault) {
+                        f.push('e.preventDefault();');
+                    }
+                    if(options.stopPropagation) {
+                        f.push('e.stopPropagation();');
+                    }
+                }
+
+                if(options.normalized === false) {
+                    f.push('e = e.browserEvent;');
+                }
+
+                if(options.buffer) {
+                    f.push('(wrap.task && clearTimeout(wrap.task));');
+                    f.push('wrap.task = setTimeout(function(){');
+                }
+
+                if(options.delay) {
+                    f.push('wrap.tasks = wrap.tasks || [];');
+                    f.push('wrap.tasks.push(setTimeout(function(){');
+                }
+
+                // finally call the actual handler fn
+                f.push('fn.call(scope || dom, e, t, options);');
+
+                if(options.single) {
+                    f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
+                }
+
+                if(options.delay) {
+                    f.push('}, ' + options.delay + '));');
+                }
+
+                if(options.buffer) {
+                    f.push('}, ' + options.buffer + ');');
+                }
+
+                gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+            }
+
             gen.call(dom, e, options, fn, scope, ename, dom, wrap, args);
         };
     },

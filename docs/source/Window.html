@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-window.Window-method-constructor'><span id='Ext-window.Window'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-window-Window-method-constructor'><span id='Ext-window-Window'>/**
 </span></span> * @class Ext.window.Window
  * @extends Ext.panel.Panel
  * &lt;p&gt;A specialized panel intended for use as an application window.  Windows are floated, {@link #resizable}, and
@@ -39,26 +56,26 @@ Ext.define('Ext.window.Window', {
 
     alias: 'widget.window',
 
-<span id='Ext-window.Window-cfg-x'>    /**
+<span id='Ext-window-Window-cfg-x'>    /**
 </span>     * @cfg {Number} x
      * The X position of the left edge of the window on initial showing. Defaults to centering the Window within
      * the width of the Window's container {@link Ext.core.Element Element) (The Element that the Window is rendered to).
      */
-<span id='Ext-window.Window-cfg-y'>    /**
+<span id='Ext-window-Window-cfg-y'>    /**
 </span>     * @cfg {Number} y
      * The Y position of the top edge of the window on initial showing. Defaults to centering the Window within
      * the height of the Window's container {@link Ext.core.Element Element) (The Element that the Window is rendered to).
      */
-<span id='Ext-window.Window-cfg-modal'>    /**
+<span id='Ext-window-Window-cfg-modal'>    /**
 </span>     * @cfg {Boolean} modal
      * True to make the window modal and mask everything behind it when displayed, false to display it without
      * restricting access to other UI elements (defaults to false).
      */
-<span id='Ext-window.Window-cfg-animateTarget'>    /**
+<span id='Ext-window-Window-cfg-animateTarget'>    /**
 </span>     * @cfg {String/Element} animateTarget
      * Id or element from which the window should animate while opening (defaults to null with no animation).
      */
-<span id='Ext-window.Window-cfg-defaultFocus'>    /**
+<span id='Ext-window-Window-cfg-defaultFocus'>    /**
 </span>     * @cfg {String/Number/Component} defaultFocus
      * &lt;p&gt;Specifies a Component to receive focus when this Window is focused.&lt;/p&gt;
      * &lt;p&gt;This may be one of:&lt;/p&gt;&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -67,31 +84,31 @@ Ext.define('Ext.window.Window', {
      * &lt;li&gt;A Component.&lt;/li&gt;
      * &lt;/ul&gt;&lt;/div&gt;
      */
-<span id='Ext-window.Window-cfg-onEsc'>    /**
+<span id='Ext-window-Window-cfg-onEsc'>    /**
 </span>     * @cfg {Function} onEsc
      * Allows override of the built-in processing for the escape key. Default action
      * is to close the Window (performing whatever action is specified in {@link #closeAction}.
      * To prevent the Window closing when the escape key is pressed, specify this as
      * Ext.emptyFn (See {@link Ext#emptyFn Ext.emptyFn}).
      */
-<span id='Ext-window.Window-cfg-collapsed'>    /**
+<span id='Ext-window-Window-cfg-collapsed'>    /**
 </span>     * @cfg {Boolean} collapsed
      * True to render the window collapsed, false to render it expanded (defaults to false). Note that if
      * {@link #expandOnShow} is true (the default) it will override the &lt;code&gt;collapsed&lt;/code&gt; config and the window
      * will always be expanded when shown.
      */
-<span id='Ext-window.Window-cfg-maximized'>    /**
+<span id='Ext-window-Window-cfg-maximized'>    /**
 </span>     * @cfg {Boolean} maximized
      * True to initially display the window in a maximized state. (Defaults to false).
      */
 
-<span id='Ext-window.Window-cfg-baseCls'>    /**
+<span id='Ext-window-Window-cfg-baseCls'>    /**
 </span>    * @cfg {String} baseCls
     * The base CSS class to apply to this panel's element (defaults to 'x-window').
     */
     baseCls: Ext.baseCSSPrefix + 'window',
 
-<span id='Ext-window.Window-cfg-resizable'>    /**
+<span id='Ext-window-Window-cfg-resizable'>    /**
 </span>     * @cfg {Mixed} resizable
      * &lt;p&gt;Specify as &lt;code&gt;true&lt;/code&gt; to allow user resizing at each edge and corner of the window, false to disable
      * resizing (defaults to true).&lt;/p&gt;
@@ -99,7 +116,7 @@ Ext.define('Ext.window.Window', {
      */
     resizable: true,
 
-<span id='Ext-window.Window-cfg-draggable'>    /**
+<span id='Ext-window-Window-cfg-draggable'>    /**
 </span>     * @cfg {Boolean} draggable
      * &lt;p&gt;True to allow the window to be dragged by the header bar, false to disable dragging (defaults to true).  Note
      * that by default the window will be centered in the viewport, so if dragging is disabled the window may need
@@ -107,7 +124,7 @@ Ext.define('Ext.window.Window', {
      */
     draggable: true,
 
-<span id='Ext-window.Window-cfg-constrain'>    /**
+<span id='Ext-window-Window-cfg-constrain'>    /**
 </span>     * @cfg {Boolean} constrain
      * True to constrain the window within its containing element, false to allow it to fall outside of its
      * containing element. By default the window will be rendered to document.body.  To render and constrain the
@@ -116,7 +133,7 @@ Ext.define('Ext.window.Window', {
      */
     constrain: false,
 
-<span id='Ext-window.Window-cfg-constrainHeader'>    /**
+<span id='Ext-window-Window-cfg-constrainHeader'>    /**
 </span>     * @cfg {Boolean} constrainHeader
      * True to constrain the window header within its containing element (allowing the window body to fall outside
      * of its containing element) or false to allow the header to fall outside its containing element (defaults to
@@ -124,7 +141,7 @@ Ext.define('Ext.window.Window', {
      */
     constrainHeader: false,
 
-<span id='Ext-window.Window-cfg-plain'>    /**
+<span id='Ext-window-Window-cfg-plain'>    /**
 </span>     * @cfg {Boolean} plain
      * True to render the window body with a transparent background so that it will blend into the framing
      * elements, false to add a lighter background color to visually highlight the body element and separate it
@@ -132,7 +149,7 @@ Ext.define('Ext.window.Window', {
      */
     plain: false,
 
-<span id='Ext-window.Window-cfg-minimizable'>    /**
+<span id='Ext-window-Window-cfg-minimizable'>    /**
 </span>     * @cfg {Boolean} minimizable
      * True to display the 'minimize' tool button and allow the user to minimize the window, false to hide the button
      * and disallow minimizing the window (defaults to false).  Note that this button provides no implementation --
@@ -141,7 +158,7 @@ Ext.define('Ext.window.Window', {
      */
     minimizable: false,
 
-<span id='Ext-window.Window-cfg-maximizable'>    /**
+<span id='Ext-window-Window-cfg-maximizable'>    /**
 </span>     * @cfg {Boolean} maximizable
      * True to display the 'maximize' tool button and allow the user to maximize the window, false to hide the button
      * and disallow maximizing the window (defaults to false).  Note that when a window is maximized, the tool button
@@ -156,7 +173,7 @@ Ext.define('Ext.window.Window', {
     // inherit docs
     minWidth: 200,
 
-<span id='Ext-window.Window-cfg-expandOnShow'>    /**
+<span id='Ext-window-Window-cfg-expandOnShow'>    /**
 </span>     * @cfg {Boolean} expandOnShow
      * True to always expand the window when it is displayed, false to keep it in its current state (which may be
      * {@link #collapsed}) when displayed (defaults to true).
@@ -166,7 +183,7 @@ Ext.define('Ext.window.Window', {
     // inherited docs, same default
     collapsible: false,
 
-<span id='Ext-window.Window-cfg-closable'>    /**
+<span id='Ext-window-Window-cfg-closable'>    /**
 </span>     * @cfg {Boolean} closable
      * &lt;p&gt;True to display the 'close' tool button and allow the user to close the window, false to
      * hide the button and disallow closing the window (defaults to &lt;code&gt;true&lt;/code&gt;).&lt;/p&gt;
@@ -179,7 +196,7 @@ Ext.define('Ext.window.Window', {
      */
     closable: true,
 
-<span id='Ext-window.Window-cfg-hidden'>    /**
+<span id='Ext-window-Window-cfg-hidden'>    /**
 </span>     * @cfg {Boolean} hidden
      * Render this Window hidden (default is &lt;code&gt;true&lt;/code&gt;). If &lt;code&gt;true&lt;/code&gt;, the
      * {@link #hide} method will be called internally.
@@ -192,7 +209,7 @@ Ext.define('Ext.window.Window', {
     // Inherit docs from Component. Windows hide using visibility.
     hideMode: 'visibility',
 
-<span id='Ext-window.Window-cfg-floating'>    /** @cfg {Boolean} floating @hide Windows are always floating*/
+<span id='Ext-window-Window-cfg-floating'>    /** @cfg {Boolean} floating @hide Windows are always floating*/
 </span>    floating: true,
 
     ariaRole: 'alertdialog',
@@ -208,17 +225,17 @@ Ext.define('Ext.window.Window', {
         var me = this;
         me.callParent();
         me.addEvents(
-<span id='Ext-window.Window-event-activate'>            /**
+<span id='Ext-window-Window-event-activate'>            /**
 </span>             * @event activate
              * Fires after the window has been visually activated via {@link #setActive}.
              * @param {Ext.window.Window} this
              */
-<span id='Ext-window.Window-event-deactivate'>            /**
+<span id='Ext-window-Window-event-deactivate'>            /**
 </span>             * @event deactivate
              * Fires after the window has been visually deactivated via {@link #setActive}.
              * @param {Ext.window.Window} this
              */
-<span id='Ext-window.Window-event-resize'>            /**
+<span id='Ext-window-Window-event-resize'>            /**
 </span>             * @event resize
              * Fires after the window has been resized.
              * @param {Ext.window.Window} this
@@ -226,19 +243,19 @@ Ext.define('Ext.window.Window', {
              * @param {Number} height The window's new height
              */
             'resize',
-<span id='Ext-window.Window-event-maximize'>            /**
+<span id='Ext-window-Window-event-maximize'>            /**
 </span>             * @event maximize
              * Fires after the window has been maximized.
              * @param {Ext.window.Window} this
              */
             'maximize',
-<span id='Ext-window.Window-event-minimize'>            /**
+<span id='Ext-window-Window-event-minimize'>            /**
 </span>             * @event minimize
              * Fires after the window has been minimized.
              * @param {Ext.window.Window} this
              */
             'minimize',
-<span id='Ext-window.Window-event-restore'>            /**
+<span id='Ext-window-Window-event-restore'>            /**
 </span>             * @event restore
              * Fires after the window has been restored to its original size after being maximized.
              * @param {Ext.window.Window} this
@@ -353,11 +370,19 @@ Ext.define('Ext.window.Window', {
         if (me.closable) {
             keyMap = me.getKeyMap();
             keyMap.on(27, me.onEsc, me);
-            keyMap.disable();
+
+            //if (hidden) { ? would be consistent w/before/afterShow...
+                keyMap.disable();
+            //}
+        }
+
+        if (!hidden) {
+            me.syncMonitorWindowResize();
+            me.doConstrain();
         }
     },
 
-<span id='Ext-window.Window-method-initDraggable'>    /**
+<span id='Ext-window-Window-method-initDraggable'>    /**
 </span>     * @private
      * @override
      * Override Component.initDraggable.
@@ -370,33 +395,40 @@ Ext.define('Ext.window.Window', {
         if (!me.header) {
             me.updateHeader(true);
         }
-
-        ddConfig = Ext.applyIf({
-            el: me.el,
-            delegate: '#' + me.header.id
-        }, me.draggable);
-
-        // Add extra configs if Window is specified to be constrained
-        if (me.constrain || me.constrainHeader) {
-            ddConfig.constrain = me.constrain;
-            ddConfig.constrainDelegate = me.constrainHeader;
-            ddConfig.constrainTo = me.constrainTo || me.container;
-        }
-
-<span id='Ext-window.Window-property-dd'>        /**
-</span>         * &lt;p&gt;If this Window is configured {@link #draggable}, this property will contain
-         * an instance of {@link Ext.util.ComponentDragger} (A subclass of {@link Ext.dd.DragTracker DragTracker})
-         * which handles dragging the Window's DOM Element, and constraining according to the {@link #constrain}
-         * and {@link #constrainHeader} .&lt;/p&gt;
-         * &lt;p&gt;This has implementations of &lt;code&gt;onBeforeStart&lt;/code&gt;, &lt;code&gt;onDrag&lt;/code&gt; and &lt;code&gt;onEnd&lt;/code&gt;
-         * which perform the dragging action. If extra logic is needed at these points, use
-         * {@link Ext.Function#createInterceptor createInterceptor} or {@link Ext.Function#createSequence createSequence} to
-         * augment the existing implementations.&lt;/p&gt;
-         * @type Ext.util.ComponentDragger
-         * @property dd
+        
+        /*
+         * Check the header here again. If for whatever reason it wasn't created in
+         * updateHeader (preventHeader) then we'll just ignore the rest since the
+         * header acts as the drag handle.
          */
-        me.dd = Ext.create('Ext.util.ComponentDragger', this, ddConfig);
-        me.relayEvents(me.dd, ['dragstart', 'drag', 'dragend']);
+        if (me.header) {
+            ddConfig = Ext.applyIf({
+                el: me.el,
+                delegate: '#' + me.header.id
+            }, me.draggable);
+
+            // Add extra configs if Window is specified to be constrained
+            if (me.constrain || me.constrainHeader) {
+                ddConfig.constrain = me.constrain;
+                ddConfig.constrainDelegate = me.constrainHeader;
+                ddConfig.constrainTo = me.constrainTo || me.container;
+            }
+
+<span id='Ext-window-Window-property-dd'>            /**
+</span>             * &lt;p&gt;If this Window is configured {@link #draggable}, this property will contain
+             * an instance of {@link Ext.util.ComponentDragger} (A subclass of {@link Ext.dd.DragTracker DragTracker})
+             * which handles dragging the Window's DOM Element, and constraining according to the {@link #constrain}
+             * and {@link #constrainHeader} .&lt;/p&gt;
+             * &lt;p&gt;This has implementations of &lt;code&gt;onBeforeStart&lt;/code&gt;, &lt;code&gt;onDrag&lt;/code&gt; and &lt;code&gt;onEnd&lt;/code&gt;
+             * which perform the dragging action. If extra logic is needed at these points, use
+             * {@link Ext.Function#createInterceptor createInterceptor} or {@link Ext.Function#createSequence createSequence} to
+             * augment the existing implementations.&lt;/p&gt;
+             * @type Ext.util.ComponentDragger
+             * @property dd
+             */
+            me.dd = Ext.create('Ext.util.ComponentDragger', this, ddConfig);
+            me.relayEvents(me.dd, ['dragstart', 'drag', 'dragend']);
+        }
     },
 
     // private
@@ -418,7 +450,7 @@ Ext.define('Ext.window.Window', {
         me.callParent();
     },
 
-<span id='Ext-window.Window-method-addTools'>    /**
+<span id='Ext-window-Window-method-addTools'>    /**
 </span>     * @private
      * @override
      * Contribute class-specific tools to the header.
@@ -449,7 +481,7 @@ Ext.define('Ext.window.Window', {
         }
     },
 
-<span id='Ext-window.Window-method-getFocusEl'>    /**
+<span id='Ext-window-Window-method-getFocusEl'>    /**
 </span>     * Gets the configured default focus item.  If a {@link #defaultFocus} is set, it will receive focus, otherwise the
      * Container itself will receive focus.
      */
@@ -485,8 +517,17 @@ Ext.define('Ext.window.Window', {
     // private
     afterShow: function(animateTarget) {
         var me = this,
-            size;
+            animating = animateTarget || me.animateTarget;
 
+        
+        if (animating) {
+            /*
+             * If we're animating, constrain the positioning before calling the
+             * superclass, otherwise we'll be animating to the unconstrained
+             * window position.
+             */
+            me.doConstrain();
+        }
         // Perform superclass's afterShow tasks
         // Which might include animating a proxy from an animTarget
         me.callParent(arguments);
@@ -495,10 +536,11 @@ Ext.define('Ext.window.Window', {
             me.fitContainer();
         }
 
-        if (me.monitorResize || me.constrain || me.constrainHeader) {
-            Ext.EventManager.onWindowResize(me.onWindowResize, me);
+        me.syncMonitorWindowResize();
+        if (!animating) {
+            me.doConstrain();
         }
-        me.doConstrain();
+
         if (me.keyMap) {
             me.keyMap.enable();
         }
@@ -523,9 +565,7 @@ Ext.define('Ext.window.Window', {
         var me = this;
 
         // No longer subscribe to resizing now that we're hidden
-        if (me.monitorResize || me.constrain || me.constrainHeader) {
-            Ext.EventManager.removeResizeListener(me.onWindowResize, me);
-        }
+        me.syncMonitorWindowResize();
 
         // Turn off keyboard handling once window is hidden
         if (me.keyMap) {
@@ -544,7 +584,7 @@ Ext.define('Ext.window.Window', {
         this.doConstrain();
     },
 
-<span id='Ext-window.Window-method-minimize'>    /**
+<span id='Ext-window-Window-method-minimize'>    /**
 </span>     * Placeholder method for minimizing the window.  By default, this method simply fires the {@link #minimize} event
      * since the behavior of minimizing a window is application-specific.  To implement custom minimize behavior,
      * either the minimize event can be handled or this method can be overridden.
@@ -582,7 +622,7 @@ Ext.define('Ext.window.Window', {
         me.callParent(arguments);
     },
 
-<span id='Ext-window.Window-method-maximize'>    /**
+<span id='Ext-window-Window-method-maximize'>    /**
 </span>     * Fits the window within its current container and automatically replaces
      * the {@link #maximizable 'maximize' tool button} with the 'restore' tool button.
      * Also see {@link #toggleMaximize}.
@@ -613,6 +653,7 @@ Ext.define('Ext.window.Window', {
             me.el.addCls(Ext.baseCSSPrefix + 'window-maximized');
             me.container.addCls(Ext.baseCSSPrefix + 'window-maximized-ct');
 
+            me.syncMonitorWindowResize();
             me.setPosition(0, 0);
             me.fitContainer();
             me.fireEvent('maximize', me);
@@ -620,7 +661,7 @@ Ext.define('Ext.window.Window', {
         return me;
     },
 
-<span id='Ext-window.Window-method-restore'>    /**
+<span id='Ext-window-Window-method-restore'>    /**
 </span>     * Restores a {@link #maximizable maximized}  window back to its original
      * size and position prior to being maximized and also replaces
      * the 'restore' tool button with the 'maximize' tool button.
@@ -665,13 +706,41 @@ Ext.define('Ext.window.Window', {
 
             me.container.removeCls(Ext.baseCSSPrefix + 'window-maximized-ct');
 
+            me.syncMonitorWindowResize();
             me.doConstrain();
             me.fireEvent('restore', me);
         }
         return me;
     },
 
-<span id='Ext-window.Window-method-toggleMaximize'>    /**
+<span id='Ext-window-Window-method-syncMonitorWindowResize'>    /**
+</span>     * Synchronizes the presence of our listener for window resize events. This method
+     * should be called whenever this status might change.
+     * @private
+     */
+    syncMonitorWindowResize: function () {
+        var me = this,
+            currentlyMonitoring = me._monitoringResize,
+            // all the states where we should be listening to window resize:
+            yes = me.monitorResize || me.constrain || me.constrainHeader || me.maximized,
+            // all the states where we veto this:
+            veto = me.hidden || me.destroying || me.isDestroyed;
+
+        if (yes &amp;&amp; !veto) {
+            // we should be listening...
+            if (!currentlyMonitoring) {
+                // but we aren't, so set it up
+                Ext.EventManager.onWindowResize(me.onWindowResize, me);
+                me._monitoringResize = true;
+            }
+        } else if (currentlyMonitoring) {
+            // we should not be listening, but we are, so tear it down
+            Ext.EventManager.removeResizeListener(me.onWindowResize, me);
+            me._monitoringResize = false;
+        }
+    },
+
+<span id='Ext-window-Window-method-toggleMaximize'>    /**
 </span>     * A shortcut method for toggling between {@link #maximize} and {@link #restore} based on the current maximized
      * state of the window.
      * @return {Ext.window.Window} this
@@ -680,9 +749,11 @@ Ext.define('Ext.window.Window', {
         return this[this.maximized ? 'restore': 'maximize']();
     }
 
-<span id='Ext-window.Window-cfg-autoWidth'>    /**
+<span id='Ext-window-Window-cfg-autoWidth'>    /**
 </span>     * @cfg {Boolean} autoWidth @hide
      * Absolute positioned element and therefore cannot support autoWidth.
      * A width is a required configuration.
      **/
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

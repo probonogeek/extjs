@@ -23,12 +23,14 @@ Ext.define('Ext.AbstractPlugin', {
     /**
      * The init method is invoked after initComponent has been run for the
      * component which we are injecting the plugin into.
+     * @method
      */
     init: Ext.emptyFn,
 
     /**
      * The destroy method is invoked by the owning Component at the time the Component is being destroyed.
      * Use this method to clean up an resources.
+     * @method
      */
     destroy: Ext.emptyFn,
 

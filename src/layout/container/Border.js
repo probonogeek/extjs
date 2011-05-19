@@ -102,6 +102,7 @@ Ext.define('Ext.layout.container.Border', {
         }
 
         // Delegate this operation to the shadow "V" or "H" box layout, and then down to any embedded layout.
+        me.fixHeightConstraints();
         me.shadowLayout.onLayout();
         if (me.embeddedContainer) {
             me.embeddedContainer.layout.onLayout();
@@ -319,6 +320,17 @@ Ext.define('Ext.layout.container.Border', {
                     me.splitters.west.ownerCt = me.embeddedContainer;
                 }
 
+                // These spliiters need to be constrained by components one-level below
+                // the component in their vobx. We update the min/maxHeight on the helper
+                // (embeddedContainer) prior to starting the split/drag. This has to be
+                // done on-the-fly to allow min/maxHeight of the E/C/W regions to be set
+                // dynamically.
+                Ext.each([me.splitters.north, me.splitters.south], function (splitter) {
+                    if (splitter) {
+                        splitter.on('beforedragstart', me.fixHeightConstraints, me);
+                    }
+                });
+
                 // The east or west region wanted a percentage
                 if (horizontalFlex) {
                     regions.center.flex -= horizontalFlex;
@@ -376,7 +388,6 @@ Ext.define('Ext.layout.container.Border', {
 
         me.borderLayoutInitialized = true;
     },
-
 
     setupState: function(comp){
         var getState = comp.getState;
@@ -439,6 +450,30 @@ Ext.define('Ext.layout.container.Border', {
             scope: me
         });
         return resizer;
+    },
+
+    // Private
+    // Propogates the min/maxHeight values from the inner hbox items to its container.
+    fixHeightConstraints: function () {
+        var me = this,
+            ct = me.embeddedContainer,
+            maxHeight = 1e99, minHeight = -1;
+
+        if (!ct) {
+            return;
+        }
+
+        ct.items.each(function (item) {
+            if (Ext.isNumber(item.maxHeight)) {
+                maxHeight = Math.max(maxHeight, item.maxHeight);
+            }
+            if (Ext.isNumber(item.minHeight)) {
+                minHeight = Math.max(minHeight, item.minHeight);
+            }
+        });
+
+        ct.maxHeight = maxHeight;
+        ct.minHeight = minHeight;
     },
 
     // Hide/show a region's associated splitter when the region is hidden/shown
@@ -521,13 +556,15 @@ Ext.define('Ext.layout.container.Border', {
                 if ((Ext.isIE6 || Ext.isIE7 || (Ext.isIEQuirks)) && !horiz) {
                     placeholder.width = 25;
                 }
-                placeholder[horiz ? 'tools' : 'items'] = [{
-                    xtype: 'tool',
-                    client: comp,
-                    type: 'expand-' + oppositeDirection,
-                    handler: me.onPlaceHolderToolClick,
-                    scope: me
-                }];
+                if (!comp.hideCollapseTool) {
+                    placeholder[horiz ? 'tools' : 'items'] = [{
+                        xtype: 'tool',
+                        client: comp,
+                        type: 'expand-' + oppositeDirection,
+                        handler: me.onPlaceHolderToolClick,
+                        scope: me
+                    }];
+                }
             }
             placeholder = me.owner.createComponent(placeholder);
             if (comp.isXType('panel')) {
@@ -591,12 +628,11 @@ Ext.define('Ext.layout.container.Border', {
     onBeforeRegionCollapse: function(comp, direction, animate) {
         var me = this,
             compEl = comp.el,
+            width,
             miniCollapse = comp.collapseMode == 'mini',
             shadowContainer = comp.shadowOwnerCt,
             shadowLayout = shadowContainer.layout,
             placeholder = comp.placeholder,
-            placeholderBox,
-            targetSize = shadowLayout.getLayoutTargetSize(),
             sl = me.owner.suspendLayout,
             scsl = shadowContainer.suspendLayout,
             isNorthOrWest = (comp.region == 'north' || comp.region == 'west'); // Flag to keep the placeholder non-adjacent to any Splitter
@@ -639,11 +675,21 @@ Ext.define('Ext.layout.container.Border', {
 
         if (!placeholder.rendered) {
             shadowLayout.renderItem(placeholder, shadowLayout.innerCt);
+
+            // The inserted placeholder does not have the proper size, so copy the width
+            // for N/S or the height for E/W from the component. This fixes EXTJSIV-1562
+            // without recursive layouts. This is only an issue initially. After this time,
+            // placeholder will have the correct width/height set by the layout (which has
+            // already happened when we get here initially).
+            if (comp.region == 'north' || comp.region == 'south') {
+                placeholder.setCalculatedSize(comp.getWidth());
+            } else {
+                placeholder.setCalculatedSize(undefined, comp.getHeight());
+            }
         }
 
         // Jobs to be done after the collapse has been done
         function afterCollapse() {
-
             // Reinstate automatic laying out.
             me.owner.suspendLayout = sl;
             shadowContainer.suspendLayout = scsl;
@@ -695,11 +741,6 @@ Ext.define('Ext.layout.container.Border', {
             compEl.setLeftTop(-10000, -10000);
             shadowLayout.layout();
             afterCollapse();
-
-            // Horrible workaround for https://sencha.jira.com/browse/EXTJSIV-1562
-            if (Ext.isIE) {
-                placeholder.setCalculatedSize(placeholder.el.getWidth());
-            }
         }
 
         return false;

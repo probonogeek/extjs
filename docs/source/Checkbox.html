@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.Checkbox-method-constructor'><span id='Ext-form.field.Checkbox'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Checkbox-method-constructor'><span id='Ext-form-field-Checkbox'>/**
 </span></span> * @class Ext.form.field.Checkbox
  * @extends Ext.form.field.Base
 
@@ -71,7 +88,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(true);
                     checkbox2.setValue(true);
                     checkbox3.setValue(true);
@@ -83,7 +100,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(false);
                     checkbox2.setValue(false);
                     checkbox3.setValue(false);
@@ -127,62 +144,62 @@ Ext.define('Ext.form.field.Checkbox', {
 
     isCheckbox: true,
 
-<span id='Ext-form.field.Checkbox-cfg-focusCls'>    /**
+<span id='Ext-form-field-Checkbox-cfg-focusCls'>    /**
 </span>     * @cfg {String} focusCls The CSS class to use when the checkbox receives focus
      * (defaults to &lt;tt&gt;'x-form-cb-focus'&lt;/tt&gt;)
      */
     focusCls: Ext.baseCSSPrefix + 'form-cb-focus',
 
-<span id='Ext-form.field.Checkbox-cfg-fieldCls'>    /**
+<span id='Ext-form-field-Checkbox-cfg-fieldCls'>    /**
 </span>     * @cfg {String} fieldCls The default CSS class for the checkbox (defaults to &lt;tt&gt;'x-form-field'&lt;/tt&gt;)
      */
 
-<span id='Ext-form.field.Checkbox-cfg-fieldBodyCls'>    /**
+<span id='Ext-form-field-Checkbox-cfg-fieldBodyCls'>    /**
 </span>     * @cfg {String} fieldBodyCls
      * An extra CSS class to be applied to the body content element in addition to {@link #fieldBodyCls}.
      * Defaults to 'x-form-cb-wrap.
      */
     fieldBodyCls: Ext.baseCSSPrefix + 'form-cb-wrap',
 
-<span id='Ext-form.field.Checkbox-cfg-checked'>    /**
+<span id='Ext-form-field-Checkbox-cfg-checked'>    /**
 </span>     * @cfg {Boolean} checked &lt;tt&gt;true&lt;/tt&gt; if the checkbox should render initially checked (defaults to &lt;tt&gt;false&lt;/tt&gt;)
      */
     checked: false,
 
-<span id='Ext-form.field.Checkbox-cfg-checkedCls'>    /**
+<span id='Ext-form-field-Checkbox-cfg-checkedCls'>    /**
 </span>     * @cfg {String} checkedCls The CSS class added to the component's main element when it is in the checked state.
      */
     checkedCls: Ext.baseCSSPrefix + 'form-cb-checked',
 
-<span id='Ext-form.field.Checkbox-cfg-boxLabel'>    /**
+<span id='Ext-form-field-Checkbox-cfg-boxLabel'>    /**
 </span>     * @cfg {String} boxLabel An optional text label that will appear next to the checkbox. Whether it appears before
      * or after the checkbox is determined by the {@link #boxLabelAlign} config (defaults to after).
      */
 
-<span id='Ext-form.field.Checkbox-cfg-boxLabelCls'>    /**
+<span id='Ext-form-field-Checkbox-cfg-boxLabelCls'>    /**
 </span>     * @cfg {String} boxLabelCls The CSS class to be applied to the {@link #boxLabel} element
      */
     boxLabelCls: Ext.baseCSSPrefix + 'form-cb-label',
 
-<span id='Ext-form.field.Checkbox-cfg-boxLabelAlign'>    /**
+<span id='Ext-form-field-Checkbox-cfg-boxLabelAlign'>    /**
 </span>     * @cfg {String} boxLabelAlign The position relative to the checkbox where the {@link #boxLabel} should
      * appear. Recognized values are &lt;tt&gt;'before'&lt;/tt&gt; and &lt;tt&gt;'after'&lt;/tt&gt;. Defaults to &lt;tt&gt;'after'&lt;/tt&gt;.
      */
     boxLabelAlign: 'after',
 
-<span id='Ext-form.field.Checkbox-cfg-inputValue'>    /**
+<span id='Ext-form-field-Checkbox-cfg-inputValue'>    /**
 </span>     * @cfg {String} inputValue The value that should go into the generated input element's value attribute and
      * should be used as the parameter value when submitting as part of a form. Defaults to &lt;tt&gt;&quot;on&quot;&lt;/tt&gt;.
      */
     inputValue: 'on',
 
-<span id='Ext-form.field.Checkbox-cfg-uncheckedValue'>    /**
+<span id='Ext-form-field-Checkbox-cfg-uncheckedValue'>    /**
 </span>     * @cfg {String} uncheckedValue If configured, this will be submitted as the checkbox's value during form
      * submit if the checkbox is unchecked. By default this is undefined, which results in nothing being
      * submitted for the checkbox field when the form is submitted (the default behavior of HTML checkboxes).
      */
 
-<span id='Ext-form.field.Checkbox-cfg-handler'>    /**
+<span id='Ext-form-field-Checkbox-cfg-handler'>    /**
 </span>     * @cfg {Function} handler A function called when the {@link #checked} value changes (can be used instead of
      * handling the {@link #change change event}). The handler is passed the following parameters:
      * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -191,7 +208,7 @@ Ext.define('Ext.form.field.Checkbox', {
      * &lt;/ul&gt;&lt;/div&gt;
      */
 
-<span id='Ext-form.field.Checkbox-cfg-scope'>    /**
+<span id='Ext-form-field-Checkbox-cfg-scope'>    /**
 </span>     * @cfg {Object} scope An object to use as the scope ('this' reference) of the {@link #handler} function
      * (defaults to this Checkbox).
      */
@@ -213,7 +230,7 @@ Ext.define('Ext.form.field.Checkbox', {
         var me = this,
             checked = !!me.checked;
 
-<span id='Ext-form.field.Checkbox-property-originalValue'>        /**
+<span id='Ext-form-field-Checkbox-property-originalValue'>        /**
 </span>         * The original value of the field as configured in the {@link #checked} configuration, or
          * as loaded by the last form load operation if the form's {@link Ext.form.Basic#trackResetOnLoad trackResetOnLoad}
          * setting is &lt;code&gt;true&lt;/code&gt;.
@@ -230,7 +247,7 @@ Ext.define('Ext.form.field.Checkbox', {
     onRender : function(ct, position) {
         var me = this;
         Ext.applyIf(me.renderSelectors, {
-<span id='Ext-form.field.Checkbox-property-boxLabelEl'>            /**
+<span id='Ext-form-field-Checkbox-property-boxLabelEl'>            /**
 </span>             * @property boxLabelEl
              * @type Ext.core.Element
              * A reference to the label element created for the {@link #boxLabel}. Only present if the
@@ -253,7 +270,7 @@ Ext.define('Ext.form.field.Checkbox', {
         me.mon(me.inputEl, 'click', me.onBoxClick, me);
     },
 
-<span id='Ext-form.field.Checkbox-method-onBoxClick'>    /**
+<span id='Ext-form-field-Checkbox-method-onBoxClick'>    /**
 </span>     * @private Handle click on the checkbox button
      */
     onBoxClick: function(e) {
@@ -263,7 +280,7 @@ Ext.define('Ext.form.field.Checkbox', {
         }
     },
 
-<span id='Ext-form.field.Checkbox-method-getRawValue'>    /**
+<span id='Ext-form-field-Checkbox-method-getRawValue'>    /**
 </span>     * Returns the checked state of the checkbox.
      * @return {Boolean} True if checked, else false
      */
@@ -271,7 +288,7 @@ Ext.define('Ext.form.field.Checkbox', {
         return this.checked;
     },
 
-<span id='Ext-form.field.Checkbox-method-getValue'>    /**
+<span id='Ext-form-field-Checkbox-method-getValue'>    /**
 </span>     * Returns the checked state of the checkbox.
      * @return {Boolean} True if checked, else false
      */
@@ -279,19 +296,17 @@ Ext.define('Ext.form.field.Checkbox', {
         return this.checked;
     },
 
-<span id='Ext-form.field.Checkbox-method-getSubmitValue'>    /**
+<span id='Ext-form-field-Checkbox-method-getSubmitValue'>    /**
 </span>     * Returns the submit value for the checkbox which can be used when submitting forms.
      * @return {Boolean/null} True if checked; otherwise either the {@link #uncheckedValue} or null.
      */
     getSubmitValue: function() {
-        return this.checked ? this.inputValue : (this.uncheckedValue || null);
+        var unchecked = this.uncheckedValue,
+            uncheckedVal = Ext.isDefined(unchecked) ? unchecked : null;
+        return this.checked ? this.inputValue : unchecked;
     },
 
-    getModelData: function() {
-        return this.getSubmitData();
-    },
-
-<span id='Ext-form.field.Checkbox-method-setRawValue'>    /**
+<span id='Ext-form-field-Checkbox-method-setRawValue'>    /**
 </span>     * Sets the checked state of the checkbox.
      * @param {Boolean/String} value The following values will check the checkbox:
      * &lt;code&gt;true, 'true', '1', or 'on'&lt;/code&gt;, as well as a String that matches the {@link #inputValue}.
@@ -314,7 +329,7 @@ Ext.define('Ext.form.field.Checkbox', {
         return checked;
     },
 
-<span id='Ext-form.field.Checkbox-method-setValue'>    /**
+<span id='Ext-form-field-Checkbox-method-setValue'>    /**
 </span>     * Sets the checked state of the checkbox, and invokes change detection.
      * @param {Boolean/String} checked The following values will check the checkbox:
      * &lt;code&gt;true, 'true', '1', or 'on'&lt;/code&gt;, as well as a String that matches the {@link #inputValue}.
@@ -345,7 +360,7 @@ Ext.define('Ext.form.field.Checkbox', {
         return value;
     },
 
-<span id='Ext-form.field.Checkbox-method-onChange'>    /**
+<span id='Ext-form-field-Checkbox-method-onChange'>    /**
 </span>     * @private
      * Called when the checkbox's checked state changes. Invokes the {@link #handler} callback
      * function if specified.
@@ -384,7 +399,7 @@ Ext.define('Ext.form.field.Checkbox', {
         me.readOnly = readOnly;
     },
 
-<span id='Ext-form.field.Checkbox-method-getBodyNaturalWidth'>    /**
+<span id='Ext-form-field-Checkbox-method-getBodyNaturalWidth'>    /**
 </span>     * @protected Calculate and return the natural width of the bodyEl. It's possible that the initial
      * rendering will cause the boxLabel to wrap and give us a bad width, so we must prevent wrapping
      * while measuring.
@@ -401,4 +416,6 @@ Ext.define('Ext.form.field.Checkbox', {
     }
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

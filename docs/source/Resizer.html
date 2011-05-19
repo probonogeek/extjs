@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-resizer.Resizer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-resizer-Resizer'>/**
 </span> * @class Ext.resizer.Resizer
  * &lt;p&gt;Applies drag handles to an element or component to make it resizable. The
  * drag handles are inserted into the element (or component's element) and
@@ -52,7 +69,7 @@ Ext.define('Ext.resizer.Resizer', {
     proxyCls:  Ext.baseCSSPrefix + 'resizable-proxy',
     wrapCls:   Ext.baseCSSPrefix + 'resizable-wrap',
 
-<span id='Ext-resizer.Resizer-cfg-dynamic'>    /**
+<span id='Ext-resizer-Resizer-cfg-dynamic'>    /**
 </span>     * @cfg {Boolean} dynamic
      * &lt;p&gt;Specify as true to update the {@link #target} (Element or {@link Ext.Component Component}) dynamically during dragging.
      * This is &lt;code&gt;true&lt;/code&gt; by default, but the {@link Ext.Component Component} class passes &lt;code&gt;false&lt;/code&gt; when it
@@ -62,61 +79,61 @@ Ext.define('Ext.resizer.Resizer', {
      */
     dynamic: true,
 
-<span id='Ext-resizer.Resizer-cfg-handles'>    /**
+<span id='Ext-resizer-Resizer-cfg-handles'>    /**
 </span>     * @cfg {String} handles String consisting of the resize handles to display. Defaults to 's e se' for
      * Elements and fixed position Components. Defaults to 8 point resizing for floating Components (such as Windows).
      * Specify either &lt;code&gt;'all'&lt;/code&gt; or any of &lt;code&gt;'n s e w ne nw se sw'&lt;/code&gt;.
      */
     handles: 's e se',
 
-<span id='Ext-resizer.Resizer-cfg-height'>    /**
+<span id='Ext-resizer-Resizer-cfg-height'>    /**
 </span>     * @cfg {Number} height Optional. The height to set target to in pixels (defaults to null)
      */
     height : null,
 
-<span id='Ext-resizer.Resizer-cfg-width'>    /**
+<span id='Ext-resizer-Resizer-cfg-width'>    /**
 </span>     * @cfg {Number} width Optional. The width to set the target to in pixels (defaults to null)
      */
     width : null,
 
-<span id='Ext-resizer.Resizer-cfg-minHeight'>    /**
+<span id='Ext-resizer-Resizer-cfg-minHeight'>    /**
 </span>     * @cfg {Number} minHeight The minimum height for the element (defaults to 20)
      */
     minHeight : 20,
 
-<span id='Ext-resizer.Resizer-cfg-minWidth'>    /**
+<span id='Ext-resizer-Resizer-cfg-minWidth'>    /**
 </span>     * @cfg {Number} minWidth The minimum width for the element (defaults to 20)
      */
     minWidth : 20,
 
-<span id='Ext-resizer.Resizer-cfg-maxHeight'>    /**
+<span id='Ext-resizer-Resizer-cfg-maxHeight'>    /**
 </span>     * @cfg {Number} maxHeight The maximum height for the element (defaults to 10000)
      */
     maxHeight : 10000,
 
-<span id='Ext-resizer.Resizer-cfg-maxWidth'>    /**
+<span id='Ext-resizer-Resizer-cfg-maxWidth'>    /**
 </span>     * @cfg {Number} maxWidth The maximum width for the element (defaults to 10000)
      */
     maxWidth : 10000,
 
-<span id='Ext-resizer.Resizer-cfg-pinned'>    /**
+<span id='Ext-resizer-Resizer-cfg-pinned'>    /**
 </span>     * @cfg {Boolean} pinned True to ensure that the resize handles are always
      * visible, false indicates resizing by cursor changes only (defaults to false)
      */
     pinned: false,
 
-<span id='Ext-resizer.Resizer-cfg-preserveRatio'>    /**
+<span id='Ext-resizer-Resizer-cfg-preserveRatio'>    /**
 </span>     * @cfg {Boolean} preserveRatio True to preserve the original ratio between height
      * and width during resize (defaults to false)
      */
     preserveRatio: false,
 
-<span id='Ext-resizer.Resizer-cfg-transparent'>    /**
+<span id='Ext-resizer-Resizer-cfg-transparent'>    /**
 </span>     * @cfg {Boolean} transparent True for transparent handles. This is only applied at config time. (defaults to false)
      */
     transparent: false,
 
-<span id='Ext-resizer.Resizer-cfg-constrainTo'>    /**
+<span id='Ext-resizer-Resizer-cfg-constrainTo'>    /**
 </span>     * @cfg {Mixed} constrainTo Optional. An element, or a {@link Ext.util.Region} into which the resize operation
      * must be constrained.
      */
@@ -132,11 +149,11 @@ Ext.define('Ext.resizer.Resizer', {
         ne: 'northeast'
     },
 
-<span id='Ext-resizer.Resizer-cfg-target'>    /**
+<span id='Ext-resizer-Resizer-cfg-target'>    /**
 </span>     * @cfg {Mixed} target The Element or Component to resize.
      */
 
-<span id='Ext-resizer.Resizer-property-el'>    /**
+<span id='Ext-resizer-Resizer-property-el'>    /**
 </span>     * Outer element for resizing behavior.
      * @type Ext.core.Element
      * @property el
@@ -154,7 +171,7 @@ Ext.define('Ext.resizer.Resizer', {
             pos;
 
         this.addEvents(
-<span id='Ext-resizer.Resizer-event-beforeresize'>            /**
+<span id='Ext-resizer-Resizer-event-beforeresize'>            /**
 </span>             * @event beforeresize
              * Fired before resize is allowed. Return false to cancel resize.
              * @param {Ext.resizer.Resizer} this
@@ -163,7 +180,7 @@ Ext.define('Ext.resizer.Resizer', {
              * @param {Ext.EventObject} e The mousedown event
              */
             'beforeresize',
-<span id='Ext-resizer.Resizer-event-resizedrag'>            /**
+<span id='Ext-resizer-Resizer-event-resizedrag'>            /**
 </span>             * @event resizedrag
              * Fires during resizing. Return false to cancel resize.
              * @param {Ext.resizer.Resizer} this
@@ -172,7 +189,7 @@ Ext.define('Ext.resizer.Resizer', {
              * @param {Ext.EventObject} e The mousedown event
              */
             'resizedrag',
-<span id='Ext-resizer.Resizer-event-resize'>            /**
+<span id='Ext-resizer-Resizer-event-resize'>            /**
 </span>             * @event resize
              * Fired after a resize.
              * @param {Ext.resizer.Resizer} this
@@ -228,7 +245,7 @@ Ext.define('Ext.resizer.Resizer', {
         // be wrapped
         tag = me.el.dom.tagName;
         if (tag == 'TEXTAREA' || tag == 'IMG') {
-<span id='Ext-resizer.Resizer-property-originalTarget'>            /**
+<span id='Ext-resizer-Resizer-property-originalTarget'>            /**
 </span>             * Reference to the original resize target if the element of the original
              * resize target was an IMG or a TEXTAREA which must be wrapped in a DIV.
              * @type Mixed
@@ -254,7 +271,7 @@ Ext.define('Ext.resizer.Resizer', {
             me.el.addCls(me.pinnedCls);
         }
 
-<span id='Ext-resizer.Resizer-property-resizeTracker'>        /**
+<span id='Ext-resizer-Resizer-property-resizeTracker'>        /**
 </span>         * @type Ext.resizer.ResizeTracker
          * @property resizeTracker
          */
@@ -335,7 +352,7 @@ Ext.define('Ext.resizer.Resizer', {
         this.resizeTracker.enable();
     },
 
-<span id='Ext-resizer.Resizer-method-onBeforeResize'>    /**
+<span id='Ext-resizer-Resizer-method-onBeforeResize'>    /**
 </span>     * @private Relay the Tracker's mousedown event as beforeresize
      * @param tracker The Resizer
      * @param e The Event
@@ -345,7 +362,7 @@ Ext.define('Ext.resizer.Resizer', {
         return this.fireEvent('beforeresize', this, b.width, b.height, e);
     },
 
-<span id='Ext-resizer.Resizer-method-onResize'>    /**
+<span id='Ext-resizer-Resizer-method-onResize'>    /**
 </span>     * @private Relay the Tracker's drag event as resizedrag
      * @param tracker The Resizer
      * @param e The Event
@@ -357,7 +374,7 @@ Ext.define('Ext.resizer.Resizer', {
         return me.fireEvent('resizedrag', me, b.width, b.height, e);
     },
 
-<span id='Ext-resizer.Resizer-method-onResizeEnd'>    /**
+<span id='Ext-resizer-Resizer-method-onResizeEnd'>    /**
 </span>     * @private Relay the Tracker's dragend event as resize
      * @param tracker The Resizer
      * @param e The Event
@@ -369,7 +386,7 @@ Ext.define('Ext.resizer.Resizer', {
         return me.fireEvent('resize', me, b.width, b.height, e);
     },
 
-<span id='Ext-resizer.Resizer-method-resizeTo'>    /**
+<span id='Ext-resizer-Resizer-method-resizeTo'>    /**
 </span>     * Perform a manual resize and fires the 'resize' event.
      * @param {Number} width
      * @param {Number} height
@@ -379,7 +396,7 @@ Ext.define('Ext.resizer.Resizer', {
         this.fireEvent('resize', this, width, height, null);
     },
 
-<span id='Ext-resizer.Resizer-method-getEl'>    /**
+<span id='Ext-resizer-Resizer-method-getEl'>    /**
 </span>     * &lt;p&gt;Returns the element that was configured with the el or target config property.
      * If a component was configured with the target property then this will return the
      * element of this component.&lt;p&gt;
@@ -392,7 +409,7 @@ Ext.define('Ext.resizer.Resizer', {
         return this.el;
     },
 
-<span id='Ext-resizer.Resizer-method-getTarget'>    /**
+<span id='Ext-resizer-Resizer-method-getTarget'>    /**
 </span>     * &lt;p&gt;Returns the element or component that was configured with the target config property.&lt;p&gt;
      * &lt;p&gt;Textarea and img elements will be wrapped with an additional div because
       * these elements do not support child nodes. The original element can be accessed
@@ -412,7 +429,7 @@ Ext.define('Ext.resizer.Resizer', {
         }
     },
 
-<span id='Ext-resizer.Resizer-method-forceHandlesHeight'>    /**
+<span id='Ext-resizer-Resizer-method-forceHandlesHeight'>    /**
 </span>     * @private
      * Fix IE6 handle height issue.
      */
@@ -432,4 +449,6 @@ Ext.define('Ext.resizer.Resizer', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

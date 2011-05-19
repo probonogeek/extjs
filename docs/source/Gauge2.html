@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Gauge'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-series-Gauge'>/**
 </span> * @class Ext.chart.series.Gauge
  * @extends Ext.chart.series.Series
  * 
@@ -46,13 +63,13 @@ Ext.define('Ext.chart.series.Gauge', {
 
     rad: Math.PI / 180,
 
-<span id='Ext-chart.series.Gauge-cfg-highlightDuration'>    /**
+<span id='Ext-chart-series-Gauge-cfg-highlightDuration'>    /**
 </span>     * @cfg {Number} highlightDuration
      * The duration for the pie slice highlight effect.
      */
     highlightDuration: 150,
 
-<span id='Ext-chart.series.Gauge-cfg-angleField'>    /**
+<span id='Ext-chart-series-Gauge-cfg-angleField'>    /**
 </span>     * @cfg {String} angleField
      * The store record field name to be used for the pie angles.
      * The values bound to this field name must be positive real numbers.
@@ -60,25 +77,25 @@ Ext.define('Ext.chart.series.Gauge', {
      */
     angleField: false,
 
-<span id='Ext-chart.series.Gauge-cfg-needle'>    /**
+<span id='Ext-chart-series-Gauge-cfg-needle'>    /**
 </span>     * @cfg {Boolean} needle
      * Use the Gauge Series as an area series or add a needle to it. Default's false.
      */
     needle: false,
     
-<span id='Ext-chart.series.Gauge-cfg-donut'>    /**
+<span id='Ext-chart-series-Gauge-cfg-donut'>    /**
 </span>     * @cfg {Boolean|Number} donut
      * Use the entire disk or just a fraction of it for the gauge. Default's false.
      */
     donut: false,
 
-<span id='Ext-chart.series.Gauge-cfg-showInLegend'>    /**
+<span id='Ext-chart-series-Gauge-cfg-showInLegend'>    /**
 </span>     * @cfg {Boolean} showInLegend
      * Whether to add the pie chart elements as legend items. Default's false.
      */
     showInLegend: false,
 
-<span id='Ext-chart.series.Gauge-cfg-style'>    /**
+<span id='Ext-chart-series-Gauge-cfg-style'>    /**
 </span>     * @cfg {Object} style
      * An object containing styles for overriding series styles from Theming.
      */
@@ -229,7 +246,7 @@ Ext.define('Ext.chart.series.Gauge', {
         };
     },
 
-<span id='Ext-chart.series.Gauge-method-drawSeries'>    /**
+<span id='Ext-chart-series-Gauge-method-drawSeries'>    /**
 </span>     * Draws the series for the current chart.
      */
     drawSeries: function() {
@@ -407,7 +424,7 @@ Ext.define('Ext.chart.series.Gauge', {
         delete me.value;
     },
     
-<span id='Ext-chart.series.Gauge-method-setValue'>    /**
+<span id='Ext-chart-series-Gauge-method-setValue'>    /**
 </span>     * Sets the Gauge chart to the current specified value.
     */
     setValue: function (value) {
@@ -442,7 +459,7 @@ Ext.define('Ext.chart.series.Gauge', {
         }
     },
     
-<span id='Ext-chart.series.Gauge-method-getLegendColor'>    /**
+<span id='Ext-chart-series-Gauge-method-getLegendColor'>    /**
 </span>     * Returns the color of the series (to be displayed as color for the series legend item).
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -452,4 +469,6 @@ Ext.define('Ext.chart.series.Gauge', {
     }
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

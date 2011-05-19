@@ -59,6 +59,11 @@ Ext.define('Ext.data.JsonP', {
      * key value pairs that will be sent along with the request.</div></li>
      * <li><b>timeout</b> : Number (Optional) <div class="sub-desc">See {@link #timeout}</div></li>
      * <li><b>callbackKey</b> : String (Optional) <div class="sub-desc">See {@link #callbackKey}</div></li>
+     * <li><b>callbackName</b> : String (Optional) <div class="sub-desc">The function name to use for this request.
+     * By default this name will be auto-generated: Ext.data.JsonP.callback1, Ext.data.JsonP.callback2, etc.
+     * Setting this option to "my_name" will force the function name to be Ext.data.JsonP.my_name.
+     * Use this if you want deterministic behavior, but be careful - the callbackName should be different
+     * in each JsonP request that you make.</div></li>
      * <li><b>disableCaching</b> : Boolean (Optional) <div class="sub-desc">See {@link #disableCaching}</div></li>
      * <li><b>disableCachingParam</b> : String (Optional) <div class="sub-desc">See {@link #disableCachingParam}</div></li>
      * <li><b>success</b> : Function (Optional) <div class="sub-desc">A function to execute if the request succeeds.</div></li>
@@ -83,7 +88,7 @@ Ext.define('Ext.data.JsonP', {
             disableCaching = Ext.isDefined(options.disableCaching) ? options.disableCaching : me.disableCaching, 
             cacheParam = options.disableCachingParam || me.disableCachingParam, 
             id = ++me.statics().requestCount, 
-            callbackName = 'callback' + id, 
+            callbackName = options.callbackName || 'callback' + id, 
             callbackKey = options.callbackKey || me.callbackKey, 
             timeout = Ext.isDefined(options.timeout) ? options.timeout : me.timeout, 
             params = Ext.apply({}, options.params), 

@@ -2,90 +2,92 @@
  * @class Ext.chart.series.Line
  * @extends Ext.chart.series.Cartesian
  * 
- <p> 
-  Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
-  categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
-  As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart 
-  documentation for more information. A typical configuration object for the line series could be:
- </p>
-{@img Ext.chart.series.Line/Ext.chart.series.Line.png Ext.chart.series.Line chart series}
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            position: 'bottom',
-            fields: ['data1'],
-            label: {
-                renderer: Ext.util.Format.numberRenderer('0,0')
-            },
-            title: 'Sample Values',
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'left',
-            fields: ['name'],
-            title: 'Sample Metrics'
-        }],
-        series: [{
-            type: 'line',
-            highlight: {
-                size: 7,
-                radius: 7
-            },
-            axis: 'left',
-            xField: 'name',
-            yField: 'data1',
-            markerCfg: {
-                type: 'cross',
-                size: 4,
-                radius: 4,
-                'stroke-width': 0
-            }
-        }, {
-            type: 'line',
-            highlight: {
-                size: 7,
-                radius: 7
-            },
-            axis: 'left',
-            fill: true,
-            xField: 'name',
-            yField: 'data3',
-            markerCfg: {
-                type: 'circle',
-                size: 4,
-                radius: 4,
-                'stroke-width': 0
-            }
-        }]
-    });
-   </code></pre>
- 
- <p> 
-  In this configuration we're adding two series (or lines), one bound to the `data1` property of the store and the other to `data3`. The type for both configurations is 
-  `line`. The `xField` for both series is the same, the name propert of the store. Both line series share the same axis, the left axis. You can set particular marker 
-  configuration by adding properties onto the markerConfig object. Both series have an object as highlight so that markers animate smoothly to the properties in highlight 
-  when hovered. The second series has `fill=true` which means that the line will also have an area below it of the same color.
- </p>
+ * Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
+ * categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
+ * As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart 
+ * documentation for more information. A typical configuration object for the line series could be:
+ *
+ * {@img Ext.chart.series.Line/Ext.chart.series.Line.png Ext.chart.series.Line chart series}
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             position: 'bottom',
+ *             fields: ['data1'],
+ *             label: {
+ *                 renderer: Ext.util.Format.numberRenderer('0,0')
+ *             },
+ *             title: 'Sample Values',
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'left',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics'
+ *         }],
+ *         series: [{
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             markerCfg: {
+ *                 type: 'cross',
+ *                 size: 4,
+ *                 radius: 4,
+ *                 'stroke-width': 0
+ *             }
+ *         }, {
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             axis: 'left',
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             markerCfg: {
+ *                 type: 'circle',
+ *                 size: 4,
+ *                 radius: 4,
+ *                 'stroke-width': 0
+ *             }
+ *         }]
+ *     });
+ *  
+ * In this configuration we're adding two series (or lines), one bound to the `data1` 
+ * property of the store and the other to `data3`. The type for both configurations is 
+ * `line`. The `xField` for both series is the same, the name propert of the store. 
+ * Both line series share the same axis, the left axis. You can set particular marker 
+ * configuration by adding properties onto the markerConfig object. Both series have 
+ * an object as highlight so that markers animate smoothly to the properties in highlight 
+ * when hovered. The second series has `fill=true` which means that the line will also 
+ * have an area below it of the same color.
+ *
+ * **Note:** In the series definition remember to explicitly set the axis to bind the 
+ * values of the line series to. This can be done by using the `axis` configuration property.
  */
-
 Ext.define('Ext.chart.series.Line', {
 
     /* Begin Definitions */
@@ -101,6 +103,13 @@ Ext.define('Ext.chart.series.Line', {
     type: 'line',
     
     alias: 'series.line',
+    
+    /**
+     * @cfg {String} axis
+     * The position of the axis to bind the values to. Possible values are 'left', 'bottom', 'top' and 'right'.
+     * You must explicitly set this value to bind the values of the line series to the ones in the axis, otherwise a
+     * relative scale will be used.
+     */
 
     /**
      * @cfg {Number} selectionTolerance
@@ -255,16 +264,24 @@ Ext.define('Ext.chart.series.Line', {
             shadowBarAttr,
             xValues = [],
             yValues = [],
+            numericAxis = true,
+            axisCount = 0,
             onbreak = false,
             markerStyle = me.markerStyle,
             seriesStyle = me.seriesStyle,
             seriesLabelStyle = me.seriesLabelStyle,
             colorArrayStyle = me.colorArrayStyle,
             colorArrayLength = colorArrayStyle && colorArrayStyle.length || 0,
+            posHash = {
+                'left': 'right',
+                'right': 'left',
+                'top': 'bottom',
+                'bottom': 'top'
+            },
             seriesIdx = me.seriesIdx, shadows, shadow, shindex, fromPath, fill, fillPath, rendererAttributes,
             x, y, prevX, prevY, firstY, markerCount, i, j, ln, axis, ends, marker, markerAux, item, xValue,
             yValue, coords, xScale, yScale, minX, maxX, minY, maxY, line, animation, endMarkerStyle,
-            endLineStyle, type, props, firstMarker;
+            endLineStyle, type, props, firstMarker, count;
         
         //if store is empty then there's nothing to draw.
         if (!store || !store.getCount()) {
@@ -308,42 +325,80 @@ Ext.define('Ext.chart.series.Line', {
 
         me.clipRect = [bbox.x, bbox.y, bbox.width, bbox.height];
 
-        for (i = 0, ln = axes.length; i < ln; i++) { 
-            axis = chart.axes.get(axes[i]);
-            if (axis) {
-                ends = axis.calcEnds();
-                if (axis.position == 'top' || axis.position == 'bottom') {
-                    minX = ends.from;
-                    maxX = ends.to;
+        chart.axes.each(function(axis) {
+            //only apply position calculations to axes that affect this series
+            //this means the axis in the position referred by this series and also
+            //the axis in the other coordinate for this series. For example: (left, top|bottom),
+            //or (top, left|right), etc.
+            if (axis.position == me.axis || axis.position != posHash[me.axis]) {
+                axisCount++;
+                if (axis.type != 'Numeric') {
+                    numericAxis = false;
+                    return;
                 }
-                else {
-                    minY = ends.from;
-                    maxY = ends.to;
+                numericAxis = (numericAxis && axis.type == 'Numeric');
+                if (axis) {
+                    ends = axis.calcEnds();
+                    if (axis.position == 'top' || axis.position == 'bottom') {
+                        minX = ends.from;
+                        maxX = ends.to;
+                    }
+                    else {
+                        minY = ends.from;
+                        maxY = ends.to;
+                    }
                 }
             }
+        });
+        
+        //If there's only one axis specified for a series, then we set the default type of the other
+        //axis to a category axis. So in this case numericAxis, which would be true if both axes affecting
+        //the series are numeric should be false.
+        if (numericAxis && axisCount == 1) {
+            numericAxis = false;
         }
+        
         // If a field was specified without a corresponding axis, create one to get bounds
         //only do this for the axis where real values are bound (that's why we check for
         //me.axis)
-        if (me.xField && !Ext.isNumber(minX)
-            && (me.axis == 'bottom' || me.axis == 'top')) {
-            axis = Ext.create('Ext.chart.axis.Axis', {
-                chart: chart,
-                fields: [].concat(me.xField)
-            }).calcEnds();
-            minX = axis.from;
-            maxX = axis.to;
+        if (me.xField && !Ext.isNumber(minX)) {
+            if (me.axis == 'bottom' || me.axis == 'top') {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.xField)
+                }).calcEnds();
+                minX = axis.from;
+                maxX = axis.to;
+            } else if (numericAxis) {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.xField),
+                    forceMinMax: true
+                }).calcEnds();
+                minX = axis.from;
+                maxX = axis.to;
+            }
         }
-        if (me.yField && !Ext.isNumber(minY)
-            && (me.axis == 'right' || me.axis == 'left')) {
-            axis = Ext.create('Ext.chart.axis.Axis', {
-                chart: chart,
-                fields: [].concat(me.yField)
-            }).calcEnds();
-            minY = axis.from;
-            maxY = axis.to;
+        
+        if (me.yField && !Ext.isNumber(minY)) {
+            if (me.axis == 'right' || me.axis == 'left') {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.yField)
+                }).calcEnds();
+                minY = axis.from;
+                maxY = axis.to;
+            } else if (numericAxis) {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.yField),
+                    forceMinMax: true
+                }).calcEnds();
+                minY = axis.from;
+                maxY = axis.to;
+            }
         }
-
+        
         if (isNaN(minX)) {
             minX = 0;
             xScale = bbox.width / (store.getCount() - 1);
@@ -359,7 +414,7 @@ Ext.define('Ext.chart.series.Line', {
         else {
             yScale = bbox.height / (maxY - minY);
         }
-
+        
         store.each(function(record, i) {
             xValue = record.get(me.xField);
             yValue = record.get(me.yField);
@@ -375,12 +430,12 @@ Ext.define('Ext.chart.series.Line', {
             // Ensure a value
             if (typeof xValue == 'string' || typeof xValue == 'object'
                 //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'top' && me.axis != 'bottom')) {
+                || (me.axis != 'top' && me.axis != 'bottom' && !numericAxis)) {
                 xValue = i;
             }
             if (typeof yValue == 'string' || typeof yValue == 'object'
                 //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'left' && me.axis != 'right')) {
+                || (me.axis != 'left' && me.axis != 'right' && !numericAxis)) {
                 yValue = i;
             }
             xValues.push(xValue);
@@ -396,6 +451,7 @@ Ext.define('Ext.chart.series.Line', {
 
         me.items = [];
 
+        count = 0;
         ln = xValues.length;
         for (i = 0; i < ln; i++) {
             xValue = xValues[i];
@@ -446,7 +502,7 @@ Ext.define('Ext.chart.series.Line', {
                 }
             }
             if (showMarkers) {
-                marker = markerGroup.getAt(i);
+                marker = markerGroup.getAt(count++);
                 if (!marker) {
                     marker = Ext.chart.Shape[type](surface, Ext.apply({
                         group: [group, markerGroup],
@@ -601,29 +657,22 @@ Ext.define('Ext.chart.series.Line', {
             }
             //animate markers
             if (showMarkers) {
+                count = 0;
                 for(i = 0; i < ln; i++) {
-                    item = markerGroup.getAt(i);
-                    if (item) {
-                        if (me.items[i]) {
+                    if (me.items[i]) {
+                        item = markerGroup.getAt(count++);
+                        if (item) {
                             rendererAttributes = me.renderer(item, store.getAt(i), item._to, i, store);
                             me.onAnimate(item, {
                                 to: Ext.apply(rendererAttributes, endMarkerStyle || {})
                             });
-                        } else {
-                            item.setAttributes(Ext.apply({
-                                hidden: true 
-                            }, item._to), true);
                         }
-                    }
+                    } 
                 }
-                for(; i < markerCount; i++) {
-                    item = markerGroup.getAt(i);
+                for(; count < markerCount; count++) {
+                    item = markerGroup.getAt(count);
                     item.hide(true);
                 }
-//                for(i = 0; i < (chart.markerIndex || 0)-1; i++) {
-//                    item = markerGroup.getAt(i);
-//                    item.hide(true);
-//                }
             }
         } else {
             rendererAttributes = me.renderer(me.line, false, { path: path, hidden: false }, i, store);
@@ -648,19 +697,18 @@ Ext.define('Ext.chart.series.Line', {
                 }, true);
             }
             if (showMarkers) {
+                count = 0;
                 for(i = 0; i < ln; i++) {
-                    item = markerGroup.getAt(i);
-                    if (item) {
-                        if (me.items[i]) {
+                    if (me.items[i]) {
+                        item = markerGroup.getAt(count++);
+                        if (item) {
                             rendererAttributes = me.renderer(item, store.getAt(i), item._to, i, store);
                             item.setAttributes(Ext.apply(endMarkerStyle || {}, rendererAttributes || {}), true);
-                        } else {
-                            item.hide(true);
                         }
-                    }
+                    } 
                 }
-                for(; i < markerCount; i++) {
-                    item = markerGroup.getAt(i);
+                for(; count < markerCount; count++) {
+                    item = markerGroup.getAt(count);
                     item.hide(true);
                 }
             }

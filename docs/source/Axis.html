@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.axis.Axis'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-axis-Axis'>/**
 </span> * @class Ext.chart.axis.Axis
  * @extends Ext.chart.axis.Abstract
  * 
@@ -53,23 +70,26 @@ Ext.define('Ext.chart.axis.Axis', {
 
     /* End Definitions */
 
-<span id='Ext-chart.axis.Axis-cfg-majorTickSteps'>    /**
+<span id='Ext-chart-axis-Axis-cfg-majorTickSteps'>    /**
 </span>     * @cfg {Number} majorTickSteps 
      * If `minimum` and `maximum` are specified it forces the number of major ticks to the specified value.
      */
 
-<span id='Ext-chart.axis.Axis-cfg-minorTickSteps'>    /**
+<span id='Ext-chart-axis-Axis-cfg-minorTickSteps'>    /**
 </span>     * @cfg {Number} minorTickSteps 
      * The number of small ticks between two major ticks. Default is zero.
      */
-
-<span id='Ext-chart.axis.Axis-cfg-dashSize'>    /**
+    
+    //@private force min/max values from store
+    forceMinMax: false,
+    
+<span id='Ext-chart-axis-Axis-cfg-dashSize'>    /**
 </span>     * @cfg {Number} dashSize 
      * The size of the dash marker. Default's 3.
      */
     dashSize: 3,
     
-<span id='Ext-chart.axis.Axis-cfg-position'>    /**
+<span id='Ext-chart-axis-Axis-cfg-position'>    /**
 </span>     * @cfg {String} position
      * Where to set the axis. Available options are `left`, `bottom`, `right`, `top`. Default's `bottom`.
      */
@@ -78,13 +98,13 @@ Ext.define('Ext.chart.axis.Axis', {
     // @private
     skipFirst: false,
     
-<span id='Ext-chart.axis.Axis-cfg-length'>    /**
+<span id='Ext-chart-axis-Axis-cfg-length'>    /**
 </span>     * @cfg {Number} length
      * Offset axis position. Default's 0.
      */
     length: 0,
     
-<span id='Ext-chart.axis.Axis-cfg-width'>    /**
+<span id='Ext-chart-axis-Axis-cfg-width'>    /**
 </span>     * @cfg {Number} width
      * Offset axis width. Default's 0.
      */
@@ -160,6 +180,14 @@ Ext.define('Ext.chart.axis.Axis', {
         out = Ext.draw.Draw.snapEnds(min, max, me.majorTickSteps !== false ?  (me.majorTickSteps +1) : me.steps);
         outfrom = out.from;
         outto = out.to;
+        if (me.forceMinMax) {
+            if (!isNaN(max)) {
+                out.to = max;
+            }
+            if (!isNaN(min)) {
+                out.from = min;
+            }
+        }
         if (!isNaN(me.maximum)) {
             //TODO(nico) users are responsible for their own minimum/maximum values set.
             //Clipping should be added to remove lines in the chart which are below the axis.
@@ -185,7 +213,7 @@ Ext.define('Ext.chart.axis.Axis', {
         return out;
     },
 
-<span id='Ext-chart.axis.Axis-method-drawAxis'>    /**
+<span id='Ext-chart-axis-Axis-method-drawAxis'>    /**
 </span>     * Renders the axis into the screen and updates it's position.
      */
     drawAxis: function (init) {
@@ -319,7 +347,7 @@ Ext.define('Ext.chart.axis.Axis', {
         me.drawLabel();
     },
 
-<span id='Ext-chart.axis.Axis-method-drawGrid'>    /**
+<span id='Ext-chart-axis-Axis-method-drawGrid'>    /**
 </span>     * Renders an horizontal and/or vertical grid into the Surface.
      */
     drawGrid: function() {
@@ -633,7 +661,7 @@ Ext.define('Ext.chart.axis.Axis', {
         return maxWidth;
     },
 
-<span id='Ext-chart.axis.Axis-method-drawLabel'>    /**
+<span id='Ext-chart-axis-Axis-method-drawLabel'>    /**
 </span>     * Renders the labels in the axes.
      */
     drawLabel: function() {
@@ -694,7 +722,7 @@ Ext.define('Ext.chart.axis.Axis', {
         return true;
     },
 
-<span id='Ext-chart.axis.Axis-method-setTitle'>    /**
+<span id='Ext-chart-axis-Axis-method-setTitle'>    /**
 </span>     * Updates the {@link #title} of this axis.
      * @param {String} title
      */
@@ -757,4 +785,6 @@ Ext.define('Ext.chart.axis.Axis', {
             }
         }, true);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

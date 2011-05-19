@@ -9,6 +9,7 @@
  * and according to the 'injectCheckbox' configuration.
  */
 Ext.define('Ext.selection.CheckboxModel', {
+    alias: 'selection.checkboxmodel',
     extend: 'Ext.selection.RowModel',
 
     /**

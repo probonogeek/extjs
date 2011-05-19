@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext'>/**
 </span> * @class Ext
  * @singleton
  */
@@ -133,7 +150,7 @@
 
 <span id='Ext-method-extend'>        /**
 </span>         * This method deprecated. Use {@link Ext#define Ext.define} instead.
-         * @function
+         * @method
          * @param {Function} superclass
          * @param {Object} overrides
          * @return {Function} The subclass constructor from the &lt;tt&gt;overrides&lt;/tt&gt; parameter, or a generated one if not provided.
@@ -346,11 +363,12 @@
             return (value === null) || (value === undefined) || (!allowEmptyString ? value === '' : false) || (Ext.isArray(value) &amp;&amp; value.length === 0);
         },
 
-<span id='Ext-property-isArray'>        /**
+<span id='Ext-method-isArray'>        /**
 </span>         * Returns true if the passed value is a JavaScript Array, false otherwise.
          *
          * @param {Mixed} target The target to test
          * @return {Boolean}
+         * @method
          */
         isArray: ('isArray' in Array) ? Array.isArray : function(value) {
             return toString.call(value) === '[object Array]';
@@ -365,10 +383,11 @@
             return toString.call(value) === '[object Date]';
         },
 
-<span id='Ext-property-isObject'>        /**
+<span id='Ext-method-isObject'>        /**
 </span>         * Returns true if the passed value is a JavaScript Object, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
@@ -389,10 +408,11 @@
             return type === 'string' || type === 'number' || type === 'boolean';
         },
 
-<span id='Ext-property-isFunction'>        /**
+<span id='Ext-method-isFunction'>        /**
 </span>         * Returns true if the passed value is a JavaScript Function, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isFunction:
         // Safari 3.x and 4.x returns 'function' for typeof &lt;NodeList&gt;, hence we need to fall back to using
@@ -446,7 +466,7 @@
          * @return {Boolean}
          */
         isElement: function(value) {
-            return value ? value.nodeType !== undefined : false;
+            return value ? value.nodeType === 1 : false;
         },
 
 <span id='Ext-method-isTextNode'>        /**
@@ -570,11 +590,14 @@
         }
     });
 
-<span id='Ext-property-type'>    /**
+<span id='Ext-method-type'>    /**
 </span>     * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
+     * @method
      */
     Ext.type = Ext.typeOf;
 
 })();
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

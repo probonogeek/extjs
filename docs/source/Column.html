@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.column.Column'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-column-Column'>/**
 </span> * @class Ext.grid.column.Column
  * @extends Ext.grid.header.Container
  * 
@@ -91,21 +108,21 @@ Ext.define('Ext.grid.column.Column', {
             '&lt;tpl if=&quot;!values.menuDisabled&quot;&gt;&lt;div class=&quot;' + Ext.baseCSSPrefix + 'column-header-trigger&quot;&gt;&lt;/div&gt;&lt;/tpl&gt;' +
         '&lt;/div&gt;',
 
-<span id='Ext-grid.column.Column-cfg-columns'>    /**
+<span id='Ext-grid-column-Column-cfg-columns'>    /**
 </span>     * @cfg {Array} columns
      * &lt;p&gt;An optional array of sub-column definitions. This column becomes a group, and houses the columns defined in the &lt;code&gt;columns&lt;/code&gt; config.&lt;/p&gt;
      * &lt;p&gt;Group columns may not be sortable. But they may be hideable and moveable. And you may move headers into and out of a group. Note that
      * if all sub columns are dragged out of a group, the group is destroyed.
      */
 
-<span id='Ext-grid.column.Column-cfg-dataIndex'>    /**
+<span id='Ext-grid-column-Column-cfg-dataIndex'>    /**
 </span>     * @cfg {String} dataIndex &lt;p&gt;&lt;b&gt;Required&lt;/b&gt;. The name of the field in the
      * grid's {@link Ext.data.Store}'s {@link Ext.data.Model} definition from
      * which to draw the column's value.&lt;/p&gt;
      */
     dataIndex: null,
 
-<span id='Ext-grid.column.Column-cfg-text'>    /**
+<span id='Ext-grid-column-Column-cfg-text'>    /**
 </span>     * @cfg {String} text Optional. The header text to be used as innerHTML
      * (html tags are accepted) to display in the Grid.  &lt;b&gt;Note&lt;/b&gt;: to
      * have a clickable header with no text displayed you can use the
@@ -113,32 +130,32 @@ Ext.define('Ext.grid.column.Column', {
      */
     text: '&amp;#160',
 
-<span id='Ext-grid.column.Column-cfg-sortable'>    /**
+<span id='Ext-grid-column-Column-cfg-sortable'>    /**
 </span>     * @cfg {Boolean} sortable Optional. &lt;tt&gt;true&lt;/tt&gt; if sorting is to be allowed on this column.
      * Whether local/remote sorting is used is specified in &lt;code&gt;{@link Ext.data.Store#remoteSort}&lt;/code&gt;.
      */
     sortable: true,
     
-<span id='Ext-grid.column.Column-cfg-groupable'>    /**
+<span id='Ext-grid-column-Column-cfg-groupable'>    /**
 </span>     * @cfg {Boolean} groupable Optional. If the grid uses a {@link Ext.grid.feature.Grouping}, this option
      * may be used to disable the header menu item to group by the column selected. By default,
      * the header menu group option is enabled. Set to false to disable (but still show) the
      * group option in the header menu for the column.
      */
      
-<span id='Ext-grid.column.Column-cfg-hideable'>    /**
+<span id='Ext-grid-column-Column-cfg-hideable'>    /**
 </span>     * @cfg {Boolean} hideable Optional. Specify as &lt;tt&gt;false&lt;/tt&gt; to prevent the user from hiding this column
      * (defaults to true).
      */
     hideable: true,
 
-<span id='Ext-grid.column.Column-cfg-menuDisabled'>    /**
+<span id='Ext-grid-column-Column-cfg-menuDisabled'>    /**
 </span>     * @cfg {Boolean} menuDisabled
      * True to disabled the column header menu containing sort/hide options. Defaults to false.
      */
     menuDisabled: false,
 
-<span id='Ext-grid.column.Column-cfg-renderer'>    /**
+<span id='Ext-grid-column-Column-cfg-renderer'>    /**
 </span>     * @cfg {Function} renderer
      * &lt;p&gt;A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it
      * is rendered. Example:&lt;/p&gt;
@@ -163,13 +180,13 @@ Ext.define('Ext.grid.column.Column', {
      */
     renderer: false,
 
-<span id='Ext-grid.column.Column-cfg-align'>    /**
+<span id='Ext-grid-column-Column-cfg-align'>    /**
 </span>     * @cfg {String} align Sets the alignment of the header and rendered columns.
      * Defaults to 'left'.
      */
     align: 'left',
 
-<span id='Ext-grid.column.Column-cfg-draggable'>    /**
+<span id='Ext-grid-column-Column-cfg-draggable'>    /**
 </span>     * @cfg {Boolean} draggable Indicates whether or not the header can be drag and drop re-ordered.
      * Defaults to true.
      */
@@ -179,19 +196,19 @@ Ext.define('Ext.grid.column.Column', {
     // override this with an emptyFn. It is controlled at the HeaderDragZone.
     initDraggable: Ext.emptyFn,
 
-<span id='Ext-grid.column.Column-cfg-tdCls'>    /**
+<span id='Ext-grid-column-Column-cfg-tdCls'>    /**
 </span>     * @cfg {String} tdCls &lt;p&gt;Optional. A CSS class names to apply to the table cells for this column.&lt;/p&gt;
      */
 
-<span id='Ext-grid.column.Column-property-triggerEl'>    /**
+<span id='Ext-grid-column-Column-property-triggerEl'>    /**
 </span>     * @property {Ext.core.Element} triggerEl
      */
 
-<span id='Ext-grid.column.Column-property-textEl'>    /**
+<span id='Ext-grid-column-Column-property-textEl'>    /**
 </span>     * @property {Ext.core.Element} textEl
      */
 
-<span id='Ext-grid.column.Column-property-isHeader'>    /**
+<span id='Ext-grid-column-Column-property-isHeader'>    /**
 </span>     * @private
      * Set in this class to identify, at runtime, instances which are not instances of the
      * HeaderContainer base class, but are in fact, the subclass: Header.
@@ -304,7 +321,7 @@ Ext.define('Ext.grid.column.Column', {
         return this.up(':not([isHeader])');
     },
 
-<span id='Ext-grid.column.Column-method-getIndex'>    /**
+<span id='Ext-grid-column-Column-method-getIndex'>    /**
 </span>     * Returns the true grid column index assiciated with this Column only if this column is a base level Column.
      * If it is a group column, it returns &lt;code&gt;false&lt;/code&gt;
      */
@@ -448,7 +465,7 @@ Ext.define('Ext.grid.column.Column', {
         this.onElClick(e, this.el.dom);
     },
 
-<span id='Ext-grid.column.Column-method-onElDblClick'>    /**
+<span id='Ext-grid-column-Column-method-onElDblClick'>    /**
 </span>     * @private
      * Double click 
      * @param e
@@ -481,7 +498,7 @@ Ext.define('Ext.grid.column.Column', {
         }
     },
 
-<span id='Ext-grid.column.Column-method-processEvent'>    /**
+<span id='Ext-grid-column-Column-method-processEvent'>    /**
 </span>     * @private
      * Process UI events from the view. The owning TablePanel calls this method, relaying events from the TableView
      * @param {String} type Event type, eg 'click'
@@ -516,7 +533,7 @@ Ext.define('Ext.grid.column.Column', {
         });
     },
 
-<span id='Ext-grid.column.Column-method-getSortParam'>    /**
+<span id='Ext-grid-column-Column-method-getSortParam'>    /**
 </span>     * Returns the parameter to sort upon when sorting this header. By default
      * this returns the dataIndex and will not need to be overriden in most cases.
      */
@@ -693,7 +710,7 @@ Ext.define('Ext.grid.column.Column', {
         return (this.el.getRight() - e.getXY()[0] &lt;= this.handleWidth);
     }
     
-<span id='Ext-grid.column.Column-method-getEditor'>    /**
+<span id='Ext-grid-column-Column-method-getEditor'>    /**
 </span>     * Retrieves the editing field for editing associated with this header. Returns false if there
      * is no field associated with the Header the method will return false. If the
      * field has not been instantiated it will be created. Note: These methods only has an implementation
@@ -707,10 +724,12 @@ Ext.define('Ext.grid.column.Column', {
     // when the editing plugin is injected
     
     
-<span id='Ext-grid.column.Column-method-setEditor'>    /**
+<span id='Ext-grid-column-Column-method-setEditor'>    /**
 </span>     * Sets the form field to be used for editing. Note: This method only has an implementation
      * if an Editing plugin has been enabled on the grid.
      * @param {Mixed} field An object representing a field to be created. If no xtype is specified a 'textfield' is assumed.
      * @method setEditor
      */
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -38,11 +38,81 @@
  *
  * For example:
  *
-        drawComponent.surface.on({
-           'mousemove': function() {
-                console.log('moving the mouse over the surface');   
-            }
-        });
+ *     drawComponent.surface.on({
+ *        'mousemove': function() {
+ *             console.log('moving the mouse over the surface');   
+ *         }
+ *     });
+ *
+ * ## Example
+ *
+ *     drawComponent.surface.add([
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#f00',
+ *             x: 10,
+ *             y: 10,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#0f0',
+ *             x: 50,
+ *             y: 50,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#00f',
+ *             x: 100,
+ *             y: 100,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 10,
+ *             y: 10,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 50,
+ *             y: 50,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 100,
+ *             y: 100,
+ *             group: 'rectangles'
+ *         }
+ *     ]);
+ *     
+ *     // Get references to my groups
+ *     my circles = surface.getGroup('circles');
+ *     my rectangles = surface.getGroup('rectangles');
+ *     
+ *     // Animate the circles down
+ *     circles.animate({
+ *         duration: 1000,
+ *         translate: {
+ *             y: 200
+ *         }
+ *     });
+ *     
+ *     // Animate the rectangles across
+ *     rectangles.animate({
+ *         duration: 1000,
+ *         translate: {
+ *             x: 200
+ *         }
+ *     });
  */
 Ext.define('Ext.draw.Surface', {
 
@@ -197,6 +267,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to add the class to.
      * @param {String/Array} className The CSS class to add, or an array of classes
+     * @method
      */
     addCls: Ext.emptyFn,
 
@@ -209,6 +280,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to remove the class from.
      * @param {String/Array} className The CSS class to remove, or an array of classes
+     * @method
      */
     removeCls: Ext.emptyFn,
 
@@ -223,6 +295,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to add, or an array of classes to
      * @param {Object} styles An Object with CSS styles.
+     * @method
      */
     setStyle: Ext.emptyFn,
 
@@ -246,17 +319,16 @@ Ext.define('Ext.draw.Surface', {
     
     // @private
     initBackground: function(config) {
-        var gradientId, 
-            gradient,
-            backgroundSprite,
-            width = this.width,
-            height = this.height;
+        var me = this,
+            width = me.width,
+            height = me.height,
+            gradientId, gradient, backgroundSprite;
         if (config) {
             if (config.gradient) {
                 gradient = config.gradient;
                 gradientId = gradient.id;
-                this.addGradient(gradient);
-                this.background = this.add({
+                me.addGradient(gradient);
+                me.background = me.add({
                     type: 'rect',
                     x: 0,
                     y: 0,
@@ -265,7 +337,7 @@ Ext.define('Ext.draw.Surface', {
                     fill: 'url(#' + gradientId + ')'
                 });
             } else if (config.fill) {
-                this.background = this.add({
+                me.background = me.add({
                     type: 'rect',
                     x: 0,
                     y: 0,
@@ -274,7 +346,7 @@ Ext.define('Ext.draw.Surface', {
                     fill: config.fill
                 });
             } else if (config.image) {
-                this.background = this.add({
+                me.background = me.add({
                     type: 'image',
                     x: 0,
                     y: 0,
@@ -394,6 +466,8 @@ Ext.define('Ext.draw.Surface', {
                         }
                     }
                 });
+     *
+     * @method
      */
     addGradient: Ext.emptyFn,
 
@@ -644,7 +718,9 @@ Ext.define('Ext.draw.Surface', {
     // @private
     getPathellipse: function (el) {
         var a = el.attr;
-        return this.ellipsePath(a.x, a.y, a.radiusX, a.radiusY);
+        return this.ellipsePath(a.x, a.y,
+                                a.radiusX || (a.width / 2) || 0,
+                                a.radiusY || (a.height / 2) || 0);
     },
 
     // @private
@@ -728,6 +804,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The Sprite to change the text.
      * @param {String} text The new text to be set.
+     * @method
      */
     setText: Ext.emptyFn,
     

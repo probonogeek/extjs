@@ -146,7 +146,9 @@ Ext.define('Ext.menu.Menu', {
 
     initComponent: function() {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls = [prefix + 'menu'],
+            bodyCls = me.bodyCls ? [me.bodyCls] : [];
 
         me.addEvents(
             /**
@@ -190,14 +192,12 @@ Ext.define('Ext.menu.Menu', {
         Ext.menu.Manager.register(me);
 
         // Menu classes
-        var cls = [prefix + 'menu'];
         if (me.plain) {
             cls.push(prefix + 'menu-plain');
         }
         me.cls = cls.join(' ');
 
         // Menu body classes
-        var bodyCls = me.bodyCls ? [me.bodyCls] : [];
         bodyCls.unshift(prefix + 'menu-body');
         me.bodyCls = bodyCls.join(' ');
 
@@ -363,7 +363,9 @@ Ext.define('Ext.menu.Menu', {
     // private
     lookupItemFromObject: function(cmp) {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls,
+            intercept;
 
         if (!cmp.isComponent) {
             if (!cmp.xtype) {
@@ -378,11 +380,8 @@ Ext.define('Ext.menu.Menu', {
         }
 
         if (!cmp.isMenuItem && !cmp.dock) {
-            var cls = [
-                    prefix + 'menu-item',
-                    prefix + 'menu-item-cmp'
-                ],
-                intercept = Ext.Function.createInterceptor;
+            cls = [prefix + 'menu-item', prefix + 'menu-item-cmp'];
+            intercept = Ext.Function.createInterceptor;
 
             // Wrap focus/blur to control component focus
             cmp.focus = intercept(cmp.focus, function() {
@@ -525,7 +524,9 @@ Ext.define('Ext.menu.Menu', {
      * @markdown
      */
     showBy: function(cmp, pos, off) {
-        var me = this;
+        var me = this,
+            xy,
+            region;
 
         if (me.floating && cmp) {
             me.layout.autoSize = true;
@@ -535,22 +536,30 @@ Ext.define('Ext.menu.Menu', {
             cmp = cmp.el || cmp;
 
             // Convert absolute to floatParent-relative coordinates if necessary.
-            var xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
+            xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
             if (me.floatParent) {
-                var r = me.floatParent.getTargetEl().getViewRegion();
-                xy[0] -= r.x;
-                xy[1] -= r.y;
+                region = me.floatParent.getTargetEl().getViewRegion();
+                xy[0] -= region.x;
+                xy[1] -= region.y;
             }
             me.showAt(xy);
-            me.doConstrain();
         }
         return me;
+    },
+    
+    // inherit docs
+    showAt: function(){
+        this.callParent(arguments);
+        if (this.floating) {
+            this.doConstrain();
+        }    
     },
 
     doConstrain : function() {
         var me = this,
-            y = this.el.getY(),
+            y = me.el.getY(),
             max, full,
+            vector,
             returnY = y, normalY, parentEl, scrollTop, viewHeight;
 
         delete me.height;
@@ -585,6 +594,10 @@ Ext.define('Ext.menu.Menu', {
             if (me.showSeparator){
                 me.iconSepEl.setHeight(me.layout.getRenderTarget().dom.scrollHeight);
             }
+        }
+        vector = me.getConstrainVector();
+        if (vector) {
+            me.setPosition(me.getPosition()[0] + vector[0]);
         }
         me.el.setY(returnY);
     }

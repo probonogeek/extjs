@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.property.Grid-method-constructor'><span id='Ext-grid.property.Grid'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-property-Grid-method-constructor'><span id='Ext-grid-property-Grid'>/**
 </span></span> * @class Ext.grid.property.Grid
  * @extends Ext.grid.Panel
  * A specialized grid implementation intended to mimic the traditional property grid as typically seen in
@@ -20,10 +37,13 @@ var grid = new Ext.grid.property.Grid({
 &lt;/code&gt;&lt;/pre&gt;
  * @constructor
  * @param {Object} config The grid config object
+ * @xtype propertygrid
  */
 Ext.define('Ext.grid.property.Grid', {
 
     extend: 'Ext.grid.Panel',
+    
+    alias: 'widget.propertygrid',
 
     alternateClassName: 'Ext.grid.PropertyGrid',
 
@@ -38,16 +58,16 @@ Ext.define('Ext.grid.property.Grid', {
        'Ext.form.field.Number'
     ],
 
-<span id='Ext-grid.property.Grid-cfg-propertyNames'>   /**
+<span id='Ext-grid-property-Grid-cfg-propertyNames'>   /**
 </span>    * @cfg {Object} propertyNames An object containing custom property name/display name pairs.
     * If specified, the display name will be shown in the name column instead of the property name.
     */
 
-<span id='Ext-grid.property.Grid-cfg-source'>    /**
+<span id='Ext-grid-property-Grid-cfg-source'>    /**
 </span>    * @cfg {Object} source A data object to use as the data source of the grid (see {@link #setSource} for details).
     */
 
-<span id='Ext-grid.property.Grid-cfg-customEditors'>    /**
+<span id='Ext-grid-property-Grid-cfg-customEditors'>    /**
 </span>    * @cfg {Object} customEditors An object containing name/value pairs of custom editor type definitions that allow
     * the grid to support additional types of editable fields.  By default, the grid supports strongly-typed editing
     * of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and
@@ -74,11 +94,11 @@ var grid = new Ext.grid.property.Grid({
 &lt;/code&gt;&lt;/pre&gt;
     */
 
-<span id='Ext-grid.property.Grid-cfg-source'>    /**
+<span id='Ext-grid-property-Grid-cfg-source'>    /**
 </span>    * @cfg {Object} source A data object to use as the data source of the grid (see {@link #setSource} for details).
     */
 
-<span id='Ext-grid.property.Grid-cfg-customRenderers'>    /**
+<span id='Ext-grid-property-Grid-cfg-customRenderers'>    /**
 </span>    * @cfg {Object} customRenderers An object containing name/value pairs of custom renderer type definitions that allow
     * the grid to support custom rendering of fields.  By default, the grid supports strongly-typed rendering
     * of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and
@@ -102,14 +122,14 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 &lt;/code&gt;&lt;/pre&gt;
     */
 
-<span id='Ext-grid.property.Grid-cfg-valueField'>    /**
+<span id='Ext-grid-property-Grid-cfg-valueField'>    /**
 </span>     * @cfg {String} valueField
      * Optional. The name of the field from the property store to use as the value field name. Defaults to &lt;code&gt;'value'&lt;/code&gt;
      * This may be useful if you do not configure the property Grid from an object, but use your own store configuration.
      */
     valueField: 'value',
 
-<span id='Ext-grid.property.Grid-cfg-nameField'>    /**
+<span id='Ext-grid-property-Grid-cfg-nameField'>    /**
 </span>     * @cfg {String} nameField
      * Optional. The name of the field from the property store to use as the property field name. Defaults to &lt;code&gt;'name'&lt;/code&gt;
      * This may be useful if you do not configure the property Grid from an object, but use your own store configuration.
@@ -163,7 +183,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         me.columns = Ext.create('Ext.grid.property.HeaderContainer', me, me.store);
 
         me.addEvents(
-<span id='Ext-grid.property.Grid-event-beforepropertychange'>            /**
+<span id='Ext-grid-property-Grid-event-beforepropertychange'>            /**
 </span>             * @event beforepropertychange
              * Fires before a property value changes.  Handlers can return false to cancel the property change
              * (this will internally call {@link Ext.data.Record#reject} on the property's record).
@@ -174,7 +194,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Mixed} oldValue The original property value prior to editing
              */
             'beforepropertychange',
-<span id='Ext-grid.property.Grid-event-propertychange'>            /**
+<span id='Ext-grid-property-Grid-event-propertychange'>            /**
 </span>             * @event propertychange
              * Fires after a property value has changed.
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
@@ -213,12 +233,12 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         if (operation == Ext.data.Model.EDIT) {
             v = record.get(me.valueField);
             oldValue = record.modified.value;
-            if (me.fireEvent('beforepropertychange', me.source, record.id, v, oldValue) !== false) {
+            if (me.fireEvent('beforepropertychange', me.source, record.getId(), v, oldValue) !== false) {
                 if (me.source) {
-                    me.source[record.id] = v;
+                    me.source[record.getId()] = v;
                 }
                 record.commit();
-                me.fireEvent('propertychange', me.source, record.id, v, oldValue);
+                me.fireEvent('propertychange', me.source, record.getId(), v, oldValue);
             } else {
                 record.reject();
             }
@@ -232,7 +252,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         } else if (direction == 'right') {
             direction = 'down';
         }
-        var pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
+        pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
         if (!pos.column) {
             pos.column = 1;
         }
@@ -281,11 +301,13 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 
     destroyEditors: function (editors) {
         for (var ed in editors) {
-            Ext.destroy(editors[ed]);
+            if (editors.hasOwnProperty(ed)) {
+                Ext.destroy(editors[ed]);
+            }
         }
     },
 
-<span id='Ext-grid.property.Grid-method-setSource'>    /**
+<span id='Ext-grid-property-Grid-method-setSource'>    /**
 </span>     * Sets the source data object containing the property data.  The data object can contain one or more name/value
      * pairs representing all of the properties of an object to display in the grid, and this data will automatically
      * be loaded into the grid's {@link #store}.  The values should be supplied in the proper data type if needed,
@@ -307,7 +329,7 @@ grid.setSource({
         this.propStore.setSource(source);
     },
 
-<span id='Ext-grid.property.Grid-method-getSource'>    /**
+<span id='Ext-grid-property-Grid-method-getSource'>    /**
 </span>     * Gets the source data object containing the property data.  See {@link #setSource} for details regarding the
      * format of the data object.
      * @return {Object} The data object
@@ -316,7 +338,7 @@ grid.setSource({
         return this.propStore.getSource();
     },
 
-<span id='Ext-grid.property.Grid-method-setProperty'>    /**
+<span id='Ext-grid-property-Grid-method-setProperty'>    /**
 </span>     * Sets the value of a property.
      * @param {String} prop The name of the property to set
      * @param {Mixed} value The value to test
@@ -326,7 +348,7 @@ grid.setSource({
         this.propStore.setValue(prop, value, create);
     },
 
-<span id='Ext-grid.property.Grid-method-removeProperty'>    /**
+<span id='Ext-grid-property-Grid-method-removeProperty'>    /**
 </span>     * Removes a property from the grid.
      * @param {String} prop The name of the property to remove
      */
@@ -334,20 +356,22 @@ grid.setSource({
         this.propStore.remove(prop);
     }
 
-<span id='Ext-grid.property.Grid-cfg-store'>    /**
+<span id='Ext-grid-property-Grid-cfg-store'>    /**
 </span>     * @cfg store
      * @hide
      */
-<span id='Ext-grid.property.Grid-cfg-colModel'>    /**
+<span id='Ext-grid-property-Grid-cfg-colModel'>    /**
 </span>     * @cfg colModel
      * @hide
      */
-<span id='Ext-grid.property.Grid-cfg-cm'>    /**
+<span id='Ext-grid-property-Grid-cfg-cm'>    /**
 </span>     * @cfg cm
      * @hide
      */
-<span id='Ext-grid.property.Grid-cfg-columns'>    /**
+<span id='Ext-grid-property-Grid-cfg-columns'>    /**
 </span>     * @cfg columns
      * @hide
      */
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

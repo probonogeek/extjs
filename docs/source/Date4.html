@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-Date'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-Date'>/**
 </span> * @class Ext.Date
  * A set of useful static methods to deal with date
  * Note that if Ext.Date is required and loaded, it will copy all methods / properties to
@@ -128,9 +145,10 @@ function xf(format) {
 }
 
 Ext.Date = {
-<span id='Ext-Date-property-now'>    /**
+<span id='Ext-Date-method-now'>    /**
 </span>     * Returns the current timestamp
      * @return {Date} The current timestamp
+     * @method
      */
     now: Date.now || function() {
         return +new Date();
@@ -454,11 +472,12 @@ Ext.Date.monthNumbers = {
         return utilDate.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
     },
 
-<span id='Ext-Date-property-formatContainsHourInfo'>    /**
+<span id='Ext-Date-method-formatContainsHourInfo'>    /**
 </span>     * Checks if the specified format contains hour information
      * @param {String} format The format to check
      * @return {Boolean} True if the format contains hour information
      * @static
+     * @method
      */
     formatContainsHourInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -468,13 +487,14 @@ Ext.Date.monthNumbers = {
         };
     })(),
 
-<span id='Ext-Date-property-formatContainsDateInfo'>    /**
+<span id='Ext-Date-method-formatContainsDateInfo'>    /**
 </span>     * Checks if the specified format contains information about
      * anything other than the time.
      * @param {String} format The format to check
      * @return {Boolean} True if the format contains information about
      * date/day information.
      * @static
+     * @method
      */
     formatContainsDateInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -865,8 +885,8 @@ dt = Ext.Date.parse(&quot;2006-02-29 03:20:01&quot;, &quot;Y-m-d H:i:s&quot;, tr
                 + &quot;y = ty &gt; Ext.Date.y2kYear ? 1900 + ty : 2000 + ty;\n&quot;, // 2-digit year
             s:&quot;(\\d{1,2})&quot;
         },
-<span id='Ext-Date-property-a'>        /**
-</span>         * In the am/pm parsing routines, we allow both upper and lower case
+        /*
+         * In the am/pm parsing routines, we allow both upper and lower case
          * even though it doesn't exactly match the spec. It gives much more flexibility
          * in being able to specify case insensitive regexes.
          */
@@ -1080,11 +1100,12 @@ dt = Ext.Date.parse(&quot;2006-02-29 03:20:01&quot;, &quot;Y-m-d H:i:s&quot;, tr
         return num + date.getDate() - 1;
     },
 
-<span id='Ext-Date-property-getWeekOfYear'>    /**
+<span id='Ext-Date-method-getWeekOfYear'>    /**
 </span>     * Get the numeric ISO-8601 week number of the year.
      * (equivalent to the format specifier 'W', but without a leading zero).
      * @param {Date} date The date
      * @return {Number} 1 to 53
+     * @method
      */
     getWeekOfYear : (function() {
         // adapted from http://www.merlyn.demon.co.uk/weekcalc.htm
@@ -1164,10 +1185,11 @@ console.log(Ext.Date.dayNames[lastDay]); //output: 'Wednesday'
         return new Date(date.getFullYear(), date.getMonth(), utilDate.getDaysInMonth(date));
     },
 
-<span id='Ext-Date-property-getDaysInMonth'>    /**
+<span id='Ext-Date-method-getDaysInMonth'>    /**
 </span>     * Get the number of days in the current month, adjusted for leap year.
      * @param {Date} date The date
      * @return {Number} The number of days in the month.
+     * @method
      */
     getDaysInMonth: (function() {
         var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -1371,4 +1393,6 @@ console.log(dt2); //returns 'Tue Sep 26 2006 00:00:00'
 var utilDate = Ext.Date;
 
 })();
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

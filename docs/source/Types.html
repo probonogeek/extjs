@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Types'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Types'>/**
 </span> * @class Ext.data.Types
  * &lt;p&gt;This is s static class containing the system-supplied data types which may be given to a {@link Ext.data.Field Field}.&lt;p/&gt;
  * &lt;p&gt;The properties in this class are used as type indicators in the {@link Ext.data.Field Field} class, so to
@@ -55,7 +72,7 @@ Ext.define('Ext.data.Types', {
     var st = Ext.data.SortTypes;
     
     Ext.apply(Ext.data.Types, {
-<span id='Ext-data.Types-property-stripRe'>        /**
+<span id='Ext-data-Types-property-stripRe'>        /**
 </span>         * @type Regexp
          * @property stripRe
          * A regular expression for stripping non-numeric characters from a numeric value. Defaults to &lt;tt&gt;/[\$,%]/g&lt;/tt&gt;.
@@ -63,7 +80,7 @@ Ext.define('Ext.data.Types', {
          */
         stripRe: /[\$,%]/g,
         
-<span id='Ext-data.Types-property-AUTO'>        /**
+<span id='Ext-data-Types-property-AUTO'>        /**
 </span>         * @type Object.
          * @property AUTO
          * This data type means that no conversion is applied to the raw data before it is placed into a Record.
@@ -76,7 +93,7 @@ Ext.define('Ext.data.Types', {
             type: 'auto'
         },
 
-<span id='Ext-data.Types-property-STRING'>        /**
+<span id='Ext-data-Types-property-STRING'>        /**
 </span>         * @type Object.
          * @property STRING
          * This data type means that the raw data is converted into a String before it is placed into a Record.
@@ -90,7 +107,7 @@ Ext.define('Ext.data.Types', {
             type: 'string'
         },
 
-<span id='Ext-data.Types-property-INT'>        /**
+<span id='Ext-data-Types-property-INT'>        /**
 </span>         * @type Object.
          * @property INT
          * This data type means that the raw data is converted into an integer before it is placed into a Record.
@@ -105,7 +122,7 @@ Ext.define('Ext.data.Types', {
             type: 'int'
         },
         
-<span id='Ext-data.Types-property-FLOAT'>        /**
+<span id='Ext-data-Types-property-FLOAT'>        /**
 </span>         * @type Object.
          * @property FLOAT
          * This data type means that the raw data is converted into a number before it is placed into a Record.
@@ -120,7 +137,7 @@ Ext.define('Ext.data.Types', {
             type: 'float'
         },
         
-<span id='Ext-data.Types-property-BOOL'>        /**
+<span id='Ext-data-Types-property-BOOL'>        /**
 </span>         * @type Object.
          * @property BOOL
          * &lt;p&gt;This data type means that the raw data is converted into a boolean before it is placed into
@@ -138,7 +155,7 @@ Ext.define('Ext.data.Types', {
             type: 'bool'
         },
         
-<span id='Ext-data.Types-property-DATE'>        /**
+<span id='Ext-data-Types-property-DATE'>        /**
 </span>         * @type Object.
          * @property DATE
          * This data type means that the raw data is converted into a Date before it is placed into a Record.
@@ -173,7 +190,7 @@ Ext.define('Ext.data.Types', {
     });
     
     Ext.apply(Ext.data.Types, {
-<span id='Ext-data.Types-property-BOOLEAN'>        /**
+<span id='Ext-data-Types-property-BOOLEAN'>        /**
 </span>         * @type Object.
          * @property BOOLEAN
          * &lt;p&gt;This data type means that the raw data is converted into a boolean before it is placed into
@@ -182,7 +199,7 @@ Ext.define('Ext.data.Types', {
          */
         BOOLEAN: this.BOOL,
         
-<span id='Ext-data.Types-property-INTEGER'>        /**
+<span id='Ext-data-Types-property-INTEGER'>        /**
 </span>         * @type Object.
          * @property INTEGER
          * This data type means that the raw data is converted into an integer before it is placed into a Record.
@@ -190,7 +207,7 @@ Ext.define('Ext.data.Types', {
          */
         INTEGER: this.INT,
         
-<span id='Ext-data.Types-property-NUMBER'>        /**
+<span id='Ext-data-Types-property-NUMBER'>        /**
 </span>         * @type Object.
          * @property NUMBER
          * This data type means that the raw data is converted into a number before it is placed into a Record.
@@ -199,4 +216,6 @@ Ext.define('Ext.data.Types', {
         NUMBER: this.FLOAT    
     });
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

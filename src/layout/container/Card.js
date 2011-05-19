@@ -55,13 +55,13 @@
         // the panels (or "cards") within the layout
         items: [{
             id: 'card-0',
-            html: '<h1>Welcome to the Wizard!</h1><p>Step 1 of 3</p>'
+            html: '&lt;h1&gt;Welcome to the Wizard!&lt;/h1&gt;&lt;p&gt;Step 1 of 3&lt;/p&gt;'
         },{
             id: 'card-1',
-            html: '<p>Step 2 of 3</p>'
+            html: '&lt;p&gt;Step 2 of 3&lt;/p&gt;'
         },{
             id: 'card-2',
-            html: '<h1>Congratulations!</h1><p>Step 3 of 3 - Complete</p>'
+            html: '&lt;h1&gt;Congratulations!&lt;/h1&gt;&lt;p&gt;Step 3 of 3 - Complete&lt;/p&gt;'
         }],
         renderTo: Ext.getBody()
     });  

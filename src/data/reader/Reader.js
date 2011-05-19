@@ -344,8 +344,7 @@ Ext.define('Ext.data.reader.Reader', {
             id     = me.getId(node);
 
             
-            record = new Model(values, id);
-            record.raw = node;
+            record = new Model(values, id, node);
             records.push(record);
                 
             if (me.implicitIncludes) {

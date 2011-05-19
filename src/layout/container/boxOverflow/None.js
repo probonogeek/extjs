@@ -18,6 +18,8 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     handleOverflow: Ext.emptyFn,
 
     clearOverflow: Ext.emptyFn,
+    
+    onRemove: Ext.emptyFn,
 
     /**
      * @private
@@ -27,5 +29,7 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
      */
     getItem: function(item) {
         return this.layout.owner.getComponent(item);
-    }
+    },
+    
+    onRemove: Ext.emptyFn
 });

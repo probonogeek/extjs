@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Animate'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Animate'>/**
 </span> * @class Ext.util.Animate
  * This animation class is a mixin.
  * 
@@ -204,7 +221,7 @@ Ext.define('Ext.util.Animate', {
 
     uses: ['Ext.fx.Manager', 'Ext.fx.Anim'],
 
-<span id='Ext-util.Animate-method-animate'>    /**
+<span id='Ext-util-Animate-method-animate'>    /**
 </span>     * &lt;p&gt;Perform custom animation on this object.&lt;p&gt;
      * &lt;p&gt;This method is applicable to both the the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
      * It performs animated transitions of certain properties of this object over a specified timeline.&lt;/p&gt;
@@ -323,53 +340,58 @@ myWindow.header.el.on('click', function() {
         }, config);
     },
 
-<span id='Ext-util.Animate-property-stopFx'>    /**
-</span>     * Stops any running effects and clears this object's internal effects queue if it contains
+<span id='Ext-util-Animate-method-stopFx'>    /**
+</span>     * @deprecated 4.0 Replaced by {@link #stopAnimation}
+     * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
+     * @method
      */
     stopFx: Ext.Function.alias(Ext.util.Animate, 'stopAnimation'),
 
-<span id='Ext-util.Animate-method-stopAnimation'>    /**
-</span>     * @deprecated 4.0 Replaced by {@link #stopAnimation}
-     * Stops any running effects and clears this object's internal effects queue if it contains
+<span id='Ext-util-Animate-method-stopAnimation'>    /**
+</span>     * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
      */
     stopAnimation: function() {
         Ext.fx.Manager.stopAnimation(this.id);
+        return this;
     },
 
-<span id='Ext-util.Animate-method-syncFx'>    /**
+<span id='Ext-util-Animate-method-syncFx'>    /**
 </span>     * Ensures that all effects queued after syncFx is called on this object are
      * run concurrently.  This is the opposite of {@link #sequenceFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     syncFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: true
         });
+        return this;
     },
 
-<span id='Ext-util.Animate-method-sequenceFx'>    /**
+<span id='Ext-util-Animate-method-sequenceFx'>    /**
 </span>     * Ensures that all effects queued after sequenceFx is called on this object are
      * run in sequence.  This is the opposite of {@link #syncFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     sequenceFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: false
         });
+        return this;
     },
 
-<span id='Ext-util.Animate-property-hasActiveFx'>    /**
+<span id='Ext-util-Animate-method-hasActiveFx'>    /**
 </span>     * @deprecated 4.0 Replaced by {@link #getActiveAnimation}
      * Returns thq current animation if this object has any effects actively running or queued, else returns false.
      * @return {Mixed} anim if element has active effects, else false
+     * @method
      */
     hasActiveFx: Ext.Function.alias(Ext.util.Animate, 'getActiveAnimation'),
 
-<span id='Ext-util.Animate-method-getActiveAnimation'>    /**
+<span id='Ext-util-Animate-method-getActiveAnimation'>    /**
 </span>     * Returns thq current animation if this object has any effects actively running or queued, else returns false.
      * @return {Mixed} anim if element has active effects, else false
      */
@@ -379,4 +401,6 @@ myWindow.header.el.on('click', function() {
 });
 
 // Apply Animate mixin manually until Element is defined in the proper 4.x way
-Ext.applyIf(Ext.core.Element.prototype, Ext.util.Animate.prototype);</pre></pre></body></html>
+Ext.applyIf(Ext.core.Element.prototype, Ext.util.Animate.prototype);</pre>
+</body>
+</html>

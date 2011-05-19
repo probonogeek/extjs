@@ -30,6 +30,9 @@ Ext.define('Ext.Img', {
         };
     },
     
+    // null out this function, we can't set any html inside the image
+    initRenderTpl: Ext.emptyFn,
+    
     /**
      * Updates the {@link #src} of the image
      */

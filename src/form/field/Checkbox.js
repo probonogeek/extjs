@@ -71,7 +71,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(true);
                     checkbox2.setValue(true);
                     checkbox3.setValue(true);
@@ -83,7 +83,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(false);
                     checkbox2.setValue(false);
                     checkbox3.setValue(false);
@@ -284,11 +284,9 @@ Ext.define('Ext.form.field.Checkbox', {
      * @return {Boolean/null} True if checked; otherwise either the {@link #uncheckedValue} or null.
      */
     getSubmitValue: function() {
-        return this.checked ? this.inputValue : (this.uncheckedValue || null);
-    },
-
-    getModelData: function() {
-        return this.getSubmitData();
+        var unchecked = this.uncheckedValue,
+            uncheckedVal = Ext.isDefined(unchecked) ? unchecked : null;
+        return this.checked ? this.inputValue : uncheckedVal;
     },
 
     /**

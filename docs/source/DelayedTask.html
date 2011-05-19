@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.DelayedTask-method-constructor'><span id='Ext-util.DelayedTask'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-DelayedTask-method-constructor'><span id='Ext-util-DelayedTask'>/**
 </span></span> * @class Ext.util.DelayedTask
  * 
  * The DelayedTask class provides a convenient way to &quot;buffer&quot; the execution of a method,
@@ -43,7 +60,7 @@ Ext.util.DelayedTask = function(fn, scope, args) {
             fn.apply(scope, args || []);
         };
 
-<span id='Ext-util.DelayedTask-method-delay'>    /**
+<span id='Ext-util-DelayedTask-method-delay'>    /**
 </span>     * Cancels any pending timeout and queues a new one
      * @param {Number} delay The milliseconds to delay
      * @param {Function} newFn (optional) Overrides function passed to constructor
@@ -59,7 +76,7 @@ Ext.util.DelayedTask = function(fn, scope, args) {
         id = setInterval(call, delay);
     };
 
-<span id='Ext-util.DelayedTask-method-cancel'>    /**
+<span id='Ext-util-DelayedTask-method-cancel'>    /**
 </span>     * Cancel the last queued timeout
      */
     this.cancel = function(){
@@ -68,4 +85,6 @@ Ext.util.DelayedTask = function(fn, scope, args) {
             id = null;
         }
     };
-};</pre></pre></body></html>
+};</pre>
+</body>
+</html>

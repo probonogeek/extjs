@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.Box'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-Box'>/**
 </span> * @class Ext.layout.container.Box
  * @extends Ext.layout.container.Container
  * &lt;p&gt;Base Class for HBoxLayout and VBoxLayout Classes. Generally it should not need to be used directly.&lt;/p&gt;
@@ -22,14 +39,14 @@ Ext.define('Ext.layout.container.Box', {
 
     /* End Definitions */
 
-<span id='Ext-layout.container.Box-cfg-animate'>    /**
+<span id='Ext-layout-container-Box-cfg-animate'>    /**
 </span>     * @cfg {Mixed} animate
      * &lt;p&gt;If truthy, child Component are &lt;i&gt;animated&lt;/i&gt; into position whenever the Container
      * is layed out. If this option is numeric, it is used as the animation duration in milliseconds.&lt;/p&gt;
      * &lt;p&gt;May be set as a property at any time.&lt;/p&gt;
      */
 
-<span id='Ext-layout.container.Box-cfg-defaultMargins'>    /**
+<span id='Ext-layout-container-Box-cfg-defaultMargins'>    /**
 </span>     * @cfg {Object} defaultMargins
      * &lt;p&gt;If the individual contained items do not have a &lt;tt&gt;margins&lt;/tt&gt;
      * property specified or margin specified via CSS, the default margins from this property will be
@@ -65,7 +82,7 @@ Ext.define('Ext.layout.container.Box', {
         left: 0
     },
 
-<span id='Ext-layout.container.Box-cfg-padding'>    /**
+<span id='Ext-layout-container-Box-cfg-padding'>    /**
 </span>     * @cfg {String} padding
      * &lt;p&gt;Sets the padding to be applied to all child items managed by this layout.&lt;/p&gt;
      * &lt;p&gt;This property must be specified as a string containing
@@ -86,7 +103,7 @@ Ext.define('Ext.layout.container.Box', {
     // documented in subclasses
     pack: 'start',
 
-<span id='Ext-layout.container.Box-cfg-pack'>    /**
+<span id='Ext-layout-container-Box-cfg-pack'>    /**
 </span>     * @cfg {String} pack
      * Controls how the child items of the container are packed together. Acceptable configuration values
      * for this property are:
@@ -99,7 +116,7 @@ Ext.define('Ext.layout.container.Box', {
      * side of container&lt;/div&gt;&lt;/li&gt;
      * &lt;/ul&gt;&lt;/div&gt;
      */
-<span id='Ext-layout.container.Box-cfg-flex'>    /**
+<span id='Ext-layout-container-Box-cfg-flex'>    /**
 </span>     * @cfg {Number} flex
      * This configuration option is to be applied to &lt;b&gt;child &lt;tt&gt;items&lt;/tt&gt;&lt;/b&gt; of the container managed
      * by this layout. Each child item with a &lt;tt&gt;flex&lt;/tt&gt; property will be flexed &lt;b&gt;horizontally&lt;/b&gt;
@@ -125,7 +142,7 @@ Ext.define('Ext.layout.container.Box', {
     // whether or not to reserve the availableSpaceOffset in layout calculations
     reserveOffset: true,
     
-<span id='Ext-layout.container.Box-cfg-clearInnerCtOnLayout'>    /**
+<span id='Ext-layout-container-Box-cfg-clearInnerCtOnLayout'>    /**
 </span>     * @cfg {Boolean} clearInnerCtOnLayout
      */
     clearInnerCtOnLayout: false,
@@ -158,7 +175,7 @@ Ext.define('Ext.layout.container.Box', {
         me.initOverflowHandler();
     },
 
-<span id='Ext-layout.container.Box-method-getChildBox'>    /**
+<span id='Ext-layout-container-Box-method-getChildBox'>    /**
 </span>     * @private
      * Returns the current size and positioning of the passed child item.
      * @param {Component} child The child Component to calculate the box for
@@ -174,7 +191,7 @@ Ext.define('Ext.layout.container.Box', {
         };
     },
 
-<span id='Ext-layout.container.Box-method-calculateChildBox'>    /**
+<span id='Ext-layout-container-Box-method-calculateChildBox'>    /**
 </span>     * @private
      * Calculates the size and positioning of the passed child item.
      * @param {Component} child The child Component to calculate the box for
@@ -194,7 +211,7 @@ Ext.define('Ext.layout.container.Box', {
         }
     },
 
-<span id='Ext-layout.container.Box-method-calculateChildBoxes'>    /**
+<span id='Ext-layout-container-Box-method-calculateChildBoxes'>    /**
 </span>     * @private
      * Calculates the size and positioning of each item in the box. This iterates over all of the rendered,
      * visible items and returns a height, width, top and left for each, as well as a reference to each. Also
@@ -475,8 +492,15 @@ Ext.define('Ext.layout.container.Box', {
             }
         };
     },
+    
+    onRemove: function(comp){
+        this.callParent(arguments);
+        if (this.overflowHandler) {
+            this.overflowHandler.onRemove(comp);
+        }
+    },
 
-<span id='Ext-layout.container.Box-method-initOverflowHandler'>    /**
+<span id='Ext-layout-container-Box-method-initOverflowHandler'>    /**
 </span>     * @private
      */
     initOverflowHandler: function() {
@@ -489,7 +513,7 @@ Ext.define('Ext.layout.container.Box', {
         }
 
         var handlerType = 'None';
-        if (handler &amp;&amp; handler.type != undefined) {
+        if (handler &amp;&amp; handler.type !== undefined) {
             handlerType = handler.type;
         }
 
@@ -501,7 +525,7 @@ Ext.define('Ext.layout.container.Box', {
         this.overflowHandler = Ext.create('Ext.layout.container.boxOverflow.' + handlerType, this, handler);
     },
 
-<span id='Ext-layout.container.Box-method-onLayout'>    /**
+<span id='Ext-layout-container-Box-method-onLayout'>    /**
 </span>     * @private
      * Runs the child box calculations and caches them in childBoxCache. Subclasses can used these cached values
      * when laying out
@@ -547,7 +571,7 @@ Ext.define('Ext.layout.container.Box', {
             me.overflowHandler.clearOverflow();
         }
 
-<span id='Ext-layout.container.Box-property-layoutTargetLastSize'>        /**
+<span id='Ext-layout-container-Box-property-layoutTargetLastSize'>        /**
 </span>         * @private
          * @property layoutTargetLastSize
          * @type Object
@@ -556,7 +580,7 @@ Ext.define('Ext.layout.container.Box', {
          */
         me.layoutTargetLastSize = targetSize;
 
-<span id='Ext-layout.container.Box-property-childBoxCache'>        /**
+<span id='Ext-layout-container-Box-property-childBoxCache'>        /**
 </span>         * @private
          * @property childBoxCache
          * @type Array
@@ -570,7 +594,7 @@ Ext.define('Ext.layout.container.Box', {
         me.handleTargetOverflow(targetSize);
     },
 
-<span id='Ext-layout.container.Box-method-updateChildBoxes'>    /**
+<span id='Ext-layout-container-Box-method-updateChildBoxes'>    /**
 </span>     * Resizes and repositions each child component
      * @param {Array} boxes The box measurements
      */
@@ -694,7 +718,7 @@ Ext.define('Ext.layout.container.Box', {
         }
     },
 
-<span id='Ext-layout.container.Box-method-updateInnerCtSize'>    /**
+<span id='Ext-layout-container-Box-method-updateInnerCtSize'>    /**
 </span>     * @private
      * Called by onRender just before the child components are sized and positioned. This resizes the innerCt
      * to make sure all child items fit within it. We call this before sizing the children because if our child
@@ -749,7 +773,7 @@ Ext.define('Ext.layout.container.Box', {
         }
     },
 
-<span id='Ext-layout.container.Box-method-handleTargetOverflow'>    /**
+<span id='Ext-layout-container-Box-method-handleTargetOverflow'>    /**
 </span>     * @private
      * This should be called after onLayout of any BoxLayout subclass. If the target's overflow is not set to 'hidden',
      * we need to lay out a second time because the scrollbars may have modified the height and width of the layout
@@ -828,11 +852,13 @@ Ext.define('Ext.layout.container.Box', {
         item.margins = margins;
     },
 
-<span id='Ext-layout.container.Box-method-destroy'>    /**
+<span id='Ext-layout-container-Box-method-destroy'>    /**
 </span>     * @private
      */
     destroy: function() {
         Ext.destroy(this.overflowHandler);
         this.callParent(arguments);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

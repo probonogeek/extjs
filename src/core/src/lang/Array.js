@@ -34,7 +34,7 @@
     }
 
     ExtArray = Ext.Array = {
-        /*
+        /**
          * Iterates an array or an iterable value and invoke the given callback function for each item.
 
     var countries = ['Vietnam', 'Singapore', 'United States', 'Russia'];

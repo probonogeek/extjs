@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.BelongsToAssociation'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-BelongsToAssociation'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.BelongsToAssociation
  * @extends Ext.data.Association
@@ -120,7 +137,7 @@ Ext.define('Ext.data.BelongsToAssociation', {
 
     alias: 'association.belongsto',
 
-<span id='Ext-data.BelongsToAssociation-cfg-foreignKey'>    /**
+<span id='Ext-data-BelongsToAssociation-cfg-foreignKey'>    /**
 </span>     * @cfg {String} foreignKey The name of the foreign key on the owner model that links it to the associated
      * model. Defaults to the lowercased name of the associated model plus &quot;_id&quot;, e.g. an association with a
      * model called Product would set up a product_id foreign key.
@@ -146,17 +163,17 @@ product.getOrder(); // Will make a call to the server asking for order_id 22
      * &lt;/code&gt;&lt;/pre&gt;
      */
 
-<span id='Ext-data.BelongsToAssociation-cfg-getterName'>    /**
+<span id='Ext-data-BelongsToAssociation-cfg-getterName'>    /**
 </span>     * @cfg {String} getterName The name of the getter function that will be added to the local model's prototype.
      * Defaults to 'get' + the name of the foreign model, e.g. getCategory
      */
 
-<span id='Ext-data.BelongsToAssociation-cfg-setterName'>    /**
+<span id='Ext-data-BelongsToAssociation-cfg-setterName'>    /**
 </span>     * @cfg {String} setterName The name of the setter function that will be added to the local model's prototype.
      * Defaults to 'set' + the name of the foreign model, e.g. setCategory
      */
     
-<span id='Ext-data.BelongsToAssociation-cfg-type'>    /**
+<span id='Ext-data-BelongsToAssociation-cfg-type'>    /**
 </span>     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'belongsTo' to create a HasManyAssocation
      * &lt;pre&gt;&lt;code&gt;
@@ -187,7 +204,7 @@ associations: [{
         ownerProto[setterName] = me.createSetter();
     },
 
-<span id='Ext-data.BelongsToAssociation-method-createSetter'>    /**
+<span id='Ext-data-BelongsToAssociation-method-createSetter'>    /**
 </span>     * @private
      * Returns a setter function to be placed on the owner model's prototype
      * @return {Function} The setter function
@@ -216,7 +233,7 @@ associations: [{
         };
     },
 
-<span id='Ext-data.BelongsToAssociation-method-createGetter'>    /**
+<span id='Ext-data-BelongsToAssociation-method-createGetter'>    /**
 </span>     * @private
      * Returns a getter function to be placed on the owner model's prototype. We cache the loaded instance
      * the first time it is loaded so that subsequent calls to the getter always receive the same reference.
@@ -273,7 +290,7 @@ associations: [{
         };
     },
 
-<span id='Ext-data.BelongsToAssociation-method-read'>    /**
+<span id='Ext-data-BelongsToAssociation-method-read'>    /**
 </span>     * Read associated data
      * @private
      * @param {Ext.data.Model} record The record we're writing to
@@ -284,4 +301,6 @@ associations: [{
         record[this.instanceName] = reader.read([associationData]).records[0];
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

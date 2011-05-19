@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Area'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-series-Area'>/**
 </span> * @class Ext.chart.series.Area
  * @extends Ext.chart.series.Cartesian
  * 
@@ -94,7 +111,7 @@ Ext.define('Ext.chart.series.Area', {
     // @private Area charts are alyways stacked
     stacked: true,
 
-<span id='Ext-chart.series.Area-cfg-style'>    /**
+<span id='Ext-chart-series-Area-cfg-style'>    /**
 </span>     * @cfg {Object} style 
      * Append styling properties to this object for it to override theme properties.
      */
@@ -345,7 +362,7 @@ Ext.define('Ext.chart.series.Area', {
         };
     },
 
-<span id='Ext-chart.series.Area-method-drawSeries'>    /**
+<span id='Ext-chart-series-Area-method-drawSeries'>    /**
 </span>     * Draws the series for the current chart.
      */
     drawSeries: function() {
@@ -611,7 +628,7 @@ Ext.define('Ext.chart.series.Area', {
         return false;
     },
 
-<span id='Ext-chart.series.Area-method-highlightSeries'>    /**
+<span id='Ext-chart-series-Area-method-highlightSeries'>    /**
 </span>     * Highlight this entire series.
      * @param {Object} item Info about the item; same format as returned by #getItemForPoint.
      */
@@ -648,7 +665,7 @@ Ext.define('Ext.chart.series.Area', {
         }
     },
 
-<span id='Ext-chart.series.Area-method-unHighlightSeries'>    /**
+<span id='Ext-chart-series-Area-method-unHighlightSeries'>    /**
 </span>     * UnHighlight this entire series.
      * @param {Object} item Info about the item; same format as returned by #getItemForPoint.
      */
@@ -673,7 +690,7 @@ Ext.define('Ext.chart.series.Area', {
         }
     },
 
-<span id='Ext-chart.series.Area-method-highlightItem'>    /**
+<span id='Ext-chart-series-Area-method-highlightItem'>    /**
 </span>     * Highlight the specified item. If no item is provided the whole series will be highlighted.
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -693,7 +710,7 @@ Ext.define('Ext.chart.series.Area', {
         }, true);
     },
 
-<span id='Ext-chart.series.Area-method-unHighlightItem'>    /**
+<span id='Ext-chart-series-Area-method-unHighlightItem'>    /**
 </span>     * un-highlights the specified item. If no item is provided it will un-highlight the entire series.
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -725,7 +742,7 @@ Ext.define('Ext.chart.series.Area', {
         }
     },
 
-<span id='Ext-chart.series.Area-method-getLegendColor'>    /**
+<span id='Ext-chart-series-Area-method-getLegendColor'>    /**
 </span>     * Returns the color of the series (to be displayed as color for the series legend item).
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -734,4 +751,6 @@ Ext.define('Ext.chart.series.Area', {
         return me.colorArrayStyle[index % me.colorArrayStyle.length];
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

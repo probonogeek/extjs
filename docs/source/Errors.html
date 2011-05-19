@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Errors'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Errors'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.Errors
  * @extends Ext.util.MixedCollection
@@ -16,14 +33,14 @@ var errors = myModel.validate();
 errors.isValid(); //false
 
 errors.length; //2
-errors.getByField('name');  // [{field: 'name',  error: 'must be present'}]
-errors.getByField('title'); // [{field: 'title', error: 'is too short'}]
+errors.getByField('name');  // [{field: 'name',  message: 'must be present'}]
+errors.getByField('title'); // [{field: 'title', message: 'is too short'}]
 &lt;/code&gt;&lt;/pre&gt;
  */
 Ext.define('Ext.data.Errors', {
     extend: 'Ext.util.MixedCollection',
     
-<span id='Ext-data.Errors-method-isValid'>    /**
+<span id='Ext-data-Errors-method-isValid'>    /**
 </span>     * Returns true if there are no errors in the collection
      * @return {Boolean} 
      */
@@ -31,7 +48,7 @@ Ext.define('Ext.data.Errors', {
         return this.length === 0;
     },
     
-<span id='Ext-data.Errors-method-getByField'>    /**
+<span id='Ext-data-Errors-method-getByField'>    /**
 </span>     * Returns all of the errors for the given field
      * @param {String} fieldName The field to get errors for
      * @return {Array} All errors for the given field
@@ -51,4 +68,6 @@ Ext.define('Ext.data.Errors', {
         return errors;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

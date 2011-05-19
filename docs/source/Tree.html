@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Tree-method-constructor'><span id='Ext-data.Tree'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Tree-method-constructor'><span id='Ext-data-Tree'>/**
 </span></span> * @class Ext.data.Tree
  * 
  * This class is used as a container for a series of nodes. The nodes themselves maintain
@@ -19,7 +36,7 @@ Ext.define('Ext.data.Tree', {
         observable: &quot;Ext.util.Observable&quot;
     },
 
-<span id='Ext-data.Tree-property-root'>    /**
+<span id='Ext-data-Tree-property-root'>    /**
 </span>     * The root node for this tree
      * @type Node
      */
@@ -37,7 +54,7 @@ Ext.define('Ext.data.Tree', {
         }
     },
 
-<span id='Ext-data.Tree-method-getRootNode'>    /**
+<span id='Ext-data-Tree-method-getRootNode'>    /**
 </span>     * Returns the root node for this tree.
      * @return {Ext.data.NodeInterface}
      */
@@ -45,7 +62,7 @@ Ext.define('Ext.data.Tree', {
         return this.root;
     },
 
-<span id='Ext-data.Tree-method-setRootNode'>    /**
+<span id='Ext-data-Tree-method-setRootNode'>    /**
 </span>     * Sets the root node for this tree.
      * @param {Ext.data.NodeInterface} node
      * @return {Ext.data.NodeInterface} The root node
@@ -61,7 +78,7 @@ Ext.define('Ext.data.Tree', {
             node.updateInfo();
             
             me.relayEvents(node, [
-<span id='Ext-data.Tree-event-append'>                /**
+<span id='Ext-data-Tree-event-append'>                /**
 </span>                 * @event append
                  * Fires when a new child node is appended to a node in this tree.
                  * @param {Tree} tree The owner tree
@@ -71,7 +88,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;append&quot;,
 
-<span id='Ext-data.Tree-event-remove'>                /**
+<span id='Ext-data-Tree-event-remove'>                /**
 </span>                 * @event remove
                  * Fires when a child node is removed from a node in this tree.
                  * @param {Tree} tree The owner tree
@@ -80,7 +97,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;remove&quot;,
 
-<span id='Ext-data.Tree-event-move'>                /**
+<span id='Ext-data-Tree-event-move'>                /**
 </span>                 * @event move
                  * Fires when a node is moved to a new location in the tree
                  * @param {Tree} tree The owner tree
@@ -91,7 +108,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;move&quot;,
 
-<span id='Ext-data.Tree-event-insert'>                /**
+<span id='Ext-data-Tree-event-insert'>                /**
 </span>                 * @event insert
                  * Fires when a new child node is inserted in a node in this tree.
                  * @param {Tree} tree The owner tree
@@ -101,7 +118,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;insert&quot;,
 
-<span id='Ext-data.Tree-event-beforeappend'>                /**
+<span id='Ext-data-Tree-event-beforeappend'>                /**
 </span>                 * @event beforeappend
                  * Fires before a new child is appended to a node in this tree, return false to cancel the append.
                  * @param {Tree} tree The owner tree
@@ -110,7 +127,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;beforeappend&quot;,
 
-<span id='Ext-data.Tree-event-beforeremove'>                /**
+<span id='Ext-data-Tree-event-beforeremove'>                /**
 </span>                 * @event beforeremove
                  * Fires before a child is removed from a node in this tree, return false to cancel the remove.
                  * @param {Tree} tree The owner tree
@@ -119,7 +136,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;beforeremove&quot;,
 
-<span id='Ext-data.Tree-event-beforemove'>                /**
+<span id='Ext-data-Tree-event-beforemove'>                /**
 </span>                 * @event beforemove
                  * Fires before a node is moved to a new location in the tree. Return false to cancel the move.
                  * @param {Tree} tree The owner tree
@@ -130,7 +147,7 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;beforemove&quot;,
 
-<span id='Ext-data.Tree-event-beforeinsert'>                /**
+<span id='Ext-data-Tree-event-beforeinsert'>                /**
 </span>                 * @event beforeinsert
                  * Fires before a new child is inserted in a node in this tree, return false to cancel the insert.
                  * @param {Tree} tree The owner tree
@@ -140,35 +157,35 @@ Ext.define('Ext.data.Tree', {
                  */
                 &quot;beforeinsert&quot;,
 
-<span id='Ext-data.Tree-event-expand'>                 /**
+<span id='Ext-data-Tree-event-expand'>                 /**
 </span>                  * @event expand
                   * Fires when this node is expanded.
                   * @param {Node} this The expanding node
                   */
                  &quot;expand&quot;,
 
-<span id='Ext-data.Tree-event-collapse'>                 /**
+<span id='Ext-data-Tree-event-collapse'>                 /**
 </span>                  * @event collapse
                   * Fires when this node is collapsed.
                   * @param {Node} this The collapsing node
                   */
                  &quot;collapse&quot;,
 
-<span id='Ext-data.Tree-event-beforeexpand'>                 /**
+<span id='Ext-data-Tree-event-beforeexpand'>                 /**
 </span>                  * @event beforeexpand
                   * Fires before this node is expanded.
                   * @param {Node} this The expanding node
                   */
                  &quot;beforeexpand&quot;,
 
-<span id='Ext-data.Tree-event-beforecollapse'>                 /**
+<span id='Ext-data-Tree-event-beforecollapse'>                 /**
 </span>                  * @event beforecollapse
                   * Fires before this node is collapsed.
                   * @param {Node} this The collapsing node
                   */
                  &quot;beforecollapse&quot; ,
 
-<span id='Ext-data.Tree-event-rootchange'>                 /**
+<span id='Ext-data-Tree-event-rootchange'>                 /**
 </span>                  * @event rootchange
                   * Fires whenever the root node is changed in the tree.
                   * @param {Ext.data.Model} root The new root
@@ -191,7 +208,7 @@ Ext.define('Ext.data.Tree', {
         return node;
     },
     
-<span id='Ext-data.Tree-method-flatten'>    /**
+<span id='Ext-data-Tree-method-flatten'>    /**
 </span>     * Flattens all the nodes in the tree into an array.
      * @private
      * @return {Array} The flattened nodes.
@@ -209,7 +226,7 @@ Ext.define('Ext.data.Tree', {
         return nodes;
     },
     
-<span id='Ext-data.Tree-method-onNodeInsert'>    /**
+<span id='Ext-data-Tree-method-onNodeInsert'>    /**
 </span>     * Fired when a node is inserted into the root or one of it's children
      * @private
      * @param {Ext.data.NodeInterface} parent The parent node
@@ -219,7 +236,7 @@ Ext.define('Ext.data.Tree', {
         this.registerNode(node);
     },
     
-<span id='Ext-data.Tree-method-onNodeAppend'>    /**
+<span id='Ext-data-Tree-method-onNodeAppend'>    /**
 </span>     * Fired when a node is appended into the root or one of it's children
      * @private
      * @param {Ext.data.NodeInterface} parent The parent node
@@ -229,7 +246,7 @@ Ext.define('Ext.data.Tree', {
         this.registerNode(node);
     },
     
-<span id='Ext-data.Tree-method-onNodeRemove'>    /**
+<span id='Ext-data-Tree-method-onNodeRemove'>    /**
 </span>     * Fired when a node is removed from the root or one of it's children
      * @private
      * @param {Ext.data.NodeInterface} parent The parent node
@@ -239,7 +256,7 @@ Ext.define('Ext.data.Tree', {
         this.unregisterNode(node);
     },
 
-<span id='Ext-data.Tree-method-getNodeById'>    /**
+<span id='Ext-data-Tree-method-getNodeById'>    /**
 </span>     * Gets a node in this tree by its id.
      * @param {String} id
      * @return {Ext.data.NodeInterface} The match node.
@@ -248,7 +265,7 @@ Ext.define('Ext.data.Tree', {
         return this.nodeHash[id];
     },
 
-<span id='Ext-data.Tree-method-registerNode'>    /**
+<span id='Ext-data-Tree-method-registerNode'>    /**
 </span>     * Registers a node with the tree
      * @private
      * @param {Ext.data.NodeInterface} The node to register
@@ -257,7 +274,7 @@ Ext.define('Ext.data.Tree', {
         this.nodeHash[node.getId() || node.internalId] = node;
     },
 
-<span id='Ext-data.Tree-method-unregisterNode'>    /**
+<span id='Ext-data-Tree-method-unregisterNode'>    /**
 </span>     * Unregisters a node with the tree
      * @private
      * @param {Ext.data.NodeInterface} The node to unregister
@@ -266,7 +283,7 @@ Ext.define('Ext.data.Tree', {
         delete this.nodeHash[node.getId() || node.internalId];
     },
     
-<span id='Ext-data.Tree-method-sort'>    /**
+<span id='Ext-data-Tree-method-sort'>    /**
 </span>     * Sorts this tree
      * @private
      * @param {Function} sorterFn The function to use for sorting
@@ -276,7 +293,7 @@ Ext.define('Ext.data.Tree', {
         this.getRootNode().sort(sorterFn, recursive);
     },
     
-<span id='Ext-data.Tree-method-filter'>     /**
+<span id='Ext-data-Tree-method-filter'>     /**
 </span>     * Filters this tree
      * @private
      * @param {Function} sorterFn The function to use for filtering
@@ -285,4 +302,6 @@ Ext.define('Ext.data.Tree', {
     filter: function(filters, recursive) {
         this.getRootNode().filter(filters, recursive);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

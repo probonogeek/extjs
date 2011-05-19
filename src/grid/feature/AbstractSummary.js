@@ -75,13 +75,18 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
      * @param {Object} data The current data
      * @return {String} The value to be rendered
      */
-    getColumnValue: function(column, data){
-        var comp = Ext.getCmp(column.id),
-            value = data[column.dataIndex],
-            renderer = comp.summaryRenderer || comp.renderer;
-            
+    getColumnValue: function(column, summaryData){
+        var comp     = Ext.getCmp(column.id),
+            value    = summaryData[column.dataIndex],
+            renderer = comp.summaryRenderer;
+
         if (renderer) {
-            value = renderer.call(comp.scope || this, value, data, column.dataIndex);
+            value = renderer.call(
+                comp.scope || this,
+                value,
+                summaryData,
+                column.dataIndex
+            );
         }
         return value;
     },

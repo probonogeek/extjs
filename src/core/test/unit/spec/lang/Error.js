@@ -1,6 +1,5 @@
 describe("Ext.Error", function() { 
-    var global,
-        consoleWarningMsg = 'An uncaught error was raised with the following data:';
+    var global;
 
     beforeEach(function() {
         global = Ext.global;
@@ -9,6 +8,9 @@ describe("Ext.Error", function() {
         Ext.global = {
             console: {
                 dir: function(s) {
+                    return s;
+                },
+                error: function(s) {
                     return s;
                 },
                 warn: function(s) {
@@ -35,13 +37,13 @@ describe("Ext.Error", function() {
                 }
             });
         
-            it("should log a warning to the console", function() {
-                spyOn(Ext.global.console, 'warn');
+            it("should log an error to the console", function() {
+                spyOn(Ext.global.console, 'error');
                 try {
                     Ext.Error.raise('foo');
                 } 
                 catch (err) {}
-                expect(Ext.global.console.warn).toHaveBeenCalledWith(consoleWarningMsg);
+                expect(Ext.global.console.error).toHaveBeenCalledWith('foo');
             });
         
             it("should log the error object to the console", function() {
@@ -99,12 +101,12 @@ describe("Ext.Error", function() {
             });
         
             it("should log a warning to the console", function() {
-                spyOn(Ext.global.console, 'warn');
+                spyOn(Ext.global.console, 'error');
                 try {
                     Ext.Error.raise({msg: 'foo'});
                 } 
                 catch (err) {}
-                expect(Ext.global.console.warn).toHaveBeenCalledWith(consoleWarningMsg);
+                expect(Ext.global.console.error).toHaveBeenCalledWith('foo');
             });
         
             it("should log the error object to the console", function() {

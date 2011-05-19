@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-direct.PollingProvider'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-direct-PollingProvider'>/**
 </span> * @class Ext.direct.PollingProvider
  * @extends Ext.direct.JsonProvider
  *
@@ -43,19 +60,19 @@ Ext.define('Ext.direct.PollingProvider', {
     
     /* End Definitions */
     
-<span id='Ext-direct.PollingProvider-cfg-interval'>    /**
+<span id='Ext-direct-PollingProvider-cfg-interval'>    /**
 </span>     * @cfg {Number} interval
      * How often to poll the server-side in milliseconds (defaults to &lt;tt&gt;3000&lt;/tt&gt; - every
      * 3 seconds).
      */
     interval: 3000,
 
-<span id='Ext-direct.PollingProvider-cfg-baseParams'>    /**
+<span id='Ext-direct-PollingProvider-cfg-baseParams'>    /**
 </span>     * @cfg {Object} baseParams An object containing properties which are to be sent as parameters
      * on every polling request
      */
     
-<span id='Ext-direct.PollingProvider-cfg-url'>    /**
+<span id='Ext-direct-PollingProvider-cfg-url'>    /**
 </span>     * @cfg {String/Function} url
      * The url which the PollingProvider should contact with each request. This can also be
      * an imported Ext.Direct method which will accept the baseParams as its only argument.
@@ -65,14 +82,14 @@ Ext.define('Ext.direct.PollingProvider', {
     constructor : function(config){
         this.callParent(arguments);
         this.addEvents(
-<span id='Ext-direct.PollingProvider-event-beforepoll'>            /**
+<span id='Ext-direct-PollingProvider-event-beforepoll'>            /**
 </span>             * @event beforepoll
              * Fired immediately before a poll takes place, an event handler can return false
              * in order to cancel the poll.
              * @param {Ext.direct.PollingProvider}
              */
             'beforepoll',            
-<span id='Ext-direct.PollingProvider-event-poll'>            /**
+<span id='Ext-direct-PollingProvider-event-poll'>            /**
 </span>             * @event poll
              * This event has not yet been implemented.
              * @param {Ext.direct.PollingProvider}
@@ -86,7 +103,7 @@ Ext.define('Ext.direct.PollingProvider', {
         return !!this.pollTask;
     },
 
-<span id='Ext-direct.PollingProvider-method-connect'>    /**
+<span id='Ext-direct-PollingProvider-method-connect'>    /**
 </span>     * Connect to the server-side and begin the polling process. To handle each
      * response subscribe to the data event.
      */
@@ -120,7 +137,7 @@ Ext.define('Ext.direct.PollingProvider', {
         }
     },
 
-<span id='Ext-direct.PollingProvider-method-disconnect'>    /**
+<span id='Ext-direct-PollingProvider-method-disconnect'>    /**
 </span>     * Disconnect from the server-side and stop the polling process. The disconnect
      * event will be fired on a successful disconnect.
      */
@@ -155,4 +172,6 @@ Ext.define('Ext.direct.PollingProvider', {
             }));
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

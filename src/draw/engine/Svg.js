@@ -451,8 +451,8 @@ Ext.define('Ext.draw.engine.Svg', {
         attrs = me.scrubAttrs(sprite) || {};
 
         // if (sprite.dirtyPath) {
-        sprite.bbox.plain = 0;
-        sprite.bbox.transform = 0;
+            sprite.bbox.plain = 0;
+            sprite.bbox.transform = 0;
             if (sprite.type == "circle" || sprite.type == "ellipse") {
                 attrs.cx = attrs.cx || attrs.x;
                 attrs.cy = attrs.cy || attrs.y;
@@ -461,9 +461,13 @@ Ext.define('Ext.draw.engine.Svg', {
                 attrs.rx = attrs.ry = attrs.r;
             }
             else if (sprite.type == "path" && attrs.d) {
-                attrs.d = Ext.draw.Draw.pathToAbsolute(attrs.d);
+                attrs.d = Ext.draw.Draw.pathToString(Ext.draw.Draw.pathToAbsolute(attrs.d));
+                
             }
             sprite.dirtyPath = false;
+        // }
+        // else {
+        //     delete attrs.d;
         // }
 
         if (attrs['clip-rect']) {
@@ -485,7 +489,7 @@ Ext.define('Ext.draw.engine.Svg', {
         }
         for (key in attrs) {
             if (attrs.hasOwnProperty(key) && attrs[key] != null) {
-                el.dom.setAttribute(key, String(attrs[key]));
+                el.dom.setAttribute(key, attrs[key]);
             }
         }
         if (sprite.type == 'text') {

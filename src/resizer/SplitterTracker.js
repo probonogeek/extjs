@@ -8,6 +8,8 @@ Ext.define('Ext.resizer.SplitterTracker', {
     extend: 'Ext.dd.DragTracker',
     requires: ['Ext.util.Region'],
     enabled: true,
+    
+    overlayCls: Ext.baseCSSPrefix + 'resizable-overlay',
 
     getPrevCmp: function() {
         var splitter = this.getSplitter();
@@ -22,37 +24,46 @@ Ext.define('Ext.resizer.SplitterTracker', {
     // ensure the tracker is enabled, store boxes of previous and next
     // components and calculate the constrain region
     onBeforeStart: function(e) {
-        var prevCmp = this.getPrevCmp(),
-            nextCmp = this.getNextCmp();
+        var me = this,
+            prevCmp = me.getPrevCmp(),
+            nextCmp = me.getNextCmp();
 
         // SplitterTracker is disabled if any of its adjacents are collapsed.
         if (nextCmp.collapsed || prevCmp.collapsed) {
             return false;
         }
         // store boxes of previous and next
-        this.prevBox  = prevCmp.getEl().getBox();
-        this.nextBox  = nextCmp.getEl().getBox();
-        this.constrainTo = this.calculateConstrainRegion();
+        me.prevBox  = prevCmp.getEl().getBox();
+        me.nextBox  = nextCmp.getEl().getBox();
+        me.constrainTo = me.calculateConstrainRegion();
     },
 
     // We move the splitter el. Add the proxy class.
     onStart: function(e) {
-        var splitter = this.getSplitter();
+        var splitter = this.getSplitter(),
+            overlay;
+            
         splitter.addCls(splitter.baseCls + '-active');
+        overlay = this.overlay =  Ext.getBody().createChild({
+            cls: this.overlayCls, 
+            html: '&#160;'
+        });
+        overlay.unselectable();
+        overlay.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
+        overlay.show();
     },
 
     // calculate the constrain Region in which the splitter el may be moved.
     calculateConstrainRegion: function() {
-        var splitter   = this.getSplitter(),
-            topPad     = 0,
-            bottomPad  = 0,
+        var me         = this,
+            splitter   = me.getSplitter(),
             splitWidth = splitter.getWidth(),
             defaultMin = splitter.defaultSplitMin,
             orient     = splitter.orientation,
-            prevBox    = this.prevBox,
-            prevCmp    = this.getPrevCmp(),
-            nextBox    = this.nextBox,
-            nextCmp    = this.getNextCmp(),
+            prevBox    = me.prevBox,
+            prevCmp    = me.getPrevCmp(),
+            nextBox    = me.nextBox,
+            nextCmp    = me.getNextCmp(),
             // prev and nextConstrainRegions are the maximumBoxes minus the
             // minimumBoxes. The result is always the intersection
             // of these two boxes.
@@ -102,16 +113,17 @@ Ext.define('Ext.resizer.SplitterTracker', {
         }
 
         // intersection of the two regions to provide region draggable
-        return  prevConstrainRegion.intersect(nextConstrainRegion);
+        return prevConstrainRegion.intersect(nextConstrainRegion);
     },
 
     // Performs the actual resizing of the previous and next components
     performResize: function(e) {
-        var offset   = this.getOffset('dragTarget'),
-            splitter = this.getSplitter(),
+        var me       = this,
+            offset   = me.getOffset('dragTarget'),
+            splitter = me.getSplitter(),
             orient   = splitter.orientation,
-            prevCmp  = this.getPrevCmp(),
-            nextCmp  = this.getNextCmp(),
+            prevCmp  = me.getPrevCmp(),
+            nextCmp  = me.getNextCmp(),
             owner    = splitter.ownerCt,
             layout   = owner.getLayout();
 
@@ -122,13 +134,13 @@ Ext.define('Ext.resizer.SplitterTracker', {
             if (prevCmp) {
                 if (!prevCmp.maintainFlex) {
                     delete prevCmp.flex;
-                    prevCmp.setSize(this.prevBox.width + offset[0], prevCmp.getHeight());
+                    prevCmp.setSize(me.prevBox.width + offset[0], prevCmp.getHeight());
                 }
             }
             if (nextCmp) {
                 if (!nextCmp.maintainFlex) {
                     delete nextCmp.flex;
-                    nextCmp.setSize(this.nextBox.width - offset[0], nextCmp.getHeight());
+                    nextCmp.setSize(me.nextBox.width - offset[0], nextCmp.getHeight());
                 }
             }
         // verticals
@@ -136,13 +148,13 @@ Ext.define('Ext.resizer.SplitterTracker', {
             if (prevCmp) {
                 if (!prevCmp.maintainFlex) {
                     delete prevCmp.flex;
-                    prevCmp.setSize(prevCmp.getWidth(), this.prevBox.height + offset[1]);
+                    prevCmp.setSize(prevCmp.getWidth(), me.prevBox.height + offset[1]);
                 }
             }
             if (nextCmp) {
                 if (!nextCmp.maintainFlex) {
                     delete nextCmp.flex;
-                    nextCmp.setSize(prevCmp.getWidth(), this.nextBox.height - offset[1]);
+                    nextCmp.setSize(prevCmp.getWidth(), me.nextBox.height - offset[1]);
                 }
             }
         }
@@ -152,23 +164,30 @@ Ext.define('Ext.resizer.SplitterTracker', {
 
     // perform the resize and remove the proxy class from the splitter el
     onEnd: function(e) {
-        var splitter = this.getSplitter();
+        var me = this,
+            splitter = me.getSplitter();
+            
         splitter.removeCls(splitter.baseCls + '-active');
-        this.performResize();
+         if (me.overlay) {
+             me.overlay.remove();
+             delete me.overlay;
+        }
+        me.performResize();
     },
 
     // Track the proxy and set the proper XY coordinates
     // while constraining the drag
     onDrag: function(e) {
-        var offset    = this.getOffset('dragTarget'),
-            splitter  = this.getSplitter(),
+        var me        = this,
+            offset    = me.getOffset('dragTarget'),
+            splitter  = me.getSplitter(),
             splitEl   = splitter.getEl(),
             orient    = splitter.orientation;
 
         if (orient === "vertical") {
-            splitEl.setX(this.startRegion.left + offset[0]);
+            splitEl.setX(me.startRegion.left + offset[0]);
         } else {
-            splitEl.setY(this.startRegion.top + offset[1]);
+            splitEl.setY(me.startRegion.top + offset[1]);
         }
     },
 

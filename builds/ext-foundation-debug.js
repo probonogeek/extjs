@@ -139,7 +139,7 @@ licensing@sencha.com
 
         /**
          * This method deprecated. Use {@link Ext#define Ext.define} instead.
-         * @function
+         * @method
          * @param {Function} superclass
          * @param {Object} overrides
          * @return {Function} The subclass constructor from the <tt>overrides</tt> parameter, or a generated one if not provided.
@@ -353,6 +353,7 @@ licensing@sencha.com
          *
          * @param {Mixed} target The target to test
          * @return {Boolean}
+         * @method
          */
         isArray: ('isArray' in Array) ? Array.isArray : function(value) {
             return toString.call(value) === '[object Array]';
@@ -371,6 +372,7 @@ licensing@sencha.com
          * Returns true if the passed value is a JavaScript Object, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
@@ -395,6 +397,7 @@ licensing@sencha.com
          * Returns true if the passed value is a JavaScript Function, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isFunction:
         // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back to using
@@ -448,7 +451,7 @@ licensing@sencha.com
          * @return {Boolean}
          */
         isElement: function(value) {
-            return value ? value.nodeType !== undefined : false;
+            return value ? value.nodeType === 1 : false;
         },
 
         /**
@@ -575,6 +578,7 @@ licensing@sencha.com
     /**
      * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
+     * @method
      */
     Ext.type = Ext.typeOf;
 
@@ -611,7 +615,7 @@ licensing@sencha.com
 (function() {
 
 // Current core version
-var version = '4.0.0', Version;
+var version = '4.0.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**
@@ -910,6 +914,7 @@ Ext.String = {
      * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
      * @param {String} value The string to encode
      * @return {String} The encoded text
+     * @method
      */
     htmlEncode: (function() {
         var entities = {
@@ -936,6 +941,7 @@ Ext.String = {
      * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
      * @param {String} value The string to decode
      * @return {String} The decoded text
+     * @method
      */
     htmlDecode: (function() {
         var entities = {
@@ -1219,7 +1225,7 @@ Ext.num = function() {
     }
 
     ExtArray = Ext.Array = {
-        /*
+        /**
          * Iterates an array or an iterable value and invoke the given callback function for each item.
 
     var countries = ['Vietnam', 'Singapore', 'United States', 'Russia'];
@@ -2826,6 +2832,7 @@ var ExtObject = Ext.Object = {
 
      * @param {Object} object
      * @return {Array} An array of keys from the object
+     * @method
      */
     getKeys: ('keys' in Object.prototype) ? Object.keys : function(object) {
         var keys = [],
@@ -3041,6 +3048,7 @@ Ext.Date = {
     /**
      * Returns the current timestamp
      * @return {Date} The current timestamp
+     * @method
      */
     now: Date.now || function() {
         return +new Date();
@@ -3369,6 +3377,7 @@ Ext.Date.monthNumbers = {
      * @param {String} format The format to check
      * @return {Boolean} True if the format contains hour information
      * @static
+     * @method
      */
     formatContainsHourInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -3385,6 +3394,7 @@ Ext.Date.monthNumbers = {
      * @return {Boolean} True if the format contains information about
      * date/day information.
      * @static
+     * @method
      */
     formatContainsDateInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -3775,7 +3785,7 @@ dt = Ext.Date.parse("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
                 + "y = ty > Ext.Date.y2kYear ? 1900 + ty : 2000 + ty;\n", // 2-digit year
             s:"(\\d{1,2})"
         },
-        /**
+        /*
          * In the am/pm parsing routines, we allow both upper and lower case
          * even though it doesn't exactly match the spec. It gives much more flexibility
          * in being able to specify case insensitive regexes.
@@ -3995,6 +4005,7 @@ dt = Ext.Date.parse("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
      * (equivalent to the format specifier 'W', but without a leading zero).
      * @param {Date} date The date
      * @return {Number} 1 to 53
+     * @method
      */
     getWeekOfYear : (function() {
         // adapted from http://www.merlyn.demon.co.uk/weekcalc.htm
@@ -4078,6 +4089,7 @@ console.log(Ext.Date.dayNames[lastDay]); //output: 'Wednesday'
      * Get the number of days in the current month, adjusted for leap year.
      * @param {Date} date The date
      * @return {Number} The number of days in the month.
+     * @method
      */
     getDaysInMonth: (function() {
         var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -4303,37 +4315,37 @@ var Base = Ext.Base = function() {};
          * Get the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#statics},
          * `this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#statics}
          * for a detailed comparison
-
-    Ext.define('My.Cat', {
-        statics: {
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            alert(this.self.speciesName); / dependent on 'this'
-
-            return this;
-        },
-
-        clone: function() {
-            return new this.self();
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-        statics: {
-            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
-        }
-    });
-
-    var cat = new My.Cat();                     // alerts 'Cat'
-    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *
+         *         constructor: function() {
+         *             alert(this.self.speciesName); / dependent on 'this'
+         *
+         *             return this;
+         *         },
+         *
+         *         clone: function() {
+         *             return new this.self();
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *         statics: {
+         *             speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                     // alerts 'Cat'
+         *     var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
+         *
          * @type Class
          * @protected
          * @markdown
@@ -4353,27 +4365,27 @@ var Base = Ext.Base = function() {};
 
         /**
          * Initialize configuration for this class. a typical example:
-
-    Ext.define('My.awesome.Class', {
-        // The default config
-        config: {
-            name: 'Awesome',
-            isAwesome: true
-        },
-
-        constructor: function(config) {
-            this.initConfig(config);
-
-            return this;
-        }
-    });
-
-    var awesome = new My.awesome.Class({
-        name: 'Super Awesome'
-    });
-
-    alert(awesome.getName()); // 'Super Awesome'
-
+         *
+         *     Ext.define('My.awesome.Class', {
+         *         // The default config
+         *         config: {
+         *             name: 'Awesome',
+         *             isAwesome: true
+         *         },
+         *
+         *         constructor: function(config) {
+         *             this.initConfig(config);
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     var awesome = new My.awesome.Class({
+         *         name: 'Super Awesome'
+         *     });
+         *
+         *     alert(awesome.getName()); // 'Super Awesome'
+         *
          * @protected
          * @param {Object} config
          * @return {Object} mixins The mixin prototypes as key - value pairs
@@ -4415,38 +4427,38 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the parent's overridden method. For example:
-
-    Ext.define('My.own.A', {
-        constructor: function(test) {
-            alert(test);
-        }
-    });
-
-    Ext.define('My.own.B', {
-        extend: 'My.own.A',
-
-        constructor: function(test) {
-            alert(test);
-
-            this.callParent([test + 1]);
-        }
-    });
-
-    Ext.define('My.own.C', {
-        extend: 'My.own.B',
-
-        constructor: function() {
-            alert("Going to call parent's overriden constructor...");
-
-            this.callParent(arguments);
-        }
-    });
-
-    var a = new My.own.A(1); // alerts '1'
-    var b = new My.own.B(1); // alerts '1', then alerts '2'
-    var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
-                             // alerts '2', then alerts '3'
-
+         *
+         *     Ext.define('My.own.A', {
+         *         constructor: function(test) {
+         *             alert(test);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.B', {
+         *         extend: 'My.own.A',
+         *
+         *         constructor: function(test) {
+         *             alert(test);
+         *
+         *             this.callParent([test + 1]);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.C', {
+         *         extend: 'My.own.B',
+         *
+         *         constructor: function() {
+         *             alert("Going to call parent's overriden constructor...");
+         *
+         *             this.callParent(arguments);
+         *         }
+         *     });
+         *
+         *     var a = new My.own.A(1); // alerts '1'
+         *     var b = new My.own.B(1); // alerts '1', then alerts '2'
+         *     var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
+         *                              // alerts '2', then alerts '3'
+         *
          * @protected
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * from the current method, for example: `this.callParent(arguments)`
@@ -4489,58 +4501,58 @@ var Base = Ext.Base = function() {};
          * Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#self},
          * `this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what
          * `this` points to during run-time
-
-    Ext.define('My.Cat', {
-        statics: {
-            totalCreated: 0,
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            var statics = this.statics();
-
-            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
-                                            // equivalent to: My.Cat.speciesName
-
-            alert(this.self.speciesName);   // dependent on 'this'
-
-            statics.totalCreated++;
-
-            return this;
-        },
-
-        clone: function() {
-            var cloned = new this.self;                      // dependent on 'this'
-
-            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
-
-            return cloned;
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-
-        statics: {
-            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
-        },
-
-        constructor: function() {
-            this.callParent();
-        }
-    });
-
-    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
-
-    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
-    alert(clone.groupName);                 // alerts 'Cat'
-
-    alert(My.Cat.totalCreated);             // alerts 3
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             totalCreated: 0,
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *  
+         *         constructor: function() {
+         *             var statics = this.statics();
+         *  
+         *             alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
+         *                                             // equivalent to: My.Cat.speciesName
+         *  
+         *             alert(this.self.speciesName);   // dependent on 'this'
+         *  
+         *             statics.totalCreated++;
+         *  
+         *             return this;
+         *         },
+         *  
+         *         clone: function() {
+         *             var cloned = new this.self;                      // dependent on 'this'
+         *  
+         *             cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
+         *  
+         *             return cloned;
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *  
+         *         statics: {
+         *             speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         },
+         *  
+         *         constructor: function() {
+         *             this.callParent();
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
+         *
+         *     var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
+         *     alert(clone.groupName);                 // alerts 'Cat'
+         *
+         *     alert(My.Cat.totalCreated);             // alerts 3
+         *
          * @protected
          * @return {Class}
          * @markdown
@@ -4558,31 +4570,31 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the original method that was previously overridden with {@link Ext.Base#override}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *   
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *   
+         *             var instance = this.callOverridden();
+         *   
+         *             alert("Meeeeoooowwww");
+         *   
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * @return {Mixed} Returns the result after calling the overridden method
          * @markdown
@@ -4617,13 +4629,15 @@ var Base = Ext.Base = function() {};
     Ext.apply(Ext.Base, {
         /**
          * Create a new instance of this Class.
-Ext.define('My.cool.Class', {
-    ...
-});
-
-My.cool.Class.create({
-    someConfig: true
-});
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *      
+         *     My.cool.Class.create({
+         *         someConfig: true
+         *     });
+         *
          * @property create
          * @static
          * @type Function
@@ -4672,17 +4686,17 @@ My.cool.Class.create({
 
         /**
          * Add / override static properties of this class.
-
-    Ext.define('My.cool.Class', {
-        ...
-    });
-
-    My.cool.Class.addStatics({
-        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
-        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
-        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
-    });
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *
+         *     My.cool.Class.addStatics({
+         *         someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
+         *         method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
+         *         method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
+         *     });
+         *
          * @property addStatics
          * @static
          * @type Function
@@ -4701,22 +4715,22 @@ My.cool.Class.create({
 
         /**
          * Add methods / properties to the prototype of this class.
-
-    Ext.define('My.awesome.Cat', {
-        constructor: function() {
-            ...
-        }
-    });
-
-     My.awesome.Cat.implement({
-         meow: function() {
-            alert('Meowww...');
-         }
-     });
-
-     var kitty = new My.awesome.Cat;
-     kitty.meow();
-
+         *
+         *     Ext.define('My.awesome.Cat', {
+         *         constructor: function() {
+         *             ...
+         *         }
+         *     });
+         *
+         *      My.awesome.Cat.implement({
+         *          meow: function() {
+         *             alert('Meowww...');
+         *          }
+         *      });
+         *
+         *      var kitty = new My.awesome.Cat;
+         *      kitty.meow();
+         *
          * @property implement
          * @static
          * @type Function
@@ -4761,25 +4775,25 @@ My.cool.Class.create({
 
         /**
          * Borrow another class' members to the prototype of this class.
-
-Ext.define('Bank', {
-    money: '$$$',
-    printMoney: function() {
-        alert('$$$$$$$');
-    }
-});
-
-Ext.define('Thief', {
-    ...
-});
-
-Thief.borrow(Bank, ['money', 'printMoney']);
-
-var steve = new Thief();
-
-alert(steve.money); // alerts '$$$'
-steve.printMoney(); // alerts '$$$$$$$'
-
+         *
+         *     Ext.define('Bank', {
+         *         money: '$$$',
+         *         printMoney: function() {
+         *             alert('$$$$$$$');
+         *         }
+         *     });
+         *
+         *     Ext.define('Thief', {
+         *         ...
+         *     });
+         *
+         *     Thief.borrow(Bank, ['money', 'printMoney']);
+         *
+         *     var steve = new Thief();
+         *
+         *     alert(steve.money); // alerts '$$$'
+         *     steve.printMoney(); // alerts '$$$$$$$'
+         *
          * @property borrow
          * @static
          * @type Function
@@ -4806,31 +4820,31 @@ steve.printMoney(); // alerts '$$$$$$$'
         /**
          * Override prototype members of this class. Overridden methods can be invoked via
          * {@link Ext.Base#callOverridden}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *
+         *             var instance = this.callOverridden();
+         *
+         *             alert("Meeeeoooowwww");
+         *
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @property override
          * @static
          * @type Function
@@ -4921,15 +4935,15 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Get the current class' name in string format.
-
-    Ext.define('My.cool.Class', {
-        constructor: function() {
-            alert(this.self.getName()); // alerts 'My.cool.Class'
-        }
-    });
-
-    My.cool.Class.getName(); // 'My.cool.Class'
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         constructor: function() {
+         *             alert(this.self.getName()); // alerts 'My.cool.Class'
+         *         }
+         *     });
+         *
+         *     My.cool.Class.getName(); // 'My.cool.Class'
+         *
          * @return {String} className
          * @markdown
          */
@@ -4939,25 +4953,25 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Create aliases for existing prototype methods. Example:
-
-    Ext.define('My.cool.Class', {
-        method1: function() { ... },
-        method2: function() { ... }
-    });
-
-    var test = new My.cool.Class();
-
-    My.cool.Class.createAlias({
-        method3: 'method1',
-        method4: 'method2'
-    });
-
-    test.method3(); // test.method1()
-
-    My.cool.Class.createAlias('method5', 'method3');
-
-    test.method5(); // test.method3() -> test.method1()
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         method1: function() { ... },
+         *         method2: function() { ... }
+         *     });
+         *
+         *     var test = new My.cool.Class();
+         *
+         *     My.cool.Class.createAlias({
+         *         method3: 'method1',
+         *         method4: 'method2'
+         *     });
+         *
+         *     test.method3(); // test.method1()
+         *
+         *     My.cool.Class.createAlias('method5', 'method3');
+         *
+         *     test.method5(); // test.method3() -> test.method1()
+         *
          * @property createAlias
          * @static
          * @type Function
@@ -6946,6 +6960,7 @@ This process will be automated with Sencha Command, to be released and documente
          * @param {String/Object} name See {@link Ext.Function#flexSetter flexSetter}
          * @param {String} path See {@link Ext.Function#flexSetter flexSetter}
          * @return {Ext.Loader} this
+         * @method
          * @markdown
          */
         setPath: flexSetter(function(name, path) {
@@ -7715,11 +7730,11 @@ This process will be automated with Sencha Command, to be released and documente
 A wrapper class for the native JavaScript Error object that adds a few useful capabilities for handling
 errors in an Ext application. When you use Ext.Error to {@link #raise} an error from within any class that
 uses the Ext 4 class system, the Error class can automatically add the source class and method from which
-the error was raised. It also includes logic to automatically log the eroor to the console, if available, 
+the error was raised. It also includes logic to automatically log the eroor to the console, if available,
 with additional metadata about the error. In all cases, the error will always be thrown at the end so that
 execution will halt.
 
-Ext.Error also offers a global error {@link #handle handling} method that can be overridden in order to 
+Ext.Error also offers a global error {@link #handle handling} method that can be overridden in order to
 handle application-wide errors in a single spot. You can optionally {@link #ignore} errors altogether,
 although in a real application it's usually a better idea to override the handling function and perform
 logging or some other method of reporting the errors in a way that is meaningful to the application.
@@ -7729,7 +7744,7 @@ At its simplest you can simply raise an error as a simple string from within any
 #Example usage:#
 
     Ext.Error.raise('Something bad happened!');
-    
+
 If raised from plain JavaScript code, the error will be logged to the console (if available) and the message
 displayed. In most cases however you'll be raising errors from within a class, and it may often be useful to add
 additional metadata about the error being raised.  The {@link #raise} method can also take a config object.
@@ -7737,7 +7752,7 @@ In this form the `msg` attribute becomes the error description, and any other da
 added to the error object and, if the console is available, logged to the console for inspection.
 
 #Example usage:#
- 
+
     Ext.define('Ext.Foo', {
         doSomething: function(option){
             if (someCondition === false) {
@@ -7759,10 +7774,10 @@ If a console is available (that supports the `console.dir` function) you'll see 
     msg:            "You cannot do that!"
     sourceClass:   "Ext.Foo"
     sourceMethod:  "doSomething"
-    
+
     uncaught exception: You cannot do that!
 
-As you can see, the error will report exactly where it was raised and will include as much information as the 
+As you can see, the error will report exactly where it was raised and will include as much information as the
 raising code can usefully provide.
 
 If you want to handle all application errors globally you can simply override the static {@link handle} method
@@ -7804,12 +7819,32 @@ be preferable to supply a custom error {@link #handle handling} function instead
         ignore: false,
 
         /**
-Raise an error that can include additional data and supports automatic console logging if available. 
-You can pass a string error message or an object with the `msg` attribute which will be used as the 
-error message. The object can contain any other name-value attributes (or objects) to be logged 
+         * @property notify
+Static flag that can be used to globally control error notification to the user. Unlike
+Ex.Error.ignore, this does not effect exceptions. They are still thrown. This value can be
+set to false to disable the alert notification (default is true for IE6 and IE7).
+
+Only the first error will generate an alert. Internally this flag is set to false when the
+first error occurs prior to displaying the alert.
+
+This flag is not used in a release build.
+
+#Example usage:#
+
+    Ext.Error.notify = false;
+
+         * @markdown
+         * @static
+         */
+        //notify: Ext.isIE6 || Ext.isIE7,
+
+        /**
+Raise an error that can include additional data and supports automatic console logging if available.
+You can pass a string error message or an object with the `msg` attribute which will be used as the
+error message. The object can contain any other name-value attributes (or objects) to be logged
 along with the error.
 
-Note that after displaying the error message a JavaScript error will ultimately be thrown so that 
+Note that after displaying the error message a JavaScript error will ultimately be thrown so that
 execution will halt.
 
 #Example usage:#
@@ -7829,7 +7864,7 @@ execution will halt.
             }
         }
     });
-         * @param {String/Object} err The error message string, or an object containing the 
+         * @param {String/Object} err The error message string, or an object containing the
          * attribute "msg" that will be used as the error message. Any other data included in
          * the object will also be logged to the browser console, if available.
          * @static
@@ -7853,28 +7888,15 @@ execution will halt.
             }
 
             if (Ext.Error.handle(err) !== true) {
-                var global = Ext.global,
-                    con = global.console,
-                    msg = Ext.Error.prototype.toString.call(err),
-                    noConsoleMsg = 'An uncaught error was raised: "' + msg + 
-                        '". Use Firebug or Webkit console for additional details.';
+                var msg = Ext.Error.prototype.toString.call(err);
 
-                if (con) {
-                    if (con.dir) {
-                        con.warn('An uncaught error was raised with the following data:');
-                        con.dir(err);
-                    }
-                    else {
-                        con.warn(noConsoleMsg);
-                    }
-                    if (con.error) {
-                        con.error(msg);
-                    }
-                }
-                else if (global.alert){
-                    global.alert(noConsoleMsg);
-                }
-                
+                Ext.log({
+                    msg: msg,
+                    level: 'error',
+                    dump: err,
+                    stack: true
+                });
+
                 throw new Ext.Error(err);
             }
         },
@@ -7905,9 +7927,12 @@ error to the browser, otherwise the error will be thrown and execution will halt
         }
     },
 
+    // This is the standard property that is the name of the constructor.
+    name: 'Ext.Error',
+
     /**
      * @constructor
-     * @param {String/Object} config The error message string, or an object containing the 
+     * @param {String/Object} config The error message string, or an object containing the
      * attribute "msg" that will be used as the error message. Any other data included in
      * the object will be applied to the error instance and logged to the browser console, if available.
      */
@@ -7915,12 +7940,18 @@ error to the browser, otherwise the error will be thrown and execution will halt
         if (Ext.isString(config)) {
             config = { msg: config };
         }
-        Ext.apply(this, config);
+
+        var me = this;
+
+        Ext.apply(me, config);
+
+        me.message = me.message || me.msg; // 'message' is standard ('msg' is non-standard)
+        // note: the above does not work in old WebKit (me.message is readonly) (Safari 4)
     },
 
     /**
-Provides a custom string representation of the error object. This is an override of the base JavaScript 
-`Object.toString` method, which is useful so that when logged to the browser console, an error object will 
+Provides a custom string representation of the error object. This is an override of the base JavaScript
+`Object.toString` method, which is useful so that when logged to the browser console, an error object will
 be displayed with a useful message instead of `[object Object]`, the default `toString` result.
 
 The default implementation will include the error message along with the raising class and method, if available,
@@ -7939,6 +7970,81 @@ a particular error instance, if you want to provide a custom description that wi
         return className + methodName + msg;
     }
 });
+
+/*
+ * This mechanism is used to notify the user of the first error encountered on the page. This
+ * was previously internal to Ext.Error.raise and is a desirable feature since errors often
+ * slip silently under the radar. It cannot live in Ext.Error.raise since there are times
+ * where exceptions are handled in a try/catch.
+ */
+(function () {
+    var prevOnError, timer, errors = 0,
+        extraordinarilyBad = /(out of stack)|(too much recursion)|(stack overflow)|(out of memory)/i,
+        win = Ext.global;
+
+    if (typeof window === 'undefined') {
+        return; // build system or some such environment...
+    }
+
+    // This method is called to notify the user of the current error status.
+    function notify () {
+        var counters = Ext.log.counters,
+            supports = Ext.supports,
+            hasOnError = supports && supports.WindowOnError; // TODO - timing
+
+        // Put log counters to the status bar (for most browsers):
+        if (counters && (counters.error + counters.warn + counters.info + counters.log)) {
+            var msg = [ 'Logged Errors:',counters.error, 'Warnings:',counters.warn,
+                        'Info:',counters.info, 'Log:',counters.log].join(' ');
+            if (errors) {
+                msg = '*** Errors: ' + errors + ' - ' + msg;
+            } else if (counters.error) {
+                msg = '*** ' + msg;
+            }
+            win.status = msg;
+        }
+
+        // Display an alert on the first error:
+        if (!Ext.isDefined(Ext.Error.notify)) {
+            Ext.Error.notify = Ext.isIE6 || Ext.isIE7; // TODO - timing
+        }
+        if (Ext.Error.notify && (hasOnError ? errors : (counters && counters.error))) {
+            Ext.Error.notify = false;
+
+            if (timer) {
+                win.clearInterval(timer); // ticks can queue up so stop...
+                timer = null;
+            }
+
+            alert('Unhandled error on page: See console or log');
+            poll();
+        }
+    }
+
+    // Sets up polling loop. This is the only way to know about errors in some browsers
+    // (Opera/Safari) and is the only way to update the status bar for warnings and other
+    // non-errors.
+    function poll () {
+        timer = win.setInterval(notify, 1000);
+    }
+
+    // window.onerror is ideal (esp in IE) because you get full context. This is harmless
+    // otherwise (never called) which is good because you cannot feature detect it.
+    prevOnError = win.onerror || Ext.emptyFn;
+    win.onerror = function (message) {
+        ++errors;
+
+        if (!extraordinarilyBad.test(message)) {
+            // too much recursion + our alert right now = crash IE
+            // our polling loop will pick it up even if we don't alert now
+            notify();
+        }
+
+        return prevOnError.apply(this, arguments);
+    };
+    poll();
+})();
+
 
 
 

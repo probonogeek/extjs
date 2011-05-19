@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.AbstractCard'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-AbstractCard'>/**
 </span> * @class Ext.layout.container.AbstractCard
  * @extends Ext.layout.container.Fit
  * &lt;p&gt;This layout manages multiple child Components, each is fit to the Container, where only a single child Component
@@ -39,7 +56,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
 
     hideInactive: true,
 
-<span id='Ext-layout.container.AbstractCard-cfg-deferredRender'>    /**
+<span id='Ext-layout-container-AbstractCard-cfg-deferredRender'>    /**
 </span>     * @cfg {Boolean} deferredRender
      * True to render each contained item at the time it becomes active, false to render all contained items
      * as soon as the layout is rendered (defaults to false).  If there is a significant amount of content or
@@ -88,7 +105,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return (itemEl &amp;&amp; itemEl.parentNode === (target.dom || target)) || false;
     },
 
-<span id='Ext-layout.container.AbstractCard-method-getActiveItem'>    /**
+<span id='Ext-layout-container-AbstractCard-method-getActiveItem'>    /**
 </span>     * Return the active (visible) component in the layout.
      * @returns {Ext.Component}
      */
@@ -147,7 +164,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return newAnim || owner.cardSwitchAnimation;
     },
 
-<span id='Ext-layout.container.AbstractCard-method-getNext'>    /**
+<span id='Ext-layout-container-AbstractCard-method-getNext'>    /**
 </span>     * Return the active (visible) component in the layout to the next card
      * @returns {Ext.Component}
      */
@@ -160,7 +177,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return items[index + 1] || (wrap ? items[0] : false);
     },
 
-<span id='Ext-layout.container.AbstractCard-method-next'>    /**
+<span id='Ext-layout-container-AbstractCard-method-next'>    /**
 </span>     * Sets the active (visible) component in the layout to the next card
      */
     next: function(anim, wrap) {
@@ -170,7 +187,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return this.setActiveItem(this.getNext(wrap), anim);
     },
 
-<span id='Ext-layout.container.AbstractCard-method-getPrev'>    /**
+<span id='Ext-layout-container-AbstractCard-method-getPrev'>    /**
 </span>     * Return the active (visible) component in the layout to the previous card
      * @returns {Ext.Component}
      */
@@ -183,7 +200,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return items[index - 1] || (wrap ? items[items.length - 1] : false);
     },
 
-<span id='Ext-layout.container.AbstractCard-method-prev'>    /**
+<span id='Ext-layout-container-AbstractCard-method-prev'>    /**
 </span>     * Sets the active (visible) component in the layout to the previous card
      */
     prev: function(anim, wrap) {
@@ -193,4 +210,6 @@ Ext.define('Ext.layout.container.AbstractCard', {
         return this.setActiveItem(this.getPrev(wrap), anim);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

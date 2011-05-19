@@ -49,7 +49,7 @@ Ext.define('Ext.window.MessageBox', {
         'Ext.layout.container.HBox',
         'Ext.ProgressBar'
     ],
-    
+
     alternateClassName: 'Ext.MessageBox',
 
     alias: 'widget.messagebox',
@@ -171,7 +171,7 @@ Ext.define('Ext.window.MessageBox', {
         wait: 'Loading...',
         alert: 'Attention'
     },
-    
+
     iconHeight: 35,
 
     makeButton: function(btnIdx) {
@@ -295,7 +295,7 @@ Ext.define('Ext.window.MessageBox', {
     onPromptKey: function(textField, e) {
         var me = this,
             blur;
-            
+
         if (e.keyCode === Ext.EventObject.RETURN || e.keyCode === 10) {
             if (me.msgButtons.ok.isVisible()) {
                 blur = true;
@@ -304,7 +304,7 @@ Ext.define('Ext.window.MessageBox', {
                 me.msgButtons.yes.handler.call(me, me.msgButtons.yes);
                 blur = true;
             }
-            
+
             if (blur) {
                 me.textField.blur();
             }
@@ -326,7 +326,7 @@ Ext.define('Ext.window.MessageBox', {
 
         // Default to allowing the Window to take focus.
         delete me.defaultFocus;
-        
+
         // clear any old animateTarget
         me.animateTarget = cfg.animateTarget || undefined;
 
@@ -342,6 +342,7 @@ Ext.define('Ext.window.MessageBox', {
             me.width = initialWidth;
             me.render(Ext.getBody());
         } else {
+            me.hidden = false;
             me.setSize(initialWidth, me.maxHeight);
         }
         me.setPosition(-10000, -10000);
@@ -508,7 +509,7 @@ icon: Ext.window.MessageBox.INFO
      */
     show: function(cfg) {
         var me = this;
-            
+
         me.reconfigure(cfg);
         me.addCls(cfg.cls);
         if (cfg.animateTarget) {
@@ -520,11 +521,11 @@ icon: Ext.window.MessageBox.INFO
         }
         return me;
     },
-    
+
     afterShow: function(){
         if (this.animateTarget) {
             this.center();
-        }    
+        }
         this.callParent(arguments);
     },
 
@@ -536,7 +537,7 @@ icon: Ext.window.MessageBox.INFO
         if (!Ext.isDefined(me.frameWidth)) {
             me.frameWidth = me.el.getWidth() - me.body.getWidth();
         }
-        
+
         // reset to the original dimensions
         icon.setHeight(iconHeight);
 

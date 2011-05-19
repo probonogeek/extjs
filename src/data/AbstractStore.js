@@ -136,7 +136,8 @@ Ext.define('Ext.data.AbstractStore', {
     
     //documented above
     constructor: function(config) {
-        var me = this;
+        var me = this,
+            filters;
         
         me.addEvents(
             /**
@@ -211,6 +212,7 @@ Ext.define('Ext.data.AbstractStore', {
         );
         
         Ext.apply(me, config);
+        // don't use *config* anymore from here on... use *me* instead...
 
         /**
          * Temporary cache in which removed model instances are kept until successfully synchronised with a Proxy,
@@ -222,7 +224,7 @@ Ext.define('Ext.data.AbstractStore', {
         me.removed = [];
 
         me.mixins.observable.constructor.apply(me, arguments);
-        me.model = Ext.ModelManager.getModel(config.model || me.model);
+        me.model = Ext.ModelManager.getModel(me.model);
 
         /**
          * @property modelDefaults
@@ -250,7 +252,7 @@ Ext.define('Ext.data.AbstractStore', {
         }
 
         //ensures that the Proxy is instantiated correctly
-        me.setProxy(config.proxy || me.proxy || me.model.getProxy());
+        me.setProxy(me.proxy || me.model.getProxy());
 
         if (me.id && !me.storeId) {
             me.storeId = me.id;
@@ -268,8 +270,9 @@ Ext.define('Ext.data.AbstractStore', {
          * @property filters
          * @type Ext.util.MixedCollection
          */
+        filters = me.decodeFilters(me.filters);
         me.filters = Ext.create('Ext.util.MixedCollection');
-        me.filters.addAll(me.decodeFilters(config.filters));
+        me.filters.addAll(filters);
     },
 
     /**
@@ -472,7 +475,10 @@ Ext.define('Ext.data.AbstractStore', {
         return item.dirty === true && item.phantom !== true && item.isValid();
     },
 
-    //returns any records that have been removed from the store but not yet destroyed on the proxy
+    /**
+     * Returns any records that have been removed from the store but not yet destroyed on the proxy.
+     * @return {Array} The removed Model instances
+     */
     getRemovedRecords: function() {
         return this.removed;
     },
@@ -702,6 +708,7 @@ Ext.define('Ext.data.AbstractStore', {
      * Removes all records from the store. This method does a "fast remove",
      * individual remove events are not called. The {@link #clear} event is
      * fired upon completion.
+     * @method
      */
     removeAll: Ext.emptyFn,
     // individual substores should implement a "fast" remove

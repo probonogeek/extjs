@@ -268,10 +268,9 @@ Ext.define('Ext.data.Store', {
     groupDir: "ASC",
 
     /**
+     * @cfg {Number} pageSize
      * The number of records considered to form a 'page'. This is used to power the built-in
      * paging using the nextPage and previousPage functions. Defaults to 25.
-     * @property pageSize
-     * @type Number
      */
     pageSize: 25,
 
@@ -324,7 +323,8 @@ Ext.define('Ext.data.Store', {
         config = config || {};
 
         var me = this,
-            groupers = config.groupers,
+            groupers = config.groupers || me.groupers,
+            groupField = config.groupField || me.groupField,
             proxy,
             data;
             
@@ -380,10 +380,10 @@ Ext.define('Ext.data.Store', {
             delete config.data;
         }
         
-        if (!groupers && config.groupField) {
+        if (!groupers && groupField) {
             groupers = [{
-                property : config.groupField,
-                direction: config.groupDir
+                property : groupField,
+                direction: config.groupDir || me.groupDir
             }];
         }
         delete config.groupers;
@@ -397,6 +397,7 @@ Ext.define('Ext.data.Store', {
         me.groupers.addAll(me.decodeGroupers(groupers));
 
         this.callParent([config]);
+        // don't use *config* anymore from here on... use *me* instead...
         
         if (me.groupers.items.length) {
             me.sort(me.groupers.items, 'prepend', false);
@@ -1010,7 +1011,7 @@ store.load(function(records, operation, success) {
                 original,
                 index;
 
-            /**
+            /*
              * Loop over each record returned from the server. Assume they are
              * returned in order of how they were sent. If we find a matching
              * record, replace it with the newly created one.
@@ -1679,7 +1680,6 @@ store.load(function(records, operation, success) {
                 sorters = me.getSorters();
                 start = me.guaranteedStart;
                 end = me.guaranteedEnd;
-                range;
                 
                 if (sorters.length) {
                     prefetchData.sort(sorters);

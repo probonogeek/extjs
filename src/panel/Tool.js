@@ -152,7 +152,7 @@ Ext.define('Ext.panel.Tool', {
             'up'
         ];
         
-        if (me.id && Ext.Array.indexOf(types, me.id) > -1) {
+        if (me.id && Ext.Array.indexOf(types, me.id) > -1 && Ext.global.console) {
             Ext.global.console.warn('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
         }
         //</debug>

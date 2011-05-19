@@ -19,37 +19,37 @@ var Base = Ext.Base = function() {};
          * Get the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#statics},
          * `this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#statics}
          * for a detailed comparison
-
-    Ext.define('My.Cat', {
-        statics: {
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            alert(this.self.speciesName); / dependent on 'this'
-
-            return this;
-        },
-
-        clone: function() {
-            return new this.self();
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-        statics: {
-            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
-        }
-    });
-
-    var cat = new My.Cat();                     // alerts 'Cat'
-    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *
+         *         constructor: function() {
+         *             alert(this.self.speciesName); / dependent on 'this'
+         *
+         *             return this;
+         *         },
+         *
+         *         clone: function() {
+         *             return new this.self();
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *         statics: {
+         *             speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                     // alerts 'Cat'
+         *     var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
+         *
          * @type Class
          * @protected
          * @markdown
@@ -69,27 +69,27 @@ var Base = Ext.Base = function() {};
 
         /**
          * Initialize configuration for this class. a typical example:
-
-    Ext.define('My.awesome.Class', {
-        // The default config
-        config: {
-            name: 'Awesome',
-            isAwesome: true
-        },
-
-        constructor: function(config) {
-            this.initConfig(config);
-
-            return this;
-        }
-    });
-
-    var awesome = new My.awesome.Class({
-        name: 'Super Awesome'
-    });
-
-    alert(awesome.getName()); // 'Super Awesome'
-
+         *
+         *     Ext.define('My.awesome.Class', {
+         *         // The default config
+         *         config: {
+         *             name: 'Awesome',
+         *             isAwesome: true
+         *         },
+         *
+         *         constructor: function(config) {
+         *             this.initConfig(config);
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     var awesome = new My.awesome.Class({
+         *         name: 'Super Awesome'
+         *     });
+         *
+         *     alert(awesome.getName()); // 'Super Awesome'
+         *
          * @protected
          * @param {Object} config
          * @return {Object} mixins The mixin prototypes as key - value pairs
@@ -131,38 +131,38 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the parent's overridden method. For example:
-
-    Ext.define('My.own.A', {
-        constructor: function(test) {
-            alert(test);
-        }
-    });
-
-    Ext.define('My.own.B', {
-        extend: 'My.own.A',
-
-        constructor: function(test) {
-            alert(test);
-
-            this.callParent([test + 1]);
-        }
-    });
-
-    Ext.define('My.own.C', {
-        extend: 'My.own.B',
-
-        constructor: function() {
-            alert("Going to call parent's overriden constructor...");
-
-            this.callParent(arguments);
-        }
-    });
-
-    var a = new My.own.A(1); // alerts '1'
-    var b = new My.own.B(1); // alerts '1', then alerts '2'
-    var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
-                             // alerts '2', then alerts '3'
-
+         *
+         *     Ext.define('My.own.A', {
+         *         constructor: function(test) {
+         *             alert(test);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.B', {
+         *         extend: 'My.own.A',
+         *
+         *         constructor: function(test) {
+         *             alert(test);
+         *
+         *             this.callParent([test + 1]);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.C', {
+         *         extend: 'My.own.B',
+         *
+         *         constructor: function() {
+         *             alert("Going to call parent's overriden constructor...");
+         *
+         *             this.callParent(arguments);
+         *         }
+         *     });
+         *
+         *     var a = new My.own.A(1); // alerts '1'
+         *     var b = new My.own.B(1); // alerts '1', then alerts '2'
+         *     var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
+         *                              // alerts '2', then alerts '3'
+         *
          * @protected
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * from the current method, for example: `this.callParent(arguments)`
@@ -209,58 +209,58 @@ var Base = Ext.Base = function() {};
          * Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#self},
          * `this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what
          * `this` points to during run-time
-
-    Ext.define('My.Cat', {
-        statics: {
-            totalCreated: 0,
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            var statics = this.statics();
-
-            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
-                                            // equivalent to: My.Cat.speciesName
-
-            alert(this.self.speciesName);   // dependent on 'this'
-
-            statics.totalCreated++;
-
-            return this;
-        },
-
-        clone: function() {
-            var cloned = new this.self;                      // dependent on 'this'
-
-            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
-
-            return cloned;
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-
-        statics: {
-            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
-        },
-
-        constructor: function() {
-            this.callParent();
-        }
-    });
-
-    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
-
-    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
-    alert(clone.groupName);                 // alerts 'Cat'
-
-    alert(My.Cat.totalCreated);             // alerts 3
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             totalCreated: 0,
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *  
+         *         constructor: function() {
+         *             var statics = this.statics();
+         *  
+         *             alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
+         *                                             // equivalent to: My.Cat.speciesName
+         *  
+         *             alert(this.self.speciesName);   // dependent on 'this'
+         *  
+         *             statics.totalCreated++;
+         *  
+         *             return this;
+         *         },
+         *  
+         *         clone: function() {
+         *             var cloned = new this.self;                      // dependent on 'this'
+         *  
+         *             cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
+         *  
+         *             return cloned;
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *  
+         *         statics: {
+         *             speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         },
+         *  
+         *         constructor: function() {
+         *             this.callParent();
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
+         *
+         *     var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
+         *     alert(clone.groupName);                 // alerts 'Cat'
+         *
+         *     alert(My.Cat.totalCreated);             // alerts 3
+         *
          * @protected
          * @return {Class}
          * @markdown
@@ -278,31 +278,31 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the original method that was previously overridden with {@link Ext.Base#override}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *   
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *   
+         *             var instance = this.callOverridden();
+         *   
+         *             alert("Meeeeoooowwww");
+         *   
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * @return {Mixed} Returns the result after calling the overridden method
          * @markdown
@@ -339,13 +339,15 @@ var Base = Ext.Base = function() {};
     Ext.apply(Ext.Base, {
         /**
          * Create a new instance of this Class.
-Ext.define('My.cool.Class', {
-    ...
-});
-
-My.cool.Class.create({
-    someConfig: true
-});
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *      
+         *     My.cool.Class.create({
+         *         someConfig: true
+         *     });
+         *
          * @property create
          * @static
          * @type Function
@@ -396,17 +398,17 @@ My.cool.Class.create({
 
         /**
          * Add / override static properties of this class.
-
-    Ext.define('My.cool.Class', {
-        ...
-    });
-
-    My.cool.Class.addStatics({
-        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
-        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
-        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
-    });
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *
+         *     My.cool.Class.addStatics({
+         *         someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
+         *         method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
+         *         method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
+         *     });
+         *
          * @property addStatics
          * @static
          * @type Function
@@ -425,22 +427,22 @@ My.cool.Class.create({
 
         /**
          * Add methods / properties to the prototype of this class.
-
-    Ext.define('My.awesome.Cat', {
-        constructor: function() {
-            ...
-        }
-    });
-
-     My.awesome.Cat.implement({
-         meow: function() {
-            alert('Meowww...');
-         }
-     });
-
-     var kitty = new My.awesome.Cat;
-     kitty.meow();
-
+         *
+         *     Ext.define('My.awesome.Cat', {
+         *         constructor: function() {
+         *             ...
+         *         }
+         *     });
+         *
+         *      My.awesome.Cat.implement({
+         *          meow: function() {
+         *             alert('Meowww...');
+         *          }
+         *      });
+         *
+         *      var kitty = new My.awesome.Cat;
+         *      kitty.meow();
+         *
          * @property implement
          * @static
          * @type Function
@@ -489,25 +491,25 @@ My.cool.Class.create({
 
         /**
          * Borrow another class' members to the prototype of this class.
-
-Ext.define('Bank', {
-    money: '$$$',
-    printMoney: function() {
-        alert('$$$$$$$');
-    }
-});
-
-Ext.define('Thief', {
-    ...
-});
-
-Thief.borrow(Bank, ['money', 'printMoney']);
-
-var steve = new Thief();
-
-alert(steve.money); // alerts '$$$'
-steve.printMoney(); // alerts '$$$$$$$'
-
+         *
+         *     Ext.define('Bank', {
+         *         money: '$$$',
+         *         printMoney: function() {
+         *             alert('$$$$$$$');
+         *         }
+         *     });
+         *
+         *     Ext.define('Thief', {
+         *         ...
+         *     });
+         *
+         *     Thief.borrow(Bank, ['money', 'printMoney']);
+         *
+         *     var steve = new Thief();
+         *
+         *     alert(steve.money); // alerts '$$$'
+         *     steve.printMoney(); // alerts '$$$$$$$'
+         *
          * @property borrow
          * @static
          * @type Function
@@ -534,31 +536,31 @@ steve.printMoney(); // alerts '$$$$$$$'
         /**
          * Override prototype members of this class. Overridden methods can be invoked via
          * {@link Ext.Base#callOverridden}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *
+         *             var instance = this.callOverridden();
+         *
+         *             alert("Meeeeoooowwww");
+         *
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @property override
          * @static
          * @type Function
@@ -649,15 +651,15 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Get the current class' name in string format.
-
-    Ext.define('My.cool.Class', {
-        constructor: function() {
-            alert(this.self.getName()); // alerts 'My.cool.Class'
-        }
-    });
-
-    My.cool.Class.getName(); // 'My.cool.Class'
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         constructor: function() {
+         *             alert(this.self.getName()); // alerts 'My.cool.Class'
+         *         }
+         *     });
+         *
+         *     My.cool.Class.getName(); // 'My.cool.Class'
+         *
          * @return {String} className
          * @markdown
          */
@@ -667,25 +669,25 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Create aliases for existing prototype methods. Example:
-
-    Ext.define('My.cool.Class', {
-        method1: function() { ... },
-        method2: function() { ... }
-    });
-
-    var test = new My.cool.Class();
-
-    My.cool.Class.createAlias({
-        method3: 'method1',
-        method4: 'method2'
-    });
-
-    test.method3(); // test.method1()
-
-    My.cool.Class.createAlias('method5', 'method3');
-
-    test.method5(); // test.method3() -> test.method1()
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         method1: function() { ... },
+         *         method2: function() { ... }
+         *     });
+         *
+         *     var test = new My.cool.Class();
+         *
+         *     My.cool.Class.createAlias({
+         *         method3: 'method1',
+         *         method4: 'method2'
+         *     });
+         *
+         *     test.method3(); // test.method1()
+         *
+         *     My.cool.Class.createAlias('method5', 'method3');
+         *
+         *     test.method5(); // test.method3() -> test.method1()
+         *
          * @property createAlias
          * @static
          * @type Function

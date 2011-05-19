@@ -519,7 +519,8 @@ Ext.define('Ext.data.NodeInterface', {
                      * 2) When destroy on the tree is called
                      * 3) For destroying child nodes on a node
                      */
-                    var me = this;
+                    var me = this,
+                        options = me.destroyOptions;
                     
                     if (silent === true) {
                         me.clear(true);
@@ -527,11 +528,13 @@ Ext.define('Ext.data.NodeInterface', {
                             n.destroy(true);
                         });
                         me.childNodes = null;
+                        delete me.destroyOptions;
+                        me.callOverridden([options]);
                     } else {
+                        me.destroyOptions = silent;
+                        // overridden method will be called, since remove will end up calling destroy(true);
                         me.remove(true);
                     }
-
-                    me.callOverridden();
                 },
 
                 /**

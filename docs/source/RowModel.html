@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-selection.RowModel'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-selection-RowModel'>/**
 </span> * @class Ext.selection.RowModel
  * @extends Ext.selection.Model
  * 
@@ -11,14 +28,14 @@ Ext.define('Ext.selection.RowModel', {
     alias: 'selection.rowmodel',
     requires: ['Ext.util.KeyNav'],
     
-<span id='Ext-selection.RowModel-property-deltaScroll'>    /**
+<span id='Ext-selection-RowModel-property-deltaScroll'>    /**
 </span>     * @private
      * Number of pixels to scroll to the left/right when pressing
      * left/right keys.
      */
     deltaScroll: 5,
     
-<span id='Ext-selection.RowModel-cfg-enableKeyNav'>    /**
+<span id='Ext-selection-RowModel-cfg-enableKeyNav'>    /**
 </span>     * @cfg {Boolean} enableKeyNav
      * 
      * Turns on/off keyboard navigation within the grid. Defaults to true.
@@ -27,7 +44,7 @@ Ext.define('Ext.selection.RowModel', {
     
     constructor: function(){
         this.addEvents(
-<span id='Ext-selection.RowModel-event-deselect'>            /**
+<span id='Ext-selection-RowModel-event-deselect'>            /**
 </span>             * @event deselect
              * Fired after a record is deselected
              * @param {Ext.selection.RowSelectionModel} this
@@ -36,7 +53,7 @@ Ext.define('Ext.selection.RowModel', {
              */
             'deselect',
             
-<span id='Ext-selection.RowModel-event-select'>            /**
+<span id='Ext-selection-RowModel-event-select'>            /**
 </span>             * @event select
              * Fired after a record is selected
              * @param {Ext.selection.RowSelectionModel} this
@@ -394,4 +411,6 @@ Ext.define('Ext.selection.RowModel', {
         var record = this.store.getAt(position.row);
         this.select(record);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -785,7 +785,9 @@ Ext.define('Ext.view.AbstractView', {
              * @return {Number} The node count
              */
             getSelectionCount : function(){
-                console.warn("DataView: getSelectionCount will be removed, please interact with the Ext.selection.DataViewModel");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: getSelectionCount will be removed, please interact with the Ext.selection.DataViewModel");
+                }
                 return this.selModel.getSelection().length;
             },
         
@@ -794,18 +796,24 @@ Ext.define('Ext.view.AbstractView', {
              * @return {Array} An array of {@link Ext.data.Model} objects
              */
             getSelectedRecords : function(){
-                console.warn("DataView: getSelectedRecords will be removed, please interact with the Ext.selection.DataViewModel");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: getSelectedRecords will be removed, please interact with the Ext.selection.DataViewModel");
+                }
                 return this.selModel.getSelection();
             },
     
             select: function(records, keepExisting, supressEvents) {
-                console.warn("DataView: select will be removed, please access select through a DataView's SelectionModel, ie: view.getSelectionModel().select()");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: select will be removed, please access select through a DataView's SelectionModel, ie: view.getSelectionModel().select()");
+                }
                 var sm = this.getSelectionModel();
                 return sm.select.apply(sm, arguments);
             },
             
             clearSelections: function() {
-                console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");
+                }
                 var sm = this.getSelectionModel();
                 return sm.deselectAll();
             }

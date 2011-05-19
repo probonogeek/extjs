@@ -131,6 +131,13 @@ Ext.define('Ext.dd.DragTracker', {
             'mousemove',
 
             /**
+             * @event beforestart
+             * @param {Object} this
+             * @param {Object} e event object
+             */
+            'beforedragstart',
+
+            /**
              * @event dragstart
              * @param {Object} this
              * @param {Object} e event object
@@ -256,27 +263,30 @@ Ext.define('Ext.dd.DragTracker', {
         this.startXY = this.lastXY = e.getXY();
         this.startRegion = Ext.fly(this.dragTarget).getRegion();
 
-        if (this.fireEvent('mousedown', this, e) !== false && this.onBeforeStart(e) !== false) {
+        if (this.fireEvent('mousedown', this, e) === false ||
+            this.fireEvent('beforedragstart', this, e) === false ||
+            this.onBeforeStart(e) === false) {
+            return;
+        }
 
-            // Track when the mouse is down so that mouseouts while the mouse is down are not processed.
-            // The onMouseOut method will only ever be called after mouseup.
-            this.mouseIsDown = true;
+        // Track when the mouse is down so that mouseouts while the mouse is down are not processed.
+        // The onMouseOut method will only ever be called after mouseup.
+        this.mouseIsDown = true;
 
-            // Flag for downstream DragTracker instances that the mouse is being tracked.
-            e.dragTracked = true;
+        // Flag for downstream DragTracker instances that the mouse is being tracked.
+        e.dragTracked = true;
 
-            if (this.preventDefault !== false) {
-                e.preventDefault();
-            }
-            Ext.getDoc().on({
-                scope: this,
-                mouseup: this.onMouseUp,
-                mousemove: this.onMouseMove,
-                selectstart: this.stopSelect
-            });
-            if (this.autoStart) {
-                this.timer =  Ext.defer(this.triggerStart, this.autoStart === true ? 1000 : this.autoStart, this, [e]);
-            }
+        if (this.preventDefault !== false) {
+            e.preventDefault();
+        }
+        Ext.getDoc().on({
+            scope: this,
+            mouseup: this.onMouseUp,
+            mousemove: this.onMouseMove,
+            selectstart: this.stopSelect
+        });
+        if (this.autoStart) {
+            this.timer =  Ext.defer(this.triggerStart, this.autoStart === true ? 1000 : this.autoStart, this, [e]);
         }
     },
 
@@ -445,7 +455,7 @@ Ext.define('Ext.dd.DragTracker', {
     },
 
     getXY : function(constrain){
-        return constrain ? this.constrainModes[constrain].call(this, this.lastXY) : this.lastXY;
+        return constrain ? this.constrainModes[constrain](this, this.lastXY) : this.lastXY;
     },
 
     /**
@@ -472,9 +482,9 @@ Ext.define('Ext.dd.DragTracker', {
 
     constrainModes: {
         // Constrain the passed point to within the constrain region
-        point: function(xy) {
-            var dr = this.dragRegion,
-                constrainTo = this.getConstrainRegion();
+        point: function(me, xy) {
+            var dr = me.dragRegion,
+                constrainTo = me.getConstrainRegion();
 
             // No constraint
             if (!constrainTo) {
@@ -489,10 +499,10 @@ Ext.define('Ext.dd.DragTracker', {
         },
 
         // Constrain the dragTarget to within the constrain region. Return the passed xy adjusted by the same delta.
-        dragTarget: function(xy) {
-            var s = this.startXY,
-                dr = this.startRegion.copy(),
-                constrainTo = this.getConstrainRegion(),
+        dragTarget: function(me, xy) {
+            var s = me.startXY,
+                dr = me.startRegion.copy(),
+                constrainTo = me.getConstrainRegion(),
                 adjust;
 
             // No constraint
@@ -503,7 +513,7 @@ Ext.define('Ext.dd.DragTracker', {
             // See where the passed XY would put the dragTarget if translated by the unconstrained offset.
             // If it overflows, we constrain the passed XY to bring the potential
             // region back within the boundary.
-            dr.translateBy.apply(dr, [xy[0]-s[0], xy[1]-s[1]]);
+            dr.translateBy(xy[0]-s[0], xy[1]-s[1]);
 
             // Constrain the X coordinate by however much the dragTarget overflows
             if (dr.right > constrainTo.right) {
@@ -514,7 +524,7 @@ Ext.define('Ext.dd.DragTracker', {
                 xy[0] += (constrainTo.left - dr.left);      // overflowed the left
             }
 
-            // Constrain the X coordinate by however much the dragTarget overflows
+            // Constrain the Y coordinate by however much the dragTarget overflows
             if (dr.bottom > constrainTo.bottom) {
                 xy[1] += adjust = (constrainTo.bottom - dr.bottom);  // overflowed the bottom
                 dr.top += adjust;

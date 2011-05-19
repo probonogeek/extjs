@@ -113,6 +113,9 @@ Ext.define('Ext.resizer.Splitter', {
         me.tracker = Ext.create('Ext.resizer.SplitterTracker', {
             el: me.el
         });
+
+        // Relay the most important events to our owner (could open wider later):
+        me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
     },
 
     getCollapseDirection: function() {

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.Layout'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-Layout'>/**
 </span> * @class Ext.layout.Layout
  * @extends Object
  * @private
@@ -37,7 +54,7 @@ Ext.define('Ext.layout.Layout', {
         Ext.apply(this, config);
     },
 
-<span id='Ext-layout.Layout-method-layout'>    /**
+<span id='Ext-layout-Layout-method-layout'>    /**
 </span>     * @private
      */
     layout : function() {
@@ -65,7 +82,7 @@ Ext.define('Ext.layout.Layout', {
         return true;
     },
 
-<span id='Ext-layout.Layout-method-renderItems'>    /**
+<span id='Ext-layout-Layout-method-renderItems'>    /**
 </span>     * @private
      * Iterates over all passed items, ensuring they are rendered.  If the items are already rendered,
      * also determines if the items are in the proper place dom.
@@ -98,7 +115,7 @@ Ext.define('Ext.layout.Layout', {
         return false;
     },
 
-<span id='Ext-layout.Layout-method-renderItem'>    /**
+<span id='Ext-layout-Layout-method-renderItem'>    /**
 </span>     * @private
      * Renders the given Component into the target Element.
      * @param {Ext.Component} item The Component to render
@@ -113,7 +130,7 @@ Ext.define('Ext.layout.Layout', {
         }
     },
 
-<span id='Ext-layout.Layout-method-moveItem'>    /**
+<span id='Ext-layout-Layout-method-moveItem'>    /**
 </span>     * @private
      * Moved Component to the provided target instead.
      */
@@ -129,7 +146,7 @@ Ext.define('Ext.layout.Layout', {
         this.childrenChanged = true;
     },
 
-<span id='Ext-layout.Layout-method-initLayout'>    /**
+<span id='Ext-layout-Layout-method-initLayout'>    /**
 </span>     * @private
      * Adds the layout's targetCls if necessary and sets
      * initialized flag when complete.
@@ -151,7 +168,7 @@ Ext.define('Ext.layout.Layout', {
         return [];
     },
 
-<span id='Ext-layout.Layout-method-configureItem'>    /**
+<span id='Ext-layout-Layout-method-configureItem'>    /**
 </span>     * @private
      * Applies itemCls
      */
@@ -175,7 +192,7 @@ Ext.define('Ext.layout.Layout', {
     onDestroy : Ext.emptyFn,
     doOwnerCtLayouts : Ext.emptyFn,
 
-<span id='Ext-layout.Layout-method-afterRemove'>    /**
+<span id='Ext-layout-Layout-method-afterRemove'>    /**
 </span>     * @private
      * Removes itemCls
      */
@@ -208,4 +225,6 @@ Ext.define('Ext.layout.Layout', {
         }
         this.onDestroy();
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

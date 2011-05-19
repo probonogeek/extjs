@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tab.Bar'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tab-Bar'>/**
 </span> * @author Ed Spencer
  * @class Ext.tab.Bar
  * @extends Ext.panel.Header
@@ -19,7 +36,7 @@ Ext.define('Ext.tab.Bar', {
     // @private
     defaultType: 'tab',
 
-<span id='Ext-tab.Bar-cfg-Boolean'>    /**
+<span id='Ext-tab-Bar-cfg-Boolean'>    /**
 </span>     * @cfg Boolean plain
      * True to not show the full background on the tabbar
      */
@@ -31,12 +48,12 @@ Ext.define('Ext.tab.Bar', {
         '&lt;div class=&quot;{baseCls}-strip&lt;tpl if=&quot;ui&quot;&gt; {baseCls}-strip-{ui}&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-strip-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&gt;&lt;/div&gt;'
     ],
 
-<span id='Ext-tab.Bar-cfg-minTabWidth'>    /**
+<span id='Ext-tab-Bar-cfg-minTabWidth'>    /**
 </span>     * @cfg {Number} minTabWidth The minimum width for each tab. Defaults to &lt;tt&gt;30&lt;/tt&gt;.
      */
     minTabWidth: 30,
 
-<span id='Ext-tab.Bar-cfg-maxTabWidth'>    /**
+<span id='Ext-tab-Bar-cfg-maxTabWidth'>    /**
 </span>     * @cfg {Number} maxTabWidth The maximum width for each tab. Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
      */
     maxTabWidth: undefined,
@@ -53,7 +70,7 @@ Ext.define('Ext.tab.Bar', {
         me.addClsWithUI(me.dock);
 
         me.addEvents(
-<span id='Ext-tab.Bar-event-change'>            /**
+<span id='Ext-tab-Bar-event-change'>            /**
 </span>             * @event change
              * Fired when the currently-active tab has changed
              * @param {Ext.tab.Bar} tabBar The TabBar
@@ -63,9 +80,9 @@ Ext.define('Ext.tab.Bar', {
             'change'
         );
 
-        Ext.applyIf(this.renderSelectors, {
-            body : '.' + this.baseCls + '-body',
-            strip: '.' + this.baseCls + '-strip'
+        Ext.applyIf(me.renderSelectors, {
+            body : '.' + me.baseCls + '-body',
+            strip: '.' + me.baseCls + '-strip'
         });
         me.callParent(arguments);
 
@@ -123,7 +140,8 @@ Ext.define('Ext.tab.Bar', {
     onClick: function(e, target) {
         // The target might not be a valid tab el.
         var tab = Ext.getCmp(target.id),
-            tabPanel = this.tabPanel;
+            tabPanel = this.tabPanel,
+            allowActive = true;
 
         target = e.getTarget();
 
@@ -131,35 +149,49 @@ Ext.define('Ext.tab.Bar', {
             if (tab.closable &amp;&amp; target === tab.closeEl.dom) {
                 tab.onCloseClick();
             } else {
-                this.setActiveTab(tab);
                 if (tabPanel) {
+                    // TabPanel will card setActiveTab of the TabBar
                     tabPanel.setActiveTab(tab.card);
+                } else {
+                    this.setActiveTab(tab);
                 }
                 tab.focus();
             }
         }
     },
 
-<span id='Ext-tab.Bar-method-closeTab'>    /**
+<span id='Ext-tab-Bar-method-closeTab'>    /**
 </span>     * @private
      * Closes the given tab by removing it from the TabBar and removing the corresponding card from the TabPanel
      * @param {Ext.Tab} tab The tab to close
      */
     closeTab: function(tab) {
-        var card    = tab.card,
-            tabPanel = this.tabPanel,
+        var me = this,
+            card = tab.card,
+            tabPanel = me.tabPanel,
             nextTab;
+            
+        if (card &amp;&amp; card.fireEvent('beforeclose', card) === false) {
+            return false;
+        }
 
-        if (tab.active &amp;&amp; this.items.getCount() &gt; 1) {
-            nextTab = tab.next('tab') || this.items.items[0];
-            this.setActiveTab(nextTab);
+        if (tab.active &amp;&amp; me.items.getCount() &gt; 1) {
+            nextTab = tab.next('tab') || me.items.items[0];
+            me.setActiveTab(nextTab);
             if (tabPanel) {
                 tabPanel.setActiveTab(nextTab.card);
             }
         }
-        this.remove(tab);
+        /*
+         * force the close event to fire. By the time this function returns,
+         * the tab is already destroyed and all listeners have been purged
+         * so the tab can't fire itself.
+         */
+        tab.fireClose();
+        me.remove(tab);
 
         if (tabPanel &amp;&amp; card) {
+            card.fireEvent('close', card);
             tabPanel.remove(card);
         }
         
@@ -168,7 +200,7 @@ Ext.define('Ext.tab.Bar', {
         }
     },
 
-<span id='Ext-tab.Bar-method-setActiveTab'>    /**
+<span id='Ext-tab-Bar-method-setActiveTab'>    /**
 </span>     * @private
      * Marks the given tab as active
      * @param {Ext.Tab} tab The tab to mark active
@@ -190,4 +222,6 @@ Ext.define('Ext.tab.Bar', {
         me.activeTab = tab;
         me.fireEvent('change', me, tab, tab.card);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.plugin.RowEditing'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-plugin-RowEditing'>/**
 </span> * @class Ext.grid.plugin.RowEditing
  * @extends Ext.grid.plugin.Editing
  * 
@@ -71,7 +88,7 @@ Ext.define('Ext.grid.plugin.RowEditing', {
 
     editStyle: 'row',
 
-<span id='Ext-grid.plugin.RowEditing-cfg-autoCancel'>    /**
+<span id='Ext-grid-plugin-RowEditing-cfg-autoCancel'>    /**
 </span>     * @cfg {Boolean} autoCancel
      * `true` to automatically cancel any pending changes when the row editor begins editing a new row.
      * `false` to force the user to explicitly cancel the pending changes. Defaults to `true`.
@@ -79,14 +96,14 @@ Ext.define('Ext.grid.plugin.RowEditing', {
      */
     autoCancel: true,
 
-<span id='Ext-grid.plugin.RowEditing-cfg-clicksToMoveEditor'>    /**
+<span id='Ext-grid-plugin-RowEditing-cfg-clicksToMoveEditor'>    /**
 </span>     * @cfg {Number} clicksToMoveEditor
      * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
      * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
      * @markdown
      */
 
-<span id='Ext-grid.plugin.RowEditing-cfg-errorSummary'>    /**
+<span id='Ext-grid-plugin-RowEditing-cfg-errorSummary'>    /**
 </span>     * @cfg {Boolean} errorSummary
      * `true` to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
      * in the row editor. Set to `false` to prevent the tooltip from showing. Defaults to `true`.
@@ -94,7 +111,7 @@ Ext.define('Ext.grid.plugin.RowEditing', {
      */
     errorSummary: true,
 
-<span id='Ext-grid.plugin.RowEditing-event-beforeedit'>    /**
+<span id='Ext-grid-plugin-RowEditing-event-beforeedit'>    /**
 </span>     * @event beforeedit
      * Fires before row editing is triggered. The edit event object has the following properties &lt;br /&gt;
      * &lt;ul style=&quot;padding:5px;padding-left:16px;&quot;&gt;
@@ -111,7 +128,7 @@ Ext.define('Ext.grid.plugin.RowEditing', {
      * @param {Ext.grid.plugin.Editing} editor
      * @param {Object} e An edit event (see above for description)
      */
-<span id='Ext-grid.plugin.RowEditing-event-edit'>    /**
+<span id='Ext-grid-plugin-RowEditing-event-edit'>    /**
 </span>     * @event edit
      * Fires after a row is edited. The edit event object has the following properties &lt;br /&gt;
      * &lt;ul style=&quot;padding:5px;padding-left:16px;&quot;&gt;
@@ -136,7 +153,7 @@ function onEdit(e) {
      * @param {Ext.grid.plugin.Editing} editor
      * @param {Object} e An edit event (see above for description)
      */
-<span id='Ext-grid.plugin.RowEditing-event-validateedit'>    /**
+<span id='Ext-grid-plugin-RowEditing-event-validateedit'>    /**
 </span>     * @event validateedit
      * Fires after a cell is edited, but before the value is set in the record. Return false
      * to cancel the change. The edit event object has the following properties &lt;br /&gt;
@@ -180,7 +197,7 @@ grid.on('validateedit', function(e) {
         me.autoCancel = !!me.autoCancel;
     },
 
-<span id='Ext-grid.plugin.RowEditing-method-destroy'>    /**
+<span id='Ext-grid-plugin-RowEditing-method-destroy'>    /**
 </span>     * @private
      * AbstractComponent calls destroy on all its plugins at destroy time.
      */
@@ -190,7 +207,7 @@ grid.on('validateedit', function(e) {
         me.callParent(arguments);
     },
 
-<span id='Ext-grid.plugin.RowEditing-method-startEdit'>    /**
+<span id='Ext-grid-plugin-RowEditing-method-startEdit'>    /**
 </span>     * Start editing the specified record, using the specified Column definition to define which field is being edited.
      * @param {Model} record The Store data record which backs the row to be edited.
      * @param {Model} columnHeader The Column object defining the column to be edited.
@@ -309,38 +326,47 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnAdd: function(ct, column) {
-        var me = this,
+        if (column.isHeader) {
+            var me = this,
+                editor;
+            
+            me.initFieldAccessors(column);
             editor = me.getEditor();
-
-        me.initFieldAccessors(column);
-        if (editor &amp;&amp; editor.onColumnAdd) {
-            editor.onColumnAdd(column);
+            
+            if (editor &amp;&amp; editor.onColumnAdd) {
+                editor.onColumnAdd(column);
+            }
         }
     },
 
     // private
     onColumnRemove: function(ct, column) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor &amp;&amp; editor.onColumnRemove) {
-            editor.onColumnRemove(column);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor &amp;&amp; editor.onColumnRemove) {
+                editor.onColumnRemove(column);
+            }
+            me.removeFieldAccessors(column);  
         }
-        me.removeFieldAccessors(column);
     },
 
     // private
     onColumnResize: function(ct, column, width) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor &amp;&amp; editor.onColumnResize) {
-            editor.onColumnResize(column, width);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor &amp;&amp; editor.onColumnResize) {
+                editor.onColumnResize(column, width);
+            }
         }
     },
 
     // private
     onColumnHide: function(ct, column) {
+        // no isHeader check here since its already a columnhide event.
         var me = this,
             editor = me.getEditor();
 
@@ -351,6 +377,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnShow: function(ct, column) {
+        // no isHeader check here since its already a columnshow event.
         var me = this,
             editor = me.getEditor();
 
@@ -361,6 +388,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnMove: function(ct, column, fromIdx, toIdx) {
+        // no isHeader check here since its already a columnmove event.
         var me = this,
             editor = me.getEditor();
 
@@ -375,4 +403,6 @@ grid.on('validateedit', function(e) {
         me.callParent(arguments);
         me.getEditor().setField(column.field, column);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

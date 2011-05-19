@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.reader.Reader-method-constructor'><span id='Ext-data.reader.Reader'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-reader-Reader-method-constructor'><span id='Ext-data-reader-Reader'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.reader.Reader
  * @extends Object
@@ -150,14 +167,14 @@ Ext.define('Ext.data.reader.Reader', {
     requires: ['Ext.data.ResultSet'],
     alternateClassName: ['Ext.data.Reader', 'Ext.data.DataReader'],
     
-<span id='Ext-data.reader.Reader-cfg-idProperty'>    /**
+<span id='Ext-data-reader-Reader-cfg-idProperty'>    /**
 </span>     * @cfg {String} idProperty Name of the property within a row object
      * that contains a record identifier value.  Defaults to &lt;tt&gt;The id of the model&lt;/tt&gt;.
      * If an idProperty is explicitly specified it will override that of the one specified
      * on the model
      */
 
-<span id='Ext-data.reader.Reader-cfg-totalProperty'>    /**
+<span id='Ext-data-reader-Reader-cfg-totalProperty'>    /**
 </span>     * @cfg {String} totalProperty Name of the property from which to
      * retrieve the total number of records in the dataset. This is only needed
      * if the whole dataset is not passed in one go, but is being paged from
@@ -165,7 +182,7 @@ Ext.define('Ext.data.reader.Reader', {
      */
     totalProperty: 'total',
 
-<span id='Ext-data.reader.Reader-cfg-successProperty'>    /**
+<span id='Ext-data-reader-Reader-cfg-successProperty'>    /**
 </span>     * @cfg {String} successProperty Name of the property from which to
      * retrieve the success attribute. Defaults to &lt;tt&gt;success&lt;/tt&gt;.  See
      * {@link Ext.data.proxy.Proxy}.{@link Ext.data.proxy.Proxy#exception exception}
@@ -173,7 +190,7 @@ Ext.define('Ext.data.reader.Reader', {
      */
     successProperty: 'success',
 
-<span id='Ext-data.reader.Reader-cfg-root'>    /**
+<span id='Ext-data-reader-Reader-cfg-root'>    /**
 </span>     * @cfg {String} root &lt;b&gt;Required&lt;/b&gt;.  The name of the property
      * which contains the Array of row objects.  Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
      * An exception will be thrown if the root property is undefined. The data
@@ -182,12 +199,12 @@ Ext.define('Ext.data.reader.Reader', {
      */
     root: '',
     
-<span id='Ext-data.reader.Reader-cfg-messageProperty'>    /**
+<span id='Ext-data-reader-Reader-cfg-messageProperty'>    /**
 </span>     * @cfg {String} messageProperty The name of the property which contains a response message.
      * This property is optional.
      */
     
-<span id='Ext-data.reader.Reader-cfg-implicitIncludes'>    /**
+<span id='Ext-data-reader-Reader-cfg-implicitIncludes'>    /**
 </span>     * @cfg {Boolean} implicitIncludes True to automatically parse models nested within other models in a response
      * object. See the Ext.data.reader.Reader intro docs for full explanation. Defaults to true.
      */
@@ -206,7 +223,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
 
-<span id='Ext-data.reader.Reader-method-setModel'>    /**
+<span id='Ext-data-reader-Reader-method-setModel'>    /**
 </span>     * Sets a new model for the reader.
      * @private
      * @param {Object} model The model to set.
@@ -223,7 +240,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
 
-<span id='Ext-data.reader.Reader-method-read'>    /**
+<span id='Ext-data-reader-Reader-method-read'>    /**
 </span>     * Reads the given response object. This method normalizes the different types of response object that may be passed
      * to it, before handing off the reading of records to the {@link #readRecords} function.
      * @param {Object} response The response object. This may be either an XMLHttpRequest object or a plain JS object
@@ -243,7 +260,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
 
-<span id='Ext-data.reader.Reader-method-readRecords'>    /**
+<span id='Ext-data-reader-Reader-method-readRecords'>    /**
 </span>     * Abstracts common functionality used by all Reader subclasses. Each subclass is expected to call
      * this function before running its own logic and returning the Ext.data.ResultSet instance. For most
      * Readers additional processing should not be needed.
@@ -263,7 +280,7 @@ Ext.define('Ext.data.reader.Reader', {
             me.buildExtractors(true);
         }
         
-<span id='Ext-data.reader.Reader-property-rawData'>        /**
+<span id='Ext-data-reader-Reader-property-rawData'>        /**
 </span>         * The raw data object that was last passed to readRecords. Stored for further processing if needed
          * @property rawData
          * @type Mixed
@@ -318,7 +335,7 @@ Ext.define('Ext.data.reader.Reader', {
         });
     },
 
-<span id='Ext-data.reader.Reader-method-extractData'>    /**
+<span id='Ext-data-reader-Reader-method-extractData'>    /**
 </span>     * Returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
      * @param {Object[]/Object} data-root from server response
      * @private
@@ -344,8 +361,7 @@ Ext.define('Ext.data.reader.Reader', {
             id     = me.getId(node);
 
             
-            record = new Model(values, id);
-            record.raw = node;
+            record = new Model(values, id, node);
             records.push(record);
                 
             if (me.implicitIncludes) {
@@ -356,7 +372,7 @@ Ext.define('Ext.data.reader.Reader', {
         return records;
     },
     
-<span id='Ext-data.reader.Reader-method-readAssociated'>    /**
+<span id='Ext-data-reader-Reader-method-readAssociated'>    /**
 </span>     * @private
      * Loads a record's associations from the data object. This prepopulates hasMany and belongsTo associations
      * on the record provided.
@@ -392,7 +408,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
     
-<span id='Ext-data.reader.Reader-method-getAssociatedDataRoot'>    /**
+<span id='Ext-data-reader-Reader-method-getAssociatedDataRoot'>    /**
 </span>     * @private
      * Used internally by {@link #readAssociated}. Given a data object (which could be json, xml etc) for a specific
      * record, this should return the relevant part of that data for the given association name. This is only really
@@ -409,7 +425,7 @@ Ext.define('Ext.data.reader.Reader', {
         return this.model.prototype.fields.items;
     },
 
-<span id='Ext-data.reader.Reader-method-extractValues'>    /**
+<span id='Ext-data-reader-Reader-method-extractValues'>    /**
 </span>     * @private
      * Given an object representing a single model instance's data, iterates over the model's fields and
      * builds an object with the value for each field.
@@ -433,7 +449,7 @@ Ext.define('Ext.data.reader.Reader', {
         return output;
     },
 
-<span id='Ext-data.reader.Reader-method-getData'>    /**
+<span id='Ext-data-reader-Reader-method-getData'>    /**
 </span>     * @private
      * By default this function just returns what is passed to it. It can be overridden in a subclass
      * to return something else. See XmlReader for an example.
@@ -444,7 +460,7 @@ Ext.define('Ext.data.reader.Reader', {
         return data;
     },
 
-<span id='Ext-data.reader.Reader-method-getRoot'>    /**
+<span id='Ext-data-reader-Reader-method-getRoot'>    /**
 </span>     * @private
      * This will usually need to be implemented in a subclass. Given a generic data object (the type depends on the type
      * of data we are reading), this function should return the object as configured by the Reader's 'root' meta data config.
@@ -456,7 +472,7 @@ Ext.define('Ext.data.reader.Reader', {
         return data;
     },
 
-<span id='Ext-data.reader.Reader-method-getResponseData'>    /**
+<span id='Ext-data-reader-Reader-method-getResponseData'>    /**
 </span>     * Takes a raw response object (as passed to this.read) and returns the useful data segment of it. This must be implemented by each subclass
      * @param {Object} response The responce object
      * @return {Object} The useful data from the response
@@ -467,7 +483,7 @@ Ext.define('Ext.data.reader.Reader', {
         //&lt;/debug&gt;
     },
 
-<span id='Ext-data.reader.Reader-method-onMetaChange'>    /**
+<span id='Ext-data-reader-Reader-method-onMetaChange'>    /**
 </span>     * @private
      * Reconfigures the meta data tied to this Reader
      */
@@ -488,7 +504,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
     
-<span id='Ext-data.reader.Reader-method-getIdProperty'>    /**
+<span id='Ext-data-reader-Reader-method-getIdProperty'>    /**
 </span>     * Get the idProperty to use for extracting data
      * @private
      * @return {String} The id property
@@ -501,7 +517,7 @@ Ext.define('Ext.data.reader.Reader', {
         return prop;
     },
 
-<span id='Ext-data.reader.Reader-method-buildExtractors'>    /**
+<span id='Ext-data-reader-Reader-method-buildExtractors'>    /**
 </span>     * @private
      * This builds optimized functions for retrieving record data and meta data from an object.
      * Subclasses may need to implement their own getRoot function.
@@ -551,7 +567,7 @@ Ext.define('Ext.data.reader.Reader', {
         me.buildFieldExtractors();
     },
 
-<span id='Ext-data.reader.Reader-method-buildFieldExtractors'>    /**
+<span id='Ext-data-reader-Reader-method-buildFieldExtractors'>    /**
 </span>     * @private
      */
     buildFieldExtractors: function() {
@@ -583,4 +599,6 @@ Ext.define('Ext.data.reader.Reader', {
             success: true
         })
     });
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

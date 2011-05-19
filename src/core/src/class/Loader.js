@@ -324,6 +324,7 @@ This process will be automated with Sencha Command, to be released and documente
          * @param {String/Object} name See {@link Ext.Function#flexSetter flexSetter}
          * @param {String} path See {@link Ext.Function#flexSetter flexSetter}
          * @return {Ext.Loader} this
+         * @method
          * @markdown
          */
         setPath: flexSetter(function(name, path) {

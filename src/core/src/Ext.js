@@ -133,7 +133,7 @@
 
         /**
          * This method deprecated. Use {@link Ext#define Ext.define} instead.
-         * @function
+         * @method
          * @param {Function} superclass
          * @param {Object} overrides
          * @return {Function} The subclass constructor from the <tt>overrides</tt> parameter, or a generated one if not provided.
@@ -351,6 +351,7 @@
          *
          * @param {Mixed} target The target to test
          * @return {Boolean}
+         * @method
          */
         isArray: ('isArray' in Array) ? Array.isArray : function(value) {
             return toString.call(value) === '[object Array]';
@@ -369,6 +370,7 @@
          * Returns true if the passed value is a JavaScript Object, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
@@ -393,6 +395,7 @@
          * Returns true if the passed value is a JavaScript Function, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isFunction:
         // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back to using
@@ -446,7 +449,7 @@
          * @return {Boolean}
          */
         isElement: function(value) {
-            return value ? value.nodeType !== undefined : false;
+            return value ? value.nodeType === 1 : false;
         },
 
         /**
@@ -573,6 +576,7 @@
     /**
      * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
+     * @method
      */
     Ext.type = Ext.typeOf;
 

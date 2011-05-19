@@ -244,13 +244,12 @@ Ext.onReady(function() {
         renderTo: 'grid-example',
         listeners: {
             scope: this,
-            //here we tell the toolbar's droppable plugin that it can accept items from the columns' dragdrop group
-            afterrender: function(grid) {
-                var headerCt = grid.child("headercontainer"),
-                    //the plugin position depends on browser see Ext.grid.header.Container sources
-                    dragProxy = headerCt.plugins[0].dragZone || headerCt.plugins[1].dragZone;
-
-                droppable.addDDGroup(dragProxy.ddGroup);
+            // wait for the first layout to access the headerCt (we only want this once):
+            single: true,
+            // tell the toolbar's droppable plugin that it accepts items from the columns' dragdrop group
+            afterlayout: function(grid) {
+                var headerCt = grid.child("headercontainer");
+                droppable.addDDGroup(headerCt.reorderer.dragZone.ddGroup);
                 doSort();
             }
         }

@@ -445,6 +445,7 @@ var ExtObject = Ext.Object = {
 
      * @param {Object} object
      * @return {Array} An array of keys from the object
+     * @method
      */
     getKeys: ('keys' in Object.prototype) ? Object.keys : function(object) {
         var keys = [],

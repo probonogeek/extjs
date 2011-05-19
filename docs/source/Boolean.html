@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.column.Boolean'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-column-Boolean'>/**
 </span> * @class Ext.grid.column.Boolean
  * @extends Ext.grid.column.Column
  * &lt;p&gt;A Column definition class which renders boolean data fields.  See the {@link Ext.grid.column.Column#xtype xtype}
@@ -52,20 +69,20 @@ Ext.define('Ext.grid.column.Boolean', {
     alias: ['widget.booleancolumn'],
     alternateClassName: 'Ext.grid.BooleanColumn',
 
-<span id='Ext-grid.column.Boolean-cfg-trueText'>    /**
+<span id='Ext-grid-column-Boolean-cfg-trueText'>    /**
 </span>     * @cfg {String} trueText
      * The string returned by the renderer when the column value is not falsey (defaults to &lt;tt&gt;'true'&lt;/tt&gt;).
      */
     trueText: 'true',
 
-<span id='Ext-grid.column.Boolean-cfg-falseText'>    /**
+<span id='Ext-grid-column-Boolean-cfg-falseText'>    /**
 </span>     * @cfg {String} falseText
      * The string returned by the renderer when the column value is falsey (but not undefined) (defaults to
      * &lt;tt&gt;'false'&lt;/tt&gt;).
      */
     falseText: 'false',
 
-<span id='Ext-grid.column.Boolean-cfg-undefinedText'>    /**
+<span id='Ext-grid-column-Boolean-cfg-undefinedText'>    /**
 </span>     * @cfg {String} undefinedText
      * The string returned by the renderer when the column value is undefined (defaults to &lt;tt&gt;'&amp;#160;'&lt;/tt&gt;).
      */
@@ -87,4 +104,6 @@ Ext.define('Ext.grid.column.Boolean', {
             return trueText;
         };
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -495,7 +495,7 @@ Ext.define('Ext.data.TreeStore', {
                 original,
                 index;
 
-            /**
+            /*
              * Loop over each record returned from the server. Assume they are
              * returned in order of how they were sent. If we find a matching
              * record, replace it with the newly created one.
@@ -563,7 +563,7 @@ Ext.define('Ext.data.TreeStore', {
 
     // inherit docs
     removeAll: function() {
-        this.getRootNode().destroy();
+        this.getRootNode().destroy(true);
         this.fireEvent('clear', this);
     },
 

@@ -324,48 +324,53 @@ myWindow.header.el.on('click', function() {
     },
 
     /**
+     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
+     * @method
      */
     stopFx: Ext.Function.alias(Ext.util.Animate, 'stopAnimation'),
 
     /**
-     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
      */
     stopAnimation: function() {
         Ext.fx.Manager.stopAnimation(this.id);
+        return this;
     },
 
     /**
      * Ensures that all effects queued after syncFx is called on this object are
      * run concurrently.  This is the opposite of {@link #sequenceFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     syncFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: true
         });
+        return this;
     },
 
     /**
      * Ensures that all effects queued after sequenceFx is called on this object are
      * run in sequence.  This is the opposite of {@link #syncFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     sequenceFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: false
         });
+        return this;
     },
 
     /**
      * @deprecated 4.0 Replaced by {@link #getActiveAnimation}
      * Returns thq current animation if this object has any effects actively running or queued, else returns false.
      * @return {Mixed} anim if element has active effects, else false
+     * @method
      */
     hasActiveFx: Ext.Function.alias(Ext.util.Animate, 'getActiveAnimation'),
 

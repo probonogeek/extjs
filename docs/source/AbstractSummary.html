@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.feature.AbstractSummary'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-feature-AbstractSummary'>/**
 </span> * A small abstract class that contains the shared behaviour for any summary
  * calculations to be used in the grid.
  * @class Ext.grid.feature.AbstractSummary
@@ -15,7 +32,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
    
     /* End Definitions */
    
-<span id='Ext-grid.feature.AbstractSummary-cfg-showSummaryRow'>   /**
+<span id='Ext-grid-feature-AbstractSummary-cfg-showSummaryRow'>   /**
 </span>    * @cfg {Boolean} showSummaryRow True to show the summary row. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
     */
     showSummaryRow: true,
@@ -23,7 +40,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
     // @private
     nestedIdRe: /\{\{id\}([\w\-]*)\}/g,
     
-<span id='Ext-grid.feature.AbstractSummary-method-toggleSummaryRow'>    /**
+<span id='Ext-grid-feature-AbstractSummary-method-toggleSummaryRow'>    /**
 </span>     * Toggle whether or not to show the summary row.
      * @param {Boolan} visible True to show the summary row
      */
@@ -31,7 +48,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         this.showSummaryRow = !!visible;
     },
     
-<span id='Ext-grid.feature.AbstractSummary-method-getSummaryFragments'>    /**
+<span id='Ext-grid-feature-AbstractSummary-method-getSummaryFragments'>    /**
 </span>     * Gets any fragments to be used in the tpl
      * @private
      * @return {Object} The fragments
@@ -46,7 +63,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         return fragments;
     },
     
-<span id='Ext-grid.feature.AbstractSummary-method-printSummaryRow'>    /**
+<span id='Ext-grid-feature-AbstractSummary-method-printSummaryRow'>    /**
 </span>     * Prints a summary row
      * @private
      * @param {Object} index The index in the template
@@ -69,24 +86,29 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
         });
     },
     
-<span id='Ext-grid.feature.AbstractSummary-method-getColumnValue'>    /**
+<span id='Ext-grid-feature-AbstractSummary-method-getColumnValue'>    /**
 </span>     * Gets the value for the column from the attached data.
      * @param {Ext.grid.column.Column} column The header
      * @param {Object} data The current data
      * @return {String} The value to be rendered
      */
-    getColumnValue: function(column, data){
-        var comp = Ext.getCmp(column.id),
-            value = data[column.dataIndex],
-            renderer = comp.summaryRenderer || comp.renderer;
-            
+    getColumnValue: function(column, summaryData){
+        var comp     = Ext.getCmp(column.id),
+            value    = summaryData[column.dataIndex],
+            renderer = comp.summaryRenderer;
+
         if (renderer) {
-            value = renderer.call(comp.scope || this, value, data, column.dataIndex);
+            value = renderer.call(
+                comp.scope || this,
+                value,
+                summaryData,
+                column.dataIndex
+            );
         }
         return value;
     },
     
-<span id='Ext-grid.feature.AbstractSummary-method-getSummary'>    /**
+<span id='Ext-grid-feature-AbstractSummary-method-getSummary'>    /**
 </span>     * Get the summary data for a field.
      * @private
      * @param {Ext.data.Store} store The store to get the data from
@@ -121,4 +143,6 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
     }
     
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -63,9 +63,9 @@ Ext.define('Ext.tab.Bar', {
             'change'
         );
 
-        Ext.applyIf(this.renderSelectors, {
-            body : '.' + this.baseCls + '-body',
-            strip: '.' + this.baseCls + '-strip'
+        Ext.applyIf(me.renderSelectors, {
+            body : '.' + me.baseCls + '-body',
+            strip: '.' + me.baseCls + '-strip'
         });
         me.callParent(arguments);
 
@@ -123,7 +123,8 @@ Ext.define('Ext.tab.Bar', {
     onClick: function(e, target) {
         // The target might not be a valid tab el.
         var tab = Ext.getCmp(target.id),
-            tabPanel = this.tabPanel;
+            tabPanel = this.tabPanel,
+            allowActive = true;
 
         target = e.getTarget();
 
@@ -131,9 +132,11 @@ Ext.define('Ext.tab.Bar', {
             if (tab.closable && target === tab.closeEl.dom) {
                 tab.onCloseClick();
             } else {
-                this.setActiveTab(tab);
                 if (tabPanel) {
+                    // TabPanel will card setActiveTab of the TabBar
                     tabPanel.setActiveTab(tab.card);
+                } else {
+                    this.setActiveTab(tab);
                 }
                 tab.focus();
             }
@@ -146,20 +149,32 @@ Ext.define('Ext.tab.Bar', {
      * @param {Ext.Tab} tab The tab to close
      */
     closeTab: function(tab) {
-        var card    = tab.card,
-            tabPanel = this.tabPanel,
+        var me = this,
+            card = tab.card,
+            tabPanel = me.tabPanel,
             nextTab;
+            
+        if (card && card.fireEvent('beforeclose', card) === false) {
+            return false;
+        }
 
-        if (tab.active && this.items.getCount() > 1) {
-            nextTab = tab.next('tab') || this.items.items[0];
-            this.setActiveTab(nextTab);
+        if (tab.active && me.items.getCount() > 1) {
+            nextTab = tab.next('tab') || me.items.items[0];
+            me.setActiveTab(nextTab);
             if (tabPanel) {
                 tabPanel.setActiveTab(nextTab.card);
             }
         }
-        this.remove(tab);
+        /*
+         * force the close event to fire. By the time this function returns,
+         * the tab is already destroyed and all listeners have been purged
+         * so the tab can't fire itself.
+         */
+        tab.fireClose();
+        me.remove(tab);
 
         if (tabPanel && card) {
+            card.fireEvent('close', card);
             tabPanel.remove(card);
         }
         

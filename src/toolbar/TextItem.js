@@ -8,15 +8,15 @@
  *
  * {@img Ext.toolbar.TextItem/Ext.toolbar.TextItem.png TextItem component}
  *
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Panel with TextItem',
- *         width: 300,
- *         height: 200,
- *         tbar: [
- *             {xtype: 'tbtext', text: 'Sample TextItem'}
- *         ],
- *         renderTo: Ext.getBody()
- *     });
+ *      Ext.create('Ext.panel.Panel', {
+ *          title: 'Panel with TextItem',
+ *          width: 300,
+ *          height: 200,
+ *          tbar: [
+ *              {xtype: 'tbtext', text: 'Sample TextItem'}
+ *          ],
+ *          renderTo: Ext.getBody()
+ *      });
  *
  * @constructor
  * Creates a new TextItem

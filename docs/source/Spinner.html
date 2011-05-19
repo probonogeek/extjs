@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.Spinner-method-constructor'><span id='Ext-form.field.Spinner'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Spinner-method-constructor'><span id='Ext-form-field-Spinner'>/**
 </span></span> * @class Ext.form.field.Spinner
  * @extends Ext.form.field.Trigger
  * &lt;p&gt;A field with a pair of up/down spinner buttons. This class is not normally instantiated directly,
@@ -64,47 +81,47 @@ Ext.define('Ext.form.field.Spinner', {
     trigger1Cls: Ext.baseCSSPrefix + 'form-spinner-up',
     trigger2Cls: Ext.baseCSSPrefix + 'form-spinner-down',
 
-<span id='Ext-form.field.Spinner-cfg-spinUpEnabled'>    /**
+<span id='Ext-form-field-Spinner-cfg-spinUpEnabled'>    /**
 </span>     * @cfg {Boolean} spinUpEnabled
      * Specifies whether the up spinner button is enabled. Defaults to &lt;tt&gt;true&lt;/tt&gt;. To change this
      * after the component is created, use the {@link #setSpinUpEnabled} method.
      */
     spinUpEnabled: true,
 
-<span id='Ext-form.field.Spinner-cfg-spinDownEnabled'>    /**
+<span id='Ext-form-field-Spinner-cfg-spinDownEnabled'>    /**
 </span>     * @cfg {Boolean} spinDownEnabled
      * Specifies whether the down spinner button is enabled. Defaults to &lt;tt&gt;true&lt;/tt&gt;. To change this
      * after the component is created, use the {@link #setSpinDownEnabled} method.
      */
     spinDownEnabled: true,
 
-<span id='Ext-form.field.Spinner-cfg-keyNavEnabled'>    /**
+<span id='Ext-form-field-Spinner-cfg-keyNavEnabled'>    /**
 </span>     * @cfg {Boolean} keyNavEnabled
      * Specifies whether the up and down arrow keys should trigger spinning up and down.
      * Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     keyNavEnabled: true,
 
-<span id='Ext-form.field.Spinner-cfg-mouseWheelEnabled'>    /**
+<span id='Ext-form-field-Spinner-cfg-mouseWheelEnabled'>    /**
 </span>     * @cfg {Boolean} mouseWheelEnabled
      * Specifies whether the mouse wheel should trigger spinning up and down while the field has
      * focus. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     mouseWheelEnabled: true,
 
-<span id='Ext-form.field.Spinner-cfg-repeatTriggerClick'>    /**
+<span id='Ext-form-field-Spinner-cfg-repeatTriggerClick'>    /**
 </span>     * @cfg {Boolean} repeatTriggerClick Whether a {@link Ext.util.ClickRepeater click repeater} should be
      * attached to the spinner buttons. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     repeatTriggerClick: true,
 
-<span id='Ext-form.field.Spinner-property-onSpinUp'>    /**
+<span id='Ext-form-field-Spinner-property-onSpinUp'>    /**
 </span>     * This method is called when the spinner up button is clicked, or when the up arrow key is pressed
      * if {@link #keyNavEnabled} is &lt;tt&gt;true&lt;/tt&gt;. Must be implemented by subclasses.
      */
     onSpinUp: Ext.emptyFn,
 
-<span id='Ext-form.field.Spinner-property-onSpinDown'>    /**
+<span id='Ext-form-field-Spinner-property-onSpinDown'>    /**
 </span>     * This method is called when the spinner down button is clicked, or when the down arrow key is pressed
      * if {@link #keyNavEnabled} is &lt;tt&gt;true&lt;/tt&gt;. Must be implemented by subclasses.
      */
@@ -114,7 +131,7 @@ Ext.define('Ext.form.field.Spinner', {
         this.callParent();
 
         this.addEvents(
-<span id='Ext-form.field.Spinner-event-spin'>            /**
+<span id='Ext-form-field-Spinner-event-spin'>            /**
 </span>             * @event spin
              * Fires when the spinner is made to spin up or down.
              * @param {Ext.form.field.Spinner} this
@@ -122,14 +139,14 @@ Ext.define('Ext.form.field.Spinner', {
              */
             'spin',
 
-<span id='Ext-form.field.Spinner-event-spinup'>            /**
+<span id='Ext-form-field-Spinner-event-spinup'>            /**
 </span>             * @event spinup
              * Fires when the spinner is made to spin up.
              * @param {Ext.form.field.Spinner} this
              */
             'spinup',
 
-<span id='Ext-form.field.Spinner-event-spindown'>            /**
+<span id='Ext-form-field-Spinner-event-spindown'>            /**
 </span>             * @event spindown
              * Fires when the spinner is made to spin down.
              * @param {Ext.form.field.Spinner} this
@@ -138,7 +155,7 @@ Ext.define('Ext.form.field.Spinner', {
         );
     },
 
-<span id='Ext-form.field.Spinner-method-onRender'>    /**
+<span id='Ext-form-field-Spinner-method-onRender'>    /**
 </span>     * @private override
      */
     onRender: function() {
@@ -148,13 +165,13 @@ Ext.define('Ext.form.field.Spinner', {
         me.callParent(arguments);
         triggers = me.triggerEl;
 
-<span id='Ext-form.field.Spinner-property-spinUpEl'>        /**
+<span id='Ext-form-field-Spinner-property-spinUpEl'>        /**
 </span>         * @property spinUpEl
          * @type Ext.core.Element
          * The spinner up button element
          */
         me.spinUpEl = triggers.item(0);
-<span id='Ext-form.field.Spinner-property-spinDownEl'>        /**
+<span id='Ext-form-field-Spinner-property-spinDownEl'>        /**
 </span>         * @property spinDownEl
          * @type Ext.core.Element
          * The spinner down button element
@@ -180,7 +197,7 @@ Ext.define('Ext.form.field.Spinner', {
         }
     },
 
-<span id='Ext-form.field.Spinner-method-getTriggerWidth'>    /**
+<span id='Ext-form-field-Spinner-method-getTriggerWidth'>    /**
 </span>     * @private override
      * Since the triggers are stacked, only measure the width of one of them.
      */
@@ -188,21 +205,21 @@ Ext.define('Ext.form.field.Spinner', {
         return this.hideTrigger || this.readOnly ? 0 : this.spinUpEl.getWidth() + this.triggerWrap.getFrameWidth('lr');
     },
 
-<span id='Ext-form.field.Spinner-method-onTrigger1Click'>    /**
+<span id='Ext-form-field-Spinner-method-onTrigger1Click'>    /**
 </span>     * @private Handles the spinner up button clicks.
      */
     onTrigger1Click: function() {
         this.spinUp();
     },
 
-<span id='Ext-form.field.Spinner-method-onTrigger2Click'>    /**
+<span id='Ext-form-field-Spinner-method-onTrigger2Click'>    /**
 </span>     * @private Handles the spinner down button clicks.
      */
     onTrigger2Click: function() {
         this.spinDown();
     },
 
-<span id='Ext-form.field.Spinner-method-spinUp'>    /**
+<span id='Ext-form-field-Spinner-method-spinUp'>    /**
 </span>     * Triggers the spinner to step up; fires the {@link #spin} and {@link #spinup} events and calls the
      * {@link #onSpinUp} method. Does nothing if the field is {@link #disabled} or if {@link #spinUpEnabled}
      * is false.
@@ -216,7 +233,7 @@ Ext.define('Ext.form.field.Spinner', {
         }
     },
 
-<span id='Ext-form.field.Spinner-method-spinDown'>    /**
+<span id='Ext-form-field-Spinner-method-spinDown'>    /**
 </span>     * Triggers the spinner to step down; fires the {@link #spin} and {@link #spindown} events and calls the
      * {@link #onSpinDown} method. Does nothing if the field is {@link #disabled} or if {@link #spinDownEnabled}
      * is false.
@@ -230,7 +247,7 @@ Ext.define('Ext.form.field.Spinner', {
         }
     },
 
-<span id='Ext-form.field.Spinner-method-setSpinUpEnabled'>    /**
+<span id='Ext-form-field-Spinner-method-setSpinUpEnabled'>    /**
 </span>     * Sets whether the spinner up button is enabled.
      * @param {Boolean} enabled true to enable the button, false to disable it.
      */
@@ -243,7 +260,7 @@ Ext.define('Ext.form.field.Spinner', {
         }
     },
 
-<span id='Ext-form.field.Spinner-method-setSpinDownEnabled'>    /**
+<span id='Ext-form-field-Spinner-method-setSpinDownEnabled'>    /**
 </span>     * Sets whether the spinner down button is enabled.
      * @param {Boolean} enabled true to enable the button, false to disable it.
      */
@@ -256,7 +273,7 @@ Ext.define('Ext.form.field.Spinner', {
         }
     },
 
-<span id='Ext-form.field.Spinner-method-onMouseWheel'>    /**
+<span id='Ext-form-field-Spinner-method-onMouseWheel'>    /**
 </span>     * @private
      * Handles mousewheel events on the field
      */
@@ -280,4 +297,6 @@ Ext.define('Ext.form.field.Spinner', {
         this.callParent();
     }
 
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

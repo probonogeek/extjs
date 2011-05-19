@@ -194,14 +194,18 @@ Ext.onReady(function() {
                             // Animate the opacity on each field. Would be more efficient to wrap them in a container
                             // and animate the opacity on just the single container element, but IE has a bug where
                             // the alpha filter does not get applied on position:relative children.
-                            field.el.animate({opacity: checked ? .3 : 1});
+                            // This must only be applied when it is not IE6, as it has issues with opacity when cleartype
+                            // is enabled
+                            if (!Ext.isIE6) {
+                                field.el.animate({opacity: checked ? .3 : 1});
+                            }
                         });
                     }
                 }, {
                     xtype: 'textfield',
                     fieldLabel: 'Street Address',
                     name: 'billingStreet',
-                    style: 'opacity:.3',
+                    //style: 'opacity:.3',
                     disabled: true,
                     allowBlank: false
                 }, {
@@ -211,14 +215,14 @@ Ext.onReady(function() {
                         xtype: 'textfield',
                         fieldLabel: 'City',
                         name: 'billingCity',
-                        style: 'opacity:.3',
+                        style: (!Ext.isIE6) ? 'opacity:.3' : '',
                         flex: 1,
                         disabled: true,
                         allowBlank: false
                     }, {
                         xtype: 'combobox',
                         name: 'billingState',
-                        style: 'opacity:.3',
+                        style: (!Ext.isIE6) ? 'opacity:.3' : '',
                         fieldLabel: 'State',
                         labelWidth: 50,
                         width: 100,
@@ -235,7 +239,7 @@ Ext.onReady(function() {
                         fieldLabel: 'Postal Code',
                         labelWidth: 80,
                         name: 'billingPostalCode',
-                        style: 'opacity:.3',
+                        style: (!Ext.isIE6) ? 'opacity:.3' : '',
                         width: 160,
                         disabled: true,
                         allowBlank: false,

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.feature.GroupingSummary'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-feature-GroupingSummary'>/**
 </span> * @class Ext.grid.feature.GroupingSummary
  * @extends Ext.grid.feature.Grouping
  * 
@@ -28,7 +45,7 @@
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage
@@ -99,7 +116,7 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
     /* End Definitions */
 
      
-<span id='Ext-grid.feature.GroupingSummary-method-getFeatureTpl'>   /**
+<span id='Ext-grid-feature-GroupingSummary-method-getFeatureTpl'>   /**
 </span>    * Modifies the row template to include the summary row.
     * @private
     * @return {String} The modified template
@@ -115,7 +132,7 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
         return tpl;
     },
     
-<span id='Ext-grid.feature.GroupingSummary-method-getFragmentTpl'>    /**
+<span id='Ext-grid-feature-GroupingSummary-method-getFragmentTpl'>    /**
 </span>     * Gets any fragments needed for the template.
      * @private
      * @return {Object} The fragments
@@ -133,7 +150,7 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
         return fragments;
     },
     
-<span id='Ext-grid.feature.GroupingSummary-method-getPrintData'>    /**
+<span id='Ext-grid-feature-GroupingSummary-method-getPrintData'>    /**
 </span>     * Gets the data for printing a template row
      * @private
      * @param {Number} index The index in the template
@@ -157,7 +174,7 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
         return data;
     },
     
-<span id='Ext-grid.feature.GroupingSummary-method-generateSummaryData'>    /**
+<span id='Ext-grid-feature-GroupingSummary-method-generateSummaryData'>    /**
 </span>     * Generates all of the summary data to be used when processing the template
      * @private
      * @return {Object} The summary data
@@ -182,7 +199,7 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
             data[groups[i].name] = {};
         }
         
-<span id='Ext-grid.feature.GroupingSummary-cfg-remoteRoot'>    /**
+<span id='Ext-grid-feature-GroupingSummary-cfg-remoteRoot'>    /**
 </span>     * @cfg {String} remoteRoot.  The name of the property
      * which contains the Array of summary objects.  Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
      * It allows to use server-side calculated summaries.
@@ -216,4 +233,6 @@ Ext.define('Ext.grid.feature.GroupingSummary', {
         return data;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

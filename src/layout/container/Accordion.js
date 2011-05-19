@@ -7,33 +7,33 @@
  * {@img Ext.layout.container.Accordion/Ext.layout.container.Accordion.png Ext.layout.container.Accordion container layout}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.panel.Panel', {
-        title: 'Accordion Layout',
-        width: 300,
-        height: 300,
-        layout:'accordion',
-        defaults: {
-            // applied to each contained panel
-            bodyStyle: 'padding:15px'
-        },
-        layoutConfig: {
-            // layout-specific configs go here
-            titleCollapse: false,
-            animate: true,
-            activeOnTop: true
-        },
-        items: [{
-            title: 'Panel 1',
-            html: '<p>Panel content!</p>'
-        },{
-            title: 'Panel 2',
-            html: '<p>Panel content!</p>'
-        },{
-            title: 'Panel 3',
-            html: '<p>Panel content!</p>'
-        }],
-        renderTo: Ext.getBody()
-    });
+Ext.create('Ext.panel.Panel', {
+    title: 'Accordion Layout',
+    width: 300,
+    height: 300,
+    layout:'accordion',
+    defaults: {
+        // applied to each contained panel
+        bodyStyle: 'padding:15px'
+    },
+    layoutConfig: {
+        // layout-specific configs go here
+        titleCollapse: false,
+        animate: true,
+        activeOnTop: true
+    },
+    items: [{
+        title: 'Panel 1',
+        html: 'Panel content!'
+    },{
+        title: 'Panel 2',
+        html: 'Panel content!'
+    },{
+        title: 'Panel 3',
+        html: 'Panel content!'
+    }],
+    renderTo: Ext.getBody()
+});
 </code></pre>
  */
 Ext.define('Ext.layout.container.Accordion', {
@@ -362,7 +362,7 @@ Ext.define('Ext.layout.container.Accordion', {
 
         // Show temporarily hidden docked items
         for (; i < len; i++) {
-            otherDocks[i].hidden = false;
+            otherDocks[i].show();
         }
 
         // If it was an initial native collapse which hides the body

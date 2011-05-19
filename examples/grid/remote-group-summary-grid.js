@@ -68,10 +68,11 @@ Ext.onReady(function(){
             text: 'Task',
             flex: 1,
             sortable: true,
+            tdCls: 'task',
             dataIndex: 'description',
             hideable: false,
-            summaryRenderer: function(v, params, data){
-                return ((v === 0 || v > 1) ? '(' + v + ' Tasks)' : '(1 Task)');
+            summaryRenderer: function(value, summaryData, dataIndex) {
+                return ((value === 0 || value > 1) ? '(' + value + ' Tasks)' : '(1 Task)');
             }
         }, {
             header: 'Project',
@@ -89,14 +90,18 @@ Ext.onReady(function(){
             width: 75,
             sortable: true,
             dataIndex: 'estimate',
-            renderer: function(v){
-                return v + ' hours';
+            renderer: function(value, metaData, record, rowIdx, colIdx, store, view){
+                return value + ' hours';
+            },
+            summaryRenderer: function(value, summaryData, dataIndex) {
+                return value + ' hours';
             }
         }, {
             header: 'Rate',
             width: 75,
             sortable: true,
             renderer: Ext.util.Format.usMoney,
+            summaryRenderer: Ext.util.Format.usMoney,
             dataIndex: 'rate',
             summaryType: 'average'
         }, {
@@ -105,7 +110,7 @@ Ext.onReady(function(){
             width: 75,
             sortable: false,
             groupable: false,
-            renderer: function(v, params, record){
+            renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
                 return Ext.util.Format.usMoney(record.get('estimate') * record.get('rate'));
             },
             dataIndex: 'cost',

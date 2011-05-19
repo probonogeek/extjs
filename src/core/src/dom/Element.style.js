@@ -154,6 +154,7 @@
          * Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).
          * @param {String} className The CSS class to toggle
          * @return {Ext.core.Element} this
+         * @method
          */
         toggleCls : Ext.supports.ClassList ?
             function(className) {
@@ -168,6 +169,7 @@
          * Checks if the specified CSS class exists on this element's DOM node.
          * @param {String} className The CSS class to check for
          * @return {Boolean} True if the class exists, else false
+         * @method
          */
         hasCls : Ext.supports.ClassList ?
             function(className) {
@@ -206,12 +208,13 @@
          * Normalizes currentStyle and computedStyle.
          * @param {String} property The style property whose value is returned.
          * @return {String} The current value of the style property for this element.
+         * @method
          */
         getStyle : function(){
             return view && view.getComputedStyle ?
                 function(prop){
                     var el = this.dom,
-                        v, cs, out, display;
+                        v, cs, out, display, cleaner;
 
                     if(el == document){
                         return null;
@@ -223,10 +226,12 @@
                     // Ignore cases when the margin is correctly reported as 0, the bug only shows
                     // numbers larger.
                     if(prop == 'marginRight' && out != '0px' && !supports.RightMargin){
+                        cleaner = Ext.core.Element.getRightMarginFixCleaner(el);
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
+                        cleaner();
                     }
                     
                     if(prop == 'backgroundColor' && out == 'rgba(0, 0, 0, 0)' && !supports.TransparentColor){

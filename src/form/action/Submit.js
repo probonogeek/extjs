@@ -145,7 +145,7 @@ Ext.define('Ext.form.action.Submit', {
                 tag: 'input',
                 type: 'hidden',
                 name: name,
-                value: val
+                value: Ext.String.htmlEncode(val)
             });
         }
 

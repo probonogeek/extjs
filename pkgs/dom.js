@@ -23,6 +23,11 @@ licensing@sencha.com
  * for a DOM node, depending on whether DomHelper is using fragments or DOM.</div></li>
  * <li><b><tt>html</tt></b> : <div class="sub-desc">The innerHTML for the element</div></li>
  * </ul></div></p>
+ * <p><b>NOTE:</b> For other arbitrary attributes, the value will currently <b>not</b> be automatically
+ * HTML-escaped prior to building the element's HTML string. This means that if your attribute value
+ * contains special characters that would not normally be allowed in a double-quoted attribute value,
+ * you <b>must</b> manually HTML-encode it beforehand (see {@link Ext.String#htmlEncode}) or risk
+ * malformed HTML being created. This behavior may change in a future release.</p>
  *
  * <p><b><u>Insertion methods</u></b></p>
  * <p>Commonly used insertion methods:
@@ -520,6 +525,7 @@ Ext.core.DomHelper = function(){
          * Creates new DOM element(s) without inserting them to the document.
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
          * @return {HTMLElement} The new uninserted node
+         * @method
          */
         createDom: createDom,
         
@@ -1064,7 +1070,10 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         },
 
         /**
-         * Selects a group of elements.
+         * Selects an array of DOM nodes using JavaScript-only implementation.
+         *
+         * Use {@link #select} to take advantage of browsers built-in support for CSS selectors.
+         *
          * @param {String} selector The selector/xpath query (can be a comma separated list of selectors)
          * @param {Node/String} root (optional) The start of the query (defaults to document).
          * @return {Array} An Array of DOM elements which match the selector. If there are
@@ -1114,7 +1123,23 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
             var docEl = (el ? el.ownerDocument || el : 0).documentElement;
             return docEl ? docEl.nodeName !== "HTML" : false;
         },
-        
+
+        /**
+         * Selects an array of DOM nodes by CSS/XPath selector.
+         *
+         * Uses [document.querySelectorAll][0] if browser supports that, otherwise falls back to
+         * {@link #jsSelect} to do the work.
+         * 
+         * Aliased as {@link Ext#query}.
+         * 
+         * [0]: https://developer.mozilla.org/en/DOM/document.querySelectorAll
+         *
+         * @param {String} path The selector/xpath query
+         * @param {Node} root (optional) The start of the query (defaults to document).
+         * @return {Array} An array of DOM elements (not a NodeList as returned by `querySelectorAll`).
+         * Empty array when no matches.
+         * @method
+         */
         select : document.querySelectorAll ? function(path, root, type) {
             root = root || document;
             if (!Ext.DomQuery.isXml(root)) {
@@ -2178,6 +2203,7 @@ el.un('click', this.handlerFn);
          * @param {String} name The attribute name
          * @param {String} namespace (optional) The namespace in which to look for the attribute
          * @return {String} The attribute value
+         * @method
          */
         getAttribute: (Ext.isIE && !(Ext.isIE9 && document.documentMode === 9)) ?
         function(name, ns) {
@@ -3015,6 +3041,7 @@ Ext.core.Element.addMethods({
          * Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).
          * @param {String} className The CSS class to toggle
          * @return {Ext.core.Element} this
+         * @method
          */
         toggleCls : Ext.supports.ClassList ?
             function(className) {
@@ -3029,6 +3056,7 @@ Ext.core.Element.addMethods({
          * Checks if the specified CSS class exists on this element's DOM node.
          * @param {String} className The CSS class to check for
          * @return {Boolean} True if the class exists, else false
+         * @method
          */
         hasCls : Ext.supports.ClassList ?
             function(className) {
@@ -3067,12 +3095,13 @@ Ext.core.Element.addMethods({
          * Normalizes currentStyle and computedStyle.
          * @param {String} property The style property whose value is returned.
          * @return {String} The current value of the style property for this element.
+         * @method
          */
         getStyle : function(){
             return view && view.getComputedStyle ?
                 function(prop){
                     var el = this.dom,
-                        v, cs, out, display;
+                        v, cs, out, display, cleaner;
 
                     if(el == document){
                         return null;
@@ -3084,10 +3113,12 @@ Ext.core.Element.addMethods({
                     // Ignore cases when the margin is correctly reported as 0, the bug only shows
                     // numbers larger.
                     if(prop == 'marginRight' && out != '0px' && !supports.RightMargin){
+                        cleaner = Ext.core.Element.getRightMarginFixCleaner(el);
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
+                        cleaner();
                     }
                     
                     if(prop == 'backgroundColor' && out == 'rgba(0, 0, 0, 0)' && !supports.TransparentColor){
@@ -6354,74 +6385,79 @@ Ext.EventManager = {
      * @param {String} ename The event name
      * @param {Function} fn The function to execute
      * @param {Object} scope The scope to execute callback in
-     * @param {Object} o The options
+     * @param {Object} options The options
+     * @return {Function} the wrapper function
      */
     createListenerWrap : function(dom, ename, fn, scope, options) {
         options = !Ext.isObject(options) ? {} : options;
 
-        var f = ['if(!Ext) {return;}'],
-            gen;
-
-        if(options.buffer || options.delay || options.freezeEvent) {
-            f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
-        } else {
-            f.push('e = Ext.EventObject.setEvent(e);');
-        }
-
-        if (options.delegate) {
-            f.push('var t = e.getTarget("' + options.delegate + '", this);');
-            f.push('if(!t) {return;}');
-        } else {
-            f.push('var t = e.target;');
-        }
-
-        if (options.target) {
-            f.push('if(e.target !== options.target) {return;}');
-        }
-
-        if(options.stopEvent) {
-            f.push('e.stopEvent();');
-        } else {
-            if(options.preventDefault) {
-                f.push('e.preventDefault();');
-            }
-            if(options.stopPropagation) {
-                f.push('e.stopPropagation();');
-            }
-        }
-
-        if(options.normalized === false) {
-            f.push('e = e.browserEvent;');
-        }
-
-        if(options.buffer) {
-            f.push('(wrap.task && clearTimeout(wrap.task));');
-            f.push('wrap.task = setTimeout(function(){');
-        }
-
-        if(options.delay) {
-            f.push('wrap.tasks = wrap.tasks || [];');
-            f.push('wrap.tasks.push(setTimeout(function(){');
-        }
-
-        // finally call the actual handler fn
-        f.push('fn.call(scope || dom, e, t, options);');
-
-        if(options.single) {
-            f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
-        }
-
-        if(options.delay) {
-            f.push('}, ' + options.delay + '));');
-        }
-
-        if(options.buffer) {
-            f.push('}, ' + options.buffer + ');');
-        }
-
-        gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+        var f, gen;
 
         return function wrap(e, args) {
+            // Compile the implementation upon first firing
+            if (!gen) {
+                f = ['if(!Ext) {return;}'];
+
+                if(options.buffer || options.delay || options.freezeEvent) {
+                    f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
+                } else {
+                    f.push('e = Ext.EventObject.setEvent(e);');
+                }
+
+                if (options.delegate) {
+                    f.push('var t = e.getTarget("' + options.delegate + '", this);');
+                    f.push('if(!t) {return;}');
+                } else {
+                    f.push('var t = e.target;');
+                }
+
+                if (options.target) {
+                    f.push('if(e.target !== options.target) {return;}');
+                }
+
+                if(options.stopEvent) {
+                    f.push('e.stopEvent();');
+                } else {
+                    if(options.preventDefault) {
+                        f.push('e.preventDefault();');
+                    }
+                    if(options.stopPropagation) {
+                        f.push('e.stopPropagation();');
+                    }
+                }
+
+                if(options.normalized === false) {
+                    f.push('e = e.browserEvent;');
+                }
+
+                if(options.buffer) {
+                    f.push('(wrap.task && clearTimeout(wrap.task));');
+                    f.push('wrap.task = setTimeout(function(){');
+                }
+
+                if(options.delay) {
+                    f.push('wrap.tasks = wrap.tasks || [];');
+                    f.push('wrap.tasks.push(setTimeout(function(){');
+                }
+
+                // finally call the actual handler fn
+                f.push('fn.call(scope || dom, e, t, options);');
+
+                if(options.single) {
+                    f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
+                }
+
+                if(options.delay) {
+                    f.push('}, ' + options.delay + '));');
+                }
+
+                if(options.buffer) {
+                    f.push('}, ' + options.buffer + ');');
+                }
+
+                gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+            }
+
             gen.call(dom, e, options, fn, scope, ename, dom, wrap, args);
         };
     },
@@ -7612,6 +7648,7 @@ Ext.EventObject = new Ext.EventObjectImpl();
  */
 (function(){
     var doc = document,
+        activeElement = null,
         isCSS1 = doc.compatMode == "CSS1Compat",
         ELEMENT = Ext.core.Element,
         fly = function(el){
@@ -7621,6 +7658,28 @@ Ext.EventObject = new Ext.EventObjectImpl();
             _fly.dom = el;
             return _fly;
         }, _fly;
+
+    // If the browser does not support document.activeElement we need some assistance.
+    // This covers old Safari 3.2 (4.0 added activeElement along with just about all
+    // other browsers). We need this support to handle issues with old Safari.
+    if (!('activeElement' in doc) && doc.addEventListener) {
+        doc.addEventListener('focus',
+            function (ev) {
+                if (ev && ev.target) {
+                    activeElement = (ev.target == doc) ? null : ev.target;
+                }
+            }, true);
+    }
+
+    /*
+     * Helper function to create the function that will restore the selection.
+     */
+    function makeSelectionRestoreFn (activeEl, start, end) {
+        return function () {
+            activeEl.selectionStart = start;
+            activeEl.selectionEnd = end;
+        };
+    }
 
     Ext.apply(ELEMENT, {
         isAncestor : function(p, c) {
@@ -7640,6 +7699,59 @@ Ext.EventObject = new Ext.EventObjectImpl();
                 }
             }
             return ret;
+        },
+
+        /**
+         * Returns the active element in the DOM. If the browser supports activeElement
+         * on the document, this is returned. If not, the focus is tracked and the active
+         * element is maintained internally.
+         * @return {HTMLElement} The active (focused) element in the document.
+         */
+        getActiveElement: function () {
+            return doc.activeElement || activeElement;
+        },
+
+        /**
+         * Creates a function to call to clean up problems with the work-around for the
+         * WebKit RightMargin bug. The work-around is to add "display: 'inline-block'" to
+         * the element before calling getComputedStyle and then to restore its original
+         * display value. The problem with this is that it corrupts the selection of an
+         * INPUT or TEXTAREA element (as in the "I-beam" goes away but ths focus remains).
+         * To cleanup after this, we need to capture the selection of any such element and
+         * then restore it after we have restored the display style.
+         *
+         * @param target {Element} The top-most element being adjusted.
+         * @private
+         */
+        getRightMarginFixCleaner: function (target) {
+            var supports = Ext.supports,
+                hasInputBug = supports.DisplayChangeInputSelectionBug,
+                hasTextAreaBug = supports.DisplayChangeTextAreaSelectionBug;
+
+            if (hasInputBug || hasTextAreaBug) {
+                var activeEl = doc.activeElement || activeElement, // save a call
+                    tag = activeEl && activeEl.tagName,
+                    start,
+                    end;
+
+                if ((hasTextAreaBug && tag == 'TEXTAREA') ||
+                    (hasInputBug && tag == 'INPUT' && activeEl.type == 'text')) {
+                    if (ELEMENT.isAncestor(target, activeEl)) {
+                        start = activeEl.selectionStart;
+                        end = activeEl.selectionEnd;
+
+                        if (Ext.isNumber(start) && Ext.isNumber(end)) { // to be safe...
+                            // We don't create the raw closure here inline because that
+                            // will be costly even if we don't want to return it (nested
+                            // function decls and exprs are often instantiated on entry
+                            // regardless of whether execution ever reaches them):
+                            return makeSelectionRestoreFn(activeEl, start, end);
+                        }
+                    }
+                }
+            }
+
+            return Ext.emptyFn; // avoid special cases, just return a nop
         },
 
         getViewWidth : function(full) {
@@ -7792,7 +7904,7 @@ Ext.EventObject = new Ext.EventObjectImpl();
                         Ext.each(element.options, function(opt){
                             if (opt.selected) {
                                 hasValue = opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttributeNode('value').specified;
-                                data += String.format("{0}={1}&", encoder(name), encoder(hasValue ? opt.value : opt.text));
+                                data += Ext.String.format("{0}={1}&", encoder(name), encoder(hasValue ? opt.value : opt.text));
                             }
                         });
                     } else if (!(/file|undefined|reset|button/i.test(type))) {

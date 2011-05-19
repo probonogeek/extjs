@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-Component-method-constructor'><span id='Ext-Component'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-Component-method-constructor'><span id='Ext-Component'>/**
 </span></span> * @class Ext.Component
  * @extends Ext.AbstractComponent
  * &lt;p&gt;Base class for all Ext components.  All subclasses of Component may participate in the automated
@@ -328,7 +345,9 @@ new Ext.Component({
             me.el.setVisibilityMode(Ext.core.Element[me.hideMode.toUpperCase()]);
         }
 
-        me.setAutoScroll(me.autoScroll);
+        if (Ext.isDefined(me.autoScroll)) {
+            me.setAutoScroll(me.autoScroll);
+        }
         me.callParent();
 
         if (!(me.x &amp;&amp; me.y) &amp;&amp; (me.pageX || me.pageY)) {
@@ -835,6 +854,7 @@ new Ext.Component({
                 me.container.remove();
             }
         }
+        delete me.focusTask;
         me.callParent();
     },
 
@@ -858,7 +878,10 @@ new Ext.Component({
                 focusEl;
 
         if (delay) {
-            me.focusTask.delay(Ext.isNumber(delay) ? delay: 10, null, me, [selectText, false]);
+            if (!me.focusTask) {
+                me.focusTask = Ext.create('Ext.util.DelayedTask', me.focus);
+            }
+            me.focusTask.delay(Ext.isNumber(delay) ? delay : 10, null, me, [selectText, false]);
             return me;
         }
 
@@ -1023,10 +1046,7 @@ alert(t.getXType());  // alerts 'textfield'
         return this.proxy;
     }
 
-}, function() {
-
-    // A single focus delayer for all Components.
-    this.prototype.focusTask = Ext.create('Ext.util.DelayedTask', this.prototype.focus);
-
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

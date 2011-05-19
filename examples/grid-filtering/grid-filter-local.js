@@ -97,7 +97,8 @@ Ext.onReady(function(){
             // to use store's field's type property (if type property not
             // explicitly specified in store config it will be 'auto' which
             // GridFilters will assume to be 'StringFilter'
-            filterable: true
+            filterable: true,
+            width: 30
             //,filter: {type: 'numeric'}
         }, {
             dataIndex: 'company',
@@ -114,7 +115,8 @@ Ext.onReady(function(){
             text: 'Price',
             filter: {
                 //type: 'numeric'  // specify type here or in store fields config
-            }
+            },
+            width: 70
         }, {
             dataIndex: 'size',
             text: 'Size',

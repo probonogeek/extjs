@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Connection'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Connection'>/**
 </span> * @class Ext.data.Connection
  * The Connection class encapsulates a connection to the page's originating domain, allowing requests to be made either
  * to a configured URL, or to a URL specified at request time.
@@ -45,26 +62,24 @@ Ext.define('Ext.data.Connection', {
     username: '',
     password: '',
 
-<span id='Ext-data.Connection-property-disableCaching'>    /**
+<span id='Ext-data-Connection-cfg-disableCaching'>    /**
 </span>     * @cfg {Boolean} disableCaching (Optional) True to add a unique cache-buster param to GET requests. (defaults to true)
-     * @type Boolean
      */
     disableCaching: true,
 
-<span id='Ext-data.Connection-property-disableCachingParam'>    /**
+<span id='Ext-data-Connection-cfg-disableCachingParam'>    /**
 </span>     * @cfg {String} disableCachingParam (Optional) Change the parameter which is sent went disabling caching
      * through a cache buster. Defaults to '_dc'
-     * @type String
      */
     disableCachingParam: '_dc',
 
-<span id='Ext-data.Connection-cfg-timeout'>    /**
+<span id='Ext-data-Connection-cfg-timeout'>    /**
 </span>     * @cfg {Number} timeout (Optional) The timeout in milliseconds to be used for requests. (defaults to 30000)
      */
     timeout : 30000,
 
-<span id='Ext-data.Connection-property-useDefaultHeader'>    /**
-</span>     * @param {Object} extraParams (Optional) Any parameters to be appended to the request.
+<span id='Ext-data-Connection-cfg-extraParams'>    /**
+</span>     * @cfg {Object} extraParams (Optional) Any parameters to be appended to the request.
      */
 
     useDefaultHeader : true,
@@ -77,14 +92,14 @@ Ext.define('Ext.data.Connection', {
         Ext.apply(this, config);
 
         this.addEvents(
-<span id='Ext-data.Connection-event-beforerequest'>            /**
+<span id='Ext-data-Connection-event-beforerequest'>            /**
 </span>             * @event beforerequest
              * Fires before a network request is made to retrieve a data object.
              * @param {Connection} conn This Connection object.
              * @param {Object} options The options config object passed to the {@link #request} method.
              */
             'beforerequest',
-<span id='Ext-data.Connection-event-requestcomplete'>            /**
+<span id='Ext-data-Connection-event-requestcomplete'>            /**
 </span>             * @event requestcomplete
              * Fires if the request was successfully completed.
              * @param {Connection} conn This Connection object.
@@ -94,7 +109,7 @@ Ext.define('Ext.data.Connection', {
              * @param {Object} options The options config object passed to the {@link #request} method.
              */
             'requestcomplete',
-<span id='Ext-data.Connection-event-requestexception'>            /**
+<span id='Ext-data-Connection-event-requestexception'>            /**
 </span>             * @event requestexception
              * Fires if an error HTTP status was returned from the server.
              * See &lt;a href=&quot;http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html&quot;&gt;HTTP Status Code Definitions&lt;/a&gt;
@@ -111,7 +126,7 @@ Ext.define('Ext.data.Connection', {
         this.mixins.observable.constructor.call(this);
     },
 
-<span id='Ext-data.Connection-method-request'>    /**
+<span id='Ext-data-Connection-method-request'>    /**
 </span>     * &lt;p&gt;Sends an HTTP request to a remote server.&lt;/p&gt;
      * &lt;p&gt;&lt;b&gt;Important:&lt;/b&gt; Ajax server requests are asynchronous, and this call will
      * return before the response has been received. Process any returned data
@@ -279,7 +294,7 @@ failure: function(response, opts) {
         }
     },
 
-<span id='Ext-data.Connection-method-upload'>    /**
+<span id='Ext-data-Connection-method-upload'>    /**
 </span>     * Upload a form using a hidden iframe.
      * @param {Mixed} form The form to upload
      * @param {String} url The url to post to
@@ -386,7 +401,7 @@ failure: function(response, opts) {
         }, 100);
     },
 
-<span id='Ext-data.Connection-method-isFormUpload'>    /**
+<span id='Ext-data-Connection-method-isFormUpload'>    /**
 </span>     * Detect whether the form is intended to be used for an upload.
      * @private
      */
@@ -398,7 +413,7 @@ failure: function(response, opts) {
         return false;
     },
 
-<span id='Ext-data.Connection-method-getForm'>    /**
+<span id='Ext-data-Connection-method-getForm'>    /**
 </span>     * Get the form object from options.
      * @private
      * @param {Object} options The request options
@@ -408,7 +423,7 @@ failure: function(response, opts) {
         return Ext.getDom(options.form) || null;
     },
 
-<span id='Ext-data.Connection-method-setOptions'>    /**
+<span id='Ext-data-Connection-method-setOptions'>    /**
 </span>     * Set various options such as the url, params for the request
      * @param {Object} options The initial options
      * @param {Object} scope The scope to execute in
@@ -497,7 +512,7 @@ failure: function(response, opts) {
         };
     },
 
-<span id='Ext-data.Connection-method-setupUrl'>    /**
+<span id='Ext-data-Connection-method-setupUrl'>    /**
 </span>     * Template method for overriding url
      * @private
      * @param {Object} options
@@ -513,7 +528,7 @@ failure: function(response, opts) {
     },
 
 
-<span id='Ext-data.Connection-method-setupParams'>    /**
+<span id='Ext-data-Connection-method-setupParams'>    /**
 </span>     * Template method for overriding params
      * @private
      * @param {Object} options
@@ -530,7 +545,7 @@ failure: function(response, opts) {
         return params;
     },
 
-<span id='Ext-data.Connection-method-setupMethod'>    /**
+<span id='Ext-data-Connection-method-setupMethod'>    /**
 </span>     * Template method for overriding method
      * @private
      * @param {Object} options
@@ -544,7 +559,7 @@ failure: function(response, opts) {
         return method;
     },
 
-<span id='Ext-data.Connection-method-setupHeaders'>    /**
+<span id='Ext-data-Connection-method-setupHeaders'>    /**
 </span>     * Setup all the headers for the request
      * @private
      * @param {Object} xhr The xhr object
@@ -594,7 +609,7 @@ failure: function(response, opts) {
         return headers;
     },
 
-<span id='Ext-data.Connection-property-getXhrInstance'>    /**
+<span id='Ext-data-Connection-property-getXhrInstance'>    /**
 </span>     * Creates the appropriate XHR transport for the browser.
      * @private
      */
@@ -621,7 +636,7 @@ failure: function(response, opts) {
         return xhr;
     })(),
 
-<span id='Ext-data.Connection-method-isLoading'>    /**
+<span id='Ext-data-Connection-method-isLoading'>    /**
 </span>     * Determine whether this object has a request outstanding.
      * @param {Object} request (Optional) defaults to the last transaction
      * @return {Boolean} True if there is an outstanding request.
@@ -635,7 +650,7 @@ failure: function(response, opts) {
         return !(state === 0 || state == 4);
     },
 
-<span id='Ext-data.Connection-method-abort'>    /**
+<span id='Ext-data-Connection-method-abort'>    /**
 </span>     * Aborts any outstanding request.
      * @param {Object} request (Optional) defaults to the last request
      */
@@ -645,8 +660,8 @@ failure: function(response, opts) {
             id;
 
         if (request &amp;&amp; me.isLoading(request)) {
-<span id='Ext-data.Connection-property-onreadystatechange'>            /**
-</span>             * Clear out the onreadystatechange here, this allows us
+            /*
+             * Clear out the onreadystatechange here, this allows us
              * greater control, the browser may/may not fire the function
              * depending on a series of conditions.
              */
@@ -667,7 +682,7 @@ failure: function(response, opts) {
         }
     },
 
-<span id='Ext-data.Connection-method-onStateChange'>    /**
+<span id='Ext-data-Connection-method-onStateChange'>    /**
 </span>     * Fires when the state of the xhr changes
      * @private
      * @param {Object} request The request
@@ -680,7 +695,7 @@ failure: function(response, opts) {
         }
     },
 
-<span id='Ext-data.Connection-method-clearTimeout'>    /**
+<span id='Ext-data-Connection-method-clearTimeout'>    /**
 </span>     * Clear the timeout on the request
      * @private
      * @param {Object} The request
@@ -690,7 +705,7 @@ failure: function(response, opts) {
         delete request.timeout;
     },
 
-<span id='Ext-data.Connection-method-cleanup'>    /**
+<span id='Ext-data-Connection-method-cleanup'>    /**
 </span>     * Clean up any left over information from the request
      * @private
      * @param {Object} The request
@@ -700,7 +715,7 @@ failure: function(response, opts) {
         delete request.xhr;
     },
 
-<span id='Ext-data.Connection-method-onComplete'>    /**
+<span id='Ext-data-Connection-method-onComplete'>    /**
 </span>     * To be called when the request has come back from the server
      * @private
      * @param {Object} request
@@ -731,7 +746,7 @@ failure: function(response, opts) {
         return response;
     },
 
-<span id='Ext-data.Connection-method-parseStatus'>    /**
+<span id='Ext-data-Connection-method-parseStatus'>    /**
 </span>     * Check if the response status was successful
      * @param {Number} status The status code
      * @return {Object} An object containing success/status state
@@ -761,7 +776,7 @@ failure: function(response, opts) {
         };
     },
 
-<span id='Ext-data.Connection-method-createResponse'>    /**
+<span id='Ext-data-Connection-method-createResponse'>    /**
 </span>     * Create the response object
      * @private
      * @param {Object} request
@@ -805,7 +820,7 @@ failure: function(response, opts) {
         return response;
     },
 
-<span id='Ext-data.Connection-method-createException'>    /**
+<span id='Ext-data-Connection-method-createException'>    /**
 </span>     * Create the exception object
      * @private
      * @param {Object} request
@@ -821,4 +836,6 @@ failure: function(response, opts) {
         };
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

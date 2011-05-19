@@ -139,7 +139,7 @@ licensing@sencha.com
 
         /**
          * This method deprecated. Use {@link Ext#define Ext.define} instead.
-         * @function
+         * @method
          * @param {Function} superclass
          * @param {Object} overrides
          * @return {Function} The subclass constructor from the <tt>overrides</tt> parameter, or a generated one if not provided.
@@ -353,6 +353,7 @@ licensing@sencha.com
          *
          * @param {Mixed} target The target to test
          * @return {Boolean}
+         * @method
          */
         isArray: ('isArray' in Array) ? Array.isArray : function(value) {
             return toString.call(value) === '[object Array]';
@@ -371,6 +372,7 @@ licensing@sencha.com
          * Returns true if the passed value is a JavaScript Object, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
@@ -395,6 +397,7 @@ licensing@sencha.com
          * Returns true if the passed value is a JavaScript Function, false otherwise.
          * @param {Mixed} value The value to test
          * @return {Boolean}
+         * @method
          */
         isFunction:
         // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back to using
@@ -448,7 +451,7 @@ licensing@sencha.com
          * @return {Boolean}
          */
         isElement: function(value) {
-            return value ? value.nodeType !== undefined : false;
+            return value ? value.nodeType === 1 : false;
         },
 
         /**
@@ -575,6 +578,7 @@ licensing@sencha.com
     /**
      * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
+     * @method
      */
     Ext.type = Ext.typeOf;
 
@@ -611,7 +615,7 @@ licensing@sencha.com
 (function() {
 
 // Current core version
-var version = '4.0.0', Version;
+var version = '4.0.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**
@@ -910,6 +914,7 @@ Ext.String = {
      * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
      * @param {String} value The string to encode
      * @return {String} The encoded text
+     * @method
      */
     htmlEncode: (function() {
         var entities = {
@@ -936,6 +941,7 @@ Ext.String = {
      * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
      * @param {String} value The string to decode
      * @return {String} The decoded text
+     * @method
      */
     htmlDecode: (function() {
         var entities = {
@@ -1219,7 +1225,7 @@ Ext.num = function() {
     }
 
     ExtArray = Ext.Array = {
-        /*
+        /**
          * Iterates an array or an iterable value and invoke the given callback function for each item.
 
     var countries = ['Vietnam', 'Singapore', 'United States', 'Russia'];
@@ -2826,6 +2832,7 @@ var ExtObject = Ext.Object = {
 
      * @param {Object} object
      * @return {Array} An array of keys from the object
+     * @method
      */
     getKeys: ('keys' in Object.prototype) ? Object.keys : function(object) {
         var keys = [],
@@ -3041,6 +3048,7 @@ Ext.Date = {
     /**
      * Returns the current timestamp
      * @return {Date} The current timestamp
+     * @method
      */
     now: Date.now || function() {
         return +new Date();
@@ -3369,6 +3377,7 @@ Ext.Date.monthNumbers = {
      * @param {String} format The format to check
      * @return {Boolean} True if the format contains hour information
      * @static
+     * @method
      */
     formatContainsHourInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -3385,6 +3394,7 @@ Ext.Date.monthNumbers = {
      * @return {Boolean} True if the format contains information about
      * date/day information.
      * @static
+     * @method
      */
     formatContainsDateInfo : (function(){
         var stripEscapeRe = /(\\.)/g,
@@ -3775,7 +3785,7 @@ dt = Ext.Date.parse("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
                 + "y = ty > Ext.Date.y2kYear ? 1900 + ty : 2000 + ty;\n", // 2-digit year
             s:"(\\d{1,2})"
         },
-        /**
+        /*
          * In the am/pm parsing routines, we allow both upper and lower case
          * even though it doesn't exactly match the spec. It gives much more flexibility
          * in being able to specify case insensitive regexes.
@@ -3995,6 +4005,7 @@ dt = Ext.Date.parse("2006-02-29 03:20:01", "Y-m-d H:i:s", true); // returns null
      * (equivalent to the format specifier 'W', but without a leading zero).
      * @param {Date} date The date
      * @return {Number} 1 to 53
+     * @method
      */
     getWeekOfYear : (function() {
         // adapted from http://www.merlyn.demon.co.uk/weekcalc.htm
@@ -4078,6 +4089,7 @@ console.log(Ext.Date.dayNames[lastDay]); //output: 'Wednesday'
      * Get the number of days in the current month, adjusted for leap year.
      * @param {Date} date The date
      * @return {Number} The number of days in the month.
+     * @method
      */
     getDaysInMonth: (function() {
         var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -4303,37 +4315,37 @@ var Base = Ext.Base = function() {};
          * Get the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#statics},
          * `this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#statics}
          * for a detailed comparison
-
-    Ext.define('My.Cat', {
-        statics: {
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            alert(this.self.speciesName); / dependent on 'this'
-
-            return this;
-        },
-
-        clone: function() {
-            return new this.self();
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-        statics: {
-            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
-        }
-    });
-
-    var cat = new My.Cat();                     // alerts 'Cat'
-    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *
+         *         constructor: function() {
+         *             alert(this.self.speciesName); / dependent on 'this'
+         *
+         *             return this;
+         *         },
+         *
+         *         clone: function() {
+         *             return new this.self();
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *         statics: {
+         *             speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                     // alerts 'Cat'
+         *     var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
+         *
          * @type Class
          * @protected
          * @markdown
@@ -4353,27 +4365,27 @@ var Base = Ext.Base = function() {};
 
         /**
          * Initialize configuration for this class. a typical example:
-
-    Ext.define('My.awesome.Class', {
-        // The default config
-        config: {
-            name: 'Awesome',
-            isAwesome: true
-        },
-
-        constructor: function(config) {
-            this.initConfig(config);
-
-            return this;
-        }
-    });
-
-    var awesome = new My.awesome.Class({
-        name: 'Super Awesome'
-    });
-
-    alert(awesome.getName()); // 'Super Awesome'
-
+         *
+         *     Ext.define('My.awesome.Class', {
+         *         // The default config
+         *         config: {
+         *             name: 'Awesome',
+         *             isAwesome: true
+         *         },
+         *
+         *         constructor: function(config) {
+         *             this.initConfig(config);
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     var awesome = new My.awesome.Class({
+         *         name: 'Super Awesome'
+         *     });
+         *
+         *     alert(awesome.getName()); // 'Super Awesome'
+         *
          * @protected
          * @param {Object} config
          * @return {Object} mixins The mixin prototypes as key - value pairs
@@ -4415,38 +4427,38 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the parent's overridden method. For example:
-
-    Ext.define('My.own.A', {
-        constructor: function(test) {
-            alert(test);
-        }
-    });
-
-    Ext.define('My.own.B', {
-        extend: 'My.own.A',
-
-        constructor: function(test) {
-            alert(test);
-
-            this.callParent([test + 1]);
-        }
-    });
-
-    Ext.define('My.own.C', {
-        extend: 'My.own.B',
-
-        constructor: function() {
-            alert("Going to call parent's overriden constructor...");
-
-            this.callParent(arguments);
-        }
-    });
-
-    var a = new My.own.A(1); // alerts '1'
-    var b = new My.own.B(1); // alerts '1', then alerts '2'
-    var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
-                             // alerts '2', then alerts '3'
-
+         *
+         *     Ext.define('My.own.A', {
+         *         constructor: function(test) {
+         *             alert(test);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.B', {
+         *         extend: 'My.own.A',
+         *
+         *         constructor: function(test) {
+         *             alert(test);
+         *
+         *             this.callParent([test + 1]);
+         *         }
+         *     });
+         *
+         *     Ext.define('My.own.C', {
+         *         extend: 'My.own.B',
+         *
+         *         constructor: function() {
+         *             alert("Going to call parent's overriden constructor...");
+         *
+         *             this.callParent(arguments);
+         *         }
+         *     });
+         *
+         *     var a = new My.own.A(1); // alerts '1'
+         *     var b = new My.own.B(1); // alerts '1', then alerts '2'
+         *     var c = new My.own.C(2); // alerts "Going to call parent's overriden constructor..."
+         *                              // alerts '2', then alerts '3'
+         *
          * @protected
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * from the current method, for example: `this.callParent(arguments)`
@@ -4489,58 +4501,58 @@ var Base = Ext.Base = function() {};
          * Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#self},
          * `this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what
          * `this` points to during run-time
-
-    Ext.define('My.Cat', {
-        statics: {
-            totalCreated: 0,
-            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
-        },
-
-        constructor: function() {
-            var statics = this.statics();
-
-            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
-                                            // equivalent to: My.Cat.speciesName
-
-            alert(this.self.speciesName);   // dependent on 'this'
-
-            statics.totalCreated++;
-
-            return this;
-        },
-
-        clone: function() {
-            var cloned = new this.self;                      // dependent on 'this'
-
-            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
-
-            return cloned;
-        }
-    });
-
-
-    Ext.define('My.SnowLeopard', {
-        extend: 'My.Cat',
-
-        statics: {
-            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
-        },
-
-        constructor: function() {
-            this.callParent();
-        }
-    });
-
-    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
-
-    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
-
-    var clone = snowLeopard.clone();
-    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
-    alert(clone.groupName);                 // alerts 'Cat'
-
-    alert(My.Cat.totalCreated);             // alerts 3
-
+         *
+         *     Ext.define('My.Cat', {
+         *         statics: {
+         *             totalCreated: 0,
+         *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
+         *         },
+         *  
+         *         constructor: function() {
+         *             var statics = this.statics();
+         *  
+         *             alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
+         *                                             // equivalent to: My.Cat.speciesName
+         *  
+         *             alert(this.self.speciesName);   // dependent on 'this'
+         *  
+         *             statics.totalCreated++;
+         *  
+         *             return this;
+         *         },
+         *  
+         *         clone: function() {
+         *             var cloned = new this.self;                      // dependent on 'this'
+         *  
+         *             cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
+         *  
+         *             return cloned;
+         *         }
+         *     });
+         *
+         *
+         *     Ext.define('My.SnowLeopard', {
+         *         extend: 'My.Cat',
+         *  
+         *         statics: {
+         *             speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
+         *         },
+         *  
+         *         constructor: function() {
+         *             this.callParent();
+         *         }
+         *     });
+         *
+         *     var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'
+         *
+         *     var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'
+         *
+         *     var clone = snowLeopard.clone();
+         *     alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'
+         *     alert(clone.groupName);                 // alerts 'Cat'
+         *
+         *     alert(My.Cat.totalCreated);             // alerts 3
+         *
          * @protected
          * @return {Class}
          * @markdown
@@ -4558,31 +4570,31 @@ var Base = Ext.Base = function() {};
 
         /**
          * Call the original method that was previously overridden with {@link Ext.Base#override}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *   
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *   
+         *             var instance = this.callOverridden();
+         *   
+         *             alert("Meeeeoooowwww");
+         *   
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * @return {Mixed} Returns the result after calling the overridden method
          * @markdown
@@ -4617,13 +4629,15 @@ var Base = Ext.Base = function() {};
     Ext.apply(Ext.Base, {
         /**
          * Create a new instance of this Class.
-Ext.define('My.cool.Class', {
-    ...
-});
-
-My.cool.Class.create({
-    someConfig: true
-});
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *      
+         *     My.cool.Class.create({
+         *         someConfig: true
+         *     });
+         *
          * @property create
          * @static
          * @type Function
@@ -4672,17 +4686,17 @@ My.cool.Class.create({
 
         /**
          * Add / override static properties of this class.
-
-    Ext.define('My.cool.Class', {
-        ...
-    });
-
-    My.cool.Class.addStatics({
-        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
-        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
-        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
-    });
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         ...
+         *     });
+         *
+         *     My.cool.Class.addStatics({
+         *         someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'
+         *         method1: function() { ... },    // My.cool.Class.method1 = function() { ... };
+         *         method2: function() { ... }     // My.cool.Class.method2 = function() { ... };
+         *     });
+         *
          * @property addStatics
          * @static
          * @type Function
@@ -4701,22 +4715,22 @@ My.cool.Class.create({
 
         /**
          * Add methods / properties to the prototype of this class.
-
-    Ext.define('My.awesome.Cat', {
-        constructor: function() {
-            ...
-        }
-    });
-
-     My.awesome.Cat.implement({
-         meow: function() {
-            alert('Meowww...');
-         }
-     });
-
-     var kitty = new My.awesome.Cat;
-     kitty.meow();
-
+         *
+         *     Ext.define('My.awesome.Cat', {
+         *         constructor: function() {
+         *             ...
+         *         }
+         *     });
+         *
+         *      My.awesome.Cat.implement({
+         *          meow: function() {
+         *             alert('Meowww...');
+         *          }
+         *      });
+         *
+         *      var kitty = new My.awesome.Cat;
+         *      kitty.meow();
+         *
          * @property implement
          * @static
          * @type Function
@@ -4761,25 +4775,25 @@ My.cool.Class.create({
 
         /**
          * Borrow another class' members to the prototype of this class.
-
-Ext.define('Bank', {
-    money: '$$$',
-    printMoney: function() {
-        alert('$$$$$$$');
-    }
-});
-
-Ext.define('Thief', {
-    ...
-});
-
-Thief.borrow(Bank, ['money', 'printMoney']);
-
-var steve = new Thief();
-
-alert(steve.money); // alerts '$$$'
-steve.printMoney(); // alerts '$$$$$$$'
-
+         *
+         *     Ext.define('Bank', {
+         *         money: '$$$',
+         *         printMoney: function() {
+         *             alert('$$$$$$$');
+         *         }
+         *     });
+         *
+         *     Ext.define('Thief', {
+         *         ...
+         *     });
+         *
+         *     Thief.borrow(Bank, ['money', 'printMoney']);
+         *
+         *     var steve = new Thief();
+         *
+         *     alert(steve.money); // alerts '$$$'
+         *     steve.printMoney(); // alerts '$$$$$$$'
+         *
          * @property borrow
          * @static
          * @type Function
@@ -4806,31 +4820,31 @@ steve.printMoney(); // alerts '$$$$$$$'
         /**
          * Override prototype members of this class. Overridden methods can be invoked via
          * {@link Ext.Base#callOverridden}
-
-    Ext.define('My.Cat', {
-        constructor: function() {
-            alert("I'm a cat!");
-
-            return this;
-        }
-    });
-
-    My.Cat.override({
-        constructor: function() {
-            alert("I'm going to be a cat!");
-
-            var instance = this.callOverridden();
-
-            alert("Meeeeoooowwww");
-
-            return instance;
-        }
-    });
-
-    var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
-                              // alerts "I'm a cat!"
-                              // alerts "Meeeeoooowwww"
-
+         *
+         *     Ext.define('My.Cat', {
+         *         constructor: function() {
+         *             alert("I'm a cat!");
+         *
+         *             return this;
+         *         }
+         *     });
+         *
+         *     My.Cat.override({
+         *         constructor: function() {
+         *             alert("I'm going to be a cat!");
+         *
+         *             var instance = this.callOverridden();
+         *
+         *             alert("Meeeeoooowwww");
+         *
+         *             return instance;
+         *         }
+         *     });
+         *
+         *     var kitty = new My.Cat(); // alerts "I'm going to be a cat!"
+         *                               // alerts "I'm a cat!"
+         *                               // alerts "Meeeeoooowwww"
+         *
          * @property override
          * @static
          * @type Function
@@ -4921,15 +4935,15 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Get the current class' name in string format.
-
-    Ext.define('My.cool.Class', {
-        constructor: function() {
-            alert(this.self.getName()); // alerts 'My.cool.Class'
-        }
-    });
-
-    My.cool.Class.getName(); // 'My.cool.Class'
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         constructor: function() {
+         *             alert(this.self.getName()); // alerts 'My.cool.Class'
+         *         }
+         *     });
+         *
+         *     My.cool.Class.getName(); // 'My.cool.Class'
+         *
          * @return {String} className
          * @markdown
          */
@@ -4939,25 +4953,25 @@ steve.printMoney(); // alerts '$$$$$$$'
 
         /**
          * Create aliases for existing prototype methods. Example:
-
-    Ext.define('My.cool.Class', {
-        method1: function() { ... },
-        method2: function() { ... }
-    });
-
-    var test = new My.cool.Class();
-
-    My.cool.Class.createAlias({
-        method3: 'method1',
-        method4: 'method2'
-    });
-
-    test.method3(); // test.method1()
-
-    My.cool.Class.createAlias('method5', 'method3');
-
-    test.method5(); // test.method3() -> test.method1()
-
+         *
+         *     Ext.define('My.cool.Class', {
+         *         method1: function() { ... },
+         *         method2: function() { ... }
+         *     });
+         *
+         *     var test = new My.cool.Class();
+         *
+         *     My.cool.Class.createAlias({
+         *         method3: 'method1',
+         *         method4: 'method2'
+         *     });
+         *
+         *     test.method3(); // test.method1()
+         *
+         *     My.cool.Class.createAlias('method5', 'method3');
+         *
+         *     test.method5(); // test.method3() -> test.method1()
+         *
          * @property createAlias
          * @static
          * @type Function
@@ -6946,6 +6960,7 @@ This process will be automated with Sencha Command, to be released and documente
          * @param {String/Object} name See {@link Ext.Function#flexSetter flexSetter}
          * @param {String} path See {@link Ext.Function#flexSetter flexSetter}
          * @return {Ext.Loader} this
+         * @method
          * @markdown
          */
         setPath: flexSetter(function(name, path) {
@@ -7715,11 +7730,11 @@ This process will be automated with Sencha Command, to be released and documente
 A wrapper class for the native JavaScript Error object that adds a few useful capabilities for handling
 errors in an Ext application. When you use Ext.Error to {@link #raise} an error from within any class that
 uses the Ext 4 class system, the Error class can automatically add the source class and method from which
-the error was raised. It also includes logic to automatically log the eroor to the console, if available, 
+the error was raised. It also includes logic to automatically log the eroor to the console, if available,
 with additional metadata about the error. In all cases, the error will always be thrown at the end so that
 execution will halt.
 
-Ext.Error also offers a global error {@link #handle handling} method that can be overridden in order to 
+Ext.Error also offers a global error {@link #handle handling} method that can be overridden in order to
 handle application-wide errors in a single spot. You can optionally {@link #ignore} errors altogether,
 although in a real application it's usually a better idea to override the handling function and perform
 logging or some other method of reporting the errors in a way that is meaningful to the application.
@@ -7729,7 +7744,7 @@ At its simplest you can simply raise an error as a simple string from within any
 #Example usage:#
 
     Ext.Error.raise('Something bad happened!');
-    
+
 If raised from plain JavaScript code, the error will be logged to the console (if available) and the message
 displayed. In most cases however you'll be raising errors from within a class, and it may often be useful to add
 additional metadata about the error being raised.  The {@link #raise} method can also take a config object.
@@ -7737,7 +7752,7 @@ In this form the `msg` attribute becomes the error description, and any other da
 added to the error object and, if the console is available, logged to the console for inspection.
 
 #Example usage:#
- 
+
     Ext.define('Ext.Foo', {
         doSomething: function(option){
             if (someCondition === false) {
@@ -7759,10 +7774,10 @@ If a console is available (that supports the `console.dir` function) you'll see 
     msg:            "You cannot do that!"
     sourceClass:   "Ext.Foo"
     sourceMethod:  "doSomething"
-    
+
     uncaught exception: You cannot do that!
 
-As you can see, the error will report exactly where it was raised and will include as much information as the 
+As you can see, the error will report exactly where it was raised and will include as much information as the
 raising code can usefully provide.
 
 If you want to handle all application errors globally you can simply override the static {@link handle} method
@@ -7804,12 +7819,32 @@ be preferable to supply a custom error {@link #handle handling} function instead
         ignore: false,
 
         /**
-Raise an error that can include additional data and supports automatic console logging if available. 
-You can pass a string error message or an object with the `msg` attribute which will be used as the 
-error message. The object can contain any other name-value attributes (or objects) to be logged 
+         * @property notify
+Static flag that can be used to globally control error notification to the user. Unlike
+Ex.Error.ignore, this does not effect exceptions. They are still thrown. This value can be
+set to false to disable the alert notification (default is true for IE6 and IE7).
+
+Only the first error will generate an alert. Internally this flag is set to false when the
+first error occurs prior to displaying the alert.
+
+This flag is not used in a release build.
+
+#Example usage:#
+
+    Ext.Error.notify = false;
+
+         * @markdown
+         * @static
+         */
+        //notify: Ext.isIE6 || Ext.isIE7,
+
+        /**
+Raise an error that can include additional data and supports automatic console logging if available.
+You can pass a string error message or an object with the `msg` attribute which will be used as the
+error message. The object can contain any other name-value attributes (or objects) to be logged
 along with the error.
 
-Note that after displaying the error message a JavaScript error will ultimately be thrown so that 
+Note that after displaying the error message a JavaScript error will ultimately be thrown so that
 execution will halt.
 
 #Example usage:#
@@ -7829,7 +7864,7 @@ execution will halt.
             }
         }
     });
-         * @param {String/Object} err The error message string, or an object containing the 
+         * @param {String/Object} err The error message string, or an object containing the
          * attribute "msg" that will be used as the error message. Any other data included in
          * the object will also be logged to the browser console, if available.
          * @static
@@ -7853,28 +7888,15 @@ execution will halt.
             }
 
             if (Ext.Error.handle(err) !== true) {
-                var global = Ext.global,
-                    con = global.console,
-                    msg = Ext.Error.prototype.toString.call(err),
-                    noConsoleMsg = 'An uncaught error was raised: "' + msg + 
-                        '". Use Firebug or Webkit console for additional details.';
+                var msg = Ext.Error.prototype.toString.call(err);
 
-                if (con) {
-                    if (con.dir) {
-                        con.warn('An uncaught error was raised with the following data:');
-                        con.dir(err);
-                    }
-                    else {
-                        con.warn(noConsoleMsg);
-                    }
-                    if (con.error) {
-                        con.error(msg);
-                    }
-                }
-                else if (global.alert){
-                    global.alert(noConsoleMsg);
-                }
-                
+                Ext.log({
+                    msg: msg,
+                    level: 'error',
+                    dump: err,
+                    stack: true
+                });
+
                 throw new Ext.Error(err);
             }
         },
@@ -7905,9 +7927,12 @@ error to the browser, otherwise the error will be thrown and execution will halt
         }
     },
 
+    // This is the standard property that is the name of the constructor.
+    name: 'Ext.Error',
+
     /**
      * @constructor
-     * @param {String/Object} config The error message string, or an object containing the 
+     * @param {String/Object} config The error message string, or an object containing the
      * attribute "msg" that will be used as the error message. Any other data included in
      * the object will be applied to the error instance and logged to the browser console, if available.
      */
@@ -7915,12 +7940,18 @@ error to the browser, otherwise the error will be thrown and execution will halt
         if (Ext.isString(config)) {
             config = { msg: config };
         }
-        Ext.apply(this, config);
+
+        var me = this;
+
+        Ext.apply(me, config);
+
+        me.message = me.message || me.msg; // 'message' is standard ('msg' is non-standard)
+        // note: the above does not work in old WebKit (me.message is readonly) (Safari 4)
     },
 
     /**
-Provides a custom string representation of the error object. This is an override of the base JavaScript 
-`Object.toString` method, which is useful so that when logged to the browser console, an error object will 
+Provides a custom string representation of the error object. This is an override of the base JavaScript
+`Object.toString` method, which is useful so that when logged to the browser console, an error object will
 be displayed with a useful message instead of `[object Object]`, the default `toString` result.
 
 The default implementation will include the error message along with the raising class and method, if available,
@@ -7939,6 +7970,81 @@ a particular error instance, if you want to provide a custom description that wi
         return className + methodName + msg;
     }
 });
+
+/*
+ * This mechanism is used to notify the user of the first error encountered on the page. This
+ * was previously internal to Ext.Error.raise and is a desirable feature since errors often
+ * slip silently under the radar. It cannot live in Ext.Error.raise since there are times
+ * where exceptions are handled in a try/catch.
+ */
+(function () {
+    var prevOnError, timer, errors = 0,
+        extraordinarilyBad = /(out of stack)|(too much recursion)|(stack overflow)|(out of memory)/i,
+        win = Ext.global;
+
+    if (typeof window === 'undefined') {
+        return; // build system or some such environment...
+    }
+
+    // This method is called to notify the user of the current error status.
+    function notify () {
+        var counters = Ext.log.counters,
+            supports = Ext.supports,
+            hasOnError = supports && supports.WindowOnError; // TODO - timing
+
+        // Put log counters to the status bar (for most browsers):
+        if (counters && (counters.error + counters.warn + counters.info + counters.log)) {
+            var msg = [ 'Logged Errors:',counters.error, 'Warnings:',counters.warn,
+                        'Info:',counters.info, 'Log:',counters.log].join(' ');
+            if (errors) {
+                msg = '*** Errors: ' + errors + ' - ' + msg;
+            } else if (counters.error) {
+                msg = '*** ' + msg;
+            }
+            win.status = msg;
+        }
+
+        // Display an alert on the first error:
+        if (!Ext.isDefined(Ext.Error.notify)) {
+            Ext.Error.notify = Ext.isIE6 || Ext.isIE7; // TODO - timing
+        }
+        if (Ext.Error.notify && (hasOnError ? errors : (counters && counters.error))) {
+            Ext.Error.notify = false;
+
+            if (timer) {
+                win.clearInterval(timer); // ticks can queue up so stop...
+                timer = null;
+            }
+
+            alert('Unhandled error on page: See console or log');
+            poll();
+        }
+    }
+
+    // Sets up polling loop. This is the only way to know about errors in some browsers
+    // (Opera/Safari) and is the only way to update the status bar for warnings and other
+    // non-errors.
+    function poll () {
+        timer = win.setInterval(notify, 1000);
+    }
+
+    // window.onerror is ideal (esp in IE) because you get full context. This is harmless
+    // otherwise (never called) which is good because you cannot feature detect it.
+    prevOnError = win.onerror || Ext.emptyFn;
+    win.onerror = function (message) {
+        ++errors;
+
+        if (!extraordinarilyBad.test(message)) {
+            // too much recursion + our alert right now = crash IE
+            // our polling loop will pick it up even if we don't alert now
+            notify();
+        }
+
+        return prevOnError.apply(this, arguments);
+    };
+    poll();
+})();
+
 
 
 /*
@@ -8145,9 +8251,9 @@ Ext.decode = Ext.JSON.decode;
 
 For more information about how to use the Ext classes, see
 
-* <a href="http://www.sencha.com/learn/">The Learning Center</a>
-* <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
-* <a href="http://www.sencha.com/forum/">The forums</a>
+- <a href="http://www.sencha.com/learn/">The Learning Center</a>
+- <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
+- <a href="http://www.sencha.com/forum/">The forums</a>
 
  * @singleton
  * @markdown
@@ -8210,6 +8316,7 @@ Ext.apply(Ext, {
     /**
      * Returns the current document head as an {@link Ext.core.Element}.
      * @return Ext.core.Element The document head
+     * @method
      */
     getHead: function() {
         var head;
@@ -8337,6 +8444,7 @@ Ext.ns = Ext.namespace;
 
 // for old browsers
 window.undefined = window.undefined;
+
 /**
  * @class Ext
  * Ext core utilities and functions.
@@ -8369,14 +8477,15 @@ window.undefined = window.undefined;
         isWindows = check(/windows|win32/),
         isMac = check(/macintosh|mac os x/),
         isLinux = check(/linux/),
-        scrollWidth = null;
+        scrollWidth = null,
+        webKitVersion = isWebKit && (/webkit\/(\d+\.\d+)/.exec(Ext.userAgent));
 
     // remove css image flicker
     try {
         document.execCommand("BackgroundImageCache", false, true);
     } catch(e) {}
 
-    Ext.setVersion('extjs', '4.0.0');
+    Ext.setVersion('extjs', '4.0.1');
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
@@ -8470,6 +8579,7 @@ function(el){
          * <code>true</code>, then DOM event listeners are also removed from all child nodes. The body node
          * will be ignored if passed in.</p>
          * @param {HTMLElement} node The node to remove
+         * @method
          */
         removeNode : isIE6 || isIE7 ? function() {
             var d;
@@ -8623,6 +8733,12 @@ function(el){
         isMac : isMac,
 
         /**
+         * The current version of WebKit (-1 if the browser does not use WebKit).
+         * @type Float
+         */
+        webKitVersion: webKitVersion ? parseFloat(webKitVersion[1]) : -1,
+
+        /**
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with CSS background images.
          * In older versions of IE, this defaults to "http://sencha.com/s.gif" and you should change this to a URL on your server.
          * For other browsers it uses an inline data URL.
@@ -8773,6 +8889,126 @@ ImageComponent = Ext.extend(Ext.Component, {
         },
 
         /**
+         * Logs a message. If a console is present it will be used. On Opera, the method
+         * "opera.postError" is called. In other cases, the message is logged to an array
+         * "Ext.log.out". An attached debugger can watch this array and view the log. The
+         * log buffer is limited to a maximum of "Ext.log.max" entries (defaults to 100).
+         *
+         * If additional parameters are passed, they are joined and appended to the message.
+         * 
+         * This method does nothing in a release build.
+         *
+         * @param {String|Object} message The message to log or an options object with any
+         * of the following properties:
+         *
+         *  - `msg`: The message to log (required).
+         *  - `level`: One of: "error", "warn", "info" or "log" (the default is "log").
+         *  - `dump`: An object to dump to the log as part of the message.
+         *  - `stack`: True to include a stack trace in the log.
+         * @markdown
+         */
+        log : function (message) {
+            var options, dump,
+                con = Ext.global.console,
+                log = Ext.log,
+                level = 'log',
+                stack,
+                members,
+                member;
+
+            if (!Ext.isString(message)) {
+                options = message;
+                message = options.msg || '';
+                level = options.level || level;
+                dump = options.dump;
+                stack = options.stack;
+
+                if (dump && !(con && con.dir)) {
+                    members = [];
+
+                    // Cannot use Ext.encode since it can recurse endlessly (if we're lucky)
+                    // ...and the data could be prettier!
+                    Ext.Object.each(dump, function (name, value) {
+                        if (typeof(value) === "function") {
+                            return;
+                        }
+
+                        if (!Ext.isDefined(value) || value === null ||
+                                Ext.isDate(value) ||
+                                Ext.isString(value) || (typeof(value) == "number") ||
+                                Ext.isBoolean(value)) {
+                            member = Ext.encode(value);
+                        } else if (Ext.isArray(value)) {
+                            member = '[ ]';
+                        } else if (Ext.isObject(value)) {
+                            member = '{ }';
+                        } else {
+                            member = 'undefined';
+                        }
+                        members.push(Ext.encode(name) + ': ' + member);
+                    });
+
+                    if (members.length) {
+                        message += ' \nData: {\n  ' + members.join(',\n  ') + '\n}';
+                    }
+                    dump = null;
+                }
+            }
+
+            if (arguments.length > 1) {
+                message += Array.prototype.slice.call(arguments, 1).join('');
+            }
+
+            // Not obvious, but 'console' comes and goes when Firebug is turned on/off, so
+            // an early test may fail either direction if Firebug is toggled.
+            //
+            if (con) { // if (Firebug-like console)
+                if (con[level]) {
+                    con[level](message);
+                } else {
+                    con.log(message);
+                }
+
+                if (dump) {
+                    con.dir(dump);
+                }
+
+                if (stack && con.trace) {
+                    // Firebug's console.error() includes a trace already...
+                    if (!con.firebug || level != 'error') {
+                        con.trace();
+                    }
+                }
+            } else {
+                // w/o console, all messages are equal, so munge the level into the message:
+                if (level != 'log') {
+                    message = level.toUpperCase() + ': ' + message;
+                }
+
+                if (Ext.isOpera) {
+                    opera.postError(message);
+                } else {
+                    var out = log.out || (log.out = []),
+                        max = log.max || (log.max = 100);
+
+                    if (out.length >= max) {
+                        // this formula allows out.max to change (via debugger), where the
+                        // more obvious "max/4" would not quite be the same
+                        out.splice(0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
+                    }
+
+                    out.push(message);
+                }
+            }
+
+            // Mostly informational, but the Ext.Error notifier uses them:
+            var counters = log.counters ||
+                          (log.counters = { error: 0, warn: 0, info: 0, log: 0 });
+
+            ++counters[level];
+        },
+
+        /**
          * Partitions the set into two sets: a true set and a false set.
          * Example:
          * Example2:
@@ -8903,8 +9139,8 @@ Ext.zip(
 
 /**
  * TBD
- * @type Function
  * @param {Object} config
+ * @method
  */
 Ext.application = function(config) {
     Ext.require('Ext.app.Application');
@@ -9174,6 +9410,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
          * </code></pre>
          * @return {Function} A function that operates on the passed value.
+         * @method
          */
         math : function(){
             var fns = {};
@@ -9346,39 +9583,46 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Capitalize the given string. See {@link Ext.String#capitalize}.
+         * @method
          */
         capitalize: Ext.String.capitalize,
 
         /**
          * Truncate a string and add an ellipsis ('...') to the end if it exceeds the specified length.
          * See {@link Ext.String#ellipsis}.
+         * @method
          */
         ellipsis: Ext.String.ellipsis,
 
         /**
          * Formats to a string. See {@link Ext.String#format}
+         * @method
          */
         format: Ext.String.format,
 
         /**
          * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
          * See {@link Ext.string#htmlDecode}.
+         * @method
          */
         htmlDecode: Ext.String.htmlDecode,
 
         /**
          * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
          * See {@link Ext.String#htmlEncode}.
+         * @method
          */
         htmlEncode: Ext.String.htmlEncode,
 
         /**
          * Adds left padding to a string. See {@link Ext.String#leftPad}
+         * @method
          */
         leftPad: Ext.String.leftPad,
 
         /**
          * Trims any whitespace from either side of a string. See {@link Ext.String#trim}.
+         * @method
          */
         trim : Ext.String.trim,
 
@@ -9850,12 +10094,65 @@ Ext.supports = {
          */
         {
             identity: 'RightMargin',
-            fn: function(doc, div, view) {
-                view = doc.defaultView;
+            fn: function(doc, div) {
+                var view = doc.defaultView;
                 return !(view && view.getComputedStyle(div.firstChild.firstChild, null).marginRight != '0px');
             }
         },
-        
+
+        /**
+         * @property DisplayChangeInputSelectionBug True if INPUT elements lose their
+         * selection when their display style is changed. Essentially, if a text input
+         * has focus and its display style is changed, the I-beam disappears.
+         * 
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
+         * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
+         * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
+         */
+        {
+            identity: 'DisplayChangeInputSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+                // WebKit but older than Safari 5 or Chrome 6:
+                return 0 < webKitVersion && webKitVersion < 533;
+            }
+        },
+
+        /**
+         * @property DisplayChangeTextAreaSelectionBug True if TEXTAREA elements lose their
+         * selection when their display style is changed. Essentially, if a text area has
+         * focus and its display style is changed, the I-beam disappears.
+         *
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
+         * be fixed in Chrome 11.
+         */
+        {
+            identity: 'DisplayChangeTextAreaSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+
+                /*
+                Has bug w/textarea:
+
+                (Chrome) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-US)
+                            AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.127
+                            Safari/534.16
+                (Safari) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us)
+                            AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5
+                            Safari/533.21.1
+
+                No bug:
+
+                (Chrome) Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7)
+                            AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57
+                            Safari/534.24
+                */
+                return 0 < webKitVersion && webKitVersion < 534.24;
+            }
+        },
+
         /**
          * @property TransparentColor True if the device supports transparent color
          * @type {Boolean}
@@ -10121,8 +10418,19 @@ Ext.supports = {
                 
                 return range && !!range.createContextualFragment;
             }
+        },
+
+        /**
+         * @property WindowOnError True if browser supports window.onerror.
+         * @type {Boolean}
+         */
+        {
+            identity: 'WindowOnError',
+            fn: function () {
+                // sadly, we cannot feature detect this...
+                return Ext.isIE || Ext.isGecko || Ext.webKitVersion >= 534.16; // Chrome 10+
+            }
         }
-        
     ]
 };
 
@@ -10153,6 +10461,11 @@ licensing@sencha.com
  * for a DOM node, depending on whether DomHelper is using fragments or DOM.</div></li>
  * <li><b><tt>html</tt></b> : <div class="sub-desc">The innerHTML for the element</div></li>
  * </ul></div></p>
+ * <p><b>NOTE:</b> For other arbitrary attributes, the value will currently <b>not</b> be automatically
+ * HTML-escaped prior to building the element's HTML string. This means that if your attribute value
+ * contains special characters that would not normally be allowed in a double-quoted attribute value,
+ * you <b>must</b> manually HTML-encode it beforehand (see {@link Ext.String#htmlEncode}) or risk
+ * malformed HTML being created. This behavior may change in a future release.</p>
  *
  * <p><b><u>Insertion methods</u></b></p>
  * <p>Commonly used insertion methods:
@@ -10648,6 +10961,7 @@ Ext.core.DomHelper = function(){
          * Creates new DOM element(s) without inserting them to the document.
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
          * @return {HTMLElement} The new uninserted node
+         * @method
          */
         createDom: createDom,
         
@@ -11190,7 +11504,10 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
         },
 
         /**
-         * Selects a group of elements.
+         * Selects an array of DOM nodes using JavaScript-only implementation.
+         *
+         * Use {@link #select} to take advantage of browsers built-in support for CSS selectors.
+         *
          * @param {String} selector The selector/xpath query (can be a comma separated list of selectors)
          * @param {Node/String} root (optional) The start of the query (defaults to document).
          * @return {Array} An Array of DOM elements which match the selector. If there are
@@ -11238,7 +11555,23 @@ Ext.core.DomQuery = Ext.DomQuery = function(){
             var docEl = (el ? el.ownerDocument || el : 0).documentElement;
             return docEl ? docEl.nodeName !== "HTML" : false;
         },
-        
+
+        /**
+         * Selects an array of DOM nodes by CSS/XPath selector.
+         *
+         * Uses [document.querySelectorAll][0] if browser supports that, otherwise falls back to
+         * {@link #jsSelect} to do the work.
+         * 
+         * Aliased as {@link Ext#query}.
+         * 
+         * [0]: https://developer.mozilla.org/en/DOM/document.querySelectorAll
+         *
+         * @param {String} path The selector/xpath query
+         * @param {Node} root (optional) The start of the query (defaults to document).
+         * @return {Array} An array of DOM elements (not a NodeList as returned by `querySelectorAll`).
+         * Empty array when no matches.
+         * @method
+         */
         select : document.querySelectorAll ? function(path, root, type) {
             root = root || document;
             if (!Ext.DomQuery.isXml(root)) {
@@ -12300,6 +12633,7 @@ el.un('click', this.handlerFn);
          * @param {String} name The attribute name
          * @param {String} namespace (optional) The namespace in which to look for the attribute
          * @return {String} The attribute value
+         * @method
          */
         getAttribute: (Ext.isIE && !(Ext.isIE9 && document.documentMode === 9)) ?
         function(name, ns) {
@@ -13137,6 +13471,7 @@ Ext.core.Element.addMethods({
          * Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).
          * @param {String} className The CSS class to toggle
          * @return {Ext.core.Element} this
+         * @method
          */
         toggleCls : Ext.supports.ClassList ?
             function(className) {
@@ -13151,6 +13486,7 @@ Ext.core.Element.addMethods({
          * Checks if the specified CSS class exists on this element's DOM node.
          * @param {String} className The CSS class to check for
          * @return {Boolean} True if the class exists, else false
+         * @method
          */
         hasCls : Ext.supports.ClassList ?
             function(className) {
@@ -13189,12 +13525,13 @@ Ext.core.Element.addMethods({
          * Normalizes currentStyle and computedStyle.
          * @param {String} property The style property whose value is returned.
          * @return {String} The current value of the style property for this element.
+         * @method
          */
         getStyle : function(){
             return view && view.getComputedStyle ?
                 function(prop){
                     var el = this.dom,
-                        v, cs, out, display;
+                        v, cs, out, display, cleaner;
 
                     if(el == document){
                         return null;
@@ -13206,10 +13543,12 @@ Ext.core.Element.addMethods({
                     // Ignore cases when the margin is correctly reported as 0, the bug only shows
                     // numbers larger.
                     if(prop == 'marginRight' && out != '0px' && !supports.RightMargin){
+                        cleaner = Ext.core.Element.getRightMarginFixCleaner(el);
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
+                        cleaner();
                     }
                     
                     if(prop == 'backgroundColor' && out == 'rgba(0, 0, 0, 0)' && !supports.TransparentColor){
@@ -16470,74 +16809,79 @@ Ext.EventManager = {
      * @param {String} ename The event name
      * @param {Function} fn The function to execute
      * @param {Object} scope The scope to execute callback in
-     * @param {Object} o The options
+     * @param {Object} options The options
+     * @return {Function} the wrapper function
      */
     createListenerWrap : function(dom, ename, fn, scope, options) {
         options = !Ext.isObject(options) ? {} : options;
 
-        var f = ['if(!Ext) {return;}'],
-            gen;
-
-        if(options.buffer || options.delay || options.freezeEvent) {
-            f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
-        } else {
-            f.push('e = Ext.EventObject.setEvent(e);');
-        }
-
-        if (options.delegate) {
-            f.push('var t = e.getTarget("' + options.delegate + '", this);');
-            f.push('if(!t) {return;}');
-        } else {
-            f.push('var t = e.target;');
-        }
-
-        if (options.target) {
-            f.push('if(e.target !== options.target) {return;}');
-        }
-
-        if(options.stopEvent) {
-            f.push('e.stopEvent();');
-        } else {
-            if(options.preventDefault) {
-                f.push('e.preventDefault();');
-            }
-            if(options.stopPropagation) {
-                f.push('e.stopPropagation();');
-            }
-        }
-
-        if(options.normalized === false) {
-            f.push('e = e.browserEvent;');
-        }
-
-        if(options.buffer) {
-            f.push('(wrap.task && clearTimeout(wrap.task));');
-            f.push('wrap.task = setTimeout(function(){');
-        }
-
-        if(options.delay) {
-            f.push('wrap.tasks = wrap.tasks || [];');
-            f.push('wrap.tasks.push(setTimeout(function(){');
-        }
-
-        // finally call the actual handler fn
-        f.push('fn.call(scope || dom, e, t, options);');
-
-        if(options.single) {
-            f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
-        }
-
-        if(options.delay) {
-            f.push('}, ' + options.delay + '));');
-        }
-
-        if(options.buffer) {
-            f.push('}, ' + options.buffer + ');');
-        }
-
-        gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+        var f, gen;
 
         return function wrap(e, args) {
+            // Compile the implementation upon first firing
+            if (!gen) {
+                f = ['if(!Ext) {return;}'];
+
+                if(options.buffer || options.delay || options.freezeEvent) {
+                    f.push('e = new Ext.EventObjectImpl(e, ' + (options.freezeEvent ? 'true' : 'false' ) + ');');
+                } else {
+                    f.push('e = Ext.EventObject.setEvent(e);');
+                }
+
+                if (options.delegate) {
+                    f.push('var t = e.getTarget("' + options.delegate + '", this);');
+                    f.push('if(!t) {return;}');
+                } else {
+                    f.push('var t = e.target;');
+                }
+
+                if (options.target) {
+                    f.push('if(e.target !== options.target) {return;}');
+                }
+
+                if(options.stopEvent) {
+                    f.push('e.stopEvent();');
+                } else {
+                    if(options.preventDefault) {
+                        f.push('e.preventDefault();');
+                    }
+                    if(options.stopPropagation) {
+                        f.push('e.stopPropagation();');
+                    }
+                }
+
+                if(options.normalized === false) {
+                    f.push('e = e.browserEvent;');
+                }
+
+                if(options.buffer) {
+                    f.push('(wrap.task && clearTimeout(wrap.task));');
+                    f.push('wrap.task = setTimeout(function(){');
+                }
+
+                if(options.delay) {
+                    f.push('wrap.tasks = wrap.tasks || [];');
+                    f.push('wrap.tasks.push(setTimeout(function(){');
+                }
+
+                // finally call the actual handler fn
+                f.push('fn.call(scope || dom, e, t, options);');
+
+                if(options.single) {
+                    f.push('Ext.EventManager.removeListener(dom, ename, fn, scope);');
+                }
+
+                if(options.delay) {
+                    f.push('}, ' + options.delay + '));');
+                }
+
+                if(options.buffer) {
+                    f.push('}, ' + options.buffer + ');');
+                }
+
+                gen = Ext.functionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', f.join('\n'));
+            }
+
             gen.call(dom, e, options, fn, scope, ename, dom, wrap, args);
         };
     },
@@ -17726,6 +18070,7 @@ Ext.EventObject = new Ext.EventObjectImpl();
  */
 (function(){
     var doc = document,
+        activeElement = null,
         isCSS1 = doc.compatMode == "CSS1Compat",
         ELEMENT = Ext.core.Element,
         fly = function(el){
@@ -17735,6 +18080,28 @@ Ext.EventObject = new Ext.EventObjectImpl();
             _fly.dom = el;
             return _fly;
         }, _fly;
+
+    // If the browser does not support document.activeElement we need some assistance.
+    // This covers old Safari 3.2 (4.0 added activeElement along with just about all
+    // other browsers). We need this support to handle issues with old Safari.
+    if (!('activeElement' in doc) && doc.addEventListener) {
+        doc.addEventListener('focus',
+            function (ev) {
+                if (ev && ev.target) {
+                    activeElement = (ev.target == doc) ? null : ev.target;
+                }
+            }, true);
+    }
+
+    /*
+     * Helper function to create the function that will restore the selection.
+     */
+    function makeSelectionRestoreFn (activeEl, start, end) {
+        return function () {
+            activeEl.selectionStart = start;
+            activeEl.selectionEnd = end;
+        };
+    }
 
     Ext.apply(ELEMENT, {
         isAncestor : function(p, c) {
@@ -17754,6 +18121,59 @@ Ext.EventObject = new Ext.EventObjectImpl();
                 }
             }
             return ret;
+        },
+
+        /**
+         * Returns the active element in the DOM. If the browser supports activeElement
+         * on the document, this is returned. If not, the focus is tracked and the active
+         * element is maintained internally.
+         * @return {HTMLElement} The active (focused) element in the document.
+         */
+        getActiveElement: function () {
+            return doc.activeElement || activeElement;
+        },
+
+        /**
+         * Creates a function to call to clean up problems with the work-around for the
+         * WebKit RightMargin bug. The work-around is to add "display: 'inline-block'" to
+         * the element before calling getComputedStyle and then to restore its original
+         * display value. The problem with this is that it corrupts the selection of an
+         * INPUT or TEXTAREA element (as in the "I-beam" goes away but ths focus remains).
+         * To cleanup after this, we need to capture the selection of any such element and
+         * then restore it after we have restored the display style.
+         *
+         * @param target {Element} The top-most element being adjusted.
+         * @private
+         */
+        getRightMarginFixCleaner: function (target) {
+            var supports = Ext.supports,
+                hasInputBug = supports.DisplayChangeInputSelectionBug,
+                hasTextAreaBug = supports.DisplayChangeTextAreaSelectionBug;
+
+            if (hasInputBug || hasTextAreaBug) {
+                var activeEl = doc.activeElement || activeElement, // save a call
+                    tag = activeEl && activeEl.tagName,
+                    start,
+                    end;
+
+                if ((hasTextAreaBug && tag == 'TEXTAREA') ||
+                    (hasInputBug && tag == 'INPUT' && activeEl.type == 'text')) {
+                    if (ELEMENT.isAncestor(target, activeEl)) {
+                        start = activeEl.selectionStart;
+                        end = activeEl.selectionEnd;
+
+                        if (Ext.isNumber(start) && Ext.isNumber(end)) { // to be safe...
+                            // We don't create the raw closure here inline because that
+                            // will be costly even if we don't want to return it (nested
+                            // function decls and exprs are often instantiated on entry
+                            // regardless of whether execution ever reaches them):
+                            return makeSelectionRestoreFn(activeEl, start, end);
+                        }
+                    }
+                }
+            }
+
+            return Ext.emptyFn; // avoid special cases, just return a nop
         },
 
         getViewWidth : function(full) {
@@ -17906,7 +18326,7 @@ Ext.EventObject = new Ext.EventObjectImpl();
                         Ext.each(element.options, function(opt){
                             if (opt.selected) {
                                 hasValue = opt.hasAttribute ? opt.hasAttribute('value') : opt.getAttributeNode('value').specified;
-                                data += String.format("{0}={1}&", encoder(name), encoder(hasValue ? opt.value : opt.text));
+                                data += Ext.String.format("{0}={1}&", encoder(name), encoder(hasValue ? opt.value : opt.text));
                             }
                         });
                     } else if (!(/file|undefined|reset|button/i.test(type))) {
@@ -20236,7 +20656,7 @@ licensing@sencha.com
         ],
         "Ext.grid.plugin.RowEditing":["plugin.rowediting"
         ],
-        "Ext.grid.property.Grid":[""
+        "Ext.grid.property.Grid":["widget.propertygrid"
         ],
         "Ext.grid.property.HeaderContainer":[""
         ],
@@ -20356,7 +20776,7 @@ licensing@sencha.com
         ],
         "Ext.selection.CellModel":["selection.cellmodel"
         ],
-        "Ext.selection.CheckboxModel":[""
+        "Ext.selection.CheckboxModel":["selection.checkboxmodel"
         ],
         "Ext.selection.RowModel":["selection.rowmodel"
         ],
@@ -20458,21 +20878,44 @@ licensing@sencha.com
         "Ext.chart.CategoryAxis":"Ext.chart.axis.Category",
         "Ext.chart.NumericAxis":"Ext.chart.axis.Numeric",
         "Ext.chart.TimeAxis":"Ext.chart.axis.Time",
+        "Ext.chart.BarSeries":"Ext.chart.series.Bar",
+        "Ext.chart.BarChart":"Ext.chart.series.Bar",
+        "Ext.chart.StackedBarChart":"Ext.chart.series.Bar",
+        "Ext.chart.CartesianSeries":"Ext.chart.series.Cartesian",
+        "Ext.chart.CartesianChart":"Ext.chart.series.Cartesian",
+        "Ext.chart.ColumnSeries":"Ext.chart.series.Column",
+        "Ext.chart.ColumnChart":"Ext.chart.series.Column",
+        "Ext.chart.StackedColumnChart":"Ext.chart.series.Column",
+        "Ext.chart.LineSeries":"Ext.chart.series.Line",
+        "Ext.chart.LineChart":"Ext.chart.series.Line",
+        "Ext.chart.PieSeries":"Ext.chart.series.Pie",
+        "Ext.chart.PieChart":"Ext.chart.series.Pie",
         "Ext.data.Record":"Ext.data.Model",
+        "Ext.StoreMgr":"Ext.data.StoreManager",
+        "Ext.data.StoreMgr":"Ext.data.StoreManager",
+        "Ext.StoreManager":"Ext.data.StoreManager",
         "Ext.data.XmlStore":"Ext.data.XmlStore",
+        "Ext.data.HttpProxy":"Ext.data.proxy.Ajax",
+        "Ext.data.AjaxProxy":"Ext.data.proxy.Ajax",
         "Ext.data.ClientProxy":"Ext.data.proxy.Client",
         "Ext.data.DirectProxy":"Ext.data.proxy.Direct",
         "Ext.data.ScriptTagProxy":"Ext.data.proxy.JsonP",
         "Ext.data.LocalStorageProxy":"Ext.data.proxy.LocalStorage",
         "Ext.data.MemoryProxy":"Ext.data.proxy.Memory",
+        "Ext.data.DataProxy":"Ext.data.proxy.Proxy",
+        "Ext.data.Proxy":"Ext.data.proxy.Proxy",
         "Ext.data.RestProxy":"Ext.data.proxy.Rest",
         "Ext.data.ServerProxy":"Ext.data.proxy.Server",
         "Ext.data.SessionStorageProxy":"Ext.data.proxy.SessionStorage",
         "Ext.data.WebStorageProxy":"Ext.data.proxy.WebStorage",
         "Ext.data.ArrayReader":"Ext.data.reader.Array",
         "Ext.data.JsonReader":"Ext.data.reader.Json",
+        "Ext.data.Reader":"Ext.data.reader.Reader",
+        "Ext.data.DataReader":"Ext.data.reader.Reader",
         "Ext.data.XmlReader":"Ext.data.reader.Xml",
         "Ext.data.JsonWriter":"Ext.data.writer.Json",
+        "Ext.data.DataWriter":"Ext.data.writer.Writer",
+        "Ext.data.Writer":"Ext.data.writer.Writer",
         "Ext.data.XmlWriter":"Ext.data.writer.Xml",
         "Ext.Direct.Transaction":"Ext.direct.Transaction",
         "Ext.AbstractStoreSelectionModel":"Ext.selection.Model",
@@ -20485,21 +20928,46 @@ licensing@sencha.com
         "Ext.ButtonGroup":"Ext.container.ButtonGroup",
         "Ext.Container":"Ext.container.Container",
         "Ext.Viewport":"Ext.container.Viewport",
+        "Ext.dd.DragDropMgr":"Ext.dd.DragDropManager",
+        "Ext.dd.DDM":"Ext.dd.DragDropManager",
         "Ext.FlashComponent":"Ext.flash.Component",
         "Ext.form.BasicForm":"Ext.form.Basic",
+        "Ext.FormPanel":"Ext.form.Panel",
+        "Ext.form.FormPanel":"Ext.form.Panel",
         "Ext.form.Action":"Ext.form.action.Action",
         "Ext.form.Action.DirectLoad":"Ext.form.action.DirectLoad",
         "Ext.form.Action.DirectSubmit":"Ext.form.action.DirectSubmit",
         "Ext.form.Action.Load":"Ext.form.action.Load",
         "Ext.form.Action.Submit":"Ext.form.action.Submit",
+        "Ext.form.Field":"Ext.form.field.Base",
+        "Ext.form.BaseField":"Ext.form.field.Base",
         "Ext.form.Checkbox":"Ext.form.field.Checkbox",
         "Ext.form.ComboBox":"Ext.form.field.ComboBox",
+        "Ext.form.DateField":"Ext.form.field.Date",
+        "Ext.form.Date":"Ext.form.field.Date",
+        "Ext.form.DisplayField":"Ext.form.field.Display",
+        "Ext.form.Display":"Ext.form.field.Display",
+        "Ext.form.FileUploadField":"Ext.form.field.File",
+        "Ext.ux.form.FileUploadField":"Ext.form.field.File",
+        "Ext.form.File":"Ext.form.field.File",
         "Ext.form.Hidden":"Ext.form.field.Hidden",
         "Ext.form.HtmlEditor":"Ext.form.field.HtmlEditor",
+        "Ext.form.NumberField":"Ext.form.field.Number",
+        "Ext.form.Number":"Ext.form.field.Number",
         "Ext.form.Picker":"Ext.form.field.Picker",
         "Ext.form.Radio":"Ext.form.field.Radio",
         "Ext.form.Spinner":"Ext.form.field.Spinner",
+        "Ext.form.TextField":"Ext.form.field.Text",
+        "Ext.form.Text":"Ext.form.field.Text",
         "Ext.form.TextArea":"Ext.form.field.TextArea",
+        "Ext.form.TimeField":"Ext.form.field.Time",
+        "Ext.form.Time":"Ext.form.field.Time",
+        "Ext.form.TriggerField":"Ext.form.field.Trigger",
+        "Ext.form.TwinTriggerField":"Ext.form.field.Trigger",
+        "Ext.form.Trigger":"Ext.form.field.Trigger",
+        "Ext.list.ListView":"Ext.grid.Panel",
+        "Ext.ListView":"Ext.grid.Panel",
+        "Ext.grid.GridPanel":"Ext.grid.Panel",
         "Ext.grid.ActionColumn":"Ext.grid.column.Action",
         "Ext.grid.BooleanColumn":"Ext.grid.column.Boolean",
         "Ext.grid.Column":"Ext.grid.column.Column",
@@ -20534,6 +21002,11 @@ licensing@sencha.com
         "Ext.MonthPicker":"Ext.picker.Month",
         "Ext.Resizable":"Ext.resizer.Resizer",
         "Ext.slider.MultiSlider":"Ext.slider.Multi",
+        "Ext.Slider":"Ext.slider.Single",
+        "Ext.form.SliderField":"Ext.slider.Single",
+        "Ext.slider.SingleSlider":"Ext.slider.Single",
+        "Ext.slider.Slider":"Ext.slider.Single",
+        "Ext.TabPanel":"Ext.tab.Panel",
         "Ext.QuickTip":"Ext.tip.QuickTip",
         "Ext.Tip":"Ext.tip.Tip",
         "Ext.ToolTip":"Ext.tip.ToolTip",
@@ -20544,6 +21017,8 @@ licensing@sencha.com
         "Ext.Toolbar.Spacer":"Ext.toolbar.Spacer",
         "Ext.Toolbar.TextItem":"Ext.toolbar.TextItem",
         "Ext.Toolbar":"Ext.toolbar.Toolbar",
+        "Ext.tree.TreePanel":"Ext.tree.Panel",
+        "Ext.TreePanel":"Ext.tree.Panel",
         "Ext.History":"Ext.util.History",
         "Ext.KeyMap":"Ext.util.KeyMap",
         "Ext.KeyNav":"Ext.util.KeyNav",

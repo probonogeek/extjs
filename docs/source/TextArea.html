@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.TextArea-method-constructor'><span id='Ext-form.field.TextArea'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-TextArea-method-constructor'><span id='Ext-form-field-TextArea'>/**
 </span></span> * @class Ext.form.field.TextArea
  * @extends Ext.form.field.Text
 
@@ -54,19 +71,19 @@ Ext.define('Ext.form.field.TextArea', {
         }
     ],
 
-<span id='Ext-form.field.TextArea-cfg-growMin'>    /**
+<span id='Ext-form-field-TextArea-cfg-growMin'>    /**
 </span>     * @cfg {Number} growMin The minimum height to allow when &lt;tt&gt;{@link Ext.form.field.Text#grow grow}=true&lt;/tt&gt;
      * (defaults to &lt;tt&gt;60&lt;/tt&gt;)
      */
     growMin: 60,
 
-<span id='Ext-form.field.TextArea-cfg-growMax'>    /**
+<span id='Ext-form-field-TextArea-cfg-growMax'>    /**
 </span>     * @cfg {Number} growMax The maximum height to allow when &lt;tt&gt;{@link Ext.form.field.Text#grow grow}=true&lt;/tt&gt;
      * (defaults to &lt;tt&gt;1000&lt;/tt&gt;)
      */
     growMax: 1000,
 
-<span id='Ext-form.field.TextArea-cfg-growAppend'>    /**
+<span id='Ext-form-field-TextArea-cfg-growAppend'>    /**
 </span>     * @cfg {String} growAppend
      * A string that will be appended to the field's current value for the purposes of calculating the target
      * field size. Only used when the {@link #grow} config is &lt;tt&gt;true&lt;/tt&gt;. Defaults to a newline for TextArea
@@ -74,21 +91,21 @@ Ext.define('Ext.form.field.TextArea', {
      */
     growAppend: '\n-',
 
-<span id='Ext-form.field.TextArea-cfg-cols'>    /**
+<span id='Ext-form-field-TextArea-cfg-cols'>    /**
 </span>     * @cfg {Number} cols An initial value for the 'cols' attribute on the textarea element. This is only
      * used if the component has no configured {@link #width} and is not given a width by its container's
      * layout. Defaults to &lt;tt&gt;20&lt;/tt&gt;.
      */
     cols: 20,
 
-<span id='Ext-form.field.TextArea-cfg-cols'>    /**
+<span id='Ext-form-field-TextArea-cfg-cols'>    /**
 </span>     * @cfg {Number} cols An initial value for the 'cols' attribute on the textarea element. This is only
      * used if the component has no configured {@link #width} and is not given a width by its container's
      * layout. Defaults to &lt;tt&gt;4&lt;/tt&gt;.
      */
     rows: 4,
 
-<span id='Ext-form.field.TextArea-cfg-enterIsSpecial'>    /**
+<span id='Ext-form-field-TextArea-cfg-enterIsSpecial'>    /**
 </span>     * @cfg {Boolean} enterIsSpecial
      * True if you want the enter key to be classed as a &lt;tt&gt;special&lt;/tt&gt; key. Special keys are generally navigation
      * keys (arrows, space, enter). Setting the config property to &lt;tt&gt;true&lt;/tt&gt; would mean that you could not insert
@@ -97,7 +114,7 @@ Ext.define('Ext.form.field.TextArea', {
      */
     enterIsSpecial: false,
 
-<span id='Ext-form.field.TextArea-cfg-preventScrollbars'>    /**
+<span id='Ext-form-field-TextArea-cfg-preventScrollbars'>    /**
 </span>     * @cfg {Boolean} preventScrollbars &lt;tt&gt;true&lt;/tt&gt; to prevent scrollbars from appearing regardless of how much text is
      * in the field. This option is only relevant when {@link #grow} is &lt;tt&gt;true&lt;/tt&gt;. Equivalent to setting overflow: hidden, defaults to
      * &lt;tt&gt;false&lt;/tt&gt;.
@@ -139,7 +156,7 @@ Ext.define('Ext.form.field.TextArea', {
         }
     },
 
-<span id='Ext-form.field.TextArea-method-autoSize'>    /**
+<span id='Ext-form-field-TextArea-method-autoSize'>    /**
 </span>     * Automatically grows the field to accomodate the height of the text up to the maximum field height allowed.
      * This only takes effect if &lt;tt&gt;{@link #grow} = true&lt;/tt&gt;, and fires the {@link #autosize} event if
      * the height changes.
@@ -164,7 +181,7 @@ Ext.define('Ext.form.field.TextArea', {
         this.getActionEl().dom.setAttribute('aria-multiline', true);
     },
 
-<span id='Ext-form.field.TextArea-method-getBodyNaturalWidth'>    /**
+<span id='Ext-form-field-TextArea-method-getBodyNaturalWidth'>    /**
 </span>     * @protected override
      * To get the natural width of the textarea element, we do a simple calculation based on the
      * 'cols' config. We use hard-coded numbers to approximate what browsers do natively,
@@ -176,4 +193,6 @@ Ext.define('Ext.form.field.TextArea', {
 
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -131,6 +131,9 @@ Ext.onReady(function(){
         height:320,
         width:600,
         frame:true,
+        resizable: {
+            handles: 's'  
+        },
         bbar: Ext.create('Ext.PagingToolbar', {
             pageSize: 10,
             store: store,

@@ -4,7 +4,7 @@
  *
  * A combobox control with support for autocomplete, remote loading, and many other features.
  *
- * A ComboBox is like a combination of a traditional HTML text `&lt;input&gt;` field and a `&lt;select&gt;`
+ * A ComboBox is like a combination of a traditional HTML text `<input>` field and a `<select>`
  * field; the user is able to type freely into the field, and/or pick values from a dropdown selection
  * list. The user can input any value by default, even if it does not appear in the selection list;
  * to prevent free-form values and restrict them to items in the list, set {@link #forceSelection} to `true`.
@@ -150,8 +150,9 @@ Ext.define('Ext.form.field.ComboBox', {
     allQuery: '',
 
     /**
-     * @cfg {String} queryParam Name of the query ({@link Ext.data.Store#baseParam baseParam} name for the store)
-     * as it will be passed on the querystring (defaults to <tt>'query'</tt>)
+     * @cfg {String} queryParam Name of the query ({@link Ext.data.proxy.Proxy#extraParam extraParam} name for the store)
+     * as it will be passed on the querystring (defaults to <tt>'query'</tt>). If explicitly set to a falsey value it will
+     * not be send.
      */
     queryParam: 'query',
 
@@ -210,9 +211,11 @@ var combo = new Ext.form.field.ComboBox({
      */
 
     /**
-     * @cfg {Boolean} autoSelect <tt>true</tt> to select the first result gathered by the data store (defaults
-     * to <tt>true</tt>).  A false value would require a manual selection from the dropdown list to set the components value
-     * unless the value of ({@link #typeAhead}) were true.
+     * @cfg {Boolean} autoSelect <tt>true</tt> to automatically highlight the first result gathered by the data store
+     * in the dropdown list when it is opened. (Defaults to <tt>true</tt>). A false value would cause nothing in the
+     * list to be highlighted automatically, so the user would have to manually highlight an item before pressing
+     * the enter or {@link #selectOnTab tab} key to select it (unless the value of ({@link #typeAhead}) were true),
+     * or use the mouse to select a value.
      */
     autoSelect: true,
 
@@ -628,8 +631,13 @@ var combo = new Ext.form.field.ComboBox({
     // private
     getParams: function(queryString) {
         var p = {},
-            pageSize = this.pageSize;
-        p[this.queryParam] = queryString;
+            pageSize = this.pageSize,
+            param = this.queryParam;
+            
+        if (param) {
+            p[param] = queryString;
+        }
+        
         if (pageSize) {
             p.start = 0;
             p.limit = pageSize;
@@ -698,14 +706,23 @@ var combo = new Ext.form.field.ComboBox({
                 me.doQueryTask.delay(me.queryDelay);
             }
         }
+        
+        if (me.enableKeyEvents) {
+            me.callParent(arguments);
+        }
     },
 
     initEvents: function() {
         var me = this;
         me.callParent();
 
-        // setup keyboard handling
-        me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
+        /*
+         * Setup keyboard handling. If enableKeyEvents is true, we already have 
+         * a listener on the inputEl for keyup, so don't create a second.
+         */
+        if (!me.enableKeyEvents) {
+            me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
+        }
     },
 
     createPicker: function() {

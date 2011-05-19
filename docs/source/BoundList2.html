@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-view.BoundList'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-view-BoundList'>/**
 </span> * @class Ext.view.BoundList
  * @extends Ext.view.View
  * An internal used DataView for ComboBox, MultiSelect and ItemSelector.
@@ -9,14 +26,14 @@ Ext.define('Ext.view.BoundList', {
     alternateClassName: 'Ext.BoundList',
     requires: ['Ext.layout.component.BoundList', 'Ext.toolbar.Paging'],
 
-<span id='Ext-view.BoundList-cfg-pageSize'>    /**
+<span id='Ext-view-BoundList-cfg-pageSize'>    /**
 </span>     * @cfg {Number} pageSize If greater than &lt;tt&gt;0&lt;/tt&gt;, a {@link Ext.toolbar.Paging} is displayed at the
      * bottom of the list and store queries will execute with page start and
      * {@link Ext.toolbar.Paging#pageSize limit} parameters.
      */
     pageSize: 0,
 
-<span id='Ext-view.BoundList-property-pagingToolbar'>    /**
+<span id='Ext-view-BoundList-property-pagingToolbar'>    /**
 </span>     * @property pagingToolbar
      * @type {Ext.toolbar.Paging}
      * A reference to the PagingToolbar instance in this view. Only populated if {@link #pageSize} is greater
@@ -131,4 +148,6 @@ Ext.define('Ext.view.BoundList', {
         this.callParent();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

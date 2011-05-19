@@ -475,6 +475,13 @@ Ext.define('Ext.layout.container.Box', {
             }
         };
     },
+    
+    onRemove: function(comp){
+        this.callParent(arguments);
+        if (this.overflowHandler) {
+            this.overflowHandler.onRemove(comp);
+        }
+    },
 
     /**
      * @private
@@ -489,7 +496,7 @@ Ext.define('Ext.layout.container.Box', {
         }
 
         var handlerType = 'None';
-        if (handler && handler.type != undefined) {
+        if (handler && handler.type !== undefined) {
             handlerType = handler.type;
         }
 

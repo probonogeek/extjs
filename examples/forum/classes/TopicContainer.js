@@ -12,13 +12,15 @@ Ext.define('ForumBrowser.TopicContainer', {
             items: [{
                 itemId: 'grid',
                 xtype: 'topicgrid',
-                region: 'center'
+                region: 'center',
+                minHeight: 150
             }, {
                 split: true,
                 height: 300,
                 region: 'south',
                 itemId: 'preview',
                 title: 'View Topic',
+                minHeight: 150,
                 bodyPadding: 10,
                 tpl: '<b><u>{title}</u></b><br /><br />Post details here.'
             }]

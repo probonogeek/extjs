@@ -10,6 +10,7 @@
  * {@link Ext.grid.column.Column#field field}. The editor can be a field instance or a field configuration.
  * If an editor is not specified for a particular column then that column won't be editable and the value of
  * the column will be displayed.
+ *
  * The editor may be shared for each column in the grid, or a different one may be specified for each column.
  * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
  * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
@@ -17,50 +18,48 @@
  * {@img Ext.grid.plugin.RowEditing/Ext.grid.plugin.RowEditing.png Ext.grid.plugin.RowEditing plugin}
  *
  * ## Example Usage
- *    Ext.create('Ext.data.Store', {
- *        storeId:'simpsonsStore',
- *        fields:['name', 'email', 'phone'],
- *        data:{'items':[
- *            {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *            {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *            {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},                        
- *            {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}            
- *        ]},
- *        proxy: {
- *            type: 'memory',
- *            reader: {
- *                type: 'json',
- *                root: 'items'
- *            }
- *        }
- *    });
- *   
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Simpsons',
- *        store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *        columns: [
- *            {header: 'Name',  dataIndex: 'name', field: 'textfield'},
- *            {header: 'Email', dataIndex: 'email', flex:1, 
- *                editor: {
- *                    xtype:'textfield',
- *                    allowBlank:false
- *                }
- *            },
- *            {header: 'Phone', dataIndex: 'phone'}
- *        ],
- *        selType: 'rowmodel',
- *        plugins: [
- *            Ext.create('Ext.grid.plugin.RowEditing', {
- *                clicksToEdit: 1
- *            })
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
- * 
- * @markdown
  *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data:{'items':[
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},                        
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}            
+ *         ]},
+ *         proxy: {
+ *             type: 'memory',
+ *             reader: {
+ *                 type: 'json',
+ *                 root: 'items'
+ *             }
+ *         }
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', field: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1, 
+ *                 editor: {
+ *                     xtype:'textfield',
+ *                     allowBlank:false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'rowmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.RowEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  */
 Ext.define('Ext.grid.plugin.RowEditing', {
     extend: 'Ext.grid.plugin.Editing',
@@ -310,38 +309,47 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnAdd: function(ct, column) {
-        var me = this,
+        if (column.isHeader) {
+            var me = this,
+                editor;
+            
+            me.initFieldAccessors(column);
             editor = me.getEditor();
-
-        me.initFieldAccessors(column);
-        if (editor && editor.onColumnAdd) {
-            editor.onColumnAdd(column);
+            
+            if (editor && editor.onColumnAdd) {
+                editor.onColumnAdd(column);
+            }
         }
     },
 
     // private
     onColumnRemove: function(ct, column) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnRemove) {
-            editor.onColumnRemove(column);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor && editor.onColumnRemove) {
+                editor.onColumnRemove(column);
+            }
+            me.removeFieldAccessors(column);  
         }
-        me.removeFieldAccessors(column);
     },
 
     // private
     onColumnResize: function(ct, column, width) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnResize) {
-            editor.onColumnResize(column, width);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor && editor.onColumnResize) {
+                editor.onColumnResize(column, width);
+            }
         }
     },
 
     // private
     onColumnHide: function(ct, column) {
+        // no isHeader check here since its already a columnhide event.
         var me = this,
             editor = me.getEditor();
 
@@ -352,6 +360,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnShow: function(ct, column) {
+        // no isHeader check here since its already a columnshow event.
         var me = this,
             editor = me.getEditor();
 
@@ -362,6 +371,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnMove: function(ct, column, fromIdx, toIdx) {
+        // no isHeader check here since its already a columnmove event.
         var me = this,
             editor = me.getEditor();
 

@@ -20,10 +20,13 @@ var grid = new Ext.grid.property.Grid({
 </code></pre>
  * @constructor
  * @param {Object} config The grid config object
+ * @xtype propertygrid
  */
 Ext.define('Ext.grid.property.Grid', {
 
     extend: 'Ext.grid.Panel',
+    
+    alias: 'widget.propertygrid',
 
     alternateClassName: 'Ext.grid.PropertyGrid',
 
@@ -213,12 +216,12 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         if (operation == Ext.data.Model.EDIT) {
             v = record.get(me.valueField);
             oldValue = record.modified.value;
-            if (me.fireEvent('beforepropertychange', me.source, record.id, v, oldValue) !== false) {
+            if (me.fireEvent('beforepropertychange', me.source, record.getId(), v, oldValue) !== false) {
                 if (me.source) {
-                    me.source[record.id] = v;
+                    me.source[record.getId()] = v;
                 }
                 record.commit();
-                me.fireEvent('propertychange', me.source, record.id, v, oldValue);
+                me.fireEvent('propertychange', me.source, record.getId(), v, oldValue);
             } else {
                 record.reject();
             }
@@ -232,7 +235,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         } else if (direction == 'right') {
             direction = 'down';
         }
-        var pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
+        pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
         if (!pos.column) {
             pos.column = 1;
         }
@@ -281,7 +284,9 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 
     destroyEditors: function (editors) {
         for (var ed in editors) {
-            Ext.destroy(editors[ed]);
+            if (editors.hasOwnProperty(ed)) {
+                Ext.destroy(editors[ed]);
+            }
         }
     },
 

@@ -229,9 +229,12 @@ Ext.define('Ext.Action', {
 
     // private
     callEach : function(fnName, args){
-        var cs = this.items;
-        for(var i = 0, len = cs.length; i < len; i++){
-            cs[i][fnName].apply(cs[i], args);
+        var items = this.items,
+            i = 0,
+            len = items.length;
+            
+        for(; i < len; i++){
+            items[i][fnName].apply(items[i], args);
         }
     },
 
@@ -243,7 +246,7 @@ Ext.define('Ext.Action', {
 
     // private
     removeComponent : function(comp){
-        this.items.remove(comp);
+        Ext.Array.remove(this.items, comp);
     },
 
     /**

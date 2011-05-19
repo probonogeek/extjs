@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-draw.Color'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-draw-Color'>/**
 </span> * @class Ext.draw.Color
  * @extends Object
  *
@@ -15,14 +32,14 @@ Ext.define('Ext.draw.Color', {
     rgbRe: /\s*rgb\s*\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*\)\s*/,
     hexRe: /\s*#([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)\s*/,
 
-<span id='Ext-draw.Color-cfg-lightnessFactor'>    /**
+<span id='Ext-draw-Color-cfg-lightnessFactor'>    /**
 </span>     * @cfg {Number} lightnessFactor
      *
      * The default factor to compute the lighter or darker color. Defaults to 0.2.
      */
     lightnessFactor: 0.2,
 
-<span id='Ext-draw.Color-method-constructor'>    /**
+<span id='Ext-draw-Color-method-constructor'>    /**
 </span>     * @constructor
      * @param {Number} red Red component (0..255)
      * @param {Number} green Green component (0..255)
@@ -36,7 +53,7 @@ Ext.define('Ext.draw.Color', {
         me.b = clamp(blue, 0, 255);
     },
 
-<span id='Ext-draw.Color-method-getRed'>    /**
+<span id='Ext-draw-Color-method-getRed'>    /**
 </span>     * Get the red component of the color, in the range 0..255.
      * @return {Number}
      */
@@ -44,7 +61,7 @@ Ext.define('Ext.draw.Color', {
         return this.r;
     },
 
-<span id='Ext-draw.Color-method-getGreen'>    /**
+<span id='Ext-draw-Color-method-getGreen'>    /**
 </span>     * Get the green component of the color, in the range 0..255.
      * @return {Number}
      */
@@ -52,7 +69,7 @@ Ext.define('Ext.draw.Color', {
         return this.g;
     },
 
-<span id='Ext-draw.Color-method-getBlue'>    /**
+<span id='Ext-draw-Color-method-getBlue'>    /**
 </span>     * Get the blue component of the color, in the range 0..255.
      * @return {Number}
      */
@@ -60,7 +77,7 @@ Ext.define('Ext.draw.Color', {
         return this.b;
     },
 
-<span id='Ext-draw.Color-method-getRGB'>    /**
+<span id='Ext-draw-Color-method-getRGB'>    /**
 </span>     * Get the RGB values.
      * @return {Array}
      */
@@ -69,7 +86,7 @@ Ext.define('Ext.draw.Color', {
         return [me.r, me.g, me.b];
     },
 
-<span id='Ext-draw.Color-method-getHSL'>    /**
+<span id='Ext-draw-Color-method-getHSL'>    /**
 </span>     * Get the equivalent HSL components of the color.
      * @return {Array}
      */
@@ -105,7 +122,7 @@ Ext.define('Ext.draw.Color', {
         return [h, s, l];
     },
 
-<span id='Ext-draw.Color-method-getLighter'>    /**
+<span id='Ext-draw-Color-method-getLighter'>    /**
 </span>     * Return a new color that is lighter than this color.
      * @param {Number} factor Lighter factor (0..1), default to 0.2
      * @return Ext.draw.Color
@@ -117,7 +134,7 @@ Ext.define('Ext.draw.Color', {
         return this.fromHSL(hsl[0], hsl[1], hsl[2]);
     },
 
-<span id='Ext-draw.Color-method-getDarker'>    /**
+<span id='Ext-draw-Color-method-getDarker'>    /**
 </span>     * Return a new color that is darker than this color.
      * @param {Number} factor Darker factor (0..1), default to 0.2
      * @return Ext.draw.Color
@@ -127,7 +144,7 @@ Ext.define('Ext.draw.Color', {
         return this.getLighter(-factor);
     },
 
-<span id='Ext-draw.Color-method-toString'>    /**
+<span id='Ext-draw-Color-method-toString'>    /**
 </span>     * Return the color in the hex format, i.e. '#rrggbb'.
      * @return {String}
      */
@@ -143,7 +160,7 @@ Ext.define('Ext.draw.Color', {
         return ['#', r, g, b].join('');
     },
 
-<span id='Ext-draw.Color-method-toHex'>    /**
+<span id='Ext-draw-Color-method-toHex'>    /**
 </span>     * Convert a color to hexadecimal format.
      *
      * @param {String|Array} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
@@ -174,7 +191,7 @@ Ext.define('Ext.draw.Color', {
         }
     },
 
-<span id='Ext-draw.Color-method-fromString'>    /**
+<span id='Ext-draw-Color-method-fromString'>    /**
 </span>     * Parse the string and create a new color.
      *
      * Supported formats: '#rrggbb', '#rgb', and 'rgb(r,g,b)'.
@@ -213,7 +230,7 @@ Ext.define('Ext.draw.Color', {
         return (typeof r == 'undefined') ? undefined : Ext.create('Ext.draw.Color', r, g, b);
     },
 
-<span id='Ext-draw.Color-method-getGrayscale'>    /**
+<span id='Ext-draw-Color-method-getGrayscale'>    /**
 </span>     * Returns the gray value (0 to 255) of the color.
      *
      * The gray value is calculated using the formula r*0.3 + g*0.59 + b*0.11.
@@ -225,7 +242,7 @@ Ext.define('Ext.draw.Color', {
         return this.r * 0.3 + this.g * 0.59 + this.b * 0.11;
     },
 
-<span id='Ext-draw.Color-method-fromHSL'>    /**
+<span id='Ext-draw-Color-method-fromHSL'>    /**
 </span>     * Create a new color based on the specified HSL values.
      *
      * @param {Number} h Hue component (0..359)
@@ -291,4 +308,6 @@ Ext.define('Ext.draw.Color', {
         }
     });
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

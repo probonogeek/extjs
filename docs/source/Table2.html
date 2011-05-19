@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-panel.Table'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Table'>/**
 </span> * @class Ext.panel.Table
  * @extends Ext.panel.Panel
  * @xtype tablepanel
@@ -31,7 +48,7 @@ Ext.define('Ext.panel.Table', {
     extraBodyCls: Ext.baseCSSPrefix + 'grid-body',
 
     layout: 'fit',
-<span id='Ext-panel.Table-property-hasView'>    /**
+<span id='Ext-panel-Table-property-hasView'>    /**
 </span>     * Boolean to indicate that a view has been injected into the panel.
      * @property hasView
      */
@@ -41,38 +58,38 @@ Ext.define('Ext.panel.Table', {
     viewType: null,
     selType: 'rowmodel',
 
-<span id='Ext-panel.Table-cfg-scrollDelta'>    /**
+<span id='Ext-panel-Table-cfg-scrollDelta'>    /**
 </span>     * @cfg {Number} scrollDelta
      * Number of pixels to scroll when scrolling with mousewheel.
      * Defaults to 40.
      */
     scrollDelta: 40,
 
-<span id='Ext-panel.Table-cfg-scroll'>    /**
+<span id='Ext-panel-Table-cfg-scroll'>    /**
 </span>     * @cfg {String/Boolean} scroll
      * Valid values are 'both', 'horizontal' or 'vertical'. true implies 'both'. false implies 'none'.
      * Defaults to true.
      */
     scroll: true,
 
-<span id='Ext-panel.Table-cfg-columns'>    /**
+<span id='Ext-panel-Table-cfg-columns'>    /**
 </span>     * @cfg {Array} columns
      * An array of {@link Ext.grid.column.Column column} definition objects which define all columns that appear in this grid. Each
      * column definition provides the header text for the column, and a definition of where the data for that column comes from.
      */
 
-<span id='Ext-panel.Table-cfg-forceFit'>    /**
+<span id='Ext-panel-Table-cfg-forceFit'>    /**
 </span>     * @cfg {Boolean} forceFit
      * Specify as &lt;code&gt;true&lt;/code&gt; to force the columns to fit into the available width. Headers are first sized according to configuration, whether that be
      * a specific width, or flex. Then they are all proportionally changed in width so that the entire content width is used..
      */
 
-<span id='Ext-panel.Table-cfg-hideHeaders'>    /**
+<span id='Ext-panel-Table-cfg-hideHeaders'>    /**
 </span>     * @cfg {Boolean} hideHeaders
      * Specify as &lt;code&gt;true&lt;/code&gt; to hide the headers.
      */
 
-<span id='Ext-panel.Table-cfg-sortableColumns'>    /**
+<span id='Ext-panel-Table-cfg-sortableColumns'>    /**
 </span>     * @cfg {Boolean} sortableColumns
      * Defaults to true. Set to false to disable column sorting via clicking the
      * header and via the Sorting menu items.
@@ -157,14 +174,14 @@ Ext.define('Ext.panel.Table', {
 
         me.store = Ext.data.StoreManager.lookup(me.store);
         me.addEvents(
-<span id='Ext-panel.Table-event-scrollerhide'>            /**
+<span id='Ext-panel-Table-event-scrollerhide'>            /**
 </span>             * @event scrollerhide
              * Fires when a scroller is hidden
              * @param {Ext.grid.Scroller} scroller
              * @param {String} orientation Orientation, can be 'vertical' or 'horizontal'
              */
             'scrollerhide',
-<span id='Ext-panel.Table-event-scrollershow'>            /**
+<span id='Ext-panel-Table-event-scrollershow'>            /**
 </span>             * @event scrollershow
              * Fires when a scroller is shown
              * @param {Ext.grid.Scroller} scroller
@@ -272,7 +289,7 @@ Ext.define('Ext.panel.Table', {
                     scope: me
                 });
                 this.relayEvents(view, [
-<span id='Ext-panel.Table-event-beforeitemmousedown'>                    /**
+<span id='Ext-panel-Table-event-beforeitemmousedown'>                    /**
 </span>                     * @event beforeitemmousedown
                      * Fires before the mousedown event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -282,7 +299,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemmousedown',
-<span id='Ext-panel.Table-event-beforeitemmouseup'>                    /**
+<span id='Ext-panel-Table-event-beforeitemmouseup'>                    /**
 </span>                     * @event beforeitemmouseup
                      * Fires before the mouseup event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -292,7 +309,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemmouseup',
-<span id='Ext-panel.Table-event-beforeitemmouseenter'>                    /**
+<span id='Ext-panel-Table-event-beforeitemmouseenter'>                    /**
 </span>                     * @event beforeitemmouseenter
                      * Fires before the mouseenter event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -302,7 +319,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemmouseenter',
-<span id='Ext-panel.Table-event-beforeitemmouseleave'>                    /**
+<span id='Ext-panel-Table-event-beforeitemmouseleave'>                    /**
 </span>                     * @event beforeitemmouseleave
                      * Fires before the mouseleave event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -312,7 +329,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemmouseleave',
-<span id='Ext-panel.Table-event-beforeitemclick'>                    /**
+<span id='Ext-panel-Table-event-beforeitemclick'>                    /**
 </span>                     * @event beforeitemclick
                      * Fires before the click event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -322,7 +339,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemclick',
-<span id='Ext-panel.Table-event-beforeitemdblclick'>                    /**
+<span id='Ext-panel-Table-event-beforeitemdblclick'>                    /**
 </span>                     * @event beforeitemdblclick
                      * Fires before the dblclick event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -332,7 +349,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemdblclick',
-<span id='Ext-panel.Table-event-beforeitemcontextmenu'>                    /**
+<span id='Ext-panel-Table-event-beforeitemcontextmenu'>                    /**
 </span>                     * @event beforeitemcontextmenu
                      * Fires before the contextmenu event on an item is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
@@ -342,7 +359,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforeitemcontextmenu',
-<span id='Ext-panel.Table-event-itemmousedown'>                    /**
+<span id='Ext-panel-Table-event-itemmousedown'>                    /**
 </span>                     * @event itemmousedown
                      * Fires when there is a mouse down on an item
                      * @param {Ext.view.View} this
@@ -352,7 +369,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemmousedown',
-<span id='Ext-panel.Table-event-itemmouseup'>                    /**
+<span id='Ext-panel-Table-event-itemmouseup'>                    /**
 </span>                     * @event itemmouseup
                      * Fires when there is a mouse up on an item
                      * @param {Ext.view.View} this
@@ -362,7 +379,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemmouseup',
-<span id='Ext-panel.Table-event-itemmouseenter'>                    /**
+<span id='Ext-panel-Table-event-itemmouseenter'>                    /**
 </span>                     * @event itemmouseenter
                      * Fires when the mouse enters an item.
                      * @param {Ext.view.View} this
@@ -372,7 +389,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemmouseenter',
-<span id='Ext-panel.Table-event-itemmouseleave'>                    /**
+<span id='Ext-panel-Table-event-itemmouseleave'>                    /**
 </span>                     * @event itemmouseleave
                      * Fires when the mouse leaves an item.
                      * @param {Ext.view.View} this
@@ -382,7 +399,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemmouseleave',
-<span id='Ext-panel.Table-event-itemclick'>                    /**
+<span id='Ext-panel-Table-event-itemclick'>                    /**
 </span>                     * @event itemclick
                      * Fires when an item is clicked.
                      * @param {Ext.view.View} this
@@ -392,7 +409,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemclick',
-<span id='Ext-panel.Table-event-itemdblclick'>                    /**
+<span id='Ext-panel-Table-event-itemdblclick'>                    /**
 </span>                     * @event itemdblclick
                      * Fires when an item is double clicked.
                      * @param {Ext.view.View} this
@@ -402,7 +419,7 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemdblclick',
-<span id='Ext-panel.Table-event-itemcontextmenu'>                    /**
+<span id='Ext-panel-Table-event-itemcontextmenu'>                    /**
 </span>                     * @event itemcontextmenu
                      * Fires when an item is right clicked.
                      * @param {Ext.view.View} this
@@ -412,91 +429,91 @@ Ext.define('Ext.panel.Table', {
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'itemcontextmenu',
-<span id='Ext-panel.Table-event-beforecontainermousedown'>                    /**
+<span id='Ext-panel-Table-event-beforecontainermousedown'>                    /**
 </span>                     * @event beforecontainermousedown
                      * Fires before the mousedown event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainermousedown',
-<span id='Ext-panel.Table-event-beforecontainermouseup'>                    /**
+<span id='Ext-panel-Table-event-beforecontainermouseup'>                    /**
 </span>                     * @event beforecontainermouseup
                      * Fires before the mouseup event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainermouseup',
-<span id='Ext-panel.Table-event-beforecontainermouseover'>                    /**
+<span id='Ext-panel-Table-event-beforecontainermouseover'>                    /**
 </span>                     * @event beforecontainermouseover
                      * Fires before the mouseover event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainermouseover',
-<span id='Ext-panel.Table-event-beforecontainermouseout'>                    /**
+<span id='Ext-panel-Table-event-beforecontainermouseout'>                    /**
 </span>                     * @event beforecontainermouseout
                      * Fires before the mouseout event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainermouseout',
-<span id='Ext-panel.Table-event-beforecontainerclick'>                    /**
+<span id='Ext-panel-Table-event-beforecontainerclick'>                    /**
 </span>                     * @event beforecontainerclick
                      * Fires before the click event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainerclick',
-<span id='Ext-panel.Table-event-beforecontainerdblclick'>                    /**
+<span id='Ext-panel-Table-event-beforecontainerdblclick'>                    /**
 </span>                     * @event beforecontainerdblclick
                      * Fires before the dblclick event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainerdblclick',
-<span id='Ext-panel.Table-event-beforecontainercontextmenu'>                    /**
+<span id='Ext-panel-Table-event-beforecontainercontextmenu'>                    /**
 </span>                     * @event beforecontainercontextmenu
                      * Fires before the contextmenu event on the container is processed. Returns false to cancel the default action.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'beforecontainercontextmenu',
-<span id='Ext-panel.Table-event-containermouseup'>                    /**
+<span id='Ext-panel-Table-event-containermouseup'>                    /**
 </span>                     * @event containermouseup
                      * Fires when there is a mouse up on the container
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'containermouseup',
-<span id='Ext-panel.Table-event-containermouseover'>                    /**
+<span id='Ext-panel-Table-event-containermouseover'>                    /**
 </span>                     * @event containermouseover
                      * Fires when you move the mouse over the container.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'containermouseover',
-<span id='Ext-panel.Table-event-containermouseout'>                    /**
+<span id='Ext-panel-Table-event-containermouseout'>                    /**
 </span>                     * @event containermouseout
                      * Fires when you move the mouse out of the container.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'containermouseout',
-<span id='Ext-panel.Table-event-containerclick'>                    /**
+<span id='Ext-panel-Table-event-containerclick'>                    /**
 </span>                     * @event containerclick
                      * Fires when the container is clicked.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'containerclick',
-<span id='Ext-panel.Table-event-containerdblclick'>                    /**
+<span id='Ext-panel-Table-event-containerdblclick'>                    /**
 </span>                     * @event containerdblclick
                      * Fires when the container is double clicked.
                      * @param {Ext.view.View} this
                      * @param {Ext.EventObject} e The raw event object
                      */
                     'containerdblclick',
-<span id='Ext-panel.Table-event-containercontextmenu'>                    /**
+<span id='Ext-panel-Table-event-containercontextmenu'>                    /**
 </span>                     * @event containercontextmenu
                      * Fires when the container is right clicked.
                      * @param {Ext.view.View} this
@@ -504,14 +521,14 @@ Ext.define('Ext.panel.Table', {
                      */
                     'containercontextmenu',
 
-<span id='Ext-panel.Table-event-selectionchange'>                    /**
+<span id='Ext-panel-Table-event-selectionchange'>                    /**
 </span>                     * @event selectionchange
                      * Fires when the selected nodes change. Relayed event from the underlying selection model.
                      * @param {Ext.view.View} this
                      * @param {Array} selections Array of the selected nodes
                      */
                     'selectionchange',
-<span id='Ext-panel.Table-event-beforeselect'>                    /**
+<span id='Ext-panel-Table-event-beforeselect'>                    /**
 </span>                     * @event beforeselect
                      * Fires before a selection is made. If any handlers return false, the selection is cancelled.
                      * @param {Ext.view.View} this
@@ -605,7 +622,7 @@ Ext.define('Ext.panel.Table', {
         }
     },
 
-<span id='Ext-panel.Table-method-getStore'>    /**
+<span id='Ext-panel-Table-method-getStore'>    /**
 </span>     * Returns the store associated with this Panel.
      * @return {Ext.data.Store} The store
      */
@@ -613,7 +630,7 @@ Ext.define('Ext.panel.Table', {
         return this.store;
     },
 
-<span id='Ext-panel.Table-method-getView'>    /**
+<span id='Ext-panel-Table-method-getView'>    /**
 </span>     * Gets the view for this panel.
      * @return {Ext.view.Table}
      */
@@ -642,7 +659,7 @@ Ext.define('Ext.panel.Table', {
         return me.view;
     },
 
-<span id='Ext-panel.Table-property-setAutoScroll'>    /**
+<span id='Ext-panel-Table-property-setAutoScroll'>    /**
 </span>     * @private
      * @override
      * autoScroll is never valid for all classes which extend TablePanel.
@@ -675,7 +692,7 @@ Ext.define('Ext.panel.Table', {
     },
     
 
-<span id='Ext-panel.Table-method-injectView'>    /**
+<span id='Ext-panel-Table-method-injectView'>    /**
 </span>     * @private
      * Called after this Component has achieved its correct initial size, after all layouts have done their thing.
      * This is so we can add the View only after the initial size is known. This method is buffered 30ms.
@@ -706,7 +723,7 @@ Ext.define('Ext.panel.Table', {
         }
     },
 
-<span id='Ext-panel.Table-method-processEvent'>    /**
+<span id='Ext-panel-Table-method-processEvent'>    /**
 </span>     * @private
      * Process UI events from the view. Propagate them to whatever internal Components need to process them
      * @param {String} type Event type, eg 'click'
@@ -726,7 +743,7 @@ Ext.define('Ext.panel.Table', {
         }
     },
 
-<span id='Ext-panel.Table-method-determineScrollbars'>    /**
+<span id='Ext-panel-Table-method-determineScrollbars'>    /**
 </span>     * Request a recalculation of scrollbars and put them in if they are needed.
      */
     determineScrollbars: function() {
@@ -741,7 +758,7 @@ Ext.define('Ext.panel.Table', {
             viewElDom = me.view.el.dom;
             //centerScrollWidth = viewElDom.scrollWidth;
             centerScrollWidth = me.headerCt.getFullWidth();
-<span id='Ext-panel.Table-property-centerClientWidth'>            /**
+<span id='Ext-panel-Table-property-centerClientWidth'>            /**
 </span>             * clientWidth often returns 0 in IE resulting in an
              * infinity result, here we use offsetWidth bc there are
              * no possible scrollbars and we don't care about margins
@@ -755,6 +772,8 @@ Ext.define('Ext.panel.Table', {
 
             clientHeight = viewElDom.clientHeight;
 
+            me.suspendLayout = true;
+            me.scrollbarChanged = false;
             if (!me.collapsed &amp;&amp; scrollHeight &gt; clientHeight) {
                 me.showVerticalScroller();
             } else {
@@ -766,6 +785,10 @@ Ext.define('Ext.panel.Table', {
             } else {
                 me.hideHorizontalScroller();
             }
+            me.suspendLayout = false;
+            if (me.scrollbarChanged) {
+                me.doComponentLayout();
+            }
         }
     },
 
@@ -776,13 +799,14 @@ Ext.define('Ext.panel.Table', {
         }
     },
 
-<span id='Ext-panel.Table-method-hideHorizontalScroller'>    /**
+<span id='Ext-panel-Table-method-hideHorizontalScroller'>    /**
 </span>     * Hide the verticalScroller and remove the horizontalScrollerPresentCls.
      */
     hideHorizontalScroller: function() {
         var me = this;
 
         if (me.horizontalScroller &amp;&amp; me.horizontalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.verticalScroller.offsets.bottom = 0;
             me.removeDocked(me.horizontalScroller, false);
             me.removeCls(me.horizontalScrollerPresentCls);
@@ -791,7 +815,7 @@ Ext.define('Ext.panel.Table', {
 
     },
 
-<span id='Ext-panel.Table-method-showHorizontalScroller'>    /**
+<span id='Ext-panel-Table-method-showHorizontalScroller'>    /**
 </span>     * Show the horizontalScroller and add the horizontalScrollerPresentCls.
      */
     showHorizontalScroller: function() {
@@ -801,13 +825,14 @@ Ext.define('Ext.panel.Table', {
             me.verticalScroller.offsets.bottom = Ext.getScrollBarWidth() - 2;
         }
         if (me.horizontalScroller &amp;&amp; me.horizontalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.horizontalScroller);
             me.addCls(me.horizontalScrollerPresentCls);
             me.fireEvent('scrollershow', me.horizontalScroller, 'horizontal');
         }
     },
 
-<span id='Ext-panel.Table-method-hideVerticalScroller'>    /**
+<span id='Ext-panel-Table-method-hideVerticalScroller'>    /**
 </span>     * Hide the verticalScroller and remove the verticalScrollerPresentCls.
      */
     hideVerticalScroller: function() {
@@ -820,13 +845,14 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller &amp;&amp; me.verticalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.removeDocked(me.verticalScroller, false);
             me.removeCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollerhide', me.verticalScroller, 'vertical');
         }
     },
 
-<span id='Ext-panel.Table-method-showVerticalScroller'>    /**
+<span id='Ext-panel-Table-method-showVerticalScroller'>    /**
 </span>     * Show the verticalScroller and add the verticalScrollerPresentCls.
      */
     showVerticalScroller: function() {
@@ -839,13 +865,14 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller &amp;&amp; me.verticalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.verticalScroller);
             me.addCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollershow', me.verticalScroller, 'vertical');
         }
     },
 
-<span id='Ext-panel.Table-method-invalidateScroller'>    /**
+<span id='Ext-panel-Table-method-invalidateScroller'>    /**
 </span>     * Invalides scrollers that are present and forces a recalculation.
      * (Not related to showing/hiding the scrollers)
      */
@@ -892,59 +919,56 @@ Ext.define('Ext.panel.Table', {
             scrollDelta = me.scrollDelta,
             deltaY, deltaX,
             vertScrollerEl, horizScrollerEl,
-            origScrollLeft, origScrollTop,
-            newScrollLeft, newScrollTop;
+            vertScrollerElDom, horizScrollerElDom,
+            horizontalCanScrollLeft, horizontalCanScrollRight,
+            verticalCanScrollDown, verticalCanScrollUp;
 
-        // Track original scroll values, so we can see if we've
-        // reached the end of our scroll height/width.
+        // calculate whether or not both scrollbars can scroll right/left and up/down
         if (horizScroller) {
             horizScrollerEl = horizScroller.el;
             if (horizScrollerEl) {
-                origScrollLeft = horizScrollerEl.dom.scrollLeft;
+                horizScrollerElDom = horizScrollerEl.dom;
+                horizontalCanScrollRight = horizScrollerElDom.scrollLeft !== horizScrollerElDom.scrollWidth - horizScrollerElDom.clientWidth;
+                horizontalCanScrollLeft  = horizScrollerElDom.scrollLeft !== 0;
             }
         }
         if (vertScroller) {
             vertScrollerEl = vertScroller.el;
             if (vertScrollerEl) {
-                origScrollTop = vertScrollerEl.dom.scrollTop;
+                vertScrollerElDom = vertScrollerEl.dom;
+                verticalCanScrollDown = vertScrollerElDom.scrollTop !== vertScrollerElDom.scrollHeight - vertScrollerElDom.clientHeight;
+                verticalCanScrollUp   = vertScrollerElDom.scrollTop !== 0;
             }
         }
 
         // Webkit Horizontal Axis
-        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {
+        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {        
             deltaX = -browserEvent.wheelDeltaX / 120 * scrollDelta / 3;
             deltaY = -browserEvent.wheelDeltaY / 120 * scrollDelta / 3;
-            if (horizScroller) {
-                newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-            }
-            if (vertScroller) {
-                newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-            }
         } else {
             // Gecko Horizontal Axis
             if (browserEvent.axis &amp;&amp; browserEvent.axis === 1) {
-                if (horizScroller) {
-                    deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
-                    newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-                }
+                deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
             } else {
-                if (vertScroller) {
-
-                    deltaY = -(scrollDelta * e.getWheelDelta() / 3);
-                    newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-                }
+                deltaY = -(scrollDelta * e.getWheelDelta() / 3);
             }
         }
-
-        // If after given our delta, the scroller has not progressed, then we're
-        // at the end of our scroll range and shouldn't stop the browser event.
-        if ((deltaX !== 0 &amp;&amp; newScrollLeft !== origScrollLeft) ||
-            (deltaY !== 0 &amp;&amp; newScrollTop !== origScrollTop)) {
-            e.stopEvent();
+        
+        if (horizScroller) {
+            if ((deltaX &lt; 0 &amp;&amp; horizontalCanScrollLeft) || (deltaX &gt; 0 &amp;&amp; horizontalCanScrollRight)) {
+                e.stopEvent();
+                horizScroller.scrollByDeltaX(deltaX);
+            }
+        }
+        if (vertScroller) {
+            if ((deltaY &lt; 0 &amp;&amp; verticalCanScrollUp) || (deltaY &gt; 0 &amp;&amp; verticalCanScrollDown)) {
+                e.stopEvent();
+                vertScroller.scrollByDeltaY(deltaY);    
+            }
         }
     },
 
-<span id='Ext-panel.Table-method-onViewRefresh'>    /**
+<span id='Ext-panel-Table-method-onViewRefresh'>    /**
 </span>     * @private
      * Determine and invalidate scrollers on view refresh
      */
@@ -1012,7 +1036,7 @@ Ext.define('Ext.panel.Table', {
         }
     },
 
-<span id='Ext-panel.Table-method-setScrollTop'>    /**
+<span id='Ext-panel-Table-method-setScrollTop'>    /**
 </span>     * Sets the scrollTop of the TablePanel.
      * @param {Number} deltaY
      */
@@ -1036,7 +1060,7 @@ Ext.define('Ext.panel.Table', {
         return rootCmp;
     },
 
-<span id='Ext-panel.Table-method-scrollByDeltaY'>    /**
+<span id='Ext-panel-Table-method-scrollByDeltaY'>    /**
 </span>     * Scrolls the TablePanel by deltaY
      * @param {Number} deltaY
      */
@@ -1050,7 +1074,7 @@ Ext.define('Ext.panel.Table', {
     },
 
 
-<span id='Ext-panel.Table-method-scrollByDeltaX'>    /**
+<span id='Ext-panel-Table-method-scrollByDeltaX'>    /**
 </span>     * Scrolls the TablePanel by deltaX
      * @param {Number} deltaY
      */
@@ -1058,7 +1082,7 @@ Ext.define('Ext.panel.Table', {
         this.horizontalScroller.scrollByDeltaX(deltaX);
     },
 
-<span id='Ext-panel.Table-method-getLhsMarker'>    /**
+<span id='Ext-panel-Table-method-getLhsMarker'>    /**
 </span>     * Get left hand side marker for header resizing.
      * @private
      */
@@ -1073,7 +1097,7 @@ Ext.define('Ext.panel.Table', {
         return me.lhsMarker;
     },
 
-<span id='Ext-panel.Table-method-getRhsMarker'>    /**
+<span id='Ext-panel-Table-method-getRhsMarker'>    /**
 </span>     * Get right hand side marker for header resizing.
      * @private
      */
@@ -1088,7 +1112,7 @@ Ext.define('Ext.panel.Table', {
         return me.rhsMarker;
     },
 
-<span id='Ext-panel.Table-method-getSelectionModel'>    /**
+<span id='Ext-panel-Table-method-getSelectionModel'>    /**
 </span>     * Returns the selection model being used and creates it via the configuration
      * if it has not been created already.
      * @return {Ext.selection.Model} selModel
@@ -1192,11 +1216,7 @@ Ext.define('Ext.panel.Table', {
         } else {
             me.getView().refresh();
         }
-    },
-
-    afterComponentLayout: function() {
-        this.callParent(arguments);
-        this.determineScrollbars();
-        this.invalidateScroller();
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

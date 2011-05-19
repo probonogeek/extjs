@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.action.Submit'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-action-Submit'>/**
 </span> * @class Ext.form.action.Submit
  * @extends Ext.form.action.Action
  * &lt;p&gt;A class which handles submission of data from {@link Ext.form.Basic Form}s
@@ -61,7 +78,7 @@ Ext.define('Ext.form.action.Submit', {
 
     type: 'submit',
 
-<span id='Ext-form.action.Submit-cfg-clientValidation'>    /**
+<span id='Ext-form-action-Submit-cfg-clientValidation'>    /**
 </span>     * @cfg {boolean} clientValidation Determines whether a Form's fields are validated
      * in a final call to {@link Ext.form.Basic#isValid isValid} prior to submission.
      * Pass &lt;tt&gt;false&lt;/tt&gt; in the Form's submit options to prevent this. Defaults to true.
@@ -79,7 +96,7 @@ Ext.define('Ext.form.action.Submit', {
         }
     },
 
-<span id='Ext-form.action.Submit-method-doSubmit'>    /**
+<span id='Ext-form-action-Submit-method-doSubmit'>    /**
 </span>     * @private
      * Perform the submit of the form data.
      */
@@ -107,7 +124,7 @@ Ext.define('Ext.form.action.Submit', {
         }
     },
 
-<span id='Ext-form.action.Submit-method-getParams'>    /**
+<span id='Ext-form-action-Submit-method-getParams'>    /**
 </span>     * @private
      * Build the full set of parameters from the field values plus any additional configured params.
      */
@@ -118,7 +135,7 @@ Ext.define('Ext.form.action.Submit', {
         return Ext.apply({}, fieldParams, configParams);
     },
 
-<span id='Ext-form.action.Submit-method-buildForm'>    /**
+<span id='Ext-form-action-Submit-method-buildForm'>    /**
 </span>     * @private
      * Build a form element containing fields corresponding to all the parameters to be
      * submitted (everything returned by {@link #getParams}.
@@ -145,7 +162,7 @@ Ext.define('Ext.form.action.Submit', {
                 tag: 'input',
                 type: 'hidden',
                 name: name,
-                value: val
+                value: Ext.String.htmlEncode(val)
             });
         }
 
@@ -191,7 +208,7 @@ Ext.define('Ext.form.action.Submit', {
 
 
 
-<span id='Ext-form.action.Submit-method-onSuccess'>    /**
+<span id='Ext-form-action-Submit-method-onSuccess'>    /**
 </span>     * @private
      */
     onSuccess: function(response) {
@@ -208,7 +225,7 @@ Ext.define('Ext.form.action.Submit', {
         form.afterAction(this, success);
     },
 
-<span id='Ext-form.action.Submit-method-handleResponse'>    /**
+<span id='Ext-form-action-Submit-method-handleResponse'>    /**
 </span>     * @private
      */
     handleResponse: function(response) {
@@ -235,4 +252,6 @@ Ext.define('Ext.form.action.Submit', {
         return Ext.decode(response.responseText);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

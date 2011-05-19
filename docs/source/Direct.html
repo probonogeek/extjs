@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.Direct'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Direct'>/**
 </span> * @class Ext.data.proxy.Direct
  * @extends Ext.data.proxy.Server
  * 
@@ -43,7 +60,7 @@ Ext.define('Ext.data.proxy.Direct', {
     
     /* End Definitions */
    
-<span id='Ext-data.proxy.Direct-cfg-paramOrder'>   /**
+<span id='Ext-data-proxy-Direct-cfg-paramOrder'>   /**
 </span>     * @cfg {Array/String} paramOrder Defaults to &lt;tt&gt;undefined&lt;/tt&gt;. A list of params to be executed
      * server side.  Specify the params in the order in which they must be executed on the server-side
      * as either (1) an Array of String values, or (2) a String of params delimited by either whitespace,
@@ -57,26 +74,26 @@ paramOrder: 'param1|param2|param'
      */
     paramOrder: undefined,
 
-<span id='Ext-data.proxy.Direct-cfg-paramsAsHash'>    /**
+<span id='Ext-data-proxy-Direct-cfg-paramsAsHash'>    /**
 </span>     * @cfg {Boolean} paramsAsHash
      * Send parameters as a collection of named arguments (defaults to &lt;tt&gt;true&lt;/tt&gt;). Providing a
      * &lt;tt&gt;{@link #paramOrder}&lt;/tt&gt; nullifies this configuration.
      */
     paramsAsHash: true,
 
-<span id='Ext-data.proxy.Direct-cfg-directFn'>    /**
+<span id='Ext-data-proxy-Direct-cfg-directFn'>    /**
 </span>     * @cfg {Function} directFn
      * Function to call when executing a request.  directFn is a simple alternative to defining the api configuration-parameter
      * for Store's which will not implement a full CRUD api.
      */
     directFn : undefined,
     
-<span id='Ext-data.proxy.Direct-cfg-api'>    /**
+<span id='Ext-data-proxy-Direct-cfg-api'>    /**
 </span>     * @cfg {Object} api The same as {@link Ext.data.proxy.Server#api}, however instead of providing urls, you should provide a direct
      * function call.
      */
     
-<span id='Ext-data.proxy.Direct-cfg-extraParams'>    /**
+<span id='Ext-data-proxy-Direct-cfg-extraParams'>    /**
 </span>     * @cfg {Object} extraParams Extra parameters that will be included on every read request. Individual requests with params
      * of the same name will override these params when they are in conflict.
      */
@@ -176,4 +193,6 @@ paramOrder: 'param1|param2|param'
         return '';
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

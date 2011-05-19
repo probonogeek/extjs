@@ -1,11 +1,29 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Observable'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Observable'>/**
 </span> * @class Ext.util.Observable
  * Base class that provides a common interface for publishing events. Subclasses are expected to
  * to have a property &quot;events&quot; with all the events defined, and, optionally, a property &quot;listeners&quot;
  * with configured listeners defined.&lt;br&gt;
  * For example:
  * &lt;pre&gt;&lt;code&gt;
-Employee = Ext.extend(Ext.util.Observable, {
+Ext.define('Employee', {
+    extend: 'Ext.util.Observable',
     constructor: function(config){
         this.name = config.name;
         this.addEvents({
@@ -42,7 +60,7 @@ Ext.define('Ext.util.Observable', {
     requires: ['Ext.util.Event'],
 
     statics: {
-<span id='Ext-util.Observable-method-releaseCapture'>        /**
+<span id='Ext-util-Observable-method-releaseCapture'>        /**
 </span>         * Removes &lt;b&gt;all&lt;/b&gt; added captures from the Observable.
          * @param {Observable} o The Observable to release
          * @static
@@ -51,7 +69,7 @@ Ext.define('Ext.util.Observable', {
             o.fireEvent = this.prototype.fireEvent;
         },
 
-<span id='Ext-util.Observable-method-capture'>        /**
+<span id='Ext-util-Observable-method-capture'>        /**
 </span>         * Starts capture on the specified Observable. All events will be passed
          * to the supplied function with the event name + standard signature of the event
          * &lt;b&gt;before&lt;/b&gt; the event is fired. If the supplied function returns false,
@@ -65,7 +83,7 @@ Ext.define('Ext.util.Observable', {
             o.fireEvent = Ext.Function.createInterceptor(o.fireEvent, fn, scope);
         },
 
-<span id='Ext-util.Observable-method-observe'>        /**
+<span id='Ext-util-Observable-method-observe'>        /**
 </span>Sets observability on the passed class constructor.
 
 This makes any event fired on any instance of the passed class also fire a single event through
@@ -99,7 +117,7 @@ Usage:
 
     /* End Definitions */
 
-<span id='Ext-util.Observable-cfg-listeners'>    /**
+<span id='Ext-util-Observable-cfg-listeners'>    /**
 </span>    * @cfg {Object} listeners (optional) &lt;p&gt;A config object containing one or more event handlers to be added to this
     * object during initialization.  This should be a valid listeners config object as specified in the
     * {@link #addListener} example for attaching multiple handlers at once.&lt;/p&gt;
@@ -151,7 +169,7 @@ new Ext.panel.Panel({
     // @private
     eventOptionsRe : /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate|element|vertical|horizontal)$/,
 
-<span id='Ext-util.Observable-method-addManagedListener'>    /**
+<span id='Ext-util-Observable-method-addManagedListener'>    /**
 </span>     * &lt;p&gt;Adds listeners to any Observable object (or Element) which are automatically removed when this Component
      * is destroyed.
      * @param {Observable/Element} item The item to which to add a listener/listeners.
@@ -192,7 +210,7 @@ new Ext.panel.Panel({
         }
     },
 
-<span id='Ext-util.Observable-method-removeManagedListener'>    /**
+<span id='Ext-util-Observable-method-removeManagedListener'>    /**
 </span>     * Removes listeners that were added by the {@link #mon} method.
      * @param {Observable|Element} item The item from which to remove a listener/listeners.
      * @param {Object|String} ename The event name, or an object containing event name properties.
@@ -206,7 +224,6 @@ new Ext.panel.Panel({
             options,
             config,
             managedListeners,
-            managedListener,
             length,
             i;
 
@@ -223,18 +240,13 @@ new Ext.panel.Panel({
         }
 
         managedListeners = me.managedListeners ? me.managedListeners.slice() : [];
-        length = managedListeners.length;
 
-        for (i = 0; i &lt; length; i++) {
-            managedListener = managedListeners[i];
-            if (managedListener.item === item &amp;&amp; managedListener.ename === ename &amp;&amp; (!fn || managedListener.fn === fn) &amp;&amp; (!scope || managedListener.scope === scope)) {
-                Ext.Array.remove(me.managedListeners, managedListener);
-                item.un(managedListener.ename, managedListener.fn, managedListener.scope);
-            }
+        for (i = 0, length = managedListeners.length; i &lt; length; i++) {
+            me.removeManagedListenerItem(false, managedListeners[i], item, ename, fn, scope);
         }
     },
 
-<span id='Ext-util.Observable-method-fireEvent'>    /**
+<span id='Ext-util-Observable-method-fireEvent'>    /**
 </span>     * &lt;p&gt;Fires the specified event with the passed parameters (minus the event name).&lt;/p&gt;
      * &lt;p&gt;An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget})
      * by calling {@link #enableBubble}.&lt;/p&gt;
@@ -273,7 +285,7 @@ new Ext.panel.Panel({
         return ret;
     },
 
-<span id='Ext-util.Observable-method-addListener'>    /**
+<span id='Ext-util-Observable-method-addListener'>    /**
 </span>     * Appends an event handler to this object.
      * @param {String}   eventName The name of the event to listen for. May also be an object who's property names are event names. See
      * @param {Function} handler The method the event invokes.
@@ -354,7 +366,7 @@ myGridPanel.on({
         }
     },
 
-<span id='Ext-util.Observable-method-removeListener'>    /**
+<span id='Ext-util-Observable-method-removeListener'>    /**
 </span>     * Removes an event handler.
      * @param {String}   eventName The type of event the handler was associated with.
      * @param {Function} handler   The handler to remove. &lt;b&gt;This must be a reference to the function passed into the {@link #addListener} call.&lt;/b&gt;
@@ -379,13 +391,13 @@ myGridPanel.on({
         } else {
             ename = ename.toLowerCase();
             event = me.events[ename];
-            if (event.isEvent) {
+            if (event &amp;&amp; event.isEvent) {
                 event.removeListener(fn, scope);
             }
         }
     },
 
-<span id='Ext-util.Observable-method-clearListeners'>    /**
+<span id='Ext-util-Observable-method-clearListeners'>    /**
 </span>     * Removes all listeners for this object including the managed listeners
      */
     clearListeners: function() {
@@ -407,36 +419,54 @@ myGridPanel.on({
 
     //&lt;debug&gt;
     purgeListeners : function() {
-        console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        }
         return this.clearListeners.apply(this, arguments);
     },
     //&lt;/debug&gt;
 
-<span id='Ext-util.Observable-method-clearManagedListeners'>    /**
+<span id='Ext-util-Observable-method-clearManagedListeners'>    /**
 </span>     * Removes all managed listeners for this object.
      */
     clearManagedListeners : function() {
         var managedListeners = this.managedListeners || [],
             i = 0,
-            len = managedListeners.length,
-            managedListener;
+            len = managedListeners.length;
 
         for (; i &lt; len; i++) {
-            managedListener = managedListeners[i];
-            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            this.removeManagedListenerItem(true, managedListeners[i]);
         }
 
         this.managedListeners = [];
     },
+    
+<span id='Ext-util-Observable-method-removeManagedListenerItem'>    /**
+</span>     * Remove a single managed listener item
+     * @private
+     * @param {Boolean} isClear True if this is being called during a clear
+     * @param {Object} managedListener The managed listener item
+     * See removeManagedListener for other args
+     */
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        if (isClear || (managedListener.item === item &amp;&amp; managedListener.ename === ename &amp;&amp; (!fn || managedListener.fn === fn) &amp;&amp; (!scope || managedListener.scope === scope))) {
+            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            if (!isClear) {
+                Ext.Array.remove(this.managedListeners, managedListener);
+            }    
+        }
+    },
 
     //&lt;debug&gt;
     purgeManagedListeners : function() {
-        console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        }
         return this.clearManagedListeners.apply(this, arguments);
     },
     //&lt;/debug&gt;
 
-<span id='Ext-util.Observable-method-addEvents'>    /**
+<span id='Ext-util-Observable-method-addEvents'>    /**
 </span>     * Adds the specified events to the list of events which this Observable may fire.
      * @param {Object/String} o Either an object with event names as properties with a value of &lt;code&gt;true&lt;/code&gt;
      * or the first event name string if multiple event names are being passed as separate parameters.
@@ -464,7 +494,7 @@ this.addEvents('storeloaded', 'storecleared');
         }
     },
 
-<span id='Ext-util.Observable-method-hasListener'>    /**
+<span id='Ext-util-Observable-method-hasListener'>    /**
 </span>     * Checks to see if this object has any listeners for a specified event
      * @param {String} eventName The name of the event to check for
      * @return {Boolean} True if the event is being listened for, else false
@@ -474,7 +504,7 @@ this.addEvents('storeloaded', 'storecleared');
         return event &amp;&amp; event.isEvent === true &amp;&amp; event.listeners.length &gt; 0;
     },
 
-<span id='Ext-util.Observable-method-suspendEvents'>    /**
+<span id='Ext-util-Observable-method-suspendEvents'>    /**
 </span>     * Suspend the firing of all events. (see {@link #resumeEvents})
      * @param {Boolean} queueSuspended Pass as true to queue up suspended events to be fired
      * after the {@link #resumeEvents} call instead of discarding all suspended events;
@@ -486,7 +516,7 @@ this.addEvents('storeloaded', 'storecleared');
         }
     },
 
-<span id='Ext-util.Observable-method-resumeEvents'>    /**
+<span id='Ext-util-Observable-method-resumeEvents'>    /**
 </span>     * Resume firing events. (see {@link #suspendEvents})
      * If events were suspended using the &lt;code&gt;&lt;b&gt;queueSuspended&lt;/b&gt;&lt;/code&gt; parameter, then all
      * events fired during event suspension will be sent to any listeners now.
@@ -504,7 +534,7 @@ this.addEvents('storeloaded', 'storecleared');
         });
     },
 
-<span id='Ext-util.Observable-method-relayEvents'>    /**
+<span id='Ext-util-Observable-method-relayEvents'>    /**
 </span>     * Relays selected events from the specified Observable as if the events were fired by &lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt;.
      * @param {Object} origin The Observable whose events this object is to relay.
      * @param {Array} events Array of event names to relay.
@@ -525,7 +555,7 @@ this.addEvents('storeloaded', 'storecleared');
         }
     },
 
-<span id='Ext-util.Observable-method-createRelayer'>    /**
+<span id='Ext-util-Observable-method-createRelayer'>    /**
 </span>     * @private
      * Creates an event handling function which refires the event from this object as the passed event name.
      * @param newName
@@ -538,7 +568,7 @@ this.addEvents('storeloaded', 'storecleared');
         };
     },
 
-<span id='Ext-util.Observable-method-enableBubble'>    /**
+<span id='Ext-util-Observable-method-enableBubble'>    /**
 </span>     * &lt;p&gt;Enables events fired by this Observable to bubble up an owner hierarchy by calling
      * &lt;code&gt;this.getBubbleTarget()&lt;/code&gt; if present. There is no implementation in the Observable base class.&lt;/p&gt;
      * &lt;p&gt;This is commonly used by Ext.Components to bubble events to owner Containers. See {@link Ext.Component#getBubbleTarget}. The default
@@ -592,7 +622,7 @@ listeners: {
         }
     }
 }, function() {
-<span id='Ext-util.Observable-method-un'>    /**
+<span id='Ext-util-Observable-method-un'>    /**
 </span>     * Removes an event handler (shorthand for {@link #removeListener}.)
      * @param {String}   eventName     The type of event the handler was associated with.
      * @param {Function} handler       The handler to remove. &lt;b&gt;This must be a reference to the function passed into the {@link #addListener} call.&lt;/b&gt;
@@ -600,7 +630,7 @@ listeners: {
      * @method un
      */
 
-<span id='Ext-util.Observable-method-on'>    /**
+<span id='Ext-util-Observable-method-on'>    /**
 </span>     * Appends an event handler to this object (shorthand for {@link #addListener}.)
      * @param {String}   eventName     The type of event to listen for
      * @param {Function} handler       The method the event invokes
@@ -735,4 +765,6 @@ listeners: {
         };
     }());
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

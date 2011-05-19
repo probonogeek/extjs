@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.WebStorage-method-constructor'><span id='Ext-data.proxy.WebStorage'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-WebStorage-method-constructor'><span id='Ext-data-proxy-WebStorage'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.proxy.WebStorage
  * @extends Ext.data.proxy.Client
@@ -15,18 +32,18 @@ Ext.define('Ext.data.proxy.WebStorage', {
     extend: 'Ext.data.proxy.Client',
     alternateClassName: 'Ext.data.WebStorageProxy',
     
-<span id='Ext-data.proxy.WebStorage-cfg-id'>    /**
+<span id='Ext-data-proxy-WebStorage-cfg-id'>    /**
 </span>     * @cfg {String} id The unique ID used as the key in which all record data are stored in the local storage object
      */
     id: undefined,
 
-<span id='Ext-data.proxy.WebStorage-method-constructor'>    /**
+<span id='Ext-data-proxy-WebStorage-method-constructor'>    /**
 </span>     * @ignore
      */
     constructor: function(config) {
         this.callParent(arguments);
         
-<span id='Ext-data.proxy.WebStorage-property-cache'>        /**
+<span id='Ext-data-proxy-WebStorage-property-cache'>        /**
 </span>         * Cached map of records already retrieved by this Proxy - ensures that the same instance is always retrieved
          * @property cache
          * @type Object
@@ -176,7 +193,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getRecord'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getRecord'>    /**
 </span>     * @private
      * Fetches a model instance from the Proxy by ID. Runs each field's decode function (if present) to decode the data
      * @param {String} id The record's unique ID
@@ -211,7 +228,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         return this.cache[id];
     },
 
-<span id='Ext-data.proxy.WebStorage-method-setRecord'>    /**
+<span id='Ext-data-proxy-WebStorage-method-setRecord'>    /**
 </span>     * Saves the given record in the Proxy. Runs each field's encode function (if present) to encode the data
      * @param {Ext.data.Model} record The model instance
      * @param {String} id The id to save the record under (defaults to the value of the record's getId() function)
@@ -254,7 +271,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         obj.setItem(key, Ext.encode(data));
     },
 
-<span id='Ext-data.proxy.WebStorage-method-removeRecord'>    /**
+<span id='Ext-data-proxy-WebStorage-method-removeRecord'>    /**
 </span>     * @private
      * Physically removes a given record from the local storage. Used internally by {@link #destroy}, which you should
      * use instead because it updates the list of currently-stored record ids
@@ -277,7 +294,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         me.getStorageObject().removeItem(me.getRecordKey(id));
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getRecordKey'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getRecordKey'>    /**
 </span>     * @private
      * Given the id of a record, returns a unique string based on that id and the id of this proxy. This is used when
      * storing data in the local storage object and should prevent naming collisions.
@@ -292,7 +309,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         return Ext.String.format(&quot;{0}-{1}&quot;, this.id, id);
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getRecordCounterKey'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getRecordCounterKey'>    /**
 </span>     * @private
      * Returns the unique key used to store the current record counter for this proxy. This is used internally when
      * realizing models (creating them when they used to be phantoms), in order to give each model instance a unique id.
@@ -302,7 +319,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         return Ext.String.format(&quot;{0}-counter&quot;, this.id);
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getIds'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getIds'>    /**
 </span>     * @private
      * Returns the array of record IDs stored in this Proxy
      * @return {Array} The record IDs. Each is cast as a Number
@@ -323,7 +340,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         return ids;
     },
 
-<span id='Ext-data.proxy.WebStorage-method-setIds'>    /**
+<span id='Ext-data-proxy-WebStorage-method-setIds'>    /**
 </span>     * @private
      * Saves the array of ids representing the set of all records in the Proxy
      * @param {Array} ids The ids to set
@@ -339,7 +356,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getNextId'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getNextId'>    /**
 </span>     * @private
      * Returns the next numerical ID that can be used when realizing a model instance (see getRecordCounterKey). Increments
      * the counter.
@@ -362,7 +379,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         return id;
     },
 
-<span id='Ext-data.proxy.WebStorage-method-initialize'>    /**
+<span id='Ext-data-proxy-WebStorage-method-initialize'>    /**
 </span>     * @private
      * Sets up the Proxy by claiming the key in the storage object that corresponds to the unique id of this Proxy. Called
      * automatically by the constructor, this should not need to be called again unless {@link #clear} has been called.
@@ -372,7 +389,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         storageObject.setItem(this.id, storageObject.getItem(this.id) || &quot;&quot;);
     },
 
-<span id='Ext-data.proxy.WebStorage-method-clear'>    /**
+<span id='Ext-data-proxy-WebStorage-method-clear'>    /**
 </span>     * Destroys all records stored in the proxy and removes all keys and values used to support the proxy from the storage object
      */
     clear: function() {
@@ -391,7 +408,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         obj.removeItem(this.id);
     },
 
-<span id='Ext-data.proxy.WebStorage-method-getStorageObject'>    /**
+<span id='Ext-data-proxy-WebStorage-method-getStorageObject'>    /**
 </span>     * @private
      * Abstract function which should return the storage object that data will be saved to. This must be implemented
      * in each subclass.
@@ -402,4 +419,6 @@ Ext.define('Ext.data.proxy.WebStorage', {
         Ext.Error.raise(&quot;The getStorageObject function has not been defined in your Ext.data.proxy.WebStorage subclass&quot;);
         //&lt;/debug&gt;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -8,35 +8,33 @@
  * to create a Chart please check the Chart class documentation. Here's an example for the axes part:
  * An example of axis for a series (in this case for an area chart that has multiple layers of yFields) could be:
  * 
-  <pre><code>
-    axes: [{
-        type: 'Numeric',
-        grid: true,
-        position: 'left',
-        fields: ['data1', 'data2', 'data3'],
-        title: 'Number of Hits',
-        grid: {
-            odd: {
-                opacity: 1,
-                fill: '#ddd',
-                stroke: '#bbb',
-                'stroke-width': 1
-            }
-        },
-        minimum: 0
-    }, {
-        type: 'Category',
-        position: 'bottom',
-        fields: ['name'],
-        title: 'Month of the Year',
-        grid: true,
-        label: {
-            rotate: {
-                degrees: 315
-            }
-        }
-    }]
-   </code></pre>
+ *     axes: [{
+ *         type: 'Numeric',
+ *         grid: true,
+ *         position: 'left',
+ *         fields: ['data1', 'data2', 'data3'],
+ *         title: 'Number of Hits',
+ *         grid: {
+ *             odd: {
+ *                 opacity: 1,
+ *                 fill: '#ddd',
+ *                 stroke: '#bbb',
+ *                 'stroke-width': 1
+ *             }
+ *         },
+ *         minimum: 0
+ *     }, {
+ *         type: 'Category',
+ *         position: 'bottom',
+ *         fields: ['name'],
+ *         title: 'Month of the Year',
+ *         grid: true,
+ *         label: {
+ *             rotate: {
+ *                 degrees: 315
+ *             }
+ *         }
+ *     }]
  * 
  * In this case we use a `Numeric` axis for displaying the values of the Area series and a `Category` axis for displaying the names of
  * the store elements. The numeric axis is placed on the left of the screen, while the category axis is placed at the bottom of the chart. 
@@ -64,7 +62,10 @@ Ext.define('Ext.chart.axis.Axis', {
      * @cfg {Number} minorTickSteps 
      * The number of small ticks between two major ticks. Default is zero.
      */
-
+    
+    //@private force min/max values from store
+    forceMinMax: false,
+    
     /**
      * @cfg {Number} dashSize 
      * The size of the dash marker. Default's 3.
@@ -162,6 +163,14 @@ Ext.define('Ext.chart.axis.Axis', {
         out = Ext.draw.Draw.snapEnds(min, max, me.majorTickSteps !== false ?  (me.majorTickSteps +1) : me.steps);
         outfrom = out.from;
         outto = out.to;
+        if (me.forceMinMax) {
+            if (!isNaN(max)) {
+                out.to = max;
+            }
+            if (!isNaN(min)) {
+                out.from = min;
+            }
+        }
         if (!isNaN(me.maximum)) {
             //TODO(nico) users are responsible for their own minimum/maximum values set.
             //Clipping should be added to remove lines in the chart which are below the axis.

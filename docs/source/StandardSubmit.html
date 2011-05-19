@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.action.StandardSubmit'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-action-StandardSubmit'>/**
 </span> * @class Ext.form.action.StandardSubmit
  * @extends Ext.form.action.Submit
  * &lt;p&gt;A class which handles submission of data from {@link Ext.form.Basic Form}s using a standard
@@ -13,13 +30,13 @@ Ext.define('Ext.form.action.StandardSubmit', {
     extend:'Ext.form.action.Submit',
     alias: 'formaction.standardsubmit',
 
-<span id='Ext-form.action.StandardSubmit-cfg-target'>    /**
+<span id='Ext-form-action-StandardSubmit-cfg-target'>    /**
 </span>     * @cfg {String} target
      * Optional &lt;tt&gt;target&lt;/tt&gt; attribute to be used for the form when submitting. If not specified,
      * the target will be the current window/frame.
      */
 
-<span id='Ext-form.action.StandardSubmit-method-doSubmit'>    /**
+<span id='Ext-form-action-StandardSubmit-method-doSubmit'>    /**
 </span>     * @private
      * Perform the form submit. Creates and submits a temporary form element containing an input element for each
      * field value returned by {@link Ext.form.Basic#getValues}, plus any configured {@link #params params} or
@@ -32,4 +49,6 @@ Ext.define('Ext.form.action.StandardSubmit', {
     }
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

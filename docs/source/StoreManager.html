@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.StoreManager'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-StoreManager'>/**
 </span> * @class Ext.data.StoreManager
  * @extends Ext.util.MixedCollection
  * &lt;p&gt;Contains a collection of all stores that are created that have an identifier.
@@ -38,11 +55,11 @@ Ext.define('Ext.data.StoreManager', {
     singleton: true,
     uses: ['Ext.data.ArrayStore'],
     
-<span id='Ext-data.StoreManager-cfg-listeners'>    /**
+<span id='Ext-data-StoreManager-cfg-listeners'>    /**
 </span>     * @cfg {Object} listeners @hide
      */
 
-<span id='Ext-data.StoreManager-method-register'>    /**
+<span id='Ext-data-StoreManager-method-register'>    /**
 </span>     * Registers one or more Stores with the StoreManager. You do not normally need to register stores
      * manually.  Any store initialized with a {@link Ext.data.Store#storeId} will be auto-registered. 
      * @param {Ext.data.Store} store1 A Store instance
@@ -55,7 +72,7 @@ Ext.define('Ext.data.StoreManager', {
         }
     },
 
-<span id='Ext-data.StoreManager-method-unregister'>    /**
+<span id='Ext-data-StoreManager-method-unregister'>    /**
 </span>     * Unregisters one or more Stores with the StoreManager
      * @param {String/Object} id1 The id of the Store, or a Store instance
      * @param {String/Object} id2 (optional)
@@ -67,7 +84,7 @@ Ext.define('Ext.data.StoreManager', {
         }
     },
 
-<span id='Ext-data.StoreManager-method-lookup'>    /**
+<span id='Ext-data-StoreManager-method-lookup'>    /**
 </span>     * Gets a registered Store by id
      * @param {String/Object} id The id of the Store, or a Store instance, or a store configuration
      * @return {Ext.data.Store}
@@ -163,4 +180,6 @@ Ext.define('Ext.data.StoreManager', {
         return Ext.data.StoreManager.lookup(name);
     };
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

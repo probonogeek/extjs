@@ -468,7 +468,7 @@ dateField.setValue('2006-05-04');
             format = Ext.String.format;
 
         return Ext.create('Ext.picker.Date', {
-            ownerCt: this.ownerCt,
+            ownerCt: me.ownerCt,
             renderTo: document.body,
             floating: true,
             hidden: true,
@@ -497,9 +497,11 @@ dateField.setValue('2006-05-04');
     },
 
     onSelect: function(m, d) {
-        this.setValue(d);
-        this.fireEvent('select', this, d);
-        this.collapse();
+        var me = this;
+        
+        me.setValue(d);
+        me.fireEvent('select', me, d);
+        me.collapse();
     },
 
     /**
@@ -509,7 +511,7 @@ dateField.setValue('2006-05-04');
     onExpand: function() {
         var me = this,
             value = me.getValue();
-        me.picker.setValue(value instanceof Date ? value : new Date());
+        me.picker.setValue(Ext.isDate(value) ? value : new Date());
     },
 
     /**
@@ -522,9 +524,16 @@ dateField.setValue('2006-05-04');
 
     // private
     beforeBlur : function(){
-        var v = this.parseDate(this.getRawValue());
-        if(v){
-            this.setValue(v);
+        var me = this,
+            v = me.parseDate(me.getRawValue()),
+            focusTask = me.focusTask;
+        
+        if (focusTask) {
+            focusTask.cancel();
+        }
+        
+        if (v) {
+            me.setValue(v);
         }
     }
 

@@ -54,6 +54,7 @@ Ext.define('Ext.layout.component.field.Field', {
             autoHeight: autoHeight,
             width: autoWidth ? owner.getBodyNaturalWidth() : width, //always give a pixel width
             height: height,
+            setOuterWidth: false, //whether the outer el width should be set to the calculated width
 
             // insets for the bodyEl from each side of the component layout area
             insets: {
@@ -91,9 +92,9 @@ Ext.define('Ext.layout.component.field.Field', {
         // perform sizing of the elements based on the final dimensions and insets
         if (autoWidth && autoHeight) {
             // Don't use setTargetSize if auto-sized, so the calculated size is not reused next time
-            me.setElementSize(owner.el, info.width, info.height);
+            me.setElementSize(owner.el, (info.setOuterWidth ? info.width : undef), info.height);
         } else {
-            me.setTargetSize(info.width, info.height);
+            me.setTargetSize((!autoWidth || info.setOuterWidth ? info.width : undef), info.height);
         }
         me.sizeBody(info);
 
@@ -183,6 +184,8 @@ Ext.define('Ext.layout.component.field.Field', {
                     if (info.autoWidth) {
                         info.width += (!owner.labelEl ? 0 : owner.labelWidth + owner.labelPad);
                     }
+                    // Must set outer width to prevent field from wrapping below floated label
+                    info.setOuterWidth = true;
                 },
                 adjustHorizInsets: function(owner, info) {
                     if (owner.labelEl) {

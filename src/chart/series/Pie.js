@@ -7,58 +7,56 @@
  * As with all other series, the Pie Series must be appended in the *series* Chart array configuration. See the Chart 
  * documentation for more information. A typical configuration object for the pie series could be:
  * 
-{@img Ext.chart.series.Pie/Ext.chart.series.Pie.png Ext.chart.series.Pie chart series}
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        theme: 'Base:gradients',
-        series: [{
-            type: 'pie',
-            field: 'data1',
-            showInLegend: true,
-            tips: {
-              trackMouse: true,
-              width: 140,
-              height: 28,
-              renderer: function(storeItem, item) {
-                //calculate and display percentage on hover
-                var total = 0;
-                store.each(function(rec) {
-                    total += rec.get('data1');
-                });
-                this.setTitle(storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%');
-              }
-            },
-            highlight: {
-              segment: {
-                margin: 20
-              }
-            },
-            label: {
-                field: 'name',
-                display: 'rotate',
-                contrast: true,
-                font: '18px Arial'
-            }
-        }]    
-    });
-   </code></pre>
- 
+ * {@img Ext.chart.series.Pie/Ext.chart.series.Pie.png Ext.chart.series.Pie chart series}
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         theme: 'Base:gradients',
+ *         series: [{
+ *             type: 'pie',
+ *             field: 'data1',
+ *             showInLegend: true,
+ *             tips: {
+ *               trackMouse: true,
+ *               width: 140,
+ *               height: 28,
+ *               renderer: function(storeItem, item) {
+ *                 //calculate and display percentage on hover
+ *                 var total = 0;
+ *                 store.each(function(rec) {
+ *                     total += rec.get('data1');
+ *                 });
+ *                 this.setTitle(storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%');
+ *               }
+ *             },
+ *             highlight: {
+ *               segment: {
+ *                 margin: 20
+ *               }
+ *             },
+ *             label: {
+ *                 field: 'name',
+ *                 display: 'rotate',
+ *                 contrast: true,
+ *                 font: '18px Arial'
+ *             }
+ *         }]    
+ *     });
  * 
  * In this configuration we set `pie` as the type for the series, set an object with specific style properties for highlighting options 
  * (triggered when hovering elements). We also set true to `showInLegend` so all the pie slices can be represented by a legend item. 
@@ -68,7 +66,6 @@
  * and size through the `font` parameter. 
  * 
  * @xtype pie
- *
  */
 Ext.define('Ext.chart.series.Pie', {
 
@@ -460,25 +457,22 @@ Ext.define('Ext.chart.series.Pie', {
                         shadowAttr = shadowAttributes[shindex];
                         shadow = shadowGroups[shindex].getAt(i);
                         if (!shadow) {
-                            shadow = chart.surface.add(Ext.apply({},
-                            {
+                            shadow = chart.surface.add(Ext.apply({}, {
                                 type: 'path',
                                 group: shadowGroups[shindex],
                                 strokeLinejoin: "round"
-                            },
-                            rendererAttributes, shadowAttr));
+                            }, rendererAttributes, shadowAttr));
                         }
                         if (animate) {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply({},
-                            rendererAttributes, shadowAttr), i, store);
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply({}, rendererAttributes, shadowAttr), i, store);
                             me.onAnimate(shadow, {
-                                to: rendererAttributes
+                                to: shadowAttr
                             });
                         } else {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
                                 hidden: false
                             }), i, store);
-                            shadow.setAttributes(rendererAttributes, true);
+                            shadow.setAttributes(shadowAttr, true);
                         }
                         shadows.push(shadow);
                     }

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre>/*
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
  * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
@@ -6,7 +23,7 @@
  * http://developer.yahoo.net/yui/license.txt
  */
 
-<span id='Ext-dd.DDProxy-method-constructor'><span id='Ext-dd.DDProxy'>/**
+<span id='Ext-dd-DDProxy-method-constructor'><span id='Ext-dd-DDProxy'>/**
 </span></span> * @class Ext.dd.DDProxy
  * A DragDrop implementation that inserts an empty, bordered div into
  * the document that follows the cursor during drag operations.  At the time of
@@ -29,7 +46,7 @@ Ext.define('Ext.dd.DDProxy', {
     extend: 'Ext.dd.DD',
 
     statics: {
-<span id='Ext-dd.DDProxy-property-Ext'>        /**
+<span id='Ext-dd-DDProxy-property-Ext'>        /**
 </span>         * The default drag frame div id
          * @property Ext.dd.DDProxy.dragElId
          * @type String
@@ -45,7 +62,7 @@ Ext.define('Ext.dd.DDProxy', {
         }
     },
 
-<span id='Ext-dd.DDProxy-property-resizeFrame'>    /**
+<span id='Ext-dd-DDProxy-property-resizeFrame'>    /**
 </span>     * By default we resize the drag frame to be the same size as the element
      * we want to drag (this is to get the frame effect).  We can turn it off
      * if we want a different behavior.
@@ -54,7 +71,7 @@ Ext.define('Ext.dd.DDProxy', {
      */
     resizeFrame: true,
 
-<span id='Ext-dd.DDProxy-property-centerFrame'>    /**
+<span id='Ext-dd-DDProxy-property-centerFrame'>    /**
 </span>     * By default the frame is positioned exactly where the drag element is, so
      * we use the cursor offset provided by Ext.dd.DD.  Another option that works only if
      * you do not have constraints on the obj is to have the drag frame centered
@@ -64,7 +81,7 @@ Ext.define('Ext.dd.DDProxy', {
      */
     centerFrame: false,
 
-<span id='Ext-dd.DDProxy-method-createFrame'>    /**
+<span id='Ext-dd-DDProxy-method-createFrame'>    /**
 </span>     * Creates the proxy element if it does not yet exist
      * @method createFrame
      */
@@ -97,7 +114,7 @@ Ext.define('Ext.dd.DDProxy', {
         }
     },
 
-<span id='Ext-dd.DDProxy-method-initFrame'>    /**
+<span id='Ext-dd-DDProxy-method-initFrame'>    /**
 </span>     * Initialization for the drag frame element.  Must be called in the
      * constructor of all subclasses
      * @method initFrame
@@ -114,7 +131,7 @@ Ext.define('Ext.dd.DDProxy', {
         this.setDragElId(this.config.dragElId || Ext.dd.DDProxy.dragElId);
     },
 
-<span id='Ext-dd.DDProxy-method-showFrame'>    /**
+<span id='Ext-dd-DDProxy-method-showFrame'>    /**
 </span>     * Resizes the drag frame to the dimensions of the clicked object, positions
      * it over the object, and finally displays it
      * @method showFrame
@@ -139,7 +156,7 @@ Ext.define('Ext.dd.DDProxy', {
         Ext.fly(dragEl).show();
     },
 
-<span id='Ext-dd.DDProxy-method-_resizeProxy'>    /**
+<span id='Ext-dd-DDProxy-method-_resizeProxy'>    /**
 </span>     * The proxy is automatically resized to the dimensions of the linked
      * element when a drag is initiated, unless resizeFrame is set to false
      * @method _resizeProxy
@@ -206,4 +223,6 @@ Ext.define('Ext.dd.DDProxy', {
     }
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

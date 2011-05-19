@@ -8,27 +8,27 @@
  * {@img Ext.form.field.Trigger/Ext.form.field.Trigger.png Ext.form.field.Trigger component}
  * For example:</p>
  * <pre><code>
-    Ext.define('Ext.ux.CustomTrigger', {
-        extend: 'Ext.form.field.Trigger',
-        alias: 'widget.customtrigger',
-        
-        // override onTriggerClick
-        onTriggerClick: function() {
-            Ext.Msg.alert('Status', 'You clicked my trigger!');
-        }
-    });
+Ext.define('Ext.ux.CustomTrigger', {
+    extend: 'Ext.form.field.Trigger',
+    alias: 'widget.customtrigger',
     
-    Ext.create('Ext.form.FormPanel', {
-        title: 'Form with TriggerField',
-        bodyPadding: 5,
-        width: 350,
-        renderTo: Ext.getBody(),
-        items:[{
-            xtype: 'customtrigger',
-            fieldLabel: 'Sample Trigger',
-            emptyText: 'click the trigger',
-        }]
-    });
+    // override onTriggerClick
+    onTriggerClick: function() {
+        Ext.Msg.alert('Status', 'You clicked my trigger!');
+    }
+});
+
+Ext.create('Ext.form.FormPanel', {
+    title: 'Form with TriggerField',
+    bodyPadding: 5,
+    width: 350,
+    renderTo: Ext.getBody(),
+    items:[{
+        xtype: 'customtrigger',
+        fieldLabel: 'Sample Trigger',
+        emptyText: 'click the trigger',
+    }]
+});
 </code></pre>
  *
  * <p>However, in general you will most likely want to use Trigger as the base class for a reusable component.

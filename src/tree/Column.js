@@ -26,7 +26,8 @@ Ext.define('Ext.tree.Column', {
                 checkboxText= '<input type="button" role="checkbox" class="{0}" {1} />',
                 formattedValue = origRenderer.apply(origScope, arguments),
                 href = record.get('href'),
-                target = record.get('hrefTarget');
+                target = record.get('hrefTarget'),
+                cls = record.get('cls');
 
             while (record) {
                 if (!record.isRoot() || (record.isRoot() && view.rootVisible)) {
@@ -73,6 +74,9 @@ Ext.define('Ext.tree.Column', {
             }
             if (href) {
                 formattedValue = format('<a href="{0}" target="{1}">{2}</a>', href, target, formattedValue);
+            }
+            if (cls) {
+                metaData.tdCls += ' ' + cls;
             }
             return buf.join("") + formattedValue;
         };

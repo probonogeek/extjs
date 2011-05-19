@@ -596,7 +596,7 @@ Ext.define('Ext.chart.series.Bar', {
     },
     
     // @private callback used when placing a label.
-    onPlaceLabel: function(label, storeItem, item, i, display, animate, index) {
+    onPlaceLabel: function(label, storeItem, item, i, display, animate, j, index) {
         // Determine the label's final position. Starts with the configured preferred value but
         // may get flipped from inside to outside or vice-versa depending on space.
         var me = this,

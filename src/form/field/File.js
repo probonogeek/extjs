@@ -152,7 +152,6 @@ Ext.define("Ext.form.field.File", {
             text: me.buttonText,
             cls: Ext.baseCSSPrefix + 'form-file-btn',
             preventDefault: false,
-            ownerCt: me,
             style: me.buttonOnly ? '' : 'margin-left:' + me.buttonMargin + 'px'
         }, me.buttonConfig));
     },

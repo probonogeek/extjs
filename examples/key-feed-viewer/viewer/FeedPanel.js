@@ -14,11 +14,12 @@ Ext.define('FeedViewer.FeedPanel', {
 
     alias: 'widget.feedpanel',
 
+    animCollapse: true,
+    layout: 'fit',
+    title: 'Feeds',
+
     initComponent: function(){
         Ext.apply(this, {
-            layout: 'fit',
-            title: 'Feeds',
-            animCollapse: true,
             items: this.createView(),
             dockedItems: [this.createToolbar()]
         });

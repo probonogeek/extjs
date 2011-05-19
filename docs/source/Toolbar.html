@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-toolbar.Toolbar-method-constructor'><span id='Ext-toolbar.Toolbar'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-toolbar-Toolbar-method-constructor'><span id='Ext-toolbar-Toolbar'>/**
 </span></span> * @class Ext.toolbar.Toolbar
  * @extends Ext.container.Container
 
@@ -17,7 +34,7 @@ __Some items have shortcut strings for creation:__
 {@img Ext.toolbar.Toolbar/Ext.toolbar.Toolbar1.png Toolbar component}
 Example usage:
 
-    Ext.create('Ext.toolbar.Toolbar&quot;, {
+    Ext.create('Ext.toolbar.Toolbar', {
         renderTo: document.body,
         width   : 500,
         items: [
@@ -214,14 +231,14 @@ Ext.define('Ext.toolbar.Toolbar', {
     
     defaultType: 'button',
     
-<span id='Ext-toolbar.Toolbar-cfg-vertical'>    /**
+<span id='Ext-toolbar-Toolbar-cfg-vertical'>    /**
 </span>     * @cfg {Boolean} vertical
      * Set to `true` to make the toolbar vertical. The layout will become a `vbox`.
      * (defaults to `false`)
      */
     vertical: false,
 
-<span id='Ext-toolbar.Toolbar-cfg-layout'>    /**
+<span id='Ext-toolbar-Toolbar-cfg-layout'>    /**
 </span>     * @cfg {String/Object} layout
      * This class assigns a default layout (&lt;code&gt;layout:'&lt;b&gt;hbox&lt;/b&gt;'&lt;/code&gt;).
      * Developers &lt;i&gt;may&lt;/i&gt; override this configuration option if another layout
@@ -230,7 +247,7 @@ Ext.define('Ext.toolbar.Toolbar', {
      * See {@link Ext.container.Container#layout} for additional information.
      */
 
-<span id='Ext-toolbar.Toolbar-cfg-enableOverflow'>    /**
+<span id='Ext-toolbar-Toolbar-cfg-enableOverflow'>    /**
 </span>     * @cfg {Boolean} enableOverflow
      * Defaults to false. Configure &lt;code&gt;true&lt;/code&gt; to make the toolbar provide a button
      * which activates a dropdown Menu to show items which overflow the Toolbar's width.
@@ -273,7 +290,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         
         me.callParent();
 
-<span id='Ext-toolbar.Toolbar-event-overflowchange'>        /**
+<span id='Ext-toolbar-Toolbar-event-overflowchange'>        /**
 </span>         * @event overflowchange
          * Fires after the overflow state has changed.
          * @param {Object} c The Container
@@ -288,7 +305,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         });
     },
 
-<span id='Ext-toolbar.Toolbar-method-add'>    /**
+<span id='Ext-toolbar-Toolbar-method-add'>    /**
 </span>     * &lt;p&gt;Adds element(s) to the toolbar -- this function takes a variable number of
      * arguments of mixed type and adds them to the toolbar.&lt;/p&gt;
      * &lt;br&gt;&lt;p&gt;&lt;b&gt;Note&lt;/b&gt;: See the notes within {@link Ext.container.Container#add}.&lt;/p&gt;
@@ -414,4 +431,6 @@ Ext.define('Ext.toolbar.Toolbar', {
         ' ' : 'tbspacer',
         '-&gt;': 'tbfill'
     };
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

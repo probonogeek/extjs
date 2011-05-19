@@ -88,7 +88,8 @@ Ext.onReady(function(){
             id: 'group',
             ftype: 'groupingsummary',
             groupHeaderTpl: '{name}',
-            hideGroupedHeader: true
+            hideGroupedHeader: true,
+            enableGroupingMenu: false
         }],
         columns: [{
             text: 'Task',
@@ -98,12 +99,8 @@ Ext.onReady(function(){
             dataIndex: 'description',
             hideable: false,
             summaryType: 'count',
-            renderer: function(v, params) {
-                params.tdCls = "task";
-                return v;
-            },
-            summaryRenderer: function(v, params, data) {
-                return ((v === 0 || v > 1) ? '(' + v + ' Tasks)' : '(1 Task)');
+            summaryRenderer: function(value, summaryData, dataIndex) {
+                return ((value === 0 || value > 1) ? '(' + value + ' Tasks)' : '(1 Task)');
             }
         }, {
             header: 'Project',
@@ -112,11 +109,12 @@ Ext.onReady(function(){
             dataIndex: 'project'
         }, {
             header: 'Due Date',
-            width: 120,
+            width: 80,
             sortable: true,
             dataIndex: 'due',
             summaryType: 'max',
             renderer: Ext.util.Format.dateRenderer('m/d/Y'),
+            summaryRenderer: Ext.util.Format.dateRenderer('m/d/Y'),
             field: {
                 xtype: 'datefield'
             }
@@ -126,8 +124,11 @@ Ext.onReady(function(){
             sortable: true,
             dataIndex: 'estimate',
             summaryType: 'sum',
-            renderer: function(v){
-                return v + ' hours';
+            renderer: function(value, metaData, record, rowIdx, colIdx, store, view){
+                return value + ' hours';
+            },
+            summaryRenderer: function(value, summaryData, dataIndex) {
+                return value + ' hours';
             },
             field: {
                 xtype: 'numberfield'
@@ -137,6 +138,7 @@ Ext.onReady(function(){
             width: 75,
             sortable: true,
             renderer: Ext.util.Format.usMoney,
+            summaryRenderer: Ext.util.Format.usMoney,
             dataIndex: 'rate',
             summaryType: 'average',
             field: {
@@ -148,7 +150,7 @@ Ext.onReady(function(){
             width: 75,
             sortable: false,
             groupable: false,
-            renderer: function(v, params, record){
+            renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
                 return Ext.util.Format.usMoney(record.get('estimate') * record.get('rate'));
             },
             dataIndex: 'cost',

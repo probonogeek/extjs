@@ -6,7 +6,7 @@
  *
  * {@img Ext.grid.column.Boolean/Ext.grid.column.Boolean.png Ext.grid.column.Boolean grid column}
  *
- *  ## Code
+ * ## Code
  *     Ext.create('Ext.data.Store', {
  *        storeId:'sampleStore',
  *        fields:[
@@ -26,24 +26,24 @@
  *                root: 'items'
  *            }
  *        }
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Boolean Column Demo',
- *        store: Ext.data.StoreManager.lookup('sampleStore'),
- *        columns: [
- *            {text: 'Framework',  dataIndex: 'framework', flex: 1},
- *            {
- *                xtype: 'booleancolumn', 
- *                text: 'Rocks',
- *                trueText: 'Yes',
- *                falseText: 'No', 
- *                dataIndex: 'rocks'}
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Boolean Column Demo',
+ *         store: Ext.data.StoreManager.lookup('sampleStore'),
+ *         columns: [
+ *             {text: 'Framework',  dataIndex: 'framework', flex: 1},
+ *             {
+ *                 xtype: 'booleancolumn', 
+ *                 text: 'Rocks',
+ *                 trueText: 'Yes',
+ *                 falseText: 'No', 
+ *                 dataIndex: 'rocks'}
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  * 
  * @xtype booleancolumn
  */

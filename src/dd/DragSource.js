@@ -320,6 +320,7 @@ Ext.define('Ext.dd.DragSource', {
      * drag event has begun.  The drag cannot be canceled from this function.
      * @param {Number} x The x position of the click on the dragged object
      * @param {Number} y The y position of the click on the dragged object
+     * @method
      */
     onStartDrag: Ext.emptyFn,
 

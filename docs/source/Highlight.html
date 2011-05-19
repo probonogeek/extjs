@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.Highlight'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-Highlight'>/**
 </span> * @class Ext.chart.Highlight
  * @ignore
  */
@@ -10,7 +27,7 @@ Ext.define('Ext.chart.Highlight', {
 
     /* End Definitions */
 
-<span id='Ext-chart.Highlight-property-highlight'>    /**
+<span id='Ext-chart-Highlight-property-highlight'>    /**
 </span>     * Highlight the given series item.
      * @param {Boolean|Object} Default's false. Can also be an object width style properties (i.e fill, stroke, radius) 
      * or just use default styles per series by setting highlight = true.
@@ -35,7 +52,7 @@ Ext.define('Ext.chart.Highlight', {
         }
     },
 
-<span id='Ext-chart.Highlight-method-highlightItem'>    /**
+<span id='Ext-chart-Highlight-method-highlightItem'>    /**
 </span>     * Highlight the given series item.
      * @param {Object} item Info about the item; same format as returned by #getItemForPoint.
      */
@@ -106,7 +123,7 @@ Ext.define('Ext.chart.Highlight', {
         }
     },
 
-<span id='Ext-chart.Highlight-method-unHighlightItem'>    /**
+<span id='Ext-chart-Highlight-method-unHighlightItem'>    /**
 </span>     * Un-highlight any existing highlights
      */
     unHighlightItem: function() {
@@ -177,4 +194,6 @@ Ext.define('Ext.chart.Highlight', {
             }
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

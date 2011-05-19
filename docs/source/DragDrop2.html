@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-grid.plugin.DragDrop'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-grid-plugin-DragDrop'>/**
 </span> * @class Ext.grid.plugin.DragDrop
  * &lt;p&gt;This plugin provides drag and/or drop functionality for a GridView.&lt;/p&gt;
  * &lt;p&gt;It creates a specialized instance of {@link Ext.dd.DragZone DragZone} which knows how to drag out of a {@link Ext.grid.View GridView}
@@ -29,7 +46,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
         'Ext.grid.ViewDropZone'
     ],
 
-<span id='Ext-grid.plugin.DragDrop-event-beforedrop'>    /**
+<span id='Ext-grid-plugin-DragDrop-event-beforedrop'>    /**
 </span>     * @event beforedrop
      * &lt;p&gt;&lt;b&gt;This event is fired through the GridView. Add listeners to the GridView object&lt;/b&gt;&lt;/p&gt;
      * &lt;p&gt;Fired when a drop gesture has been triggered by a mouseup event in a valid drop position in the GridView.
@@ -62,7 +79,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * &lt;p&gt;Return &lt;code&gt;0&lt;/code&gt; from this event handler, and call the &lt;code&gt;dropFunction&lt;/code&gt; at any time to perform the data transfer.&lt;/p&gt;
      */
 
-<span id='Ext-grid.plugin.DragDrop-event-drop'>    /**
+<span id='Ext-grid-plugin-DragDrop-event-drop'>    /**
 </span>     * @event drop
      * &lt;b&gt;This event is fired through the GridView. Add listeners to the GridView object&lt;/b&gt;
      * Fired when a drop operation has been completed and the data has been moved or copied.
@@ -87,35 +104,35 @@ Ext.define('Ext.grid.plugin.DragDrop', {
 
     dragText : '{0} selected row{1}',
 
-<span id='Ext-grid.plugin.DragDrop-cfg-ddGroup'>    /**
+<span id='Ext-grid-plugin-DragDrop-cfg-ddGroup'>    /**
 </span>     * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then both the DragZones and DropZone
      * used by this plugin will only interact with other drag drop objects in the same group (defaults to 'TreeDD').
      */
     ddGroup : &quot;GridDD&quot;,
 
-<span id='Ext-grid.plugin.DragDrop-cfg-dragGroup'>    /**
+<span id='Ext-grid-plugin-DragDrop-cfg-dragGroup'>    /**
 </span>     * @cfg {String} dragGroup
      * &lt;p&gt;The ddGroup to which the DragZone will belong.&lt;/p&gt;
      * &lt;p&gt;This defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other Drag/DropZones
      * which are members of the same ddGroup.&lt;/p&gt;
      */
 
-<span id='Ext-grid.plugin.DragDrop-cfg-dropGroup'>    /**
+<span id='Ext-grid-plugin-DragDrop-cfg-dropGroup'>    /**
 </span>     * @cfg {String} dropGroup
      * &lt;p&gt;The ddGroup to which the DropZone will belong.&lt;/p&gt;
      * &lt;p&gt;This defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other Drag/DropZones
      * which are members of the same ddGroup.&lt;/p&gt;
      */
 
-<span id='Ext-grid.plugin.DragDrop-cfg-enableDrop'>    /**
+<span id='Ext-grid-plugin-DragDrop-cfg-enableDrop'>    /**
 </span>     * @cfg {Boolean} enableDrop
      * &lt;p&gt;Defaults to &lt;code&gt;true&lt;/code&gt;&lt;/p&gt;
      * &lt;p&gt;Set to &lt;code&gt;false&lt;/code&gt; to disallow the View from accepting drop gestures&lt;/p&gt;
      */
     enableDrop: true,
 
-<span id='Ext-grid.plugin.DragDrop-cfg-enableDrag'>    /**
+<span id='Ext-grid-plugin-DragDrop-cfg-enableDrag'>    /**
 </span>     * @cfg {Boolean} enableDrag
      * &lt;p&gt;Defaults to &lt;code&gt;true&lt;/code&gt;&lt;/p&gt;
      * &lt;p&gt;Set to &lt;code&gt;false&lt;/code&gt; to disallow dragging items from the View &lt;/p&gt;
@@ -126,7 +143,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
         view.on('render', this.onViewRender, this, {single: true});
     },
 
-<span id='Ext-grid.plugin.DragDrop-method-destroy'>    /**
+<span id='Ext-grid-plugin-DragDrop-method-destroy'>    /**
 </span>     * @private
      * AbstractComponent calls destroy on all its plugins at destroy time.
      */
@@ -152,4 +169,6 @@ Ext.define('Ext.grid.plugin.DragDrop', {
             });
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

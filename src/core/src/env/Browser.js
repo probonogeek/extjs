@@ -86,6 +86,7 @@ Ext.define('Ext.env.Browser', {
      *
      * @param {String} value The OS name to check
      * @return {Boolean}
+     * @method
      */
     is: Ext.emptyFn,
 

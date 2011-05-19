@@ -169,45 +169,34 @@ Ext.define('Ext.data.reader.Xml', {
     alias : 'reader.xml',
     
     /**
+     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
+     */
+
+    /**
      * @private
      * Creates a function to return some particular key of data from a response. The totalProperty and
      * successProperty are treated as special cases for type casting, everything else is just a simple selector.
      * @param {String} key
      * @return {Function}
      */
-
-    /**
-     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
-     */
-
-    createAccessor: function() {
-        var selectValue = function(expr, root){
+    createAccessor: function(expr) {
+        var me = this;
+        
+        if (Ext.isEmpty(expr)) {
+            return Ext.emptyFn;
+        }
+        
+        if (Ext.isFunction(expr)) {
+            return expr;
+        }
+        
+        return function(root) {
             var node = Ext.DomQuery.selectNode(expr, root),
-                val;
+                val = me.getNodeValue(node);
                 
-            
-            
+            return Ext.isEmpty(val) ? null : val;
         };
-
-        return function(expr) {
-            var me = this;
-            
-            if (Ext.isEmpty(expr)) {
-                return Ext.emptyFn;
-            }
-            
-            if (Ext.isFunction(expr)) {
-                return expr;
-            }
-            
-            return function(root) {
-                var node = Ext.DomQuery.selectNode(expr, root),
-                    val = me.getNodeValue(node);
-                    
-                return Ext.isEmpty(val) ? null : val;
-            };
-        };
-    }(),
+    },
     
     getNodeValue: function(node) {
         var val;

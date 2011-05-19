@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Series'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-series-Series'>/**
 </span> * @class Ext.chart.series.Series
  * 
  * Series is the abstract class containing the common logic to all chart series. Series includes 
@@ -43,7 +60,7 @@ Ext.define('Ext.chart.series.Series', {
 
     /* End Definitions */
 
-<span id='Ext-chart.series.Series-cfg-highlight'>    /**
+<span id='Ext-chart-series-Series-cfg-highlight'>    /**
 </span>     * @cfg {Boolean|Object} highlight
      * If set to `true` it will highlight the markers or the series when hovering
      * with the mouse. This parameter can also be an object with the same style
@@ -51,7 +68,7 @@ Ext.define('Ext.chart.series.Series', {
      * styles to markers and series.
      */
 
-<span id='Ext-chart.series.Series-cfg-tips'>    /**
+<span id='Ext-chart-series-Series-cfg-tips'>    /**
 </span>     * @cfg {Object} tips
      * Add tooltips to the visualization's markers. The options for the tips are the
      * same configuration used with {@link Ext.tip.ToolTip}. For example:
@@ -66,25 +83,25 @@ Ext.define('Ext.chart.series.Series', {
      *     },
      */
 
-<span id='Ext-chart.series.Series-cfg-type'>    /**
+<span id='Ext-chart-series-Series-cfg-type'>    /**
 </span>     * @cfg {String} type
      * The type of series. Set in subclasses.
      */
     type: null,
 
-<span id='Ext-chart.series.Series-cfg-title'>    /**
+<span id='Ext-chart-series-Series-cfg-title'>    /**
 </span>     * @cfg {String} title
      * The human-readable name of the series.
      */
     title: null,
 
-<span id='Ext-chart.series.Series-cfg-showInLegend'>    /**
+<span id='Ext-chart-series-Series-cfg-showInLegend'>    /**
 </span>     * @cfg {Boolean} showInLegend
      * Whether to show this series in the legend.
      */
     showInLegend: true,
 
-<span id='Ext-chart.series.Series-cfg-renderer'>    /**
+<span id='Ext-chart-series-Series-cfg-renderer'>    /**
 </span>     * @cfg {Function} renderer
      * A function that can be overridden to set custom styling properties to each rendered element.
      * Passes in (sprite, record, attributes, index, store) to the function.
@@ -93,7 +110,7 @@ Ext.define('Ext.chart.series.Series', {
         return attributes;
     },
 
-<span id='Ext-chart.series.Series-cfg-shadowAttributes'>    /**
+<span id='Ext-chart-series-Series-cfg-shadowAttributes'>    /**
 </span>     * @cfg {Array} shadowAttributes
      * An array with shadow attributes
      */
@@ -102,7 +119,7 @@ Ext.define('Ext.chart.series.Series', {
     //@private triggerdrawlistener flag
     triggerAfterDraw: false,
 
-<span id='Ext-chart.series.Series-cfg-listeners'>    /**
+<span id='Ext-chart-series-Series-cfg-listeners'>    /**
 </span>     * @cfg {Object} listeners  
      * An (optional) object with event callbacks. All event callbacks get the target *item* as first parameter. The callback functions are:
      *  
@@ -136,7 +153,7 @@ Ext.define('Ext.chart.series.Series', {
             mouseleave: true,
             afterdraw: true,
 
-<span id='Ext-chart.series.Series-event-titlechange'>            /**
+<span id='Ext-chart-series-Series-event-titlechange'>            /**
 </span>             * @event titlechange
              * Fires when the series title is changed via {@link #setTitle}.
              * @param {String} title The new title value
@@ -238,7 +255,7 @@ Ext.define('Ext.chart.series.Series', {
         }
     },
 
-<span id='Ext-chart.series.Series-method-getItemForPoint'>    /**
+<span id='Ext-chart-series-Series-method-getItemForPoint'>    /**
 </span>     * For a given x/y point relative to the Surface, find a corresponding item from this
      * series, if any.
      * @param {Number} x
@@ -279,7 +296,7 @@ Ext.define('Ext.chart.series.Series', {
         return false;
     },
 
-<span id='Ext-chart.series.Series-method-hideAll'>    /**
+<span id='Ext-chart-series-Series-method-hideAll'>    /**
 </span>     * Hides all the elements in the series.
      */
     hideAll: function() {
@@ -305,7 +322,7 @@ Ext.define('Ext.chart.series.Series', {
         }
     },
 
-<span id='Ext-chart.series.Series-method-showAll'>    /**
+<span id='Ext-chart-series-Series-method-showAll'>    /**
 </span>     * Shows all the elements in the series.
      */
     showAll: function() {
@@ -318,7 +335,7 @@ Ext.define('Ext.chart.series.Series', {
         me.chart.animate = prevAnimate;
     },
     
-<span id='Ext-chart.series.Series-method-getLegendColor'>    /**
+<span id='Ext-chart-series-Series-method-getLegendColor'>    /**
 </span>     * Returns a string with the color to be used for the series legend item. 
      */
     getLegendColor: function(index) {
@@ -334,7 +351,7 @@ Ext.define('Ext.chart.series.Series', {
         return '#000';
     },
     
-<span id='Ext-chart.series.Series-method-visibleInLegend'>    /**
+<span id='Ext-chart-series-Series-method-visibleInLegend'>    /**
 </span>     * Checks whether the data field should be visible in the legend
      * @private
      * @param {Number} index The index of the current item
@@ -347,7 +364,7 @@ Ext.define('Ext.chart.series.Series', {
         return !this.seriesIsHidden;
     },
 
-<span id='Ext-chart.series.Series-method-setTitle'>    /**
+<span id='Ext-chart-series-Series-method-setTitle'>    /**
 </span>     * Changes the value of the {@link #title} for the series.
      * Arguments can take two forms:
      * &lt;ul&gt;
@@ -376,4 +393,6 @@ Ext.define('Ext.chart.series.Series', {
         me.fireEvent('titlechange', title, index);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

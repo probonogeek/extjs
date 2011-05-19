@@ -9,15 +9,14 @@
  *
  * A possible configuration for this axis would look like:
  *
-            axes: [{
-                type: 'gauge',
-                position: 'gauge',
-                minimum: 0,
-                maximum: 100,
-                steps: 10,
-                margin: 7
-            }],
- * 
+ *     axes: [{
+ *         type: 'gauge',
+ *         position: 'gauge',
+ *         minimum: 0,
+ *         maximum: 100,
+ *         steps: 10,
+ *         margin: 7
+ *     }],
  */
 Ext.define('Ext.chart.axis.Gauge', {
 

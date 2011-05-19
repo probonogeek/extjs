@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-env.OS'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-env-OS'>/**
 </span> * @class Ext.env.OS
  * Provide useful information about the current operating system environment. Access the global instance stored in Ext.os. Example:
  * &lt;pre&gt;&lt;code&gt;
@@ -36,8 +53,8 @@ Ext.define('Ext.env.OS', {
         }
     },
 
-    /*
-     * A &quot;hybrid&quot; property, can be either accessed as a method call, i.e:
+<span id='Ext-env-OS-method-is'>    /**
+</span>     * A &quot;hybrid&quot; property, can be either accessed as a method call, i.e:
      * &lt;pre&gt;&lt;code&gt;
      * if (Ext.os.is('Android')) { ... }
      * &lt;/code&gt;&lt;/pre&gt;
@@ -61,18 +78,19 @@ Ext.define('Ext.env.OS', {
      *
      * @param {String} value The OS name to check
      * @return {Boolean}
+     * @method
      */
     is: Ext.emptyFn,
 
-    /*
-     * Read-only - the full name of the current operating system
+<span id='Ext-env-OS-property-name'>    /**
+</span>     * Read-only - the full name of the current operating system
      * Possible values are: iOS, Android, WebOS, BlackBerry, MacOSX, Windows, Linux and Other
      * @type String
      */
     name: null,
 
-    /*
-     * Read-only, refer to {@link Ext.Version}
+<span id='Ext-env-OS-property-version'>    /**
+</span>     * Read-only, refer to {@link Ext.Version}
      * @type Ext.Version
      */
     version: null,
@@ -130,4 +148,6 @@ Ext.define('Ext.env.OS', {
 Ext.os = new Ext.env.OS();
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

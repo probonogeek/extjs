@@ -146,7 +146,7 @@ Ext.define('Ext.form.field.Picker', {
                 mousedown: collapseIf,
                 scope: me
             });
-
+            Ext.EventManager.onWindowResize(me.alignPicker, me);
             me.fireEvent('expand', me);
             me.onExpand();
         }
@@ -204,7 +204,7 @@ Ext.define('Ext.form.field.Picker', {
             // remove event listeners
             doc.un('mousewheel', collapseIf, me);
             doc.un('mousedown', collapseIf, me);
-
+            Ext.EventManager.removeResizeListener(me.alignPicker, me);
             me.fireEvent('collapse', me);
             me.onCollapse();
         }
@@ -268,6 +268,7 @@ Ext.define('Ext.form.field.Picker', {
 
     onDestroy : function(){
         var me = this;
+        Ext.EventManager.removeResizeListener(me.alignPicker, me);
         Ext.destroy(me.picker, me.keyNav);
         me.callParent();
     }

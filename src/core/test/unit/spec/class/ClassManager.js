@@ -461,4 +461,106 @@ describe("Ext.ClassManager", function() {
             });
         });
     });
+    
+    describe("createNamespaces", function() {
+        var w = window;
+
+        it("should have an alias Ext.namespace", function() {
+            spyOn(Ext.ClassManager, 'createNamespaces');
+            Ext.namespace('a', 'b', 'c');
+            expect(Ext.ClassManager.createNamespaces).toHaveBeenCalledWith('a', 'b', 'c');
+        });
+
+        it("should create a single top level namespace", function() {
+            Ext.ClassManager.createNamespaces('FooTest1');
+
+            expect(w.FooTest1).toBeDefined();
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest1 = undefined;
+            } else {
+                delete w.FooTest1;
+            }
+        });
+
+        it("should create multiple top level namespace", function() {
+            Ext.ClassManager.createNamespaces('FooTest2', 'FooTest3', 'FooTest4');
+
+            expect(w.FooTest2).toBeDefined();
+            expect(w.FooTest3).toBeDefined();
+            expect(w.FooTest4).toBeDefined();
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest2 = undefined;
+                w.FooTest3 = undefined;
+                w.FooTest4 = undefined;
+            } else {
+                delete w.FooTest2;
+                delete w.FooTest3;
+                delete w.FooTest4;
+            }
+        });
+
+        it("should create a chain of namespaces, starting from a top level", function() {
+            Ext.ClassManager.createNamespaces('FooTest5', 'FooTest5.ns1', 'FooTest5.ns1.ns2', 'FooTest5.ns1.ns2.ns3');
+
+            expect(w.FooTest5).toBeDefined();
+            expect(w.FooTest5.ns1).toBeDefined();
+            expect(w.FooTest5.ns1.ns2).toBeDefined();
+            expect(w.FooTest5.ns1.ns2.ns3).toBeDefined();
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest5 = undefined;
+            } else {
+                delete w.FooTest5;
+            }
+        });
+
+        it("should create lower level namespaces without first defining the top level", function() {
+            Ext.ClassManager.createNamespaces('FooTest6.ns1', 'FooTest7.ns2');
+
+            expect(w.FooTest6).toBeDefined();
+            expect(w.FooTest6.ns1).toBeDefined();
+            expect(w.FooTest7).toBeDefined();
+            expect(w.FooTest7.ns2).toBeDefined();
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest6 = undefined;
+                w.FooTest7 = undefined;
+            } else {
+                delete w.FooTest6;
+                delete w.FooTest7;
+            }
+        });
+
+        it("should create a lower level namespace without defining the middle level", function() {
+            Ext.ClassManager.createNamespaces('FooTest8', 'FooTest8.ns1.ns2');
+
+            expect(w.FooTest8).toBeDefined();
+            expect(w.FooTest8.ns1).toBeDefined();
+            expect(w.FooTest8.ns1.ns2).toBeDefined();
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest8 = undefined;
+            } else {
+                delete w.FooTest8;
+            }
+        });
+
+        it ("should not overwritte existing namespace", function() {
+            Ext.ClassManager.createNamespaces('FooTest9');
+
+            FooTest9.prop1 = 'foo';
+
+            Ext.ClassManager.createNamespaces('FooTest9');
+
+            expect(FooTest9.prop1).toEqual("foo");
+
+            if (jasmine.browser.isIE6 || jasmine.browser.isIE7 || jasmine.browser.isIE8) {
+                w.FooTest9 = undefined;
+            } else {
+                delete w.FooTest9;
+            }
+        });
+    });
 });

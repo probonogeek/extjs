@@ -369,7 +369,7 @@ Ext.define('Ext.data.Model', {
                 // Fire the onModelDefined template method on ModelManager
                 Ext.ModelManager.onModelDefined(cls);
             });
-        }
+        };
     },
 
     inheritableStatics: {
@@ -536,7 +536,8 @@ Ext.define('Ext.data.Model', {
      * @type {Array}
      */
 
-    constructor: function(data, id) {
+    // raw not documented intentionally, meant to be used internally.
+    constructor: function(data, id, raw) {
         data = data || {};
         
         var me = this,
@@ -555,6 +556,13 @@ Ext.define('Ext.data.Model', {
          * @private
          */
         me.internalId = (id || id === 0) ? id : Ext.data.Model.id(me);
+        
+        /**
+         * The raw data used to create this model if created via a reader.
+         * @property raw
+         * @type Object
+         */
+        me.raw = raw;
 
         Ext.applyIf(me, {
             data: {}    

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.Server'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Server'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.proxy.Server
  * @extends Ext.data.proxy.Proxy
@@ -16,85 +33,85 @@ Ext.define('Ext.data.proxy.Server', {
     alternateClassName: 'Ext.data.ServerProxy',
     uses  : ['Ext.data.Request'],
     
-<span id='Ext-data.proxy.Server-cfg-url'>    /**
+<span id='Ext-data-proxy-Server-cfg-url'>    /**
 </span>     * @cfg {String} url The URL from which to request the data object.
      */
     
-<span id='Ext-data.proxy.Server-cfg-reader'>    /**
+<span id='Ext-data-proxy-Server-cfg-reader'>    /**
 </span>     * @cfg {Object/String/Ext.data.reader.Reader} reader The Ext.data.reader.Reader to use to decode the server's response. This can
      * either be a Reader instance, a config object or just a valid Reader type name (e.g. 'json', 'xml').
      */
     
-<span id='Ext-data.proxy.Server-cfg-writer'>    /**
+<span id='Ext-data-proxy-Server-cfg-writer'>    /**
 </span>     * @cfg {Object/String/Ext.data.writer.Writer} writer The Ext.data.writer.Writer to use to encode any request sent to the server.
      * This can either be a Writer instance, a config object or just a valid Writer type name (e.g. 'json', 'xml').
      */
     
-<span id='Ext-data.proxy.Server-cfg-pageParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-pageParam'>    /**
 </span>     * @cfg {String} pageParam The name of the 'page' parameter to send in a request. Defaults to 'page'. Set this to
      * undefined if you don't want to send a page parameter
      */
     pageParam: 'page',
     
-<span id='Ext-data.proxy.Server-cfg-startParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-startParam'>    /**
 </span>     * @cfg {String} startParam The name of the 'start' parameter to send in a request. Defaults to 'start'. Set this
      * to undefined if you don't want to send a start parameter
      */
     startParam: 'start',
 
-<span id='Ext-data.proxy.Server-cfg-limitParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-limitParam'>    /**
 </span>     * @cfg {String} limitParam The name of the 'limit' parameter to send in a request. Defaults to 'limit'. Set this
      * to undefined if you don't want to send a limit parameter
      */
     limitParam: 'limit',
     
-<span id='Ext-data.proxy.Server-cfg-groupParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-groupParam'>    /**
 </span>     * @cfg {String} groupParam The name of the 'group' parameter to send in a request. Defaults to 'group'. Set this
      * to undefined if you don't want to send a group parameter
      */
     groupParam: 'group',
     
-<span id='Ext-data.proxy.Server-cfg-sortParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-sortParam'>    /**
 </span>     * @cfg {String} sortParam The name of the 'sort' parameter to send in a request. Defaults to 'sort'. Set this
      * to undefined if you don't want to send a sort parameter
      */
     sortParam: 'sort',
     
-<span id='Ext-data.proxy.Server-cfg-filterParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-filterParam'>    /**
 </span>     * @cfg {String} filterParam The name of the 'filter' parameter to send in a request. Defaults to 'filter'. Set 
      * this to undefined if you don't want to send a filter parameter
      */
     filterParam: 'filter',
     
-<span id='Ext-data.proxy.Server-cfg-directionParam'>    /**
+<span id='Ext-data-proxy-Server-cfg-directionParam'>    /**
 </span>     * @cfg {String} directionParam The name of the direction parameter to send in a request. &lt;strong&gt;This is only used when simpleSortMode is set to true.&lt;/strong&gt;
      * Defaults to 'dir'.
      */
     directionParam: 'dir',
     
-<span id='Ext-data.proxy.Server-cfg-simpleSortMode'>    /**
+<span id='Ext-data-proxy-Server-cfg-simpleSortMode'>    /**
 </span>     * @cfg {Boolean} simpleSortMode Enabling simpleSortMode in conjunction with remoteSort will only send one sort property and a direction when a remote sort is requested.
      * The directionParam and sortParam will be sent with the property name and either 'ASC' or 'DESC'
      */
     simpleSortMode: false,
     
-<span id='Ext-data.proxy.Server-cfg-noCache'>    /**
+<span id='Ext-data-proxy-Server-cfg-noCache'>    /**
 </span>     * @cfg {Boolean} noCache (optional) Defaults to true. Disable caching by adding a unique parameter
      * name to the request.
      */
     noCache : true,
     
-<span id='Ext-data.proxy.Server-cfg-cacheString'>    /**
+<span id='Ext-data-proxy-Server-cfg-cacheString'>    /**
 </span>     * @cfg {String} cacheString The name of the cache param added to the url when using noCache (defaults to &quot;_dc&quot;)
      */
     cacheString: &quot;_dc&quot;,
     
-<span id='Ext-data.proxy.Server-cfg-timeout'>    /**
+<span id='Ext-data-proxy-Server-cfg-timeout'>    /**
 </span>     * @cfg {Number} timeout (optional) The number of milliseconds to wait for a response. Defaults to 30 seconds.
      */
     timeout : 30000,
     
-<span id='Ext-data.proxy.Server-cfg-api'>    /**
+<span id='Ext-data-proxy-Server-cfg-api'>    /**
 </span>     * @cfg {Object} api
      * Specific urls to call on CRUD action methods &quot;read&quot;, &quot;create&quot;, &quot;update&quot; and &quot;destroy&quot;.
      * Defaults to:&lt;pre&gt;&lt;code&gt;
@@ -121,7 +138,7 @@ api: {
      * will be directed to the configured &lt;tt&gt;{@link Ext.data.proxy.Server#url url}&lt;/tt&gt;.&lt;/p&gt;
      */
     
-<span id='Ext-data.proxy.Server-method-constructor'>    /**
+<span id='Ext-data-proxy-Server-method-constructor'>    /**
 </span>     * @ignore
      */
     constructor: function(config) {
@@ -129,7 +146,7 @@ api: {
         
         config = config || {};
         this.addEvents(
-<span id='Ext-data.proxy.Server-event-exception'>            /**
+<span id='Ext-data-proxy-Server-event-exception'>            /**
 </span>             * @event exception
              * Fires when the server returns an exception
              * @param {Ext.data.proxy.Proxy} this
@@ -140,7 +157,7 @@ api: {
         );
         me.callParent([config]);
         
-<span id='Ext-data.proxy.Server-cfg-extraParams'>        /**
+<span id='Ext-data-proxy-Server-cfg-extraParams'>        /**
 </span>         * @cfg {Object} extraParams Extra parameters that will be included on every request. Individual requests with params
          * of the same name will override these params when they are in conflict.
          */
@@ -169,7 +186,7 @@ api: {
         return this.doRequest.apply(this, arguments);
     },
     
-<span id='Ext-data.proxy.Server-method-buildRequest'>    /**
+<span id='Ext-data-proxy-Server-method-buildRequest'>    /**
 </span>     * Creates and returns an Ext.data.Request object based on the options passed by the {@link Ext.data.Store Store}
      * that this Proxy is attached to.
      * @param {Ext.data.Operation} operation The {@link Ext.data.Operation Operation} object to execute
@@ -205,7 +222,7 @@ api: {
         return request;
     },
     
-<span id='Ext-data.proxy.Server-method-processResponse'>    /**
+<span id='Ext-data-proxy-Server-method-processResponse'>    /**
 </span>     * 
      */
     processResponse: function(success, operation, request, response, callback, scope){
@@ -262,7 +279,7 @@ api: {
         me.afterRequest(request, success);
     },
     
-<span id='Ext-data.proxy.Server-method-setException'>    /**
+<span id='Ext-data-proxy-Server-method-setException'>    /**
 </span>     * Sets up an exception on the operation
      * @private
      * @param {Ext.data.Operation} operation The operation
@@ -275,7 +292,7 @@ api: {
         });     
     },
     
-<span id='Ext-data.proxy.Server-method-extractResponseData'>    /**
+<span id='Ext-data-proxy-Server-method-extractResponseData'>    /**
 </span>     * Template method to allow subclasses to specify how to get the response for the reader.
      * @private
      * @param {Object} response The server response
@@ -285,7 +302,7 @@ api: {
         return response; 
     },
     
-<span id='Ext-data.proxy.Server-method-applyEncoding'>    /**
+<span id='Ext-data-proxy-Server-method-applyEncoding'>    /**
 </span>     * Encode any values being sent to the server. Can be overridden in subclasses.
      * @private
      * @param {Array} An array of sorters/filters.
@@ -295,7 +312,7 @@ api: {
         return Ext.encode(value);
     },
     
-<span id='Ext-data.proxy.Server-method-encodeSorters'>    /**
+<span id='Ext-data-proxy-Server-method-encodeSorters'>    /**
 </span>     * Encodes the array of {@link Ext.util.Sorter} objects into a string to be sent in the request url. By default, 
      * this simply JSON-encodes the sorter data
      * @param {Array} sorters The array of {@link Ext.util.Sorter Sorter} objects
@@ -316,7 +333,7 @@ api: {
         
     },
     
-<span id='Ext-data.proxy.Server-method-encodeFilters'>    /**
+<span id='Ext-data-proxy-Server-method-encodeFilters'>    /**
 </span>     * Encodes the array of {@link Ext.util.Filter} objects into a string to be sent in the request url. By default, 
      * this simply JSON-encodes the filter data
      * @param {Array} sorters The array of {@link Ext.util.Filter Filter} objects
@@ -336,7 +353,7 @@ api: {
         return this.applyEncoding(min);
     },
     
-<span id='Ext-data.proxy.Server-method-getParams'>    /**
+<span id='Ext-data-proxy-Server-method-getParams'>    /**
 </span>     * @private
      * Copy any sorters, filters etc into the params so they can be sent over the wire
      */
@@ -396,7 +413,7 @@ api: {
         return params;
     },
     
-<span id='Ext-data.proxy.Server-method-buildUrl'>    /**
+<span id='Ext-data-proxy-Server-method-buildUrl'>    /**
 </span>     * Generates a url based on a given Ext.data.Request object. By default, ServerProxy's buildUrl will
      * add the cache-buster param to the end of the url. Subclasses may need to perform additional modifications
      * to the url.
@@ -420,7 +437,7 @@ api: {
         return url;
     },
     
-<span id='Ext-data.proxy.Server-method-getUrl'>    /**
+<span id='Ext-data-proxy-Server-method-getUrl'>    /**
 </span>     * Get the url for the request taking into account the order of priority,
      * - The request
      * - The api
@@ -433,7 +450,7 @@ api: {
         return request.url || this.api[request.action] || this.url;
     },
     
-<span id='Ext-data.proxy.Server-method-doRequest'>    /**
+<span id='Ext-data-proxy-Server-method-doRequest'>    /**
 </span>     * In ServerProxy subclasses, the {@link #create}, {@link #read}, {@link #update} and {@link #destroy} methods all pass
      * through to doRequest. Each ServerProxy subclass must implement the doRequest method - see {@link Ext.data.proxy.JsonP}
      * and {@link Ext.data.proxy.Ajax} for examples. This method carries the same signature as each of the methods that delegate to it.
@@ -447,10 +464,11 @@ api: {
         //&lt;/debug&gt;
     },
     
-<span id='Ext-data.proxy.Server-property-afterRequest'>    /**
+<span id='Ext-data-proxy-Server-method-afterRequest'>    /**
 </span>     * Optional callback function which can be used to clean up after a request has been completed.
      * @param {Ext.data.Request} request The Request object
      * @param {Boolean} success True if the request was successful
+     * @method
      */
     afterRequest: Ext.emptyFn,
     
@@ -458,4 +476,6 @@ api: {
         Ext.destroy(this.reader, this.writer);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

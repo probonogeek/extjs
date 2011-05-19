@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.axis.Numeric-method-constructor'><span id='Ext-chart.axis.Numeric'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-axis-Numeric-method-constructor'><span id='Ext-chart-axis-Numeric'>/**
 </span></span> * @class Ext.chart.axis.Numeric
  * @extends Ext.chart.axis.Axis
  *
@@ -92,22 +109,20 @@ Ext.define('Ext.chart.axis.Numeric', {
     alias: 'axis.numeric',
 
     constructor: function(config) {
-        var me = this, label, f;
+        var me = this,
+            hasLabel = !!(config.label &amp;&amp; config.label.renderer),
+            label;
+        
         me.callParent([config]);
         label = me.label;
         if (me.roundToDecimal === false) {
             return;
         }
-        if (label.renderer) {
-            f = label.renderer;
-            label.renderer = function(v) {
-                return me.roundToDecimal( f(v), me.decimals );
-            };
-        } else {
+        if (!hasLabel) {
             label.renderer = function(v) {
                 return me.roundToDecimal(v, me.decimals);
             };
-        }
+        } 
     },
     
     roundToDecimal: function(v, dec) {
@@ -115,7 +130,7 @@ Ext.define('Ext.chart.axis.Numeric', {
         return ((v * val) &gt;&gt; 0) / val;
     },
     
-<span id='Ext-chart.axis.Numeric-property-minimum'>    /**
+<span id='Ext-chart-axis-Numeric-property-minimum'>    /**
 </span>     * The minimum value drawn by the axis. If not set explicitly, the axis
      * minimum will be calculated automatically.
      *
@@ -124,7 +139,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     minimum: NaN,
 
-<span id='Ext-chart.axis.Numeric-property-maximum'>    /**
+<span id='Ext-chart-axis-Numeric-property-maximum'>    /**
 </span>     * The maximum value drawn by the axis. If not set explicitly, the axis
      * maximum will be calculated automatically.
      *
@@ -133,7 +148,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     maximum: NaN,
 
-<span id='Ext-chart.axis.Numeric-property-decimals'>    /**
+<span id='Ext-chart-axis-Numeric-property-decimals'>    /**
 </span>     * The number of decimals to round the value to.
      * Default's 2.
      *
@@ -142,7 +157,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     decimals: 2,
 
-<span id='Ext-chart.axis.Numeric-property-scale'>    /**
+<span id='Ext-chart-axis-Numeric-property-scale'>    /**
 </span>     * The scaling algorithm to use on this axis. May be &quot;linear&quot; or
      * &quot;logarithmic&quot;.
      *
@@ -151,7 +166,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     scale: &quot;linear&quot;,
 
-<span id='Ext-chart.axis.Numeric-property-position'>    /**
+<span id='Ext-chart-axis-Numeric-property-position'>    /**
 </span>     * Indicates the position of the axis relative to the chart
      *
      * @property position
@@ -159,7 +174,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     position: 'left',
 
-<span id='Ext-chart.axis.Numeric-property-adjustMaximumByMajorUnit'>    /**
+<span id='Ext-chart-axis-Numeric-property-adjustMaximumByMajorUnit'>    /**
 </span>     * Indicates whether to extend maximum beyond data's maximum to the nearest
      * majorUnit.
      *
@@ -168,7 +183,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      */
     adjustMaximumByMajorUnit: false,
 
-<span id='Ext-chart.axis.Numeric-property-adjustMinimumByMajorUnit'>    /**
+<span id='Ext-chart-axis-Numeric-property-adjustMinimumByMajorUnit'>    /**
 </span>     * Indicates whether to extend the minimum beyond data's minimum to the
      * nearest majorUnit.
      *
@@ -183,4 +198,6 @@ Ext.define('Ext.chart.axis.Numeric', {
         return this.calcEnds();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

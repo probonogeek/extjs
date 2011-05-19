@@ -241,12 +241,65 @@ Ext.supports = {
          */
         {
             identity: 'RightMargin',
-            fn: function(doc, div, view) {
-                view = doc.defaultView;
+            fn: function(doc, div) {
+                var view = doc.defaultView;
                 return !(view && view.getComputedStyle(div.firstChild.firstChild, null).marginRight != '0px');
             }
         },
-        
+
+        /**
+         * @property DisplayChangeInputSelectionBug True if INPUT elements lose their
+         * selection when their display style is changed. Essentially, if a text input
+         * has focus and its display style is changed, the I-beam disappears.
+         * 
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
+         * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
+         * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
+         */
+        {
+            identity: 'DisplayChangeInputSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+                // WebKit but older than Safari 5 or Chrome 6:
+                return 0 < webKitVersion && webKitVersion < 533;
+            }
+        },
+
+        /**
+         * @property DisplayChangeTextAreaSelectionBug True if TEXTAREA elements lose their
+         * selection when their display style is changed. Essentially, if a text area has
+         * focus and its display style is changed, the I-beam disappears.
+         *
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
+         * be fixed in Chrome 11.
+         */
+        {
+            identity: 'DisplayChangeTextAreaSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+
+                /*
+                Has bug w/textarea:
+
+                (Chrome) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-US)
+                            AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.127
+                            Safari/534.16
+                (Safari) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us)
+                            AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5
+                            Safari/533.21.1
+
+                No bug:
+
+                (Chrome) Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7)
+                            AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57
+                            Safari/534.24
+                */
+                return 0 < webKitVersion && webKitVersion < 534.24;
+            }
+        },
+
         /**
          * @property TransparentColor True if the device supports transparent color
          * @type {Boolean}
@@ -512,7 +565,18 @@ Ext.supports = {
                 
                 return range && !!range.createContextualFragment;
             }
+        },
+
+        /**
+         * @property WindowOnError True if browser supports window.onerror.
+         * @type {Boolean}
+         */
+        {
+            identity: 'WindowOnError',
+            fn: function () {
+                // sadly, we cannot feature detect this...
+                return Ext.isIE || Ext.isGecko || Ext.webKitVersion >= 534.16; // Chrome 10+
+            }
         }
-        
     ]
 };

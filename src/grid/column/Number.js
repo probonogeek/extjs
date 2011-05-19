@@ -1,7 +1,8 @@
 /**
  * @class Ext.grid.column.Number
  * @extends Ext.grid.column.Column
- * <p>A Column definition class which renders a numeric data field according to a {@link #format} string.</p>
+ *
+ * A Column definition class which renders a numeric data field according to a {@link #format} string.
  *
  * {@img Ext.grid.column.Number/Ext.grid.column.Number.png Ext.grid.column.Number cell editing}
  *
@@ -20,21 +21,21 @@
  *            {symbol:"apple", price:342.41, change:1.35, volume:24484858},            
  *            {symbol:"sencha", price:142.08, change:8.85, volume:5556351}            
  *        ]
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Number Column Demo',
- *        store: Ext.data.StoreManager.lookup('sampleStore'),
- *        columns: [
- *            {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
- *            {text: 'Current Price',  dataIndex: 'price', renderer: Ext.util.Format.usMoney},
- *            {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
- *            {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'}
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Number Column Demo',
+ *         store: Ext.data.StoreManager.lookup('sampleStore'),
+ *         columns: [
+ *             {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
+ *             {text: 'Current Price',  dataIndex: 'price', renderer: Ext.util.Format.usMoney},
+ *             {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
+ *             {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'}
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  * 
  * @xtype numbercolumn
  */

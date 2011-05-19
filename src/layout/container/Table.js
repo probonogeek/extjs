@@ -46,16 +46,16 @@
             bodyStyle:'padding:20px'
         },
         items: [{
-            html: '<p>Cell A content</p>',
+            html: 'Cell A content',
             rowspan: 2
         },{
-            html: '<p>Cell B content</p>',
+            html: 'Cell B content',
             colspan: 2
         },{
-            html: '<p>Cell C content</p>',
+            html: 'Cell C content',
             cellCls: 'highlight'
         },{
-            html: '<p>Cell D content</p>'
+            html: 'Cell D content'
         }],
         renderTo: Ext.getBody()
     });

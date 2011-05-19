@@ -235,17 +235,5 @@ store.sort('myField', 'DESC');
     
     getSorters: function() {
         return this.sorters.items;
-    },
-    
-    /**
-     * Returns an object describing the current sort state of this Store.
-     * @return {Object} The sort state of the Store. An object with two properties:<ul>
-     * <li><b>field</b> : String<p class="sub-desc">The name of the field by which the Records are sorted.</p></li>
-     * <li><b>direction</b> : String<p class="sub-desc">The sort order, 'ASC' or 'DESC' (case-sensitive).</p></li>
-     * </ul>
-     * See <tt>{@link #sortInfo}</tt> for additional details.
-     */
-    getSortState : function() {
-        return this.sortInfo;
     }
 });

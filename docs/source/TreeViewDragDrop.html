@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tree.ViewDDPlugin'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tree-ViewDDPlugin'>/**
 </span> * @class Ext.tree.ViewDDPlugin
  * @extends Ext.AbstractPlugin
  * &lt;p&gt;This plugin provides drag and/or drop functionality for a TreeView.&lt;/p&gt;
@@ -30,7 +47,7 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
         'Ext.tree.ViewDropZone'
     ],
 
-<span id='Ext-tree.ViewDDPlugin-event-beforedrop'>    /**
+<span id='Ext-tree-ViewDDPlugin-event-beforedrop'>    /**
 </span>     * @event beforedrop
      * &lt;p&gt;&lt;b&gt;This event is fired through the TreeView. Add listeners to the TreeView object&lt;/b&gt;&lt;/p&gt;
      * &lt;p&gt;Fired when a drop gesture has been triggered by a mouseup event in a valid drop position in the TreeView.
@@ -64,7 +81,7 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
      * &lt;p&gt;Return &lt;code&gt;0&lt;/code&gt; from this event handler, and call the &lt;code&gt;dropFunction&lt;/code&gt; at any time to perform the data transfer.&lt;/p&gt;
      */
 
-<span id='Ext-tree.ViewDDPlugin-event-drop'>    /**
+<span id='Ext-tree-ViewDDPlugin-event-drop'>    /**
 </span>     * @event drop
      * &lt;b&gt;This event is fired through the TreeView. Add listeners to the TreeView object&lt;/b&gt;
      * Fired when a drop operation has been completed and the data has been moved or copied.
@@ -90,75 +107,75 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
 
     dragText : '{0} selected node{1}',
 
-<span id='Ext-tree.ViewDDPlugin-cfg-allowParentInsert'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-allowParentInsert'>    /**
 </span>     * @cfg {Boolean} allowParentInsert
      * Allow inserting a dragged node between an expanded parent node and its first child that will become a
      * sibling of the parent when dropped (defaults to false)
      */
     allowParentInserts: false,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-allowContainerDrop'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-allowContainerDrop'>    /**
 </span>     * @cfg {String} allowContainerDrop
      * True if drops on the tree container (outside of a specific tree node) are allowed (defaults to false)
      */
     allowContainerDrops: false,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-appendOnly'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-appendOnly'>    /**
 </span>     * @cfg {String} appendOnly
      * True if the tree should only allow append drops (use for trees which are sorted, defaults to false)
      */
     appendOnly: false,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-ddGroup'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-ddGroup'>    /**
 </span>     * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then both the DragZones and DropZone
      * used by this plugin will only interact with other drag drop objects in the same group (defaults to 'TreeDD').
      */
     ddGroup : &quot;TreeDD&quot;,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-dragGroup'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-dragGroup'>    /**
 </span>     * @cfg {String} dragGroup
      * &lt;p&gt;The ddGroup to which the DragZone will belong.&lt;/p&gt;
      * &lt;p&gt;This defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other Drag/DropZones
      * which are members of the same ddGroup.&lt;/p&gt;
      */
 
-<span id='Ext-tree.ViewDDPlugin-cfg-dropGroup'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-dropGroup'>    /**
 </span>     * @cfg {String} dropGroup
      * &lt;p&gt;The ddGroup to which the DropZone will belong.&lt;/p&gt;
      * &lt;p&gt;This defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other Drag/DropZones
      * which are members of the same ddGroup.&lt;/p&gt;
      */
 
-<span id='Ext-tree.ViewDDPlugin-cfg-expandDelay'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-expandDelay'>    /**
 </span>     * @cfg {String} expandDelay
      * The delay in milliseconds to wait before expanding a target tree node while dragging a droppable node
      * over the target (defaults to 1000)
      */
     expandDelay : 1000,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-enableDrop'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-enableDrop'>    /**
 </span>     * @cfg {Boolean} enableDrop
      * &lt;p&gt;Defaults to &lt;code&gt;true&lt;/code&gt;&lt;/p&gt;
      * &lt;p&gt;Set to &lt;code&gt;false&lt;/code&gt; to disallow the View from accepting drop gestures&lt;/p&gt;
      */
     enableDrop: true,
 
-<span id='Ext-tree.ViewDDPlugin-cfg-enableDrag'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-enableDrag'>    /**
 </span>     * @cfg {Boolean} enableDrag
      * &lt;p&gt;Defaults to &lt;code&gt;true&lt;/code&gt;&lt;/p&gt;
      * &lt;p&gt;Set to &lt;code&gt;false&lt;/code&gt; to disallow dragging items from the View &lt;/p&gt;
      */
     enableDrag: true,
     
-<span id='Ext-tree.ViewDDPlugin-cfg-nodeHighlightColor'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-nodeHighlightColor'>    /**
 </span>     * @cfg {String} nodeHighlightColor The color to use when visually highlighting the dragged
      * or dropped node (defaults to 'c3daf9' - light blue). The color must be a 6 digit hex value, without
      * a preceding '#'. See also {@link #nodeHighlightOnDrop} and {@link #nodeHighlightOnRepair}.
      */
     nodeHighlightColor: 'c3daf9',
     
-<span id='Ext-tree.ViewDDPlugin-cfg-nodeHighlightOnDrop'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-nodeHighlightOnDrop'>    /**
 </span>     * @cfg {Boolean} nodeHighlightOnDrop Whether or not to highlight any nodes after they are
      * successfully dropped on their target. Defaults to the value of `Ext.enableFx`.
      * See also {@link #nodeHighlightColor} and {@link #nodeHighlightOnRepair}.
@@ -166,7 +183,7 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
      */
     nodeHighlightOnDrop: Ext.enableFx,
     
-<span id='Ext-tree.ViewDDPlugin-cfg-nodeHighlightOnRepair'>    /**
+<span id='Ext-tree-ViewDDPlugin-cfg-nodeHighlightOnRepair'>    /**
 </span>     * @cfg {Boolean} nodeHighlightOnRepair Whether or not to highlight any nodes after they are
      * repaired from an unsuccessful drag/drop. Defaults to the value of `Ext.enableFx`.
      * See also {@link #nodeHighlightColor} and {@link #nodeHighlightOnDrop}.
@@ -178,7 +195,7 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
         view.on('render', this.onViewRender, this, {single: true});
     },
 
-<span id='Ext-tree.ViewDDPlugin-method-destroy'>    /**
+<span id='Ext-tree-ViewDDPlugin-method-destroy'>    /**
 </span>     * @private
      * AbstractComponent calls destroy on all its plugins at destroy time.
      */
@@ -212,4 +229,6 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
             });
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

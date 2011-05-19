@@ -130,6 +130,10 @@ Ext.define('Ext.grid.LockingView', {
         return result;
     },
     
+    addElListener: function(eventName, fn, scope){
+        this.relayFn('addElListener', arguments);
+    },
+    
     refreshNode: function(){
         this.relayFn('refreshNode', arguments);
     },

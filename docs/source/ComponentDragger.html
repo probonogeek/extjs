@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.ComponentDragger-method-constructor'><span id='Ext-util.ComponentDragger'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-ComponentDragger-method-constructor'><span id='Ext-util-ComponentDragger'>/**
 </span></span> * @class Ext.util.ComponentDragger
  * @extends Ext.dd.DragTracker
  * &lt;p&gt;A subclass of Ext.dd.DragTracker which handles dragging any Component.&lt;/p&gt;
@@ -12,19 +29,19 @@
  */
 Ext.define('Ext.util.ComponentDragger', {
 
-<span id='Ext-util.ComponentDragger-cfg-constrain'>    /**
+<span id='Ext-util-ComponentDragger-cfg-constrain'>    /**
 </span>     * @cfg {Boolean} constrain
      * Specify as &lt;code&gt;true&lt;/code&gt; to constrain the Component to within the bounds of the {@link #constrainTo} region.
      */
 
-<span id='Ext-util.ComponentDragger-cfg-delegate'>    /**
+<span id='Ext-util-ComponentDragger-cfg-delegate'>    /**
 </span>     * @cfg {String/Element} delegate
      * Optional. &lt;p&gt;A {@link Ext.DomQuery DomQuery} selector which identifies child elements within the Component's encapsulating
      * Element which are the drag handles. This limits dragging to only begin when the matching elements are mousedowned.&lt;/p&gt;
      * &lt;p&gt;This may also be a specific child element within the Component's encapsulating element to use as the drag handle.&lt;/p&gt;
      */
 
-<span id='Ext-util.ComponentDragger-cfg-constrainDelegate'>    /**
+<span id='Ext-util-ComponentDragger-cfg-constrainDelegate'>    /**
 </span>     * @cfg {Boolean} constrainDelegate
      * Specify as &lt;code&gt;true&lt;/code&gt; to constrain the drag handles within the {@link constrainTo} region.
      */
@@ -100,7 +117,7 @@ Ext.define('Ext.util.ComponentDragger', {
             comp = (me.proxy &amp;&amp; !me.comp.liveDrag) ? me.proxy : me.comp,
             offset = me.getOffset(me.constrain || me.constrainDelegate ? 'dragTarget' : null);
 
-        comp.setPosition.apply(comp, [me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]]);
+        comp.setPosition(me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]);
     },
 
     onEnd: function(e) {
@@ -108,4 +125,6 @@ Ext.define('Ext.util.ComponentDragger', {
             this.comp.unghost();
         }
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

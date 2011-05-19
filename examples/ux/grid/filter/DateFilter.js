@@ -253,7 +253,7 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
                 args.push({
                     type: 'date',
                     comparison: this.compareMap[key],
-                    value: this.getFieldValue(key).format(this.dateFormat)
+                    value: Ext.Date.format(this.getFieldValue(key), this.dateFormat)
                 });
             }
         }

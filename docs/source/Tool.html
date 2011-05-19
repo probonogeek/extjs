@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-panel.Tool'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Tool'>/**
 </span> * @class Ext.panel.Tool
  * @extends Ext.Component
 
@@ -51,7 +68,7 @@ Ext.define('Ext.panel.Tool', {
     ariaRole: 'button',
     renderTpl: ['&lt;img src=&quot;{blank}&quot; class=&quot;{baseCls}-{type}&quot; role=&quot;presentation&quot;/&gt;'],
     
-<span id='Ext-panel.Tool-cfg-handler'>    /**
+<span id='Ext-panel-Tool-cfg-handler'>    /**
 </span>     * @cfg {Function} handler
      * A function to execute when the tool is clicked.
      * Arguments passed are:
@@ -63,12 +80,12 @@ Ext.define('Ext.panel.Tool', {
      * &lt;/ul&gt;
      */
     
-<span id='Ext-panel.Tool-cfg-scope'>    /**
+<span id='Ext-panel-Tool-cfg-scope'>    /**
 </span>     * @cfg {Object} scope
      * The scope to execute the {@link #handler} function. Defaults to the tool.
      */
     
-<span id='Ext-panel.Tool-cfg-type'>    /**
+<span id='Ext-panel-Tool-cfg-type'>    /**
 </span>     * @cfg {String} type
      * The type of tool to render. The following types are available:
      * &lt;ul&gt;
@@ -100,12 +117,12 @@ Ext.define('Ext.panel.Tool', {
      * &lt;/ul&gt;
      */
     
-<span id='Ext-panel.Tool-cfg-tooltip'>    /**
+<span id='Ext-panel-Tool-cfg-tooltip'>    /**
 </span>     * @cfg {String/Object} tooltip 
      * The tooltip for the tool - can be a string to be used as innerHTML (html tags are accepted) or QuickTips config object
      */
     
-<span id='Ext-panel.Tool-cfg-stopEvent'>    /**
+<span id='Ext-panel-Tool-cfg-stopEvent'>    /**
 </span>     * @cfg {Boolean} stopEvent
      * Defaults to true. Specify as false to allow click event to propagate.
      */
@@ -114,7 +131,7 @@ Ext.define('Ext.panel.Tool', {
     initComponent: function() {
         var me = this;
         me.addEvents(
-<span id='Ext-panel.Tool-event-click'>            /**
+<span id='Ext-panel-Tool-event-click'>            /**
 </span>             * @event click
              * Fires when the tool is clicked
              * @param {Ext.panel.Tool} this
@@ -152,7 +169,7 @@ Ext.define('Ext.panel.Tool', {
             'up'
         ];
         
-        if (me.id &amp;&amp; Ext.Array.indexOf(types, me.id) &gt; -1) {
+        if (me.id &amp;&amp; Ext.Array.indexOf(types, me.id) &gt; -1 &amp;&amp; Ext.global.console) {
             Ext.global.console.warn('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
         }
         //&lt;/debug&gt;
@@ -192,7 +209,7 @@ Ext.define('Ext.panel.Tool', {
         });
     },
 
-<span id='Ext-panel.Tool-method-setType'>    /**
+<span id='Ext-panel-Tool-method-setType'>    /**
 </span>     * Set the type of the tool. Allows the icon to be changed.
      * @param {String} type The new type. See the {@link #type} config.
      * @return {Ext.panel.Tool} this
@@ -207,7 +224,7 @@ Ext.define('Ext.panel.Tool', {
         return me;
     },
 
-<span id='Ext-panel.Tool-method-bindTo'>    /**
+<span id='Ext-panel-Tool-method-bindTo'>    /**
 </span>     * Binds this tool to a component.
      * @private
      * @param {Ext.Component} component The component
@@ -216,7 +233,7 @@ Ext.define('Ext.panel.Tool', {
         this.owner = component;
     },
 
-<span id='Ext-panel.Tool-method-onClick'>    /**
+<span id='Ext-panel-Tool-method-onClick'>    /**
 </span>     * Fired when the tool element is clicked
      * @private
      * @param {Ext.EventObject} e
@@ -252,7 +269,7 @@ Ext.define('Ext.panel.Tool', {
         this.callParent();
     },
 
-<span id='Ext-panel.Tool-method-onMouseDown'>    /**
+<span id='Ext-panel-Tool-method-onMouseDown'>    /**
 </span>     * Called then the user pressing their mouse button down on a tool
      * Adds the press class ({@link #toolPressedCls})
      * @private
@@ -265,7 +282,7 @@ Ext.define('Ext.panel.Tool', {
         this.el.addCls(this.toolPressedCls);
     },
 
-<span id='Ext-panel.Tool-method-onMouseOver'>    /**
+<span id='Ext-panel-Tool-method-onMouseOver'>    /**
 </span>     * Called when the user rolls over a tool
      * Adds the over class ({@link #toolOverCls})
      * @private
@@ -277,7 +294,7 @@ Ext.define('Ext.panel.Tool', {
         this.el.addCls(this.toolOverCls);
     },
 
-<span id='Ext-panel.Tool-method-onMouseOut'>    /**
+<span id='Ext-panel-Tool-method-onMouseOut'>    /**
 </span>     * Called when the user rolls out from a tool.
      * Removes the over class ({@link #toolOverCls})
      * @private
@@ -285,4 +302,6 @@ Ext.define('Ext.panel.Tool', {
     onMouseOut: function() {
         this.el.removeCls(this.toolOverCls);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

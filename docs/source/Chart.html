@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.Chart'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-Chart'>/**
 </span> * @class Ext.chart.Chart
  * @extends Ext.draw.Component
  *
@@ -59,37 +76,37 @@ Ext.define('Ext.chart.Chart', {
     // @private
     viewBox: false,
 
-<span id='Ext-chart.Chart-cfg-theme'>    /**
+<span id='Ext-chart-Chart-cfg-theme'>    /**
 </span>     * @cfg {String} theme (optional) The name of the theme to be used. A theme defines the colors and
      * other visual displays of tick marks on axis, text, title text, line colors, marker colors and styles, etc.
      * Possible theme values are 'Base', 'Green', 'Sky', 'Red', 'Purple', 'Blue', 'Yellow' and also six category themes
      * 'Category1' to 'Category6'. Default value is 'Base'.
      */
 
-<span id='Ext-chart.Chart-cfg-animate'>    /**
+<span id='Ext-chart-Chart-cfg-animate'>    /**
 </span>     * @cfg {Boolean/Object} animate (optional) true for the default animation (easing: 'ease' and duration: 500)
      * or a standard animation config object to be used for default chart animations. Defaults to false.
      */
     animate: false,
 
-<span id='Ext-chart.Chart-cfg-legend'>    /**
+<span id='Ext-chart-Chart-cfg-legend'>    /**
 </span>     * @cfg {Boolean/Object} legend (optional) true for the default legend display or a legend config object. Defaults to false.
      */
     legend: false,
 
-<span id='Ext-chart.Chart-cfg-insetPadding'>    /**
+<span id='Ext-chart-Chart-cfg-insetPadding'>    /**
 </span>     * @cfg {integer} insetPadding (optional) Set the amount of inset padding in pixels for the chart. Defaults to 10.
      */
     insetPadding: 10,
 
-<span id='Ext-chart.Chart-cfg-enginePriority'>    /**
+<span id='Ext-chart-Chart-cfg-enginePriority'>    /**
 </span>     * @cfg {Array} enginePriority
      * Defines the priority order for which Surface implementation to use. The first
      * one supported by the current environment will be used.
      */
     enginePriority: ['Svg', 'Vml'],
 
-<span id='Ext-chart.Chart-cfg-background'>    /**
+<span id='Ext-chart-Chart-cfg-background'>    /**
 </span>     * @cfg {Object|Boolean} background (optional) Set the chart background. This can be a gradient object, image, or color.
      * Defaults to false for no background.
      *
@@ -131,7 +148,7 @@ Ext.define('Ext.chart.Chart', {
      */
     background: false,
 
-<span id='Ext-chart.Chart-cfg-gradients'>    /**
+<span id='Ext-chart-Chart-cfg-gradients'>    /**
 </span>     * @cfg {Array} gradients (optional) Define a set of gradients that can be used as `fill` property in sprites.
      * The gradients array is an array of objects with the following properties:
      *
@@ -227,14 +244,14 @@ Ext.define('Ext.chart.Chart', {
             'itemdragstart',
             'itemdrag',
             'itemdragend',
-<span id='Ext-chart.Chart-event-beforerefresh'>            /**
+<span id='Ext-chart-Chart-event-beforerefresh'>            /**
 </span>                 * @event beforerefresh
                  * Fires before a refresh to the chart data is called.  If the beforerefresh handler returns
                  * &lt;tt&gt;false&lt;/tt&gt; the {@link #refresh} action will be cancelled.
                  * @param {Chart} this
                  */
             'beforerefresh',
-<span id='Ext-chart.Chart-event-refresh'>            /**
+<span id='Ext-chart-Chart-event-refresh'>            /**
 </span>                 * @event refresh
                  * Fires after the chart data has been refreshed.
                  * @param {Chart} this
@@ -285,7 +302,7 @@ Ext.define('Ext.chart.Chart', {
         this.callParent(arguments);
     },
 
-<span id='Ext-chart.Chart-cfg-resize'>    /**
+<span id='Ext-chart-Chart-cfg-resize'>    /**
 </span>     * Redraw the chart. If animations are set this will animate the chart too.
      * @cfg {boolean} resize Optional flag which changes the default origin points of the chart for animations.
      */
@@ -507,7 +524,7 @@ Ext.define('Ext.chart.Chart', {
         }
     },
 
-<span id='Ext-chart.Chart-method-bindStore'>    /**
+<span id='Ext-chart-Chart-method-bindStore'>    /**
 </span>     * Changes the data store bound to this chart and refreshes it.
      * @param {Store} store The store to bind to this chart
      */
@@ -609,7 +626,7 @@ Ext.define('Ext.chart.Chart', {
     },
 
 
-<span id='Ext-chart.Chart-method-alignAxes'>    /**
+<span id='Ext-chart-Chart-method-alignAxes'>    /**
 </span>     * @private Adjust the dimensions and positions of each axis and the chart body area after accounting
      * for the space taken up on each side by the axes and legend.
      */
@@ -754,4 +771,6 @@ Ext.define('Ext.chart.Chart', {
         this.callParent(arguments);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

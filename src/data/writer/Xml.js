@@ -2,8 +2,13 @@
  * @author Ed Spencer
  * @class Ext.data.writer.Xml
  * @extends Ext.data.writer.Writer
- * 
- * <p>Writer that outputs model data in XML format</p>
+
+This class is used to write {@link Ext.data.Model} data to the server in an XML format.
+The {@link #documentRoot} property is used to specify the root element in the XML document.
+The {@link #record} option is used to specify the element name for each record that will make
+up the XML document.
+
+ * @markdown
  */
 Ext.define('Ext.data.writer.Xml', {
     

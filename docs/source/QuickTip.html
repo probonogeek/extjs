@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tip.QuickTip-method-constructor'><span id='Ext-tip.QuickTip'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tip-QuickTip-method-constructor'><span id='Ext-tip-QuickTip'>/**
 </span></span> * @class Ext.tip.QuickTip
  * @extends Ext.tip.ToolTip
  * A specialized tooltip class for tooltips that can be specified in markup and automatically managed by the global
@@ -11,10 +28,10 @@
 Ext.define('Ext.tip.QuickTip', {
     extend: 'Ext.tip.ToolTip',
     alternateClassName: 'Ext.QuickTip',
-<span id='Ext-tip.QuickTip-cfg-target'>    /**
+<span id='Ext-tip-QuickTip-cfg-target'>    /**
 </span>     * @cfg {Mixed} target The target HTMLElement, Ext.core.Element or id to associate with this Quicktip (defaults to the document).
      */
-<span id='Ext-tip.QuickTip-cfg-interceptTitles'>    /**
+<span id='Ext-tip-QuickTip-cfg-interceptTitles'>    /**
 </span>     * @cfg {Boolean} interceptTitles True to automatically use the element's DOM title value if available (defaults to false).
      */
     interceptTitles : false,
@@ -44,7 +61,7 @@ Ext.define('Ext.tip.QuickTip', {
         me.callParent();
     },
 
-<span id='Ext-tip.QuickTip-method-register'>    /**
+<span id='Ext-tip-QuickTip-method-register'>    /**
 </span>     * Configures a new quick tip instance and assigns it to a target element.  The following config values are
      * supported (for example usage, see the {@link Ext.tip.QuickTipManager} class header):
      * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -78,7 +95,7 @@ Ext.define('Ext.tip.QuickTip', {
         }
     },
 
-<span id='Ext-tip.QuickTip-method-unregister'>    /**
+<span id='Ext-tip-QuickTip-method-unregister'>    /**
 </span>     * Removes this quick tip from its element and destroys it.
      * @param {String/HTMLElement/Element} el The element from which the quick tip is to be removed.
      */
@@ -86,7 +103,7 @@ Ext.define('Ext.tip.QuickTip', {
         delete this.targets[Ext.id(el)];
     },
     
-<span id='Ext-tip.QuickTip-method-cancelShow'>    /**
+<span id='Ext-tip-QuickTip-method-cancelShow'>    /**
 </span>     * Hides a visible tip or cancels an impending show for a particular element.
      * @param {String/HTMLElement/Element} el The element that is the target of the tip.
      */
@@ -263,4 +280,6 @@ Ext.define('Ext.tip.QuickTip', {
         this.callParent();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

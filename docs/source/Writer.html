@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.writer.Writer-method-constructor'><span id='Ext-data.writer.Writer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-writer-Writer-method-constructor'><span id='Ext-data-writer-Writer'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.writer.Writer
  * @extends Object
@@ -22,14 +39,14 @@ Ext.define('Ext.data.writer.Writer', {
     alias: 'writer.base',
     alternateClassName: ['Ext.data.DataWriter', 'Ext.data.Writer'],
     
-<span id='Ext-data.writer.Writer-cfg-writeAllFields'>    /**
+<span id='Ext-data-writer-Writer-cfg-writeAllFields'>    /**
 </span>     * @cfg {Boolean} writeAllFields True to write all fields from the record to the server. If set to false it
      * will only send the fields that were modified. Defaults to &lt;tt&gt;true&lt;/tt&gt;. Note that any fields that have
      * {@link Ext.data.Field#persist} set to false will still be ignored.
      */
     writeAllFields: true,
     
-<span id='Ext-data.writer.Writer-cfg-nameProperty'>    /**
+<span id='Ext-data-writer-Writer-cfg-nameProperty'>    /**
 </span>     * @cfg {String} nameProperty This property is used to read the key for each value that will be sent to the server.
      * For example:
      * &lt;pre&gt;&lt;code&gt;
@@ -66,7 +83,7 @@ new Ext.data.writer.Writer({
         Ext.apply(this, config);
     },
 
-<span id='Ext-data.writer.Writer-method-write'>    /**
+<span id='Ext-data-writer-Writer-method-write'>    /**
 </span>     * Prepares a Proxy's Ext.data.Request object
      * @param {Ext.data.Request} request The request object
      * @return {Ext.data.Request} The modified request object
@@ -84,7 +101,7 @@ new Ext.data.writer.Writer({
         return this.writeRecords(request, data);
     },
 
-<span id='Ext-data.writer.Writer-method-getRecordData'>    /**
+<span id='Ext-data-writer-Writer-method-getRecordData'>    /**
 </span>     * Formats the data for each record before sending it to the server. This
      * method should be overridden to format the data in a way that differs from the default.
      * @param {Object} record The record that we are writing to the server.
@@ -127,4 +144,6 @@ new Ext.data.writer.Writer({
         return data;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

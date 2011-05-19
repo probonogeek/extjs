@@ -117,7 +117,7 @@ Ext.define('Ext.chart.Label', {
             store = me.chart.store,
             len = store.getCount(),
             ratio = items.length / len,
-            i, count, j, 
+            i, count, index, j, 
             k, gradientsCount = (gradients || 0) && gradients.length,
             colorStopTotal, colorStopIndex, colorStop,
             item, label, storeItem,
@@ -130,10 +130,16 @@ Ext.define('Ext.chart.Label', {
         }
 
         for (i = 0, count = 0; i < len; i++) {
+            index = 0;
             for (j = 0; j < ratio; j++) {
                 item = items[count];
                 label = group.getAt(count);
                 storeItem = store.getAt(i);
+                
+                //check the excludes
+                while(this.__excludes && this.__excludes[index]) {
+                    index++;
+                }
 
                 if (!item && label) {
                     label.hide(true);
@@ -141,9 +147,9 @@ Ext.define('Ext.chart.Label', {
 
                 if (item && field[j]) {
                     if (!label) {
-                        label = me.onCreateLabel(storeItem, item, i, display, j, count);
+                        label = me.onCreateLabel(storeItem, item, i, display, j, index);
                     }
-                    me.onPlaceLabel(label, storeItem, item, i, display, animate, j, count);
+                    me.onPlaceLabel(label, storeItem, item, i, display, animate, j, index);
 
                     //set contrast
                     if (config.contrast && item.sprite) {
@@ -179,6 +185,7 @@ Ext.define('Ext.chart.Label', {
                     }
                 }
                 count++;
+                index++;
             }
         }
         me.hideLabels(count);

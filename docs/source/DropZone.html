@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-dd.DropZone-method-constructor'><span id='Ext-dd.DropZone'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-dd-DropZone-method-constructor'><span id='Ext-dd-DropZone'>/**
 </span></span> * @class Ext.dd.DropZone
  * @extends Ext.dd.DropTarget
 
@@ -72,7 +89,7 @@ Ext.define('Ext.dd.DropZone', {
     extend: 'Ext.dd.DropTarget',
     requires: ['Ext.dd.Registry'],
 
-<span id='Ext-dd.DropZone-method-getTargetFromEvent'>    /**
+<span id='Ext-dd-DropZone-method-getTargetFromEvent'>    /**
 </span>     * Returns a custom data object associated with the DOM node that is the target of the event.  By default
      * this looks up the event target in the {@link Ext.dd.Registry}, although you can override this method to
      * provide your own custom lookup.
@@ -83,7 +100,7 @@ Ext.define('Ext.dd.DropZone', {
         return Ext.dd.Registry.getTargetFromEvent(e);
     },
 
-<span id='Ext-dd.DropZone-method-onNodeEnter'>    /**
+<span id='Ext-dd-DropZone-method-onNodeEnter'>    /**
 </span>     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has entered a drop node
      * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
      * This method has no default implementation and should be overridden to provide
@@ -98,7 +115,7 @@ Ext.define('Ext.dd.DropZone', {
         
     },
 
-<span id='Ext-dd.DropZone-method-onNodeOver'>    /**
+<span id='Ext-dd-DropZone-method-onNodeOver'>    /**
 </span>     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is over a drop node
      * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
      * The default implementation returns this.dropNotAllowed, so it should be
@@ -115,7 +132,7 @@ Ext.define('Ext.dd.DropZone', {
         return this.dropAllowed;
     },
 
-<span id='Ext-dd.DropZone-method-onNodeOut'>    /**
+<span id='Ext-dd-DropZone-method-onNodeOut'>    /**
 </span>     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dragged out of
      * the drop node without dropping.  This method has no default implementation and should be overridden to provide
      * node-specific processing if necessary.
@@ -129,7 +146,7 @@ Ext.define('Ext.dd.DropZone', {
         
     },
 
-<span id='Ext-dd.DropZone-method-onNodeDrop'>    /**
+<span id='Ext-dd-DropZone-method-onNodeDrop'>    /**
 </span>     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped onto
      * the drop node.  The default implementation returns false, so it should be overridden to provide the
      * appropriate processing of the drop event and return true so that the drag source's repair action does not run.
@@ -144,7 +161,7 @@ Ext.define('Ext.dd.DropZone', {
         return false;
     },
 
-<span id='Ext-dd.DropZone-method-onContainerOver'>    /**
+<span id='Ext-dd-DropZone-method-onContainerOver'>    /**
 </span>     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is being dragged over it,
      * but not over any of its registered drop nodes.  The default implementation returns this.dropNotAllowed, so
      * it should be overridden to provide the proper feedback if necessary.
@@ -158,7 +175,7 @@ Ext.define('Ext.dd.DropZone', {
         return this.dropNotAllowed;
     },
 
-<span id='Ext-dd.DropZone-method-onContainerDrop'>    /**
+<span id='Ext-dd-DropZone-method-onContainerDrop'>    /**
 </span>     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped on it,
      * but not on any of its registered drop nodes.  The default implementation returns false, so it should be
      * overridden to provide the appropriate processing of the drop event if you need the drop zone itself to
@@ -172,7 +189,7 @@ Ext.define('Ext.dd.DropZone', {
         return false;
     },
 
-<span id='Ext-dd.DropZone-method-notifyEnter'>    /**
+<span id='Ext-dd-DropZone-method-notifyEnter'>    /**
 </span>     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source is now over
      * the zone.  The default implementation returns this.dropNotAllowed and expects that only registered drop
      * nodes can process drag drop operations, so if you need the drop zone itself to be able to process drops
@@ -187,7 +204,7 @@ Ext.define('Ext.dd.DropZone', {
         return this.dropNotAllowed;
     },
 
-<span id='Ext-dd.DropZone-method-notifyOver'>    /**
+<span id='Ext-dd-DropZone-method-notifyOver'>    /**
 </span>     * The function a {@link Ext.dd.DragSource} calls continuously while it is being dragged over the drop zone.
      * This method will be called on every mouse movement while the drag source is over the drop zone.
      * It will call {@link #onNodeOver} while the drag source is over a registered node, and will also automatically
@@ -219,7 +236,7 @@ Ext.define('Ext.dd.DropZone', {
         return this.onNodeOver(n, dd, e, data);
     },
 
-<span id='Ext-dd.DropZone-method-notifyOut'>    /**
+<span id='Ext-dd-DropZone-method-notifyOut'>    /**
 </span>     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source has been dragged
      * out of the zone without dropping.  If the drag source is currently over a registered node, the notification
      * will be delegated to {@link #onNodeOut} for node-specific handling, otherwise it will be ignored.
@@ -234,7 +251,7 @@ Ext.define('Ext.dd.DropZone', {
         }
     },
 
-<span id='Ext-dd.DropZone-method-notifyDrop'>    /**
+<span id='Ext-dd-DropZone-method-notifyDrop'>    /**
 </span>     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the dragged item has
      * been dropped on it.  The drag zone will look up the target node based on the event passed in, and if there
      * is a node registered for that event, it will delegate to {@link #onNodeDrop} for node-specific handling,
@@ -259,4 +276,6 @@ Ext.define('Ext.dd.DropZone', {
     triggerCacheRefresh : function() {
         Ext.dd.DDM.refreshCache(this.groups);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

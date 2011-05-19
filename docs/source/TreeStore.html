@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.TreeStore'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-TreeStore'>/**
 </span> * @class Ext.data.TreeStore
  * @extends Ext.data.AbstractStore
  * 
@@ -22,31 +39,31 @@ Ext.define('Ext.data.TreeStore', {
     alias: 'store.tree',
     requires: ['Ext.data.Tree', 'Ext.data.NodeInterface', 'Ext.data.NodeStore'],
 
-<span id='Ext-data.TreeStore-cfg-clearOnLoad'>    /**
+<span id='Ext-data-TreeStore-cfg-clearOnLoad'>    /**
 </span>     * @cfg {Boolean} clearOnLoad (optional) Default to true. Remove previously existing
      * child nodes before loading.
      */
     clearOnLoad : true,
 
-<span id='Ext-data.TreeStore-cfg-nodeParam'>    /**
+<span id='Ext-data-TreeStore-cfg-nodeParam'>    /**
 </span>     * @cfg {String} nodeParam The name of the parameter sent to the server which contains
      * the identifier of the node. Defaults to &lt;tt&gt;'node'&lt;/tt&gt;.
      */
     nodeParam: 'node',
 
-<span id='Ext-data.TreeStore-cfg-defaultRootId'>    /**
+<span id='Ext-data-TreeStore-cfg-defaultRootId'>    /**
 </span>     * @cfg {String} defaultRootId
      * The default root id. Defaults to 'root'
      */
     defaultRootId: 'root',
     
-<span id='Ext-data.TreeStore-cfg-defaultRootProperty'>    /**
+<span id='Ext-data-TreeStore-cfg-defaultRootProperty'>    /**
 </span>     * @cfg {String} defaultRootProperty
      * The root property to specify on the reader if one is not explicitly defined.
      */
     defaultRootProperty: 'children',
 
-<span id='Ext-data.TreeStore-cfg-folderSort'>    /**
+<span id='Ext-data-TreeStore-cfg-folderSort'>    /**
 </span>     * @cfg {Boolean} folderSort Set to true to automatically prepend a leaf sorter (defaults to &lt;tt&gt;undefined&lt;/tt&gt;)
      */
     folderSort: false,
@@ -59,7 +76,7 @@ Ext.define('Ext.data.TreeStore', {
         
         config = Ext.apply({}, config);
         
-<span id='Ext-data.TreeStore-property-fields'>        /**
+<span id='Ext-data-TreeStore-property-fields'>        /**
 </span>         * If we have no fields declare for the store, add some defaults.
          * These will be ignored if a model is explicitly specified.
          */
@@ -91,7 +108,7 @@ Ext.define('Ext.data.TreeStore', {
         }
 
         me.relayEvents(me.tree, [
-<span id='Ext-data.TreeStore-event-append'>            /**
+<span id='Ext-data-TreeStore-event-append'>            /**
 </span>             * @event append
              * Fires when a new child node is appended to a node in this store's tree.
              * @param {Tree} tree The owner tree
@@ -101,7 +118,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;append&quot;,
             
-<span id='Ext-data.TreeStore-event-remove'>            /**
+<span id='Ext-data-TreeStore-event-remove'>            /**
 </span>             * @event remove
              * Fires when a child node is removed from a node in this store's tree.
              * @param {Tree} tree The owner tree
@@ -110,7 +127,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;remove&quot;,
             
-<span id='Ext-data.TreeStore-event-move'>            /**
+<span id='Ext-data-TreeStore-event-move'>            /**
 </span>             * @event move
              * Fires when a node is moved to a new location in the store's tree
              * @param {Tree} tree The owner tree
@@ -121,7 +138,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;move&quot;,
             
-<span id='Ext-data.TreeStore-event-insert'>            /**
+<span id='Ext-data-TreeStore-event-insert'>            /**
 </span>             * @event insert
              * Fires when a new child node is inserted in a node in this store's tree.
              * @param {Tree} tree The owner tree
@@ -131,7 +148,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;insert&quot;,
             
-<span id='Ext-data.TreeStore-event-beforeappend'>            /**
+<span id='Ext-data-TreeStore-event-beforeappend'>            /**
 </span>             * @event beforeappend
              * Fires before a new child is appended to a node in this store's tree, return false to cancel the append.
              * @param {Tree} tree The owner tree
@@ -140,7 +157,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;beforeappend&quot;,
             
-<span id='Ext-data.TreeStore-event-beforeremove'>            /**
+<span id='Ext-data-TreeStore-event-beforeremove'>            /**
 </span>             * @event beforeremove
              * Fires before a child is removed from a node in this store's tree, return false to cancel the remove.
              * @param {Tree} tree The owner tree
@@ -149,7 +166,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;beforeremove&quot;,
             
-<span id='Ext-data.TreeStore-event-beforemove'>            /**
+<span id='Ext-data-TreeStore-event-beforemove'>            /**
 </span>             * @event beforemove
              * Fires before a node is moved to a new location in the store's tree. Return false to cancel the move.
              * @param {Tree} tree The owner tree
@@ -160,7 +177,7 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;beforemove&quot;,
             
-<span id='Ext-data.TreeStore-event-beforeinsert'>            /**
+<span id='Ext-data-TreeStore-event-beforeinsert'>            /**
 </span>             * @event beforeinsert
              * Fires before a new child is inserted in a node in this store's tree, return false to cancel the insert.
              * @param {Tree} tree The owner tree
@@ -170,42 +187,42 @@ Ext.define('Ext.data.TreeStore', {
              */
             &quot;beforeinsert&quot;,
              
-<span id='Ext-data.TreeStore-event-expand'>             /**
+<span id='Ext-data-TreeStore-event-expand'>             /**
 </span>              * @event expand
               * Fires when this node is expanded.
               * @param {Node} this The expanding node
               */
              &quot;expand&quot;,
              
-<span id='Ext-data.TreeStore-event-collapse'>             /**
+<span id='Ext-data-TreeStore-event-collapse'>             /**
 </span>              * @event collapse
               * Fires when this node is collapsed.
               * @param {Node} this The collapsing node
               */
              &quot;collapse&quot;,
              
-<span id='Ext-data.TreeStore-event-beforeexpand'>             /**
+<span id='Ext-data-TreeStore-event-beforeexpand'>             /**
 </span>              * @event beforeexpand
               * Fires before this node is expanded.
               * @param {Node} this The expanding node
               */
              &quot;beforeexpand&quot;,
              
-<span id='Ext-data.TreeStore-event-beforecollapse'>             /**
+<span id='Ext-data-TreeStore-event-beforecollapse'>             /**
 </span>              * @event beforecollapse
               * Fires before this node is collapsed.
               * @param {Node} this The collapsing node
               */
              &quot;beforecollapse&quot;,
 
-<span id='Ext-data.TreeStore-event-sort'>             /**
+<span id='Ext-data-TreeStore-event-sort'>             /**
 </span>              * @event sort
               * Fires when this TreeStore is sorted.
               * @param {Node} node The node that is sorted.
               */             
              &quot;sort&quot;,
              
-<span id='Ext-data.TreeStore-event-rootchange'>             /**
+<span id='Ext-data-TreeStore-event-rootchange'>             /**
 </span>              * @event rootchange
               * Fires whenever the root node is changed in the tree.
               * @param {Ext.data.Model} root The new root
@@ -214,7 +231,7 @@ Ext.define('Ext.data.TreeStore', {
         ]);
         
         me.addEvents(
-<span id='Ext-data.TreeStore-event-rootchange'>            /**
+<span id='Ext-data-TreeStore-event-rootchange'>            /**
 </span>             * @event rootchange
              * Fires when the root node on this TreeStore is changed.
              * @param {Ext.data.TreeStore} store This TreeStore
@@ -269,7 +286,7 @@ Ext.define('Ext.data.TreeStore', {
         }
     },
     
-<span id='Ext-data.TreeStore-method-onBeforeNodeExpand'>    /**
+<span id='Ext-data-TreeStore-method-onBeforeNodeExpand'>    /**
 </span>     * Called before a node is expanded.
      * @private
      * @param {Ext.data.NodeInterface} node The node being expanded.
@@ -305,7 +322,7 @@ Ext.define('Ext.data.TreeStore', {
         return Ext.Array.filter(this.tree.flatten(), this.filterUpdated);
     },
     
-<span id='Ext-data.TreeStore-method-onBeforeNodeCollapse'>    /**
+<span id='Ext-data-TreeStore-method-onBeforeNodeCollapse'>    /**
 </span>     * Called before a node is collapsed.
      * @private
      * @param {Ext.data.NodeInterface} node The node being collapsed.
@@ -341,7 +358,7 @@ Ext.define('Ext.data.TreeStore', {
         }
     },
         
-<span id='Ext-data.TreeStore-method-setRootNode'>    /**
+<span id='Ext-data-TreeStore-method-setRootNode'>    /**
 </span>     * Sets the root node for this store
      * @param {Ext.data.Model/Ext.data.NodeInterface} root
      * @return {Ext.data.NodeInterface} The new root
@@ -378,7 +395,7 @@ Ext.define('Ext.data.TreeStore', {
         return root;
     },
         
-<span id='Ext-data.TreeStore-method-getRootNode'>    /**
+<span id='Ext-data-TreeStore-method-getRootNode'>    /**
 </span>     * Returns the root node for this tree.
      * @return {Ext.data.NodeInterface}
      */
@@ -386,7 +403,7 @@ Ext.define('Ext.data.TreeStore', {
         return this.tree.getRootNode();
     },
 
-<span id='Ext-data.TreeStore-method-getNodeById'>    /**
+<span id='Ext-data-TreeStore-method-getNodeById'>    /**
 </span>     * Returns the record node by id
      * @return {Ext.data.NodeInterface}
      */
@@ -394,7 +411,7 @@ Ext.define('Ext.data.TreeStore', {
         return this.tree.getNodeById(id);
     },
 
-<span id='Ext-data.TreeStore-method-load'>    /**
+<span id='Ext-data-TreeStore-method-load'>    /**
 </span>     * Loads the Store using its configured {@link #proxy}.
      * @param {Object} options Optional config object. This is passed into the {@link Ext.data.Operation Operation}
      * object that is created and then sent to the proxy's {@link Ext.data.proxy.Proxy#read} function.
@@ -434,7 +451,7 @@ Ext.define('Ext.data.TreeStore', {
     },
         
 
-<span id='Ext-data.TreeStore-method-fillNode'>    /**
+<span id='Ext-data-TreeStore-method-fillNode'>    /**
 </span>     * Fills a node with a series of child records.
      * @private
      * @param {Ext.data.NodeInterface} node The node to fill
@@ -478,7 +495,7 @@ Ext.define('Ext.data.TreeStore', {
         Ext.callback(operation.callback, operation.scope || me, [records, operation, successful]);
     },
     
-<span id='Ext-data.TreeStore-method-onCreateRecords'>    /**
+<span id='Ext-data-TreeStore-method-onCreateRecords'>    /**
 </span>     * Create any new records when a write is returned from the server.
      * @private
      * @param {Array} records The array of new records
@@ -495,8 +512,8 @@ Ext.define('Ext.data.TreeStore', {
                 original,
                 index;
 
-<span id='Ext-data.TreeStore-property-'>            /**
-</span>             * Loop over each record returned from the server. Assume they are
+            /*
+             * Loop over each record returned from the server. Assume they are
              * returned in order of how they were sent. If we find a matching
              * record, replace it with the newly created one.
              */
@@ -517,7 +534,7 @@ Ext.define('Ext.data.TreeStore', {
         }
     },
 
-<span id='Ext-data.TreeStore-method-onUpdateRecords'>    /**
+<span id='Ext-data-TreeStore-method-onUpdateRecords'>    /**
 </span>     * Update any records when a write is returned from the server.
      * @private
      * @param {Array} records The array of updated records
@@ -548,7 +565,7 @@ Ext.define('Ext.data.TreeStore', {
         }
     },
 
-<span id='Ext-data.TreeStore-method-onDestroyRecords'>    /**
+<span id='Ext-data-TreeStore-method-onDestroyRecords'>    /**
 </span>     * Remove any records when a write is returned from the server.
      * @private
      * @param {Array} records The array of removed records
@@ -563,7 +580,7 @@ Ext.define('Ext.data.TreeStore', {
 
     // inherit docs
     removeAll: function() {
-        this.getRootNode().destroy();
+        this.getRootNode().destroy(true);
         this.fireEvent('clear', this);
     },
 
@@ -579,4 +596,6 @@ Ext.define('Ext.data.TreeStore', {
         }   
         me.fireEvent('sort', me);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

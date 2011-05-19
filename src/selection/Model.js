@@ -108,24 +108,44 @@ Ext.define('Ext.selection.Model', {
         }
     },
 
-    selectAll: function(silent) {
-        var selections = this.store.getRange(),
+    /**
+     * Select all records in the view.
+     * @param {Boolean} suppressEvent True to suppress any selects event
+     */
+    selectAll: function(suppressEvent) {
+        var me = this,
+            selections = me.store.getRange(),
             i = 0,
-            len = selections.length;
+            len = selections.length,
+            start = me.getSelection().length;
             
+        me.bulkChange = true;
         for (; i < len; i++) {
-            this.doSelect(selections[i], true, silent);
+            me.doSelect(selections[i], true, suppressEvent);
         }
+        delete me.bulkChange;
+        // fire selection change only if the number of selections differs
+        me.maybeFireSelectionChange(me.getSelection().length !== start);
     },
 
-    deselectAll: function() {
-        var selections = this.getSelection(),
+    /**
+     * Deselect all records in the view.
+     * @param {Boolean} suppressEvent True to suppress any deselect events
+     */
+    deselectAll: function(suppressEvent) {
+        var me = this,
+            selections = me.getSelection(),
             i = 0,
-            len = selections.length;
+            len = selections.length,
+            start = me.getSelection().length;
             
+        me.bulkChange = true;
         for (; i < len; i++) {
-            this.doDeselect(selections[i]);
+            me.doDeselect(selections[i], suppressEvent);
         }
+        delete me.bulkChange;
+        // fire selection change only if the number of selections differs
+        me.maybeFireSelectionChange(me.getSelection().length !== start);
     },
 
     // Provides differentiation of logic between MULTI, SIMPLE and SINGLE
@@ -282,7 +302,7 @@ Ext.define('Ext.selection.Model', {
         len = records.length;
         if (!keepExisting && selected.getCount() > 0) {
             change = true;
-            me.doDeselect(me.getSelection(), true);
+            me.doDeselect(me.getSelection(), suppressEvent);
         }
 
         for (; i < len; i++) {
@@ -381,8 +401,8 @@ Ext.define('Ext.selection.Model', {
     // fire selection change as long as true is not passed
     // into maybeFireSelectionChange
     maybeFireSelectionChange: function(fireEvent) {
-        if (fireEvent) {
-            var me = this;
+        var me = this;
+        if (fireEvent && !me.bulkChange) {
             me.fireEvent('selectionchange', me, me.getSelection());
         }
     },
@@ -498,6 +518,11 @@ Ext.define('Ext.selection.Model', {
         me.maybeFireSelectionChange(change);
     },
 
+    /**
+     * A fast reset of the selections without firing events, updating the ui, etc.
+     * For private usage only.
+     * @private
+     */
     clearSelections: function() {
         // reset the entire selection to nothing
         var me = this;

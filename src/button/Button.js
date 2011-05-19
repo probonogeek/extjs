@@ -322,6 +322,17 @@ Ext.define('Ext.button.Button', {
      * The CSS class to add to a button when it's menu is active. (Defaults to 'x-btn-menu-active')
      */
     menuActiveCls: 'menu-active',
+    
+    /**
+     * @cfg {Object} baseParams
+     * An object literal of parameters to pass to the url when the {@link #href} property is specified.
+     */
+    
+    /**
+     * @cfg {Object} params
+     * An object literal of parameters to pass to the url when the {@link #href} property is specified.
+     * Any params override {@link #baseParams}. New params can be set using the {@link #setParams} method.
+     */
 
     ariaRole: 'button',
 
@@ -712,17 +723,21 @@ Ext.define('Ext.button.Button', {
      * @returns The href string with parameters appended.
      */
     getHref: function() {
-        var me = this;
-        return me.href ? Ext.urlAppend(me.href, me.params + Ext.Object.toQueryString(Ext.apply(Ext.apply({}, me.baseParams)))) : false;
+        var me = this,
+            params = Ext.apply({}, me.baseParams);
+            
+        // write baseParams first, then write any params
+        params = Ext.apply(params, me.params);
+        return me.href ? Ext.urlAppend(me.href, Ext.Object.toQueryString(params)) : false;
     },
 
     /**
      * <p><b>Only valid if the Button was originally configured with a {@link #url}</b></p>
      * <p>Sets the href of the link dynamically according to the params passed, and any {@link #baseParams} configured.</p>
-     * @param {Object} Parameters to use in the href URL.
+     * @param {Object} params Parameters to use in the href URL.
      */
-    setParams: function(p) {
-        this.params = p;
+    setParams: function(params) {
+        this.params = params;
         this.btnEl.dom.href = this.getHref();
     },
 

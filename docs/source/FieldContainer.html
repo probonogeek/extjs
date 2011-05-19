@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.FieldContainer-method-constructor'><span id='Ext-form.FieldContainer'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-FieldContainer-method-constructor'><span id='Ext-form-FieldContainer'>/**
 </span></span> * @class Ext.form.FieldContainer
  * @extends Ext.container.Container
 
@@ -112,21 +129,21 @@ Ext.define('Ext.form.FieldContainer', {
 
     componentLayout: 'field',
 
-<span id='Ext-form.FieldContainer-cfg-combineLabels'>    /**
+<span id='Ext-form-FieldContainer-cfg-combineLabels'>    /**
 </span>     * @cfg {Boolean} combineLabels
      * If set to true, and there is no defined {@link #fieldLabel}, the field container will automatically
      * generate its label by combining the labels of all the fields it contains. Defaults to false.
      */
     combineLabels: false,
 
-<span id='Ext-form.FieldContainer-cfg-labelConnector'>    /**
+<span id='Ext-form-FieldContainer-cfg-labelConnector'>    /**
 </span>     * @cfg {String} labelConnector
      * The string to use when joining the labels of individual sub-fields, when {@link #combineLabels} is
      * set to true. Defaults to ', '.
      */
     labelConnector: ', ',
 
-<span id='Ext-form.FieldContainer-cfg-combineErrors'>    /**
+<span id='Ext-form-FieldContainer-cfg-combineErrors'>    /**
 </span>     * @cfg {Boolean} combineErrors
      * If set to true, the field container will automatically combine and display the validation errors from
      * all the fields it contains as a single error on the container, according to the configured
@@ -147,7 +164,7 @@ Ext.define('Ext.form.FieldContainer', {
         me.callParent();
     },
 
-<span id='Ext-form.FieldContainer-method-onLabelableAdded'>    /**
+<span id='Ext-form-FieldContainer-method-onLabelableAdded'>    /**
 </span>     * @protected Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was added
      */
@@ -157,7 +174,7 @@ Ext.define('Ext.form.FieldContainer', {
         me.updateLabel();
     },
 
-<span id='Ext-form.FieldContainer-method-onLabelableRemoved'>    /**
+<span id='Ext-form-FieldContainer-method-onLabelableRemoved'>    /**
 </span>     * @protected Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was removed
      */
@@ -189,7 +206,7 @@ Ext.define('Ext.form.FieldContainer', {
         return Ext.applyIf(this.callParent(), this.getLabelableRenderData());
     },
 
-<span id='Ext-form.FieldContainer-method-getFieldLabel'>    /**
+<span id='Ext-form-FieldContainer-method-getFieldLabel'>    /**
 </span>     * Returns the combined field label if {@link #combineLabels} is set to true and if there is no
      * set {@link #fieldLabel}. Otherwise returns the fieldLabel like normal. You can also override
      * this method to provide a custom generated label.
@@ -204,7 +221,7 @@ Ext.define('Ext.form.FieldContainer', {
         return label;
     },
 
-<span id='Ext-form.FieldContainer-method-updateLabel'>    /**
+<span id='Ext-form-FieldContainer-method-updateLabel'>    /**
 </span>     * @private Updates the content of the labelEl if it is rendered
      */
     updateLabel: function() {
@@ -216,7 +233,7 @@ Ext.define('Ext.form.FieldContainer', {
     },
 
 
-<span id='Ext-form.FieldContainer-method-onFieldErrorChange'>    /**
+<span id='Ext-form-FieldContainer-method-onFieldErrorChange'>    /**
 </span>     * @private Fired when the error message of any field within the container changes, and updates the
      * combined error message to match.
      */
@@ -241,7 +258,7 @@ Ext.define('Ext.form.FieldContainer', {
         }
     },
 
-<span id='Ext-form.FieldContainer-method-getCombinedErrors'>    /**
+<span id='Ext-form-FieldContainer-method-getCombinedErrors'>    /**
 </span>     * Takes an Array of invalid {@link Ext.form.field.Field} objects and builds a combined list of error
      * messages from them. Defaults to prepending each message by the field name and a colon. This
      * can be overridden to provide custom combined error message handling, for instance changing
@@ -265,4 +282,6 @@ Ext.define('Ext.form.FieldContainer', {
         return this.bodyEl || this.callParent();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.Table'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-Table'>/**
 </span> * @class Ext.layout.container.Table
  * @extends Ext.layout.container.Auto
  * &lt;p&gt;This layout allows you to easily render content into an HTML table.  The total number of columns can be
@@ -72,7 +89,7 @@ Ext.define('Ext.layout.container.Table', {
 
     /* End Definitions */
 
-<span id='Ext-layout.container.Table-cfg-columns'>    /**
+<span id='Ext-layout-container-Table-cfg-columns'>    /**
 </span>     * @cfg {Number} columns
      * The total number of columns to create in the table for this layout.  If not specified, all Components added to
      * this layout will be rendered into a single row using one column per Component.
@@ -93,7 +110,7 @@ Ext.define('Ext.layout.container.Table', {
     tableCls: Ext.baseCSSPrefix + 'table-layout',
     cellCls: Ext.baseCSSPrefix + 'table-layout-cell',
 
-<span id='Ext-layout.container.Table-cfg-tableAttrs'>    /**
+<span id='Ext-layout-container-Table-cfg-tableAttrs'>    /**
 </span>     * @cfg {Object} tableAttrs
      * &lt;p&gt;An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
      * used to create the layout's &lt;tt&gt;&amp;lt;table&amp;gt;&lt;/tt&gt; element. Example:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;
@@ -112,7 +129,7 @@ Ext.define('Ext.layout.container.Table', {
      */
     tableAttrs:null,
 
-<span id='Ext-layout.container.Table-method-renderItems'>    /**
+<span id='Ext-layout-container-Table-method-renderItems'>    /**
 </span>     * @private
      * Iterates over all passed items, ensuring they are rendered in a cell in the proper
      * location in the table structure.
@@ -192,7 +209,7 @@ Ext.define('Ext.layout.container.Table', {
         }
     },
 
-<span id='Ext-layout.container.Table-method-calculateCells'>    /**
+<span id='Ext-layout-container-Table-method-calculateCells'>    /**
 </span>     * @private
      * Determine the row and cell indexes for each component, taking into consideration
      * the number of columns and each item's configured colspan/rowspan values.
@@ -247,7 +264,7 @@ Ext.define('Ext.layout.container.Table', {
         return cells;
     },
 
-<span id='Ext-layout.container.Table-method-getTable'>    /**
+<span id='Ext-layout-container-Table-method-getTable'>    /**
 </span>     * @private
      * Return the layout's table element, creating it if necessary.
      */
@@ -268,7 +285,7 @@ Ext.define('Ext.layout.container.Table', {
         return table;
     },
 
-<span id='Ext-layout.container.Table-method-needsDivWrap'>    /**
+<span id='Ext-layout-container-Table-method-needsDivWrap'>    /**
 </span>     * @private
      * Opera 10.5 has a bug where if a table cell's child has box-sizing:border-box and padding, it
      * will include that padding in the size of the cell, making it always larger than the
@@ -280,4 +297,6 @@ Ext.define('Ext.layout.container.Table', {
     needsDivWrap: function() {
         return Ext.isOpera10_5;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

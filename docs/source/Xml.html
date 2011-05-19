@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.reader.Xml'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-reader-Xml'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.reader.Xml
  * @extends Ext.data.reader.Reader
@@ -168,46 +185,35 @@ Ext.define('Ext.data.reader.Xml', {
     alternateClassName: 'Ext.data.XmlReader',
     alias : 'reader.xml',
     
-<span id='Ext-data.reader.Xml-property-'>    /**
+<span id='Ext-data-reader-Xml-cfg-record'>    /**
+</span>     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
+     */
+
+<span id='Ext-data-reader-Xml-method-createAccessor'>    /**
 </span>     * @private
      * Creates a function to return some particular key of data from a response. The totalProperty and
      * successProperty are treated as special cases for type casting, everything else is just a simple selector.
      * @param {String} key
      * @return {Function}
      */
-
-<span id='Ext-data.reader.Xml-cfg-record'>    /**
-</span>     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
-     */
-
-    createAccessor: function() {
-        var selectValue = function(expr, root){
+    createAccessor: function(expr) {
+        var me = this;
+        
+        if (Ext.isEmpty(expr)) {
+            return Ext.emptyFn;
+        }
+        
+        if (Ext.isFunction(expr)) {
+            return expr;
+        }
+        
+        return function(root) {
             var node = Ext.DomQuery.selectNode(expr, root),
-                val;
+                val = me.getNodeValue(node);
                 
-            
-            
+            return Ext.isEmpty(val) ? null : val;
         };
-
-        return function(expr) {
-            var me = this;
-            
-            if (Ext.isEmpty(expr)) {
-                return Ext.emptyFn;
-            }
-            
-            if (Ext.isFunction(expr)) {
-                return expr;
-            }
-            
-            return function(root) {
-                var node = Ext.DomQuery.selectNode(expr, root),
-                    val = me.getNodeValue(node);
-                    
-                return Ext.isEmpty(val) ? null : val;
-            };
-        };
-    }(),
+    },
     
     getNodeValue: function(node) {
         var val;
@@ -233,7 +239,7 @@ Ext.define('Ext.data.reader.Xml', {
         return xml;
     },
 
-<span id='Ext-data.reader.Xml-method-getData'>    /**
+<span id='Ext-data-reader-Xml-method-getData'>    /**
 </span>     * Normalizes the data object
      * @param {Object} data The raw data object
      * @return {Object} Returns the documentElement property of the data object if present, or the same object if not
@@ -242,7 +248,7 @@ Ext.define('Ext.data.reader.Xml', {
         return data.documentElement || data;
     },
 
-<span id='Ext-data.reader.Xml-method-getRoot'>    /**
+<span id='Ext-data-reader-Xml-method-getRoot'>    /**
 </span>     * @private
      * Given an XML object, returns the Element that represents the root as configured by the Reader's meta data
      * @param {Object} data The XML data object
@@ -262,7 +268,7 @@ Ext.define('Ext.data.reader.Xml', {
         }
     },
 
-<span id='Ext-data.reader.Xml-method-extractData'>    /**
+<span id='Ext-data-reader-Xml-method-extractData'>    /**
 </span>     * @private
      * We're just preparing the data for the superclass by pulling out the record nodes we want
      * @param {Element} root The XML root node
@@ -285,7 +291,7 @@ Ext.define('Ext.data.reader.Xml', {
         return this.callParent([root]);
     },
     
-<span id='Ext-data.reader.Xml-method-getAssociatedDataRoot'>    /**
+<span id='Ext-data-reader-Xml-method-getAssociatedDataRoot'>    /**
 </span>     * @private
      * See Ext.data.reader.Reader's getAssociatedDataRoot docs
      * @param {Mixed} data The raw data object
@@ -296,7 +302,7 @@ Ext.define('Ext.data.reader.Xml', {
         return Ext.DomQuery.select(associationName, data)[0];
     },
 
-<span id='Ext-data.reader.Xml-method-readRecords'>    /**
+<span id='Ext-data-reader-Xml-method-readRecords'>    /**
 </span>     * Parses an XML document and returns a ResultSet containing the model instances
      * @param {Object} doc Parsed XML document
      * @return {Ext.data.ResultSet} The parsed result set
@@ -307,7 +313,7 @@ Ext.define('Ext.data.reader.Xml', {
             doc = doc[0];
         }
         
-<span id='Ext-data.reader.Xml-property-xmlData'>        /**
+<span id='Ext-data-reader-Xml-property-xmlData'>        /**
 </span>         * DEPRECATED - will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead
          * @property xmlData
          * @type Object
@@ -316,4 +322,6 @@ Ext.define('Ext.data.reader.Xml', {
         return this.callParent([doc]);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

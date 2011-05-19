@@ -9,8 +9,8 @@ Ext.onReady(function() {
         telephone: '555 1234 123'
     }, {
         insuranceCode: '22222',
-        name: 'Fred West',
-        address: 'Cromwell Street',
+        name: 'Fred Bansod',
+        address: 'Van Ness',
         telephone: '666 666 666'
     }, {
         insuranceCode: '33333',

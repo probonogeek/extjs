@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tab.Panel-method-constructor'><span id='Ext-tab.Panel'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tab-Panel-method-constructor'><span id='Ext-tab-Panel'>/**
 </span></span> * @author Ed Spencer, Tommy Maintz, Brian Moeskau
  * @class Ext.tab.Panel
  * @extends Ext.panel.Panel
@@ -270,44 +287,44 @@ Ext.define('Ext.tab.Panel', {
 
     requires: ['Ext.layout.container.Card', 'Ext.tab.Bar'],
 
-<span id='Ext-tab.Panel-cfg-tabPosition'>    /**
+<span id='Ext-tab-Panel-cfg-tabPosition'>    /**
 </span>     * @cfg {String} tabPosition The position where the tab strip should be rendered (defaults to &lt;code&gt;'top'&lt;/code&gt;).
      * In 4.0, The only other supported value is &lt;code&gt;'bottom'&lt;/code&gt;.
      */
     tabPosition : 'top',
     
-<span id='Ext-tab.Panel-cfg-tabBar'>    /**
+<span id='Ext-tab-Panel-cfg-tabBar'>    /**
 </span>     * @cfg {Object} tabBar Optional configuration object for the internal {@link Ext.tab.Bar}. If present, this is 
      * passed straight through to the TabBar's constructor
      */
 
-<span id='Ext-tab.Panel-cfg-layout'>    /**
+<span id='Ext-tab-Panel-cfg-layout'>    /**
 </span>     * @cfg {Object} layout Optional configuration object for the internal {@link Ext.layout.container.Card card layout}.
      * If present, this is passed straight through to the layout's constructor
      */
 
-<span id='Ext-tab.Panel-cfg-removePanelHeader'>    /**
+<span id='Ext-tab-Panel-cfg-removePanelHeader'>    /**
 </span>     * @cfg {Boolean} removePanelHeader True to instruct each Panel added to the TabContainer to not render its header 
      * element. This is to ensure that the title of the panel does not appear twice. Defaults to true.
      */
     removePanelHeader: true,
 
-<span id='Ext-tab.Panel-cfg-Boolean'>    /**
+<span id='Ext-tab-Panel-cfg-Boolean'>    /**
 </span>     * @cfg Boolean plain
      * True to not show the full background on the TabBar
      */
     plain: false,
 
-<span id='Ext-tab.Panel-cfg-itemCls'>    /**
+<span id='Ext-tab-Panel-cfg-itemCls'>    /**
 </span>     * @cfg {String} itemCls The class added to each child item of this TabPanel. Defaults to 'x-tabpanel-child'.
      */
     itemCls: 'x-tabpanel-child',
 
-<span id='Ext-tab.Panel-cfg-minTabWidth'>    /**
+<span id='Ext-tab-Panel-cfg-minTabWidth'>    /**
 </span>     * @cfg {Number} minTabWidth The minimum width for a tab in the {@link #tabBar}. Defaults to &lt;code&gt;30&lt;/code&gt;.
      */
 
-<span id='Ext-tab.Panel-cfg-deferredRender'>    /**
+<span id='Ext-tab-Panel-cfg-deferredRender'>    /**
 </span>     * @cfg {Boolean} deferredRender
      * &lt;p&gt;&lt;tt&gt;true&lt;/tt&gt; by default to defer the rendering of child &lt;tt&gt;{@link Ext.container.Container#items items}&lt;/tt&gt;
      * to the browsers DOM until a tab is activated. &lt;tt&gt;false&lt;/tt&gt; will render all contained
@@ -335,7 +352,7 @@ Ext.define('Ext.tab.Panel', {
             itemCls: me.itemCls
         }, me.layout));
 
-<span id='Ext-tab.Panel-property-tabBar'>        /**
+<span id='Ext-tab-Panel-property-tabBar'>        /**
 </span>         * @property tabBar
          * @type Ext.TabBar
          * Internal reference to the docked TabBar
@@ -356,7 +373,7 @@ Ext.define('Ext.tab.Panel', {
         me.dockedItems = dockedItems;
 
         me.addEvents(
-<span id='Ext-tab.Panel-event-beforetabchange'>            /**
+<span id='Ext-tab-Panel-event-beforetabchange'>            /**
 </span>             * @event beforetabchange
              * Fires before a tab change (activated by {@link #setActiveTab}). Return false in any listener to cancel
              * the tabchange
@@ -366,7 +383,7 @@ Ext.define('Ext.tab.Panel', {
              */
             'beforetabchange',
 
-<span id='Ext-tab.Panel-event-tabchange'>            /**
+<span id='Ext-tab-Panel-event-tabchange'>            /**
 </span>             * @event tabchange
              * Fires when a new tab has been activated (activated by {@link #setActiveTab}).
              * @param {Ext.tab.Panel} tabPanel The TabPanel
@@ -383,7 +400,7 @@ Ext.define('Ext.tab.Panel', {
         me.on('afterlayout', me.afterInitialLayout, me, {single: true});
     },
 
-<span id='Ext-tab.Panel-method-afterInitialLayout'>    /**
+<span id='Ext-tab-Panel-method-afterInitialLayout'>    /**
 </span>     * @private
      * We have to wait until after the initial layout to visually activate the activeTab (if set).
      * The active tab has different margins than normal tabs, so if the initial layout happens with
@@ -399,7 +416,7 @@ Ext.define('Ext.tab.Panel', {
         }
     },
 
-<span id='Ext-tab.Panel-method-setActiveTab'>    /**
+<span id='Ext-tab-Panel-method-setActiveTab'>    /**
 </span>     * Makes the given card active (makes it the visible card in the TabPanel's CardLayout and highlights the Tab)
      * @param {Ext.Component} card The card to make active
      */
@@ -427,7 +444,7 @@ Ext.define('Ext.tab.Panel', {
         }
     },
 
-<span id='Ext-tab.Panel-method-getActiveTab'>    /**
+<span id='Ext-tab-Panel-method-getActiveTab'>    /**
 </span>     * Returns the item that is currently active inside this TabPanel. Note that before the TabPanel first activates a
      * child component this will return whatever was configured in the {@link #activeTab} config option 
      * @return {Ext.Component/Integer} The currently active item
@@ -436,7 +453,7 @@ Ext.define('Ext.tab.Panel', {
         return this.activeTab;
     },
 
-<span id='Ext-tab.Panel-method-getTabBar'>    /**
+<span id='Ext-tab-Panel-method-getTabBar'>    /**
 </span>     * Returns the {@link Ext.tab.Bar} currently used in this TabPanel
      * @return {Ext.TabBar} The TabBar
      */
@@ -444,7 +461,7 @@ Ext.define('Ext.tab.Panel', {
         return this.tabBar;
     },
 
-<span id='Ext-tab.Panel-method-onAdd'>    /**
+<span id='Ext-tab-Panel-method-onAdd'>    /**
 </span>     * @ignore
      * Makes sure we have a Tab for each item added to the TabPanel
      */
@@ -487,7 +504,7 @@ Ext.define('Ext.tab.Panel', {
         }
     },
     
-<span id='Ext-tab.Panel-method-onItemEnable'>    /**
+<span id='Ext-tab-Panel-method-onItemEnable'>    /**
 </span>     * @private
      * Enable corresponding tab when item is enabled.
      */
@@ -495,7 +512,7 @@ Ext.define('Ext.tab.Panel', {
         item.tab.enable();
     },
 
-<span id='Ext-tab.Panel-method-onItemDisable'>    /**
+<span id='Ext-tab-Panel-method-onItemDisable'>    /**
 </span>     * @private
      * Disable corresponding tab when item is enabled.
      */    
@@ -503,7 +520,7 @@ Ext.define('Ext.tab.Panel', {
         item.tab.disable();
     },
     
-<span id='Ext-tab.Panel-method-onItemBeforeShow'>    /**
+<span id='Ext-tab-Panel-method-onItemBeforeShow'>    /**
 </span>     * @private
      * Sets activeTab before item is shown.
      */
@@ -514,7 +531,7 @@ Ext.define('Ext.tab.Panel', {
         }    
     },
     
-<span id='Ext-tab.Panel-method-onItemIconChange'>    /**
+<span id='Ext-tab-Panel-method-onItemIconChange'>    /**
 </span>     * @private
      * Update the tab iconCls when panel iconCls has been set or changed.
      */
@@ -523,7 +540,7 @@ Ext.define('Ext.tab.Panel', {
         this.getTabBar().doLayout();
     },
     
-<span id='Ext-tab.Panel-method-onItemTitleChange'>    /**
+<span id='Ext-tab-Panel-method-onItemTitleChange'>    /**
 </span>     * @private
      * Update the tab title when panel title has been set or changed.
      */
@@ -533,7 +550,7 @@ Ext.define('Ext.tab.Panel', {
     },
 
 
-<span id='Ext-tab.Panel-method-doRemove'>    /**
+<span id='Ext-tab-Panel-method-doRemove'>    /**
 </span>     * @ignore
      * If we're removing the currently active tab, activate the nearest one. The item is removed when we call super,
      * so we can do preprocessing before then to find the card's index
@@ -541,7 +558,7 @@ Ext.define('Ext.tab.Panel', {
     doRemove: function(item, autoDestroy) {
         var me = this,
             items = me.items,
-<span id='Ext-tab.Panel-property-hasItemsLeft'>            /**
+<span id='Ext-tab-Panel-property-hasItemsLeft'>            /**
 </span>             * At this point the item hasn't been removed from the items collection.
              * As such, if we want to check if there are no more tabs left, we have to
              * check for one, as opposed to 0.
@@ -560,7 +577,7 @@ Ext.define('Ext.tab.Panel', {
         delete item.tab;
     },
 
-<span id='Ext-tab.Panel-method-onRemove'>    /**
+<span id='Ext-tab-Panel-method-onRemove'>    /**
 </span>     * @ignore
      * Makes sure we remove the corresponding Tab when an item is removed
      */
@@ -578,4 +595,6 @@ Ext.define('Ext.tab.Panel', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

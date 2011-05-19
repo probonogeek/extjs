@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.Panel-method-constructor'><span id='Ext-form.Panel'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-Panel-method-constructor'><span id='Ext-form-Panel'>/**
 </span></span> * @class Ext.form.Panel
  * @extends Ext.panel.Panel
 
@@ -134,7 +151,7 @@ Ext.define('Ext.form.Panel', {
     alternateClassName: ['Ext.FormPanel', 'Ext.form.FormPanel'],
     requires: ['Ext.form.Basic', 'Ext.util.TaskRunner'],
 
-<span id='Ext-form.Panel-cfg-pollForChanges'>    /**
+<span id='Ext-form-Panel-cfg-pollForChanges'>    /**
 </span>     * @cfg {Boolean} pollForChanges
      * If set to &lt;tt&gt;true&lt;/tt&gt;, sets up an interval task (using the {@link #pollInterval}) in which the 
      * panel's fields are repeatedly checked for changes in their values. This is in addition to the normal detection
@@ -143,13 +160,13 @@ Ext.define('Ext.form.Panel', {
      * do not fire native events. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
 
-<span id='Ext-form.Panel-cfg-pollInterval'>    /**
+<span id='Ext-form-Panel-cfg-pollInterval'>    /**
 </span>     * @cfg {Number} pollInterval
      * Interval in milliseconds at which the form's fields are checked for value changes. Only used if
      * the {@link #pollForChanges} option is set to &lt;tt&gt;true&lt;/tt&gt;. Defaults to 500 milliseconds.
      */
 
-<span id='Ext-form.Panel-cfg-layout'>    /**
+<span id='Ext-form-Panel-cfg-layout'>    /**
 </span>     * @cfg {String} layout The {@link Ext.container.Container#layout} for the form panel's immediate child items.
      * Defaults to &lt;tt&gt;'anchor'&lt;/tt&gt;.
      */
@@ -190,14 +207,14 @@ Ext.define('Ext.form.Panel', {
         me.form.initialize();
     },
 
-<span id='Ext-form.Panel-method-createForm'>    /**
+<span id='Ext-form-Panel-method-createForm'>    /**
 </span>     * @private
      */
     createForm: function() {
         return Ext.create('Ext.form.Basic', this, Ext.applyIf({listeners: {}}, this.initialConfig));
     },
 
-<span id='Ext-form.Panel-method-getForm'>    /**
+<span id='Ext-form-Panel-method-getForm'>    /**
 </span>     * Provides access to the {@link Ext.form.Basic Form} which this Panel contains.
      * @return {Ext.form.Basic} The {@link Ext.form.Basic Form} which this Panel contains.
      */
@@ -205,7 +222,7 @@ Ext.define('Ext.form.Panel', {
         return this.form;
     },
     
-<span id='Ext-form.Panel-method-loadRecord'>    /**
+<span id='Ext-form-Panel-method-loadRecord'>    /**
 </span>     * Loads an {@link Ext.data.Model} into this form (internally just calls {@link Ext.form.Basic#loadRecord})
      * See also {@link #trackResetOnLoad}.
      * @param {Ext.data.Model} record The record to load
@@ -215,7 +232,7 @@ Ext.define('Ext.form.Panel', {
         return this.getForm().loadRecord(record);
     },
     
-<span id='Ext-form.Panel-method-getRecord'>    /**
+<span id='Ext-form-Panel-method-getRecord'>    /**
 </span>     * Returns the currently loaded Ext.data.Model instance if one was loaded via {@link #loadRecord}.
      * @return {Ext.data.Model} The loaded instance
      */
@@ -223,7 +240,7 @@ Ext.define('Ext.form.Panel', {
         return this.getForm().getRecord();
     },
     
-<span id='Ext-form.Panel-method-getValues'>    /**
+<span id='Ext-form-Panel-method-getValues'>    /**
 </span>     * Convenience function for fetching the current value of each field in the form. This is the same as calling
      * {@link Ext.form.Basic#getValues this.getForm().getValues()}
      * @return {Object} The current form field values, keyed by field name
@@ -238,7 +255,7 @@ Ext.define('Ext.form.Panel', {
         this.callParent();
     },
 
-<span id='Ext-form.Panel-method-load'>    /**
+<span id='Ext-form-Panel-method-load'>    /**
 </span>     * This is a proxy for the underlying BasicForm's {@link Ext.form.Basic#load} call.
      * @param {Object} options The options to pass to the action (see {@link Ext.form.Basic#load} and
      * {@link Ext.form.Basic#doAction} for details)
@@ -247,7 +264,7 @@ Ext.define('Ext.form.Panel', {
         this.form.load(options);
     },
 
-<span id='Ext-form.Panel-method-submit'>    /**
+<span id='Ext-form-Panel-method-submit'>    /**
 </span>     * This is a proxy for the underlying BasicForm's {@link Ext.form.Basic#submit} call.
      * @param {Object} options The options to pass to the action (see {@link Ext.form.Basic#submit} and
      * {@link Ext.form.Basic#doAction} for details)
@@ -278,7 +295,7 @@ Ext.define('Ext.form.Panel', {
         });
     },
 
-<span id='Ext-form.Panel-method-startPolling'>    /**
+<span id='Ext-form-Panel-method-startPolling'>    /**
 </span>     * Start an interval task to continuously poll all the fields in the form for changes in their
      * values. This is normally started automatically by setting the {@link #pollForChanges} config.
      * @param {Number} interval The interval in milliseconds at which the check should run.
@@ -294,7 +311,7 @@ Ext.define('Ext.form.Panel', {
         this.pollTask = task;
     },
 
-<span id='Ext-form.Panel-method-stopPolling'>    /**
+<span id='Ext-form-Panel-method-stopPolling'>    /**
 </span>     * Stop a running interval task that was started by {@link #startPolling}.
      */
     stopPolling: function() {
@@ -305,7 +322,7 @@ Ext.define('Ext.form.Panel', {
         }
     },
 
-<span id='Ext-form.Panel-method-checkChange'>    /**
+<span id='Ext-form-Panel-method-checkChange'>    /**
 </span>     * Forces each field within the form panel to 
      * {@link Ext.form.field.Field#checkChange check if its value has changed}.
      */
@@ -315,4 +332,6 @@ Ext.define('Ext.form.Panel', {
         });
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

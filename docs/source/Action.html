@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-Action-method-constructor'><span id='Ext-Action'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-Action-method-constructor'><span id='Ext-Action'>/**
 </span></span> * @class Ext.Action
  * &lt;p&gt;An Action is a piece of reusable functionality that can be abstracted out of any particular component so that it
  * can be usefully shared among multiple components.  Actions let you share handlers, configuration options and UI
@@ -229,9 +246,12 @@ Ext.define('Ext.Action', {
 
     // private
     callEach : function(fnName, args){
-        var cs = this.items;
-        for(var i = 0, len = cs.length; i &lt; len; i++){
-            cs[i][fnName].apply(cs[i], args);
+        var items = this.items,
+            i = 0,
+            len = items.length;
+            
+        for(; i &lt; len; i++){
+            items[i][fnName].apply(items[i], args);
         }
     },
 
@@ -243,7 +263,7 @@ Ext.define('Ext.Action', {
 
     // private
     removeComponent : function(comp){
-        this.items.remove(comp);
+        Ext.Array.remove(this.items, comp);
     },
 
 <span id='Ext-Action-method-execute'>    /**
@@ -258,4 +278,6 @@ Ext.define('Ext.Action', {
         this.initialConfig.handler.apply(this.initialConfig.scope || Ext.global, arguments);
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

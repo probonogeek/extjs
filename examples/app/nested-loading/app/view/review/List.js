@@ -55,7 +55,7 @@ Ext.define('Books.view.review.List', {
             layout: 'card',
 
             dockedItems: [
-                Ext.create('widget.header', {
+                Ext.create('Books.view.Header', {
                     html: 'Reviews'
                 })
             ],

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.Association-method-constructor'><span id='Ext-data.Association'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-Association-method-constructor'><span id='Ext-data-Association'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.Association
  * @extends Object
@@ -117,25 +134,25 @@ Ext.onReady(function(){
  * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.Association', {
-<span id='Ext-data.Association-cfg-ownerModel'>    /**
+<span id='Ext-data-Association-cfg-ownerModel'>    /**
 </span>     * @cfg {String} ownerModel The string name of the model that owns the association. Required
      */
 
-<span id='Ext-data.Association-cfg-associatedModel'>    /**
+<span id='Ext-data-Association-cfg-associatedModel'>    /**
 </span>     * @cfg {String} associatedModel The string name of the model that is being associated with. Required
      */
 
-<span id='Ext-data.Association-cfg-primaryKey'>    /**
+<span id='Ext-data-Association-cfg-primaryKey'>    /**
 </span>     * @cfg {String} primaryKey The name of the primary key on the associated model. Defaults to 'id'.
      * In general this will be the {@link Ext.data.Model#idProperty} of the Model.
      */
     primaryKey: 'id',
 
-<span id='Ext-data.Association-cfg-reader'>    /**
+<span id='Ext-data-Association-cfg-reader'>    /**
 </span>     * @cfg {Ext.data.reader.Reader} reader A special reader to read associated data
      */
     
-<span id='Ext-data.Association-cfg-associationKey'>    /**
+<span id='Ext-data-Association-cfg-associationKey'>    /**
 </span>     * @cfg {String} associationKey The name of the property in the data to read the association from.
      * Defaults to the name of the associated model.
      */
@@ -191,13 +208,13 @@ Ext.define('Ext.data.Association', {
         this.ownerModel = ownerModel;
         this.associatedModel = associatedModel;
 
-<span id='Ext-data.Association-property-ownerName'>        /**
+<span id='Ext-data-Association-property-ownerName'>        /**
 </span>         * The name of the model that 'owns' the association
          * @property ownerName
          * @type String
          */
 
-<span id='Ext-data.Association-property-associatedName'>        /**
+<span id='Ext-data-Association-property-associatedName'>        /**
 </span>         * The name of the model is on the other end of the association (e.g. if a User model hasMany Orders, this is 'Order')
          * @property associatedName
          * @type String
@@ -209,7 +226,7 @@ Ext.define('Ext.data.Association', {
         });
     },
 
-<span id='Ext-data.Association-method-getReader'>    /**
+<span id='Ext-data-Association-method-getReader'>    /**
 </span>     * Get a specialized reader for reading associated data
      * @return {Ext.data.reader.Reader} The reader, null if not supplied
      */
@@ -237,4 +254,6 @@ Ext.define('Ext.data.Association', {
         return me.reader || null;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

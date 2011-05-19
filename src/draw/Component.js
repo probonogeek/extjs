@@ -198,6 +198,7 @@ Ext.define('Ext.draw.Component', {
         }, true);
         if (me.rendered) {
             me.setSize(width, height);
+            me.surface.setSize(width, height);
         }
         else {
             me.surface.setSize(width, height);

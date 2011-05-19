@@ -41,11 +41,13 @@ Ext.onReady(function(){
         },
         listeners: {
             write: function(store, operation){
-                var record = operation.records[0],
+                var record = operation.getRecords()[0],
                     name = Ext.String.capitalize(operation.action),
                     verb;
                     
+                    
                 if (name == 'Destroy') {
+                    record = operation.records[0];
                     verb = 'Destroyed';
                 } else {
                     verb = name + 'd';
@@ -71,13 +73,7 @@ Ext.onReady(function(){
             text: 'ID',
             width: 40,
             sortable: true,
-            dataIndex: 'id',
-            renderer: function(v){
-                if (Ext.isEmpty(v)) {
-                    v = '&#160;';
-                }
-                return v;
-            }
+            dataIndex: 'id'
         }, {
             text: 'Email',
             flex: 1,

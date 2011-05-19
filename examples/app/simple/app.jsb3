@@ -584,10 +584,6 @@
                     "name": "Vml.js"
                 },
                 {
-                    "path": "../../../src/container/",
-                    "name": "Viewport.js"
-                },
-                {
                     "path": "app/model/",
                     "name": "User.js"
                 },
@@ -634,10 +630,6 @@
                 {
                     "path": "../../../../platform/src/selection/",
                     "name": "Model.js"
-                },
-                {
-                    "path": "app/view/",
-                    "name": "Viewport.js"
                 },
                 {
                     "path": "../../../src/form/action/",

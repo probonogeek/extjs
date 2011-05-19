@@ -258,6 +258,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
          * </code></pre>
          * @return {Function} A function that operates on the passed value.
+         * @method
          */
         math : function(){
             var fns = {};
@@ -432,39 +433,46 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Capitalize the given string. See {@link Ext.String#capitalize}.
+         * @method
          */
         capitalize: Ext.String.capitalize,
 
         /**
          * Truncate a string and add an ellipsis ('...') to the end if it exceeds the specified length.
          * See {@link Ext.String#ellipsis}.
+         * @method
          */
         ellipsis: Ext.String.ellipsis,
 
         /**
          * Formats to a string. See {@link Ext.String#format}
+         * @method
          */
         format: Ext.String.format,
 
         /**
          * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
          * See {@link Ext.string#htmlDecode}.
+         * @method
          */
         htmlDecode: Ext.String.htmlDecode,
 
         /**
          * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
          * See {@link Ext.String#htmlEncode}.
+         * @method
          */
         htmlEncode: Ext.String.htmlEncode,
 
         /**
          * Adds left padding to a string. See {@link Ext.String#leftPad}
+         * @method
          */
         leftPad: Ext.String.leftPad,
 
         /**
          * Trims any whitespace from either side of a string. See {@link Ext.String#trim}.
+         * @method
          */
         trim : Ext.String.trim,
 

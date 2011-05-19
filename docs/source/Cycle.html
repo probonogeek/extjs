@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-button.Cycle-method-constructor'><span id='Ext-button.Cycle'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-button-Cycle-method-constructor'><span id='Ext-button-Cycle'>/**
 </span></span> * @class Ext.button.Cycle
  * @extends Ext.button.Split
  * A specialized SplitButton that contains a menu of {@link Ext.menu.CheckItem} elements.  The button automatically
@@ -45,32 +62,32 @@ Ext.define('Ext.button.Cycle', {
 
     /* End Definitions */
 
-<span id='Ext-button.Cycle-cfg-items'>    /**
+<span id='Ext-button-Cycle-cfg-items'>    /**
 </span>     * @cfg {Array} items &lt;p&gt;Deprecated as of 4.0. Use the {@link #menu} config instead. All menu items will be created
      * as {@link Ext.menu.CheckItem CheckItem}s.&lt;/p&gt;
      * &lt;p&gt;An array of {@link Ext.menu.CheckItem} &lt;b&gt;config&lt;/b&gt; objects to be used when creating the
      * button's menu items (e.g., {text:'Foo', iconCls:'foo-icon'})
      */
-<span id='Ext-button.Cycle-cfg-showText'>    /**
+<span id='Ext-button-Cycle-cfg-showText'>    /**
 </span>     * @cfg {Boolean} showText True to display the active item's text as the button text (defaults to false).
      * The Button will show its configured {@link #text} if this. config is omitted.
      */
-<span id='Ext-button.Cycle-cfg-prependText'>    /**
+<span id='Ext-button-Cycle-cfg-prependText'>    /**
 </span>     * @cfg {String} prependText A static string to prepend before the active item's text when displayed as the
      * button's text (only applies when showText = true, defaults to '')
      */
-<span id='Ext-button.Cycle-cfg-changeHandler'>    /**
+<span id='Ext-button-Cycle-cfg-changeHandler'>    /**
 </span>     * @cfg {Function} changeHandler A callback function that will be invoked each time the active menu
      * item in the button's menu has changed.  If this callback is not supplied, the SplitButton will instead
      * fire the {@link #change} event on active item change.  The changeHandler function will be called with the
      * following argument list: (SplitButton this, Ext.menu.CheckItem item)
      */
-<span id='Ext-button.Cycle-cfg-forceIcon'>    /**
+<span id='Ext-button-Cycle-cfg-forceIcon'>    /**
 </span>     * @cfg {String} forceIcon A css class which sets an image to be used as the static icon for this button.  This
      * icon will always be displayed regardless of which item is selected in the dropdown list.  This overrides the 
      * default behavior of changing the button's icon to match the selected item's icon on change.
      */
-<span id='Ext-button.Cycle-property-menu'>    /**
+<span id='Ext-button-Cycle-property-menu'>    /**
 </span>     * @property menu
      * @type Menu
      * The {@link Ext.menu.Menu Menu} object used to display the {@link Ext.menu.CheckItem CheckItems} representing the available choices.
@@ -91,7 +108,7 @@ Ext.define('Ext.button.Cycle', {
         return me.text;
     },
 
-<span id='Ext-button.Cycle-method-setActiveItem'>    /**
+<span id='Ext-button-Cycle-method-setActiveItem'>    /**
 </span>     * Sets the button's active menu item.
      * @param {Ext.menu.CheckItem} item The item to activate
      * @param {Boolean} suppressEvent True to prevent the button's change event from firing (defaults to false)
@@ -123,7 +140,7 @@ Ext.define('Ext.button.Cycle', {
         }
     },
 
-<span id='Ext-button.Cycle-method-getActiveItem'>    /**
+<span id='Ext-button-Cycle-method-getActiveItem'>    /**
 </span>     * Gets the currently active menu item.
      * @return {Ext.menu.CheckItem} The active item
      */
@@ -138,7 +155,7 @@ Ext.define('Ext.button.Cycle', {
             items;
 
         me.addEvents(
-<span id='Ext-button.Cycle-event-change'>            /**
+<span id='Ext-button-Cycle-event-change'>            /**
 </span>             * @event change
              * Fires after the button's active menu item has changed.  Note that if a {@link #changeHandler} function
              * is set on this CycleButton, it will be called instead on active item change and this change event will
@@ -194,7 +211,7 @@ Ext.define('Ext.button.Cycle', {
         }
     },
 
-<span id='Ext-button.Cycle-method-toggleSelected'>    /**
+<span id='Ext-button-Cycle-method-toggleSelected'>    /**
 </span>     * This is normally called internally on button click, but can be called externally to advance the button's
      * active item programmatically to the next one in the menu.  If the current item is the last one in the menu
      * the active item will be set to the first item in the menu.
@@ -207,4 +224,6 @@ Ext.define('Ext.button.Cycle', {
         checkItem = me.activeItem.next(':not([disabled])') || m.items.getAt(0);
         checkItem.setChecked(true);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

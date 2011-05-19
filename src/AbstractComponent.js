@@ -425,7 +425,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      */
 
     /**
-     * @cfg {String} styleHtmlContent
+     * @cfg {Boolean} styleHtmlContent
      * True to automatically style the html inside the content target of this component (body for panels).
      * Defaults to false.
      */
@@ -697,6 +697,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         if (me.renderTo) {
             me.render(me.renderTo);
+            // EXTJSIV-1935 - should be a way to do afterShow or something, but that
+            // won't work. Likewise, rendering hidden and then showing (w/autoShow) has
+            // implications to afterRender so we cannot do that.
         }
 
         if (me.autoShow) {
@@ -802,7 +805,6 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
         return plugin;
     },
-
 
     // @private
     initPlugin : function(plugin) {
@@ -2153,7 +2155,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * @deprecated 4.0 Replaced by {link:#addCls}
+     * @deprecated 4.0 Replaced by {@link #addCls}
      * Adds a CSS class to the top level element representing this component.
      * @param {String} cls The CSS class name to add
      * @return {Ext.Component} Returns the Component to allow method chaining.
@@ -2243,8 +2245,26 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
         return me.mixins.observable.addListener.apply(me, arguments);
     },
-
-    // @TODO: implement removelistener to support the dom event stuff
+    
+    // inherit docs
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        var me = this,
+            element = managedListener.options ? managedListener.options.element : null;
+        
+        if (element) {
+            element = me[element];
+            if (element && element.un) {
+                if (isClear || (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope))) {
+                    element.un(managedListener.ename, managedListener.fn, managedListener.scope);
+                    if (!isClear) {
+                        Ext.Array.remove(me.managedListeners, managedListener);
+                    }
+                }
+            }
+        } else {
+            return me.mixins.observable.removeManagedListenerItem.apply(me, arguments);
+        }
+    },
 
     /**
      * Provides the link for Observable's fireEvent method to bubble up the ownership hierarchy.

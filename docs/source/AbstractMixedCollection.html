@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.AbstractMixedCollection'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-AbstractMixedCollection'>/**
 </span> * @class Ext.util.AbstractMixedCollection
  */
 Ext.define('Ext.util.AbstractMixedCollection', {
@@ -17,13 +34,13 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         me.length = 0;
 
         me.addEvents(
-<span id='Ext-util.AbstractMixedCollection-event-clear'>            /**
+<span id='Ext-util-AbstractMixedCollection-event-clear'>            /**
 </span>             * @event clear
              * Fires when the collection is cleared.
              */
             'clear',
 
-<span id='Ext-util.AbstractMixedCollection-event-add'>            /**
+<span id='Ext-util-AbstractMixedCollection-event-add'>            /**
 </span>             * @event add
              * Fires when an item is added to the collection.
              * @param {Number} index The index at which the item was added.
@@ -32,7 +49,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
              */
             'add',
 
-<span id='Ext-util.AbstractMixedCollection-event-replace'>            /**
+<span id='Ext-util-AbstractMixedCollection-event-replace'>            /**
 </span>             * @event replace
              * Fires when an item is replaced in the collection.
              * @param {String} key he key associated with the new added.
@@ -41,7 +58,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
              */
             'replace',
 
-<span id='Ext-util.AbstractMixedCollection-event-remove'>            /**
+<span id='Ext-util-AbstractMixedCollection-event-remove'>            /**
 </span>             * @event remove
              * Fires when an item is removed from the collection.
              * @param {Object} o The item being removed.
@@ -59,14 +76,14 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         me.mixins.observable.constructor.call(me);
     },
     
-<span id='Ext-util.AbstractMixedCollection-cfg-allowFunctions'>    /**
+<span id='Ext-util-AbstractMixedCollection-cfg-allowFunctions'>    /**
 </span>     * @cfg {Boolean} allowFunctions Specify &lt;tt&gt;true&lt;/tt&gt; if the {@link #addAll}
      * function should add function references to the collection. Defaults to
      * &lt;tt&gt;false&lt;/tt&gt;.
      */
     allowFunctions : false,
 
-<span id='Ext-util.AbstractMixedCollection-method-add'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-add'>    /**
 </span>     * Adds an item to the collection. Fires the {@link #add} event when complete.
      * @param {String} key &lt;p&gt;The key to associate with the item, or the new item.&lt;/p&gt;
      * &lt;p&gt;If a {@link #getKey} implementation was specified for this MixedCollection,
@@ -100,7 +117,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         return myObj;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-getKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-getKey'>    /**
 </span>      * MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
       * simply returns &lt;b&gt;&lt;code&gt;item.id&lt;/code&gt;&lt;/b&gt; but you can provide your own implementation
       * to return a different value as in the following examples:&lt;pre&gt;&lt;code&gt;
@@ -132,7 +149,7 @@ mc.add(otherEl);
          return o.id;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-replace'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-replace'>    /**
 </span>     * Replaces an item in the collection. Fires the {@link #replace} event when complete.
      * @param {String} key &lt;p&gt;The key associated with the item to replace, or the replacement item.&lt;/p&gt;
      * &lt;p&gt;If you supplied a {@link #getKey} implementation for this MixedCollection, or if the key
@@ -163,7 +180,7 @@ mc.add(otherEl);
         return o;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-addAll'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-addAll'>    /**
 </span>     * Adds all elements of an Array or an Object to the collection.
      * @param {Object/Array} objs An Object containing properties which will be added
      * to the collection, or an Array of values, each of which are added to the collection.
@@ -193,7 +210,7 @@ mc.add(otherEl);
         }
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-each'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-each'>    /**
 </span>     * Executes the specified function once for every item in the collection, passing the following arguments:
      * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
      * &lt;li&gt;&lt;b&gt;item&lt;/b&gt; : Mixed&lt;p class=&quot;sub-desc&quot;&gt;The collection item&lt;/p&gt;&lt;/li&gt;
@@ -218,7 +235,7 @@ mc.add(otherEl);
         }
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-eachKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-eachKey'>    /**
 </span>     * Executes the specified function once for every key in the collection, passing each
      * key, and its associated item as the first two parameters.
      * @param {Function} fn The function to execute for each item.
@@ -235,7 +252,7 @@ mc.add(otherEl);
         }
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-findBy'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-findBy'>    /**
 </span>     * Returns the first item in the collection which elicits a true return value from the
      * passed selection function.
      * @param {Function} fn The selection function to execute for each item.
@@ -265,7 +282,7 @@ mc.add(otherEl);
     },
     //&lt;/deprecated&gt;
 
-<span id='Ext-util.AbstractMixedCollection-method-insert'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-insert'>    /**
 </span>     * Inserts an item at the specified index in the collection. Fires the {@link #add} event when complete.
      * @param {Number} index The index to insert the item at.
      * @param {String} key The key to associate with the new item, or the item itself.
@@ -299,7 +316,7 @@ mc.add(otherEl);
         return myObj;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-remove'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-remove'>    /**
 </span>     * Remove an item from the collection.
      * @param {Object} o The item to remove.
      * @return {Object} The item removed or false if no item was removed.
@@ -308,7 +325,7 @@ mc.add(otherEl);
         return this.removeAt(this.indexOf(o));
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-removeAll'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-removeAll'>    /**
 </span>     * Remove all items in the passed array from the collection.
      * @param {Array} items An array of items to be removed.
      * @return {Ext.util.MixedCollection} this object
@@ -321,7 +338,7 @@ mc.add(otherEl);
         return this;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-removeAt'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-removeAt'>    /**
 </span>     * Remove an item from a specified index in the collection. Fires the {@link #remove} event when complete.
      * @param {Number} index The index within the collection of the item to remove.
      * @return {Object} The item removed or false if no item was removed.
@@ -346,7 +363,7 @@ mc.add(otherEl);
         return false;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-removeAtKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-removeAtKey'>    /**
 </span>     * Removed an item associated with the passed key fom the collection.
      * @param {String} key The key of the item to remove.
      * @return {Object} The item removed or false if no item was removed.
@@ -355,7 +372,7 @@ mc.add(otherEl);
         return this.removeAt(this.indexOfKey(key));
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-getCount'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-getCount'>    /**
 </span>     * Returns the number of items in the collection.
      * @return {Number} the number of items in the collection.
      */
@@ -363,7 +380,7 @@ mc.add(otherEl);
         return this.length;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-indexOf'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-indexOf'>    /**
 </span>     * Returns index within the collection of the passed Object.
      * @param {Object} o The item to find the index of.
      * @return {Number} index of the item. Returns -1 if not found.
@@ -372,7 +389,7 @@ mc.add(otherEl);
         return Ext.Array.indexOf(this.items, o);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-indexOfKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-indexOfKey'>    /**
 </span>     * Returns index within the collection of the passed key.
      * @param {String} key The key to find the index of.
      * @return {Number} index of the key.
@@ -381,7 +398,7 @@ mc.add(otherEl);
         return Ext.Array.indexOf(this.keys, key);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-get'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-get'>    /**
 </span>     * Returns the item associated with the passed key OR index.
      * Key has priority over index.  This is the equivalent
      * of calling {@link #key} first, then if nothing matched calling {@link #getAt}.
@@ -396,7 +413,7 @@ mc.add(otherEl);
         return typeof item != 'function' || me.allowFunctions ? item : null; // for prototype!
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-getAt'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-getAt'>    /**
 </span>     * Returns the item at the specified index.
      * @param {Number} index The index of the item.
      * @return {Object} The item at the specified index.
@@ -405,7 +422,7 @@ mc.add(otherEl);
         return this.items[index];
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-getByKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-getByKey'>    /**
 </span>     * Returns the item associated with the passed key.
      * @param {String/Number} key The key of the item.
      * @return {Object} The item associated with the passed key.
@@ -414,7 +431,7 @@ mc.add(otherEl);
         return this.map[key];
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-contains'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-contains'>    /**
 </span>     * Returns true if the collection contains the passed Object as an item.
      * @param {Object} o  The Object to look for in the collection.
      * @return {Boolean} True if the collection contains the Object as an item.
@@ -423,7 +440,7 @@ mc.add(otherEl);
         return Ext.Array.contains(this.items, o);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-containsKey'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-containsKey'>    /**
 </span>     * Returns true if the collection contains the passed Object as a key.
      * @param {String} key The key to look for in the collection.
      * @return {Boolean} True if the collection contains the Object as a key.
@@ -432,7 +449,7 @@ mc.add(otherEl);
         return typeof this.map[key] != 'undefined';
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-clear'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-clear'>    /**
 </span>     * Removes all items from the collection.  Fires the {@link #clear} event when complete.
      */
     clear : function(){
@@ -445,7 +462,7 @@ mc.add(otherEl);
         me.fireEvent('clear');
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-first'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-first'>    /**
 </span>     * Returns the first item in the collection.
      * @return {Object} the first item in the collection..
      */
@@ -453,7 +470,7 @@ mc.add(otherEl);
         return this.items[0];
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-last'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-last'>    /**
 </span>     * Returns the last item in the collection.
      * @return {Object} the last item in the collection..
      */
@@ -461,7 +478,7 @@ mc.add(otherEl);
         return this.items[this.length - 1];
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-sum'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-sum'>    /**
 </span>     * Collects all of the values of the given property and returns their sum
      * @param {String} property The property to sum by
      * @param {String} root Optional 'root' property to extract the first argument from. This is used mainly when
@@ -486,7 +503,7 @@ mc.add(otherEl);
         return sum;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-collect'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-collect'>    /**
 </span>     * Collects unique values of a particular property in this MixedCollection
      * @param {String} property The property to collect on
      * @param {String} root Optional 'root' property to extract the first argument from. This is used mainly when
@@ -514,7 +531,7 @@ mc.add(otherEl);
         return unique;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-extractValues'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-extractValues'>    /**
 </span>     * @private
      * Extracts all of the given property values from the items in the MC. Mainly used as a supporting method for
      * functions like sum and collect.
@@ -533,7 +550,7 @@ mc.add(otherEl);
         return Ext.Array.pluck(values, property);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-getRange'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-getRange'>    /**
 </span>     * Returns a range of items in this collection
      * @param {Number} startIndex (optional) The starting index. Defaults to 0.
      * @param {Number} endIndex (optional) The ending index. Defaults to the last item.
@@ -563,7 +580,7 @@ mc.add(otherEl);
         return range;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-filter'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-filter'>    /**
 </span>     * &lt;p&gt;Filters the objects in this collection by a set of {@link Ext.util.Filter Filter}s, or by a single
      * property/value pair with optional parameters for substring matching and case sensitivity. See
      * {@link Ext.util.Filter Filter} for an example of using Filter objects (preferred). Alternatively,
@@ -627,7 +644,7 @@ var middleAged = people.filter('age', 24);
         return this.filterBy(filterFn);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-filterBy'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-filterBy'>    /**
 </span>     * Filter by a function. Returns a &lt;i&gt;new&lt;/i&gt; collection that has been filtered.
      * The passed function will be called with each object in the collection.
      * If the function returns true, the value is included otherwise it is filtered.
@@ -654,7 +671,7 @@ var middleAged = people.filter('age', 24);
         return newMC;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-findIndex'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-findIndex'>    /**
 </span>     * Finds the index of the first matching object in this collection by a specific property/value.
      * @param {String} property The name of a property on your objects.
      * @param {String/RegExp} value A string that the property values
@@ -674,7 +691,7 @@ var middleAged = people.filter('age', 24);
         }, null, start);
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-findIndexBy'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-findIndexBy'>    /**
 </span>     * Find the index of the first matching object in this collection by a function.
      * If the function returns &lt;i&gt;true&lt;/i&gt; it is considered a match.
      * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key).
@@ -697,7 +714,7 @@ var middleAged = people.filter('age', 24);
         return -1;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-createValueMatcher'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-createValueMatcher'>    /**
 </span>     * Returns a regular expression based on the given value and matching options. This is used internally for finding and filtering,
      * and by Ext.data.Store#filter
      * @private
@@ -724,7 +741,7 @@ var middleAged = people.filter('age', 24);
         return value;
     },
 
-<span id='Ext-util.AbstractMixedCollection-method-clone'>    /**
+<span id='Ext-util-AbstractMixedCollection-method-clone'>    /**
 </span>     * Creates a shallow copy of this collection
      * @return {MixedCollection}
      */
@@ -743,4 +760,6 @@ var middleAged = people.filter('age', 24);
         return copy;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

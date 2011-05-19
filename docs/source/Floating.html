@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Floating'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Floating'>/**
 </span> * @class Ext.util.Floating
  * A mixin to add floating capability to a Component
  */
@@ -6,14 +23,14 @@ Ext.define('Ext.util.Floating', {
 
     uses: ['Ext.Layer', 'Ext.window.Window'],
 
-<span id='Ext-util.Floating-cfg-focusOnToFront'>    /**
+<span id='Ext-util-Floating-cfg-focusOnToFront'>    /**
 </span>     * @cfg {Boolean} focusOnToFront
      * Specifies whether the floated component should be automatically {@link #focus focused} when it is
      * {@link #toFront brought to the front}. Defaults to true.
      */
     focusOnToFront: true,
 
-<span id='Ext-util.Floating-cfg-shadow'>    /**
+<span id='Ext-util-Floating-cfg-shadow'>    /**
 </span>     * @cfg {String/Boolean} shadow Specifies whether the floating component should be given a shadow. Set to
      * &lt;tt&gt;true&lt;/tt&gt; to automatically create an {@link Ext.Shadow}, or a string indicating the
      * shadow's display {@link Ext.Shadow#mode}. Set to &lt;tt&gt;false&lt;/tt&gt; to disable the shadow.
@@ -88,7 +105,7 @@ Ext.define('Ext.util.Floating', {
         }
     },
 
-<span id='Ext-util.Floating-method-getZIndexParent'>    /**
+<span id='Ext-util-Floating-method-getZIndexParent'>    /**
 </span>     * @private
      * &lt;p&gt;Finds the ancestor Container responsible for allocating zIndexes for the passed Component.&lt;/p&gt;
      * &lt;p&gt;That will be the outermost floating Container (a Container which has no ownerCt and has floating:true).&lt;/p&gt;
@@ -130,7 +147,7 @@ Ext.define('Ext.util.Floating', {
         return index;
     },
 
-<span id='Ext-util.Floating-method-doConstrain'>    /**
+<span id='Ext-util-Floating-method-doConstrain'>    /**
 </span>     * &lt;p&gt;Moves this floating Component into a constrain region.&lt;/p&gt;
      * &lt;p&gt;By default, this Component is constrained to be within the container it was added to, or the element
      * it was rendered to.&lt;/p&gt;
@@ -139,27 +156,36 @@ Ext.define('Ext.util.Floating', {
      */
     doConstrain: function(constrainTo) {
         var me = this,
-            constrainEl,
-            vector,
+            vector = me.getConstrainVector(constrainTo),
             xy;
 
+        if (vector) {
+            xy = me.getPosition();
+            xy[0] += vector[0];
+            xy[1] += vector[1];
+            me.setPosition(xy);
+        }
+    },
+    
+    
+<span id='Ext-util-Floating-method-getConstrainVector'>    /**
+</span>     * Gets the x/y offsets to constrain this float
+     * @private
+     * @param {Mixed} constrainTo Optional. The Element or {@link Ext.util.Region Region} into which this Component is to be constrained.
+     * @return {Array} The x/y constraints
+     */
+    getConstrainVector: function(constrainTo){
+        var me = this,
+            el;
+            
         if (me.constrain || me.constrainHeader) {
-            if (me.constrainHeader) {
-                constrainEl = me.header.el;
-            } else {
-                constrainEl = me.el;
-            }
-            vector = constrainEl.getConstrainVector(constrainTo || (me.floatParent &amp;&amp; me.floatParent.getTargetEl()) || me.container);
-            if (vector) {
-                xy = me.getPosition();
-                xy[0] += vector[0];
-                xy[1] += vector[1];
-                me.setPosition(xy);
-            }
+            el = me.constrainHeader ? me.header.el : me.el;
+            constrainTo = constrainTo || (me.floatParent &amp;&amp; me.floatParent.getTargetEl()) || me.container;
+            return el.getConstrainVector(constrainTo);
         }
     },
 
-<span id='Ext-util.Floating-method-alignTo'>    /**
+<span id='Ext-util-Floating-method-alignTo'>    /**
 </span>     * Aligns this floating Component to the specified element
      * @param {Mixed} element The element or {@link Ext.Component} to align to. If passing a component, it must
      * be a omponent instance. If a string id is passed, it will be used as an element id.
@@ -176,7 +202,7 @@ Ext.define('Ext.util.Floating', {
         return this;
     },
 
-<span id='Ext-util.Floating-method-toFront'>    /**
+<span id='Ext-util-Floating-method-toFront'>    /**
 </span>     * &lt;p&gt;Brings this floating Component to the front of any other visible, floating Components managed by the same {@link Ext.ZIndexManager ZIndexManager}&lt;/p&gt;
      * &lt;p&gt;If this Component is modal, inserts the modal mask just below this Component in the z-index stack.&lt;/p&gt;
      * @param {Boolean} preventFocus (optional) Specify &lt;code&gt;true&lt;/code&gt; to prevent the Component from being focused.
@@ -204,7 +230,7 @@ Ext.define('Ext.util.Floating', {
         return me;
     },
 
-<span id='Ext-util.Floating-method-setActive'>    /**
+<span id='Ext-util-Floating-method-setActive'>    /**
 </span>     * &lt;p&gt;This method is called internally by {@link Ext.ZIndexManager} to signal that a floating
      * Component has either been moved to the top of its zIndex stack, or pushed from the top of its zIndex stack.&lt;/p&gt;
      * &lt;p&gt;If a &lt;i&gt;Window&lt;/i&gt; is superceded by another Window, deactivating it hides its shadow.&lt;/p&gt;
@@ -228,7 +254,7 @@ Ext.define('Ext.util.Floating', {
         }
     },
 
-<span id='Ext-util.Floating-method-toBack'>    /**
+<span id='Ext-util-Floating-method-toBack'>    /**
 </span>     * Sends this Component to the back of (lower z-index than) any other visible windows
      * @return {Component} this
      */
@@ -237,7 +263,7 @@ Ext.define('Ext.util.Floating', {
         return this;
     },
 
-<span id='Ext-util.Floating-method-center'>    /**
+<span id='Ext-util-Floating-method-center'>    /**
 </span>     * Center this Component in its container.
      * @return {Component} this
      */
@@ -262,4 +288,6 @@ Ext.define('Ext.util.Floating', {
 
         this.setSize(size);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-draw.CompositeSprite'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-draw-CompositeSprite'>/**
 </span> * @class Ext.draw.CompositeSprite
  * @extends Ext.util.MixedCollection
  *
@@ -94,7 +111,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         });
     },
 
-<span id='Ext-draw.CompositeSprite-method-add'>    /** Add a Sprite to the Group */
+<span id='Ext-draw-CompositeSprite-method-add'>    /** Add a Sprite to the Group */
 </span>    add: function(key, o) {
         var result = this.callParent(arguments);
         this.attachEvents(result);
@@ -105,7 +122,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         return this.callParent(arguments);
     },
 
-<span id='Ext-draw.CompositeSprite-method-remove'>    /** Remove a Sprite from the Group */
+<span id='Ext-draw-CompositeSprite-method-remove'>    /** Remove a Sprite from the Group */
 </span>    remove: function(o) {
         var me = this;
         
@@ -120,7 +137,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         me.callParent(arguments);
     },
     
-<span id='Ext-draw.CompositeSprite-method-getBBox'>    /**
+<span id='Ext-draw-CompositeSprite-method-getBBox'>    /**
 </span>     * Returns the group bounding box.
      * Behaves like {@link Ext.draw.Sprite} getBBox method.
     */
@@ -156,7 +173,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         };
     },
 
-<span id='Ext-draw.CompositeSprite-method-setAttributes'>    /**
+<span id='Ext-draw-CompositeSprite-method-setAttributes'>    /**
 </span>     *  Iterates through all sprites calling
      *  `setAttributes` on each one. For more information
      *  {@link Ext.draw.Sprite} provides a description of the
@@ -173,32 +190,32 @@ Ext.define('Ext.draw.CompositeSprite', {
         return this;
     },
 
-<span id='Ext-draw.CompositeSprite-method-hide'>    /**
+<span id='Ext-draw-CompositeSprite-method-hide'>    /**
 </span>     * Hides all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    hide: function(attrs) {
+    hide: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i &lt; len; i++) {
-            items[i].hide();
+            items[i].hide(redraw);
         }
         return this;
     },
 
-<span id='Ext-draw.CompositeSprite-method-show'>    /**
+<span id='Ext-draw-CompositeSprite-method-show'>    /**
 </span>     * Shows all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    show: function(attrs) {
+    show: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i &lt; len; i++) {
-            items[i].show();
+            items[i].show(redraw);
         }
         return this;
     },
@@ -259,7 +276,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         }
     },
     
-<span id='Ext-draw.CompositeSprite-method-getSurface'>    /**
+<span id='Ext-draw-CompositeSprite-method-getSurface'>    /**
 </span>     * Grab the surface from the items
      * @private
      * @return {Ext.draw.Surface} The surface, null if not found
@@ -272,7 +289,7 @@ Ext.define('Ext.draw.CompositeSprite', {
         return null;
     },
     
-<span id='Ext-draw.CompositeSprite-method-destroy'>    /**
+<span id='Ext-draw-CompositeSprite-method-destroy'>    /**
 </span>     * Destroys the SpriteGroup
      */
     destroy: function(){
@@ -290,4 +307,6 @@ Ext.define('Ext.draw.CompositeSprite', {
         me.clearListeners();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

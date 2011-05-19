@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-toolbar.Paging-method-constructor'><span id='Ext-toolbar.Paging'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-toolbar-Paging-method-constructor'><span id='Ext-toolbar-Paging'>/**
 </span></span> * @class Ext.toolbar.Paging
  * @extends Ext.toolbar.Toolbar
  * &lt;p&gt;As the amount of records increases, the time required for the browser to render
@@ -112,22 +129,22 @@ Ext.define('Ext.toolbar.Paging', {
     alias: 'widget.pagingtoolbar',
     alternateClassName: 'Ext.PagingToolbar',
     requires: ['Ext.toolbar.TextItem', 'Ext.form.field.Number'],
-<span id='Ext-toolbar.Paging-cfg-store'>    /**
+<span id='Ext-toolbar-Paging-cfg-store'>    /**
 </span>     * @cfg {Ext.data.Store} store
      * The {@link Ext.data.Store} the paging toolbar should use as its data source (required).
      */
-<span id='Ext-toolbar.Paging-cfg-displayInfo'>    /**
+<span id='Ext-toolbar-Paging-cfg-displayInfo'>    /**
 </span>     * @cfg {Boolean} displayInfo
      * &lt;tt&gt;true&lt;/tt&gt; to display the displayMsg (defaults to &lt;tt&gt;false&lt;/tt&gt;)
      */
     displayInfo: false,
-<span id='Ext-toolbar.Paging-cfg-prependButtons'>    /**
+<span id='Ext-toolbar-Paging-cfg-prependButtons'>    /**
 </span>     * @cfg {Boolean} prependButtons
      * &lt;tt&gt;true&lt;/tt&gt; to insert any configured &lt;tt&gt;items&lt;/tt&gt; &lt;i&gt;before&lt;/i&gt; the paging buttons.
      * Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     prependButtons: false,
-<span id='Ext-toolbar.Paging-cfg-displayMsg'>    /**
+<span id='Ext-toolbar-Paging-cfg-displayMsg'>    /**
 </span>     * @cfg {String} displayMsg
      * The paging status message to display (defaults to &lt;tt&gt;'Displaying {0} - {1} of {2}'&lt;/tt&gt;).
      * Note that this string is formatted using the braced numbers &lt;tt&gt;{0}-{2}&lt;/tt&gt; as tokens
@@ -135,17 +152,17 @@ Ext.define('Ext.toolbar.Paging', {
      * be preserved when overriding this string if showing those values is desired.
      */
     displayMsg : 'Displaying {0} - {1} of {2}',
-<span id='Ext-toolbar.Paging-cfg-emptyMsg'>    /**
+<span id='Ext-toolbar-Paging-cfg-emptyMsg'>    /**
 </span>     * @cfg {String} emptyMsg
      * The message to display when no records are found (defaults to 'No data to display')
      */
     emptyMsg : 'No data to display',
-<span id='Ext-toolbar.Paging-cfg-beforePageText'>    /**
+<span id='Ext-toolbar-Paging-cfg-beforePageText'>    /**
 </span>     * @cfg {String} beforePageText
      * The text displayed before the input item (defaults to &lt;tt&gt;'Page'&lt;/tt&gt;).
      */
     beforePageText : 'Page',
-<span id='Ext-toolbar.Paging-cfg-afterPageText'>    /**
+<span id='Ext-toolbar-Paging-cfg-afterPageText'>    /**
 </span>     * @cfg {String} afterPageText
      * Customizable piece of the default paging text (defaults to &lt;tt&gt;'of {0}'&lt;/tt&gt;). Note that
      * this string is formatted using &lt;tt&gt;{0}&lt;/tt&gt; as a token that is replaced by the number of
@@ -153,43 +170,43 @@ Ext.define('Ext.toolbar.Paging', {
      * total page count is desired.
      */
     afterPageText : 'of {0}',
-<span id='Ext-toolbar.Paging-cfg-firstText'>    /**
+<span id='Ext-toolbar-Paging-cfg-firstText'>    /**
 </span>     * @cfg {String} firstText
      * The quicktip text displayed for the first page button (defaults to &lt;tt&gt;'First Page'&lt;/tt&gt;).
      * &lt;b&gt;Note&lt;/b&gt;: quick tips must be initialized for the quicktip to show.
      */
     firstText : 'First Page',
-<span id='Ext-toolbar.Paging-cfg-prevText'>    /**
+<span id='Ext-toolbar-Paging-cfg-prevText'>    /**
 </span>     * @cfg {String} prevText
      * The quicktip text displayed for the previous page button (defaults to &lt;tt&gt;'Previous Page'&lt;/tt&gt;).
      * &lt;b&gt;Note&lt;/b&gt;: quick tips must be initialized for the quicktip to show.
      */
     prevText : 'Previous Page',
-<span id='Ext-toolbar.Paging-cfg-nextText'>    /**
+<span id='Ext-toolbar-Paging-cfg-nextText'>    /**
 </span>     * @cfg {String} nextText
      * The quicktip text displayed for the next page button (defaults to &lt;tt&gt;'Next Page'&lt;/tt&gt;).
      * &lt;b&gt;Note&lt;/b&gt;: quick tips must be initialized for the quicktip to show.
      */
     nextText : 'Next Page',
-<span id='Ext-toolbar.Paging-cfg-lastText'>    /**
+<span id='Ext-toolbar-Paging-cfg-lastText'>    /**
 </span>     * @cfg {String} lastText
      * The quicktip text displayed for the last page button (defaults to &lt;tt&gt;'Last Page'&lt;/tt&gt;).
      * &lt;b&gt;Note&lt;/b&gt;: quick tips must be initialized for the quicktip to show.
      */
     lastText : 'Last Page',
-<span id='Ext-toolbar.Paging-cfg-refreshText'>    /**
+<span id='Ext-toolbar-Paging-cfg-refreshText'>    /**
 </span>     * @cfg {String} refreshText
      * The quicktip text displayed for the Refresh button (defaults to &lt;tt&gt;'Refresh'&lt;/tt&gt;).
      * &lt;b&gt;Note&lt;/b&gt;: quick tips must be initialized for the quicktip to show.
      */
     refreshText : 'Refresh',
-<span id='Ext-toolbar.Paging-cfg-inputItemWidth'>    /**
+<span id='Ext-toolbar-Paging-cfg-inputItemWidth'>    /**
 </span>     * @cfg {Number} inputItemWidth
      * The width in pixels of the input field used to display and change the current page number (defaults to 30).
      */
     inputItemWidth : 30,
     
-<span id='Ext-toolbar.Paging-method-getPagingItems'>    /**
+<span id='Ext-toolbar-Paging-method-getPagingItems'>    /**
 </span>     * Gets the standard paging items in the toolbar
      * @private
      */
@@ -287,7 +304,7 @@ Ext.define('Ext.toolbar.Paging', {
         me.callParent();
         
         me.addEvents(
-<span id='Ext-toolbar.Paging-event-change'>            /**
+<span id='Ext-toolbar-Paging-event-change'>            /**
 </span>             * @event change
              * Fires after the active page has been changed.
              * @param {Ext.toolbar.Paging} this
@@ -302,7 +319,7 @@ Ext.define('Ext.toolbar.Paging', {
              * &lt;/ul&gt;
              */
             'change',
-<span id='Ext-toolbar.Paging-event-beforechange'>            /**
+<span id='Ext-toolbar-Paging-event-beforechange'>            /**
 </span>             * @event beforechange
              * Fires just before the active page is changed.
              * Return false to prevent the active page from being changed.
@@ -464,7 +481,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-moveFirst'>    /**
+<span id='Ext-toolbar-Paging-method-moveFirst'>    /**
 </span>     * Move to the first page, has the same effect as clicking the 'first' button.
      */
     moveFirst : function(){
@@ -474,7 +491,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-movePrevious'>    /**
+<span id='Ext-toolbar-Paging-method-movePrevious'>    /**
 </span>     * Move to the previous page, has the same effect as clicking the 'previous' button.
      */
     movePrevious : function(){
@@ -486,7 +503,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-moveNext'>    /**
+<span id='Ext-toolbar-Paging-method-moveNext'>    /**
 </span>     * Move to the next page, has the same effect as clicking the 'next' button.
      */
     moveNext : function(){
@@ -496,7 +513,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-moveLast'>    /**
+<span id='Ext-toolbar-Paging-method-moveLast'>    /**
 </span>     * Move to the last page, has the same effect as clicking the 'last' button.
      */
     moveLast : function(){
@@ -508,7 +525,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-doRefresh'>    /**
+<span id='Ext-toolbar-Paging-method-doRefresh'>    /**
 </span>     * Refresh the current page, has the same effect as clicking the 'refresh' button.
      */
     doRefresh : function(){
@@ -520,7 +537,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-<span id='Ext-toolbar.Paging-method-bindStore'>    /**
+<span id='Ext-toolbar-Paging-method-bindStore'>    /**
 </span>     * Binds the paging toolbar to the specified {@link Ext.data.Store}
      * @param {Store} store The store to bind to this toolbar
      * @param {Boolean} initial (Optional) true to not remove listeners
@@ -552,7 +569,7 @@ Ext.define('Ext.toolbar.Paging', {
         me.store = store;
     },
 
-<span id='Ext-toolbar.Paging-method-unbind'>    /**
+<span id='Ext-toolbar-Paging-method-unbind'>    /**
 </span>     * Unbinds the paging toolbar from the specified {@link Ext.data.Store} &lt;b&gt;(deprecated)&lt;/b&gt;
      * @param {Ext.data.Store} store The data store to unbind
      */
@@ -560,7 +577,7 @@ Ext.define('Ext.toolbar.Paging', {
         this.bindStore(null);
     },
 
-<span id='Ext-toolbar.Paging-method-bind'>    /**
+<span id='Ext-toolbar-Paging-method-bind'>    /**
 </span>     * Binds the paging toolbar to the specified {@link Ext.data.Store} &lt;b&gt;(deprecated)&lt;/b&gt;
      * @param {Ext.data.Store} store The data store to bind
      */
@@ -574,4 +591,6 @@ Ext.define('Ext.toolbar.Paging', {
         this.callParent();
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

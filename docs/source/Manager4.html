@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-state.Manager'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-state-Manager'>/**
 </span> * @class Ext.state.Manager
  * This is the global state manager. By default all components that are &quot;state aware&quot; check this class
  * for state information if you don't pass them a custom state provider. In order for this class
@@ -25,7 +42,7 @@ Ext.define('Ext.state.Manager', {
     },
     
     
-<span id='Ext-state.Manager-method-setProvider'>    /**
+<span id='Ext-state-Manager-method-setProvider'>    /**
 </span>     * Configures the default state provider for your application
      * @param {Provider} stateProvider The state provider to set
      */
@@ -33,7 +50,7 @@ Ext.define('Ext.state.Manager', {
         this.provider = stateProvider;
     },
 
-<span id='Ext-state.Manager-method-get'>    /**
+<span id='Ext-state-Manager-method-get'>    /**
 </span>     * Returns the current value for a key
      * @param {String} name The key name
      * @param {Mixed} defaultValue The default value to return if the key lookup does not match
@@ -43,7 +60,7 @@ Ext.define('Ext.state.Manager', {
         return this.provider.get(key, defaultValue);
     },
 
-<span id='Ext-state.Manager-method-set'>    /**
+<span id='Ext-state-Manager-method-set'>    /**
 </span>     * Sets the value for a key
      * @param {String} name The key name
      * @param {Mixed} value The state data
@@ -52,7 +69,7 @@ Ext.define('Ext.state.Manager', {
         this.provider.set(key, value);
     },
 
-<span id='Ext-state.Manager-method-clear'>    /**
+<span id='Ext-state-Manager-method-clear'>    /**
 </span>     * Clears a value from the state
      * @param {String} name The key name
      */
@@ -60,11 +77,13 @@ Ext.define('Ext.state.Manager', {
         this.provider.clear(key);
     },
 
-<span id='Ext-state.Manager-method-getProvider'>    /**
+<span id='Ext-state-Manager-method-getProvider'>    /**
 </span>     * Gets the currently configured state provider
      * @return {Provider} The state provider
      */
     getProvider : function(){
         return this.provider;
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

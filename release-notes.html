@@ -13,6 +13,246 @@
         <div id="releases">
             <div class="release">
                 <h1>
+                    Release Notes for Ext JS 4.0.1
+                </h1>
+                <p class="notes">
+                    Release Notes: May 17, 2011<br>
+                    Version Number: 4.0.1
+                </p>
+                <h2>
+                    Bugs Fixed
+                </h2>
+
+                <ul>
+                    <li>Charts and Drawing
+                        <ul>
+                            <li>[EXTJSIV-144] - Grouped Stacked Negative 0 point not aligned properly</li>
+                            <li>[EXTJSIV-148] - Pie chart labels should be along the centerline of the text, not the baseline.</li>
+                            <li>[EXTJSIV-1769] - Draggable sprite broken</li>
+                            <li>[EXTJSIV-1811] - Problem with hiding items via legend with grouped bar chart</li>
+                            <li>[EXTJSIV-1822] - setAttributes - scale only works on first item</li>
+                            <li>[EXTJSIV-1878] - Line chart scaling incorrect</li>
+                            <li>[EXTJSIV-1892] - Pie chart is not rendering it's shadow properly on initial render</li>
+                        </ul>
+                    </li>
+
+                    <li>Panel
+                        <ul>
+                            <li>[EXTJSIV-237] - Vertical alignment of the Panel title is not consistent between quirks and strict HTML modes</li>
+                            <li>[EXTJSIV-963] - Vertical headers lack proper centering</li>
+                            <li>[EXTJSIV-1102] - When panel collapse animates, there's some flashing</li>
+                            <li>[EXTJSIV-1814] - Panel doesn't fire close event in TabPanel</li>
+                        </ul>
+                    </li>
+
+                    <li>Examples
+                        <ul>
+                            <li>[EXTJSIV-482] - Logos example has a few cosmetic issues</li>
+                            <li>[EXTJSIV-1001] - Form is missing in Safari 3.2 with form/form-grid-access.html</li>
+                            <li>[EXTJSIV-1083] - Themes Example: Progress bar doesn't show any text</li>
+                            <li>[EXTJSIV-1118] - Portal Drag and Drop IE 6 & 7</li>
+                            <li>[EXTJSIV-1121] - feed viewer - highlight on mouse over incorrect</li>
+                            <li>[EXTJSIV-1141] - Sliding Pager Extension Example: There's no Panel Resizing at the bottom of the grid</li>
+                            <li>[EXTJSIV-1142] - FeedViewer: apply sensible minWidth on feeds panel</li>
+                            <li>[EXTJSIV-1165] - Summary Grid: Need an Icon in the Panel</li>
+                            <li>[EXTJSIV-1172] - Grid Plugin Example: No Checkbox Plugin in the bottom example</li>
+                            <li>[EXTJSIV-1173] - Grid Filtering Local:  ID Column should have a smaller width</li>
+                            <li>[EXTJSIV-1180] - Rest proxy example - notification is missing when updating</li>
+                            <li>[EXTJSIV-1193] - Combo Box Example: State name Combo Boxes are too wide</li>
+                            <li>[EXTJSIV-1204] - Ext.Action Example should port the existing Action Example over</li>
+                            <li>[EXTJSIV-1211] - Double clicking in Manager Details header doesn't always open the combo box    </li>
+                            <li>[EXTJSIV-1460] - Panel resizer ux not working properly or styled correctly</li>
+                            <li>[EXTJSIV-1474] - Black background in desktop/desktop.html example in quirks mode</li>
+                            <li>[EXTJSIV-1481] - form/xml-form is broken in Safari 3.2 with transitional DOCTYPE</li>
+                            <li>[EXTJSIV-1496] - Desktop cascading doesn't set correct z index</li>
+                            <li>[EXTJSIV-1499] - Desktop example's accordion window does not react to clicking the refresh icon</li>
+                            <li>[EXTJSIV-1535] - Array grid example advertised as stateful. But it does not remember column state</li>
+                            <li>[EXTJSIV-1860] - Nested Loading example is using widget.header alias which is reserver for standard Panel Headers</li>
+                            <li>[EXTJSIV-1861] - Portal example is having to synchronously load Ext.layout.component.Body.</li>
+                            <li>[EXTJSIV-1919] - Error in charts/draw code on portal example</li>
+                            <li>[EXTJSIV-1922] - Error in grid multiple sorting example</li>
+                            <li>[EXTJSIV-1923] - Error on editor example</li>
+                            <li>[EXTJSIV-1924] - FormDashboard chart example fieldset is too short</li>
+                            <li>[EXTJSIV-1927] - Text rotation example missing text</li>
+                        </ul>
+                    </li>
+
+                    <li>Toolbars
+                        <ul>
+                            <li>[EXTJSIV-939] - Artifact in search toolbar only with Chrome 5</li>
+                            <li>[EXTJSIV-980] - Background color in bottom toolbar should be blue</li>
+                            <li>[EXTJSIV-1109] - disabled text color in buttons is too light</li>
+                            <li>[EXTJSIV-1865] - Toolbar with removeAll() crashes when used with overflow</li>
+                        </ul>
+                    </li>        
+
+                    <li>Layout
+                        <ul>
+                            <li>[EXTJSIV-1846] - Infinite loop, IE Border layout</li>
+                            <li>[EXTJSIV-1867] - Resizers on border layout do not constrain during drag</li>
+                            <li>[EXTJSIV-1931] - collapsedCls not applied in border layout</li>
+                            <li>[EXTJSIV-1845] - hideCollapseTool ignored in border layout/panel</li>
+                            <li>[EXTJSIV-1780] - Collapsing large grid in border layout fails</li>
+                        </ul>
+                    </li>
+
+                    <li>Windows
+                        <ul>
+                            <li>[EXTJSIV-1708] - Desktop example - windows don't move or resize</li>
+                            <li>[EXTJSIV-1737] - Opera 10.6: Windows cannot be moved vertically</li>
+                            <li>[EXTJSIV-1751] - Ext.Window Maximize doesnt account for browser window resize</li>
+                            <li>[EXTJSIV-1792] - Window fails with preventHeader: true</li>
+                            <li>[EXTJSIV-1945] - Window doesn't constrain properly when animating</li>
+                        </ul>
+                    </li>
+
+                    <li>Styling
+                        <ul>
+                            <li>[EXTJSIV-1269] - Checkbox in header does not line up with checkbox in the data rows</li>
+                            <li>[EXTJSIV-1271] - Arrow is not vertically centered in the overflow toolbar</li>
+                            <li>[EXTJSIV-1317] - Slightly rounded corners on menu item highlights</li>
+                            <li>[EXTJSIV-1322] - Window header color is different to 3.x</li>
+                            <li>[EXTJSIV-1417] - The text "Powered by" in logo is not legible</li>
+                            <li>[EXTJSIV-1516] - Menus are not in access-theme colors for the access example</li>
+                            <li>[EXTJSIV-1540] - Disabled buttons are really hard to read</li>
+                            <li>[EXTJSIV-1764] - Accessibility theme missing images</li>
+                            <li>[EXTJSIV-1841] - $panel-border-radius does not work</li>
+                            <li>[EXTJSIV-1825] - Button mixin in SASS is inconsistant with other UI mixins - quick fix</li>
+                            <li>[EXTJSIV-1826] - Window does not adhere to $base-color</li>
+                            <li>[EXTJSIV-1842] - 2 issues with button variables, not working correctly.</li>
+                            <li>[EXTJSIV-1851] - Errors when building template my-ext-theme.scss</li>
+                            <li>[EXTJSIV-1854] - Remove breaking comments from layout/_layout.scss</li>
+                            <li>[EXTJSIV-1862] - ui theme does not apply to window drag & drop proxy</li>
+                            <li>[EXTJSIV-1918] - Can't set overflow hidden on component style</li>
+                        </ul>
+                    </li>
+
+                    <li>Form
+                        <ul>
+                            <li>[EXTJSIV-1758] - Checkbox field does not report correct value</li>
+                            <li>[EXTJSIV-1775] - combo box autoSelect attribute non-functional</li>
+                            <li>[EXTJSIV-1781] - Combo Picker doesn't shift when window resizes</li>
+                            <li>[EXTJSIV-1798] - serializeForm tries to call .format</li>
+                            <li>[EXTJSIV-1809] - Html encoding issues on forms with standard submit</li>
+                            <li>[EXTJSIV-1834] - Keyup doesn't fire on combo</li>
+                            <li>[EXTJSIV-1838] - Checkbox getModelData incorrect</li>
+                            <li>[EXTJSIV-1839] - Fieldset doesn't render items when collapsed</li>
+                            <li>[EXTJSIV-1847] - Weird form field height display</li>
+                            <li>[EXTJSIV-1849] - Performance issues when adding multiple items to a form</li>
+                            <li>[EXTJSIV-1857] - Combo - Allow exclusion of queryParam</li>
+                            <li>[EXTJSIV-1869] - DisplayField alignment incorrect</li>
+                            <li>[EXTJSIV-1899] - field.Date refocuses on blur when picker is expanded</li>
+                            <li>[EXTJSIV-1902] - NumberField ignores disableKeyFilter</li>
+                            <li>[EXTJSIV-1942] - NumberField doesn't return number type when value is 0.</li>
+                            <li>[EXTJSIV-1943] - Checkbox should check for undefined uncheckedValue</li>
+                        </ul>
+                    </li>
+
+                    <li>Grid / Tree
+                        <ul>
+                            <li>[EXTJSIV-1689] - Selection model selectAll/deselectAll fire selectionchange event for every record</li>
+                            <li>[EXTJSIV-1757] - Grid loses row striping after editing</li>
+                            <li>[EXTJSIV-1762] - Grid: CellEditing problems destroying</li>
+                            <li>[EXTJSIV-1767] - ActionColumn fails when creating a global handler</li>
+                            <li>[EXTJSIV-1771] - Deselect doesnt fire in multi select mode</li>
+                            <li>[EXTJSIV-1773] - itemmousenter/itemmouseleave fire on every mouseover/mouseout event bubbled from *within* a View item</li>
+                            <li>[EXTJSIV-1778] - PropertyGrid crashes on destroy</li>
+                            <li>[EXTJSIV-1782] - PropertyGrid crashes when removing from store</li>
+                            <li>[EXTJSIV-1788] - Cell Editor doesn't update context</li>
+                            <li>[EXTJSIV-1794] - Crash when rootVisible false</li>
+                            <li>[EXTJSIV-1800] - RowNumberer incompatible with groupingSummary</li>
+                            <li>[EXTJSIV-1802] - Editor doesn't hide on grid scroll - FF</li>
+                            <li>[EXTJSIV-1819] - Grid in accordion layout doesn't show headers</li>
+                            <li>[EXTJSIV-1824] - PropertyGrid has no alias</li>
+                            <li>[EXTJSIV-1831] - Checkbox Selection model missing alias.</li>
+                            <li>[EXTJSIV-1848] - Row Editor doesn't work with grid filtering</li>
+                            <li>[EXTJSIV-1871] - PropertyGrid doesn't update source correctly</li>
+                            <li>[EXTJSIV-1872] - PropertyStore refers to wrong object</li>
+                            <li>[EXTJSIV-1875] - Tree doesn't allow string store id.</li>
+                            <li>[EXTJSIV-1881] - PreviewPlugin overwrites features</li>
+                            <li>[EXTJSIV-1926] - Safari: scrolling via wheel in grid also scrolls the page</li>
+                            <li>[EXTJSIV-1932] - NodeInterface callback params incorrect.</li>
+                            <li>[EXTJSIV-1939] - ProgressBar Pager fails with empty store</li>
+                            <li>[EXTJSIV-1958] - View DD contains redundant check</li>
+                        </ul>
+                    </li>
+
+                    <li>General
+                        <ul>
+                            <li>[EXTJSIV-988] - ToolTip/QuickTip steals shadow from modal window</li>
+                            <li>[EXTJSIV-1003] - Accessibility Theme has several glitches (IE9 Quirks)</li>
+                            <li>[EXTJSIV-1047] - Validation change steals focus in Safari (3.? and 4 at least)</li>
+                            <li>[EXTJSIV-1217] - Localization files are missing a bunch of strings - NL, DE, etc</li>
+                            <li>[EXTJSIV-1218] - Validation looks wrong in a frame panel with checkboxes</li>
+                            <li>[EXTJSIV-1295] - TextField focus method does not focus, DelayedTask at fault?</li>
+                            <li>[EXTJSIV-1510] - The close button in accordion does a refresh instead.</li>
+                            <li>[EXTJSIV-1528] - The previous/next buttons do not always un-focus after clicking on it and moving the mouse away</li>
+                            <li>[EXTJSIV-1562] - Collapse icon does not relocate after resizing the browser window</li>
+                            <li>[EXTJSIV-1648] - Checkbox selection doesn't fire selection change</li>
+                            <li>[EXTJSIV-1650] - Programmatically disabled before rendered prevents enabling </li>
+                            <li>[EXTJSIV-1654] - Using Quicktips on Frameset only page cause hard error</li>
+                            <li>[EXTJSIV-1736] - IE6 - Slider doesn't show up</li>
+                            <li>[EXTJSIV-1756] - Disabled text in forms have regressed in IE 6</li>
+                            <li>[EXTJSIV-1766] - Image Component crashes when rendered in IE</li>
+                            <li>[EXTJSIV-1779] - beforetabchange returning false doesn't stop tab changing.</li>
+                            <li>[EXTJSIV-1784] - Warn statements need to wrapped to check of the existence of the console</li>
+                            <li>[EXTJSIV-1790] - Observable shouldn't fail when removing an event that doesn't exist</li>
+                            <li>[EXTJSIV-1807] - Application fails when no controllers are specified</li>
+                            <li>[EXTJSIV-1813] - Store Can't read grouping info when specified on the class definition</li>
+                            <li>[EXTJSIV-1817] - Removed unused code: getSortState</li>
+                            <li>[EXTJSIV-1818] - NodeInterface destroy shadows Model destroy</li>
+                            <li>[EXTJSIV-1852] - JSBuilder doesn't build .jsb3 files correctly if using relative paths</li>
+                            <li>[EXTJSIV-1853] - JSBuilder not producing build correctly.</li>
+                            <li>[EXTJSIV-1856] - WebKit browsers lose selection in TEXTAREA elements</li>
+                            <li>[EXTJSIV-1864] - Store cannot set filters via prototype properties</li>
+                            <li>[EXTJSIV-1880] - Change autoCreateViewport to be false by default on Ext.app.App</li>
+                            <li>[EXTJSIV-1888] - Ext.Error.raise embeds an alert in IE or FF w/o Firebug (not good for many uses)</li>
+                            <li>[EXTJSIV-1889] - Splitter dragging doesn't work with iframes</li>
+                            <li>[EXTJSIV-1890] - Record raw property set too late</li>
+                            <li>[EXTJSIV-1895] - Ext.Array#include doesn't return anything, but docs say it does</li>
+                            <li>[EXTJSIV-1896] - Ext.data.Model#persistanceProperty should be spelled persistenceProperty</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h2>Documentation Improvements</h2>
+
+                <ul>
+                    <li>[EXTJSIV-739] - Improved Ext.fx.Animator docs</li>
+                    <li>[EXTJSIV-751] - Improved Ext.grid.GridPanel docs</li>
+                    <li>[EXTJSIV-769] - Improved Ext.tip.ToolTip docs</li>
+                    <li>[EXTJSIV-1074] - Improved Ext.app.Controller docs</li>
+                    <li>[EXTJSIV-1227] - Improved Ext.chart.Mask</li>
+                    <li>[EXTJSIV-1229] - Added docs for Ext.grid.property.Grid</li>
+                    <li>[EXTJSIV-1238] - Add documentation to tabPanel private methods</li>
+                    <li>[EXTJSIV-1293] - Documented Store.removeAll</li>
+                    <li>[EXTJSIV-1421] - Documented the Organizer example</li>
+                    <li>[EXTJSIV-1433] - Better docs for Ext.app.Application</li>
+                    <li>[EXTJSIV-1891] - documented loadMask configuration property of Ext.Component and descendants</li>
+                    <li>[EXTJSIV-1894] - Documented Ext.draw.Sprite events not documented</li>
+                    <li>[EXTJSIV-1898] - Removed Ext.getModel from data guide</li>
+                    <li>[EXTJSIV-1901] - Documented Ext.CompositeElement documents methods without names</li>
+                    <li>[EXTJSIV-1903] - Bad reference to Ext.panel.Panel#frame for more documentation</li>
+                    <li>[EXTJSIV-1904] - Added missing image: guides/tree/simple-tree.png</li>
+                    <li>[EXTJSIV-43] - Documented the fact that attributes are transformed to model fields</li>
+                    <li>[EXTJSIV-1485] - SDK Bootstrapping Guide and Build Tools for Developers</li>
+                    <li>[EXTJSIV-1248] - More docs for Surface</li>
+                    <li>[EXTJSIV-1244] - Added docs for Gauge AXIS</li>
+                    <li>[EXTJSIV-1796] - Character Encoding issues on deployed docs</li>
+                    <li>[EXTJSIV-1906] - a typo / encoding issue in the getting started guide</li>
+                </ul>
+
+                <h2>General Improvements</h2>
+
+                <ul>
+                    <li>[EXTJSIV-1961] - Added callbackName option to Ext.data.JsonP.request</li>
+                    <li>[EXTJSIV-853] - Tooltips: Renamed initTarget to setTarget</li>
+                    <li>[EXTJSIV-1536] - Added a vertical toolbar example</li>
+                </ul>
+            </div>            
+            
+            <div class="release">
+                <h1>
                     Release Notes for Ext JS 4.0 Final
                 </h1>
                 <p class="notes">

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.MixedCollection-method-constructor'><span id='Ext-util.MixedCollection'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-MixedCollection-method-constructor'><span id='Ext-util-MixedCollection'>/**
 </span></span> * @class Ext.util.MixedCollection
  * &lt;p&gt;
  * Represents a collection of a set of key and value pairs. Each key in the MixedCollection
@@ -57,7 +74,7 @@ Ext.define('Ext.util.MixedCollection', {
         this.sortBy(sorterFn);
     },
 
-<span id='Ext-util.MixedCollection-method-_sort'>    /**
+<span id='Ext-util-MixedCollection-method-_sort'>    /**
 </span>     * @private
      * Performs the actual sorting based on a direction and a sorting function. Internally,
      * this creates a temporary array of all items in the MixedCollection, sorts it and then writes
@@ -109,7 +126,7 @@ Ext.define('Ext.util.MixedCollection', {
         me.fireEvent('sort', me);
     },
 
-<span id='Ext-util.MixedCollection-method-sortBy'>    /**
+<span id='Ext-util-MixedCollection-method-sortBy'>    /**
 </span>     * Sorts the collection by a single sorter function
      * @param {Function} sorterFn The function to sort by
      */
@@ -148,7 +165,7 @@ Ext.define('Ext.util.MixedCollection', {
         me.fireEvent('sort', me, items, keys);
     },
 
-<span id='Ext-util.MixedCollection-method-reorder'>    /**
+<span id='Ext-util-MixedCollection-method-reorder'>    /**
 </span>     * Reorders each of the items based on a mapping from old index to new index. Internally this
      * just translates into a sort. The 'sort' event is fired whenever reordering has occured.
      * @param {Object} mapping Mapping from old item index to new item index
@@ -188,7 +205,7 @@ Ext.define('Ext.util.MixedCollection', {
         me.fireEvent('sort', me);
     },
 
-<span id='Ext-util.MixedCollection-method-sortByKey'>    /**
+<span id='Ext-util-MixedCollection-method-sortByKey'>    /**
 </span>     * Sorts this collection by &lt;b&gt;key&lt;/b&gt;s.
      * @param {String} direction (optional) 'ASC' or 'DESC'. Defaults to 'ASC'.
      * @param {Function} fn (optional) Comparison function that defines the sort order.
@@ -201,4 +218,6 @@ Ext.define('Ext.util.MixedCollection', {
         });
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

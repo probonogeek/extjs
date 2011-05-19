@@ -95,19 +95,19 @@ __Example usage:__
                     var radio1 = Ext.getCmp('radio1'),
                         radio2 = Ext.getCmp('radio2'),
                         radio3 = Ext.getCmp('radio3');
-    
+
                     //if L is selected, change to M
                     if (radio2.getValue()) {
                         radio1.setValue(true);
                         return;
                     }
-    
+
                     //if XL is selected, change to L
                     if (radio3.getValue()) {
                         radio2.setValue(true);
                         return;
                     }
-    
+
                     //if nothing is set, set size to S
                     radio1.setValue(true);
                 }
@@ -118,19 +118,19 @@ __Example usage:__
                     var radio1 = Ext.getCmp('radio1'),
                         radio2 = Ext.getCmp('radio2'),
                         radio3 = Ext.getCmp('radio3');
-    
+
                     //if M is selected, change to L
                     if (radio1.getValue()) {
                         radio2.setValue(true);
                         return;
                     }
-    
+
                     //if L is selected, change to XL
                     if (radio2.getValue()) {
                         radio3.setValue(true);
                         return;
                     }
-    
+
                     //if nothing is set, set size to XL
                     radio3.setValue(true);
                 }
@@ -238,6 +238,10 @@ Ext.define('Ext.form.field.Radio', {
      */
     getSubmitValue: function() {
         return this.checked ? this.inputValue : null;
+    },
+
+    getModelData: function() {
+        return this.getSubmitData();
     },
 
     // inherit docs

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.Proxy-method-constructor'><span id='Ext-data.proxy.Proxy'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Proxy-method-constructor'><span id='Ext-data-proxy-Proxy'>/**
 </span></span> * @author Ed Spencer
  * @class Ext.data.proxy.Proxy
  * 
@@ -54,32 +71,32 @@ Ext.define('Ext.data.proxy.Proxy', {
         observable: 'Ext.util.Observable'
     },
     
-<span id='Ext-data.proxy.Proxy-cfg-batchOrder'>    /**
+<span id='Ext-data-proxy-Proxy-cfg-batchOrder'>    /**
 </span>     * @cfg {String} batchOrder
      * Comma-separated ordering 'create', 'update' and 'destroy' actions when batching. Override this
      * to set a different order for the batched CRUD actions to be executed in. Defaults to 'create,update,destroy'
      */
     batchOrder: 'create,update,destroy',
     
-<span id='Ext-data.proxy.Proxy-cfg-batchActions'>    /**
+<span id='Ext-data-proxy-Proxy-cfg-batchActions'>    /**
 </span>     * @cfg {Boolean} batchActions True to batch actions of a particular type when synchronizing the store.
      * Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     batchActions: true,
     
-<span id='Ext-data.proxy.Proxy-cfg-defaultReaderType'>    /**
+<span id='Ext-data-proxy-Proxy-cfg-defaultReaderType'>    /**
 </span>     * @cfg {String} defaultReaderType The default registered reader type. Defaults to 'json'
      * @private
      */
     defaultReaderType: 'json',
     
-<span id='Ext-data.proxy.Proxy-cfg-defaultWriterType'>    /**
+<span id='Ext-data-proxy-Proxy-cfg-defaultWriterType'>    /**
 </span>     * @cfg {String} defaultWriterType The default registered writer type. Defaults to 'json'
      * @private
      */
     defaultWriterType: 'json',
     
-<span id='Ext-data.proxy.Proxy-cfg-model'>    /**
+<span id='Ext-data-proxy-Proxy-cfg-model'>    /**
 </span>     * @cfg {String/Ext.data.Model} model The name of the Model to tie to this Proxy. Can be either the string name of
      * the Model, or a reference to the Model constructor. Required.
      */
@@ -100,7 +117,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         }
     },
     
-<span id='Ext-data.proxy.Proxy-method-setModel'>    /**
+<span id='Ext-data-proxy-Proxy-method-setModel'>    /**
 </span>     * Sets the model associated with this proxy. This will only usually be called by a Store
      * @param {String|Ext.data.Model} model The new model. Can be either the model name string,
      * or a reference to the model's constructor
@@ -120,7 +137,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         }
     },
     
-<span id='Ext-data.proxy.Proxy-method-getModel'>    /**
+<span id='Ext-data-proxy-Proxy-method-getModel'>    /**
 </span>     * Returns the model attached to this Proxy
      * @return {Ext.data.Model} The model
      */
@@ -128,7 +145,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         return this.model;
     },
     
-<span id='Ext-data.proxy.Proxy-method-setReader'>    /**
+<span id='Ext-data-proxy-Proxy-method-setReader'>    /**
 </span>     * Sets the Proxy's Reader by string, config object or Reader instance
      * @param {String|Object|Ext.data.reader.Reader} reader The new Reader, which can be either a type string, a configuration object
      * or an Ext.data.reader.Reader instance
@@ -159,7 +176,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         return me.reader;
     },
     
-<span id='Ext-data.proxy.Proxy-method-getReader'>    /**
+<span id='Ext-data-proxy-Proxy-method-getReader'>    /**
 </span>     * Returns the reader currently attached to this proxy instance
      * @return {Ext.data.reader.Reader} The Reader instance
      */
@@ -167,7 +184,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         return this.reader;
     },
     
-<span id='Ext-data.proxy.Proxy-method-setWriter'>    /**
+<span id='Ext-data-proxy-Proxy-method-setWriter'>    /**
 </span>     * Sets the Proxy's Writer by string, config object or Writer instance
      * @param {String|Object|Ext.data.writer.Writer} writer The new Writer, which can be either a type string, a configuration object
      * or an Ext.data.writer.Writer instance
@@ -194,7 +211,7 @@ Ext.define('Ext.data.proxy.Proxy', {
         return this.writer;
     },
     
-<span id='Ext-data.proxy.Proxy-method-getWriter'>    /**
+<span id='Ext-data-proxy-Proxy-method-getWriter'>    /**
 </span>     * Returns the writer currently attached to this proxy instance
      * @return {Ext.data.writer.Writer} The Writer instance
      */
@@ -202,39 +219,43 @@ Ext.define('Ext.data.proxy.Proxy', {
         return this.writer;
     },
     
-<span id='Ext-data.proxy.Proxy-property-create'>    /**
+<span id='Ext-data-proxy-Proxy-method-create'>    /**
 </span>     * Performs the given create operation.
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     create: Ext.emptyFn,
     
-<span id='Ext-data.proxy.Proxy-property-read'>    /**
+<span id='Ext-data-proxy-Proxy-method-read'>    /**
 </span>     * Performs the given read operation.
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     read: Ext.emptyFn,
     
-<span id='Ext-data.proxy.Proxy-property-update'>    /**
+<span id='Ext-data-proxy-Proxy-method-update'>    /**
 </span>     * Performs the given update operation.
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     update: Ext.emptyFn,
     
-<span id='Ext-data.proxy.Proxy-property-destroy'>    /**
+<span id='Ext-data-proxy-Proxy-method-destroy'>    /**
 </span>     * Performs the given destroy operation.
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     destroy: Ext.emptyFn,
     
-<span id='Ext-data.proxy.Proxy-method-batch'>    /**
+<span id='Ext-data-proxy-Proxy-method-batch'>    /**
 </span>     * Performs a batch of {@link Ext.data.Operation Operations}, in the order specified by {@link #batchOrder}. Used internally by
      * {@link Ext.data.Store}'s {@link Ext.data.Store#sync sync} method. Example usage:
      * &lt;pre&gt;&lt;code&gt;
@@ -290,4 +311,6 @@ Ext.define('Ext.data.proxy.Proxy', {
     //     Ext.data.DataProxy = this;
     // }, this);
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

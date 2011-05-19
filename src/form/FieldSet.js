@@ -340,8 +340,7 @@ Ext.define('Ext.form.FieldSet', {
      */
     setExpanded: function(expanded) {
         var me = this,
-            checkboxCmp = me.checkboxCmp,
-            toggleCmp = me.toggleCmp;
+            checkboxCmp = me.checkboxCmp;
 
         expanded = !!expanded;
         
@@ -355,6 +354,10 @@ Ext.define('Ext.form.FieldSet', {
             me.addCls(me.baseCls + '-collapsed');
         }
         me.collapsed = !expanded;
+        if (expanded) {
+            // ensure subitems will get rendered and layed out when expanding
+            me.getComponentLayout().childrenChanged = true;
+        }
         me.doComponentLayout();
         return me;
     },

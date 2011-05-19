@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-panel.Header'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Header'>/**
 </span> * @class Ext.panel.Header
  * @extends Ext.container.Container
  * Simple header class which is used for on {@link Ext.panel.Panel} and {@link Ext.window.Window}
@@ -237,7 +254,7 @@ Ext.define('Ext.panel.Header', {
         return this.body || this.frameBody || this.el;
     },
 
-<span id='Ext-panel.Header-method-setTitle'>    /**
+<span id='Ext-panel-Header-method-setTitle'>    /**
 </span>     * Sets the title of the header.
      * @param {String} title The title to be set
      */
@@ -283,7 +300,7 @@ Ext.define('Ext.panel.Header', {
         }
     },
 
-<span id='Ext-panel.Header-method-setIconCls'>    /**
+<span id='Ext-panel-Header-method-setIconCls'>    /**
 </span>     * Sets the CSS class that provides the icon image for this panel.  This method will replace any existing
      * icon class if one has already been set and fire the {@link #iconchange} event after completion.
      * @param {String} cls The new CSS class name
@@ -309,7 +326,7 @@ Ext.define('Ext.panel.Header', {
         }
     },
 
-<span id='Ext-panel.Header-method-addTool'>    /**
+<span id='Ext-panel-Header-method-addTool'>    /**
 </span>     * Add a tool to the header
      * @param {Object} tool
      */
@@ -317,7 +334,7 @@ Ext.define('Ext.panel.Header', {
         this.tools.push(this.add(tool));
     },
 
-<span id='Ext-panel.Header-method-onAdd'>    /**
+<span id='Ext-panel-Header-method-onAdd'>    /**
 </span>     * @private
      * Set up the tools.&amp;lt;tool type&gt; link in the owning Panel.
      * Bind the tool to its owning Panel.
@@ -332,4 +349,6 @@ Ext.define('Ext.panel.Header', {
         }
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

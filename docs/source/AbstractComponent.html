@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-AbstractComponent-method-constructor'><span id='Ext-AbstractComponent'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-AbstractComponent-method-constructor'><span id='Ext-AbstractComponent'>/**
 </span></span> * @class Ext.AbstractComponent
  * &lt;p&gt;An abstract base class which provides shared methods for Components across the Sencha product line.&lt;/p&gt;
  * &lt;p&gt;Please refer to sub class's documentation&lt;/p&gt;
@@ -425,7 +442,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      */
 
 <span id='Ext-AbstractComponent-cfg-styleHtmlContent'>    /**
-</span>     * @cfg {String} styleHtmlContent
+</span>     * @cfg {Boolean} styleHtmlContent
      * True to automatically style the html inside the content target of this component (body for panels).
      * Defaults to false.
      */
@@ -697,6 +714,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         if (me.renderTo) {
             me.render(me.renderTo);
+            // EXTJSIV-1935 - should be a way to do afterShow or something, but that
+            // won't work. Likewise, rendering hidden and then showing (w/autoShow) has
+            // implications to afterRender so we cannot do that.
         }
 
         if (me.autoShow) {
@@ -802,7 +822,6 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
         return plugin;
     },
-
 
     // @private
     initPlugin : function(plugin) {
@@ -1681,13 +1700,17 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     initEvents : function() {
         var me = this,
             afterRenderEvents = me.afterRenderEvents,
-            property, listeners;
+            el,
+            property,
+            fn = function(listeners){
+                me.mon(el, listeners);
+            };
         if (afterRenderEvents) {
             for (property in afterRenderEvents) {
                 if (afterRenderEvents.hasOwnProperty(property)) {
-                    listeners = afterRenderEvents[property];
-                    if (me[property] &amp;&amp; me[property].on) {
-                        me.mon(me[property], listeners);
+                    el = me[property];
+                    if (el &amp;&amp; el.on) {
+                        Ext.each(afterRenderEvents[property], fn);
                     }
                 }
             }
@@ -2153,7 +2176,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
 <span id='Ext-AbstractComponent-method-addClass'>    /**
-</span>     * @deprecated 4.0 Replaced by {link:#addCls}
+</span>     * @deprecated 4.0 Replaced by {@link #addCls}
      * Adds a CSS class to the top level element representing this component.
      * @param {String} cls The CSS class name to add
      * @return {Ext.Component} Returns the Component to allow method chaining.
@@ -2237,14 +2260,35 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                 me.mon(me[element], listeners);
             } else {
                 me.afterRenderEvents = me.afterRenderEvents || {};
-                me.afterRenderEvents[element] = listeners;
+                if (!me.afterRenderEvents[element]) {
+                    me.afterRenderEvents[element] = [];
+                }
+                me.afterRenderEvents[element].push(listeners);
             }
         }
 
         return me.mixins.observable.addListener.apply(me, arguments);
     },
-
-    // @TODO: implement removelistener to support the dom event stuff
+    
+    // inherit docs
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        var me = this,
+            element = managedListener.options ? managedListener.options.element : null;
+        
+        if (element) {
+            element = me[element];
+            if (element &amp;&amp; element.un) {
+                if (isClear || (managedListener.item === item &amp;&amp; managedListener.ename === ename &amp;&amp; (!fn || managedListener.fn === fn) &amp;&amp; (!scope || managedListener.scope === scope))) {
+                    element.un(managedListener.ename, managedListener.fn, managedListener.scope);
+                    if (!isClear) {
+                        Ext.Array.remove(me.managedListeners, managedListener);
+                    }
+                }
+            }
+        } else {
+            return me.mixins.observable.removeManagedListenerItem.apply(me, arguments);
+        }
+    },
 
 <span id='Ext-AbstractComponent-method-getBubbleTarget'>    /**
 </span>     * Provides the link for Observable's fireEvent method to bubble up the ownership hierarchy.
@@ -2718,4 +2762,6 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         next: 'nextSibling'
     });
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -42,6 +42,10 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
          */
         me.menuItems = [];
     },
+    
+    onRemove: function(comp){
+        Ext.Array.remove(this.menuItems, comp);
+    },
 
     handleOverflow: function(calculations, targetSize) {
         var me = this,
@@ -102,7 +106,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * @private
      */
     hideTrigger: function() {
-        if (this.menuTrigger != undefined) {
+        if (this.menuTrigger !== undefined) {
             this.menuTrigger.hide();
         }
     },

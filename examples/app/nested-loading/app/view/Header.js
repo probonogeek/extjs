@@ -3,15 +3,14 @@
  * @extends Ext.Component
  */
 Ext.define('Books.view.Header', {
-    alias: 'widget.header',
     extend: 'Ext.Component',
+    
+    dock: 'top',
+    baseCls: 'app-header',
     
     initComponent: function() {
         Ext.applyIf(this, {
-            dock: 'top',
-            html: 'Loading Nested Data Example',
-            cls: 'app-header',
-            border: false
+            html: 'Loading Nested Data Example'
         });
                 
         this.callParent(arguments);

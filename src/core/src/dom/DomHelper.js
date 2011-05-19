@@ -17,6 +17,11 @@
  * for a DOM node, depending on whether DomHelper is using fragments or DOM.</div></li>
  * <li><b><tt>html</tt></b> : <div class="sub-desc">The innerHTML for the element</div></li>
  * </ul></div></p>
+ * <p><b>NOTE:</b> For other arbitrary attributes, the value will currently <b>not</b> be automatically
+ * HTML-escaped prior to building the element's HTML string. This means that if your attribute value
+ * contains special characters that would not normally be allowed in a double-quoted attribute value,
+ * you <b>must</b> manually HTML-encode it beforehand (see {@link Ext.String#htmlEncode}) or risk
+ * malformed HTML being created. This behavior may change in a future release.</p>
  *
  * <p><b><u>Insertion methods</u></b></p>
  * <p>Commonly used insertion methods:
@@ -514,6 +519,7 @@ Ext.core.DomHelper = function(){
          * Creates new DOM element(s) without inserting them to the document.
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
          * @return {HTMLElement} The new uninserted node
+         * @method
          */
         createDom: createDom,
         

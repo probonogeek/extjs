@@ -202,9 +202,9 @@ Ext.decode = Ext.JSON.decode;
 
 For more information about how to use the Ext classes, see
 
-* <a href="http://www.sencha.com/learn/">The Learning Center</a>
-* <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
-* <a href="http://www.sencha.com/forum/">The forums</a>
+- <a href="http://www.sencha.com/learn/">The Learning Center</a>
+- <a href="http://www.sencha.com/learn/Ext_FAQ">The FAQ</a>
+- <a href="http://www.sencha.com/forum/">The forums</a>
 
  * @singleton
  * @markdown
@@ -267,6 +267,7 @@ Ext.apply(Ext, {
     /**
      * Returns the current document head as an {@link Ext.core.Element}.
      * @return Ext.core.Element The document head
+     * @method
      */
     getHead: function() {
         var head;
@@ -394,6 +395,7 @@ Ext.ns = Ext.namespace;
 
 // for old browsers
 window.undefined = window.undefined;
+
 /**
  * @class Ext
  * Ext core utilities and functions.
@@ -426,14 +428,15 @@ window.undefined = window.undefined;
         isWindows = check(/windows|win32/),
         isMac = check(/macintosh|mac os x/),
         isLinux = check(/linux/),
-        scrollWidth = null;
+        scrollWidth = null,
+        webKitVersion = isWebKit && (/webkit\/(\d+\.\d+)/.exec(Ext.userAgent));
 
     // remove css image flicker
     try {
         document.execCommand("BackgroundImageCache", false, true);
     } catch(e) {}
 
-    Ext.setVersion('extjs', '4.0.0');
+    Ext.setVersion('extjs', '4.0.1');
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
@@ -527,6 +530,7 @@ function(el){
          * <code>true</code>, then DOM event listeners are also removed from all child nodes. The body node
          * will be ignored if passed in.</p>
          * @param {HTMLElement} node The node to remove
+         * @method
          */
         removeNode : isIE6 || isIE7 ? function() {
             var d;
@@ -680,6 +684,12 @@ function(el){
         isMac : isMac,
 
         /**
+         * The current version of WebKit (-1 if the browser does not use WebKit).
+         * @type Float
+         */
+        webKitVersion: webKitVersion ? parseFloat(webKitVersion[1]) : -1,
+
+        /**
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with CSS background images.
          * In older versions of IE, this defaults to "http://sencha.com/s.gif" and you should change this to a URL on your server.
          * For other browsers it uses an inline data URL.
@@ -830,6 +840,128 @@ ImageComponent = Ext.extend(Ext.Component, {
         },
 
         /**
+         * Logs a message. If a console is present it will be used. On Opera, the method
+         * "opera.postError" is called. In other cases, the message is logged to an array
+         * "Ext.log.out". An attached debugger can watch this array and view the log. The
+         * log buffer is limited to a maximum of "Ext.log.max" entries (defaults to 100).
+         *
+         * If additional parameters are passed, they are joined and appended to the message.
+         * 
+         * This method does nothing in a release build.
+         *
+         * @param {String|Object} message The message to log or an options object with any
+         * of the following properties:
+         *
+         *  - `msg`: The message to log (required).
+         *  - `level`: One of: "error", "warn", "info" or "log" (the default is "log").
+         *  - `dump`: An object to dump to the log as part of the message.
+         *  - `stack`: True to include a stack trace in the log.
+         * @markdown
+         */
+        log : function (message) {
+            //<debug>
+            var options, dump,
+                con = Ext.global.console,
+                log = Ext.log,
+                level = 'log',
+                stack,
+                members,
+                member;
+
+            if (!Ext.isString(message)) {
+                options = message;
+                message = options.msg || '';
+                level = options.level || level;
+                dump = options.dump;
+                stack = options.stack;
+
+                if (dump && !(con && con.dir)) {
+                    members = [];
+
+                    // Cannot use Ext.encode since it can recurse endlessly (if we're lucky)
+                    // ...and the data could be prettier!
+                    Ext.Object.each(dump, function (name, value) {
+                        if (typeof(value) === "function") {
+                            return;
+                        }
+
+                        if (!Ext.isDefined(value) || value === null ||
+                                Ext.isDate(value) ||
+                                Ext.isString(value) || (typeof(value) == "number") ||
+                                Ext.isBoolean(value)) {
+                            member = Ext.encode(value);
+                        } else if (Ext.isArray(value)) {
+                            member = '[ ]';
+                        } else if (Ext.isObject(value)) {
+                            member = '{ }';
+                        } else {
+                            member = 'undefined';
+                        }
+                        members.push(Ext.encode(name) + ': ' + member);
+                    });
+
+                    if (members.length) {
+                        message += ' \nData: {\n  ' + members.join(',\n  ') + '\n}';
+                    }
+                    dump = null;
+                }
+            }
+
+            if (arguments.length > 1) {
+                message += Array.prototype.slice.call(arguments, 1).join('');
+            }
+
+            // Not obvious, but 'console' comes and goes when Firebug is turned on/off, so
+            // an early test may fail either direction if Firebug is toggled.
+            //
+            if (con) { // if (Firebug-like console)
+                if (con[level]) {
+                    con[level](message);
+                } else {
+                    con.log(message);
+                }
+
+                if (dump) {
+                    con.dir(dump);
+                }
+
+                if (stack && con.trace) {
+                    // Firebug's console.error() includes a trace already...
+                    if (!con.firebug || level != 'error') {
+                        con.trace();
+                    }
+                }
+            } else {
+                // w/o console, all messages are equal, so munge the level into the message:
+                if (level != 'log') {
+                    message = level.toUpperCase() + ': ' + message;
+                }
+
+                if (Ext.isOpera) {
+                    opera.postError(message);
+                } else {
+                    var out = log.out || (log.out = []),
+                        max = log.max || (log.max = 100);
+
+                    if (out.length >= max) {
+                        // this formula allows out.max to change (via debugger), where the
+                        // more obvious "max/4" would not quite be the same
+                        out.splice(0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
+                    }
+
+                    out.push(message);
+                }
+            }
+
+            // Mostly informational, but the Ext.Error notifier uses them:
+            var counters = log.counters ||
+                          (log.counters = { error: 0, warn: 0, info: 0, log: 0 });
+
+            ++counters[level];
+            //</debug>
+        },
+
+        /**
          * Partitions the set into two sets: a true set and a false set.
          * Example:
          * Example2:
@@ -960,8 +1092,8 @@ Ext.zip(
 
 /**
  * TBD
- * @type Function
  * @param {Object} config
+ * @method
  */
 Ext.application = function(config) {
     Ext.require('Ext.app.Application');
@@ -1231,6 +1363,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
          * </code></pre>
          * @return {Function} A function that operates on the passed value.
+         * @method
          */
         math : function(){
             var fns = {};
@@ -1405,39 +1538,46 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Capitalize the given string. See {@link Ext.String#capitalize}.
+         * @method
          */
         capitalize: Ext.String.capitalize,
 
         /**
          * Truncate a string and add an ellipsis ('...') to the end if it exceeds the specified length.
          * See {@link Ext.String#ellipsis}.
+         * @method
          */
         ellipsis: Ext.String.ellipsis,
 
         /**
          * Formats to a string. See {@link Ext.String#format}
+         * @method
          */
         format: Ext.String.format,
 
         /**
          * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
          * See {@link Ext.string#htmlDecode}.
+         * @method
          */
         htmlDecode: Ext.String.htmlDecode,
 
         /**
          * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
          * See {@link Ext.String#htmlEncode}.
+         * @method
          */
         htmlEncode: Ext.String.htmlEncode,
 
         /**
          * Adds left padding to a string. See {@link Ext.String#leftPad}
+         * @method
          */
         leftPad: Ext.String.leftPad,
 
         /**
          * Trims any whitespace from either side of a string. See {@link Ext.String#trim}.
+         * @method
          */
         trim : Ext.String.trim,
 
@@ -1909,12 +2049,65 @@ Ext.supports = {
          */
         {
             identity: 'RightMargin',
-            fn: function(doc, div, view) {
-                view = doc.defaultView;
+            fn: function(doc, div) {
+                var view = doc.defaultView;
                 return !(view && view.getComputedStyle(div.firstChild.firstChild, null).marginRight != '0px');
             }
         },
-        
+
+        /**
+         * @property DisplayChangeInputSelectionBug True if INPUT elements lose their
+         * selection when their display style is changed. Essentially, if a text input
+         * has focus and its display style is changed, the I-beam disappears.
+         * 
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
+         * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
+         * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
+         */
+        {
+            identity: 'DisplayChangeInputSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+                // WebKit but older than Safari 5 or Chrome 6:
+                return 0 < webKitVersion && webKitVersion < 533;
+            }
+        },
+
+        /**
+         * @property DisplayChangeTextAreaSelectionBug True if TEXTAREA elements lose their
+         * selection when their display style is changed. Essentially, if a text area has
+         * focus and its display style is changed, the I-beam disappears.
+         *
+         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
+         * be fixed in Chrome 11.
+         */
+        {
+            identity: 'DisplayChangeTextAreaSelectionBug',
+            fn: function() {
+                var webKitVersion = Ext.webKitVersion;
+
+                /*
+                Has bug w/textarea:
+
+                (Chrome) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-US)
+                            AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.127
+                            Safari/534.16
+                (Safari) Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us)
+                            AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5
+                            Safari/533.21.1
+
+                No bug:
+
+                (Chrome) Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7)
+                            AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57
+                            Safari/534.24
+                */
+                return 0 < webKitVersion && webKitVersion < 534.24;
+            }
+        },
+
         /**
          * @property TransparentColor True if the device supports transparent color
          * @type {Boolean}
@@ -2180,8 +2373,19 @@ Ext.supports = {
                 
                 return range && !!range.createContextualFragment;
             }
+        },
+
+        /**
+         * @property WindowOnError True if browser supports window.onerror.
+         * @type {Boolean}
+         */
+        {
+            identity: 'WindowOnError',
+            fn: function () {
+                // sadly, we cannot feature detect this...
+                return Ext.isIE || Ext.isGecko || Ext.webKitVersion >= 534.16; // Chrome 10+
+            }
         }
-        
     ]
 };
 

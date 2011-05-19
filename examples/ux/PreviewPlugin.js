@@ -34,22 +34,26 @@ Ext.define('Ext.ux.PreviewPlugin', {
         this.callParent(arguments);
         var bodyField   = this.bodyField,
             hideBodyCls = this.hideBodyCls,
-            section     = this.getCmp();
+            section     = this.getCmp(),
+            features = [{
+                ftype: 'rowbody',
+                getAdditionalData: function(data, idx, record, orig, view) {
+                    var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments);
+                    Ext.apply(o, {
+                        rowBody: data[bodyField],
+                        rowBodyCls: section.previewExpanded ? '' : hideBodyCls
+                    });
+                    return o;
+                }
+            },{
+                ftype: 'rowwrap'
+            }];
         
         section.previewExpanded = this.previewExpanded;
-        section.features = [{
-            ftype: 'rowbody',
-            getAdditionalData: function(data, idx, record, orig, view) {
-                var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments);
-                Ext.apply(o, {
-                    rowBody: data[bodyField],
-                    rowBodyCls: section.previewExpanded ? '' : hideBodyCls
-                });
-                return o;
-            }
-        },{
-            ftype: 'rowwrap'
-        }];
+        if (!section.features) {
+            section.features = [];
+        }
+        section.features = features.concat(section.features);
     },
     
     /**

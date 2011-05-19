@@ -44,6 +44,8 @@ Ext.define('FeedViewer.FeedDetail', {
             region: 'center',
             dockedItems: [this.createTopToolbar()],
             flex: 2,
+            minHeight: 200,
+            minWidth: 150,
             listeners: {
                 scope: this,
                 select: this.onSelect
@@ -169,6 +171,7 @@ Ext.define('FeedViewer.FeedDetail', {
             region: 'south',
             split: true,
             flex: 2,
+            minHeight: 150,
             items: this.display
         });
         return this.south;
@@ -186,6 +189,7 @@ Ext.define('FeedViewer.FeedDetail', {
             flex: 1,
             split: true,
             hidden: true,
+            minWidth: 150,
             border: false
         });
         return this.east;

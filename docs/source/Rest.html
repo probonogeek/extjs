@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.proxy.Rest'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Rest'>/**
 </span> * @author Ed Spencer
  * @class Ext.data.proxy.Rest
  * @extends Ext.data.proxy.Ajax
@@ -116,24 +133,24 @@ Ext.define('Ext.data.proxy.Rest', {
     alternateClassName: 'Ext.data.RestProxy',
     alias : 'proxy.rest',
     
-<span id='Ext-data.proxy.Rest-cfg-appendId'>    /**
+<span id='Ext-data-proxy-Rest-cfg-appendId'>    /**
 </span>     * @cfg {Boolean} appendId True to automatically append the ID of a Model instance when performing a request based
      * on that single instance. See RestProxy intro docs for more details. Defaults to true.
      */
     appendId: true,
     
-<span id='Ext-data.proxy.Rest-cfg-format'>    /**
+<span id='Ext-data-proxy-Rest-cfg-format'>    /**
 </span>     * @cfg {String} format Optional data format to send to the server when making any request (e.g. 'json'). See the
      * RestProxy intro docs for full details. Defaults to undefined.
      */
     
-<span id='Ext-data.proxy.Rest-cfg-batchActions'>    /**
+<span id='Ext-data-proxy-Rest-cfg-batchActions'>    /**
 </span>     * @cfg {Boolean} batchActions True to batch actions of a particular type when synchronizing the store.
      * Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     batchActions: false,
     
-<span id='Ext-data.proxy.Rest-method-buildUrl'>    /**
+<span id='Ext-data-proxy-Rest-method-buildUrl'>    /**
 </span>     * Specialized version of buildUrl that incorporates the {@link #appendId} and {@link #format} options into the
      * generated url. Override this to provide further customizations, but remember to call the superclass buildUrl
      * so that additional parameters like the cache buster string are appended
@@ -169,7 +186,7 @@ Ext.define('Ext.data.proxy.Rest', {
     }
 }, function() {
     Ext.apply(this.prototype, {
-<span id='Ext-data.proxy.Rest-property-actionMethods'>        /**
+<span id='Ext-data-proxy-Rest-property-actionMethods'>        /**
 </span>         * Mapping of action name to HTTP request method. These default to RESTful conventions for the 'create', 'read',
          * 'update' and 'destroy' actions (which map to 'POST', 'GET', 'PUT' and 'DELETE' respectively). This object should
          * not be changed except globally via {@link Ext#override Ext.override} - the {@link #getMethod} function can be overridden instead.
@@ -184,4 +201,6 @@ Ext.define('Ext.data.proxy.Rest', {
         }
     });
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

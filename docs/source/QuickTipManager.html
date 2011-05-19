@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tip.QuickTipManager'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tip-QuickTipManager'>/**
 </span> * @class Ext.tip.QuickTipManager
  *
  * Provides attractive and customizable tooltips for any element. The QuickTips
@@ -74,7 +91,7 @@
  *     });
  *
  * To register a quick tip in markup, you simply add one or more of the valid QuickTip attributes prefixed with
- * the **ext** namespace.  The HTML element itself is automatically set as the quick tip target. Here is the summary
+ * the **data-** namespace.  The HTML element itself is automatically set as the quick tip target. Here is the summary
  * of supported attributes (optional unless otherwise noted):
  *
  *  - `hide`: Specifying &quot;user&quot; is equivalent to setting autoHide = false.  Any other value will be the same as autoHide = true.
@@ -86,8 +103,8 @@
  * Here is an example of configuring an HTML element to display a tooltip from markup:
  *     
  *     // Add a quick tip to an HTML button
- *     &amp;lt;input type=&quot;button&quot; value=&quot;OK&quot; ext:qtitle=&quot;OK Button&quot; ext:qwidth=&quot;100&quot;
- *          data-qtip=&quot;This is a quick tip from markup!&quot;&gt;&amp;lt;/input&gt;
+ *     &lt;input type=&quot;button&quot; value=&quot;OK&quot; data-qtitle=&quot;OK Button&quot; data-qwidth=&quot;100&quot;
+ *          data-qtip=&quot;This is a quick tip from markup!&quot;&gt;&lt;/input&gt;
  *
  * @singleton
  */
@@ -99,11 +116,17 @@ Ext.define('Ext.tip.QuickTipManager', function() {
         requires: ['Ext.tip.QuickTip'],
         singleton: true,
         alternateClassName: 'Ext.QuickTips',
-<span id='Ext-tip.QuickTipManager-method-init'>        /**
+
+<span id='Ext-tip-QuickTipManager-method-init'>        /**
 </span>         * Initialize the global QuickTips instance and prepare any quick tips.
-         * @param {Boolean} autoRender True to render the QuickTips container immediately to preload images. (Defaults to true) 
+         * @param {Boolean} autoRender True to render the QuickTips container immediately to
+         * preload images. (Defaults to true)
+         * @param {Object} config An optional config object for the created QuickTip. By
+         * default, the {@link Ext.tip.QuickTip QuickTip} class is instantiated, but this can
+         * be changed by supplying an xtype property or a className property in this object.
+         * All other properties on this object are configuration for the created component.
          */
-        init : function(autoRender){
+        init : function (autoRender, config) {
             if (!tip) {
                 if (!Ext.isReady) {
                     Ext.onReady(function(){
@@ -111,14 +134,37 @@ Ext.define('Ext.tip.QuickTipManager', function() {
                     });
                     return;
                 }
-                tip = Ext.create('Ext.tip.QuickTip', {
-                    disabled: disabled,
-                    renderTo: autoRender !== false ? document.body : undefined
-                });
+
+                var tipConfig = Ext.apply({ disabled: disabled }, config),
+                    className = tipConfig.className,
+                    xtype = tipConfig.xtype;
+
+                if (className) {
+                    delete tipConfig.className;
+                } else if (xtype) {
+                    className = 'widget.' + xtype;
+                    delete tipConfig.xtype;
+                }
+
+                if (autoRender !== false) {
+                    tipConfig.renderTo = document.body;
+
+                    //&lt;debug&gt;
+                    if (tipConfig.renderTo.tagName != 'BODY') { // e.g., == 'FRAMESET'
+                        Ext.Error.raise({
+                            sourceClass: 'Ext.tip.QuickTipManager',
+                            sourceMethod: 'init',
+                            msg: 'Cannot init QuickTipManager: no document body'
+                        });
+                    }
+                    //&lt;/debug&gt;
+                }
+
+                tip = Ext.create(className || 'Ext.tip.QuickTip', tipConfig);
             }
         },
 
-<span id='Ext-tip.QuickTipManager-method-destroy'>        /**
+<span id='Ext-tip-QuickTipManager-method-destroy'>        /**
 </span>         * Destroy the QuickTips instance.
          */
         destroy: function() {
@@ -145,7 +191,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             }
         },
 
-<span id='Ext-tip.QuickTipManager-method-enable'>        /**
+<span id='Ext-tip-QuickTipManager-method-enable'>        /**
 </span>         * Enable quick tips globally.
          */
         enable : function(){
@@ -155,7 +201,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             disabled = false;
         },
 
-<span id='Ext-tip.QuickTipManager-method-disable'>        /**
+<span id='Ext-tip-QuickTipManager-method-disable'>        /**
 </span>         * Disable quick tips globally.
          */
         disable : function(){
@@ -165,7 +211,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             disabled = true;
         },
 
-<span id='Ext-tip.QuickTipManager-method-isEnabled'>        /**
+<span id='Ext-tip-QuickTipManager-method-isEnabled'>        /**
 </span>         * Returns true if quick tips are enabled, else false.
          * @return {Boolean}
          */
@@ -173,7 +219,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             return tip !== undefined &amp;&amp; !tip.disabled;
         },
 
-<span id='Ext-tip.QuickTipManager-method-getQuickTip'>        /**
+<span id='Ext-tip-QuickTipManager-method-getQuickTip'>        /**
 </span>         * Gets the single {@link Ext.tip.QuickTip QuickTip} instance used to show tips from all registered elements.
          * @return {Ext.tip.QuickTip}
          */
@@ -181,7 +227,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             return tip;
         },
 
-<span id='Ext-tip.QuickTipManager-method-register'>        /**
+<span id='Ext-tip-QuickTipManager-method-register'>        /**
 </span>         * Configures a new quick tip instance and assigns it to a target element.  See
          * {@link Ext.tip.QuickTip#register} for details.
          * @param {Object} config The config object
@@ -190,7 +236,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             tip.register.apply(tip, arguments);
         },
 
-<span id='Ext-tip.QuickTipManager-method-unregister'>        /**
+<span id='Ext-tip-QuickTipManager-method-unregister'>        /**
 </span>         * Removes any registered quick tip from the target element and destroys it.
          * @param {String/HTMLElement/Element} el The element from which the quick tip is to be removed.
          */
@@ -198,7 +244,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             tip.unregister.apply(tip, arguments);
         },
 
-<span id='Ext-tip.QuickTipManager-method-tips'>        /**
+<span id='Ext-tip-QuickTipManager-method-tips'>        /**
 </span>         * Alias of {@link #register}.
          * @param {Object} config The config object
          */
@@ -206,4 +252,6 @@ Ext.define('Ext.tip.QuickTipManager', function() {
             tip.register.apply(tip, arguments);
         }
     };
-}());</pre></pre></body></html>
+}());</pre>
+</body>
+</html>

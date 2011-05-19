@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-chart.series.Pie'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-chart-series-Pie'>/**
 </span> * @class Ext.chart.series.Pie
  * @extends Ext.chart.series.Series
  * 
@@ -83,13 +100,13 @@ Ext.define('Ext.chart.series.Pie', {
 
     rad: Math.PI / 180,
 
-<span id='Ext-chart.series.Pie-cfg-highlightDuration'>    /**
+<span id='Ext-chart-series-Pie-cfg-highlightDuration'>    /**
 </span>     * @cfg {Number} highlightDuration
      * The duration for the pie slice highlight effect.
      */
     highlightDuration: 150,
 
-<span id='Ext-chart.series.Pie-cfg-angleField'>    /**
+<span id='Ext-chart-series-Pie-cfg-angleField'>    /**
 </span>     * @cfg {String} angleField
      * The store record field name to be used for the pie angles.
      * The values bound to this field name must be positive real numbers.
@@ -97,7 +114,7 @@ Ext.define('Ext.chart.series.Pie', {
      */
     angleField: false,
 
-<span id='Ext-chart.series.Pie-cfg-lengthField'>    /**
+<span id='Ext-chart-series-Pie-cfg-lengthField'>    /**
 </span>     * @cfg {String} lengthField
      * The store record field name to be used for the pie slice lengths.
      * The values bound to this field name must be positive real numbers.
@@ -105,7 +122,7 @@ Ext.define('Ext.chart.series.Pie', {
      */
     lengthField: false,
 
-<span id='Ext-chart.series.Pie-cfg-donut'>    /**
+<span id='Ext-chart-series-Pie-cfg-donut'>    /**
 </span>     * @cfg {Boolean|Number} donut
      * Whether to set the pie chart as donut chart.
      * Default's false. Can be set to a particular percentage to set the radius
@@ -113,18 +130,18 @@ Ext.define('Ext.chart.series.Pie', {
      */
     donut: false,
 
-<span id='Ext-chart.series.Pie-cfg-showInLegend'>    /**
+<span id='Ext-chart-series-Pie-cfg-showInLegend'>    /**
 </span>     * @cfg {Boolean} showInLegend
      * Whether to add the pie chart elements as legend items. Default's false.
      */
     showInLegend: false,
 
-<span id='Ext-chart.series.Pie-cfg-colorSet'>    /**
+<span id='Ext-chart-series-Pie-cfg-colorSet'>    /**
 </span>     * @cfg {Array} colorSet
      * An array of color values which will be used, in order, as the pie slice fill colors.
      */
     
-<span id='Ext-chart.series.Pie-cfg-style'>    /**
+<span id='Ext-chart-series-Pie-cfg-style'>    /**
 </span>     * @cfg {Object} style
      * An object containing styles for overriding series styles from Theming.
      */
@@ -281,7 +298,7 @@ Ext.define('Ext.chart.series.Pie', {
         };
     },
 
-<span id='Ext-chart.series.Pie-method-drawSeries'>    /**
+<span id='Ext-chart-series-Pie-method-drawSeries'>    /**
 </span>     * Draws the series for the current chart.
      */
     drawSeries: function() {
@@ -457,25 +474,22 @@ Ext.define('Ext.chart.series.Pie', {
                         shadowAttr = shadowAttributes[shindex];
                         shadow = shadowGroups[shindex].getAt(i);
                         if (!shadow) {
-                            shadow = chart.surface.add(Ext.apply({},
-                            {
+                            shadow = chart.surface.add(Ext.apply({}, {
                                 type: 'path',
                                 group: shadowGroups[shindex],
                                 strokeLinejoin: &quot;round&quot;
-                            },
-                            rendererAttributes, shadowAttr));
+                            }, rendererAttributes, shadowAttr));
                         }
                         if (animate) {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply({},
-                            rendererAttributes, shadowAttr), i, store);
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply({}, rendererAttributes, shadowAttr), i, store);
                             me.onAnimate(shadow, {
-                                to: rendererAttributes
+                                to: shadowAttr
                             });
                         } else {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
                                 hidden: false
                             }), i, store);
-                            shadow.setAttributes(rendererAttributes, true);
+                            shadow.setAttributes(shadowAttr, true);
                         }
                         shadows.push(shadow);
                     }
@@ -819,7 +833,7 @@ Ext.define('Ext.chart.series.Pie', {
         }
     },
 
-<span id='Ext-chart.series.Pie-method-highlightItem'>    /**
+<span id='Ext-chart-series-Pie-method-highlightItem'>    /**
 </span>     * Highlight the specified item. If no item is provided the whole series will be highlighted.
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -920,7 +934,7 @@ Ext.define('Ext.chart.series.Pie', {
         }
     },
 
-<span id='Ext-chart.series.Pie-method-unHighlightItem'>    /**
+<span id='Ext-chart-series-Pie-method-unHighlightItem'>    /**
 </span>     * un-highlights the specified item. If no item is provided it will un-highlight the entire series.
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -1009,7 +1023,7 @@ Ext.define('Ext.chart.series.Pie', {
         me.callParent(arguments);
     },
     
-<span id='Ext-chart.series.Pie-method-getLegendColor'>    /**
+<span id='Ext-chart-series-Pie-method-getLegendColor'>    /**
 </span>     * Returns the color of the series (to be displayed as color for the series legend item).
      * @param item {Object} Info about the item; same format as returned by #getItemForPoint
      */
@@ -1019,4 +1033,6 @@ Ext.define('Ext.chart.series.Pie', {
     }
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

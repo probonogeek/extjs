@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-core.Element-method-constructor'><span id='Ext-core.Element'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-core-Element-method-constructor'><span id='Ext-core-Element'>/**
 </span></span> * @class Ext.core.Element
  * &lt;p&gt;Encapsulates a DOM element, adding simple DOM manipulation facilities, normalizing for browser differences.&lt;/p&gt;
  * &lt;p&gt;All instances of this class inherit the methods of {@link Ext.fx.Anim} making visual effects easily available to all DOM elements.&lt;/p&gt;
@@ -86,13 +103,13 @@ if(opt.anim.isAnimated()){
             return EC[id].el;
         }
 
-<span id='Ext-core.Element-property-dom'>        /**
+<span id='Ext-core-Element-property-dom'>        /**
 </span>     * The DOM element
      * @type HTMLElement
      */
         this.dom = dom;
 
-<span id='Ext-core.Element-property-id'>        /**
+<span id='Ext-core-Element-property-id'>        /**
 </span>     * The DOM element ID
      * @type String
      */
@@ -104,7 +121,7 @@ if(opt.anim.isAnimated()){
 
 
     El.prototype = {
-<span id='Ext-core.Element-method-set'>        /**
+<span id='Ext-core-Element-method-set'>        /**
 </span>     * Sets the passed attributes as attributes of this element (a style attribute can be a string, object or function)
      * @param {Object} o The object with the attributes
      * @param {Boolean} useSet (optional) false to override the default setAttribute to use expandos.
@@ -134,70 +151,70 @@ if(opt.anim.isAnimated()){
         },
 
         //  Mouse events
-<span id='Ext-core.Element-event-click'>        /**
+<span id='Ext-core-Element-event-click'>        /**
 </span>     * @event click
      * Fires when a mouse click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-contextmenu'>        /**
+<span id='Ext-core-Element-event-contextmenu'>        /**
 </span>     * @event contextmenu
      * Fires when a right click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-dblclick'>        /**
+<span id='Ext-core-Element-event-dblclick'>        /**
 </span>     * @event dblclick
      * Fires when a mouse double click is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mousedown'>        /**
+<span id='Ext-core-Element-event-mousedown'>        /**
 </span>     * @event mousedown
      * Fires when a mousedown is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mouseup'>        /**
+<span id='Ext-core-Element-event-mouseup'>        /**
 </span>     * @event mouseup
      * Fires when a mouseup is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mouseover'>        /**
+<span id='Ext-core-Element-event-mouseover'>        /**
 </span>     * @event mouseover
      * Fires when a mouseover is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mousemove'>        /**
+<span id='Ext-core-Element-event-mousemove'>        /**
 </span>     * @event mousemove
      * Fires when a mousemove is detected with the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mouseout'>        /**
+<span id='Ext-core-Element-event-mouseout'>        /**
 </span>     * @event mouseout
      * Fires when a mouseout is detected with the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mouseenter'>        /**
+<span id='Ext-core-Element-event-mouseenter'>        /**
 </span>     * @event mouseenter
      * Fires when the mouse enters the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-mouseleave'>        /**
+<span id='Ext-core-Element-event-mouseleave'>        /**
 </span>     * @event mouseleave
      * Fires when the mouse leaves the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -206,21 +223,21 @@ if(opt.anim.isAnimated()){
      */
 
         //  Keyboard events
-<span id='Ext-core.Element-event-keypress'>        /**
+<span id='Ext-core-Element-event-keypress'>        /**
 </span>     * @event keypress
      * Fires when a keypress is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-keydown'>        /**
+<span id='Ext-core-Element-event-keydown'>        /**
 </span>     * @event keydown
      * Fires when a keydown is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-keyup'>        /**
+<span id='Ext-core-Element-event-keyup'>        /**
 </span>     * @event keyup
      * Fires when a keyup is detected within the element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -230,42 +247,42 @@ if(opt.anim.isAnimated()){
 
 
         //  HTML frame/object events
-<span id='Ext-core.Element-event-load'>        /**
+<span id='Ext-core-Element-event-load'>        /**
 </span>     * @event load
      * Fires when the user agent finishes loading all content within the element. Only supported by window, frames, objects and images.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-unload'>        /**
+<span id='Ext-core-Element-event-unload'>        /**
 </span>     * @event unload
      * Fires when the user agent removes all content from a window or frame. For elements, it fires when the target element or any of its content has been removed.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-abort'>        /**
+<span id='Ext-core-Element-event-abort'>        /**
 </span>     * @event abort
      * Fires when an object/image is stopped from loading before completely loaded.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-error'>        /**
+<span id='Ext-core-Element-event-error'>        /**
 </span>     * @event error
      * Fires when an object/image/frame cannot be loaded properly.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-resize'>        /**
+<span id='Ext-core-Element-event-resize'>        /**
 </span>     * @event resize
      * Fires when a document view is resized.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-scroll'>        /**
+<span id='Ext-core-Element-event-scroll'>        /**
 </span>     * @event scroll
      * Fires when a document view is scrolled.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -274,42 +291,42 @@ if(opt.anim.isAnimated()){
      */
 
         //  Form events
-<span id='Ext-core.Element-event-select'>        /**
+<span id='Ext-core-Element-event-select'>        /**
 </span>     * @event select
      * Fires when a user selects some text in a text field, including input and textarea.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-change'>        /**
+<span id='Ext-core-Element-event-change'>        /**
 </span>     * @event change
      * Fires when a control loses the input focus and its value has been modified since gaining focus.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-submit'>        /**
+<span id='Ext-core-Element-event-submit'>        /**
 </span>     * @event submit
      * Fires when a form is submitted.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-reset'>        /**
+<span id='Ext-core-Element-event-reset'>        /**
 </span>     * @event reset
      * Fires when a form is reset.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-focus'>        /**
+<span id='Ext-core-Element-event-focus'>        /**
 </span>     * @event focus
      * Fires when an element receives focus either via the pointing device or by tab navigation.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-blur'>        /**
+<span id='Ext-core-Element-event-blur'>        /**
 </span>     * @event blur
      * Fires when an element loses focus either via the pointing device or by tabbing navigation.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -318,21 +335,21 @@ if(opt.anim.isAnimated()){
      */
 
         //  User Interface events
-<span id='Ext-core.Element-event-DOMFocusIn'>        /**
+<span id='Ext-core-Element-event-DOMFocusIn'>        /**
 </span>     * @event DOMFocusIn
      * Where supported. Similar to HTML focus event, but can be applied to any focusable element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMFocusOut'>        /**
+<span id='Ext-core-Element-event-DOMFocusOut'>        /**
 </span>     * @event DOMFocusOut
      * Where supported. Similar to HTML blur event, but can be applied to any focusable element.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMActivate'>        /**
+<span id='Ext-core-Element-event-DOMActivate'>        /**
 </span>     * @event DOMActivate
      * Where supported. Fires when an element is activated, for instance, through a mouse click or a keypress.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -341,49 +358,49 @@ if(opt.anim.isAnimated()){
      */
 
         //  DOM Mutation events
-<span id='Ext-core.Element-event-DOMSubtreeModified'>        /**
+<span id='Ext-core-Element-event-DOMSubtreeModified'>        /**
 </span>     * @event DOMSubtreeModified
      * Where supported. Fires when the subtree is modified.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMNodeInserted'>        /**
+<span id='Ext-core-Element-event-DOMNodeInserted'>        /**
 </span>     * @event DOMNodeInserted
      * Where supported. Fires when a node has been added as a child of another node.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMNodeRemoved'>        /**
+<span id='Ext-core-Element-event-DOMNodeRemoved'>        /**
 </span>     * @event DOMNodeRemoved
      * Where supported. Fires when a descendant node of the element is removed.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMNodeRemovedFromDocument'>        /**
+<span id='Ext-core-Element-event-DOMNodeRemovedFromDocument'>        /**
 </span>     * @event DOMNodeRemovedFromDocument
      * Where supported. Fires when a node is being removed from a document.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMNodeInsertedIntoDocument'>        /**
+<span id='Ext-core-Element-event-DOMNodeInsertedIntoDocument'>        /**
 </span>     * @event DOMNodeInsertedIntoDocument
      * Where supported. Fires when a node is being inserted into a document.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMAttrModified'>        /**
+<span id='Ext-core-Element-event-DOMAttrModified'>        /**
 </span>     * @event DOMAttrModified
      * Where supported. Fires when an attribute has been modified.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
      * @param {HtmlElement} t The target of the event.
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
-<span id='Ext-core.Element-event-DOMCharacterDataModified'>        /**
+<span id='Ext-core-Element-event-DOMCharacterDataModified'>        /**
 </span>     * @event DOMCharacterDataModified
      * Where supported. Fires when the character data has been modified.
      * @param {Ext.EventObject} e The {@link Ext.EventObject} encapsulating the DOM event.
@@ -391,13 +408,13 @@ if(opt.anim.isAnimated()){
      * @param {Object} o The options configuration passed to the {@link #addListener} call.
      */
 
-<span id='Ext-core.Element-property-defaultUnit'>        /**
+<span id='Ext-core-Element-property-defaultUnit'>        /**
 </span>     * The default unit to append to CSS values where a unit isn't provided (defaults to px).
      * @type String
      */
         defaultUnit: &quot;px&quot;,
 
-<span id='Ext-core.Element-method-is'>        /**
+<span id='Ext-core-Element-method-is'>        /**
 </span>     * Returns true if this element matches the passed simple selector (e.g. div.some-class or span:first-child)
      * @param {String} selector The simple selector to test
      * @return {Boolean} True if this element matches the selector, else false
@@ -406,7 +423,7 @@ if(opt.anim.isAnimated()){
             return Ext.DomQuery.is(this.dom, simpleSelector);
         },
 
-<span id='Ext-core.Element-method-focus'>        /**
+<span id='Ext-core-Element-method-focus'>        /**
 </span>     * Tries to focus the element. Any exceptions are caught and ignored.
      * @param {Number} defer (optional) Milliseconds to defer the focus
      * @return {Ext.core.Element} this
@@ -426,7 +443,7 @@ if(opt.anim.isAnimated()){
             return me;
         },
 
-<span id='Ext-core.Element-method-blur'>        /**
+<span id='Ext-core-Element-method-blur'>        /**
 </span>     * Tries to blur the element. Any exceptions are caught and ignored.
      * @return {Ext.core.Element} this
      */
@@ -437,7 +454,7 @@ if(opt.anim.isAnimated()){
             return this;
         },
 
-<span id='Ext-core.Element-method-getValue'>        /**
+<span id='Ext-core-Element-method-getValue'>        /**
 </span>     * Returns the value of the &quot;value&quot; attribute
      * @param {Boolean} asNumber true to parse the value as a number
      * @return {String/Number}
@@ -447,7 +464,7 @@ if(opt.anim.isAnimated()){
             return asNumber ? parseInt(val, 10) : val;
         },
 
-<span id='Ext-core.Element-method-addListener'>        /**
+<span id='Ext-core-Element-method-addListener'>        /**
 </span>     * Appends an event handler to this element.  The shorthand version {@link #on} is equivalent.
      * @param {String} eventName The name of event to handle.
      * @param {Function} fn The handler function the event invokes. This function is passed
@@ -557,7 +574,7 @@ el.on(
             return this;
         },
 
-<span id='Ext-core.Element-method-removeListener'>        /**
+<span id='Ext-core-Element-method-removeListener'>        /**
 </span>     * Removes an event handler from this element.  The shorthand version {@link #un} is equivalent.
      * &lt;b&gt;Note&lt;/b&gt;: if a &lt;i&gt;scope&lt;/i&gt; was explicitly specified when {@link #addListener adding} the
      * listener, the same scope must be specified here.
@@ -578,7 +595,7 @@ el.un('click', this.handlerFn);
             return this;
         },
 
-<span id='Ext-core.Element-method-removeAllListeners'>        /**
+<span id='Ext-core-Element-method-removeAllListeners'>        /**
 </span>     * Removes all previous added listeners from this element
      * @return {Ext.core.Element} this
      */
@@ -587,7 +604,7 @@ el.un('click', this.handlerFn);
             return this;
         },
 
-<span id='Ext-core.Element-method-purgeAllListeners'>        /**
+<span id='Ext-core-Element-method-purgeAllListeners'>        /**
 </span>         * Recursively removes all previous added listeners from this element and its children
          * @return {Ext.core.Element} this
          */
@@ -596,7 +613,7 @@ el.un('click', this.handlerFn);
             return this;
         },
 
-<span id='Ext-core.Element-method-addUnits'>        /**
+<span id='Ext-core-Element-method-addUnits'>        /**
 </span>         * @private Test if size has a unit, otherwise appends the passed unit string, or the default for this Element.
          * @param size {Mixed} The size to set
          * @param units {String} The units to append to a numeric size value
@@ -625,7 +642,7 @@ el.un('click', this.handlerFn);
             return size;
         },
 
-<span id='Ext-core.Element-method-isBorderBox'>        /**
+<span id='Ext-core-Element-method-isBorderBox'>        /**
 </span>         * Tests various css rules/browsers to determine if this element uses a border box
          * @return {Boolean}
          */
@@ -633,7 +650,7 @@ el.un('click', this.handlerFn);
             return Ext.isBorderBox || noBoxAdjust[(this.dom.tagName || &quot;&quot;).toLowerCase()];
         },
 
-<span id='Ext-core.Element-method-remove'>        /**
+<span id='Ext-core-Element-method-remove'>        /**
 </span>         * &lt;p&gt;Removes this element's dom reference.  Note that event and cache removal is handled at {@link Ext#removeNode Ext.removeNode}&lt;/p&gt;
          */
         remove: function() {
@@ -646,7 +663,7 @@ el.un('click', this.handlerFn);
             }
         },
 
-<span id='Ext-core.Element-method-hover'>        /**
+<span id='Ext-core-Element-method-hover'>        /**
 </span>         * Sets up event handlers to call the passed functions when the mouse is moved into and out of the Element.
          * @param {Function} overFn The function to call when the mouse enters the Element.
          * @param {Function} outFn The function to call when the mouse leaves the Element.
@@ -661,7 +678,7 @@ el.un('click', this.handlerFn);
             return me;
         },
 
-<span id='Ext-core.Element-method-contains'>        /**
+<span id='Ext-core-Element-method-contains'>        /**
 </span>         * Returns true if this element is an ancestor of the passed element
          * @param {HTMLElement/String} el The element to check
          * @return {Boolean} True if this element is an ancestor of el, else false
@@ -670,7 +687,7 @@ el.un('click', this.handlerFn);
             return ! el ? false: Ext.core.Element.isAncestor(this.dom, el.dom ? el.dom: el);
         },
 
-<span id='Ext-core.Element-method-getAttributeNS'>        /**
+<span id='Ext-core-Element-method-getAttributeNS'>        /**
 </span>         * Returns the value of a namespaced attribute from the element's underlying DOM node.
          * @param {String} namespace The namespace in which to look for the attribute
          * @param {String} name The attribute name
@@ -681,11 +698,12 @@ el.un('click', this.handlerFn);
             return this.getAttribute(name, ns);
         },
 
-<span id='Ext-core.Element-property-getAttribute'>        /**
+<span id='Ext-core-Element-method-getAttribute'>        /**
 </span>         * Returns the value of an attribute from the element's underlying DOM node.
          * @param {String} name The attribute name
          * @param {String} namespace (optional) The namespace in which to look for the attribute
          * @return {String} The attribute value
+         * @method
          */
         getAttribute: (Ext.isIE &amp;&amp; !(Ext.isIE9 &amp;&amp; document.documentMode === 9)) ?
         function(name, ns) {
@@ -710,7 +728,7 @@ el.un('click', this.handlerFn);
             return  d.getAttribute(name) || d[name] || null;
         },
 
-<span id='Ext-core.Element-method-update'>        /**
+<span id='Ext-core-Element-method-update'>        /**
 </span>         * Update the innerHTML of this element
          * @param {String} html The new HTML
          * @return {Ext.core.Element} this
@@ -729,7 +747,7 @@ el.un('click', this.handlerFn);
         Ext.apply(ep, o);
     };
 
-<span id='Ext-core.Element-method-on'>    /**
+<span id='Ext-core-Element-method-on'>    /**
 </span>     * Appends an event handler (shorthand for {@link #addListener}).
      * @param {String} eventName The name of event to handle.
      * @param {Function} fn The handler function the event invokes.
@@ -740,7 +758,7 @@ el.un('click', this.handlerFn);
      */
     ep.on = ep.addListener;
 
-<span id='Ext-core.Element-method-un'>    /**
+<span id='Ext-core-Element-method-un'>    /**
 </span>     * Removes an event handler from this element (see {@link #removeListener} for additional notes).
      * @param {String} eventName The name of the event from which to remove the handler.
      * @param {Function} fn The handler function to remove. &lt;b&gt;This must be a reference to the function passed into the {@link #addListener} call.&lt;/b&gt;
@@ -752,7 +770,7 @@ el.un('click', this.handlerFn);
      */
     ep.un = ep.removeListener;
 
-<span id='Ext-core.Element-method-clearListeners'>    /**
+<span id='Ext-core-Element-method-clearListeners'>    /**
 </span>     * Removes all previous added listeners from this element
      * @return {Ext.core.Element} this
      * @member Ext.core.Element
@@ -760,7 +778,7 @@ el.un('click', this.handlerFn);
      */
     ep.clearListeners = ep.removeAllListeners;
 
-<span id='Ext-core.Element-method-destroy'>    /**
+<span id='Ext-core-Element-method-destroy'>    /**
 </span>     * Removes this element's dom reference.  Note that event and cache removal is handled at {@link Ext#removeNode Ext.removeNode}.
      * Alias to {@link #remove}.
      * @member Ext.core.Element
@@ -768,7 +786,7 @@ el.un('click', this.handlerFn);
      */
     ep.destroy = ep.remove;
 
-<span id='Ext-core.Element-property-autoBoxAdjust'>    /**
+<span id='Ext-core-Element-property-autoBoxAdjust'>    /**
 </span>     * true to automatically adjust width and height settings for box-model issues (default to true)
      */
     ep.autoBoxAdjust = true;
@@ -777,7 +795,7 @@ el.un('click', this.handlerFn);
     var unitPattern = /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
     docEl;
 
-<span id='Ext-core.Element-method-get'>    /**
+<span id='Ext-core-Element-method-get'>    /**
 </span>     * Retrieves Ext.core.Element objects.
      * &lt;p&gt;&lt;b&gt;This method does not retrieve {@link Ext.Component Component}s.&lt;/b&gt; This method
      * retrieves Ext.core.Element objects which encapsulate DOM elements. To retrieve a Component by
@@ -949,7 +967,7 @@ el.un('click', this.handlerFn);
     El.Flyweight.prototype.isFlyweight = true;
     El._flyweights = {};
 
-<span id='Ext-core.Element-method-fly'>    /**
+<span id='Ext-core-Element-method-fly'>    /**
 </span>     * &lt;p&gt;Gets the globally shared flyweight Element, with the passed node as the active element. Do not store a reference to this element -
      * the dom node can be overwritten by other code. Shorthand of {@link Ext.core.Element#fly}&lt;/p&gt;
      * &lt;p&gt;Use this to make one-time references to DOM elements which are not going to be accessed again either by
@@ -1015,4 +1033,6 @@ el.un('click', this.handlerFn);
         noBoxAdjust['button'] = 1;
     }
 })();
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

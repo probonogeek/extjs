@@ -1,20 +1,20 @@
 /**
  * @class Ext.app.Application
- * @constructor
+ * @extend Ext.app.Controller
  * 
  * Represents an Ext JS 4 application, which is typically a single page app using a {@link Ext.container.Viewport Viewport}.
  * A typical Ext.app.Application might look like this:
  * 
- * Ext.application({
-     name: 'MyApp',
-     launch: function() {
-         Ext.create('Ext.container.Viewport', {
-             items: {
-                 html: 'My App'
-             }
-         });
-     }
- });
+ *     Ext.application({
+ *         name: 'MyApp',
+ *         launch: function() {
+ *             Ext.create('Ext.container.Viewport', {
+ *                 items: {
+ *                     html: 'My App'
+ *                 }
+ *             });
+ *         }
+ *     });
  * 
  * This does several things. First it creates a global variable called 'MyApp' - all of your Application's classes (such
  * as its Models, Views and Controllers) will reside under this single namespace, which drastically lowers the chances
@@ -31,15 +31,15 @@
  * might have Models and Controllers for Posts and Comments, and Views for listing, adding and editing Posts and Comments.
  * Here's how we'd tell our Application about all these things:
  * 
- * Ext.application({
-     name: 'Blog',
-     models: ['Post', 'Comment'],
-     controllers: ['Posts', 'Comments'],
-
-     launch: function() {
-         ...
-     }
- });
+ *     Ext.application({
+ *         name: 'Blog',
+ *         models: ['Post', 'Comment'],
+ *         controllers: ['Posts', 'Comments'],
+ *     
+ *         launch: function() {
+ *             ...
+ *         }
+ *     });
  * 
  * Note that we didn't actually list the Views directly in the Application itself. This is because Views are managed by
  * Controllers, so it makes sense to keep those dependencies there. The Application will load each of the specified 
@@ -48,12 +48,12 @@
  * app/controller/Comments.js. In turn, each Controller simply needs to list the Views it uses and they will be
  * automatically loaded. Here's how our Posts controller like be defined:
  * 
- * Ext.define('MyApp.controller.Posts', {
-     extend: 'Ext.app.Controller',
-     views: ['posts.List', 'posts.Edit'],
-
-     //the rest of the Controller here
- });
+ *     Ext.define('MyApp.controller.Posts', {
+ *         extend: 'Ext.app.Controller',
+ *         views: ['posts.List', 'posts.Edit'],
+ *     
+ *         //the rest of the Controller here
+ *     });
  * 
  * Because we told our Application about our Models and Controllers, and our Controllers about their Views, Ext JS will
  * automatically load all of our app files for us. This means we don't have to manually add script tags into our html
@@ -63,8 +63,8 @@
  * For more information about writing Ext JS 4 applications, please see the <a href="../guide/application_architecture">
  * application architecture guide</a>.
  * 
- * @markdown
  * @docauthor Ed Spencer
+ * @constructor
  */
 Ext.define('Ext.app.Application', {
     extend: 'Ext.app.Controller',
@@ -79,7 +79,7 @@ Ext.define('Ext.app.Application', {
     ],
 
     /**
-     * @cfg {Object} name The name of your application. This will also be the namespace for your views, controllers
+     * @cfg {String} name The name of your application. This will also be the namespace for your views, controllers
      * models and stores. Don't use spaces or special characters in the name.
      */
 
@@ -106,9 +106,10 @@ Ext.define('Ext.app.Application', {
     appFolder: 'app',
 
     /**
-     * @cfg {Boolean} autoCreateViewport Automatically loads and instantiates AppName.view.Viewport before firing the launch function.
+     * @cfg {Boolean} autoCreateViewport True to automatically load and instantiate AppName.view.Viewport
+     * before firing the launch function (defaults to false).
      */
-    autoCreateViewport: true,
+    autoCreateViewport: false,
 
     constructor: function(config) {
         config = config || {};
@@ -128,8 +129,8 @@ Ext.define('Ext.app.Application', {
 
         this.eventbus = Ext.create('Ext.app.EventBus');
 
-        var controllers = this.controllers,
-            ln = controllers.length,
+        var controllers = Ext.Array.from(this.controllers),
+            ln = controllers && controllers.length,
             i, controller;
 
         this.controllers = Ext.create('Ext.util.MixedCollection');

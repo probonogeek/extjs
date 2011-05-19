@@ -89,7 +89,7 @@ TestAction.multiply(
     
     /**
      * @cfg {String} url
-     * <b>Required<b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
+     * <b>Required</b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
      */
     
     /**

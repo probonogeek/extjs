@@ -17,7 +17,7 @@
         layout:'fit',
         items: {
             title: 'Inner Panel',
-            html: '<p>This is the inner panel content</p>',
+            html: 'This is the inner panel content',
             bodyPadding: 20,
             border: false
         },

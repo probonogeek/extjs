@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.CheckboxGroup-method-constructor'><span id='Ext-form.CheckboxGroup'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-CheckboxGroup-method-constructor'><span id='Ext-form-CheckboxGroup'>/**
 </span></span> * @class Ext.form.CheckboxGroup
  * @extends Ext.form.FieldContainer
  * &lt;p&gt;A {@link Ext.form.FieldContainer field container} which has a specialized layout for arranging
@@ -54,17 +71,17 @@ Ext.define('Ext.form.CheckboxGroup', {
     alias: 'widget.checkboxgroup',
     requires: ['Ext.layout.container.CheckboxGroup', 'Ext.form.field.Base'],
 
-<span id='Ext-form.CheckboxGroup-cfg-name'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-name'>    /**
 </span>     * @cfg {String} name
      * @hide
      */
 
-<span id='Ext-form.CheckboxGroup-cfg-items'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-items'>    /**
 </span>     * @cfg {Array} items An Array of {@link Ext.form.field.Checkbox Checkbox}es or Checkbox config objects
      * to arrange in the group.
      */
 
-<span id='Ext-form.CheckboxGroup-cfg-columns'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-columns'>    /**
 </span>     * @cfg {String/Number/Array} columns Specifies the number of columns to use when displaying grouped
      * checkbox/radio controls using automatic layout.  This config can take several types of values:
      * &lt;ul&gt;&lt;li&gt;&lt;b&gt;'auto'&lt;/b&gt; : &lt;p class=&quot;sub-desc&quot;&gt;The controls will be rendered one per column on one row and the width
@@ -79,7 +96,7 @@ Ext.define('Ext.form.CheckboxGroup', {
      */
     columns : 'auto',
 
-<span id='Ext-form.CheckboxGroup-cfg-vertical'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-vertical'>    /**
 </span>     * @cfg {Boolean} vertical True to distribute contained controls across columns, completely filling each column
      * top to bottom before starting on the next column.  The number of controls in each column will be automatically
      * calculated to keep columns as even as possible.  The default value is false, so that controls will be added
@@ -87,13 +104,13 @@ Ext.define('Ext.form.CheckboxGroup', {
      */
     vertical : false,
 
-<span id='Ext-form.CheckboxGroup-cfg-allowBlank'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-allowBlank'>    /**
 </span>     * @cfg {Boolean} allowBlank False to validate that at least one item in the group is checked (defaults to true).
      * If no items are selected at validation time, {@link #blankText} will be used as the error text.
      */
     allowBlank : true,
 
-<span id='Ext-form.CheckboxGroup-cfg-blankText'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-blankText'>    /**
 </span>     * @cfg {String} blankText Error text to display if the {@link #allowBlank} validation fails (defaults to &quot;You must
      * select at least one item in this group&quot;)
      */
@@ -105,7 +122,7 @@ Ext.define('Ext.form.CheckboxGroup', {
     // private
     groupCls : Ext.baseCSSPrefix + 'form-check-group',
 
-<span id='Ext-form.CheckboxGroup-cfg-fieldBodyCls'>    /**
+<span id='Ext-form-CheckboxGroup-cfg-fieldBodyCls'>    /**
 </span>     * @cfg {String} fieldBodyCls
      * An extra CSS class to be applied to the body content element in addition to {@link #baseBodyCls}.
      * Defaults to 'x-form-checkboxgroup-body'.
@@ -121,7 +138,7 @@ Ext.define('Ext.form.CheckboxGroup', {
         me.initField();
     },
 
-<span id='Ext-form.CheckboxGroup-method-initValue'>    /**
+<span id='Ext-form-CheckboxGroup-method-initValue'>    /**
 </span>     * @protected
      * Initializes the field's value based on the initial config. If the {@link #value} config is specified
      * then we use that to set the value; otherwise we initialize the originalValue by querying the values of
@@ -136,7 +153,7 @@ Ext.define('Ext.form.CheckboxGroup', {
         }
     },
 
-<span id='Ext-form.CheckboxGroup-method-onFieldAdded'>    /**
+<span id='Ext-form-CheckboxGroup-method-onFieldAdded'>    /**
 </span>     * @protected
      * When a checkbox is added to the group, monitor it for changes
      */
@@ -162,7 +179,7 @@ Ext.define('Ext.form.CheckboxGroup', {
         return toQueryString(value1) === toQueryString(value2);
     },
 
-<span id='Ext-form.CheckboxGroup-method-getErrors'>    /**
+<span id='Ext-form-CheckboxGroup-method-getErrors'>    /**
 </span>     * Runs CheckboxGroup's validations and returns an array of any errors. The only error by default
      * is if allowBlank is set to true and no items are checked.
      * @return {Array} Array of all validation errors
@@ -175,14 +192,14 @@ Ext.define('Ext.form.CheckboxGroup', {
         return errors;
     },
 
-<span id='Ext-form.CheckboxGroup-method-getBoxes'>    /**
+<span id='Ext-form-CheckboxGroup-method-getBoxes'>    /**
 </span>     * @private Returns all checkbox components within the container
      */
     getBoxes: function() {
         return this.query('[isCheckbox]');
     },
 
-<span id='Ext-form.CheckboxGroup-method-eachBox'>    /**
+<span id='Ext-form-CheckboxGroup-method-eachBox'>    /**
 </span>     * @private Convenience function which calls the given function for every checkbox in the group
      * @param {Function} fn The function to call
      * @param {Object} scope Optional scope object
@@ -191,7 +208,7 @@ Ext.define('Ext.form.CheckboxGroup', {
         Ext.Array.forEach(this.getBoxes(), fn, scope || this);
     },
 
-<span id='Ext-form.CheckboxGroup-method-getChecked'>    /**
+<span id='Ext-form-CheckboxGroup-method-getChecked'>    /**
 </span>     * Returns an Array of all checkboxes in the container which are currently checked
      * @return {Array} Array of Ext.form.field.Checkbox components
      */
@@ -216,7 +233,7 @@ Ext.define('Ext.form.CheckboxGroup', {
         this.readOnly = readOnly;
     },
 
-<span id='Ext-form.CheckboxGroup-method-reset'>    /**
+<span id='Ext-form-CheckboxGroup-method-reset'>    /**
 </span>     * Resets the checked state of all {@link Ext.form.field.Checkbox checkboxes} in the group to their
      * originally loaded values and clears any validation messages.
      * See {@link Ext.form.Basic}.{@link Ext.form.Basic#trackResetOnLoad trackResetOnLoad}
@@ -248,7 +265,7 @@ Ext.define('Ext.form.CheckboxGroup', {
     },
 
 
-<span id='Ext-form.CheckboxGroup-method-setValue'>    /**
+<span id='Ext-form-CheckboxGroup-method-setValue'>    /**
 </span>     * &lt;p&gt;Sets the value(s) of all checkboxes in the group. The expected format is an Object of
      * name-value pairs corresponding to the names of the checkboxes in the group. Each pair can
      * have either a single or multiple values:&lt;/p&gt;
@@ -318,7 +335,7 @@ myCheckboxGroup.setValue({
     },
 
 
-<span id='Ext-form.CheckboxGroup-method-getValue'>    /**
+<span id='Ext-form-CheckboxGroup-method-getValue'>    /**
 </span>     * &lt;p&gt;Returns an object containing the values of all checked checkboxes within the group. Each key-value pair
      * in the object corresponds to a checkbox {@link Ext.form.field.Checkbox#name name}. If there is only one checked
      * checkbox with a particular name, the value of that pair will be the String
@@ -389,4 +406,6 @@ myCheckboxGroup.setValue({
 
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

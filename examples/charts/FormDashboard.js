@@ -335,7 +335,7 @@ Ext.onReady(function(){
         frame: true,
         bodyPadding: 5,
         width: 870,
-        height: 700,
+        height: 720,
 
         fieldDefaults: {
             labelAlign: 'left',

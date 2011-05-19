@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-menu.Item-method-constructor'><span id='Ext-menu.Item'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-menu-Item-method-constructor'><span id='Ext-menu-Item'>/**
 </span></span> * @class Ext.menu.Item
  * @extends Ext.Component
 
@@ -32,12 +49,12 @@ Ext.define('Ext.menu.Item', {
     alias: 'widget.menuitem',
     alternateClassName: 'Ext.menu.TextItem',
     
-<span id='Ext-menu.Item-property-activated'>    /**
+<span id='Ext-menu-Item-property-activated'>    /**
 </span>     * @property {Boolean} activated
      * Whether or not this item is currently activated
      */
 
-<span id='Ext-menu.Item-cfg-activeCls'>    /**
+<span id='Ext-menu-Item-cfg-activeCls'>    /**
 </span>     * @cfg {String} activeCls
      * The CSS class added to the menu item when the item is activated (focused/mouseover).
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-active'`.
@@ -45,19 +62,19 @@ Ext.define('Ext.menu.Item', {
      */
     activeCls: Ext.baseCSSPrefix + 'menu-item-active',
     
-<span id='Ext-menu.Item-cfg-ariaRole'>    /**
+<span id='Ext-menu-Item-cfg-ariaRole'>    /**
 </span>     * @cfg {String} ariaRole @hide
      */
     ariaRole: 'menuitem',
     
-<span id='Ext-menu.Item-cfg-canActivate'>    /**
+<span id='Ext-menu-Item-cfg-canActivate'>    /**
 </span>     * @cfg {Boolean} canActivate
      * Whether or not this menu item can be activated when focused/mouseovered. Defaults to `true`.
      * @markdown
      */
     canActivate: true,
     
-<span id='Ext-menu.Item-cfg-clickHideDelay'>    /**
+<span id='Ext-menu-Item-cfg-clickHideDelay'>    /**
 </span>     * @cfg {Number} clickHideDelay
      * The delay in milliseconds to wait before hiding the menu after clicking the menu item.
      * This only has an effect when `hideOnClick: true`. Defaults to `1`.
@@ -65,13 +82,13 @@ Ext.define('Ext.menu.Item', {
      */
     clickHideDelay: 1,
     
-<span id='Ext-menu.Item-cfg-destroyMenu'>    /**
+<span id='Ext-menu-Item-cfg-destroyMenu'>    /**
 </span>     * @cfg {Boolean} destroyMenu
      * Whether or not to destroy any associated sub-menu when this item is destroyed. Defaults to `true`.
      */
     destroyMenu: true,
     
-<span id='Ext-menu.Item-cfg-disabledCls'>    /**
+<span id='Ext-menu-Item-cfg-disabledCls'>    /**
 </span>     * @cfg {String} disabledCls
      * The CSS class added to the menu item when the item is disabled.
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-disabled'`.
@@ -79,32 +96,32 @@ Ext.define('Ext.menu.Item', {
      */
     disabledCls: Ext.baseCSSPrefix + 'menu-item-disabled',
     
-<span id='Ext-menu.Item-cfg-href'>    /**
+<span id='Ext-menu-Item-cfg-href'>    /**
 </span>     * @cfg {String} href
      * The href attribute to use for the underlying anchor link. Defaults to `#`.
      * @markdown
      */
      
-<span id='Ext-menu.Item-cfg-hrefTarget'>     /**
+<span id='Ext-menu-Item-cfg-hrefTarget'>     /**
 </span>      * @cfg {String} hrefTarget
       * The target attribute to use for the underlying anchor link. Defaults to `undefined`.
       * @markdown
       */
     
-<span id='Ext-menu.Item-cfg-hideOnClick'>    /**
+<span id='Ext-menu-Item-cfg-hideOnClick'>    /**
 </span>     * @cfg {Boolean} hideOnClick
      * Whether to not to hide the owning menu when this item is clicked. Defaults to `true`.
      * @markdown
      */
     hideOnClick: true,
     
-<span id='Ext-menu.Item-cfg-icon'>    /**
+<span id='Ext-menu-Item-cfg-icon'>    /**
 </span>     * @cfg {String} icon
      * The path to an icon to display in this item. Defaults to `Ext.BLANK_IMAGE_URL`.
      * @markdown
      */
      
-<span id='Ext-menu.Item-cfg-iconCls'>    /**
+<span id='Ext-menu-Item-cfg-iconCls'>    /**
 </span>     * @cfg {String} iconCls
      * A CSS class that specifies a `background-image` to use as the icon for this item. Defaults to `undefined`.
      * @markdown
@@ -112,7 +129,7 @@ Ext.define('Ext.menu.Item', {
     
     isMenuItem: true,
     
-<span id='Ext-menu.Item-property-menu'>    /**
+<span id='Ext-menu-Item-property-menu'>    /**
 </span>     * @cfg {Mixed} menu
      * Either an instance of {@link Ext.menu.Menu} or a config object for an {@link Ext.menu.Menu}
      * which will act as a sub-menu to this item.
@@ -120,7 +137,7 @@ Ext.define('Ext.menu.Item', {
      * @property {Ext.menu.Menu} menu The sub-menu associated with this item, if one was configured.
      */
     
-<span id='Ext-menu.Item-cfg-menuAlign'>    /**
+<span id='Ext-menu-Item-cfg-menuAlign'>    /**
 </span>     * @cfg {String} menuAlign
      * The default {@link Ext.core.Element#getAlignToXY Ext.Element.getAlignToXY} anchor position value for this
      * item's sub-menu relative to this item's position. Defaults to `'tl-tr?'`.
@@ -128,21 +145,21 @@ Ext.define('Ext.menu.Item', {
      */
     menuAlign: 'tl-tr?',
     
-<span id='Ext-menu.Item-cfg-menuExpandDelay'>    /**
+<span id='Ext-menu-Item-cfg-menuExpandDelay'>    /**
 </span>     * @cfg {Number} menuExpandDelay
      * The delay in milliseconds before this item's sub-menu expands after this item is moused over. Defaults to `200`.
      * @markdown
      */
     menuExpandDelay: 200,
     
-<span id='Ext-menu.Item-cfg-menuHideDelay'>    /**
+<span id='Ext-menu-Item-cfg-menuHideDelay'>    /**
 </span>     * @cfg {Number} menuHideDelay
      * The delay in milliseconds before this item's sub-menu hides after this item is moused out. Defaults to `200`.
      * @markdown
      */
     menuHideDelay: 200,
     
-<span id='Ext-menu.Item-cfg-plain'>    /**
+<span id='Ext-menu-Item-cfg-plain'>    /**
 </span>     * @cfg {Boolean} plain
      * Whether or not this item is plain text/html with no icon or visual activation. Defaults to `false`.
      * @markdown
@@ -165,7 +182,7 @@ Ext.define('Ext.menu.Item', {
     
     maskOnDisable: false,
     
-<span id='Ext-menu.Item-cfg-text'>    /**
+<span id='Ext-menu-Item-cfg-text'>    /**
 </span>     * @cfg {String} text
      * The text/html to display in this item. Defaults to `undefined`.
      * @markdown
@@ -264,14 +281,14 @@ Ext.define('Ext.menu.Item', {
             cls = [prefix + 'menu-item'];
         
         me.addEvents(
-<span id='Ext-menu.Item-event-activate'>            /**
+<span id='Ext-menu-Item-event-activate'>            /**
 </span>             * @event activate
              * Fires when this item is activated
              * @param {Ext.menu.Item} item The activated item
              */
             'activate',
             
-<span id='Ext-menu.Item-event-click'>            /**
+<span id='Ext-menu-Item-event-click'>            /**
 </span>             * @event click
              * Fires when this item is clicked
              * @param {Ext.menu.Item} item The item that was clicked
@@ -279,7 +296,7 @@ Ext.define('Ext.menu.Item', {
              */
             'click',
             
-<span id='Ext-menu.Item-event-deactivate'>            /**
+<span id='Ext-menu-Item-event-deactivate'>            /**
 </span>             * @event deactivate
              * Fires when this tiem is deactivated
              * @param {Ext.menu.Item} item The deactivated item
@@ -369,7 +386,7 @@ Ext.define('Ext.menu.Item', {
         me.callParent(arguments);
     },
     
-<span id='Ext-menu.Item-method-setHandler'>    /**
+<span id='Ext-menu-Item-method-setHandler'>    /**
 </span>     * Sets the {@link #click} handler of this item
      * @param {Function} fn The handler function
      * @param {Object} scope (optional) The scope of the handler function
@@ -379,7 +396,7 @@ Ext.define('Ext.menu.Item', {
         this.scope = scope;
     },
     
-<span id='Ext-menu.Item-method-setIconCls'>    /**
+<span id='Ext-menu-Item-method-setIconCls'>    /**
 </span>     * Sets the {@link #iconCls} of this item
      * @param {String} iconCls The CSS class to set to {@link #iconCls}
      */
@@ -399,7 +416,7 @@ Ext.define('Ext.menu.Item', {
         me.iconCls = iconCls;
     },
     
-<span id='Ext-menu.Item-method-setText'>    /**
+<span id='Ext-menu-Item-method-setText'>    /**
 </span>     * Sets the {@link #text} of this item
      * @param {String} text The {@link #text}
      */
@@ -425,4 +442,6 @@ Ext.define('Ext.menu.Item', {
         me.text = text;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

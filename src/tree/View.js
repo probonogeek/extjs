@@ -247,7 +247,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 
@@ -322,7 +322,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 

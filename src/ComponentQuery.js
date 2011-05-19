@@ -361,7 +361,6 @@ Ext.define('Ext.ComponentQuery', {
          * <p>This parameter may also be an array of Components to filter according to the selector.</p>
          * @returns {Array} The matched Components.
          * @member Ext.ComponentQuery
-         * @method query
          */
         query: function(selector, root) {
             var selectors = selector.split(','),
@@ -403,7 +402,6 @@ Ext.define('Ext.ComponentQuery', {
          * @param selector The selector string to test against.
          * @return {Boolean} True if the Component matches the selector.
          * @member Ext.ComponentQuery
-         * @method query
          */
         is: function(component, selector) {
             if (!selector) {

@@ -9,28 +9,26 @@
  *
  * For example:
  *
-  <pre><code>
-    axes: [{
-        type: 'Time',
-        position: 'bottom',
-        fields: 'date',
-        title: 'Day',
-        dateFormat: 'M d',
-        groupBy: 'year,month,day',
-        aggregateOp: 'sum',
-
-        constrain: true,
-        fromDate: new Date('1/1/11'),
-        toDate: new Date('1/7/11')
-    }]
-  </code></pre>
+ *     axes: [{
+ *         type: 'Time',
+ *         position: 'bottom',
+ *         fields: 'date',
+ *         title: 'Day',
+ *         dateFormat: 'M d',
+ *         groupBy: 'year,month,day',
+ *         aggregateOp: 'sum',
+ *     
+ *         constrain: true,
+ *         fromDate: new Date('1/1/11'),
+ *         toDate: new Date('1/7/11')
+ *     }]
  *
- * In this example we're creating a time axis that has as title <em>Day</em>.
- * The field the axis is bound to is <em>date</em>.
- * The date format to use to display the text for the axis labels is <em>M d</em>
+ * In this example we're creating a time axis that has as title *Day*.
+ * The field the axis is bound to is `date`.
+ * The date format to use to display the text for the axis labels is `M d`
  * which is a three letter month abbreviation followed by the day number.
- * The time axis will show values for dates betwee <em>fromDate</em> and <em>toDate</em>.
- * Since <em>constrain</em> is set to true all other values for other dates not between
+ * The time axis will show values for dates between `fromDate` and `toDate`.
+ * Since `constrain` is set to true all other values for other dates not between
  * the fromDate and toDate will not be displayed.
  * 
  * @constructor

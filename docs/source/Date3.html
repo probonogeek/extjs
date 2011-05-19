@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-picker.Date-method-constructor'><span id='Ext-picker.Date'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-picker-Date-method-constructor'><span id='Ext-picker-Date'>/**
 </span></span> * @class Ext.picker.Date
  * @extends Ext.Component
  * &lt;p&gt;A date picker. This class is used by the {@link Ext.form.field.Date} field to allow browsing and
@@ -92,12 +109,12 @@ Ext.define('Ext.picker.Date', {
     ],
 
     ariaTitle: 'Date Picker',
-<span id='Ext-picker.Date-cfg-todayText'>    /**
+<span id='Ext-picker-Date-cfg-todayText'>    /**
 </span>     * @cfg {String} todayText
      * The text to display on the button that selects the current date (defaults to &lt;code&gt;'Today'&lt;/code&gt;)
      */
     todayText : 'Today',
-<span id='Ext-picker.Date-cfg-handler'>    /**
+<span id='Ext-picker-Date-cfg-handler'>    /**
 </span>     * @cfg {Function} handler
      * Optional. A function that will handle the select event of this picker.
      * The handler is passed the following parameters:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
@@ -105,96 +122,96 @@ Ext.define('Ext.picker.Date', {
      * &lt;li&gt;&lt;code&gt;date&lt;/code&gt; : Date &lt;div class=&quot;sub-desc&quot;&gt;The selected date.&lt;/div&gt;&lt;/li&gt;
      * &lt;/ul&gt;&lt;/div&gt;
      */
-<span id='Ext-picker.Date-cfg-scope'>    /**
+<span id='Ext-picker-Date-cfg-scope'>    /**
 </span>     * @cfg {Object} scope
      * The scope (&lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt; reference) in which the &lt;code&gt;{@link #handler}&lt;/code&gt;
      * function will be called.  Defaults to this DatePicker instance.
      */
-<span id='Ext-picker.Date-cfg-todayTip'>    /**
+<span id='Ext-picker-Date-cfg-todayTip'>    /**
 </span>     * @cfg {String} todayTip
      * A string used to format the message for displaying in a tooltip over the button that
      * selects the current date. Defaults to &lt;code&gt;'{0} (Spacebar)'&lt;/code&gt; where
      * the &lt;code&gt;{0}&lt;/code&gt; token is replaced by today's date.
      */
     todayTip : '{0} (Spacebar)',
-<span id='Ext-picker.Date-cfg-minText'>    /**
+<span id='Ext-picker-Date-cfg-minText'>    /**
 </span>     * @cfg {String} minText
      * The error text to display if the minDate validation fails (defaults to &lt;code&gt;'This date is before the minimum date'&lt;/code&gt;)
      */
     minText : 'This date is before the minimum date',
-<span id='Ext-picker.Date-cfg-maxText'>    /**
+<span id='Ext-picker-Date-cfg-maxText'>    /**
 </span>     * @cfg {String} maxText
      * The error text to display if the maxDate validation fails (defaults to &lt;code&gt;'This date is after the maximum date'&lt;/code&gt;)
      */
     maxText : 'This date is after the maximum date',
-<span id='Ext-picker.Date-cfg-format'>    /**
+<span id='Ext-picker-Date-cfg-format'>    /**
 </span>     * @cfg {String} format
      * The default date format string which can be overriden for localization support.  The format must be
      * valid according to {@link Ext.Date#parse} (defaults to {@link Ext.Date#defaultFormat}).
      */
-<span id='Ext-picker.Date-cfg-disabledDaysText'>    /**
+<span id='Ext-picker-Date-cfg-disabledDaysText'>    /**
 </span>     * @cfg {String} disabledDaysText
      * The tooltip to display when the date falls on a disabled day (defaults to &lt;code&gt;'Disabled'&lt;/code&gt;)
      */
     disabledDaysText : 'Disabled',
-<span id='Ext-picker.Date-cfg-disabledDatesText'>    /**
+<span id='Ext-picker-Date-cfg-disabledDatesText'>    /**
 </span>     * @cfg {String} disabledDatesText
      * The tooltip text to display when the date falls on a disabled date (defaults to &lt;code&gt;'Disabled'&lt;/code&gt;)
      */
     disabledDatesText : 'Disabled',
-<span id='Ext-picker.Date-cfg-monthNames'>    /**
+<span id='Ext-picker-Date-cfg-monthNames'>    /**
 </span>     * @cfg {Array} monthNames
      * An array of textual month names which can be overriden for localization support (defaults to Ext.Date.monthNames)
      */
-<span id='Ext-picker.Date-cfg-dayNames'>    /**
+<span id='Ext-picker-Date-cfg-dayNames'>    /**
 </span>     * @cfg {Array} dayNames
      * An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
      */
-<span id='Ext-picker.Date-cfg-nextText'>    /**
+<span id='Ext-picker-Date-cfg-nextText'>    /**
 </span>     * @cfg {String} nextText
      * The next month navigation button tooltip (defaults to &lt;code&gt;'Next Month (Control+Right)'&lt;/code&gt;)
      */
     nextText : 'Next Month (Control+Right)',
-<span id='Ext-picker.Date-cfg-prevText'>    /**
+<span id='Ext-picker-Date-cfg-prevText'>    /**
 </span>     * @cfg {String} prevText
      * The previous month navigation button tooltip (defaults to &lt;code&gt;'Previous Month (Control+Left)'&lt;/code&gt;)
      */
     prevText : 'Previous Month (Control+Left)',
-<span id='Ext-picker.Date-cfg-monthYearText'>    /**
+<span id='Ext-picker-Date-cfg-monthYearText'>    /**
 </span>     * @cfg {String} monthYearText
      * The header month selector tooltip (defaults to &lt;code&gt;'Choose a month (Control+Up/Down to move years)'&lt;/code&gt;)
      */
     monthYearText : 'Choose a month (Control+Up/Down to move years)',
-<span id='Ext-picker.Date-cfg-startDay'>    /**
+<span id='Ext-picker-Date-cfg-startDay'>    /**
 </span>     * @cfg {Number} startDay
      * Day index at which the week should begin, 0-based (defaults to 0, which is Sunday)
      */
     startDay : 0,
-<span id='Ext-picker.Date-cfg-showToday'>    /**
+<span id='Ext-picker-Date-cfg-showToday'>    /**
 </span>     * @cfg {Boolean} showToday
      * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar
      * that selects the current date (defaults to &lt;code&gt;true&lt;/code&gt;).
      */
     showToday : true,
-<span id='Ext-picker.Date-cfg-minDate'>    /**
+<span id='Ext-picker-Date-cfg-minDate'>    /**
 </span>     * @cfg {Date} minDate
      * Minimum allowable date (JavaScript date object, defaults to null)
      */
-<span id='Ext-picker.Date-cfg-maxDate'>    /**
+<span id='Ext-picker-Date-cfg-maxDate'>    /**
 </span>     * @cfg {Date} maxDate
      * Maximum allowable date (JavaScript date object, defaults to null)
      */
-<span id='Ext-picker.Date-cfg-disabledDays'>    /**
+<span id='Ext-picker-Date-cfg-disabledDays'>    /**
 </span>     * @cfg {Array} disabledDays
      * An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday (defaults to null).
      */
-<span id='Ext-picker.Date-cfg-disabledDatesRE'>    /**
+<span id='Ext-picker-Date-cfg-disabledDatesRE'>    /**
 </span>     * @cfg {RegExp} disabledDatesRE
      * JavaScript regular expression used to disable a pattern of dates (defaults to null).  The {@link #disabledDates}
      * config will generate this regex internally, but if you specify disabledDatesRE it will take precedence over the
      * disabledDates value.
      */
-<span id='Ext-picker.Date-cfg-disabledDates'>    /**
+<span id='Ext-picker-Date-cfg-disabledDates'>    /**
 </span>     * @cfg {Array} disabledDates
      * An array of 'dates' to disable, as strings. These strings will be used to build a dynamic regular
      * expression so they are very powerful. Some examples:
@@ -210,40 +227,40 @@ Ext.define('Ext.picker.Date', {
      * escape the dot when restricting dates. For example: ['03\\.08\\.03'].
      */
 
-<span id='Ext-picker.Date-cfg-disableAnim'>    /**
+<span id='Ext-picker-Date-cfg-disableAnim'>    /**
 </span>     * @cfg {Boolean} disableAnim True to disable animations when showing the month picker. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     disableAnim: true,
 
-<span id='Ext-picker.Date-cfg-baseCls'>    /**
+<span id='Ext-picker-Date-cfg-baseCls'>    /**
 </span>     * @cfg {String} baseCls
      * The base CSS class to apply to this components element (defaults to &lt;tt&gt;'x-datepicker'&lt;/tt&gt;).
      */
     baseCls: Ext.baseCSSPrefix + 'datepicker',
 
-<span id='Ext-picker.Date-cfg-selectedCls'>    /**
+<span id='Ext-picker-Date-cfg-selectedCls'>    /**
 </span>     * @cfg {String} selectedCls
      * The class to apply to the selected cell. Defaults to &lt;tt&gt;'x-datepicker-selected'&lt;/tt&gt;
      */
 
-<span id='Ext-picker.Date-cfg-disabledCellCls'>    /**
+<span id='Ext-picker-Date-cfg-disabledCellCls'>    /**
 </span>     * @cfg {String} disabledCellCls
      * The class to apply to disabled cells. Defaults to &lt;tt&gt;'x-datepicker-disabled'&lt;/tt&gt;
      */
 
-<span id='Ext-picker.Date-cfg-longDayFormat'>    /**
+<span id='Ext-picker-Date-cfg-longDayFormat'>    /**
 </span>     * @cfg {String} longDayFormat
      * The format for displaying a date in a longer format. Defaults to &lt;tt&gt;'F d, Y'&lt;/tt&gt;
      */
     longDayFormat: 'F d, Y',
 
-<span id='Ext-picker.Date-cfg-keyNavConfig'>    /**
+<span id='Ext-picker-Date-cfg-keyNavConfig'>    /**
 </span>     * @cfg {Object} keyNavConfig Specifies optional custom key event handlers for the {@link Ext.util.KeyNav}
      * attached to this date picker. Must conform to the config format recognized by the {@link Ext.util.KeyNav}
      * constructor. Handlers specified in this object will replace default handlers of the same name.
      */
 
-<span id='Ext-picker.Date-cfg-focusOnShow'>    /**
+<span id='Ext-picker-Date-cfg-focusOnShow'>    /**
 </span>     * @cfg {Boolean} focusOnShow
      * True to automatically focus the picker on show. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
@@ -279,7 +296,7 @@ Ext.define('Ext.picker.Date', {
                  clearTime(me.value, true) : clearTime(new Date());
 
         me.addEvents(
-<span id='Ext-picker.Date-event-select'>            /**
+<span id='Ext-picker-Date-event-select'>            /**
 </span>             * @event select
              * Fires when a date is selected
              * @param {DatePicker} this DatePicker
@@ -423,7 +440,7 @@ Ext.define('Ext.picker.Date', {
         me.update(me.value);
     },
 
-<span id='Ext-picker.Date-method-initDisabledDays'>    /**
+<span id='Ext-picker-Date-method-initDisabledDays'>    /**
 </span>     * Setup the disabled dates regex based on config options
      * @private
      */
@@ -446,7 +463,7 @@ Ext.define('Ext.picker.Date', {
         }
     },
 
-<span id='Ext-picker.Date-method-setDisabledDates'>    /**
+<span id='Ext-picker-Date-method-setDisabledDates'>    /**
 </span>     * Replaces any existing disabled dates with new values and refreshes the DatePicker.
      * @param {Array/RegExp} disabledDates An array of date strings (see the {@link #disabledDates} config
      * for details on supported values), or a JavaScript regular expression used to disable a pattern of dates.
@@ -466,7 +483,7 @@ Ext.define('Ext.picker.Date', {
         return me;
     },
 
-<span id='Ext-picker.Date-method-setDisabledDays'>    /**
+<span id='Ext-picker-Date-method-setDisabledDays'>    /**
 </span>     * Replaces any existing disabled days (by index, 0-6) with new values and refreshes the DatePicker.
      * @param {Array} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config
      * for details on supported values.
@@ -477,7 +494,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(this.value, true);
     },
 
-<span id='Ext-picker.Date-method-setMinDate'>    /**
+<span id='Ext-picker-Date-method-setMinDate'>    /**
 </span>     * Replaces any existing {@link #minDate} with the new value and refreshes the DatePicker.
      * @param {Date} value The minimum date that can be selected
      * @return {Ext.picker.Date} this
@@ -487,7 +504,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(this.value, true);
     },
 
-<span id='Ext-picker.Date-method-setMaxDate'>    /**
+<span id='Ext-picker-Date-method-setMaxDate'>    /**
 </span>     * Replaces any existing {@link #maxDate} with the new value and refreshes the DatePicker.
      * @param {Date} value The maximum date that can be selected
      * @return {Ext.picker.Date} this
@@ -497,7 +514,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(this.value, true);
     },
 
-<span id='Ext-picker.Date-method-setValue'>    /**
+<span id='Ext-picker-Date-method-setValue'>    /**
 </span>     * Sets the value of the date field
      * @param {Date} value The date to set
      * @return {Ext.picker.Date} this
@@ -507,7 +524,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(this.value);
     },
 
-<span id='Ext-picker.Date-method-getValue'>    /**
+<span id='Ext-picker-Date-method-getValue'>    /**
 </span>     * Gets the current selected value of the date field
      * @return {Date} The selected date
      */
@@ -534,7 +551,7 @@ Ext.define('Ext.picker.Date', {
         this.setDisabledStatus(true);
     },
 
-<span id='Ext-picker.Date-method-setDisabledStatus'>    /**
+<span id='Ext-picker-Date-method-setDisabledStatus'>    /**
 </span>     * Set the disabled state of various internal components
      * @private
      * @param {Boolean} disabled
@@ -551,7 +568,7 @@ Ext.define('Ext.picker.Date', {
         }
     },
 
-<span id='Ext-picker.Date-method-getActive'>    /**
+<span id='Ext-picker-Date-method-getActive'>    /**
 </span>     * Get the current active date.
      * @private
      * @return {Date} The active date
@@ -560,7 +577,7 @@ Ext.define('Ext.picker.Date', {
         return this.activeDate || me.value;
     },
 
-<span id='Ext-picker.Date-method-runAnimation'>    /**
+<span id='Ext-picker-Date-method-runAnimation'>    /**
 </span>     * Run any animation required to hide/show the month picker.
      * @private
      * @param {Boolean} isHide True if it's a hide operation
@@ -580,7 +597,7 @@ Ext.define('Ext.picker.Date', {
         Ext.create('Ext.fx.Anim', options);
     },
 
-<span id='Ext-picker.Date-method-hideMonthPicker'>    /**
+<span id='Ext-picker-Date-method-hideMonthPicker'>    /**
 </span>     * Hides the month picker, if it's visible.
      * @return {Ext.picker.Date} this
      */
@@ -598,7 +615,7 @@ Ext.define('Ext.picker.Date', {
         return me;
     },
 
-<span id='Ext-picker.Date-method-showMonthPicker'>    /**
+<span id='Ext-picker-Date-method-showMonthPicker'>    /**
 </span>     * Show the month picker
      * @return {Ext.picker.Date} this
      */
@@ -627,7 +644,7 @@ Ext.define('Ext.picker.Date', {
         return me;
     },
 
-<span id='Ext-picker.Date-method-createMonthPicker'>    /**
+<span id='Ext-picker-Date-method-createMonthPicker'>    /**
 </span>     * Create the month picker instance
      * @private
      * @return {Ext.picker.Month} picker
@@ -655,7 +672,7 @@ Ext.define('Ext.picker.Date', {
         return picker;
     },
 
-<span id='Ext-picker.Date-method-onOkClick'>    /**
+<span id='Ext-picker-Date-method-onOkClick'>    /**
 </span>     * Respond to an ok click on the month picker
      * @private
      */
@@ -673,7 +690,7 @@ Ext.define('Ext.picker.Date', {
         me.hideMonthPicker();
     },
 
-<span id='Ext-picker.Date-method-onCancelClick'>    /**
+<span id='Ext-picker-Date-method-onCancelClick'>    /**
 </span>     * Respond to a cancel click on the month picker
      * @private
      */
@@ -681,7 +698,7 @@ Ext.define('Ext.picker.Date', {
         this.hideMonthPicker();
     },
 
-<span id='Ext-picker.Date-method-showPrevMonth'>    /**
+<span id='Ext-picker-Date-method-showPrevMonth'>    /**
 </span>     * Show the previous month.
      * @return {Ext.picker.Date} this
      */
@@ -689,7 +706,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(Ext.Date.add(this.activeDate, Ext.Date.MONTH, -1));
     },
 
-<span id='Ext-picker.Date-method-showNextMonth'>    /**
+<span id='Ext-picker-Date-method-showNextMonth'>    /**
 </span>     * Show the next month.
      * @return {Ext.picker.Date} this
      */
@@ -697,7 +714,7 @@ Ext.define('Ext.picker.Date', {
         return this.update(Ext.Date.add(this.activeDate, Ext.Date.MONTH, 1));
     },
 
-<span id='Ext-picker.Date-method-showPrevYear'>    /**
+<span id='Ext-picker-Date-method-showPrevYear'>    /**
 </span>     * Show the previous year.
      * @return {Ext.picker.Date} this
      */
@@ -705,7 +722,7 @@ Ext.define('Ext.picker.Date', {
         this.update(Ext.Date.add(this.activeDate, Ext.Date.YEAR, -1));
     },
 
-<span id='Ext-picker.Date-method-showNextYear'>    /**
+<span id='Ext-picker-Date-method-showNextYear'>    /**
 </span>     * Show the next year.
      * @return {Ext.picker.Date} this
      */
@@ -713,7 +730,7 @@ Ext.define('Ext.picker.Date', {
         this.update(Ext.Date.add(this.activeDate, Ext.Date.YEAR, 1));
     },
 
-<span id='Ext-picker.Date-method-handleMouseWheel'>    /**
+<span id='Ext-picker-Date-method-handleMouseWheel'>    /**
 </span>     * Respond to the mouse wheel event
      * @private
      * @param {Ext.EventObject} e
@@ -730,7 +747,7 @@ Ext.define('Ext.picker.Date', {
         }
     },
 
-<span id='Ext-picker.Date-method-handleDateClick'>    /**
+<span id='Ext-picker-Date-method-handleDateClick'>    /**
 </span>     * Respond to a date being clicked in the picker
      * @private
      * @param {Ext.EventObject} e
@@ -757,7 +774,7 @@ Ext.define('Ext.picker.Date', {
         }
     },
 
-<span id='Ext-picker.Date-method-onSelect'>    /**
+<span id='Ext-picker-Date-method-onSelect'>    /**
 </span>     * Perform any post-select actions
      * @private
      */
@@ -767,7 +784,7 @@ Ext.define('Ext.picker.Date', {
          }
     },
 
-<span id='Ext-picker.Date-method-selectToday'>    /**
+<span id='Ext-picker-Date-method-selectToday'>    /**
 </span>     * Sets the current value to today.
      * @return {Ext.picker.Date} this
      */
@@ -787,7 +804,7 @@ Ext.define('Ext.picker.Date', {
         return me;
     },
 
-<span id='Ext-picker.Date-method-selectedUpdate'>    /**
+<span id='Ext-picker-Date-method-selectedUpdate'>    /**
 </span>     * Update the selected cell
      * @private
      * @param {Date} date The new date
@@ -812,7 +829,7 @@ Ext.define('Ext.picker.Date', {
         }, this);
     },
 
-<span id='Ext-picker.Date-method-fullUpdate'>    /**
+<span id='Ext-picker-Date-method-fullUpdate'>    /**
 </span>     * Update the contents of the picker for a new month
      * @private
      * @param {Date} date The new date
@@ -933,7 +950,7 @@ Ext.define('Ext.picker.Date', {
         me.monthBtn.setText(me.monthNames[date.getMonth()] + ' ' + date.getFullYear());
     },
 
-<span id='Ext-picker.Date-method-update'>    /**
+<span id='Ext-picker-Date-method-update'>    /**
 </span>     * Update the contents of the picker
      * @private
      * @param {Date} date The new date
@@ -992,4 +1009,6 @@ function() {
 
     proto.format = Ext.Date.defaultFormat;
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

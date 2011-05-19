@@ -209,8 +209,8 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The padding configured for this drag and drop object for calculating
      * the drop zone intersection with this object.
-     * @property padding
-     * @type int[] An array containing the 4 padding values: [top, right, bottom, left]
+     * An array containing the 4 padding values: [top, right, bottom, left]
+     * @property {[int]} padding
      */
     padding: null,
 
@@ -290,8 +290,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * horizontal graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property xTicks
-     * @type int[]
+     * @property {[int]} xTicks
      */
     xTicks: null,
 
@@ -299,8 +298,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * vertical graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property yTicks
-     * @type int[]
+     * @property {[int]} yTicks
      */
     yTicks: null,
 

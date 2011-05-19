@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.action.Load'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-action-Load'>/**
 </span> * @class Ext.form.action.Load
  * @extends Ext.form.action.Action
  * &lt;p&gt;A class which handles loading of data from a server into the Fields of an {@link Ext.form.Basic}.&lt;/p&gt;
@@ -64,7 +81,7 @@ Ext.define('Ext.form.action.Load', {
 
     type: 'load',
 
-<span id='Ext-form.action.Load-method-run'>    /**
+<span id='Ext-form-action-Load-method-run'>    /**
 </span>     * @private
      */
     run: function() {
@@ -79,7 +96,7 @@ Ext.define('Ext.form.action.Load', {
         ));
     },
 
-<span id='Ext-form.action.Load-method-onSuccess'>    /**
+<span id='Ext-form-action-Load-method-onSuccess'>    /**
 </span>     * @private
      */
     onSuccess: function(response){
@@ -95,7 +112,7 @@ Ext.define('Ext.form.action.Load', {
         form.afterAction(this, true);
     },
 
-<span id='Ext-form.action.Load-method-handleResponse'>    /**
+<span id='Ext-form-action-Load-method-handleResponse'>    /**
 </span>     * @private
      */
     handleResponse: function(response) {
@@ -113,4 +130,6 @@ Ext.define('Ext.form.action.Load', {
     }
 });
 
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

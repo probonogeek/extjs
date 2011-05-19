@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.FieldAncestor'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-FieldAncestor'>/**
 </span> * @class Ext.form.FieldAncestor
 
 A mixin for {@link Ext.container.Container} components that are likely to have form fields in their
@@ -19,7 +36,7 @@ and should not normally need to be used directly.
  */
 Ext.define('Ext.form.FieldAncestor', {
 
-<span id='Ext-form.FieldAncestor-cfg-fieldDefaults'>    /**
+<span id='Ext-form-FieldAncestor-cfg-fieldDefaults'>    /**
 </span>     * @cfg {Object} fieldDefaults
      * &lt;p&gt;If specified, the properties in this object are used as default config values for each
      * {@link Ext.form.Labelable} instance (e.g. {@link Ext.form.field.Base} or {@link Ext.form.FieldContainer})
@@ -59,7 +76,7 @@ Ext.define('Ext.form.FieldAncestor', {
      */
 
 
-<span id='Ext-form.FieldAncestor-method-initFieldAncestor'>    /**
+<span id='Ext-form-FieldAncestor-method-initFieldAncestor'>    /**
 </span>     * @protected Initializes the FieldAncestor's state; this must be called from the initComponent method
      * of any components importing this mixin.
      */
@@ -68,7 +85,7 @@ Ext.define('Ext.form.FieldAncestor', {
             onSubtreeChange = me.onFieldAncestorSubtreeChange;
 
         me.addEvents(
-<span id='Ext-form.FieldAncestor-event-fielderrorchange'>            /**
+<span id='Ext-form-FieldAncestor-event-fielderrorchange'>            /**
 </span>             * @event fielderrorchange
              * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
              * container changes.
@@ -78,7 +95,7 @@ Ext.define('Ext.form.FieldAncestor', {
              */
             'fieldvaliditychange',
 
-<span id='Ext-form.FieldAncestor-event-fielderrorchange'>            /**
+<span id='Ext-form-FieldAncestor-event-fielderrorchange'>            /**
 </span>             * @event fielderrorchange
              * Fires when the active error message is changed for any one of the {@link Ext.form.Labelable}
              * instances within this container.
@@ -96,7 +113,7 @@ Ext.define('Ext.form.FieldAncestor', {
         me.initFieldDefaults();
     },
 
-<span id='Ext-form.FieldAncestor-method-initFieldDefaults'>    /**
+<span id='Ext-form-FieldAncestor-method-initFieldDefaults'>    /**
 </span>     * @private Initialize the {@link #fieldDefaults} object
      */
     initFieldDefaults: function() {
@@ -105,7 +122,7 @@ Ext.define('Ext.form.FieldAncestor', {
         }
     },
 
-<span id='Ext-form.FieldAncestor-method-onFieldAncestorSubtreeChange'>    /**
+<span id='Ext-form-FieldAncestor-method-onFieldAncestorSubtreeChange'>    /**
 </span>     * @private
      * Handle the addition and removal of components in the FieldAncestor component's child tree.
      */
@@ -131,7 +148,7 @@ Ext.define('Ext.form.FieldAncestor', {
         handleCmp(child);
     },
 
-<span id='Ext-form.FieldAncestor-method-onLabelableAdded'>    /**
+<span id='Ext-form-FieldAncestor-method-onLabelableAdded'>    /**
 </span>     * @protected Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was added
      */
@@ -144,7 +161,7 @@ Ext.define('Ext.form.FieldAncestor', {
         labelable.setFieldDefaults(me.fieldDefaults);
     },
 
-<span id='Ext-form.FieldAncestor-method-onFieldAdded'>    /**
+<span id='Ext-form-FieldAncestor-method-onFieldAdded'>    /**
 </span>     * @protected Called when a {@link Ext.form.field.Field} instance is added to the container's subtree.
      * @param {Ext.form.field.Field} field The field which was added
      */
@@ -153,7 +170,7 @@ Ext.define('Ext.form.FieldAncestor', {
         me.mon(field, 'validitychange', me.handleFieldValidityChange, me);
     },
 
-<span id='Ext-form.FieldAncestor-method-onLabelableRemoved'>    /**
+<span id='Ext-form-FieldAncestor-method-onLabelableRemoved'>    /**
 </span>     * @protected Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was removed
      */
@@ -162,7 +179,7 @@ Ext.define('Ext.form.FieldAncestor', {
         me.mun(labelable, 'errorchange', me.handleFieldErrorChange, me);
     },
 
-<span id='Ext-form.FieldAncestor-method-onFieldRemoved'>    /**
+<span id='Ext-form-FieldAncestor-method-onFieldRemoved'>    /**
 </span>     * @protected Called when a {@link Ext.form.field.Field} instance is removed from the container's subtree.
      * @param {Ext.form.field.Field} field The field which was removed
      */
@@ -171,7 +188,7 @@ Ext.define('Ext.form.FieldAncestor', {
         me.mun(field, 'validitychange', me.handleFieldValidityChange, me);
     },
 
-<span id='Ext-form.FieldAncestor-method-handleFieldValidityChange'>    /**
+<span id='Ext-form-FieldAncestor-method-handleFieldValidityChange'>    /**
 </span>     * @private Handle validitychange events on sub-fields; invoke the aggregated event and method
      */
     handleFieldValidityChange: function(field, isValid) {
@@ -180,7 +197,7 @@ Ext.define('Ext.form.FieldAncestor', {
         me.onFieldValidityChange();
     },
 
-<span id='Ext-form.FieldAncestor-method-handleFieldErrorChange'>    /**
+<span id='Ext-form-FieldAncestor-method-handleFieldErrorChange'>    /**
 </span>     * @private Handle errorchange events on sub-fields; invoke the aggregated event and method
      */
     handleFieldErrorChange: function(labelable, activeError) {
@@ -189,18 +206,20 @@ Ext.define('Ext.form.FieldAncestor', {
         me.onFieldErrorChange();
     },
 
-<span id='Ext-form.FieldAncestor-property-onFieldValidityChange'>    /**
+<span id='Ext-form-FieldAncestor-property-onFieldValidityChange'>    /**
 </span>     * @protected Fired when the validity of any field within the container changes.
      * @param {Ext.form.field.Field} The sub-field whose validity changed
      * @param {String} The new validity state
      */
     onFieldValidityChange: Ext.emptyFn,
 
-<span id='Ext-form.FieldAncestor-property-onFieldErrorChange'>    /**
+<span id='Ext-form-FieldAncestor-property-onFieldErrorChange'>    /**
 </span>     * @protected Fired when the error message of any field within the container changes.
      * @param {Ext.form.Labelable} The sub-field whose active error changed
      * @param {String} The new active error message
      */
     onFieldErrorChange: Ext.emptyFn
 
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

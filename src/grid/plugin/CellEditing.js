@@ -16,48 +16,48 @@
  * {@img Ext.grid.plugin.CellEditing/Ext.grid.plugin.CellEditing.png Ext.grid.plugin.CellEditing plugin}
  *
  * ## Example Usage
- *    Ext.create('Ext.data.Store', {
- *        storeId:'simpsonsStore',
- *        fields:['name', 'email', 'phone'],
- *        data:{'items':[
- *            {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *            {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *            {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
- *            {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
- *        ]},
- *        proxy: {
- *            type: 'memory',
- *            reader: {
- *                type: 'json',
- *                root: 'items'
- *            }
- *        }
- *    });
  *
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Simpsons',
- *        store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *        columns: [
- *            {header: 'Name',  dataIndex: 'name', field: 'textfield'},
- *            {header: 'Email', dataIndex: 'email', flex:1,
- *                editor: {
- *                    xtype:'textfield',
- *                    allowBlank:false
- *                }
- *            },
- *            {header: 'Phone', dataIndex: 'phone'}
- *        ],
- *        selType: 'cellmodel',
- *        plugins: [
- *            Ext.create('Ext.grid.plugin.CellEditing', {
- *                clicksToEdit: 1
- *            })
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
- *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data:{'items':[
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
+ *         ]},
+ *         proxy: {
+ *             type: 'memory',
+ *             reader: {
+ *                 type: 'json',
+ *                 root: 'items'
+ *             }
+ *         }
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', field: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1,
+ *                 editor: {
+ *                     xtype:'textfield',
+ *                     allowBlank:false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'cellmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.CellEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  */
 Ext.define('Ext.grid.plugin.CellEditing', {
     alias: 'plugin.cellediting',
@@ -157,21 +157,27 @@ grid.on('validateedit', function(e) {
         me.editors.clear();
         me.callParent(arguments);
     },
+    
+    onBodyScroll: function() {
+        var ed = this.getActiveEditor();
+        if (ed && ed.field) {
+            if (ed.field.triggerBlur) {
+                ed.field.triggerBlur();
+            } else {
+                ed.field.blur();
+            }
+        }
+    },
 
     // private
     // Template method called from base class's initEvents
     initCancelTriggers: function() {
-        var me   = this;
+        var me   = this,
             grid = me.grid,
-            view   = grid.view;
-
-        me.mon(view, {
-            mousewheel: {
-                element: 'el',
-                fn: me.cancelEdit,
-                scope: me
-            }
-        });
+            view = grid.view;
+            
+        view.addElListener('mousewheel', me.cancelEdit, me);
+        me.mon(view, 'bodyscroll', me.onBodyScroll, me);
         me.mon(grid, {
             columnresize: me.cancelEdit,
             columnmove: me.cancelEdit,
@@ -258,7 +264,8 @@ grid.on('validateedit', function(e) {
     },
 
     getEditor: function(record, column) {
-        var editors = this.editors,
+        var me = this,
+            editors = me.editors,
             editorId = column.itemId || column.id,
             editor = editors.getByKey(editorId);
 
@@ -277,13 +284,13 @@ grid.on('validateedit', function(e) {
                     field: editor
                 });
             }
-            editor.parentEl = this.grid.getEditorParent();
+            editor.parentEl = me.grid.getEditorParent();
             // editor.parentEl should be set here.
             editor.on({
-                scope: this,
-                specialkey: this.onSpecialKey,
-                complete: this.onEditComplete,
-                canceledit: this.cancelEdit
+                scope: me,
+                specialkey: me.onSpecialKey,
+                complete: me.onEditComplete,
+                canceledit: me.cancelEdit
             });
             editors.add(editor);
             return editor;
@@ -316,18 +323,33 @@ grid.on('validateedit', function(e) {
         var me = this,
             grid = me.grid,
             sm = grid.getSelectionModel(),
-            dataIndex = me.getActiveColumn().dataIndex;
+            activeColumn = me.getActiveColumn(),
+            dataIndex;
 
-        me.setActiveEditor(null);
-        me.setActiveColumn(null);
-        me.setActiveRecord(null);
-        delete sm.wasEditing;
+        if (activeColumn) {
+            dataIndex = activeColumn.dataIndex;
 
-        if (!me.validateEdit()) {
-            return;
+            me.setActiveEditor(null);
+            me.setActiveColumn(null);
+            me.setActiveRecord(null);
+            delete sm.wasEditing;
+    
+            if (!me.validateEdit()) {
+                return;
+            }
+            // Only update the record if the new value is different than the
+            // startValue, when the view refreshes its el will gain focus
+            if (value !== startValue) {
+                me.context.record.set(dataIndex, value);
+            // Restore focus back to the view's element.
+            } else {
+                grid.getView().el.focus();
+            }
+            me.context.value = value;
+            me.fireEvent('edit', me, me.context);
+            
+
         }
-        me.context.record.set(dataIndex, value);
-        me.fireEvent('edit', me, me.context);
     },
 
     /**

@@ -1,6 +1,5 @@
 /**
  * @class Ext.app.Controller
- * @constructor
  * 
  * Controllers are the glue that binds an application together. All they really do is listen for events (usually from
  * views) and take some action. Here's how we might create a Controller to manage Users:
@@ -53,28 +52,28 @@
  * One of the most useful parts of Controllers is the new ref system. These use the new {@link Ext.ComponentQuery} to
  * make it really easy to get references to Views on your page. Let's look at an example of this now:
  * 
- * Ext.define('MyApp.controller.Users', {
-     extend: 'Ext.app.Controller',
-
-     refs: [
-         {
-             ref: 'list',
-             selector: 'grid'
-         }
-     ],
-
-     init: function() {
-         this.control({
-             'button': {
-                 click: this.refreshGrid
-             }
-         });
-     },
-
-     refreshGrid: function() {
-         this.getList().store.load();
-     }
- });
+ *     Ext.define('MyApp.controller.Users', {
+ *         extend: 'Ext.app.Controller',
+ *     
+ *         refs: [
+ *             {
+ *                 ref: 'list',
+ *                 selector: 'grid'
+ *             }
+ *         ],
+ *     
+ *         init: function() {
+ *             this.control({
+ *                 'button': {
+ *                     click: this.refreshGrid
+ *                 }
+ *             });
+ *         },
+ *     
+ *         refreshGrid: function() {
+ *             this.getList().store.load();
+ *         }
+ *     });
  * 
  * This example assumes the existence of a {@link Ext.grid.Panel Grid} on the page, which contains a single button to 
  * refresh the Grid when clicked. In our refs array, we set up a reference to the grid. There are two parts to this - 
@@ -104,20 +103,20 @@
  * Refs aren't the only thing that generate convenient getter methods. Controllers often have to deal with Models and 
  * Stores so the framework offers a couple of easy ways to get access to those too. Let's look at another example:
  * 
- * Ext.define('MyApp.controller.Users', {
-     extend: 'Ext.app.Controller',
-
-     models: ['User'],
-     stores: ['AllUsers', 'AdminUsers'],
-
-     init: function() {
-         var User = this.getUserModel(),
-             allUsers = this.getAllUsersStore();
-
-         var ed = new User({name: 'Ed'});
-         allUsers.add(ed);
-     }
- });
+ *     Ext.define('MyApp.controller.Users', {
+ *         extend: 'Ext.app.Controller',
+ *     
+ *         models: ['User'],
+ *         stores: ['AllUsers', 'AdminUsers'],
+ *     
+ *         init: function() {
+ *             var User = this.getUserModel(),
+ *                 allUsers = this.getAllUsersStore();
+ *     
+ *             var ed = new User({name: 'Ed'});
+ *             allUsers.add(ed);
+ *         }
+ *     });
  * 
  * By specifying Models and Stores that the Controller cares about, it again dynamically loads them from the appropriate
  * locations (app/model/User.js, app/store/AllUsers.js and app/store/AdminUsers.js in this case) and creates getter 
@@ -130,12 +129,12 @@
  * For more information about writing Ext JS 4 applications, please see the <a href="../guide/application_architecture">
  * application architecture guide</a>. Also see the {@link Ext.app.Application} documentation.
  * 
- * @markdown
  * @docauthor Ed Spencer
+ * @constructor
  */  
 Ext.define('Ext.app.Controller', {
     /**
-     * @cfg {Object} id The id of this controller. You can use this id when dispatching.
+     * @cfg {String} id The id of this controller. You can use this id when dispatching.
      */
 
     mixins: {

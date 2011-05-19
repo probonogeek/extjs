@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-data.JsonP'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-data-JsonP'>/**
 </span> * @class Ext.data.JsonP
  * @singleton
  * This class is used to create JSONP requests. JSONP is a mechanism that allows for making
@@ -18,7 +35,7 @@ Ext.define('Ext.data.JsonP', {
     
     /* End Definitions */
     
-<span id='Ext-data.JsonP-property-timeout'>    /**
+<span id='Ext-data-JsonP-property-timeout'>    /**
 </span>     * @property timeout
      * @type Number
      * A default timeout for any JsonP requests. If the request has not completed in this time the
@@ -26,21 +43,21 @@ Ext.define('Ext.data.JsonP', {
      */
     timeout: 30000,
     
-<span id='Ext-data.JsonP-property-disableCaching'>    /**
+<span id='Ext-data-JsonP-property-disableCaching'>    /**
 </span>     * @property disableCaching
      * @type Boolean
      * True to add a unique cache-buster param to requests. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     disableCaching: true,
    
-<span id='Ext-data.JsonP-property-disableCachingParam'>    /**
+<span id='Ext-data-JsonP-property-disableCachingParam'>    /**
 </span>     * @property disableCachingParam 
      * @type String
      * Change the parameter which is sent went disabling caching through a cache buster. Defaults to &lt;tt&gt;'_dc'&lt;/tt&gt;.
      */
     disableCachingParam: '_dc',
    
-<span id='Ext-data.JsonP-property-callbackKey'>    /**
+<span id='Ext-data-JsonP-property-callbackKey'>    /**
 </span>     * @property callbackKey
      * @type String
      * Specifies the GET parameter that will be sent to the server containing the function name to be executed when
@@ -49,7 +66,7 @@ Ext.define('Ext.data.JsonP', {
      */
     callbackKey: 'callback',
    
-<span id='Ext-data.JsonP-method-request'>    /**
+<span id='Ext-data-JsonP-method-request'>    /**
 </span>     * Makes a JSONP request.
      * @param {Object} options An object which may contain the following properties. Note that options will
      * take priority over any defaults that are specified in the class.
@@ -120,7 +137,7 @@ Ext.define('Ext.data.JsonP', {
         return request;
     },
     
-<span id='Ext-data.JsonP-method-abort'>    /**
+<span id='Ext-data-JsonP-method-abort'>    /**
 </span>     * Abort a request. If the request parameter is not specified all open requests will
      * be aborted.
      * @param {Object/String} request (Optional) The request to abort
@@ -143,7 +160,7 @@ Ext.define('Ext.data.JsonP', {
         }
     },
     
-<span id='Ext-data.JsonP-method-setupErrorHandling'>    /**
+<span id='Ext-data-JsonP-method-setupErrorHandling'>    /**
 </span>     * Sets up error handling for the script
      * @private
      * @param {Object} request The request
@@ -152,7 +169,7 @@ Ext.define('Ext.data.JsonP', {
         request.script.onerror = Ext.bind(this.handleError, this, [request]);
     },
     
-<span id='Ext-data.JsonP-method-handleAbort'>    /**
+<span id='Ext-data-JsonP-method-handleAbort'>    /**
 </span>     * Handles any aborts when loading the script
      * @private
      * @param {Object} request The request
@@ -162,7 +179,7 @@ Ext.define('Ext.data.JsonP', {
         this.handleResponse(null, request);
     },
     
-<span id='Ext-data.JsonP-method-handleError'>    /**
+<span id='Ext-data-JsonP-method-handleError'>    /**
 </span>     * Handles any script errors when loading the script
      * @private
      * @param {Object} request The request
@@ -172,7 +189,7 @@ Ext.define('Ext.data.JsonP', {
         this.handleResponse(null, request);
     },
  
-<span id='Ext-data.JsonP-method-cleanupErrorHandling'>    /**
+<span id='Ext-data-JsonP-method-cleanupErrorHandling'>    /**
 </span>     * Cleans up anu script handling errors
      * @private
      * @param {Object} request The request
@@ -181,7 +198,7 @@ Ext.define('Ext.data.JsonP', {
         request.script.onerror = null;
     },
  
-<span id='Ext-data.JsonP-method-handleTimeout'>    /**
+<span id='Ext-data-JsonP-method-handleTimeout'>    /**
 </span>     * Handle any script timeouts
      * @private
      * @param {Object} request The request
@@ -191,7 +208,7 @@ Ext.define('Ext.data.JsonP', {
         this.handleResponse(null, request);
     },
  
-<span id='Ext-data.JsonP-method-handleResponse'>    /**
+<span id='Ext-data-JsonP-method-handleResponse'>    /**
 </span>     * Handle a successful response
      * @private
      * @param {Object} result The result from the request
@@ -218,7 +235,7 @@ Ext.define('Ext.data.JsonP', {
         Ext.callback(request.callback, request.scope, [success, result, request.errorType]);
     },
     
-<span id='Ext-data.JsonP-method-createScript'>    /**
+<span id='Ext-data-JsonP-method-createScript'>    /**
 </span>     * Create the script tag
      * @private
      * @param {String} url The url of the request
@@ -232,4 +249,6 @@ Ext.define('Ext.data.JsonP', {
         return script;
     }
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-util.Point'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-util-Point'>/**
 </span> * @class Ext.util.Point
  * @extends Ext.util.Region
  *
@@ -16,7 +33,7 @@ Ext.define('Ext.util.Point', {
 
     statics: {
 
-<span id='Ext-util.Point-method-fromEvent'>        /**
+<span id='Ext-util-Point-method-fromEvent'>        /**
 </span>         * Returns a new instance of Ext.util.Point base on the pageX / pageY values of the given event
          * @static
          * @param {Event} e The event
@@ -34,7 +51,7 @@ Ext.define('Ext.util.Point', {
         this.callParent([y, x, y, x]);
     },
 
-<span id='Ext-util.Point-method-toString'>    /**
+<span id='Ext-util-Point-method-toString'>    /**
 </span>     * Returns a human-eye-friendly string that represents this point,
      * useful for debugging
      * @return {String}
@@ -43,7 +60,7 @@ Ext.define('Ext.util.Point', {
         return &quot;Point[&quot; + this.x + &quot;,&quot; + this.y + &quot;]&quot;;
     },
 
-<span id='Ext-util.Point-method-equals'>    /**
+<span id='Ext-util-Point-method-equals'>    /**
 </span>     * Compare this point and another point
      * @param {Ext.util.Point/Object} The point to compare with, either an instance
      * of Ext.util.Point or an object with left and top properties
@@ -53,7 +70,7 @@ Ext.define('Ext.util.Point', {
         return (this.x == p.x &amp;&amp; this.y == p.y);
     },
 
-<span id='Ext-util.Point-method-isWithin'>    /**
+<span id='Ext-util-Point-method-isWithin'>    /**
 </span>     * Whether the given point is not away from this point within the given threshold amount.
      * TODO: Rename this isNear.
      * @param {Ext.util.Point/Object} The point to check with, either an instance
@@ -73,7 +90,7 @@ Ext.define('Ext.util.Point', {
                 this.y &lt;= p.y + threshold.y &amp;&amp; this.y &gt;= p.y - threshold.y);
     },
 
-<span id='Ext-util.Point-method-roundedEquals'>    /**
+<span id='Ext-util-Point-method-roundedEquals'>    /**
 </span>     * Compare this point with another point when the x and y values of both points are rounded. E.g:
      * [100.3,199.8] will equals to [100, 200]
      * @param {Ext.util.Point/Object} The point to compare with, either an instance
@@ -84,13 +101,16 @@ Ext.define('Ext.util.Point', {
         return (Math.round(this.x) == Math.round(p.x) &amp;&amp; Math.round(this.y) == Math.round(p.y));
     }
 }, function() {
-<span id='Ext-util.Point-property-translate'>    /**
+<span id='Ext-util-Point-method-translate'>    /**
 </span>     * Translate this region by the given offset amount. TODO: Either use translate or translateBy!
      * @param {Ext.util.Offset/Object} offset Object containing the &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; properties.
      * Or the x value is using the two argument form.
      * @param {Number} The y value unless using an Offset object.
      * @return {Ext.util.Region} this This Region
+     * @method
      */
     this.prototype.translate = Ext.util.Region.prototype.translateBy;
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

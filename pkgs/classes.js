@@ -11,7 +11,8 @@ licensing@sencha.com
  * with configured listeners defined.<br>
  * For example:
  * <pre><code>
-Employee = Ext.extend(Ext.util.Observable, {
+Ext.define('Employee', {
+    extend: 'Ext.util.Observable',
     constructor: function(config){
         this.name = config.name;
         this.addEvents({
@@ -212,7 +213,6 @@ new Ext.panel.Panel({
             options,
             config,
             managedListeners,
-            managedListener,
             length,
             i;
 
@@ -229,14 +229,9 @@ new Ext.panel.Panel({
         }
 
         managedListeners = me.managedListeners ? me.managedListeners.slice() : [];
-        length = managedListeners.length;
 
-        for (i = 0; i < length; i++) {
-            managedListener = managedListeners[i];
-            if (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope)) {
-                Ext.Array.remove(me.managedListeners, managedListener);
-                item.un(managedListener.ename, managedListener.fn, managedListener.scope);
-            }
+        for (i = 0, length = managedListeners.length; i < length; i++) {
+            me.removeManagedListenerItem(false, managedListeners[i], item, ename, fn, scope);
         }
     },
 
@@ -385,7 +380,7 @@ myGridPanel.on({
         } else {
             ename = ename.toLowerCase();
             event = me.events[ename];
-            if (event.isEvent) {
+            if (event && event.isEvent) {
                 event.removeListener(fn, scope);
             }
         }
@@ -413,7 +408,9 @@ myGridPanel.on({
 
     //<debug>
     purgeListeners : function() {
-        console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+        }
         return this.clearListeners.apply(this, arguments);
     },
     //</debug>
@@ -424,20 +421,36 @@ myGridPanel.on({
     clearManagedListeners : function() {
         var managedListeners = this.managedListeners || [],
             i = 0,
-            len = managedListeners.length,
-            managedListener;
+            len = managedListeners.length;
 
         for (; i < len; i++) {
-            managedListener = managedListeners[i];
-            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            this.removeManagedListenerItem(true, managedListeners[i]);
         }
 
         this.managedListeners = [];
     },
+    
+    /**
+     * Remove a single managed listener item
+     * @private
+     * @param {Boolean} isClear True if this is being called during a clear
+     * @param {Object} managedListener The managed listener item
+     * See removeManagedListener for other args
+     */
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        if (isClear || (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope))) {
+            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+            if (!isClear) {
+                Ext.Array.remove(this.managedListeners, managedListener);
+            }    
+        }
+    },
 
     //<debug>
     purgeManagedListeners : function() {
-        console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        if (Ext.global.console) {
+            Ext.global.console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+        }
         return this.clearManagedListeners.apply(this, arguments);
     },
     //</debug>
@@ -1068,48 +1081,53 @@ myWindow.header.el.on('click', function() {
     },
 
     /**
+     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
+     * @method
      */
     stopFx: Ext.Function.alias(Ext.util.Animate, 'stopAnimation'),
 
     /**
-     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
      * @return {Ext.core.Element} The Element
      */
     stopAnimation: function() {
         Ext.fx.Manager.stopAnimation(this.id);
+        return this;
     },
 
     /**
      * Ensures that all effects queued after syncFx is called on this object are
      * run concurrently.  This is the opposite of {@link #sequenceFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     syncFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: true
         });
+        return this;
     },
 
     /**
      * Ensures that all effects queued after sequenceFx is called on this object are
      * run in sequence.  This is the opposite of {@link #syncFx}.
-     * @return {Ext.core.Element} The Element
+     * @return {Object} this
      */
     sequenceFx: function() {
         Ext.fx.Manager.setFxDefaults(this.id, {
             concurrent: false
         });
+        return this;
     },
 
     /**
      * @deprecated 4.0 Replaced by {@link #getActiveAnimation}
      * Returns thq current animation if this object has any effects actively running or queued, else returns false.
      * @return {Mixed} anim if element has active effects, else false
+     * @method
      */
     hasActiveFx: Ext.Function.alias(Ext.util.Animate, 'getActiveAnimation'),
 
@@ -2286,7 +2304,6 @@ Ext.define('Ext.ComponentQuery', {
          * <p>This parameter may also be an array of Components to filter according to the selector.</p>
          * @returns {Array} The matched Components.
          * @member Ext.ComponentQuery
-         * @method query
          */
         query: function(selector, root) {
             var selectors = selector.split(','),
@@ -2328,7 +2345,6 @@ Ext.define('Ext.ComponentQuery', {
          * @param selector The selector string to test against.
          * @return {Boolean} True if the Component matches the selector.
          * @member Ext.ComponentQuery
-         * @method query
          */
         is: function(component, selector) {
             if (!selector) {
@@ -3341,13 +3357,13 @@ Ext.define('Ext.layout.component.Component', {
             ownerElChild = owner.el.child,
             layoutCollection;
 
-        /**
-        * Do not layout calculatedSized components for fixedLayouts unless the ownerCt == layoutOwner
-        * fixedLayouts means layouts which are never auto/auto in the sizing that comes from their ownerCt.
-        * Currently 3 layouts MAY be auto/auto (Auto, Border, and Box)
-        * The reason for not allowing component layouts is to stop component layouts from things such as Updater and
-        * form Validation.
-        */
+        /*
+         * Do not layout calculatedSized components for fixedLayouts unless the ownerCt == layoutOwner
+         * fixedLayouts means layouts which are never auto/auto in the sizing that comes from their ownerCt.
+         * Currently 3 layouts MAY be auto/auto (Auto, Border, and Box)
+         * The reason for not allowing component layouts is to stop component layouts from things such as Updater and
+         * form Validation.
+         */
         if (!isSetSize && !(Ext.isNumber(width) && Ext.isNumber(height)) && ownerCt && ownerCt.layout && ownerCt.layout.fixedLayout && ownerCt != layoutOwner) {
             me.doContainerLayout();
             return false;
@@ -5673,18 +5689,6 @@ store.sort('myField', 'DESC');
     
     getSorters: function() {
         return this.sorters.items;
-    },
-    
-    /**
-     * Returns an object describing the current sort state of this Store.
-     * @return {Object} The sort state of the Store. An object with two properties:<ul>
-     * <li><b>field</b> : String<p class="sub-desc">The name of the field by which the Records are sorted.</p></li>
-     * <li><b>direction</b> : String<p class="sub-desc">The sort order, 'ASC' or 'DESC' (case-sensitive).</p></li>
-     * </ul>
-     * See <tt>{@link #sortInfo}</tt> for additional details.
-     */
-    getSortState : function() {
-        return this.sortInfo;
     }
 });
 /**
@@ -6936,7 +6940,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      */
 
     /**
-     * @cfg {String} styleHtmlContent
+     * @cfg {Boolean} styleHtmlContent
      * True to automatically style the html inside the content target of this component (body for panels).
      * Defaults to false.
      */
@@ -7208,6 +7212,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         if (me.renderTo) {
             me.render(me.renderTo);
+            // EXTJSIV-1935 - should be a way to do afterShow or something, but that
+            // won't work. Likewise, rendering hidden and then showing (w/autoShow) has
+            // implications to afterRender so we cannot do that.
         }
 
         if (me.autoShow) {
@@ -7313,7 +7320,6 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
         return plugin;
     },
-
 
     // @private
     initPlugin : function(plugin) {
@@ -8664,7 +8670,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * @deprecated 4.0 Replaced by {link:#addCls}
+     * @deprecated 4.0 Replaced by {@link #addCls}
      * Adds a CSS class to the top level element representing this component.
      * @param {String} cls The CSS class name to add
      * @return {Ext.Component} Returns the Component to allow method chaining.
@@ -8754,8 +8760,26 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
         return me.mixins.observable.addListener.apply(me, arguments);
     },
-
-    // @TODO: implement removelistener to support the dom event stuff
+    
+    // inherit docs
+    removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
+        var me = this,
+            element = managedListener.options ? managedListener.options.element : null;
+        
+        if (element) {
+            element = me[element];
+            if (element && element.un) {
+                if (isClear || (managedListener.item === item && managedListener.ename === ename && (!fn || managedListener.fn === fn) && (!scope || managedListener.scope === scope))) {
+                    element.un(managedListener.ename, managedListener.fn, managedListener.scope);
+                    if (!isClear) {
+                        Ext.Array.remove(me.managedListeners, managedListener);
+                    }
+                }
+            }
+        } else {
+            return me.mixins.observable.removeManagedListenerItem.apply(me, arguments);
+        }
+    },
 
     /**
      * Provides the link for Observable's fireEvent method to bubble up the ownership hierarchy.
@@ -9255,12 +9279,14 @@ Ext.define('Ext.AbstractPlugin', {
     /**
      * The init method is invoked after initComponent has been run for the
      * component which we are injecting the plugin into.
+     * @method
      */
     init: Ext.emptyFn,
 
     /**
      * The destroy method is invoked by the owning Component at the time the Component is being destroyed.
      * Use this method to clean up an resources.
+     * @method
      */
     destroy: Ext.emptyFn,
 
@@ -9328,14 +9354,12 @@ Ext.define('Ext.data.Connection', {
 
     /**
      * @cfg {Boolean} disableCaching (Optional) True to add a unique cache-buster param to GET requests. (defaults to true)
-     * @type Boolean
      */
     disableCaching: true,
 
     /**
      * @cfg {String} disableCachingParam (Optional) Change the parameter which is sent went disabling caching
      * through a cache buster. Defaults to '_dc'
-     * @type String
      */
     disableCachingParam: '_dc',
 
@@ -9345,7 +9369,7 @@ Ext.define('Ext.data.Connection', {
     timeout : 30000,
 
     /**
-     * @param {Object} extraParams (Optional) Any parameters to be appended to the request.
+     * @cfg {Object} extraParams (Optional) Any parameters to be appended to the request.
      */
 
     useDefaultHeader : true,
@@ -9926,7 +9950,7 @@ failure: function(response, opts) {
             id;
 
         if (request && me.isLoading(request)) {
-            /**
+            /*
              * Clear out the onreadystatechange here, this allows us
              * greater control, the browser may/may not fire the function
              * depending on a series of conditions.
@@ -10123,7 +10147,7 @@ is used to communicate with your server side code. It can be used as follows:
         }
     });
 
-Default options for all requests can be set be changing a property on the Ext.Ajax class:
+Default options for all requests can be set by changing a property on the Ext.Ajax class:
 
     Ext.Ajax.timeout = 60000; // 60 seconds
 
@@ -10622,7 +10646,6 @@ Ext.define('Ext.ModelManager', {
 
 /**
  * @class Ext.app.Controller
- * @constructor
  * 
  * Controllers are the glue that binds an application together. All they really do is listen for events (usually from
  * views) and take some action. Here's how we might create a Controller to manage Users:
@@ -10675,28 +10698,28 @@ Ext.define('Ext.ModelManager', {
  * One of the most useful parts of Controllers is the new ref system. These use the new {@link Ext.ComponentQuery} to
  * make it really easy to get references to Views on your page. Let's look at an example of this now:
  * 
- * Ext.define('MyApp.controller.Users', {
-     extend: 'Ext.app.Controller',
-
-     refs: [
-         {
-             ref: 'list',
-             selector: 'grid'
-         }
-     ],
-
-     init: function() {
-         this.control({
-             'button': {
-                 click: this.refreshGrid
-             }
-         });
-     },
-
-     refreshGrid: function() {
-         this.getList().store.load();
-     }
- });
+ *     Ext.define('MyApp.controller.Users', {
+ *         extend: 'Ext.app.Controller',
+ *     
+ *         refs: [
+ *             {
+ *                 ref: 'list',
+ *                 selector: 'grid'
+ *             }
+ *         ],
+ *     
+ *         init: function() {
+ *             this.control({
+ *                 'button': {
+ *                     click: this.refreshGrid
+ *                 }
+ *             });
+ *         },
+ *     
+ *         refreshGrid: function() {
+ *             this.getList().store.load();
+ *         }
+ *     });
  * 
  * This example assumes the existence of a {@link Ext.grid.Panel Grid} on the page, which contains a single button to 
  * refresh the Grid when clicked. In our refs array, we set up a reference to the grid. There are two parts to this - 
@@ -10726,20 +10749,20 @@ Ext.define('Ext.ModelManager', {
  * Refs aren't the only thing that generate convenient getter methods. Controllers often have to deal with Models and 
  * Stores so the framework offers a couple of easy ways to get access to those too. Let's look at another example:
  * 
- * Ext.define('MyApp.controller.Users', {
-     extend: 'Ext.app.Controller',
-
-     models: ['User'],
-     stores: ['AllUsers', 'AdminUsers'],
-
-     init: function() {
-         var User = this.getUserModel(),
-             allUsers = this.getAllUsersStore();
-
-         var ed = new User({name: 'Ed'});
-         allUsers.add(ed);
-     }
- });
+ *     Ext.define('MyApp.controller.Users', {
+ *         extend: 'Ext.app.Controller',
+ *     
+ *         models: ['User'],
+ *         stores: ['AllUsers', 'AdminUsers'],
+ *     
+ *         init: function() {
+ *             var User = this.getUserModel(),
+ *                 allUsers = this.getAllUsersStore();
+ *     
+ *             var ed = new User({name: 'Ed'});
+ *             allUsers.add(ed);
+ *         }
+ *     });
  * 
  * By specifying Models and Stores that the Controller cares about, it again dynamically loads them from the appropriate
  * locations (app/model/User.js, app/store/AllUsers.js and app/store/AdminUsers.js in this case) and creates getter 
@@ -10752,12 +10775,12 @@ Ext.define('Ext.ModelManager', {
  * For more information about writing Ext JS 4 applications, please see the <a href="../guide/application_architecture">
  * application architecture guide</a>. Also see the {@link Ext.app.Application} documentation.
  * 
- * @markdown
  * @docauthor Ed Spencer
+ * @constructor
  */  
 Ext.define('Ext.app.Controller', {
     /**
-     * @cfg {Object} id The id of this controller. You can use this id when dispatching.
+     * @cfg {String} id The id of this controller. You can use this id when dispatching.
      */
 
     mixins: {
@@ -11049,8 +11072,8 @@ var errors = myModel.validate();
 errors.isValid(); //false
 
 errors.length; //2
-errors.getByField('name');  // [{field: 'name',  error: 'must be present'}]
-errors.getByField('title'); // [{field: 'title', error: 'is too short'}]
+errors.getByField('name');  // [{field: 'name',  message: 'must be present'}]
+errors.getByField('title'); // [{field: 'title', message: 'is too short'}]
 </code></pre>
  */
 Ext.define('Ext.data.Errors', {
@@ -11754,23 +11777,32 @@ Ext.define('Ext.util.Floating', {
      */
     doConstrain: function(constrainTo) {
         var me = this,
-            constrainEl,
-            vector,
+            vector = me.getConstrainVector(constrainTo),
             xy;
 
+        if (vector) {
+            xy = me.getPosition();
+            xy[0] += vector[0];
+            xy[1] += vector[1];
+            me.setPosition(xy);
+        }
+    },
+    
+    
+    /**
+     * Gets the x/y offsets to constrain this float
+     * @private
+     * @param {Mixed} constrainTo Optional. The Element or {@link Ext.util.Region Region} into which this Component is to be constrained.
+     * @return {Array} The x/y constraints
+     */
+    getConstrainVector: function(constrainTo){
+        var me = this,
+            el;
+            
         if (me.constrain || me.constrainHeader) {
-            if (me.constrainHeader) {
-                constrainEl = me.header.el;
-            } else {
-                constrainEl = me.el;
-            }
-            vector = constrainEl.getConstrainVector(constrainTo || (me.floatParent && me.floatParent.getTargetEl()) || me.container);
-            if (vector) {
-                xy = me.getPosition();
-                xy[0] += vector[0];
-                xy[1] += vector[1];
-                me.setPosition(xy);
-            }
+            el = me.constrainHeader ? me.header.el : me.el;
+            constrainTo = constrainTo || (me.floatParent && me.floatParent.getTargetEl()) || me.container;
+            return el.getConstrainVector(constrainTo);
         }
     },
 
@@ -12433,6 +12465,8 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     handleOverflow: Ext.emptyFn,
 
     clearOverflow: Ext.emptyFn,
+    
+    onRemove: Ext.emptyFn,
 
     /**
      * @private
@@ -12442,7 +12476,9 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
      */
     getItem: function(item) {
         return this.layout.owner.getComponent(item);
-    }
+    },
+    
+    onRemove: Ext.emptyFn
 });
 /**
  * @class Ext.util.KeyMap
@@ -16677,8 +16713,7 @@ Ext.define('Ext.data.reader.Reader', {
             id     = me.getId(node);
 
             
-            record = new Model(values, id);
-            record.raw = node;
+            record = new Model(values, id, node);
             records.push(record);
                 
             if (me.implicitIncludes) {
@@ -17212,7 +17247,12 @@ Ext.define('Ext.data.reader.Json', {
 /**
  * @class Ext.data.writer.Json
  * @extends Ext.data.writer.Writer
- * @ignore
+
+This class is used to write {@link Ext.data.Model} data to the server in a JSON format.
+The {@link #allowSingle} configuration can be set to false to force the records to always be
+encoded in an array, even if there is only a single record being sent.
+
+ * @markdown
  */
 Ext.define('Ext.data.writer.Json', {
     extend: 'Ext.data.writer.Writer',
@@ -17496,6 +17536,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     create: Ext.emptyFn,
     
@@ -17504,6 +17545,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     read: Ext.emptyFn,
     
@@ -17512,6 +17554,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     update: Ext.emptyFn,
     
@@ -17520,6 +17563,7 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Ext.data.Operation} operation The Operation to perform
      * @param {Function} callback Callback function to be called when the Operation has completed (whether successful or not)
      * @param {Object} scope Scope to execute the callback function in
+     * @method
      */
     destroy: Ext.emptyFn,
     
@@ -18033,6 +18077,7 @@ api: {
      * Optional callback function which can be used to clean up after a request has been completed.
      * @param {Ext.data.Request} request The Request object
      * @param {Boolean} success True if the request was successful
+     * @method
      */
     afterRequest: Ext.emptyFn,
     
@@ -18724,7 +18769,7 @@ Ext.define('Ext.data.Model', {
                 // Fire the onModelDefined template method on ModelManager
                 Ext.ModelManager.onModelDefined(cls);
             });
-        }
+        };
     },
 
     inheritableStatics: {
@@ -18891,7 +18936,8 @@ Ext.define('Ext.data.Model', {
      * @type {Array}
      */
 
-    constructor: function(data, id) {
+    // raw not documented intentionally, meant to be used internally.
+    constructor: function(data, id, raw) {
         data = data || {};
         
         var me = this,
@@ -18910,6 +18956,13 @@ Ext.define('Ext.data.Model', {
          * @private
          */
         me.internalId = (id || id === 0) ? id : Ext.data.Model.id(me);
+        
+        /**
+         * The raw data used to create this model if created via a reader.
+         * @property raw
+         * @type Object
+         */
+        me.raw = raw;
 
         Ext.applyIf(me, {
             data: {}    
@@ -19867,7 +19920,9 @@ new Ext.Component({
             me.el.setVisibilityMode(Ext.core.Element[me.hideMode.toUpperCase()]);
         }
 
-        me.setAutoScroll(me.autoScroll);
+        if (Ext.isDefined(me.autoScroll)) {
+            me.setAutoScroll(me.autoScroll);
+        }
         me.callParent();
 
         if (!(me.x && me.y) && (me.pageX || me.pageY)) {
@@ -20374,6 +20429,7 @@ new Ext.Component({
                 me.container.remove();
             }
         }
+        delete me.focusTask;
         me.callParent();
     },
 
@@ -20397,7 +20453,10 @@ new Ext.Component({
                 focusEl;
 
         if (delay) {
-            me.focusTask.delay(Ext.isNumber(delay) ? delay: 10, null, me, [selectText, false]);
+            if (!me.focusTask) {
+                me.focusTask = Ext.create('Ext.util.DelayedTask', me.focus);
+            }
+            me.focusTask.delay(Ext.isNumber(delay) ? delay : 10, null, me, [selectText, false]);
             return me;
         }
 
@@ -20561,11 +20620,6 @@ alert(t.getXType());  // alerts 'textfield'
         }
         return this.proxy;
     }
-
-}, function() {
-
-    // A single focus delayer for all Components.
-    this.prototype.focusTask = Ext.create('Ext.util.DelayedTask', this.prototype.focus);
 
 });
 
@@ -21811,24 +21865,26 @@ Ext.define('Ext.container.Container', {
 /**
  * @class Ext.toolbar.Fill
  * @extends Ext.Component
+ *
  * A non-rendering placeholder item which instructs the Toolbar's Layout to begin using
  * the right-justified button container.
  *
  * {@img Ext.toolbar.Fill/Ext.toolbar.Fill.png Toolbar Fill}
- * Example usage:
-<pre><code>
-    Ext.create('Ext.panel.Panel', {
-        title: 'Toolbar Fill Example',
-        width: 300,
-        height: 200,
-        tbar : [
-            'Item 1',
-            {xtype: 'tbfill'}, // or '->'
-            'Item 2'
-        ],
-        renderTo: Ext.getBody()
-    });
-</code></pre>
+ *
+ * ## Example
+ *
+ *     Ext.create('Ext.panel.Panel', {
+ *          title: 'Toolbar Fill Example',
+ *          width: 300,
+ *          height: 200,
+ *          tbar : [
+ *              'Item 1',
+ *              {xtype: 'tbfill'}, // or '->'
+ *              'Item 2'
+ *          ],
+ *          renderTo: Ext.getBody()
+ *      });
+ *
  * @constructor
  * Creates a new Fill
  * @xtype tbfill
@@ -21866,21 +21922,23 @@ Ext.define('Ext.toolbar.Item', {
  * @extends Ext.toolbar.Item
  * A simple class that adds a vertical separator bar between toolbar items
  * (css class:<tt>'x-toolbar-separator'</tt>). 
+ *
  * {@img Ext.toolbar.Separator/Ext.toolbar.Separator.png Toolbar Separator}
- * Example usage:
- * <pre><code>
-    Ext.create('Ext.panel.Panel', {
-        title: 'Toolbar Seperator Example',
-        width: 300,
-        height: 200,
-        tbar : [
-            'Item 1',
-            {xtype: 'tbseparator'}, // or '-'
-            'Item 2'
-        ],
-        renderTo: Ext.getBody()
-    }); 
-</code></pre>
+ *
+ * ## Example
+ *
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Toolbar Seperator Example',
+ *         width: 300,
+ *         height: 200,
+ *         tbar : [
+ *             'Item 1',
+ *             {xtype: 'tbseparator'}, // or '-'
+ *             'Item 2'
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     }); 
+ *
  * @constructor
  * Creates a new Separator
  * @xtype tbseparator
@@ -22427,6 +22485,17 @@ Ext.define('Ext.button.Button', {
      * The CSS class to add to a button when it's menu is active. (Defaults to 'x-btn-menu-active')
      */
     menuActiveCls: 'menu-active',
+    
+    /**
+     * @cfg {Object} baseParams
+     * An object literal of parameters to pass to the url when the {@link #href} property is specified.
+     */
+    
+    /**
+     * @cfg {Object} params
+     * An object literal of parameters to pass to the url when the {@link #href} property is specified.
+     * Any params override {@link #baseParams}. New params can be set using the {@link #setParams} method.
+     */
 
     ariaRole: 'button',
 
@@ -22817,17 +22886,21 @@ Ext.define('Ext.button.Button', {
      * @returns The href string with parameters appended.
      */
     getHref: function() {
-        var me = this;
-        return me.href ? Ext.urlAppend(me.href, me.params + Ext.Object.toQueryString(Ext.apply(Ext.apply({}, me.baseParams)))) : false;
+        var me = this,
+            params = Ext.apply({}, me.baseParams);
+            
+        // write baseParams first, then write any params
+        params = Ext.apply(params, me.params);
+        return me.href ? Ext.urlAppend(me.href, Ext.Object.toQueryString(params)) : false;
     },
 
     /**
      * <p><b>Only valid if the Button was originally configured with a {@link #url}</b></p>
      * <p>Sets the href of the link dynamically according to the params passed, and any {@link #baseParams} configured.</p>
-     * @param {Object} Parameters to use in the href URL.
+     * @param {Object} params Parameters to use in the href URL.
      */
-    setParams: function(p) {
-        this.params = p;
+    setParams: function(params) {
+        this.params = params;
         this.btnEl.dom.href = this.getHref();
     },
 
@@ -23468,6 +23541,10 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
          */
         me.menuItems = [];
     },
+    
+    onRemove: function(comp){
+        Ext.Array.remove(this.menuItems, comp);
+    },
 
     handleOverflow: function(calculations, targetSize) {
         var me = this,
@@ -23528,7 +23605,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * @private
      */
     hideTrigger: function() {
-        if (this.menuTrigger != undefined) {
+        if (this.menuTrigger !== undefined) {
             this.menuTrigger.hide();
         }
     },
@@ -25911,6 +25988,13 @@ Ext.define('Ext.layout.container.Box', {
             }
         };
     },
+    
+    onRemove: function(comp){
+        this.callParent(arguments);
+        if (this.overflowHandler) {
+            this.overflowHandler.onRemove(comp);
+        }
+    },
 
     /**
      * @private
@@ -25925,7 +26009,7 @@ Ext.define('Ext.layout.container.Box', {
         }
 
         var handlerType = 'None';
-        if (handler && handler.type != undefined) {
+        if (handler && handler.type !== undefined) {
             handlerType = handler.type;
         }
 
@@ -27327,7 +27411,7 @@ __Some items have shortcut strings for creation:__
 {@img Ext.toolbar.Toolbar/Ext.toolbar.Toolbar1.png Toolbar component}
 Example usage:
 
-    Ext.create('Ext.toolbar.Toolbar", {
+    Ext.create('Ext.toolbar.Toolbar', {
         renderTo: document.body,
         width   : 500,
         items: [
@@ -27992,7 +28076,7 @@ var panel = new Ext.panel.Panel({
             item.onAdded(me, i);
             me.onDockedAdd(item);
         }
-        if (me.rendered) {
+        if (me.rendered && !me.suspendLayout) {
             me.doComponentLayout();
         }
         return items;
@@ -29543,8 +29627,14 @@ Ext.define('Ext.draw.Draw', {
         }
     },
 
+    // To be deprecated, converts itself (an arrayPath) to a proper SVG path string
     path2string: function () {
         return this.join(",").replace(Ext.draw.Draw.pathToStringRE, "$1");
+    },
+
+    // Convert the passed arrayPath to a proper SVG path string (d attribute)
+    pathToString: function(arrayPath) {
+        return arrayPath.join(",").replace(Ext.draw.Draw.pathToStringRE, "$1");
     },
 
     parsePathString: function (pathString) {
@@ -29601,10 +29691,7 @@ Ext.define('Ext.draw.Draw', {
 
     pathClone: function(pathArray) {
         var res = [],
-            j,
-            jj,
-            i,
-            ii;
+            j, jj, i, ii;
         if (!this.is(pathArray, "array") || !this.is(pathArray && pathArray[0], "array")) { // rough assumption
             pathArray = this.parsePathString(pathArray);
         }
@@ -29627,80 +29714,93 @@ Ext.define('Ext.draw.Draw', {
             y = 0,
             mx = 0,
             my = 0,
-            start = 0,
-            i,
-            ii,
-            r,
-            pa,
-            j,
-            jj,
-            k,
-            kk;
-        if (pathArray[0][0] == "M") {
+            i = 0,
+            ln = pathArray.length,
+            r, pathSegment, j, ln2;
+        // MoveTo initial x/y position
+        if (ln && pathArray[0][0] == "M") {
             x = +pathArray[0][1];
             y = +pathArray[0][2];
             mx = x;
             my = y;
-            start++;
+            i++;
             res[0] = ["M", x, y];
         }
-        for (i = start, ii = pathArray.length; i < ii; i++) {
+        for (; i < ln; i++) {
             r = res[i] = [];
-            pa = pathArray[i];
-            if (pa[0] != pa[0].toUpperCase()) {
-                r[0] = pa[0].toUpperCase();
+            pathSegment = pathArray[i];
+            if (pathSegment[0] != pathSegment[0].toUpperCase()) {
+                r[0] = pathSegment[0].toUpperCase();
                 switch (r[0]) {
+                    // Elliptical Arc
                     case "A":
-                        r[1] = pa[1];
-                        r[2] = pa[2];
-                        r[3] = pa[3];
-                        r[4] = pa[4];
-                        r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
+                        r[1] = pathSegment[1];
+                        r[2] = pathSegment[2];
+                        r[3] = pathSegment[3];
+                        r[4] = pathSegment[4];
+                        r[5] = pathSegment[5];
+                        r[6] = +(pathSegment[6] + x);
+                        r[7] = +(pathSegment[7] + y);
                         break;
+                    // Vertical LineTo
                     case "V":
-                        r[1] = +pa[1] + y;
+                        r[1] = +pathSegment[1] + y;
                         break;
+                    // Horizontal LineTo
                     case "H":
-                        r[1] = +pa[1] + x;
+                        r[1] = +pathSegment[1] + x;
                         break;
                     case "M":
-                        mx = +pa[1] + x;
-                        my = +pa[2] + y;
+                    // MoveTo
+                        mx = +pathSegment[1] + x;
+                        my = +pathSegment[2] + y;
                     default:
-                        for (j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +pa[j] + ((j % 2) ? x : y);
+                        j = 1;
+                        ln2 = pathSegment.length;
+                        for (; j < ln2; j++) {
+                            r[j] = +pathSegment[j] + ((j % 2) ? x : y);
                         }
                 }
-            } else {
-                for (k = 0, kk = pa.length; k < kk; k++) {
-                    res[i][k] = pa[k];
+            }
+            else {
+                j = 0;
+                ln2 = pathSegment.length;
+                for (; j < ln2; j++) {
+                    res[i][j] = pathSegment[j];
                 }
             }
             switch (r[0]) {
+                // ClosePath
                 case "Z":
                     x = mx;
                     y = my;
                     break;
+                // Horizontal LineTo
                 case "H":
                     x = r[1];
                     break;
+                // Vertical LineTo
                 case "V":
                     y = r[1];
                     break;
+                // MoveTo
                 case "M":
-                    mx = res[i][res[i].length - 2];
-                    my = res[i][res[i].length - 1];
+                    pathSegment = res[i];
+                    ln2 = pathSegment.length;
+                    mx = pathSegment[ln2 - 2];
+                    my = pathSegment[ln2 - 1];
                 default:
-                    x = res[i][res[i].length - 2];
-                    y = res[i][res[i].length - 1];
+                    pathSegment = res[i];
+                    ln2 = pathSegment.length;
+                    x = pathSegment[ln2 - 2];
+                    y = pathSegment[ln2 - 1];
             }
         }
         res.toString = this.path2string;
         return res;
     },
 
+    // TO BE DEPRECATED
     pathToRelative: function (pathArray) {
         if (!this.is(pathArray, "array") || !this.is(pathArray && pathArray[0], "array")) {
             pathArray = this.parsePathString(pathArray);
@@ -29776,7 +29876,7 @@ Ext.define('Ext.draw.Draw', {
         return res;
     },
 
-    //Returns a path converted to a set of curveto commands
+    // Returns a path converted to a set of curveto commands
     path2curve: function (path) {
         var me = this,
             points = me.pathToAbsolute(path),
@@ -30023,27 +30123,8 @@ Ext.define('Ext.draw.Draw', {
             return newres;
         }
     },
-    
-    rotatePoint: function (x, y, alpha, cx, cy) {
-        if (!alpha) {
-            return {
-                x: x,
-                y: y
-            };
-        }
-        cx = cx || 0;
-        cy = cy || 0;
-        x = x - cx;
-        y = y - cy;
-        alpha = alpha * this.radian;
-        var cos = Math.cos(alpha),
-            sin = Math.sin(alpha);
-        return {
-            x: x * cos - y * sin + cx,
-            y: x * sin + y * cos + cy
-        };
-    },
 
+    // TO BE DEPRECATED
     rotateAndTranslatePath: function (sprite) {
         var alpha = sprite.rotation.degrees,
             cx = sprite.rotation.x,
@@ -30080,7 +30161,28 @@ Ext.define('Ext.draw.Draw', {
         }
         return res;
     },
-    
+
+    // TO BE DEPRECATED
+    rotatePoint: function (x, y, alpha, cx, cy) {
+        if (!alpha) {
+            return {
+                x: x,
+                y: y
+            };
+        }
+        cx = cx || 0;
+        cy = cy || 0;
+        x = x - cx;
+        y = y - cy;
+        alpha = alpha * this.radian;
+        var cos = Math.cos(alpha),
+            sin = Math.sin(alpha);
+        return {
+            x: x * cos - y * sin + cx,
+            y: x * sin + y * cos + cy
+        };
+    },
+
     pathDimensions: function (path) {
         if (!path || !(path + "")) {
             return {x: 0, y: 0, width: 0, height: 0};
@@ -30090,13 +30192,10 @@ Ext.define('Ext.draw.Draw', {
             y = 0,
             X = [],
             Y = [],
-            p,
-            i,
-            ii,
-            xmin,
-            ymin,
-            dim;
-        for (i = 0, ii = path.length; i < ii; i++) {
+            i = 0,
+            ln = path.length,
+            p, xmin, ymin, dim;
+        for (; i < ln; i++) {
             p = path[i];
             if (p[0] == "M") {
                 x = p[1];
@@ -30122,42 +30221,50 @@ Ext.define('Ext.draw.Draw', {
             height: Math.max.apply(0, Y) - ymin
         };
     },
-    
-    intersect: function(subjectPolygon, clipPolygon) {
-        var cp1, cp2, s, e, point;
-        var inside = function(p) {
-            return (cp2[0]-cp1[0]) * (p[1]-cp1[1]) > (cp2[1]-cp1[1]) * (p[0]-cp1[0]);
-        };
-        var intersection = function() {
-            var p = [];
-            var dcx = cp1[0]-cp2[0],
-                dcy = cp1[1]-cp2[1],
-                dpx = s[0]-e[0],
-                dpy = s[1]-e[1],
-                n1 = cp1[0]*cp2[1] - cp1[1]*cp2[0],
-                n2 = s[0]*e[1] - s[1]*e[0],
-                n3 = 1 / (dcx*dpy - dcy*dpx);
 
-            p[0] = (n1*dpx - n2*dcx) * n3;
-            p[1] = (n1*dpy - n2*dcy) * n3;
-            return p;
-        };
-        var outputList = subjectPolygon;
-        cp1 = clipPolygon[clipPolygon.length -1];
-        for (var i = 0, l = clipPolygon.length; i < l; ++i) {
+    intersectInside: function(path, cp1, cp2) {
+        return (cp2[0] - cp1[0]) * (path[1] - cp1[1]) > (cp2[1] - cp1[1]) * (path[0] - cp1[0]);
+    },
+
+    intersectIntersection: function(s, e, cp1, cp2) {
+        var p = [],
+            dcx = cp1[0] - cp2[0],
+            dcy = cp1[1] - cp2[1],
+            dpx = s[0] - e[0],
+            dpy = s[1] - e[1],
+            n1 = cp1[0] * cp2[1] - cp1[1] * cp2[0],
+            n2 = s[0] * e[1] - s[1] * e[0],
+            n3 = 1 / (dcx * dpy - dcy * dpx);
+
+        p[0] = (n1 * dpx - n2 * dcx) * n3;
+        p[1] = (n1 * dpy - n2 * dcy) * n3;
+        return p;
+    },
+
+    intersect: function(subjectPolygon, clipPolygon) {
+        var me = this,
+            i = 0,
+            ln = clipPolygon.length,
+            cp1 = clipPolygon[ln - 1],
+            outputList = subjectPolygon,
+            cp2, s, e, point, ln2, inputList, j;
+        for (; i < ln; ++i) {
             cp2 = clipPolygon[i];
-            var inputList = outputList;
+            inputList = outputList;
             outputList = [];
-            s = inputList[inputList.length -1];
-            for (var j = 0, ln = inputList.length; j < ln; j++) {
+            s = inputList[inputList.length - 1];
+            j = 0;
+            ln2 = inputList.length;
+            for (; j < ln2; j++) {
                 e = inputList[j];
-                if (inside(e)) {
-                    if (!inside(s)) {
-                        outputList.push(intersection());
+                if (me.intersectInside(e, cp1, cp2)) {
+                    if (!me.intersectInside(s, cp1, cp2)) {
+                        outputList.push(me.intersectIntersection(s, e, cp1, cp2));
                     }
                     outputList.push(e);
-                } else if (inside(s)) {
-                    outputList.push(intersection());
+                }
+                else if (me.intersectInside(s, cp1, cp2)) {
+                    outputList.push(me.intersectIntersection(s, e, cp1, cp2));
                 }
                 s = e;
             }
@@ -30165,7 +30272,7 @@ Ext.define('Ext.draw.Draw', {
         }
         return outputList;
     },
-    
+
     curveDim: function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
         var a = (c2x - 2 * c1x + p1x) - (p2x - 2 * c2x + c1x),
             b = 2 * (c1x - p1x) - 2 * (c2x - c1x),
@@ -31402,8 +31509,8 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The padding configured for this drag and drop object for calculating
      * the drop zone intersection with this object.
-     * @property padding
-     * @type int[] An array containing the 4 padding values: [top, right, bottom, left]
+     * An array containing the 4 padding values: [top, right, bottom, left]
+     * @property {[int]} padding
      */
     padding: null,
 
@@ -31483,8 +31590,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * horizontal graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property xTicks
-     * @type int[]
+     * @property {[int]} xTicks
      */
     xTicks: null,
 
@@ -31492,8 +31598,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * vertical graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property yTicks
-     * @type int[]
+     * @property {[int]} yTicks
      */
     yTicks: null,
 
@@ -33210,6 +33315,7 @@ Ext.define('Ext.dd.DragSource', {
      * drag event has begun.  The drag cannot be canceled from this function.
      * @param {Number} x The x position of the click on the dragged object
      * @param {Number} y The y position of the click on the dragged object
+     * @method
      */
     onStartDrag: Ext.emptyFn,
 
@@ -33535,7 +33641,13 @@ Ext.define('Ext.panel.Panel', {
      * clicking the expand button to see it again (defaults to <tt>true</tt>).
      */
     floatable: true,
-
+    
+    /**
+     * @cfg {Mixed} overlapHeader
+     * True to overlap the header in a panel over the framing of the panel itself. This is needed when frame:true (and is done automatically for you). Otherwise it is undefined.
+     * If you manually add rounded corners to a panel header which does not have frame:true, this will need to be set to true.
+     */
+    
     /**
      * @cfg {Boolean} collapsible
      * <p>True to make the panel collapsible and have an expand/collapse toggle Tool added into
@@ -34364,12 +34476,14 @@ each of the buttons in the fbar.
                 cls: me.baseCls + '-collapsed-placeholder ' + ' ' + Ext.baseCSSPrefix + 'docked ' + me.baseCls + '-' + me.ui + '-collapsed',
                 renderTo: me.el
             };
-            reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
-                xtype: 'tool',
-                type: 'expand-' + me.expandDirection,
-                handler: me.toggleCollapse,
-                scope: me
-            }];
+            if (!me.hideCollapseTool) {
+                reExpander[(reExpander.orientation == 'horizontal') ? 'tools' : 'items'] = [{
+                    xtype: 'tool',
+                    type: 'expand-' + me.expandDirection,
+                    handler: me.toggleCollapse,
+                    scope: me
+                }];
+            }
 
             // Capture the size of the re-expander.
             // For vertical headers in IE6 and IE7, this will be sized by a CSS rule in _panel.scss
@@ -34409,6 +34523,10 @@ each of the buttons in the fbar.
         if (animate) {
             me.animate(anim);
         } else {
+            // EXTJSIV-1937 (would like to use setCalculateSize)
+            // save width/height here, expand puts them back
+            me.uncollapsedSize = { width: me.width, height: me.height };
+
             me.setSize(anim.to.width, anim.to.height);
             if (Ext.isDefined(anim.to.left) || Ext.isDefined(anim.to.top)) {
                 me.setPosition(anim.to.left, anim.to.top);
@@ -34469,6 +34587,19 @@ each of the buttons in the fbar.
         if (!this.collapsed || this.fireEvent('beforeexpand', this, animate) === false) {
             return false;
         }
+
+        // EXTJSIV-1937 (would like to use setCalculateSize)
+        if (this.uncollapsedSize) {
+            Ext.Object.each(this.uncollapsedSize, function (name, value) {
+                if (Ext.isDefined(value)) {
+                    this[name] = value;
+                } else {
+                    delete this[name];
+                }
+            }, this);
+            delete this.uncollapsedSize;
+        }
+
         var me = this,
             i = 0,
             l = me.hiddenDocked.length,
@@ -35927,84 +36058,95 @@ Ext.define('Ext.tip.QuickTip', {
 
 /**
  * @class Ext.tip.QuickTipManager
- * <p>Provides attractive and customizable tooltips for any element. The QuickTips
+ *
+ * Provides attractive and customizable tooltips for any element. The QuickTips
  * singleton is used to configure and manage tooltips globally for multiple elements
  * in a generic manner.  To create individual tooltips with maximum customizability,
- * you should consider either {@link Ext.tip.Tip} or {@link Ext.tip.ToolTip}.</p>
- * <p>Quicktips can be configured via tag attributes directly in markup, or by
- * registering quick tips programmatically via the {@link #register} method.</p>
- * <p>The singleton's instance of {@link Ext.tip.QuickTip} is available via
+ * you should consider either {@link Ext.tip.Tip} or {@link Ext.tip.ToolTip}.
+ *
+ * Quicktips can be configured via tag attributes directly in markup, or by
+ * registering quick tips programmatically via the {@link #register} method.
+ *
+ * The singleton's instance of {@link Ext.tip.QuickTip} is available via
  * {@link #getQuickTip}, and supports all the methods, and all the all the
  * configuration properties of Ext.tip.QuickTip. These settings will apply to all
- * tooltips shown by the singleton.</p>
- * <p>Below is the summary of the configuration properties which can be used.
- * For detailed descriptions see the config options for the {@link Ext.tip.QuickTip QuickTip} class</p>
- * <p><b>QuickTips singleton configs (all are optional)</b></p>
- * <div class="mdetail-params"><ul><li>dismissDelay</li>
- * <li>hideDelay</li>
- * <li>maxWidth</li>
- * <li>minWidth</li>
- * <li>showDelay</li>
- * <li>trackMouse</li></ul></div>
- * <p><b>Target element configs (optional unless otherwise noted)</b></p>
- * <div class="mdetail-params"><ul><li>autoHide</li>
- * <li>cls</li>
- * <li>dismissDelay (overrides singleton value)</li>
- * <li>target (required)</li>
- * <li>text (required)</li>
- * <li>title</li>
- * <li>width</li></ul></div>
- * <p>Here is an example showing how some of these config options could be used:</p>
+ * tooltips shown by the singleton.
+ *
+ * Below is the summary of the configuration properties which can be used.
+ * For detailed descriptions see the config options for the {@link Ext.tip.QuickTip QuickTip} class
+ *
+ * ## QuickTips singleton configs (all are optional)
+ *
+ *  - `dismissDelay`
+ *  - `hideDelay`
+ *  - `maxWidth`
+ *  - `minWidth`
+ *  - `showDelay`
+ *  - `trackMouse`
+ *
+ * ## Target element configs (optional unless otherwise noted)
+ *
+ *  - `autoHide`
+ *  - `cls`
+ *  - `dismissDelay` (overrides singleton value)
+ *  - `target` (required)
+ *  - `text` (required)
+ *  - `title`
+ *  - `width`
+ *
+ * Here is an example showing how some of these config options could be used:
  *
  * {@img Ext.tip.QuickTipManager/Ext.tip.QuickTipManager.png Ext.tip.QuickTipManager component}
  *
  * ## Code
- *    // Init the singleton.  Any tag-based quick tips will start working.
- *    Ext.tip.QuickTipManager.init();
- *    
- *    // Apply a set of config properties to the singleton
- *    Ext.apply(Ext.tip.QuickTipManager.getQuickTip(), {
- *        maxWidth: 200,
- *        minWidth: 100,
- *        showDelay: 50      // Show 50ms after entering target
- *    });
- *    
- *    // Create a small panel to add a quick tip to
- *    Ext.create('Ext.container.Container', {
- *        id: 'quickTipContainer',
- *        width: 200,
- *        height: 150,
- *        style: {
- *            backgroundColor:'#000000'
- *        },
- *        renderTo: Ext.getBody()
- *    });
  *
- *    
- *    // Manually register a quick tip for a specific element
- *    Ext.tip.QuickTipManager.register({
- *        target: 'quickTipContainer',
- *        title: 'My Tooltip',
- *        text: 'This tooltip was added in code',
- *        width: 100,
- *        dismissDelay: 10000 // Hide after 10 seconds hover
- *    });
-</code></pre>
- * <p>To register a quick tip in markup, you simply add one or more of the valid QuickTip attributes prefixed with
- * the <b>ext:</b> namespace.  The HTML element itself is automatically set as the quick tip target. Here is the summary
- * of supported attributes (optional unless otherwise noted):</p>
- * <ul><li><b>hide</b>: Specifying "user" is equivalent to setting autoHide = false.  Any other value will be the
- * same as autoHide = true.</li>
- * <li><b>qclass</b>: A CSS class to be applied to the quick tip (equivalent to the 'cls' target element config).</li>
- * <li><b>qtip (required)</b>: The quick tip text (equivalent to the 'text' target element config).</li>
- * <li><b>qtitle</b>: The quick tip title (equivalent to the 'title' target element config).</li>
- * <li><b>qwidth</b>: The quick tip width (equivalent to the 'width' target element config).</li></ul>
- * <p>Here is an example of configuring an HTML element to display a tooltip from markup:</p>
- * <pre><code>
-// Add a quick tip to an HTML button
-&lt;input type="button" value="OK" ext:qtitle="OK Button" ext:qwidth="100"
-     data-qtip="This is a quick tip from markup!">&lt;/input>
-</code></pre>
+ *     // Init the singleton.  Any tag-based quick tips will start working.
+ *     Ext.tip.QuickTipManager.init();
+ *     
+ *     // Apply a set of config properties to the singleton
+ *     Ext.apply(Ext.tip.QuickTipManager.getQuickTip(), {
+ *         maxWidth: 200,
+ *         minWidth: 100,
+ *         showDelay: 50      // Show 50ms after entering target
+ *     });
+ *     
+ *     // Create a small panel to add a quick tip to
+ *     Ext.create('Ext.container.Container', {
+ *         id: 'quickTipContainer',
+ *         width: 200,
+ *         height: 150,
+ *         style: {
+ *             backgroundColor:'#000000'
+ *         },
+ *         renderTo: Ext.getBody()
+ *     });
+ *     
+ *     
+ *     // Manually register a quick tip for a specific element
+ *     Ext.tip.QuickTipManager.register({
+ *         target: 'quickTipContainer',
+ *         title: 'My Tooltip',
+ *         text: 'This tooltip was added in code',
+ *         width: 100,
+ *         dismissDelay: 10000 // Hide after 10 seconds hover
+ *     });
+ *
+ * To register a quick tip in markup, you simply add one or more of the valid QuickTip attributes prefixed with
+ * the **data-** namespace.  The HTML element itself is automatically set as the quick tip target. Here is the summary
+ * of supported attributes (optional unless otherwise noted):
+ *
+ *  - `hide`: Specifying "user" is equivalent to setting autoHide = false.  Any other value will be the same as autoHide = true.
+ *  - `qclass`: A CSS class to be applied to the quick tip (equivalent to the 'cls' target element config).
+ *  - `qtip (required)`: The quick tip text (equivalent to the 'text' target element config).
+ *  - `qtitle`: The quick tip title (equivalent to the 'title' target element config).
+ *  - `qwidth`: The quick tip width (equivalent to the 'width' target element config).
+ *
+ * Here is an example of configuring an HTML element to display a tooltip from markup:
+ *     
+ *     // Add a quick tip to an HTML button
+ *     <input type="button" value="OK" data-qtitle="OK Button" data-qwidth="100"
+ *          data-qtip="This is a quick tip from markup!"></input>
+ *
  * @singleton
  */
 Ext.define('Ext.tip.QuickTipManager', function() {
@@ -36015,11 +36157,17 @@ Ext.define('Ext.tip.QuickTipManager', function() {
         requires: ['Ext.tip.QuickTip'],
         singleton: true,
         alternateClassName: 'Ext.QuickTips',
+
         /**
          * Initialize the global QuickTips instance and prepare any quick tips.
-         * @param {Boolean} autoRender True to render the QuickTips container immediately to preload images. (Defaults to true) 
+         * @param {Boolean} autoRender True to render the QuickTips container immediately to
+         * preload images. (Defaults to true)
+         * @param {Object} config An optional config object for the created QuickTip. By
+         * default, the {@link Ext.tip.QuickTip QuickTip} class is instantiated, but this can
+         * be changed by supplying an xtype property or a className property in this object.
+         * All other properties on this object are configuration for the created component.
          */
-        init : function(autoRender){
+        init : function (autoRender, config) {
             if (!tip) {
                 if (!Ext.isReady) {
                     Ext.onReady(function(){
@@ -36027,10 +36175,33 @@ Ext.define('Ext.tip.QuickTipManager', function() {
                     });
                     return;
                 }
-                tip = Ext.create('Ext.tip.QuickTip', {
-                    disabled: disabled,
-                    renderTo: autoRender !== false ? document.body : undefined
-                });
+
+                var tipConfig = Ext.apply({ disabled: disabled }, config),
+                    className = tipConfig.className,
+                    xtype = tipConfig.xtype;
+
+                if (className) {
+                    delete tipConfig.className;
+                } else if (xtype) {
+                    className = 'widget.' + xtype;
+                    delete tipConfig.xtype;
+                }
+
+                if (autoRender !== false) {
+                    tipConfig.renderTo = document.body;
+
+                    //<debug>
+                    if (tipConfig.renderTo.tagName != 'BODY') { // e.g., == 'FRAMESET'
+                        Ext.Error.raise({
+                            sourceClass: 'Ext.tip.QuickTipManager',
+                            sourceMethod: 'init',
+                            msg: 'Cannot init QuickTipManager: no document body'
+                        });
+                    }
+                    //</debug>
+                }
+
+                tip = Ext.create(className || 'Ext.tip.QuickTip', tipConfig);
             }
         },
 
@@ -36125,21 +36296,21 @@ Ext.define('Ext.tip.QuickTipManager', function() {
 }());
 /**
  * @class Ext.app.Application
- * @constructor
+ * @extend Ext.app.Controller
  * 
  * Represents an Ext JS 4 application, which is typically a single page app using a {@link Ext.container.Viewport Viewport}.
  * A typical Ext.app.Application might look like this:
  * 
- * Ext.application({
-     name: 'MyApp',
-     launch: function() {
-         Ext.create('Ext.container.Viewport', {
-             items: {
-                 html: 'My App'
-             }
-         });
-     }
- });
+ *     Ext.application({
+ *         name: 'MyApp',
+ *         launch: function() {
+ *             Ext.create('Ext.container.Viewport', {
+ *                 items: {
+ *                     html: 'My App'
+ *                 }
+ *             });
+ *         }
+ *     });
  * 
  * This does several things. First it creates a global variable called 'MyApp' - all of your Application's classes (such
  * as its Models, Views and Controllers) will reside under this single namespace, which drastically lowers the chances
@@ -36156,15 +36327,15 @@ Ext.define('Ext.tip.QuickTipManager', function() {
  * might have Models and Controllers for Posts and Comments, and Views for listing, adding and editing Posts and Comments.
  * Here's how we'd tell our Application about all these things:
  * 
- * Ext.application({
-     name: 'Blog',
-     models: ['Post', 'Comment'],
-     controllers: ['Posts', 'Comments'],
-
-     launch: function() {
-         ...
-     }
- });
+ *     Ext.application({
+ *         name: 'Blog',
+ *         models: ['Post', 'Comment'],
+ *         controllers: ['Posts', 'Comments'],
+ *     
+ *         launch: function() {
+ *             ...
+ *         }
+ *     });
  * 
  * Note that we didn't actually list the Views directly in the Application itself. This is because Views are managed by
  * Controllers, so it makes sense to keep those dependencies there. The Application will load each of the specified 
@@ -36173,12 +36344,12 @@ Ext.define('Ext.tip.QuickTipManager', function() {
  * app/controller/Comments.js. In turn, each Controller simply needs to list the Views it uses and they will be
  * automatically loaded. Here's how our Posts controller like be defined:
  * 
- * Ext.define('MyApp.controller.Posts', {
-     extend: 'Ext.app.Controller',
-     views: ['posts.List', 'posts.Edit'],
-
-     //the rest of the Controller here
- });
+ *     Ext.define('MyApp.controller.Posts', {
+ *         extend: 'Ext.app.Controller',
+ *         views: ['posts.List', 'posts.Edit'],
+ *     
+ *         //the rest of the Controller here
+ *     });
  * 
  * Because we told our Application about our Models and Controllers, and our Controllers about their Views, Ext JS will
  * automatically load all of our app files for us. This means we don't have to manually add script tags into our html
@@ -36188,8 +36359,8 @@ Ext.define('Ext.tip.QuickTipManager', function() {
  * For more information about writing Ext JS 4 applications, please see the <a href="../guide/application_architecture">
  * application architecture guide</a>.
  * 
- * @markdown
  * @docauthor Ed Spencer
+ * @constructor
  */
 Ext.define('Ext.app.Application', {
     extend: 'Ext.app.Controller',
@@ -36204,7 +36375,7 @@ Ext.define('Ext.app.Application', {
     ],
 
     /**
-     * @cfg {Object} name The name of your application. This will also be the namespace for your views, controllers
+     * @cfg {String} name The name of your application. This will also be the namespace for your views, controllers
      * models and stores. Don't use spaces or special characters in the name.
      */
 
@@ -36231,9 +36402,10 @@ Ext.define('Ext.app.Application', {
     appFolder: 'app',
 
     /**
-     * @cfg {Boolean} autoCreateViewport Automatically loads and instantiates AppName.view.Viewport before firing the launch function.
+     * @cfg {Boolean} autoCreateViewport True to automatically load and instantiate AppName.view.Viewport
+     * before firing the launch function (defaults to false).
      */
-    autoCreateViewport: true,
+    autoCreateViewport: false,
 
     constructor: function(config) {
         config = config || {};
@@ -36253,8 +36425,8 @@ Ext.define('Ext.app.Application', {
 
         this.eventbus = Ext.create('Ext.app.EventBus');
 
-        var controllers = this.controllers,
-            ln = controllers.length,
+        var controllers = Ext.Array.from(this.controllers),
+            ln = controllers && controllers.length,
             i, controller;
 
         this.controllers = Ext.create('Ext.util.MixedCollection');
@@ -36682,13 +36854,13 @@ Ext.define('Ext.draw.CompositeSprite', {
      * Hides all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    hide: function(attrs) {
+    hide: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].hide();
+            items[i].hide(redraw);
         }
         return this;
     },
@@ -36697,13 +36869,13 @@ Ext.define('Ext.draw.CompositeSprite', {
      * Shows all sprites. If the first parameter of the method is true
      * then a redraw will be forced for each sprite.
      */
-    show: function(attrs) {
+    show: function(redraw) {
         var i = 0,
             items = this.items,
             len = this.length;
             
         for (; i < len; i++) {
-            items[i].show();
+            items[i].show(redraw);
         }
         return this;
     },
@@ -37491,11 +37663,81 @@ Ext.define('Ext.chart.Shape', {
  *
  * For example:
  *
-        drawComponent.surface.on({
-           'mousemove': function() {
-                console.log('moving the mouse over the surface');   
-            }
-        });
+ *     drawComponent.surface.on({
+ *        'mousemove': function() {
+ *             console.log('moving the mouse over the surface');   
+ *         }
+ *     });
+ *
+ * ## Example
+ *
+ *     drawComponent.surface.add([
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#f00',
+ *             x: 10,
+ *             y: 10,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#0f0',
+ *             x: 50,
+ *             y: 50,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#00f',
+ *             x: 100,
+ *             y: 100,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 10,
+ *             y: 10,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 50,
+ *             y: 50,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 100,
+ *             y: 100,
+ *             group: 'rectangles'
+ *         }
+ *     ]);
+ *     
+ *     // Get references to my groups
+ *     my circles = surface.getGroup('circles');
+ *     my rectangles = surface.getGroup('rectangles');
+ *     
+ *     // Animate the circles down
+ *     circles.animate({
+ *         duration: 1000,
+ *         translate: {
+ *             y: 200
+ *         }
+ *     });
+ *     
+ *     // Animate the rectangles across
+ *     rectangles.animate({
+ *         duration: 1000,
+ *         translate: {
+ *             x: 200
+ *         }
+ *     });
  */
 Ext.define('Ext.draw.Surface', {
 
@@ -37650,6 +37892,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to add the class to.
      * @param {String/Array} className The CSS class to add, or an array of classes
+     * @method
      */
     addCls: Ext.emptyFn,
 
@@ -37662,6 +37905,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to remove the class from.
      * @param {String/Array} className The CSS class to remove, or an array of classes
+     * @method
      */
     removeCls: Ext.emptyFn,
 
@@ -37676,6 +37920,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The sprite to add, or an array of classes to
      * @param {Object} styles An Object with CSS styles.
+     * @method
      */
     setStyle: Ext.emptyFn,
 
@@ -37699,17 +37944,16 @@ Ext.define('Ext.draw.Surface', {
     
     // @private
     initBackground: function(config) {
-        var gradientId, 
-            gradient,
-            backgroundSprite,
-            width = this.width,
-            height = this.height;
+        var me = this,
+            width = me.width,
+            height = me.height,
+            gradientId, gradient, backgroundSprite;
         if (config) {
             if (config.gradient) {
                 gradient = config.gradient;
                 gradientId = gradient.id;
-                this.addGradient(gradient);
-                this.background = this.add({
+                me.addGradient(gradient);
+                me.background = me.add({
                     type: 'rect',
                     x: 0,
                     y: 0,
@@ -37718,7 +37962,7 @@ Ext.define('Ext.draw.Surface', {
                     fill: 'url(#' + gradientId + ')'
                 });
             } else if (config.fill) {
-                this.background = this.add({
+                me.background = me.add({
                     type: 'rect',
                     x: 0,
                     y: 0,
@@ -37727,7 +37971,7 @@ Ext.define('Ext.draw.Surface', {
                     fill: config.fill
                 });
             } else if (config.image) {
-                this.background = this.add({
+                me.background = me.add({
                     type: 'image',
                     x: 0,
                     y: 0,
@@ -37847,6 +38091,8 @@ Ext.define('Ext.draw.Surface', {
                         }
                     }
                 });
+     *
+     * @method
      */
     addGradient: Ext.emptyFn,
 
@@ -38097,7 +38343,9 @@ Ext.define('Ext.draw.Surface', {
     // @private
     getPathellipse: function (el) {
         var a = el.attr;
-        return this.ellipsePath(a.x, a.y, a.radiusX, a.radiusY);
+        return this.ellipsePath(a.x, a.y,
+                                a.radiusX || (a.width / 2) || 0,
+                                a.radiusY || (a.height / 2) || 0);
     },
 
     // @private
@@ -38181,6 +38429,7 @@ Ext.define('Ext.draw.Surface', {
      *      
      * @param {Object} sprite The Sprite to change the text.
      * @param {String} text The new text to be set.
+     * @method
      */
     setText: Ext.emptyFn,
     
@@ -38409,6 +38658,7 @@ Ext.define('Ext.draw.Component', {
         }, true);
         if (me.rendered) {
             me.setSize(width, height);
+            me.surface.setSize(width, height);
         }
         else {
             me.surface.setSize(width, height);
@@ -40106,7 +40356,7 @@ Ext.define('Ext.chart.Label', {
             store = me.chart.store,
             len = store.getCount(),
             ratio = items.length / len,
-            i, count, j, 
+            i, count, index, j, 
             k, gradientsCount = (gradients || 0) && gradients.length,
             colorStopTotal, colorStopIndex, colorStop,
             item, label, storeItem,
@@ -40119,10 +40369,16 @@ Ext.define('Ext.chart.Label', {
         }
 
         for (i = 0, count = 0; i < len; i++) {
+            index = 0;
             for (j = 0; j < ratio; j++) {
                 item = items[count];
                 label = group.getAt(count);
                 storeItem = store.getAt(i);
+                
+                //check the excludes
+                while(this.__excludes && this.__excludes[index]) {
+                    index++;
+                }
 
                 if (!item && label) {
                     label.hide(true);
@@ -40130,9 +40386,9 @@ Ext.define('Ext.chart.Label', {
 
                 if (item && field[j]) {
                     if (!label) {
-                        label = me.onCreateLabel(storeItem, item, i, display, j, count);
+                        label = me.onCreateLabel(storeItem, item, i, display, j, index);
                     }
-                    me.onPlaceLabel(label, storeItem, item, i, display, animate, j, count);
+                    me.onPlaceLabel(label, storeItem, item, i, display, animate, j, index);
 
                     //set contrast
                     if (config.contrast && item.sprite) {
@@ -40168,6 +40424,7 @@ Ext.define('Ext.chart.Label', {
                     }
                 }
                 count++;
+                index++;
             }
         }
         me.hideLabels(count);
@@ -40423,35 +40680,33 @@ Ext.define('Ext.chart.axis.Abstract', {
  * to create a Chart please check the Chart class documentation. Here's an example for the axes part:
  * An example of axis for a series (in this case for an area chart that has multiple layers of yFields) could be:
  * 
-  <pre><code>
-    axes: [{
-        type: 'Numeric',
-        grid: true,
-        position: 'left',
-        fields: ['data1', 'data2', 'data3'],
-        title: 'Number of Hits',
-        grid: {
-            odd: {
-                opacity: 1,
-                fill: '#ddd',
-                stroke: '#bbb',
-                'stroke-width': 1
-            }
-        },
-        minimum: 0
-    }, {
-        type: 'Category',
-        position: 'bottom',
-        fields: ['name'],
-        title: 'Month of the Year',
-        grid: true,
-        label: {
-            rotate: {
-                degrees: 315
-            }
-        }
-    }]
-   </code></pre>
+ *     axes: [{
+ *         type: 'Numeric',
+ *         grid: true,
+ *         position: 'left',
+ *         fields: ['data1', 'data2', 'data3'],
+ *         title: 'Number of Hits',
+ *         grid: {
+ *             odd: {
+ *                 opacity: 1,
+ *                 fill: '#ddd',
+ *                 stroke: '#bbb',
+ *                 'stroke-width': 1
+ *             }
+ *         },
+ *         minimum: 0
+ *     }, {
+ *         type: 'Category',
+ *         position: 'bottom',
+ *         fields: ['name'],
+ *         title: 'Month of the Year',
+ *         grid: true,
+ *         label: {
+ *             rotate: {
+ *                 degrees: 315
+ *             }
+ *         }
+ *     }]
  * 
  * In this case we use a `Numeric` axis for displaying the values of the Area series and a `Category` axis for displaying the names of
  * the store elements. The numeric axis is placed on the left of the screen, while the category axis is placed at the bottom of the chart. 
@@ -40479,7 +40734,10 @@ Ext.define('Ext.chart.axis.Axis', {
      * @cfg {Number} minorTickSteps 
      * The number of small ticks between two major ticks. Default is zero.
      */
-
+    
+    //@private force min/max values from store
+    forceMinMax: false,
+    
     /**
      * @cfg {Number} dashSize 
      * The size of the dash marker. Default's 3.
@@ -40577,6 +40835,14 @@ Ext.define('Ext.chart.axis.Axis', {
         out = Ext.draw.Draw.snapEnds(min, max, me.majorTickSteps !== false ?  (me.majorTickSteps +1) : me.steps);
         outfrom = out.from;
         outto = out.to;
+        if (me.forceMinMax) {
+            if (!isNaN(max)) {
+                out.to = max;
+            }
+            if (!isNaN(min)) {
+                out.from = min;
+            }
+        }
         if (!isNaN(me.maximum)) {
             //TODO(nico) users are responsible for their own minimum/maximum values set.
             //Clipping should be added to remove lines in the chart which are below the axis.
@@ -41185,67 +41451,67 @@ Ext.define('Ext.chart.axis.Axis', {
  * axis are more suitable.
  *
  * As with other axis you can set the position of the axis and its title. For example:
+ *
  * {@img Ext.chart.axis.Category/Ext.chart.axis.Category.png Ext.chart.axis.Category chart axis}
-    <pre><code>
-   var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            grid: true,
-            position: 'left',
-            fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
-            title: 'Sample Values',
-            grid: {
-                odd: {
-                    opacity: 1,
-                    fill: '#ddd',
-                    stroke: '#bbb',
-                    'stroke-width': 1
-                }
-            },
-            minimum: 0,
-            adjustMinimumByMajorUnit: 0
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: ['name'],
-            title: 'Sample Metrics',
-            grid: true,
-            label: {
-                rotate: {
-                    degrees: 315
-                }
-            }
-        }],
-        series: [{
-            type: 'area',
-            highlight: false,
-            axis: 'left',
-            xField: 'name',
-            yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
-            style: {
-                opacity: 0.93
-            }
-        }]
-    });
-    </code></pre>
-
-    In this example with set the category axis to the bottom of the surface, bound the axis to
-    the <em>name</em> property and set as title <em>Month of the Year</em>.
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *  
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             grid: true,
+ *             position: 'left',
+ *             fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             title: 'Sample Values',
+ *             grid: {
+ *                 odd: {
+ *                     opacity: 1,
+ *                     fill: '#ddd',
+ *                     stroke: '#bbb',
+ *                     'stroke-width': 1
+ *                 }
+ *             },
+ *             minimum: 0,
+ *             adjustMinimumByMajorUnit: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics',
+ *             grid: true,
+ *             label: {
+ *                 rotate: {
+ *                     degrees: 315
+ *                 }
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             highlight: false,
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             style: {
+ *                 opacity: 0.93
+ *             }
+ *         }]
+ *     });
+ *
+ * In this example with set the category axis to the bottom of the surface, bound the axis to
+ * the <em>name</em> property and set as title <em>Month of the Year</em>.
  */
 
 Ext.define('Ext.chart.axis.Category', {
@@ -41320,15 +41586,14 @@ Ext.define('Ext.chart.axis.Category', {
  *
  * A possible configuration for this axis would look like:
  *
-            axes: [{
-                type: 'gauge',
-                position: 'gauge',
-                minimum: 0,
-                maximum: 100,
-                steps: 10,
-                margin: 7
-            }],
- * 
+ *     axes: [{
+ *         type: 'gauge',
+ *         position: 'gauge',
+ *         minimum: 0,
+ *         maximum: 100,
+ *         steps: 10,
+ *         margin: 7
+ *     }],
  */
 Ext.define('Ext.chart.axis.Gauge', {
 
@@ -41512,67 +41777,66 @@ Ext.define('Ext.chart.axis.Gauge', {
  * opposed to the category axis. You can set mininum and maximum values to the
  * axis so that the values are bound to that. If no values are set, then the
  * scale will auto-adjust to the values.
+ *
  * {@img Ext.chart.axis.Numeric/Ext.chart.axis.Numeric.png Ext.chart.axis.Numeric chart axis}
+ *
  * For example:
-
-    <pre><code>
-   var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            grid: true,
-            position: 'left',
-            fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
-            title: 'Sample Values',
-            grid: {
-                odd: {
-                    opacity: 1,
-                    fill: '#ddd',
-                    stroke: '#bbb',
-                    'stroke-width': 1
-                }
-            },
-            minimum: 0,
-            adjustMinimumByMajorUnit: 0
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: ['name'],
-            title: 'Sample Metrics',
-            grid: true,
-            label: {
-                rotate: {
-                    degrees: 315
-                }
-            }
-        }],
-        series: [{
-            type: 'area',
-            highlight: false,
-            axis: 'left',
-            xField: 'name',
-            yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
-            style: {
-                opacity: 0.93
-            }
-        }]
-    });
-    </code></pre>
-
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *          fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *          data: [
+ *              {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *              {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *              {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *              {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *              {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *          ]
+ *     });
+ *  
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             grid: true,
+ *             position: 'left',
+ *             fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             title: 'Sample Values',
+ *             grid: {
+ *                 odd: {
+ *                     opacity: 1,
+ *                     fill: '#ddd',
+ *                     stroke: '#bbb',
+ *                     'stroke-width': 1
+ *                 }
+ *             },
+ *             minimum: 0,
+ *             adjustMinimumByMajorUnit: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics',
+ *             grid: true,
+ *             label: {
+ *                 rotate: {
+ *                     degrees: 315
+ *                 }
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             highlight: false,
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             style: {
+ *                 opacity: 0.93
+ *             }
+ *         }]
+ *     });
  *
  * In this example we create an axis of Numeric type. We set a minimum value so that
  * even if all series have values greater than zero, the grid starts at zero. We bind
@@ -41581,7 +41845,6 @@ Ext.define('Ext.chart.axis.Gauge', {
  * We set the title of the axis to <em>Number of Hits</em> by using the <em>title</em> property.
  * We use a <em>grid</em> configuration to set odd background rows to a certain style and even rows
  * to be transparent/ignored.
- *
  *
  * @constructor
  */
@@ -42030,7 +42293,8 @@ Ext.define('Ext.data.AbstractStore', {
     
     //documented above
     constructor: function(config) {
-        var me = this;
+        var me = this,
+            filters;
         
         me.addEvents(
             /**
@@ -42105,6 +42369,7 @@ Ext.define('Ext.data.AbstractStore', {
         );
         
         Ext.apply(me, config);
+        // don't use *config* anymore from here on... use *me* instead...
 
         /**
          * Temporary cache in which removed model instances are kept until successfully synchronised with a Proxy,
@@ -42116,7 +42381,7 @@ Ext.define('Ext.data.AbstractStore', {
         me.removed = [];
 
         me.mixins.observable.constructor.apply(me, arguments);
-        me.model = Ext.ModelManager.getModel(config.model || me.model);
+        me.model = Ext.ModelManager.getModel(me.model);
 
         /**
          * @property modelDefaults
@@ -42144,7 +42409,7 @@ Ext.define('Ext.data.AbstractStore', {
         }
 
         //ensures that the Proxy is instantiated correctly
-        me.setProxy(config.proxy || me.proxy || me.model.getProxy());
+        me.setProxy(me.proxy || me.model.getProxy());
 
         if (me.id && !me.storeId) {
             me.storeId = me.id;
@@ -42162,8 +42427,9 @@ Ext.define('Ext.data.AbstractStore', {
          * @property filters
          * @type Ext.util.MixedCollection
          */
+        filters = me.decodeFilters(me.filters);
         me.filters = Ext.create('Ext.util.MixedCollection');
-        me.filters.addAll(me.decodeFilters(config.filters));
+        me.filters.addAll(filters);
     },
 
     /**
@@ -42366,7 +42632,10 @@ Ext.define('Ext.data.AbstractStore', {
         return item.dirty === true && item.phantom !== true && item.isValid();
     },
 
-    //returns any records that have been removed from the store but not yet destroyed on the proxy
+    /**
+     * Returns any records that have been removed from the store but not yet destroyed on the proxy.
+     * @return {Array} The removed Model instances
+     */
     getRemovedRecords: function() {
         return this.removed;
     },
@@ -42596,6 +42865,7 @@ Ext.define('Ext.data.AbstractStore', {
      * Removes all records from the store. This method does a "fast remove",
      * individual remove events are not called. The {@link #clear} event is
      * fired upon completion.
+     * @method
      */
     removeAll: Ext.emptyFn,
     // individual substores should implement a "fast" remove
@@ -42902,10 +43172,9 @@ Ext.define('Ext.data.Store', {
     groupDir: "ASC",
 
     /**
+     * @cfg {Number} pageSize
      * The number of records considered to form a 'page'. This is used to power the built-in
      * paging using the nextPage and previousPage functions. Defaults to 25.
-     * @property pageSize
-     * @type Number
      */
     pageSize: 25,
 
@@ -42958,7 +43227,8 @@ Ext.define('Ext.data.Store', {
         config = config || {};
 
         var me = this,
-            groupers = config.groupers,
+            groupers = config.groupers || me.groupers,
+            groupField = config.groupField || me.groupField,
             proxy,
             data;
             
@@ -43014,10 +43284,10 @@ Ext.define('Ext.data.Store', {
             delete config.data;
         }
         
-        if (!groupers && config.groupField) {
+        if (!groupers && groupField) {
             groupers = [{
-                property : config.groupField,
-                direction: config.groupDir
+                property : groupField,
+                direction: config.groupDir || me.groupDir
             }];
         }
         delete config.groupers;
@@ -43031,6 +43301,7 @@ Ext.define('Ext.data.Store', {
         me.groupers.addAll(me.decodeGroupers(groupers));
 
         this.callParent([config]);
+        // don't use *config* anymore from here on... use *me* instead...
         
         if (me.groupers.items.length) {
             me.sort(me.groupers.items, 'prepend', false);
@@ -43644,7 +43915,7 @@ store.load(function(records, operation, success) {
                 original,
                 index;
 
-            /**
+            /*
              * Loop over each record returned from the server. Assume they are
              * returned in order of how they were sent. If we find a matching
              * record, replace it with the newly created one.
@@ -44313,7 +44584,6 @@ store.load(function(records, operation, success) {
                 sorters = me.getSorters();
                 start = me.guaranteedStart;
                 end = me.guaranteedEnd;
-                range;
                 
                 if (sorters.length) {
                     prefetchData.sort(sorters);
@@ -44867,28 +45137,26 @@ Ext.define('Ext.data.JsonStore',  {
  *
  * For example:
  *
-  <pre><code>
-    axes: [{
-        type: 'Time',
-        position: 'bottom',
-        fields: 'date',
-        title: 'Day',
-        dateFormat: 'M d',
-        groupBy: 'year,month,day',
-        aggregateOp: 'sum',
-
-        constrain: true,
-        fromDate: new Date('1/1/11'),
-        toDate: new Date('1/7/11')
-    }]
-  </code></pre>
+ *     axes: [{
+ *         type: 'Time',
+ *         position: 'bottom',
+ *         fields: 'date',
+ *         title: 'Day',
+ *         dateFormat: 'M d',
+ *         groupBy: 'year,month,day',
+ *         aggregateOp: 'sum',
+ *     
+ *         constrain: true,
+ *         fromDate: new Date('1/1/11'),
+ *         toDate: new Date('1/7/11')
+ *     }]
  *
- * In this example we're creating a time axis that has as title <em>Day</em>.
- * The field the axis is bound to is <em>date</em>.
- * The date format to use to display the text for the axis labels is <em>M d</em>
+ * In this example we're creating a time axis that has as title *Day*.
+ * The field the axis is bound to is `date`.
+ * The date format to use to display the text for the axis labels is `M d`
  * which is a three letter month abbreviation followed by the day number.
- * The time axis will show values for dates betwee <em>fromDate</em> and <em>toDate</em>.
- * Since <em>constrain</em> is set to true all other values for other dates not between
+ * The time axis will show values for dates between `fromDate` and `toDate`.
+ * Since `constrain` is set to true all other values for other dates not between
  * the fromDate and toDate will not be displayed.
  * 
  * @constructor
@@ -46969,7 +47237,7 @@ Ext.define('Ext.chart.series.Bar', {
     },
     
     // @private callback used when placing a label.
-    onPlaceLabel: function(label, storeItem, item, i, display, animate, index) {
+    onPlaceLabel: function(label, storeItem, item, i, display, animate, j, index) {
         // Determine the label's final position. Starts with the configured preferred value but
         // may get flipped from inside to outside or vice-versa depending on space.
         var me = this,
@@ -47171,95 +47439,92 @@ Ext.define('Ext.chart.series.Bar', {
  * @class Ext.chart.series.Column
  * @extends Ext.chart.series.Bar
  * 
-  <p>
-  Creates a Column Chart. Much of the methods are inherited from Bar. A Column Chart is a useful visualization technique to display quantitative information for different 
-  categories that can show some progression (or regression) in the data set.
-  As with all other series, the Column Series must be appended in the *series* Chart array configuration. See the Chart 
-  documentation for more information. A typical configuration object for the column series could be:
-  </p>
-{@img Ext.chart.series.Column/Ext.chart.series.Column.png Ext.chart.series.Column chart series  
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            position: 'bottom',
-            fields: ['data1'],
-            label: {
-                renderer: Ext.util.Format.numberRenderer('0,0')
-            },
-            title: 'Sample Values',
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'left',
-            fields: ['name'],
-            title: 'Sample Metrics'
-        }],
-            axes: [{
-                type: 'Numeric',
-                position: 'left',
-                fields: ['data1'],
-                label: {
-                    renderer: Ext.util.Format.numberRenderer('0,0')
-                },
-                title: 'Sample Values',
-                grid: true,
-                minimum: 0
-            }, {
-                type: 'Category',
-                position: 'bottom',
-                fields: ['name'],
-                title: 'Sample Metrics'
-            }],
-            series: [{
-                type: 'column',
-                axis: 'left',
-                highlight: true,
-                tips: {
-                  trackMouse: true,
-                  width: 140,
-                  height: 28,
-                  renderer: function(storeItem, item) {
-                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
-                  }
-                },
-                label: {
-                  display: 'insideEnd',
-                  'text-anchor': 'middle',
-                    field: 'data1',
-                    renderer: Ext.util.Format.numberRenderer('0'),
-                    orientation: 'vertical',
-                    color: '#333'
-                },
-                xField: 'name',
-                yField: 'data1'
-            }]
-    });
-   </code></pre>
- 
-  <p>
-  In this configuration we set `column` as the series type, bind the values of the bars to the bottom axis, set `highlight` to true so that bars are smoothly highlighted
-  when hovered and bind the `xField` or category field to the data store `name` property and the `yField` as the data1 property of a store element. 
-  </p>
+ * Creates a Column Chart. Much of the methods are inherited from Bar. A Column Chart is a useful visualization technique to display quantitative information for different 
+ * categories that can show some progression (or regression) in the data set.
+ * As with all other series, the Column Series must be appended in the *series* Chart array configuration. See the Chart 
+ * documentation for more information. A typical configuration object for the column series could be:
+ *
+ * {@img Ext.chart.series.Column/Ext.chart.series.Column.png Ext.chart.series.Column chart series}
+ *
+ * ## Example
+ * 
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             position: 'bottom',
+ *             fields: ['data1'],
+ *             label: {
+ *                 renderer: Ext.util.Format.numberRenderer('0,0')
+ *             },
+ *             title: 'Sample Values',
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'left',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics'
+ *         }],
+ *             axes: [{
+ *                 type: 'Numeric',
+ *                 position: 'left',
+ *                 fields: ['data1'],
+ *                 label: {
+ *                     renderer: Ext.util.Format.numberRenderer('0,0')
+ *                 },
+ *                 title: 'Sample Values',
+ *                 grid: true,
+ *                 minimum: 0
+ *             }, {
+ *                 type: 'Category',
+ *                 position: 'bottom',
+ *                 fields: ['name'],
+ *                 title: 'Sample Metrics'
+ *             }],
+ *             series: [{
+ *                 type: 'column',
+ *                 axis: 'left',
+ *                 highlight: true,
+ *                 tips: {
+ *                   trackMouse: true,
+ *                   width: 140,
+ *                   height: 28,
+ *                   renderer: function(storeItem, item) {
+ *                     this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
+ *                   }
+ *                 },
+ *                 label: {
+ *                   display: 'insideEnd',
+ *                   'text-anchor': 'middle',
+ *                     field: 'data1',
+ *                     renderer: Ext.util.Format.numberRenderer('0'),
+ *                     orientation: 'vertical',
+ *                     color: '#333'
+ *                 },
+ *                 xField: 'name',
+ *                 yField: 'data1'
+ *             }]
+ *     });
+ *  
+ * In this configuration we set `column` as the series type, bind the values of the bars to the bottom axis, set `highlight` to true so that bars are smoothly highlighted
+ * when hovered and bind the `xField` or category field to the data store `name` property and the `yField` as the data1 property of a store element. 
  */
-
 Ext.define('Ext.chart.series.Column', {
 
     /* Begin Definitions */
@@ -47746,90 +48011,92 @@ Ext.define('Ext.chart.series.Gauge', {
  * @class Ext.chart.series.Line
  * @extends Ext.chart.series.Cartesian
  * 
- <p> 
-  Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
-  categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
-  As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart 
-  documentation for more information. A typical configuration object for the line series could be:
- </p>
-{@img Ext.chart.series.Line/Ext.chart.series.Line.png Ext.chart.series.Line chart series}
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            position: 'bottom',
-            fields: ['data1'],
-            label: {
-                renderer: Ext.util.Format.numberRenderer('0,0')
-            },
-            title: 'Sample Values',
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'left',
-            fields: ['name'],
-            title: 'Sample Metrics'
-        }],
-        series: [{
-            type: 'line',
-            highlight: {
-                size: 7,
-                radius: 7
-            },
-            axis: 'left',
-            xField: 'name',
-            yField: 'data1',
-            markerCfg: {
-                type: 'cross',
-                size: 4,
-                radius: 4,
-                'stroke-width': 0
-            }
-        }, {
-            type: 'line',
-            highlight: {
-                size: 7,
-                radius: 7
-            },
-            axis: 'left',
-            fill: true,
-            xField: 'name',
-            yField: 'data3',
-            markerCfg: {
-                type: 'circle',
-                size: 4,
-                radius: 4,
-                'stroke-width': 0
-            }
-        }]
-    });
-   </code></pre>
- 
- <p> 
-  In this configuration we're adding two series (or lines), one bound to the `data1` property of the store and the other to `data3`. The type for both configurations is 
-  `line`. The `xField` for both series is the same, the name propert of the store. Both line series share the same axis, the left axis. You can set particular marker 
-  configuration by adding properties onto the markerConfig object. Both series have an object as highlight so that markers animate smoothly to the properties in highlight 
-  when hovered. The second series has `fill=true` which means that the line will also have an area below it of the same color.
- </p>
+ * Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
+ * categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
+ * As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart 
+ * documentation for more information. A typical configuration object for the line series could be:
+ *
+ * {@img Ext.chart.series.Line/Ext.chart.series.Line.png Ext.chart.series.Line chart series}
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             position: 'bottom',
+ *             fields: ['data1'],
+ *             label: {
+ *                 renderer: Ext.util.Format.numberRenderer('0,0')
+ *             },
+ *             title: 'Sample Values',
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'left',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics'
+ *         }],
+ *         series: [{
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             markerCfg: {
+ *                 type: 'cross',
+ *                 size: 4,
+ *                 radius: 4,
+ *                 'stroke-width': 0
+ *             }
+ *         }, {
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             axis: 'left',
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             markerCfg: {
+ *                 type: 'circle',
+ *                 size: 4,
+ *                 radius: 4,
+ *                 'stroke-width': 0
+ *             }
+ *         }]
+ *     });
+ *  
+ * In this configuration we're adding two series (or lines), one bound to the `data1` 
+ * property of the store and the other to `data3`. The type for both configurations is 
+ * `line`. The `xField` for both series is the same, the name propert of the store. 
+ * Both line series share the same axis, the left axis. You can set particular marker 
+ * configuration by adding properties onto the markerConfig object. Both series have 
+ * an object as highlight so that markers animate smoothly to the properties in highlight 
+ * when hovered. The second series has `fill=true` which means that the line will also 
+ * have an area below it of the same color.
+ *
+ * **Note:** In the series definition remember to explicitly set the axis to bind the 
+ * values of the line series to. This can be done by using the `axis` configuration property.
  */
-
 Ext.define('Ext.chart.series.Line', {
 
     /* Begin Definitions */
@@ -47845,6 +48112,13 @@ Ext.define('Ext.chart.series.Line', {
     type: 'line',
     
     alias: 'series.line',
+    
+    /**
+     * @cfg {String} axis
+     * The position of the axis to bind the values to. Possible values are 'left', 'bottom', 'top' and 'right'.
+     * You must explicitly set this value to bind the values of the line series to the ones in the axis, otherwise a
+     * relative scale will be used.
+     */
 
     /**
      * @cfg {Number} selectionTolerance
@@ -47999,16 +48273,24 @@ Ext.define('Ext.chart.series.Line', {
             shadowBarAttr,
             xValues = [],
             yValues = [],
+            numericAxis = true,
+            axisCount = 0,
             onbreak = false,
             markerStyle = me.markerStyle,
             seriesStyle = me.seriesStyle,
             seriesLabelStyle = me.seriesLabelStyle,
             colorArrayStyle = me.colorArrayStyle,
             colorArrayLength = colorArrayStyle && colorArrayStyle.length || 0,
+            posHash = {
+                'left': 'right',
+                'right': 'left',
+                'top': 'bottom',
+                'bottom': 'top'
+            },
             seriesIdx = me.seriesIdx, shadows, shadow, shindex, fromPath, fill, fillPath, rendererAttributes,
             x, y, prevX, prevY, firstY, markerCount, i, j, ln, axis, ends, marker, markerAux, item, xValue,
             yValue, coords, xScale, yScale, minX, maxX, minY, maxY, line, animation, endMarkerStyle,
-            endLineStyle, type, props, firstMarker;
+            endLineStyle, type, props, firstMarker, count;
         
         //if store is empty then there's nothing to draw.
         if (!store || !store.getCount()) {
@@ -48052,42 +48334,80 @@ Ext.define('Ext.chart.series.Line', {
 
         me.clipRect = [bbox.x, bbox.y, bbox.width, bbox.height];
 
-        for (i = 0, ln = axes.length; i < ln; i++) { 
-            axis = chart.axes.get(axes[i]);
-            if (axis) {
-                ends = axis.calcEnds();
-                if (axis.position == 'top' || axis.position == 'bottom') {
-                    minX = ends.from;
-                    maxX = ends.to;
+        chart.axes.each(function(axis) {
+            //only apply position calculations to axes that affect this series
+            //this means the axis in the position referred by this series and also
+            //the axis in the other coordinate for this series. For example: (left, top|bottom),
+            //or (top, left|right), etc.
+            if (axis.position == me.axis || axis.position != posHash[me.axis]) {
+                axisCount++;
+                if (axis.type != 'Numeric') {
+                    numericAxis = false;
+                    return;
                 }
-                else {
-                    minY = ends.from;
-                    maxY = ends.to;
+                numericAxis = (numericAxis && axis.type == 'Numeric');
+                if (axis) {
+                    ends = axis.calcEnds();
+                    if (axis.position == 'top' || axis.position == 'bottom') {
+                        minX = ends.from;
+                        maxX = ends.to;
+                    }
+                    else {
+                        minY = ends.from;
+                        maxY = ends.to;
+                    }
                 }
             }
+        });
+        
+        //If there's only one axis specified for a series, then we set the default type of the other
+        //axis to a category axis. So in this case numericAxis, which would be true if both axes affecting
+        //the series are numeric should be false.
+        if (numericAxis && axisCount == 1) {
+            numericAxis = false;
         }
+        
         // If a field was specified without a corresponding axis, create one to get bounds
         //only do this for the axis where real values are bound (that's why we check for
         //me.axis)
-        if (me.xField && !Ext.isNumber(minX)
-            && (me.axis == 'bottom' || me.axis == 'top')) {
-            axis = Ext.create('Ext.chart.axis.Axis', {
-                chart: chart,
-                fields: [].concat(me.xField)
-            }).calcEnds();
-            minX = axis.from;
-            maxX = axis.to;
+        if (me.xField && !Ext.isNumber(minX)) {
+            if (me.axis == 'bottom' || me.axis == 'top') {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.xField)
+                }).calcEnds();
+                minX = axis.from;
+                maxX = axis.to;
+            } else if (numericAxis) {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.xField),
+                    forceMinMax: true
+                }).calcEnds();
+                minX = axis.from;
+                maxX = axis.to;
+            }
         }
-        if (me.yField && !Ext.isNumber(minY)
-            && (me.axis == 'right' || me.axis == 'left')) {
-            axis = Ext.create('Ext.chart.axis.Axis', {
-                chart: chart,
-                fields: [].concat(me.yField)
-            }).calcEnds();
-            minY = axis.from;
-            maxY = axis.to;
+        
+        if (me.yField && !Ext.isNumber(minY)) {
+            if (me.axis == 'right' || me.axis == 'left') {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.yField)
+                }).calcEnds();
+                minY = axis.from;
+                maxY = axis.to;
+            } else if (numericAxis) {
+                axis = Ext.create('Ext.chart.axis.Axis', {
+                    chart: chart,
+                    fields: [].concat(me.yField),
+                    forceMinMax: true
+                }).calcEnds();
+                minY = axis.from;
+                maxY = axis.to;
+            }
         }
-
+        
         if (isNaN(minX)) {
             minX = 0;
             xScale = bbox.width / (store.getCount() - 1);
@@ -48103,7 +48423,7 @@ Ext.define('Ext.chart.series.Line', {
         else {
             yScale = bbox.height / (maxY - minY);
         }
-
+        
         store.each(function(record, i) {
             xValue = record.get(me.xField);
             yValue = record.get(me.yField);
@@ -48119,12 +48439,12 @@ Ext.define('Ext.chart.series.Line', {
             // Ensure a value
             if (typeof xValue == 'string' || typeof xValue == 'object'
                 //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'top' && me.axis != 'bottom')) {
+                || (me.axis != 'top' && me.axis != 'bottom' && !numericAxis)) {
                 xValue = i;
             }
             if (typeof yValue == 'string' || typeof yValue == 'object'
                 //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'left' && me.axis != 'right')) {
+                || (me.axis != 'left' && me.axis != 'right' && !numericAxis)) {
                 yValue = i;
             }
             xValues.push(xValue);
@@ -48140,6 +48460,7 @@ Ext.define('Ext.chart.series.Line', {
 
         me.items = [];
 
+        count = 0;
         ln = xValues.length;
         for (i = 0; i < ln; i++) {
             xValue = xValues[i];
@@ -48190,7 +48511,7 @@ Ext.define('Ext.chart.series.Line', {
                 }
             }
             if (showMarkers) {
-                marker = markerGroup.getAt(i);
+                marker = markerGroup.getAt(count++);
                 if (!marker) {
                     marker = Ext.chart.Shape[type](surface, Ext.apply({
                         group: [group, markerGroup],
@@ -48345,29 +48666,22 @@ Ext.define('Ext.chart.series.Line', {
             }
             //animate markers
             if (showMarkers) {
+                count = 0;
                 for(i = 0; i < ln; i++) {
-                    item = markerGroup.getAt(i);
-                    if (item) {
-                        if (me.items[i]) {
+                    if (me.items[i]) {
+                        item = markerGroup.getAt(count++);
+                        if (item) {
                             rendererAttributes = me.renderer(item, store.getAt(i), item._to, i, store);
                             me.onAnimate(item, {
                                 to: Ext.apply(rendererAttributes, endMarkerStyle || {})
                             });
-                        } else {
-                            item.setAttributes(Ext.apply({
-                                hidden: true 
-                            }, item._to), true);
                         }
-                    }
+                    } 
                 }
-                for(; i < markerCount; i++) {
-                    item = markerGroup.getAt(i);
+                for(; count < markerCount; count++) {
+                    item = markerGroup.getAt(count);
                     item.hide(true);
                 }
-//                for(i = 0; i < (chart.markerIndex || 0)-1; i++) {
-//                    item = markerGroup.getAt(i);
-//                    item.hide(true);
-//                }
             }
         } else {
             rendererAttributes = me.renderer(me.line, false, { path: path, hidden: false }, i, store);
@@ -48392,19 +48706,18 @@ Ext.define('Ext.chart.series.Line', {
                 }, true);
             }
             if (showMarkers) {
+                count = 0;
                 for(i = 0; i < ln; i++) {
-                    item = markerGroup.getAt(i);
-                    if (item) {
-                        if (me.items[i]) {
+                    if (me.items[i]) {
+                        item = markerGroup.getAt(count++);
+                        if (item) {
                             rendererAttributes = me.renderer(item, store.getAt(i), item._to, i, store);
                             item.setAttributes(Ext.apply(endMarkerStyle || {}, rendererAttributes || {}), true);
-                        } else {
-                            item.hide(true);
                         }
-                    }
+                    } 
                 }
-                for(; i < markerCount; i++) {
-                    item = markerGroup.getAt(i);
+                for(; count < markerCount; count++) {
+                    item = markerGroup.getAt(count);
                     item.hide(true);
                 }
             }
@@ -48745,58 +49058,56 @@ Ext.define('Ext.chart.series.Line', {
  * As with all other series, the Pie Series must be appended in the *series* Chart array configuration. See the Chart 
  * documentation for more information. A typical configuration object for the pie series could be:
  * 
-{@img Ext.chart.series.Pie/Ext.chart.series.Pie.png Ext.chart.series.Pie chart series}
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        store: store,
-        theme: 'Base:gradients',
-        series: [{
-            type: 'pie',
-            field: 'data1',
-            showInLegend: true,
-            tips: {
-              trackMouse: true,
-              width: 140,
-              height: 28,
-              renderer: function(storeItem, item) {
-                //calculate and display percentage on hover
-                var total = 0;
-                store.each(function(rec) {
-                    total += rec.get('data1');
-                });
-                this.setTitle(storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%');
-              }
-            },
-            highlight: {
-              segment: {
-                margin: 20
-              }
-            },
-            label: {
-                field: 'name',
-                display: 'rotate',
-                contrast: true,
-                font: '18px Arial'
-            }
-        }]    
-    });
-   </code></pre>
- 
+ * {@img Ext.chart.series.Pie/Ext.chart.series.Pie.png Ext.chart.series.Pie chart series}
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         store: store,
+ *         theme: 'Base:gradients',
+ *         series: [{
+ *             type: 'pie',
+ *             field: 'data1',
+ *             showInLegend: true,
+ *             tips: {
+ *               trackMouse: true,
+ *               width: 140,
+ *               height: 28,
+ *               renderer: function(storeItem, item) {
+ *                 //calculate and display percentage on hover
+ *                 var total = 0;
+ *                 store.each(function(rec) {
+ *                     total += rec.get('data1');
+ *                 });
+ *                 this.setTitle(storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%');
+ *               }
+ *             },
+ *             highlight: {
+ *               segment: {
+ *                 margin: 20
+ *               }
+ *             },
+ *             label: {
+ *                 field: 'name',
+ *                 display: 'rotate',
+ *                 contrast: true,
+ *                 font: '18px Arial'
+ *             }
+ *         }]    
+ *     });
  * 
  * In this configuration we set `pie` as the type for the series, set an object with specific style properties for highlighting options 
  * (triggered when hovering elements). We also set true to `showInLegend` so all the pie slices can be represented by a legend item. 
@@ -48806,7 +49117,6 @@ Ext.define('Ext.chart.series.Line', {
  * and size through the `font` parameter. 
  * 
  * @xtype pie
- *
  */
 Ext.define('Ext.chart.series.Pie', {
 
@@ -49198,25 +49508,22 @@ Ext.define('Ext.chart.series.Pie', {
                         shadowAttr = shadowAttributes[shindex];
                         shadow = shadowGroups[shindex].getAt(i);
                         if (!shadow) {
-                            shadow = chart.surface.add(Ext.apply({},
-                            {
+                            shadow = chart.surface.add(Ext.apply({}, {
                                 type: 'path',
                                 group: shadowGroups[shindex],
                                 strokeLinejoin: "round"
-                            },
-                            rendererAttributes, shadowAttr));
+                            }, rendererAttributes, shadowAttr));
                         }
                         if (animate) {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply({},
-                            rendererAttributes, shadowAttr), i, store);
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply({}, rendererAttributes, shadowAttr), i, store);
                             me.onAnimate(shadow, {
-                                to: rendererAttributes
+                                to: shadowAttr
                             });
                         } else {
-                            rendererAttributes = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
+                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply(shadowAttr, {
                                 hidden: false
                             }), i, store);
-                            shadow.setAttributes(rendererAttributes, true);
+                            shadow.setAttributes(shadowAttr, true);
                         }
                         shadows.push(shadow);
                     }
@@ -49770,85 +50077,83 @@ Ext.define('Ext.chart.series.Pie', {
  * As with all other series, the Radar series must be appended in the *series* Chart array configuration. See the Chart 
  * documentation for more information. A typical configuration object for the radar series could be:
  * 
- {@img Ext.chart.series.Radar/Ext.chart.series.Radar.png Ext.chart.series.Radar chart series}  
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        theme:'Category2',
-        store: store,
-        axes: [{
-            type: 'Radial',
-            position: 'radial',
-            label: {
-                display: true
-            }
-        }],
-        series: [{
-            type: 'radar',
-            xField: 'name',
-            yField: 'data3',
-            showInLegend: true,
-            showMarkers: true,
-            markerConfig: {
-                radius: 5,
-                size: 5           
-            },
-            style: {
-                'stroke-width': 2,
-                fill: 'none'
-            }
-        },{
-            type: 'radar',
-            xField: 'name',
-            yField: 'data2',
-            showMarkers: true,
-            showInLegend: true,
-            markerConfig: {
-                radius: 5,
-                size: 5
-            },
-            style: {
-                'stroke-width': 2,
-                fill: 'none'
-            }
-        },{
-            type: 'radar',
-            xField: 'name',
-            yField: 'data5',
-            showMarkers: true,
-            showInLegend: true,
-            markerConfig: {
-                radius: 5,
-                size: 5
-            },
-            style: {
-                'stroke-width': 2,
-                fill: 'none'
-            }
-        }]    
-    });
-   </code></pre>
+ * {@img Ext.chart.series.Radar/Ext.chart.series.Radar.png Ext.chart.series.Radar chart series}  
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         theme:'Category2',
+ *         store: store,
+ *         axes: [{
+ *             type: 'Radial',
+ *             position: 'radial',
+ *             label: {
+ *                 display: true
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'radar',
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             showInLegend: true,
+ *             showMarkers: true,
+ *             markerConfig: {
+ *                 radius: 5,
+ *                 size: 5           
+ *             },
+ *             style: {
+ *                 'stroke-width': 2,
+ *                 fill: 'none'
+ *             }
+ *         },{
+ *             type: 'radar',
+ *             xField: 'name',
+ *             yField: 'data2',
+ *             showMarkers: true,
+ *             showInLegend: true,
+ *             markerConfig: {
+ *                 radius: 5,
+ *                 size: 5
+ *             },
+ *             style: {
+ *                 'stroke-width': 2,
+ *                 fill: 'none'
+ *             }
+ *         },{
+ *             type: 'radar',
+ *             xField: 'name',
+ *             yField: 'data5',
+ *             showMarkers: true,
+ *             showInLegend: true,
+ *             markerConfig: {
+ *                 radius: 5,
+ *                 size: 5
+ *             },
+ *             style: {
+ *                 'stroke-width': 2,
+ *                 fill: 'none'
+ *             }
+ *         }]    
+ *     });
  * 
  * In this configuration we add three series to the chart. Each of these series is bound to the same categories field, `name` but bound to different properties for each category,
  * `data1`, `data2` and `data3` respectively. All series display markers by having `showMarkers` enabled. The configuration for the markers of each series can be set by adding properties onto 
  * the markerConfig object. Finally we override some theme styling properties by adding properties to the `style` object.
  * 
  * @xtype radar
- * 
  */
 Ext.define('Ext.chart.series.Radar', {
 
@@ -50191,61 +50496,59 @@ Ext.define('Ext.chart.series.Radar', {
  * As with all other series, the Scatter Series must be appended in the *series* Chart array configuration. See the Chart 
  * documentation for more information on creating charts. A typical configuration object for the scatter could be:
  *
-{@img Ext.chart.series.Scatter/Ext.chart.series.Scatter.png Ext.chart.series.Scatter chart series}  
-  <pre><code>
-    var store = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
-        data: [
-            {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
-            {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
-            {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
-            {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
-            {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
-        ]
-    });
-    
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 500,
-        height: 300,
-        animate: true,
-        theme:'Category2',
-        store: store,
-        axes: [{
-            type: 'Numeric',
-            position: 'bottom',
-            fields: ['data1', 'data2', 'data3'],
-            title: 'Sample Values',
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'left',
-            fields: ['name'],
-            title: 'Sample Metrics'
-        }],
-        series: [{
-            type: 'scatter',
-            markerConfig: {
-                radius: 5,
-                size: 5
-            },
-            axis: 'left',
-            xField: 'name',
-            yField: 'data2'
-        }, {
-            type: 'scatter',
-            markerConfig: {
-                radius: 5,
-                size: 5
-            },
-            axis: 'left',
-            xField: 'name',
-            yField: 'data3'
-        }]   
-    });
-   </code></pre>
- 
+ * {@img Ext.chart.series.Scatter/Ext.chart.series.Scatter.png Ext.chart.series.Scatter chart series}  
+ *
+ *     var store = Ext.create('Ext.data.JsonStore', {
+ *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *         data: [
+ *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.chart.Chart', {
+ *         renderTo: Ext.getBody(),
+ *         width: 500,
+ *         height: 300,
+ *         animate: true,
+ *         theme:'Category2',
+ *         store: store,
+ *         axes: [{
+ *             type: 'Numeric',
+ *             position: 'bottom',
+ *             fields: ['data1', 'data2', 'data3'],
+ *             title: 'Sample Values',
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'Category',
+ *             position: 'left',
+ *             fields: ['name'],
+ *             title: 'Sample Metrics'
+ *         }],
+ *         series: [{
+ *             type: 'scatter',
+ *             markerConfig: {
+ *                 radius: 5,
+ *                 size: 5
+ *             },
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: 'data2'
+ *         }, {
+ *             type: 'scatter',
+ *             markerConfig: {
+ *                 radius: 5,
+ *                 size: 5
+ *             },
+ *             axis: 'left',
+ *             xField: 'name',
+ *             yField: 'data3'
+ *         }]   
+ *     });
  * 
  * In this configuration we add three different categories of scatter series. Each of them is bound to a different field of the same data store, 
  * `data1`, `data2` and `data3` respectively. All x-fields for the series must be the same field, in this case `name`. 
@@ -50253,7 +50556,6 @@ Ext.define('Ext.chart.series.Radar', {
  * axis to show the current values of the elements.
  * 
  * @xtype scatter
- * 
  */
 Ext.define('Ext.chart.series.Scatter', {
 
@@ -52718,6 +53020,11 @@ Ext.define('Ext.data.JsonP', {
      * key value pairs that will be sent along with the request.</div></li>
      * <li><b>timeout</b> : Number (Optional) <div class="sub-desc">See {@link #timeout}</div></li>
      * <li><b>callbackKey</b> : String (Optional) <div class="sub-desc">See {@link #callbackKey}</div></li>
+     * <li><b>callbackName</b> : String (Optional) <div class="sub-desc">The function name to use for this request.
+     * By default this name will be auto-generated: Ext.data.JsonP.callback1, Ext.data.JsonP.callback2, etc.
+     * Setting this option to "my_name" will force the function name to be Ext.data.JsonP.my_name.
+     * Use this if you want deterministic behavior, but be careful - the callbackName should be different
+     * in each JsonP request that you make.</div></li>
      * <li><b>disableCaching</b> : Boolean (Optional) <div class="sub-desc">See {@link #disableCaching}</div></li>
      * <li><b>disableCachingParam</b> : String (Optional) <div class="sub-desc">See {@link #disableCachingParam}</div></li>
      * <li><b>success</b> : Function (Optional) <div class="sub-desc">A function to execute if the request succeeds.</div></li>
@@ -52742,7 +53049,7 @@ Ext.define('Ext.data.JsonP', {
             disableCaching = Ext.isDefined(options.disableCaching) ? options.disableCaching : me.disableCaching, 
             cacheParam = options.disableCachingParam || me.disableCachingParam, 
             id = ++me.statics().requestCount, 
-            callbackName = 'callback' + id, 
+            callbackName = options.callbackName || 'callback' + id, 
             callbackKey = options.callbackKey || me.callbackKey, 
             timeout = Ext.isDefined(options.timeout) ? options.timeout : me.timeout, 
             params = Ext.apply({}, options.params), 
@@ -53468,7 +53775,8 @@ Ext.define('Ext.data.NodeInterface', {
                      * 2) When destroy on the tree is called
                      * 3) For destroying child nodes on a node
                      */
-                    var me = this;
+                    var me = this,
+                        options = me.destroyOptions;
                     
                     if (silent === true) {
                         me.clear(true);
@@ -53476,11 +53784,13 @@ Ext.define('Ext.data.NodeInterface', {
                             n.destroy(true);
                         });
                         me.childNodes = null;
+                        delete me.destroyOptions;
+                        me.callOverridden([options]);
                     } else {
+                        me.destroyOptions = silent;
+                        // overridden method will be called, since remove will end up calling destroy(true);
                         me.remove(true);
                     }
-
-                    me.callOverridden();
                 },
 
                 /**
@@ -55091,7 +55401,7 @@ Ext.define('Ext.data.TreeStore', {
                 original,
                 index;
 
-            /**
+            /*
              * Loop over each record returned from the server. Assume they are
              * returned in order of how they were sent. If we find a matching
              * record, replace it with the newly created one.
@@ -55159,7 +55469,7 @@ Ext.define('Ext.data.TreeStore', {
 
     // inherit docs
     removeAll: function() {
-        this.getRootNode().destroy();
+        this.getRootNode().destroy(true);
         this.fireEvent('clear', this);
     },
 
@@ -56669,45 +56979,34 @@ Ext.define('Ext.data.reader.Xml', {
     alias : 'reader.xml',
     
     /**
+     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
+     */
+
+    /**
      * @private
      * Creates a function to return some particular key of data from a response. The totalProperty and
      * successProperty are treated as special cases for type casting, everything else is just a simple selector.
      * @param {String} key
      * @return {Function}
      */
-
-    /**
-     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
-     */
-
-    createAccessor: function() {
-        var selectValue = function(expr, root){
+    createAccessor: function(expr) {
+        var me = this;
+        
+        if (Ext.isEmpty(expr)) {
+            return Ext.emptyFn;
+        }
+        
+        if (Ext.isFunction(expr)) {
+            return expr;
+        }
+        
+        return function(root) {
             var node = Ext.DomQuery.selectNode(expr, root),
-                val;
+                val = me.getNodeValue(node);
                 
-            
-            
+            return Ext.isEmpty(val) ? null : val;
         };
-
-        return function(expr) {
-            var me = this;
-            
-            if (Ext.isEmpty(expr)) {
-                return Ext.emptyFn;
-            }
-            
-            if (Ext.isFunction(expr)) {
-                return expr;
-            }
-            
-            return function(root) {
-                var node = Ext.DomQuery.selectNode(expr, root),
-                    val = me.getNodeValue(node);
-                    
-                return Ext.isEmpty(val) ? null : val;
-            };
-        };
-    }(),
+    },
     
     getNodeValue: function(node) {
         var val;
@@ -56821,8 +57120,13 @@ Ext.define('Ext.data.reader.Xml', {
  * @author Ed Spencer
  * @class Ext.data.writer.Xml
  * @extends Ext.data.writer.Writer
- * 
- * <p>Writer that outputs model data in XML format</p>
+
+This class is used to write {@link Ext.data.Model} data to the server in an XML format.
+The {@link #documentRoot} property is used to specify the root element in the XML document.
+The {@link #record} option is used to specify the element name for each record that will make
+up the XML document.
+
+ * @markdown
  */
 Ext.define('Ext.data.writer.Xml', {
     
@@ -57068,11 +57372,13 @@ p.disconnect();
 
     /**
      * Abstract methods for subclasses to implement.
+     * @method
      */
     connect: Ext.emptyFn,
     
     /**
      * Abstract methods for subclasses to implement.
+     * @method
      */
     disconnect: Ext.emptyFn
 });
@@ -57528,7 +57834,7 @@ TestAction.multiply(
     
     /**
      * @cfg {String} url
-     * <b>Required<b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
+     * <b>Required</b>. The url to connect to the {@link Ext.direct.Manager} server-side router. 
      */
     
     /**
@@ -58223,7 +58529,7 @@ Ext.define('Ext.draw.SpriteDD', {
  * A Sprite is an object rendered in a Drawing surface. There are different options and types of sprites.
  * The configuration of a Sprite is an object with the following properties:
  *
- * - **type** - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square'. 
+ * - **type** - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'. 
  * - **width** - (Number) Used in rectangle sprites, the width of the rectangle.
  * - **height** - (Number) Used in rectangle sprites, the height of the rectangle.
  * - **size** - (Number) Used in square sprites, the dimension of the square.
@@ -58406,7 +58712,7 @@ Ext.define('Ext.draw.Sprite', {
         me.draggable = true;
         //create element if it doesn't exist.
         if (!me.el) {
-            me.surface.createSprite(me);
+            me.surface.createSpriteElement(me);
         }
         me.dd = Ext.create('Ext.draw.SpriteDD', me, Ext.isBoolean(me.draggable) ? null : me.draggable);
         me.on('beforedestroy', me.dd.destroy, me.dd);
@@ -58429,6 +58735,7 @@ Ext.define('Ext.draw.Sprite', {
             spriteAttrs = me.attr,
             attr, i, translate, translation, rotate, rotation, scale, scaling;
 
+        attrs = Ext.apply({}, attrs);
         for (attr in custom) {
             if (attrs.hasOwnProperty(attr) && typeof custom[attr] == "function") {
                 Ext.apply(attrs, custom[attr].apply(me, [].concat(attrs[attr])));
@@ -59068,8 +59375,8 @@ Ext.define('Ext.draw.engine.Svg', {
         attrs = me.scrubAttrs(sprite) || {};
 
         // if (sprite.dirtyPath) {
-        sprite.bbox.plain = 0;
-        sprite.bbox.transform = 0;
+            sprite.bbox.plain = 0;
+            sprite.bbox.transform = 0;
             if (sprite.type == "circle" || sprite.type == "ellipse") {
                 attrs.cx = attrs.cx || attrs.x;
                 attrs.cy = attrs.cy || attrs.y;
@@ -59078,9 +59385,13 @@ Ext.define('Ext.draw.engine.Svg', {
                 attrs.rx = attrs.ry = attrs.r;
             }
             else if (sprite.type == "path" && attrs.d) {
-                attrs.d = Ext.draw.Draw.pathToAbsolute(attrs.d);
+                attrs.d = Ext.draw.Draw.pathToString(Ext.draw.Draw.pathToAbsolute(attrs.d));
+                
             }
             sprite.dirtyPath = false;
+        // }
+        // else {
+        //     delete attrs.d;
         // }
 
         if (attrs['clip-rect']) {
@@ -59102,7 +59413,7 @@ Ext.define('Ext.draw.engine.Svg', {
         }
         for (key in attrs) {
             if (attrs.hasOwnProperty(key) && attrs[key] != null) {
-                el.dom.setAttribute(key, String(attrs[key]));
+                el.dom.setAttribute(key, attrs[key]);
             }
         }
         if (sprite.type == 'text') {
@@ -60340,7 +60651,7 @@ Ext.define('Ext.layout.container.AbstractFit', {
         layout:'fit',
         items: {
             title: 'Inner Panel',
-            html: '<p>This is the inner panel content</p>',
+            html: 'This is the inner panel content',
             bodyPadding: 20,
             border: false
         },
@@ -60691,24 +61002,44 @@ Ext.define('Ext.selection.Model', {
         }
     },
 
-    selectAll: function(silent) {
-        var selections = this.store.getRange(),
+    /**
+     * Select all records in the view.
+     * @param {Boolean} suppressEvent True to suppress any selects event
+     */
+    selectAll: function(suppressEvent) {
+        var me = this,
+            selections = me.store.getRange(),
             i = 0,
-            len = selections.length;
+            len = selections.length,
+            start = me.getSelection().length;
             
+        me.bulkChange = true;
         for (; i < len; i++) {
-            this.doSelect(selections[i], true, silent);
+            me.doSelect(selections[i], true, suppressEvent);
         }
+        delete me.bulkChange;
+        // fire selection change only if the number of selections differs
+        me.maybeFireSelectionChange(me.getSelection().length !== start);
     },
 
-    deselectAll: function() {
-        var selections = this.getSelection(),
+    /**
+     * Deselect all records in the view.
+     * @param {Boolean} suppressEvent True to suppress any deselect events
+     */
+    deselectAll: function(suppressEvent) {
+        var me = this,
+            selections = me.getSelection(),
             i = 0,
-            len = selections.length;
+            len = selections.length,
+            start = me.getSelection().length;
             
+        me.bulkChange = true;
         for (; i < len; i++) {
-            this.doDeselect(selections[i]);
+            me.doDeselect(selections[i], suppressEvent);
         }
+        delete me.bulkChange;
+        // fire selection change only if the number of selections differs
+        me.maybeFireSelectionChange(me.getSelection().length !== start);
     },
 
     // Provides differentiation of logic between MULTI, SIMPLE and SINGLE
@@ -60865,7 +61196,7 @@ Ext.define('Ext.selection.Model', {
         len = records.length;
         if (!keepExisting && selected.getCount() > 0) {
             change = true;
-            me.doDeselect(me.getSelection(), true);
+            me.doDeselect(me.getSelection(), suppressEvent);
         }
 
         for (; i < len; i++) {
@@ -60964,8 +61295,8 @@ Ext.define('Ext.selection.Model', {
     // fire selection change as long as true is not passed
     // into maybeFireSelectionChange
     maybeFireSelectionChange: function(fireEvent) {
-        if (fireEvent) {
-            var me = this;
+        var me = this;
+        if (fireEvent && !me.bulkChange) {
             me.fireEvent('selectionchange', me, me.getSelection());
         }
     },
@@ -61081,6 +61412,11 @@ Ext.define('Ext.selection.Model', {
         me.maybeFireSelectionChange(change);
     },
 
+    /**
+     * A fast reset of the selections without firing events, updating the ui, etc.
+     * For private usage only.
+     * @private
+     */
     clearSelections: function() {
         // reset the entire selection to nothing
         var me = this;
@@ -61565,6 +61901,7 @@ Ext.define('Ext.util.Point', {
      * Or the x value is using the two argument form.
      * @param {Number} The y value unless using an Offset object.
      * @return {Ext.util.Region} this This Region
+     * @method
      */
     this.prototype.translate = Ext.util.Region.prototype.translateBy;
 });
@@ -62356,7 +62693,9 @@ Ext.define('Ext.view.AbstractView', {
              * @return {Number} The node count
              */
             getSelectionCount : function(){
-                console.warn("DataView: getSelectionCount will be removed, please interact with the Ext.selection.DataViewModel");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: getSelectionCount will be removed, please interact with the Ext.selection.DataViewModel");
+                }
                 return this.selModel.getSelection().length;
             },
         
@@ -62365,18 +62704,24 @@ Ext.define('Ext.view.AbstractView', {
              * @return {Array} An array of {@link Ext.data.Model} objects
              */
             getSelectedRecords : function(){
-                console.warn("DataView: getSelectedRecords will be removed, please interact with the Ext.selection.DataViewModel");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: getSelectedRecords will be removed, please interact with the Ext.selection.DataViewModel");
+                }
                 return this.selModel.getSelection();
             },
     
             select: function(records, keepExisting, supressEvents) {
-                console.warn("DataView: select will be removed, please access select through a DataView's SelectionModel, ie: view.getSelectionModel().select()");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: select will be removed, please access select through a DataView's SelectionModel, ie: view.getSelectionModel().select()");
+                }
                 var sm = this.getSelectionModel();
                 return sm.select.apply(sm, arguments);
             },
             
             clearSelections: function() {
-                console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");
+                if (Ext.global.console) {
+                    Ext.global.console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");
+                }
                 var sm = this.getSelectionModel();
                 return sm.deselectAll();
             }
@@ -62615,9 +62960,12 @@ Ext.define('Ext.Action', {
 
     // private
     callEach : function(fnName, args){
-        var cs = this.items;
-        for(var i = 0, len = cs.length; i < len; i++){
-            cs[i][fnName].apply(cs[i], args);
+        var items = this.items,
+            i = 0,
+            len = items.length;
+            
+        for(; i < len; i++){
+            items[i][fnName].apply(items[i], args);
         }
     },
 
@@ -62629,7 +62977,7 @@ Ext.define('Ext.Action', {
 
     // private
     removeComponent : function(comp){
-        this.items.remove(comp);
+        Ext.Array.remove(this.items, comp);
     },
 
     /**
@@ -63204,6 +63552,9 @@ Ext.define('Ext.Img', {
             src: this.src
         };
     },
+    
+    // null out this function, we can't set any html inside the image
+    initRenderTpl: Ext.emptyFn,
     
     /**
      * Updates the {@link #src} of the image
@@ -64395,25 +64746,25 @@ Ext.define('Ext.button.Split', {
  * {@img Ext.button.Cycle/Ext.button.Cycle.png Ext.button.Cycle component}
  * Example usage:
  * <pre><code>
-    Ext.create('Ext.button.Cycle', {
-        showText: true,
-        prependText: 'View as ',
-        renderTo: Ext.getBody(),
-        menu: {
-            id: 'view-type-menu',
-            items: [{
-                text:'text only',
-                iconCls:'view-text',
-                checked:true
-            },{
-                text:'HTML',
-                iconCls:'view-html'
-            }]
-        },
-        changeHandler:function(cycleBtn, activeItem){
-            Ext.Msg.alert('Change View', activeItem.text);
-        }
-    });
+Ext.create('Ext.button.Cycle', {
+    showText: true,
+    prependText: 'View as ',
+    renderTo: Ext.getBody(),
+    menu: {
+        id: 'view-type-menu',
+        items: [{
+            text:'text only',
+            iconCls:'view-text',
+            checked:true
+        },{
+            text:'HTML',
+            iconCls:'view-html'
+        }]
+    },
+    changeHandler:function(cycleBtn, activeItem){
+        Ext.Msg.alert('Change View', activeItem.text);
+    }
+});
 </code></pre>
  * @constructor
  * Create a new split button
@@ -65244,6 +65595,13 @@ Ext.define('Ext.dd.DragTracker', {
             'mousemove',
 
             /**
+             * @event beforestart
+             * @param {Object} this
+             * @param {Object} e event object
+             */
+            'beforedragstart',
+
+            /**
              * @event dragstart
              * @param {Object} this
              * @param {Object} e event object
@@ -65369,27 +65727,30 @@ Ext.define('Ext.dd.DragTracker', {
         this.startXY = this.lastXY = e.getXY();
         this.startRegion = Ext.fly(this.dragTarget).getRegion();
 
-        if (this.fireEvent('mousedown', this, e) !== false && this.onBeforeStart(e) !== false) {
+        if (this.fireEvent('mousedown', this, e) === false ||
+            this.fireEvent('beforedragstart', this, e) === false ||
+            this.onBeforeStart(e) === false) {
+            return;
+        }
 
-            // Track when the mouse is down so that mouseouts while the mouse is down are not processed.
-            // The onMouseOut method will only ever be called after mouseup.
-            this.mouseIsDown = true;
+        // Track when the mouse is down so that mouseouts while the mouse is down are not processed.
+        // The onMouseOut method will only ever be called after mouseup.
+        this.mouseIsDown = true;
 
-            // Flag for downstream DragTracker instances that the mouse is being tracked.
-            e.dragTracked = true;
+        // Flag for downstream DragTracker instances that the mouse is being tracked.
+        e.dragTracked = true;
 
-            if (this.preventDefault !== false) {
-                e.preventDefault();
-            }
-            Ext.getDoc().on({
-                scope: this,
-                mouseup: this.onMouseUp,
-                mousemove: this.onMouseMove,
-                selectstart: this.stopSelect
-            });
-            if (this.autoStart) {
-                this.timer =  Ext.defer(this.triggerStart, this.autoStart === true ? 1000 : this.autoStart, this, [e]);
-            }
+        if (this.preventDefault !== false) {
+            e.preventDefault();
+        }
+        Ext.getDoc().on({
+            scope: this,
+            mouseup: this.onMouseUp,
+            mousemove: this.onMouseMove,
+            selectstart: this.stopSelect
+        });
+        if (this.autoStart) {
+            this.timer =  Ext.defer(this.triggerStart, this.autoStart === true ? 1000 : this.autoStart, this, [e]);
         }
     },
 
@@ -65558,7 +65919,7 @@ Ext.define('Ext.dd.DragTracker', {
     },
 
     getXY : function(constrain){
-        return constrain ? this.constrainModes[constrain].call(this, this.lastXY) : this.lastXY;
+        return constrain ? this.constrainModes[constrain](this, this.lastXY) : this.lastXY;
     },
 
     /**
@@ -65585,9 +65946,9 @@ Ext.define('Ext.dd.DragTracker', {
 
     constrainModes: {
         // Constrain the passed point to within the constrain region
-        point: function(xy) {
-            var dr = this.dragRegion,
-                constrainTo = this.getConstrainRegion();
+        point: function(me, xy) {
+            var dr = me.dragRegion,
+                constrainTo = me.getConstrainRegion();
 
             // No constraint
             if (!constrainTo) {
@@ -65602,10 +65963,10 @@ Ext.define('Ext.dd.DragTracker', {
         },
 
         // Constrain the dragTarget to within the constrain region. Return the passed xy adjusted by the same delta.
-        dragTarget: function(xy) {
-            var s = this.startXY,
-                dr = this.startRegion.copy(),
-                constrainTo = this.getConstrainRegion(),
+        dragTarget: function(me, xy) {
+            var s = me.startXY,
+                dr = me.startRegion.copy(),
+                constrainTo = me.getConstrainRegion(),
                 adjust;
 
             // No constraint
@@ -65616,7 +65977,7 @@ Ext.define('Ext.dd.DragTracker', {
             // See where the passed XY would put the dragTarget if translated by the unconstrained offset.
             // If it overflows, we constrain the passed XY to bring the potential
             // region back within the boundary.
-            dr.translateBy.apply(dr, [xy[0]-s[0], xy[1]-s[1]]);
+            dr.translateBy(xy[0]-s[0], xy[1]-s[1]);
 
             // Constrain the X coordinate by however much the dragTarget overflows
             if (dr.right > constrainTo.right) {
@@ -65627,7 +65988,7 @@ Ext.define('Ext.dd.DragTracker', {
                 xy[0] += (constrainTo.left - dr.left);      // overflowed the left
             }
 
-            // Constrain the X coordinate by however much the dragTarget overflows
+            // Constrain the Y coordinate by however much the dragTarget overflows
             if (dr.bottom > constrainTo.bottom) {
                 xy[1] += adjust = (constrainTo.bottom - dr.bottom);  // overflowed the bottom
                 dr.top += adjust;
@@ -67212,7 +67573,7 @@ Ext.define('Ext.form.action.Submit', {
                 tag: 'input',
                 type: 'hidden',
                 name: name,
-                value: val
+                value: Ext.String.htmlEncode(val)
             });
         }
 
@@ -67405,7 +67766,7 @@ Ext.define('Ext.util.ComponentDragger', {
             comp = (me.proxy && !me.comp.liveDrag) ? me.proxy : me.comp,
             offset = me.getOffset(me.constrain || me.constrainDelegate ? 'dragTarget' : null);
 
-        comp.setPosition.apply(comp, [me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]]);
+        comp.setPosition(me.startPosition[0] + offset[0], me.startPosition[1] + offset[1]);
     },
 
     onEnd: function(e) {
@@ -68246,6 +68607,7 @@ Ext.define('Ext.form.field.Field', {
      * will not prevent submission of forms submitted with the {@link Ext.form.action.Submit#clientValidation}
      * option set.</p>
      * @param {String/Array} errors The error message(s) for the field.
+     * @method
      */
     markInvalid: Ext.emptyFn,
 
@@ -68256,6 +68618,7 @@ Ext.define('Ext.form.field.Field', {
      * return <code>true</code> if the value does not <i>pass</i> validation. So simply clearing a field's errors
      * will not necessarily allow submission of forms submitted with the {@link Ext.form.action.Submit#clientValidation}
      * option set.</p>
+     * @method
      */
     clearInvalid: Ext.emptyFn
 
@@ -68317,6 +68680,7 @@ Ext.define('Ext.layout.component.field.Field', {
             autoHeight: autoHeight,
             width: autoWidth ? owner.getBodyNaturalWidth() : width, //always give a pixel width
             height: height,
+            setOuterWidth: false, //whether the outer el width should be set to the calculated width
 
             // insets for the bodyEl from each side of the component layout area
             insets: {
@@ -68354,9 +68718,9 @@ Ext.define('Ext.layout.component.field.Field', {
         // perform sizing of the elements based on the final dimensions and insets
         if (autoWidth && autoHeight) {
             // Don't use setTargetSize if auto-sized, so the calculated size is not reused next time
-            me.setElementSize(owner.el, info.width, info.height);
+            me.setElementSize(owner.el, (info.setOuterWidth ? info.width : undef), info.height);
         } else {
-            me.setTargetSize(info.width, info.height);
+            me.setTargetSize((!autoWidth || info.setOuterWidth ? info.width : undef), info.height);
         }
         me.sizeBody(info);
 
@@ -68446,6 +68810,8 @@ Ext.define('Ext.layout.component.field.Field', {
                     if (info.autoWidth) {
                         info.width += (!owner.labelEl ? 0 : owner.labelWidth + owner.labelPad);
                     }
+                    // Must set outer width to prevent field from wrapping below floated label
+                    info.setOuterWidth = true;
                 },
                 adjustHorizInsets: function(owner, info) {
                     if (owner.labelEl) {
@@ -68913,39 +69279,44 @@ Ext.define('Ext.layout.component.field.TextArea', {
 /**
  * @class Ext.layout.container.Anchor
  * @extends Ext.layout.container.Container
- * <p>This is a layout that enables anchoring of contained elements relative to the container's dimensions.
+ * 
+ * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
- * <b><tt>{@link #anchor}</tt></b> rules.</p>
- * <p>This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
+ * <b><tt>{@link #anchor}</tt></b> rules.
+ *
+ * This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
  * config, and should generally not need to be created directly via the new keyword.</p>
- * <p>AnchorLayout does not have any direct config options (other than inherited ones). By default,
+ * 
+ * AnchorLayout does not have any direct config options (other than inherited ones). By default,
  * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
  * container using the AnchorLayout can supply an anchoring-specific config property of <b>anchorSize</b>.
  * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
  * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
  * logic if necessary.  
+ *
  * {@img Ext.layout.container.Anchor/Ext.layout.container.Anchor.png Ext.layout.container.Anchor container layout}
+ *
  * For example:
-	Ext.create('Ext.Panel', {
-		width: 500,
-		height: 400,
-		title: "AnchorLayout Panel",
-		layout: 'anchor',
-		renderTo: Ext.getBody(),
-		items: [{
-			xtype: 'panel',
-			title: '75% Width and 20% Height',
-			anchor: '75% 20%'
-		},{
-			xtype: 'panel',
-			title: 'Offset -300 Width & -200 Height',
-			anchor: '-300 -200'		
-		},{
-			xtype: 'panel',
-			title: 'Mixed Offset and Percent',
-			anchor: '-250 20%'
-		}]
-	});
+ *     Ext.create('Ext.Panel', {
+ *         width: 500,
+ *         height: 400,
+ *         title: "AnchorLayout Panel",
+ *         layout: 'anchor',
+ *         renderTo: Ext.getBody(),
+ *         items: [{
+ *             xtype: 'panel',
+ *             title: '75% Width and 20% Height',
+ *             anchor: '75% 20%'
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Offset -300 Width & -200 Height',
+ *             anchor: '-300 -200'		
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Mixed Offset and Percent',
+ *             anchor: '-250 20%'
+ *         }]
+ *     });
  */
 
 Ext.define('Ext.layout.container.Anchor', {
@@ -69033,7 +69404,7 @@ anchor: '-50 75%'
             len = components.length,
             boxes = [],
             box, newTargetSize, anchorWidth, anchorHeight, component, anchorSpec, calcWidth, calcHeight,
-            anchorsArray, anchor, i, el;
+            anchorsArray, anchor, i, el, cleaner;
 
         if (ownerWidth < 20 && ownerHeight < 20) {
             return;
@@ -69066,6 +69437,7 @@ anchor: '-50 75%'
 
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
+            cleaner = Ext.core.Element.getRightMarginFixCleaner(target);
             target.addCls(Ext.baseCSSPrefix + 'inline-children');
         }
 
@@ -69108,6 +69480,7 @@ anchor: '-50 75%'
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
             target.removeCls(Ext.baseCSSPrefix + 'inline-children');
+            cleaner();
         }
 
         for (i = 0; i < len; i++) {
@@ -69639,7 +70012,15 @@ Ext.define('Ext.window.Window', {
         if (me.closable) {
             keyMap = me.getKeyMap();
             keyMap.on(27, me.onEsc, me);
-            keyMap.disable();
+
+            //if (hidden) { ? would be consistent w/before/afterShow...
+                keyMap.disable();
+            //}
+        }
+
+        if (!hidden) {
+            me.syncMonitorWindowResize();
+            me.doConstrain();
         }
     },
 
@@ -69656,33 +70037,40 @@ Ext.define('Ext.window.Window', {
         if (!me.header) {
             me.updateHeader(true);
         }
-
-        ddConfig = Ext.applyIf({
-            el: me.el,
-            delegate: '#' + me.header.id
-        }, me.draggable);
-
-        // Add extra configs if Window is specified to be constrained
-        if (me.constrain || me.constrainHeader) {
-            ddConfig.constrain = me.constrain;
-            ddConfig.constrainDelegate = me.constrainHeader;
-            ddConfig.constrainTo = me.constrainTo || me.container;
-        }
-
-        /**
-         * <p>If this Window is configured {@link #draggable}, this property will contain
-         * an instance of {@link Ext.util.ComponentDragger} (A subclass of {@link Ext.dd.DragTracker DragTracker})
-         * which handles dragging the Window's DOM Element, and constraining according to the {@link #constrain}
-         * and {@link #constrainHeader} .</p>
-         * <p>This has implementations of <code>onBeforeStart</code>, <code>onDrag</code> and <code>onEnd</code>
-         * which perform the dragging action. If extra logic is needed at these points, use
-         * {@link Ext.Function#createInterceptor createInterceptor} or {@link Ext.Function#createSequence createSequence} to
-         * augment the existing implementations.</p>
-         * @type Ext.util.ComponentDragger
-         * @property dd
+        
+        /*
+         * Check the header here again. If for whatever reason it wasn't created in
+         * updateHeader (preventHeader) then we'll just ignore the rest since the
+         * header acts as the drag handle.
          */
-        me.dd = Ext.create('Ext.util.ComponentDragger', this, ddConfig);
-        me.relayEvents(me.dd, ['dragstart', 'drag', 'dragend']);
+        if (me.header) {
+            ddConfig = Ext.applyIf({
+                el: me.el,
+                delegate: '#' + me.header.id
+            }, me.draggable);
+
+            // Add extra configs if Window is specified to be constrained
+            if (me.constrain || me.constrainHeader) {
+                ddConfig.constrain = me.constrain;
+                ddConfig.constrainDelegate = me.constrainHeader;
+                ddConfig.constrainTo = me.constrainTo || me.container;
+            }
+
+            /**
+             * <p>If this Window is configured {@link #draggable}, this property will contain
+             * an instance of {@link Ext.util.ComponentDragger} (A subclass of {@link Ext.dd.DragTracker DragTracker})
+             * which handles dragging the Window's DOM Element, and constraining according to the {@link #constrain}
+             * and {@link #constrainHeader} .</p>
+             * <p>This has implementations of <code>onBeforeStart</code>, <code>onDrag</code> and <code>onEnd</code>
+             * which perform the dragging action. If extra logic is needed at these points, use
+             * {@link Ext.Function#createInterceptor createInterceptor} or {@link Ext.Function#createSequence createSequence} to
+             * augment the existing implementations.</p>
+             * @type Ext.util.ComponentDragger
+             * @property dd
+             */
+            me.dd = Ext.create('Ext.util.ComponentDragger', this, ddConfig);
+            me.relayEvents(me.dd, ['dragstart', 'drag', 'dragend']);
+        }
     },
 
     // private
@@ -69770,8 +70158,7 @@ Ext.define('Ext.window.Window', {
 
     // private
     afterShow: function(animateTarget) {
-        var me = this,
-            size;
+        var me = this;
 
         // Perform superclass's afterShow tasks
         // Which might include animating a proxy from an animTarget
@@ -69781,10 +70168,9 @@ Ext.define('Ext.window.Window', {
             me.fitContainer();
         }
 
-        if (me.monitorResize || me.constrain || me.constrainHeader) {
-            Ext.EventManager.onWindowResize(me.onWindowResize, me);
-        }
+        me.syncMonitorWindowResize();
         me.doConstrain();
+
         if (me.keyMap) {
             me.keyMap.enable();
         }
@@ -69809,9 +70195,7 @@ Ext.define('Ext.window.Window', {
         var me = this;
 
         // No longer subscribe to resizing now that we're hidden
-        if (me.monitorResize || me.constrain || me.constrainHeader) {
-            Ext.EventManager.removeResizeListener(me.onWindowResize, me);
-        }
+        me.syncMonitorWindowResize();
 
         // Turn off keyboard handling once window is hidden
         if (me.keyMap) {
@@ -69899,6 +70283,7 @@ Ext.define('Ext.window.Window', {
             me.el.addCls(Ext.baseCSSPrefix + 'window-maximized');
             me.container.addCls(Ext.baseCSSPrefix + 'window-maximized-ct');
 
+            me.syncMonitorWindowResize();
             me.setPosition(0, 0);
             me.fitContainer();
             me.fireEvent('maximize', me);
@@ -69951,10 +70336,38 @@ Ext.define('Ext.window.Window', {
 
             me.container.removeCls(Ext.baseCSSPrefix + 'window-maximized-ct');
 
+            me.syncMonitorWindowResize();
             me.doConstrain();
             me.fireEvent('restore', me);
         }
         return me;
+    },
+
+    /**
+     * Synchronizes the presence of our listener for window resize events. This method
+     * should be called whenever this status might change.
+     * @private
+     */
+    syncMonitorWindowResize: function () {
+        var me = this,
+            currentlyMonitoring = me._monitoringResize,
+            // all the states where we should be listening to window resize:
+            yes = me.monitorResize || me.constrain || me.constrainHeader || me.maximized,
+            // all the states where we veto this:
+            veto = me.hidden || me.destroying || me.isDestroyed;
+
+        if (yes && !veto) {
+            // we should be listening...
+            if (!currentlyMonitoring) {
+                // but we aren't, so set it up
+                Ext.EventManager.onWindowResize(me.onWindowResize, me);
+                me._monitoringResize = true;
+            }
+        } else if (currentlyMonitoring) {
+            // we should not be listening, but we are, so tear it down
+            Ext.EventManager.removeResizeListener(me.onWindowResize, me);
+            me._monitoringResize = false;
+        }
     },
 
     /**
@@ -71654,7 +72067,7 @@ Ext.define('Ext.window.MessageBox', {
         'Ext.layout.container.HBox',
         'Ext.ProgressBar'
     ],
-    
+
     alternateClassName: 'Ext.MessageBox',
 
     alias: 'widget.messagebox',
@@ -71776,7 +72189,7 @@ Ext.define('Ext.window.MessageBox', {
         wait: 'Loading...',
         alert: 'Attention'
     },
-    
+
     iconHeight: 35,
 
     makeButton: function(btnIdx) {
@@ -71900,7 +72313,7 @@ Ext.define('Ext.window.MessageBox', {
     onPromptKey: function(textField, e) {
         var me = this,
             blur;
-            
+
         if (e.keyCode === Ext.EventObject.RETURN || e.keyCode === 10) {
             if (me.msgButtons.ok.isVisible()) {
                 blur = true;
@@ -71909,7 +72322,7 @@ Ext.define('Ext.window.MessageBox', {
                 me.msgButtons.yes.handler.call(me, me.msgButtons.yes);
                 blur = true;
             }
-            
+
             if (blur) {
                 me.textField.blur();
             }
@@ -71931,7 +72344,7 @@ Ext.define('Ext.window.MessageBox', {
 
         // Default to allowing the Window to take focus.
         delete me.defaultFocus;
-        
+
         // clear any old animateTarget
         me.animateTarget = cfg.animateTarget || undefined;
 
@@ -71947,6 +72360,7 @@ Ext.define('Ext.window.MessageBox', {
             me.width = initialWidth;
             me.render(Ext.getBody());
         } else {
+            me.hidden = false;
             me.setSize(initialWidth, me.maxHeight);
         }
         me.setPosition(-10000, -10000);
@@ -72113,7 +72527,7 @@ icon: Ext.window.MessageBox.INFO
      */
     show: function(cfg) {
         var me = this;
-            
+
         me.reconfigure(cfg);
         me.addCls(cfg.cls);
         if (cfg.animateTarget) {
@@ -72125,11 +72539,11 @@ icon: Ext.window.MessageBox.INFO
         }
         return me;
     },
-    
+
     afterShow: function(){
         if (this.animateTarget) {
             this.center();
-        }    
+        }
         this.callParent(arguments);
     },
 
@@ -72141,7 +72555,7 @@ icon: Ext.window.MessageBox.INFO
         if (!Ext.isDefined(me.frameWidth)) {
             me.frameWidth = me.el.getWidth() - me.body.getWidth();
         }
-        
+
         // reset to the original dimensions
         icon.setHeight(iconHeight);
 
@@ -72434,7 +72848,7 @@ Ext.define('Ext.form.Basic', {
     extend: 'Ext.util.Observable',
     alternateClassName: 'Ext.form.BasicForm',
     requires: ['Ext.util.MixedCollection', 'Ext.form.action.Load', 'Ext.form.action.Submit',
-               'Ext.window.MessageBox', 'Ext.data.Errors'],
+               'Ext.window.MessageBox', 'Ext.data.Errors', 'Ext.util.DelayedTask'],
 
     constructor: function(owner, config) {
         var me = this,
@@ -72460,6 +72874,8 @@ Ext.define('Ext.form.Basic', {
         if (Ext.isString(me.paramOrder)) {
             me.paramOrder = me.paramOrder.split(/[\s,|]/);
         }
+
+        me.checkValidityTask = Ext.create('Ext.util.DelayedTask', me.checkValidity, me);
 
         me.addEvents(
             /**
@@ -72632,6 +73048,7 @@ paramOrder: 'param1|param2|param'
      */
     destroy: function() {
         this.clearListeners();
+        this.checkValidityTask.cancel();
     },
 
     /**
@@ -72668,9 +73085,10 @@ paramOrder: 'param1|param2|param'
         // Flush the cached list of formBind components
         delete this._boundItems;
 
-        // Check form bind, but only after initial add
+        // Check form bind, but only after initial add. Batch it to prevent excessive validation
+        // calls when many fields are being added at once.
         if (me.initialized) {
-            me.onValidityChange(!me.hasInvalidField());
+            me.checkValidityTask.delay(10);
         }
     },
 
@@ -73915,28 +74333,28 @@ Ext.define('Ext.form.FieldContainer', {
  * {@img Ext.form.RadioGroup/Ext.form.RadioGroup.png Ext.form.RadioGroup component}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.form.Panel', {
-        title: 'RadioGroup Example',
-        width: 300,
-        height: 125,
-        bodyPadding: 10,
-        renderTo: Ext.getBody(),        
-        items:[{            
-            xtype: 'radiogroup',
-            fieldLabel: 'Two Columns',
-            // Arrange radio buttons into two columns, distributed vertically
-            columns: 2,
-            vertical: true,
-            items: [
-                {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
-                {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
-                {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
-                {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
-                {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
-                {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
-            ]
-        }]
-    });
+Ext.create('Ext.form.Panel', {
+    title: 'RadioGroup Example',
+    width: 300,
+    height: 125,
+    bodyPadding: 10,
+    renderTo: Ext.getBody(),        
+    items:[{            
+        xtype: 'radiogroup',
+        fieldLabel: 'Two Columns',
+        // Arrange radio buttons into two columns, distributed vertically
+        columns: 2,
+        vertical: true,
+        items: [
+            {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
+            {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
+            {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
+            {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
+            {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
+            {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
+        ]
+    }]
+});
  * </code></pre>
  * @constructor
  * Creates a new CheckboxGroup
@@ -74656,8 +75074,7 @@ Ext.define('Ext.form.FieldSet', {
      */
     setExpanded: function(expanded) {
         var me = this,
-            checkboxCmp = me.checkboxCmp,
-            toggleCmp = me.toggleCmp;
+            checkboxCmp = me.checkboxCmp;
 
         expanded = !!expanded;
         
@@ -74671,6 +75088,10 @@ Ext.define('Ext.form.FieldSet', {
             me.addCls(me.baseCls + '-collapsed');
         }
         me.collapsed = !expanded;
+        if (expanded) {
+            // ensure subitems will get rendered and layed out when expanding
+            me.getComponentLayout().childrenChanged = true;
+        }
         me.doComponentLayout();
         return me;
     },
@@ -75592,7 +76013,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(true);
                     checkbox2.setValue(true);
                     checkbox3.setValue(true);
@@ -75604,7 +76025,7 @@ __Example usage:__
                     var checkbox1 = Ext.getCmp('checkbox1'),
                         checkbox2 = Ext.getCmp('checkbox2'),
                         checkbox3 = Ext.getCmp('checkbox3');
-    
+
                     checkbox1.setValue(false);
                     checkbox2.setValue(false);
                     checkbox3.setValue(false);
@@ -75805,11 +76226,9 @@ Ext.define('Ext.form.field.Checkbox', {
      * @return {Boolean/null} True if checked; otherwise either the {@link #uncheckedValue} or null.
      */
     getSubmitValue: function() {
-        return this.checked ? this.inputValue : (this.uncheckedValue || null);
-    },
-
-    getModelData: function() {
-        return this.getSubmitData();
+        var unchecked = this.uncheckedValue,
+            uncheckedVal = Ext.isDefined(unchecked) ? unchecked : null;
+        return this.checked ? this.inputValue : uncheckedVal;
     },
 
     /**
@@ -75974,51 +76393,52 @@ Ext.define('Ext.layout.component.field.Trigger', {
  * mouseover, mouseout, etc. as well as a built-in selection model. <b>In order to use these features, an {@link #itemSelector}
  * config must be provided for the DataView to determine what nodes it will be working with.</b>
  *
- * <p>The example below binds a DataView to a {@link Ext.data.Store} and renders it into an {@link Ext.panel.Panel}.</p>
+ * The example below binds a DataView to a {@link Ext.data.Store} and renders it into an {@link Ext.panel.Panel}.
+ *
  * {@img Ext.DataView/Ext.DataView.png Ext.DataView component}
- * <pre><code>
-    Ext.regModel('Image', {
-        Fields: [
-            {name:'src', type:'string'},
-            {name:'caption', type:'string'}
-        ]
-    });
-    
-    Ext.create('Ext.data.Store', {
-        id:'imagesStore',
-        model: 'Image',
-        data: [
-            {src:'http://www.sencha.com/img/20110215-feat-drawing.png', caption:'Drawing & Charts'},
-            {src:'http://www.sencha.com/img/20110215-feat-data.png', caption:'Advanced Data'},
-            {src:'http://www.sencha.com/img/20110215-feat-html5.png', caption:'Overhauled Theme'},
-            {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}            
-        ]
-    });
-    
-    var imageTpl = new Ext.XTemplate(
-        '<tpl for=".">',
-            '<div style="thumb-wrap">',
-              '<img src="{src}" />',
-              '<br/><span>{caption}</span>',
-            '</div>',
-        '</tpl>'
-    );
-    
-    Ext.create('Ext.DataView', {
-        store: Ext.data.StoreManager.lookup('imagesStore'),
-        tpl: imageTpl,
-        itemSelector: 'div.thumb-wrap',
-        emptyText: 'No images available',
-        renderTo: Ext.getBody()
-    });
- * </code></pre>
+ *
+ *     Ext.regModel('Image', {
+ *         Fields: [
+ *             {name:'src', type:'string'},
+ *             {name:'caption', type:'string'}
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.data.Store', {
+ *         id:'imagesStore',
+ *         model: 'Image',
+ *         data: [
+ *             {src:'http://www.sencha.com/img/20110215-feat-drawing.png', caption:'Drawing & Charts'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-data.png', caption:'Advanced Data'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-html5.png', caption:'Overhauled Theme'},
+ *             {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}            
+ *         ]
+ *     });
+ *     
+ *     var imageTpl = new Ext.XTemplate(
+ *         '&lt;tpl for="."&gt;',
+ *             '&lt;div style="thumb-wrap"&gt;',
+ *               '&lt;img src="{src}" /&gt;',
+ *               '&lt;br/&gt;&lt;span&gt;{caption}&lt;/span&gt;',
+ *             '&lt;/div&gt;',
+ *         '&lt;/tpl&gt;'
+ *     );
+ *     
+ *     Ext.create('Ext.DataView', {
+ *         store: Ext.data.StoreManager.lookup('imagesStore'),
+ *         tpl: imageTpl,
+ *         itemSelector: 'div.thumb-wrap',
+ *         emptyText: 'No images available',
+ *         renderTo: Ext.getBody()
+ *     });
+ *
  * @xtype dataview
  */
 Ext.define('Ext.view.View', {
     extend: 'Ext.view.AbstractView',
     alternateClassName: 'Ext.view.View',
     alias: 'widget.dataview',
-    
+
     inheritableStatics: {
         EventMap: {
             mousedown: 'MouseDown',
@@ -76033,7 +76453,7 @@ Ext.define('Ext.view.View', {
             keydown: 'KeyDown'
         }
     },
-    
+
     addCmpEvents: function() {
         this.addEvents(
             /**
@@ -76301,7 +76721,7 @@ Ext.define('Ext.view.View', {
              * @param {Ext.EventObject} e The raw event object. Use {@link Ext.EventObject#getKey getKey()} to retrieve the key that was pressed.
              */
             'containerkeydown',
-            
+
             /**
              * @event selectionchange
              * Fires when the selected nodes change. Relayed event from the underlying selection model.
@@ -76321,9 +76741,9 @@ Ext.define('Ext.view.View', {
     },
     // private
     afterRender: function(){
-        var me = this, 
+        var me = this,
             listeners;
-        
+
         me.callParent();
 
         listeners = {
@@ -76337,43 +76757,61 @@ Ext.define('Ext.view.View', {
             mouseout: me.handleEvent,
             keydown: me.handleEvent
         };
-        
+
         me.mon(me.getTargetEl(), listeners);
-        
+
         if (me.store) {
             me.bindStore(me.store, true);
         }
     },
-    
+
     handleEvent: function(e) {
         if (this.processUIEvent(e) !== false) {
             this.processSpecialEvent(e);
         }
     },
-    
+
     // Private template method
     processItemEvent: Ext.emptyFn,
     processContainerEvent: Ext.emptyFn,
     processSpecialEvent: Ext.emptyFn,
-    
-    processUIEvent: function(e, type) {
-        type = type || e.type;
+
+    /*
+     * Returns true if this mouseover/out event is still over the overItem.
+     */
+    stillOverItem: function (event, overItem) {
+        var nowOver;
+
+        // There is this weird bug when you hover over the border of a cell it is saying
+        // the target is the table.
+        // BrowserBug: IE6 & 7. If me.mouseOverItem has been removed and is no longer
+        // in the DOM then accessing .offsetParent will throw an "Unspecified error." exception.
+        // typeof'ng and checking to make sure the offsetParent is an object will NOT throw
+        // this hard exception.
+        if (overItem && typeof(overItem.offsetParent) === "object") {
+            // mouseout : relatedTarget == nowOver, target == wasOver
+            // mouseover: relatedTarget == wasOver, target == nowOver
+            nowOver = (event.type == 'mouseout') ? event.getRelatedTarget() : event.getTarget();
+            return Ext.fly(overItem).contains(nowOver);
+        }
+
+        return false;
+    },
+
+    processUIEvent: function(e) {
         var me = this,
             item = e.getTarget(me.getItemSelector(), me.getTargetEl()),
             map = this.statics().EventMap,
-            index, record;
-        
+            index, record,
+            type = e.type,
+            overItem = me.mouseOverItem,
+            newType;
+
         if (!item) {
-            // There is this weird bug when you hover over the border of a cell it is saying
-            // the target is the table.
-            // BrowserBug: IE6 & 7. If me.mouseOverItem has been removed and is no longer
-            // in the DOM then accessing .offsetParent will throw an "Unspecified error." exception.
-            // typeof'ng and checking to make sure the offsetParent is an object will NOT throw
-            // this hard exception.
-            if (type == 'mouseover' && me.mouseOverItem && typeof me.mouseOverItem.offsetParent === "object" && Ext.fly(me.mouseOverItem).getRegion().contains(e.getPoint())) {
-                item = me.mouseOverItem;
+            if (type == 'mouseover' && me.stillOverItem(e, overItem)) {
+                item = overItem;
             }
-            
+
             // Try to get the selected item to handle the keydown event, otherwise we'll just fire a container keydown event
             if (type == 'keydown') {
                 record = me.getSelectionModel().getLastSelected();
@@ -76382,54 +76820,53 @@ Ext.define('Ext.view.View', {
                 }
             }
         }
-        
+
         if (item) {
             index = me.indexOf(item);
             if (!record) {
                 record = me.getRecord(item);
             }
-            
-            if (me.processItemEvent(type, record, item, index, e) === false) {
+
+            if (me.processItemEvent(record, item, index, e) === false) {
                 return false;
             }
-            
-            type = me.isNewItemEvent(type, item, e);
-            if (type === false) {
+
+            newType = me.isNewItemEvent(item, e);
+            if (newType === false) {
                 return false;
             }
-            
+
             if (
-                (me['onBeforeItem' + map[type]](record, item, index, e) === false) ||
-                (me.fireEvent('beforeitem' + type, me, record, item, index, e) === false) ||
-                (me['onItem' + map[type]](record, item, index, e) === false)
-            ) { 
+                (me['onBeforeItem' + map[newType]](record, item, index, e) === false) ||
+                (me.fireEvent('beforeitem' + newType, me, record, item, index, e) === false) ||
+                (me['onItem' + map[newType]](record, item, index, e) === false)
+            ) {
                 return false;
             }
-            
-            me.fireEvent('item' + type, me, record, item, index, e);
-        } 
+
+            me.fireEvent('item' + newType, me, record, item, index, e);
+        }
         else {
             if (
-                (me.processContainerEvent(type, e) === false) ||
+                (me.processContainerEvent(e) === false) ||
                 (me['onBeforeContainer' + map[type]](e) === false) ||
                 (me.fireEvent('beforecontainer' + type, me, e) === false) ||
                 (me['onContainer' + map[type]](e) === false)
             ) {
                 return false;
             }
-            
+
             me.fireEvent('container' + type, me, e);
         }
-        
+
         return true;
     },
-    
-    isNewItemEvent: function(type, item, e) {
+
+    isNewItemEvent: function (item, e) {
         var me = this,
             overItem = me.mouseOverItem,
-            contains,
-            isItem;
-            
+            type = e.type;
+
         switch (type) {
             case 'mouseover':
                 if (item === overItem) {
@@ -76437,27 +76874,18 @@ Ext.define('Ext.view.View', {
                 }
                 me.mouseOverItem = item;
                 return 'mouseenter';
-            break;
-            
+
             case 'mouseout':
-               /*
-                * Need an extra check here to see if it's the parent element. See the
-                * comment re: the browser bug at the start of processUIEvent
-                */
-                if (overItem && typeof overItem.offsetParent === "object") {
-                    contains = Ext.fly(me.mouseOverItem).getRegion().contains(e.getPoint());
-                    isItem = Ext.fly(e.getTarget()).hasCls(me.itemSelector);
-                    if (contains && isItem) {
-                        return false;
-                    }
+                // If the currently mouseovered item contains the mouseover target, it's *NOT* a mouseleave
+                if (me.stillOverItem(e, overItem)) {
+                    return false;
                 }
                 me.mouseOverItem = null;
                 return 'mouseleave';
-            break;
         }
         return type;
     },
-    
+
     // private
     onItemMouseEnter: function(record, item, index, e) {
         if (this.trackOver) {
@@ -76487,7 +76915,7 @@ Ext.define('Ext.view.View', {
     onBeforeItemDblClick: Ext.emptyFn,
     onBeforeItemContextMenu: Ext.emptyFn,
     onBeforeItemKeyDown: Ext.emptyFn,
-    
+
     // @private, template methods
     onContainerMouseDown: Ext.emptyFn,
     onContainerMouseUp: Ext.emptyFn,
@@ -76505,7 +76933,7 @@ Ext.define('Ext.view.View', {
     onBeforeContainerDblClick: Ext.emptyFn,
     onBeforeContainerContextMenu: Ext.emptyFn,
     onBeforeContainerKeyDown: Ext.emptyFn,
-    
+
     /**
      * Highlight a given item in the DataView. This is called by the mouseover handler if {@link #overItemCls}
      * and {@link #trackOver} are configured, but can also be called manually by other code, for instance to
@@ -76525,7 +76953,7 @@ Ext.define('Ext.view.View', {
     clearHighlight: function() {
         var me = this,
             highlighted = me.highlightedItem;
-            
+
         if (highlighted) {
             Ext.fly(highlighted).removeCls(me.overItemCls);
             delete me.highlightedItem;
@@ -76652,15 +77080,15 @@ Ext.define('Ext.layout.component.BoundList', {
  *
  * {@img Ext.toolbar.TextItem/Ext.toolbar.TextItem.png TextItem component}
  *
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Panel with TextItem',
- *         width: 300,
- *         height: 200,
- *         tbar: [
- *             {xtype: 'tbtext', text: 'Sample TextItem'}
- *         ],
- *         renderTo: Ext.getBody()
- *     });
+ *      Ext.create('Ext.panel.Panel', {
+ *          title: 'Panel with TextItem',
+ *          width: 300,
+ *          height: 200,
+ *          tbar: [
+ *              {xtype: 'tbtext', text: 'Sample TextItem'}
+ *          ],
+ *          renderTo: Ext.getBody()
+ *      });
  *
  * @constructor
  * Creates a new TextItem
@@ -76712,27 +77140,27 @@ Ext.define('Ext.toolbar.TextItem', {
  * {@img Ext.form.field.Trigger/Ext.form.field.Trigger.png Ext.form.field.Trigger component}
  * For example:</p>
  * <pre><code>
-    Ext.define('Ext.ux.CustomTrigger', {
-        extend: 'Ext.form.field.Trigger',
-        alias: 'widget.customtrigger',
-        
-        // override onTriggerClick
-        onTriggerClick: function() {
-            Ext.Msg.alert('Status', 'You clicked my trigger!');
-        }
-    });
+Ext.define('Ext.ux.CustomTrigger', {
+    extend: 'Ext.form.field.Trigger',
+    alias: 'widget.customtrigger',
     
-    Ext.create('Ext.form.FormPanel', {
-        title: 'Form with TriggerField',
-        bodyPadding: 5,
-        width: 350,
-        renderTo: Ext.getBody(),
-        items:[{
-            xtype: 'customtrigger',
-            fieldLabel: 'Sample Trigger',
-            emptyText: 'click the trigger',
-        }]
-    });
+    // override onTriggerClick
+    onTriggerClick: function() {
+        Ext.Msg.alert('Status', 'You clicked my trigger!');
+    }
+});
+
+Ext.create('Ext.form.FormPanel', {
+    title: 'Form with TriggerField',
+    bodyPadding: 5,
+    width: 350,
+    renderTo: Ext.getBody(),
+    items:[{
+        xtype: 'customtrigger',
+        fieldLabel: 'Sample Trigger',
+        emptyText: 'click the trigger',
+    }]
+});
 </code></pre>
  *
  * <p>However, in general you will most likely want to use Trigger as the base class for a reusable component.
@@ -77263,7 +77691,7 @@ Ext.define('Ext.form.field.Picker', {
                 mousedown: collapseIf,
                 scope: me
             });
-
+            Ext.EventManager.onWindowResize(me.alignPicker, me);
             me.fireEvent('expand', me);
             me.onExpand();
         }
@@ -77321,7 +77749,7 @@ Ext.define('Ext.form.field.Picker', {
             // remove event listeners
             doc.un('mousewheel', collapseIf, me);
             doc.un('mousedown', collapseIf, me);
-
+            Ext.EventManager.removeResizeListener(me.alignPicker, me);
             me.fireEvent('collapse', me);
             me.onCollapse();
         }
@@ -77385,6 +77813,7 @@ Ext.define('Ext.form.field.Picker', {
 
     onDestroy : function(){
         var me = this;
+        Ext.EventManager.removeResizeListener(me.alignPicker, me);
         Ext.destroy(me.picker, me.keyNav);
         me.callParent();
     }
@@ -77855,23 +78284,25 @@ Ext.define('Ext.form.field.Number', {
         var me = this,
             allowed;
 
-        this.callParent();
+        me.callParent();
 
         me.setMinValue(me.minValue);
         me.setMaxValue(me.maxValue);
 
         // Build regexes for masking and stripping based on the configured options
-        allowed = me.baseChars + '';
-        if (me.allowDecimals) {
-            allowed += me.decimalSeparator;
-        }
-        if (me.minValue < 0) {
-            allowed += '-';
-        }
-        allowed = Ext.String.escapeRegex(allowed);
-        me.maskRe = new RegExp('[' + allowed + ']');
-        if (me.autoStripChars) {
-            me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+        if (me.disableKeyFilter !== true) {
+            allowed = me.baseChars + '';
+            if (me.allowDecimals) {
+                allowed += me.decimalSeparator;
+            }
+            if (me.minValue < 0) {
+                allowed += '-';
+            }
+            allowed = Ext.String.escapeRegex(allowed);
+            me.maskRe = new RegExp('[' + allowed + ']');
+            if (me.autoStripChars) {
+                me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+            }
         }
     },
 
@@ -78820,7 +79251,7 @@ Ext.define('Ext.view.BoundListKeyNav', {
  *
  * A combobox control with support for autocomplete, remote loading, and many other features.
  *
- * A ComboBox is like a combination of a traditional HTML text `&lt;input&gt;` field and a `&lt;select&gt;`
+ * A ComboBox is like a combination of a traditional HTML text `<input>` field and a `<select>`
  * field; the user is able to type freely into the field, and/or pick values from a dropdown selection
  * list. The user can input any value by default, even if it does not appear in the selection list;
  * to prevent free-form values and restrict them to items in the list, set {@link #forceSelection} to `true`.
@@ -78966,8 +79397,9 @@ Ext.define('Ext.form.field.ComboBox', {
     allQuery: '',
 
     /**
-     * @cfg {String} queryParam Name of the query ({@link Ext.data.Store#baseParam baseParam} name for the store)
-     * as it will be passed on the querystring (defaults to <tt>'query'</tt>)
+     * @cfg {String} queryParam Name of the query ({@link Ext.data.proxy.Proxy#extraParam extraParam} name for the store)
+     * as it will be passed on the querystring (defaults to <tt>'query'</tt>). If explicitly set to a falsey value it will
+     * not be send.
      */
     queryParam: 'query',
 
@@ -79026,9 +79458,11 @@ var combo = new Ext.form.field.ComboBox({
      */
 
     /**
-     * @cfg {Boolean} autoSelect <tt>true</tt> to select the first result gathered by the data store (defaults
-     * to <tt>true</tt>).  A false value would require a manual selection from the dropdown list to set the components value
-     * unless the value of ({@link #typeAhead}) were true.
+     * @cfg {Boolean} autoSelect <tt>true</tt> to automatically highlight the first result gathered by the data store
+     * in the dropdown list when it is opened. (Defaults to <tt>true</tt>). A false value would cause nothing in the
+     * list to be highlighted automatically, so the user would have to manually highlight an item before pressing
+     * the enter or {@link #selectOnTab tab} key to select it (unless the value of ({@link #typeAhead}) were true),
+     * or use the mouse to select a value.
      */
     autoSelect: true,
 
@@ -79444,8 +79878,13 @@ var combo = new Ext.form.field.ComboBox({
     // private
     getParams: function(queryString) {
         var p = {},
-            pageSize = this.pageSize;
-        p[this.queryParam] = queryString;
+            pageSize = this.pageSize,
+            param = this.queryParam;
+            
+        if (param) {
+            p[param] = queryString;
+        }
+        
         if (pageSize) {
             p.start = 0;
             p.limit = pageSize;
@@ -79514,14 +79953,23 @@ var combo = new Ext.form.field.ComboBox({
                 me.doQueryTask.delay(me.queryDelay);
             }
         }
+        
+        if (me.enableKeyEvents) {
+            me.callParent(arguments);
+        }
     },
 
     initEvents: function() {
         var me = this;
         me.callParent();
 
-        // setup keyboard handling
-        me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
+        /*
+         * Setup keyboard handling. If enableKeyEvents is true, we already have 
+         * a listener on the inputEl for keyup, so don't create a second.
+         */
+        if (!me.enableKeyEvents) {
+            me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
+        }
     },
 
     createPicker: function() {
@@ -81739,7 +82187,7 @@ dateField.setValue('2006-05-04');
             format = Ext.String.format;
 
         return Ext.create('Ext.picker.Date', {
-            ownerCt: this.ownerCt,
+            ownerCt: me.ownerCt,
             renderTo: document.body,
             floating: true,
             hidden: true,
@@ -81768,9 +82216,11 @@ dateField.setValue('2006-05-04');
     },
 
     onSelect: function(m, d) {
-        this.setValue(d);
-        this.fireEvent('select', this, d);
-        this.collapse();
+        var me = this;
+        
+        me.setValue(d);
+        me.fireEvent('select', me, d);
+        me.collapse();
     },
 
     /**
@@ -81780,7 +82230,7 @@ dateField.setValue('2006-05-04');
     onExpand: function() {
         var me = this,
             value = me.getValue();
-        me.picker.setValue(value instanceof Date ? value : new Date());
+        me.picker.setValue(Ext.isDate(value) ? value : new Date());
     },
 
     /**
@@ -81793,9 +82243,16 @@ dateField.setValue('2006-05-04');
 
     // private
     beforeBlur : function(){
-        var v = this.parseDate(this.getRawValue());
-        if(v){
-            this.setValue(v);
+        var me = this,
+            v = me.parseDate(me.getRawValue()),
+            focusTask = me.focusTask;
+        
+        if (focusTask) {
+            focusTask.cancel();
+        }
+        
+        if (v) {
+            me.setValue(v);
         }
     }
 
@@ -82093,7 +82550,6 @@ Ext.define("Ext.form.field.File", {
             text: me.buttonText,
             cls: Ext.baseCSSPrefix + 'form-file-btn',
             preventDefault: false,
-            ownerCt: me,
             style: me.buttonOnly ? '' : 'margin-left:' + me.buttonMargin + 'px'
         }, me.buttonConfig));
     },
@@ -83913,19 +84369,19 @@ __Example usage:__
                     var radio1 = Ext.getCmp('radio1'),
                         radio2 = Ext.getCmp('radio2'),
                         radio3 = Ext.getCmp('radio3');
-    
+
                     //if L is selected, change to M
                     if (radio2.getValue()) {
                         radio1.setValue(true);
                         return;
                     }
-    
+
                     //if XL is selected, change to L
                     if (radio3.getValue()) {
                         radio2.setValue(true);
                         return;
                     }
-    
+
                     //if nothing is set, set size to S
                     radio1.setValue(true);
                 }
@@ -83936,19 +84392,19 @@ __Example usage:__
                     var radio1 = Ext.getCmp('radio1'),
                         radio2 = Ext.getCmp('radio2'),
                         radio3 = Ext.getCmp('radio3');
-    
+
                     //if M is selected, change to L
                     if (radio1.getValue()) {
                         radio2.setValue(true);
                         return;
                     }
-    
+
                     //if L is selected, change to XL
                     if (radio2.getValue()) {
                         radio3.setValue(true);
                         return;
                     }
-    
+
                     //if nothing is set, set size to XL
                     radio3.setValue(true);
                 }
@@ -84056,6 +84512,10 @@ Ext.define('Ext.form.field.Radio', {
      */
     getSubmitValue: function() {
         return this.checked ? this.inputValue : null;
+    },
+
+    getModelData: function() {
+        return this.getSubmitData();
     },
 
     // inherit docs
@@ -84269,29 +84729,29 @@ Ext.define('Ext.picker.Time', {
  * {@img Ext.form.Time/Ext.form.Time.png Ext.form.Time component}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.form.Panel', {
-        title: 'Time Card',
-        width: 300,
-        bodyPadding: 10,
-        renderTo: Ext.getBody(),        
-        items: [{
-            xtype: 'timefield',
-            name: 'in',
-            fieldLabel: 'Time In',
-            minValue: '6:00 AM',
-            maxValue: '8:00 PM',
-            increment: 30,
-            anchor: '100%'
-        }, {
-            xtype: 'timefield',
-            name: 'out',
-            fieldLabel: 'Time Out',
-            minValue: '6:00 AM',
-            maxValue: '8:00 PM',
-            increment: 30,
-            anchor: '100%'
-       }]
-    });
+Ext.create('Ext.form.Panel', {
+    title: 'Time Card',
+    width: 300,
+    bodyPadding: 10,
+    renderTo: Ext.getBody(),        
+    items: [{
+        xtype: 'timefield',
+        name: 'in',
+        fieldLabel: 'Time In',
+        minValue: '6:00 AM',
+        maxValue: '8:00 PM',
+        increment: 30,
+        anchor: '100%'
+    }, {
+        xtype: 'timefield',
+        name: 'out',
+        fieldLabel: 'Time Out',
+        minValue: '6:00 AM',
+        maxValue: '8:00 PM',
+        increment: 30,
+        anchor: '100%'
+   }]
+});
 </code></pre>
  * @constructor
  * Create a new Time field
@@ -85030,6 +85490,10 @@ Ext.define('Ext.grid.LockingView', {
             result = this.normalView.getRecord(node);
         }
         return result;
+    },
+    
+    addElListener: function(eventName, fn, scope){
+        this.relayFn('addElListener', arguments);
     },
     
     refreshNode: function(){
@@ -86221,6 +86685,7 @@ Ext.define('Ext.panel.Table', {
 
         // Set our determinScrollbars method to reference a buffered call to determinScrollbars which fires on a 30ms buffer.
         me.determineScrollbars = Ext.Function.createBuffered(me.determineScrollbars, 30);
+        me.invalidateScroller = Ext.Function.createBuffered(me.invalidateScroller, 30);
         me.injectView = Ext.Function.createBuffered(me.injectView, 30);
 
         if (me.hideHeaders) {
@@ -86857,6 +87322,8 @@ Ext.define('Ext.panel.Table', {
 
             clientHeight = viewElDom.clientHeight;
 
+            me.suspendLayout = true;
+            me.scrollbarChanged = false;
             if (!me.collapsed && scrollHeight > clientHeight) {
                 me.showVerticalScroller();
             } else {
@@ -86867,6 +87334,10 @@ Ext.define('Ext.panel.Table', {
                 me.showHorizontalScroller();
             } else {
                 me.hideHorizontalScroller();
+            }
+            me.suspendLayout = false;
+            if (me.scrollbarChanged) {
+                me.doComponentLayout();
             }
         }
     },
@@ -86885,6 +87356,7 @@ Ext.define('Ext.panel.Table', {
         var me = this;
 
         if (me.horizontalScroller && me.horizontalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.verticalScroller.offsets.bottom = 0;
             me.removeDocked(me.horizontalScroller, false);
             me.removeCls(me.horizontalScrollerPresentCls);
@@ -86903,6 +87375,7 @@ Ext.define('Ext.panel.Table', {
             me.verticalScroller.offsets.bottom = Ext.getScrollBarWidth() - 2;
         }
         if (me.horizontalScroller && me.horizontalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.horizontalScroller);
             me.addCls(me.horizontalScrollerPresentCls);
             me.fireEvent('scrollershow', me.horizontalScroller, 'horizontal');
@@ -86922,6 +87395,7 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller && me.verticalScroller.ownerCt === me) {
+            me.scrollbarChanged = true;
             me.removeDocked(me.verticalScroller, false);
             me.removeCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollerhide', me.verticalScroller, 'vertical');
@@ -86941,6 +87415,7 @@ Ext.define('Ext.panel.Table', {
             headerCt.doLayout();
         }
         if (me.verticalScroller && me.verticalScroller.ownerCt !== me) {
+            me.scrollbarChanged = true;
             me.addDocked(me.verticalScroller);
             me.addCls(me.verticalScrollerPresentCls);
             me.fireEvent('scrollershow', me.verticalScroller, 'vertical');
@@ -86994,55 +87469,52 @@ Ext.define('Ext.panel.Table', {
             scrollDelta = me.scrollDelta,
             deltaY, deltaX,
             vertScrollerEl, horizScrollerEl,
-            origScrollLeft, origScrollTop,
-            newScrollLeft, newScrollTop;
+            vertScrollerElDom, horizScrollerElDom,
+            horizontalCanScrollLeft, horizontalCanScrollRight,
+            verticalCanScrollDown, verticalCanScrollUp;
 
-        // Track original scroll values, so we can see if we've
-        // reached the end of our scroll height/width.
+        // calculate whether or not both scrollbars can scroll right/left and up/down
         if (horizScroller) {
             horizScrollerEl = horizScroller.el;
             if (horizScrollerEl) {
-                origScrollLeft = horizScrollerEl.dom.scrollLeft;
+                horizScrollerElDom = horizScrollerEl.dom;
+                horizontalCanScrollRight = horizScrollerElDom.scrollLeft !== horizScrollerElDom.scrollWidth - horizScrollerElDom.clientWidth;
+                horizontalCanScrollLeft  = horizScrollerElDom.scrollLeft !== 0;
             }
         }
         if (vertScroller) {
             vertScrollerEl = vertScroller.el;
             if (vertScrollerEl) {
-                origScrollTop = vertScrollerEl.dom.scrollTop;
+                vertScrollerElDom = vertScrollerEl.dom;
+                verticalCanScrollDown = vertScrollerElDom.scrollTop !== vertScrollerElDom.scrollHeight - vertScrollerElDom.clientHeight;
+                verticalCanScrollUp   = vertScrollerElDom.scrollTop !== 0;
             }
         }
 
         // Webkit Horizontal Axis
-        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {
+        if (browserEvent.wheelDeltaX || browserEvent.wheelDeltaY) {        
             deltaX = -browserEvent.wheelDeltaX / 120 * scrollDelta / 3;
             deltaY = -browserEvent.wheelDeltaY / 120 * scrollDelta / 3;
-            if (horizScroller) {
-                newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-            }
-            if (vertScroller) {
-                newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-            }
         } else {
             // Gecko Horizontal Axis
             if (browserEvent.axis && browserEvent.axis === 1) {
-                if (horizScroller) {
-                    deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
-                    newScrollLeft = horizScroller.scrollByDeltaX(deltaX);
-                }
+                deltaX = -(scrollDelta * e.getWheelDelta()) / 3;
             } else {
-                if (vertScroller) {
-
-                    deltaY = -(scrollDelta * e.getWheelDelta() / 3);
-                    newScrollTop = vertScroller.scrollByDeltaY(deltaY);
-                }
+                deltaY = -(scrollDelta * e.getWheelDelta() / 3);
             }
         }
-
-        // If after given our delta, the scroller has not progressed, then we're
-        // at the end of our scroll range and shouldn't stop the browser event.
-        if ((deltaX !== 0 && newScrollLeft !== origScrollLeft) ||
-            (deltaY !== 0 && newScrollTop !== origScrollTop)) {
-            e.stopEvent();
+        
+        if (horizScroller) {
+            if ((deltaX < 0 && horizontalCanScrollLeft) || (deltaX > 0 && horizontalCanScrollRight)) {
+                e.stopEvent();
+                horizScroller.scrollByDeltaX(deltaX);
+            }
+        }
+        if (vertScroller) {
+            if ((deltaY < 0 && verticalCanScrollUp) || (deltaY > 0 && verticalCanScrollDown)) {
+                e.stopEvent();
+                vertScroller.scrollByDeltaY(deltaY);    
+            }
         }
     },
 
@@ -87295,11 +87767,12 @@ Ext.define('Ext.panel.Table', {
             me.getView().refresh();
         }
     },
-
+    
     afterComponentLayout: function() {
-        this.callParent(arguments);
-        this.determineScrollbars();
-        this.invalidateScroller();
+        var me = this;
+        me.callParent(arguments);
+        me.determineScrollbars();
+        me.invalidateScroller();
     }
 });
 /**
@@ -87392,15 +87865,17 @@ viewConfig: {
     getRowClass: null,
 
     initComponent: function() {
-        this.scrollState = {};
-        this.selModel.view = this;
-        this.headerCt.view = this;
-        this.initFeatures();
-        this.setNewTemplate();
-        this.callParent();
-        this.mon(this.store, {
-            load: this.onStoreLoad,
-            scope: this
+        var me = this;
+        
+        me.scrollState = {};
+        me.selModel.view = me;
+        me.headerCt.view = me;
+        me.initFeatures();
+        me.tpl = '<div></div>';
+        me.callParent();
+        me.mon(me.store, {
+            load: me.onStoreLoad,
+            scope: me
         });
 
         // this.addEvents(
@@ -87416,20 +87891,32 @@ viewConfig: {
 
     // scroll to top of the grid when store loads
     onStoreLoad: function(){
-        if (this.invalidateScrollerOnRefresh) {
+        var me = this;
+        
+        if (me.invalidateScrollerOnRefresh) {
             if (Ext.isGecko) {
-                if (!this.scrollToTopTask) {
-                    this.scrollToTopTask = Ext.create('Ext.util.DelayedTask', this.scrollToTop, this);
+                if (!me.scrollToTopTask) {
+                    me.scrollToTopTask = Ext.create('Ext.util.DelayedTask', me.scrollToTop, me);
                 }
-                this.scrollToTopTask.delay(1);
+                me.scrollToTopTask.delay(1);
             } else {
-                this.scrollToTop();
+                me    .scrollToTop();
             }
         }
     },
 
     // scroll the view to the top
     scrollToTop: Ext.emptyFn,
+    
+    /**
+     * Add a listener to the main view element. It will be destroyed with the view.
+     * @private
+     */
+    addElListener: function(eventName, fn, scope){
+        this.mon(this, eventName, fn, scope, {
+            element: 'el'
+        });
+    },
     
     /**
      * Get the columns used for generating a template via TableChunker.
@@ -87478,20 +87965,24 @@ viewConfig: {
      * @private
      */
     initFeatures: function() {
-        this.features = this.features || [];
-        var features = this.features,
-            ln       = features.length,
-            i        = 0;
+        var me = this,
+            i = 0,
+            features,
+            len;
+            
+        me.features = me.features || [];
+        features = me.features;
+        len = features.length;
 
-        this.featuresMC = Ext.create('Ext.util.MixedCollection');
-        for (; i < ln; i++) {
+        me.featuresMC = Ext.create('Ext.util.MixedCollection');
+        for (; i < len; i++) {
             // ensure feature hasnt already been instantiated
             if (!features[i].isFeature) {
-                features[i] = Ext.create('feature.'+features[i].ftype, features[i]);
+                features[i] = Ext.create('feature.' + features[i].ftype, features[i]);
             }
             // inject a reference to view
-            features[i].view = this;
-            this.featuresMC.add(features[i]);
+            features[i].view = me;
+            me.featuresMC.add(features[i]);
         }
     },
 
@@ -87513,12 +88004,15 @@ viewConfig: {
     },
 
     afterRender: function() {
-        this.callParent();
-        this.mon(this.el, {
-            scroll: this.fireBodyScroll,
-            scope: this
+        var me = this;
+        
+        me.callParent();
+        me.mon(me.el, {
+            scroll: me.fireBodyScroll,
+            scope: me
         });
-        this.attachEventsForFeatures();
+        me.el.unselectable();
+        me.attachEventsForFeatures();
     },
 
     fireBodyScroll: function(e, t) {
@@ -87533,8 +88027,9 @@ viewConfig: {
      * @private
      */
     prepareData: function(data, idx, record) {
-        var orig     = this.headerCt.prepareData(data, idx, record, this),
-            features = this.features,
+        var me       = this,
+            orig     = me.headerCt.prepareData(data, idx, record, me, me.ownerCt),
+            features = me.features,
             ln       = features.length,
             i        = 0,
             node, feature;
@@ -87542,7 +88037,7 @@ viewConfig: {
         for (; i < ln; i++) {
             feature = features[i];
             if (feature.isFeature) {
-                Ext.apply(orig, feature.getAdditionalData(data, idx, record, orig, this));
+                Ext.apply(orig, feature.getAdditionalData(data, idx, record, orig, me));
             }
         }
 
@@ -87616,18 +88111,19 @@ viewConfig: {
      * @private
      */
     onHeaderResize: function(header, w, suppressFocus) {
-        var el = this.el;
+        var me = this,
+            el = me.el;
         if (el) {
-            this.saveScrollState();
+            me.saveScrollState();
             // Grab the col and set the width, css
             // class is generated in TableChunker.
             // Select composites because there may be several chunks.
             el.select('.' + Ext.baseCSSPrefix + 'grid-col-resizer-'+header.id).setWidth(w);
-            el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(this.headerCt.getFullWidth());
-            this.restoreScrollState();
-            this.setNewTemplate();
+            el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(me.headerCt.getFullWidth());
+            me.restoreScrollState();
+            me.setNewTemplate();
             if (!suppressFocus) {
-                this.el.focus();
+                me.el.focus();
             }
         }
     },
@@ -87664,10 +88160,12 @@ viewConfig: {
      * @private
      */
     setNewTemplate: function() {
-        var columns = this.headerCt.getColumnsForTpl(true);
-        this.tpl = this.getTableChunker().getTableTpl({
+        var me = this,
+            columns = me.headerCt.getColumnsForTpl(true);
+            
+        me.tpl = me.getTableChunker().getTableTpl({
             columns: columns,
-            features: this.features
+            features: me.features
         });
     },
 
@@ -87709,8 +88207,10 @@ viewConfig: {
 
     // GridSelectionModel invokes onRowDeselect as selection changes
     onRowDeselect : function(rowIdx) {
-        this.removeRowCls(rowIdx, this.selectedItemCls);
-        this.removeRowCls(rowIdx, this.focusedItemCls);
+        var me = this;
+        
+        me.removeRowCls(rowIdx, me.selectedItemCls);
+        me.removeRowCls(rowIdx, me.focusedItemCls);
     },
     
     onCellSelect: function(position) {
@@ -87742,7 +88242,7 @@ viewConfig: {
             cellSelector,
             cell = false;
             
-        if (header) {
+        if (header && node) {
             cellSelector = header.getCellSelector();
             cell = Ext.fly(node).down(cellSelector);
         }
@@ -87752,16 +88252,17 @@ viewConfig: {
     // GridSelectionModel invokes onRowFocus to 'highlight'
     // the last row focused
     onRowFocus: function(rowIdx, highlight, supressFocus) {
-        var row = this.getNode(rowIdx);
+        var me = this,
+            row = me.getNode(rowIdx);
 
         if (highlight) {
-            this.addRowCls(rowIdx, this.focusedItemCls);
+            me.addRowCls(rowIdx, me.focusedItemCls);
             if (!supressFocus) {
-                this.focusRow(rowIdx);
+                me.focusRow(rowIdx);
             }
             //this.el.dom.setAttribute('aria-activedescendant', row.id);
         } else {
-            this.removeRowCls(rowIdx, this.focusedItemCls);
+            me.removeRowCls(rowIdx, me.focusedItemCls);
         }
     },
 
@@ -87771,15 +88272,16 @@ viewConfig: {
      * id of a template node or the record associated with the node.
      */
     focusRow: function(rowIdx) {
-        var row        = this.getNode(rowIdx),
-            el         = this.el,
+        var me         = this,
+            row        = me.getNode(rowIdx),
+            el         = me.el,
             adjustment = 0,
-            panel      = this.ownerCt,
+            panel      = me.ownerCt,
             rowRegion,
             elRegion,
             record;
             
-        if (row && this.el) {
+        if (row && el) {
             elRegion  = el.getRegion();
             rowRegion = Ext.fly(row).getRegion();
             // row is above
@@ -87789,24 +88291,25 @@ viewConfig: {
             } else if (rowRegion.bottom > elRegion.bottom) {
                 adjustment = rowRegion.bottom - elRegion.bottom;
             }
-            record = this.getRecord(row);
-            rowIdx = this.store.indexOf(record);
+            record = me.getRecord(row);
+            rowIdx = me.store.indexOf(record);
 
             if (adjustment) {
                 // scroll the grid itself, so that all gridview's update.
                 panel.scrollByDeltaY(adjustment);
             }
-            this.fireEvent('rowfocus', record, row, rowIdx);
+            me.fireEvent('rowfocus', record, row, rowIdx);
         }
     },
 
     focusCell: function(position) {
-        var cell        = this.getCellByPosition(position),
-            el          = this.el,
+        var me          = this,
+            cell        = me.getCellByPosition(position),
+            el          = me.el,
             adjustmentY = 0,
             adjustmentX = 0,
             elRegion    = el.getRegion(),
-            panel       = this.ownerCt,
+            panel       = me.ownerCt,
             cellRegion,
             record;
 
@@ -87836,7 +88339,7 @@ viewConfig: {
                 panel.scrollByDeltaX(adjustmentX);
             }
             el.focus();
-            this.fireEvent('cellfocus', record, cell, position);
+            me.fireEvent('cellfocus', record, cell, position);
         }
     },
 
@@ -87896,39 +88399,23 @@ viewConfig: {
         //this.saveScrollState();
         me.setNewTemplate();
         
-        // The table.unselectable() call below adds a selectstart listener to the table element.
-        // Before we clear the whole dataview in the callParent, we remove all the listeners from the
-        // table. This prevents a big memory leak on IE6 and IE7.
-        if (me.rendered) {
-            table = me.el.child('table');
-            if (table) {
-                table.removeAllListeners();
-            }
-        }
-        
         me.callParent(arguments);
 
         //this.restoreScrollState();
-        if (me.rendered) {
-            // Make the table view unselectable
-            table = me.el.child('table');
-            if (table) {
-                table.unselectable();
-            }
-            
-            if (!firstPass) {
-                // give focus back to gridview
-                me.el.focus();
-            }
+
+        if (me.rendered && !firstPass) {
+            // give focus back to gridview
+            //me.el.focus();
         }
     },
 
-    processItemEvent: function(type, record, row, rowIndex, e) {
+    processItemEvent: function(record, row, rowIndex, e) {
         var me = this,
             cell = e.getTarget(me.cellSelector, row),
             cellIndex = cell ? cell.cellIndex : -1,
             map = me.statics().EventMap,
             selModel = me.getSelectionModel(),
+            type = e.type,
             result;
 
         if (type == 'keydown' && !cell && selModel.getCurrentPosition) {
@@ -87962,15 +88449,15 @@ viewConfig: {
 
     processSpecialEvent: function(e) {
         var me = this,
-            map = this.statics().EventMap,
-            features = this.features,
+            map = me.statics().EventMap,
+            features = me.features,
             ln = features.length,
             type = e.type,
             i, feature, prefix, featureTarget,
             beforeArgs, args,
             panel = me.ownerCt;
 
-        this.callParent(arguments);
+        me.callParent(arguments);
 
         if (type == 'mouseover' || type == 'mouseout') {
             return;
@@ -87984,8 +88471,8 @@ viewConfig: {
                     prefix = feature.eventPrefix;
                     // allows features to implement getFireEventArgs to change the
                     // fireEvent signature
-                    beforeArgs = feature.getFireEventArgs('before' + prefix + type, me, featureTarget);
-                    args = feature.getFireEventArgs(prefix + type, me, featureTarget);
+                    beforeArgs = feature.getFireEventArgs('before' + prefix + type, me, featureTarget, e);
+                    args = feature.getFireEventArgs(prefix + type, me, featureTarget, e);
                     
                     if (
                         // before view event
@@ -88052,12 +88539,13 @@ viewConfig: {
     },
 
     getPositionByEvent: function(e) {
-        var cellNode = e.getTarget(this.cellSelector),
-            rowNode  = e.getTarget(this.itemSelector),
-            record   = this.getRecord(rowNode),
-            header   = this.getHeaderByCell(cellNode);
+        var me       = this,
+            cellNode = e.getTarget(me.cellSelector),
+            rowNode  = e.getTarget(me.itemSelector),
+            record   = me.getRecord(rowNode),
+            header   = me.getHeaderByCell(cellNode);
 
-        return this.getPosition(record, header);
+        return me.getPosition(record, header);
     },
 
     getHeaderByCell: function(cell) {
@@ -88087,13 +88575,14 @@ viewConfig: {
      * @private
      */
     walkCells: function(pos, direction, e, preventWrap, verifierFn, scope) {
-        var row      = pos.row,
+        var me       = this,
+            row      = pos.row,
             column   = pos.column,
-            rowCount = this.store.getCount(),
-            firstCol = this.getFirstVisibleColumnIndex(),
-            lastCol  = this.getLastVisibleColumnIndex(),
+            rowCount = me.store.getCount(),
+            firstCol = me.getFirstVisibleColumnIndex(),
+            lastCol  = me.getLastVisibleColumnIndex(),
             newPos   = {row: row, column: column},
-            activeHeader = this.headerCt.getHeaderAtIndex(column);
+            activeHeader = me.headerCt.getHeaderAtIndex(column);
 
         // no active header or its currently hidden
         if (!activeHeader || activeHeader.hidden) {
@@ -88118,7 +88607,7 @@ viewConfig: {
                 // go right
                 } else {
                     if (!e.ctrlKey) {
-                        newPos.column = column + this.getRightGap(activeHeader);
+                        newPos.column = column + me.getRightGap(activeHeader);
                     } else {
                         newPos.column = lastCol;
                     }
@@ -88140,7 +88629,7 @@ viewConfig: {
                 // go left
                 } else {
                     if (!e.ctrlKey) {
-                        newPos.column = column + this.getLeftGap(activeHeader);
+                        newPos.column = column + me.getLeftGap(activeHeader);
                     } else {
                         newPos.column = firstCol;
                     }
@@ -88239,10 +88728,7 @@ viewConfig: {
 
     beforeDestroy: function() {
         if (this.rendered) {
-            table = this.el.child('table');
-            if (table) {
-                table.removeAllListeners();
-            }
+            this.el.removeAllListeners();
         }
         this.callParent(arguments);
     },
@@ -88343,15 +88829,22 @@ Ext.define('Ext.grid.View', {
         this.doStripeRows(index);
     },
     
+    onUpdate: function(ds, record, operation) {
+        var index = ds.indexOf(record);
+        this.callParent(arguments);
+        this.doStripeRows(index, index);
+    },
+    
     /**
      * Stripe rows from a particular row index
      * @param {Number} startRow
+     * @param {Number} endRow Optional argument specifying the last row to process. By default process up to the last row.
      * @private
      */
-    doStripeRows: function(startRow) {
+    doStripeRows: function(startRow, endRow) {
         // ensure stripeRows configuration is turned on
         if (this.stripeRows) {
-            var rows   = this.getNodes(startRow),
+            var rows   = this.getNodes(startRow, endRow),
                 rowsLn = rows.length,
                 i      = 0,
                 row;
@@ -88360,8 +88853,9 @@ Ext.define('Ext.grid.View', {
                 row = rows[i];
                 // Remove prior applied row classes.
                 row.className = row.className.replace(this.rowClsRe, ' ');
+                startRow++;
                 // Every odd row will get an additional cls
-                if (i % 2 === 1) {
+                if (startRow % 2 === 0) {
                     row.className += (' ' + this.altRowCls);
                 }
             }
@@ -88779,6 +89273,10 @@ Ext.define('Ext.grid.RowEditor', {
     lastScrollTop: 0,
 
     border: false,
+    
+    // Change the hideMode to offsets so that we get accurate measurements when
+    // the roweditor is hidden for laying out things like a TriggerField.
+    hideMode: 'offsets',
 
     initComponent: function() {
         var me = this,
@@ -88949,7 +89447,7 @@ Ext.define('Ext.grid.RowEditor', {
         }
     },
 
-    onFieldAdd: function(hm, fieldId, column) {
+    onFieldAdd: function(map, fieldId, column) {
         var me = this,
             colIdx = me.editingPlugin.grid.headerCt.getHeaderIndex(column),
             field = column.getEditor({ xtype: 'displayfield' });
@@ -88957,24 +89455,26 @@ Ext.define('Ext.grid.RowEditor', {
         me.insert(colIdx, field);
     },
 
-    onFieldRemove: function(hm, fieldId, column) {
+    onFieldRemove: function(map, fieldId, column) {
         var me = this,
             field = column.getEditor(),
-            fieldDom = field.el.dom;
+            fieldEl = field.el;
         me.remove(field, false);
-        fieldDom.parentNode.removeChild(fieldDom);
+        if (fieldEl) {
+            fieldEl.remove();
+        }
     },
 
-    onFieldReplace: function(hm, fieldId, column, oldColumn) {
+    onFieldReplace: function(map, fieldId, column, oldColumn) {
         var me = this;
-        me.onFieldRemove(hm, fieldId, oldColumn);
+        me.onFieldRemove(map, fieldId, oldColumn);
     },
 
     clearFields: function() {
         var me = this,
-            hm = me.columns;
-        hm.each(function(fieldId) {
-            hm.removeAtKey(fieldId);
+            map = me.columns;
+        map.each(function(fieldId) {
+            map.removeAtKey(fieldId);
         });
     },
 
@@ -89154,14 +89654,25 @@ Ext.define('Ext.grid.RowEditor', {
         }
 
         // Get a default display field if necessary
-        field = column.getEditor(null, { xtype: 'displayfield' });
+        field = column.getEditor(null, {
+            xtype: 'displayfield',
+            // Default display fields will not return values. This is done because
+            // the display field will pick up column renderers from the grid.
+            getModelData: function() {
+                return null;
+            }
+        });
         field.margins = '0 0 0 2';
-        field.setWidth(column.getWidth() - 2);
+        field.setWidth(column.getDesiredWidth() - 2);
         me.mon(field, 'change', me.onFieldChange, me);
 
         // Maintain mapping of fields-to-columns
         // This will fire events that maintain our container items
         me.columns.add(field.id, column);
+        
+        if (me.isVisible() && me.context) {
+            me.renderColumnData(field, me.context.record);
+        }
     },
 
     loadRecord: function(record) {
@@ -89187,7 +89698,7 @@ Ext.define('Ext.grid.RowEditor', {
             view = grid.view,
             store = view.store,
             column = me.columns.get(field.id),
-            value = field.getRawValue();
+            value = record.get(column.dataIndex);
 
         // honor our column's renderer (TemplateHeader sets renderer for us!)
         if (column.renderer) {
@@ -89621,15 +90132,33 @@ Ext.define('Ext.grid.header.Container', {
         if (!this.isHeader) {
             var me = this,
                 topHeaders = me.query('>gridcolumn:not([hidden])'),
-                viewEl;
+                viewEl,
+                firstHeaderEl,
+                lastHeaderEl;
 
             me.callParent(arguments);
 
             if (topHeaders.length) {
-                topHeaders[0].el.radioCls(me.firstHeaderCls);
-                topHeaders[topHeaders.length - 1].el.radioCls(me.lastHeaderCls);
+                firstHeaderEl = topHeaders[0].el;
+                if (firstHeaderEl !== me.pastFirstHeaderEl) {
+                    if (me.pastFirstHeaderEl) {
+                        me.pastFirstHeaderEl.removeCls(me.firstHeaderCls);
+                    }
+                    firstHeaderEl.addCls(me.firstHeaderCls);
+                    me.pastFirstHeaderEl = firstHeaderEl;
+                }
+                
+                lastHeaderEl = topHeaders[topHeaders.length - 1].el;
+                if (lastHeaderEl !== me.pastLastHeaderEl) {
+                    if (me.pastLastHeaderEl) {
+                        me.pastLastHeaderEl.removeCls(me.lastHeaderCls);
+                    }
+                    lastHeaderEl.addCls(me.lastHeaderCls);
+                    me.pastLastHeaderEl = lastHeaderEl
+                }
             }
         }
+        
     },
 
     onHeaderShow: function(header) {
@@ -90091,15 +90620,17 @@ Ext.define('Ext.grid.header.Container', {
      * This correlates to the markup/template generated by
      * TableChunker.
      */
-    prepareData: function(data, rowIdx, record, view) {
+    prepareData: function(data, rowIdx, record, view, panel) {
         var obj       = {},
-            headers   = this.getGridColumns(),
+            headers   = this.gridDataColumns || this.getGridColumns(),
             headersLn = headers.length,
             colIdx    = 0,
-            header, value,
+            header,
+            headerId,
+            renderer,
+            value,
             metaData,
-            g = this.up('tablepanel'),
-            store = g.store;
+            store = panel.store;
 
         for (; colIdx < headersLn; colIdx++) {
             metaData = {
@@ -90107,16 +90638,18 @@ Ext.define('Ext.grid.header.Container', {
                 style: ''
             };
             header = headers[colIdx];
+            headerId = header.id;
+            renderer = header.renderer;
             value = data[header.dataIndex];
 
             // When specifying a renderer as a string, it always resolves
             // to Ext.util.Format
-            if (Ext.isString(header.renderer)) {
-                header.renderer = Ext.util.Format[header.renderer];
+            if (typeof renderer === "string") {
+                header.renderer = renderer = Ext.util.Format[renderer];
             }
-
-            if (Ext.isFunction(header.renderer)) {
-                value = header.renderer.call(
+            
+            if (typeof renderer === "function") {
+                value = renderer.call(
                     header.scope || this.ownerCt,
                     value,
                     // metadata per cell passing an obj by reference so that
@@ -90138,14 +90671,15 @@ Ext.define('Ext.grid.header.Container', {
                 delete metaData.css;
             }
             // </debug>
-            obj[header.id+'-modified'] = record.isModified(header.dataIndex) ? Ext.baseCSSPrefix + 'grid-dirty-cell' : Ext.baseCSSPrefix + 'grid-clean-cell';
-            obj[header.id+'-tdCls'] = metaData.tdCls;
-            obj[header.id+'-tdAttr'] = metaData.tdAttr;
-            obj[header.id+'-style'] = metaData.style;
+            
+            obj[headerId+'-modified'] = record.modified[header.dataIndex] ? Ext.baseCSSPrefix + 'grid-dirty-cell' : '';
+            obj[headerId+'-tdCls'] = metaData.tdCls;
+            obj[headerId+'-tdAttr'] = metaData.tdAttr;
+            obj[headerId+'-style'] = metaData.style;
             if (value === undefined || value === null || value === '') {
                 value = '&#160;';
             }
-            obj[header.id] = value;
+            obj[headerId] = value;
         }
         return obj;
     },
@@ -90170,30 +90704,31 @@ Ext.define('Ext.grid.header.Container', {
  * {@img Ext.grid.column.Column/Ext.grid.column.Column.png Ext.grid.column.Column grid column}
  *
  * ## Code
- *    Ext.create('Ext.data.Store', {
- *        storeId:'employeeStore',
- *        fields:['firstname', 'lastname', 'senority', 'dep', 'hired'],
- *        data:[
- *            {firstname:"Michael", lastname:"Scott", senority:7, dep:"Manangement", hired:"01/10/2004"},
- *            {firstname:"Dwight", lastname:"Schrute", senority:2, dep:"Sales", hired:"04/01/2004"},
- *            {firstname:"Jim", lastname:"Halpert", senority:3, dep:"Sales", hired:"02/22/2006"},
- *            {firstname:"Kevin", lastname:"Malone", senority:4, dep:"Accounting", hired:"06/10/2007"},
- *            {firstname:"Angela", lastname:"Martin", senority:5, dep:"Accounting", hired:"10/21/2008"}                        
- *        ]
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Column Demo',
- *        store: Ext.data.StoreManager.lookup('employeeStore'),
- *        columns: [
- *            {text: 'First Name',  dataIndex:'firstname'},
- *            {text: 'Last Name',  dataIndex:'lastname'},
- *            {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},              
- *            {text: 'Deparment (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({senority})'}
- *        ],
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
+ *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'employeeStore',
+ *         fields:['firstname', 'lastname', 'senority', 'dep', 'hired'],
+ *         data:[
+ *             {firstname:"Michael", lastname:"Scott", senority:7, dep:"Manangement", hired:"01/10/2004"},
+ *             {firstname:"Dwight", lastname:"Schrute", senority:2, dep:"Sales", hired:"04/01/2004"},
+ *             {firstname:"Jim", lastname:"Halpert", senority:3, dep:"Sales", hired:"02/22/2006"},
+ *             {firstname:"Kevin", lastname:"Malone", senority:4, dep:"Accounting", hired:"06/10/2007"},
+ *             {firstname:"Angela", lastname:"Martin", senority:5, dep:"Accounting", hired:"10/21/2008"}                        
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Column Demo',
+ *         store: Ext.data.StoreManager.lookup('employeeStore'),
+ *         columns: [
+ *             {text: 'First Name',  dataIndex:'firstname'},
+ *             {text: 'Last Name',  dataIndex:'lastname'},
+ *             {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},              
+ *             {text: 'Deparment (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({senority})'}
+ *         ],
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  *     
  * ## Convenience Subclasses
  * There are several column subclasses that provide default rendering for various data types
@@ -91349,7 +91884,7 @@ Ext.define('Ext.grid.column.Action', {
 
         // This is a Container. Delete the items config to be reinstated after construction.
         delete cfg.items;
-        this.callParent([cfg]);
+        me.callParent([cfg]);
 
         // Items is an array property of ActionColumns
         me.items = items;
@@ -91385,19 +91920,23 @@ Ext.define('Ext.grid.column.Action', {
      * Returns the event handler's status to allow canceling of GridView's bubbling process.
      */
     processEvent : function(type, view, cell, recordIndex, cellIndex, e){
-        var m = e.getTarget().className.match(this.actionIdRe),
+        var me = this,
+            match = e.getTarget().className.match(me.actionIdRe),
             item, fn;
-        if (m && (item = this.items[parseInt(m[1], 10)])) {
-            if (type == 'click') {
-                fn = item.handler;
-                if (fn || this.handler) {
-                    fn.call(item.scope||this.scope||this, view, recordIndex, cellIndex, item, e);
+        if (match) {
+            item = me.items[parseInt(match[1], 10)];
+            if (item) {
+                if (type == 'click') {
+                    fn = item.handler || me.handler;
+                    if (fn) {
+                        fn.call(item.scope || me.scope || me, view, recordIndex, cellIndex, item, e);
+                    }
+                } else if (type == 'mousedown' && item.stopSelection !== false) {
+                    return false;
                 }
-            } else if ((type == 'mousedown') && (item.stopSelection !== false)) {
-                return false;
             }
         }
-        return this.callParent(arguments);
+        return me.callParent(arguments);
     },
 
     cascade: function(fn, scope) {
@@ -91417,7 +91956,7 @@ Ext.define('Ext.grid.column.Action', {
  *
  * {@img Ext.grid.column.Boolean/Ext.grid.column.Boolean.png Ext.grid.column.Boolean grid column}
  *
- *  ## Code
+ * ## Code
  *     Ext.create('Ext.data.Store', {
  *        storeId:'sampleStore',
  *        fields:[
@@ -91437,24 +91976,24 @@ Ext.define('Ext.grid.column.Action', {
  *                root: 'items'
  *            }
  *        }
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Boolean Column Demo',
- *        store: Ext.data.StoreManager.lookup('sampleStore'),
- *        columns: [
- *            {text: 'Framework',  dataIndex: 'framework', flex: 1},
- *            {
- *                xtype: 'booleancolumn', 
- *                text: 'Rocks',
- *                trueText: 'Yes',
- *                falseText: 'No', 
- *                dataIndex: 'rocks'}
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Boolean Column Demo',
+ *         store: Ext.data.StoreManager.lookup('sampleStore'),
+ *         columns: [
+ *             {text: 'Framework',  dataIndex: 'framework', flex: 1},
+ *             {
+ *                 xtype: 'booleancolumn', 
+ *                 text: 'Rocks',
+ *                 trueText: 'Yes',
+ *                 falseText: 'No', 
+ *                 dataIndex: 'rocks'}
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  * 
  * @xtype booleancolumn
  */
@@ -91502,43 +92041,45 @@ Ext.define('Ext.grid.column.Boolean', {
 /**
  * @class Ext.grid.column.Date
  * @extends Ext.grid.column.Column
- * <p>A Column definition class which renders a passed date according to the default locale, or a configured
- * {@link #format}.</p>
+ *
+ * A Column definition class which renders a passed date according to the default locale, or a configured
+ * {@link #format}.
  *
  * {@img Ext.grid.column.Date/Ext.grid.column.Date.png Ext.grid.column.Date grid column}
  *
  * ## Code
- *    Ext.create('Ext.data.Store', {
- *        storeId:'sampleStore',
- *        fields:[
- *            {name: 'symbol', type: 'string'},
- *            {name: 'date', type: 'date'},
- *            {name: 'change', type: 'number'},
- *            {name: 'volume', type: 'number'},
- *            {name: 'topday', type: 'date'}                        
- *        ],
- *        data:[
- *            {symbol:"msft", date:'2011/04/22', change:2.43, volume:61606325, topday:'04/01/2010'},
- *            {symbol:"goog", date:'2011/04/22', change:0.81, volume:3053782, topday:'04/11/2010'},
- *            {symbol:"apple", date:'2011/04/22', change:1.35, volume:24484858, topday:'04/28/2010'},            
- *            {symbol:"sencha", date:'2011/04/22', change:8.85, volume:5556351, topday:'04/22/2010'}            
- *        ]
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Date Column Demo',
- *        store: Ext.data.StoreManager.lookup('sampleStore'),
- *        columns: [
- *            {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
- *            {text: 'Date',  dataIndex: 'date', xtype: 'datecolumn', format:'Y-m-d'},
- *            {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
- *            {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'},
- *            {text: 'Top Day',  dataIndex: 'topday', xtype: 'datecolumn', format:'l'}            
- *        ],
- *        height: 200,
- *        width: 450,
- *        renderTo: Ext.getBody()
- *    });
+ *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'sampleStore',
+ *         fields:[
+ *             {name: 'symbol', type: 'string'},
+ *             {name: 'date', type: 'date'},
+ *             {name: 'change', type: 'number'},
+ *             {name: 'volume', type: 'number'},
+ *             {name: 'topday', type: 'date'}                        
+ *         ],
+ *         data:[
+ *             {symbol:"msft", date:'2011/04/22', change:2.43, volume:61606325, topday:'04/01/2010'},
+ *             {symbol:"goog", date:'2011/04/22', change:0.81, volume:3053782, topday:'04/11/2010'},
+ *             {symbol:"apple", date:'2011/04/22', change:1.35, volume:24484858, topday:'04/28/2010'},            
+ *             {symbol:"sencha", date:'2011/04/22', change:8.85, volume:5556351, topday:'04/22/2010'}            
+ *         ]
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Date Column Demo',
+ *         store: Ext.data.StoreManager.lookup('sampleStore'),
+ *         columns: [
+ *             {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
+ *             {text: 'Date',  dataIndex: 'date', xtype: 'datecolumn', format:'Y-m-d'},
+ *             {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
+ *             {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'},
+ *             {text: 'Top Day',  dataIndex: 'topday', xtype: 'datecolumn', format:'l'}            
+ *         ],
+ *         height: 200,
+ *         width: 450,
+ *         renderTo: Ext.getBody()
+ *     });
  *    
  * @xtype datecolumn
  */
@@ -91564,7 +92105,8 @@ Ext.define('Ext.grid.column.Date', {
 /**
  * @class Ext.grid.column.Number
  * @extends Ext.grid.column.Column
- * <p>A Column definition class which renders a numeric data field according to a {@link #format} string.</p>
+ *
+ * A Column definition class which renders a numeric data field according to a {@link #format} string.
  *
  * {@img Ext.grid.column.Number/Ext.grid.column.Number.png Ext.grid.column.Number cell editing}
  *
@@ -91583,21 +92125,21 @@ Ext.define('Ext.grid.column.Date', {
  *            {symbol:"apple", price:342.41, change:1.35, volume:24484858},            
  *            {symbol:"sencha", price:142.08, change:8.85, volume:5556351}            
  *        ]
- *    });
- *    
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Number Column Demo',
- *        store: Ext.data.StoreManager.lookup('sampleStore'),
- *        columns: [
- *            {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
- *            {text: 'Current Price',  dataIndex: 'price', renderer: Ext.util.Format.usMoney},
- *            {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
- *            {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'}
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Number Column Demo',
+ *         store: Ext.data.StoreManager.lookup('sampleStore'),
+ *         columns: [
+ *             {text: 'Symbol',  dataIndex: 'symbol', flex: 1},
+ *             {text: 'Current Price',  dataIndex: 'price', renderer: Ext.util.Format.usMoney},
+ *             {text: 'Change',  dataIndex: 'change', xtype: 'numbercolumn', format:'0.00'},
+ *             {text: 'Volume',  dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000'}
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  * 
  * @xtype numbercolumn
  */
@@ -91765,8 +92307,8 @@ Ext.define('Ext.grid.feature.Feature', {
      * The method must also return the eventName as the first index of the array
      * to be passed to fireEvent.
      */
-    getFireEventArgs: function(eventName, view, featureTarget) {
-        return [eventName, view, featureTarget];
+    getFireEventArgs: function(eventName, view, featureTarget, e) {
+        return [eventName, view, featureTarget, e];
     },
     
     /**
@@ -91905,13 +92447,18 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
      * @param {Object} data The current data
      * @return {String} The value to be rendered
      */
-    getColumnValue: function(column, data){
-        var comp = Ext.getCmp(column.id),
-            value = data[column.dataIndex],
-            renderer = comp.summaryRenderer || comp.renderer;
-            
+    getColumnValue: function(column, summaryData){
+        var comp     = Ext.getCmp(column.id),
+            value    = summaryData[column.dataIndex],
+            renderer = comp.summaryRenderer;
+
         if (renderer) {
-            value = renderer.call(comp.scope || this, value, data, column.dataIndex);
+            value = renderer.call(
+                comp.scope || this,
+                value,
+                summaryData,
+                column.dataIndex
+            );
         }
         return value;
     },
@@ -92087,8 +92634,7 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @event groupclick
      * @param {Ext.view.Table} view
      * @param {HTMLElement} node
-     * @param {Number} unused
-     * @param {Number} unused
+     * @param {String} group The name of the group
      * @param {Ext.EventObject} e
      */
 
@@ -92096,8 +92642,7 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @event groupdblclick
      * @param {Ext.view.Table} view
      * @param {HTMLElement} node
-     * @param {Number} unused
-     * @param {Number} unused
+     * @param {String} group The name of the group
      * @param {Ext.EventObject} e
      */
 
@@ -92105,8 +92650,7 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @event groupcontextmenu
      * @param {Ext.view.Table} view
      * @param {HTMLElement} node
-     * @param {Number} unused
-     * @param {Number} unused
+     * @param {String} group The name of the group
      * @param {Ext.EventObject} e
      */
 
@@ -92114,8 +92658,7 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @event groupcollapse
      * @param {Ext.view.Table} view
      * @param {HTMLElement} node
-     * @param {Number} unused
-     * @param {Number} unused
+     * @param {String} group The name of the group
      * @param {Ext.EventObject} e
      */
 
@@ -92123,8 +92666,7 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @event groupexpand
      * @param {Ext.view.Table} view
      * @param {HTMLElement} node
-     * @param {Number} unused
-     * @param {Number} unused
+     * @param {String} group The name of the group
      * @param {Ext.EventObject} e
      */
 
@@ -92298,7 +92840,7 @@ Ext.define('Ext.grid.feature.Grouping', {
             showGroupsText     = me.showGroupsText,
             enableNoGroups     = me.enableNoGroups,
             groupMenuItemClick = Ext.Function.bind(me.onGroupMenuItemClick, me),
-            groupToggleMenuItemClick = Ext.Function.bind(me.onGroupToggleMenuItemClick, me)
+            groupToggleMenuItemClick = Ext.Function.bind(me.onGroupToggleMenuItemClick, me);
         
         // runs in the scope of headerCt
         return function() {
@@ -92541,14 +93083,14 @@ Ext.define('Ext.grid.feature.Grouping', {
     // events that are fired on the view. Chose not to return the actual
     // group itself because of its expense and because developers can simply
     // grab the group via store.getGroups(groupName)
-    getFireEventArgs: function(type, view, featureTarget) {
+    getFireEventArgs: function(type, view, featureTarget, e) {
         var returnArray = [type, view, featureTarget],
             groupBd     = Ext.fly(featureTarget.nextSibling, '_grouping'),
             groupBdId   = Ext.getDom(groupBd).id,
             prefix      = view.id + '-gp-',
             groupName   = groupBdId.substr(prefix.length);
         
-        returnArray.push(groupName);
+        returnArray.push(groupName, e);
         
         return returnArray;
     }
@@ -92584,7 +93126,7 @@ Ext.define('Ext.grid.feature.Grouping', {
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage
@@ -92952,7 +93494,7 @@ Ext.define('Ext.grid.feature.RowWrap', {
  * not specified the default calculated value is shown. The summaryRenderer is called with:
  *
  *  - value {Object} - The calculated value.
- *  - data {Object} - Contains all raw summary values for the row.
+ *  - summaryData {Object} - Contains all raw summary values for the row.
  *  - field {String} - The name of the field we are calculating
  * 
  * ## Example Usage
@@ -92992,7 +93534,7 @@ Ext.define('Ext.grid.feature.RowWrap', {
  *             dataIndex: 'student',
  *             text: 'Name',
  *             summaryType: 'count',
- *             summaryRenderer: function(value){
+ *             summaryRenderer: function(value, summaryData, dataIndex) {
  *                 return Ext.String.format('{0} student{1}', value, value !== 1 ? 's' : ''); 
  *             }
  *         }, {
@@ -93764,48 +94306,48 @@ Ext.define('Ext.grid.plugin.Editing', {
  * {@img Ext.grid.plugin.CellEditing/Ext.grid.plugin.CellEditing.png Ext.grid.plugin.CellEditing plugin}
  *
  * ## Example Usage
- *    Ext.create('Ext.data.Store', {
- *        storeId:'simpsonsStore',
- *        fields:['name', 'email', 'phone'],
- *        data:{'items':[
- *            {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *            {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *            {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
- *            {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
- *        ]},
- *        proxy: {
- *            type: 'memory',
- *            reader: {
- *                type: 'json',
- *                root: 'items'
- *            }
- *        }
- *    });
  *
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Simpsons',
- *        store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *        columns: [
- *            {header: 'Name',  dataIndex: 'name', field: 'textfield'},
- *            {header: 'Email', dataIndex: 'email', flex:1,
- *                editor: {
- *                    xtype:'textfield',
- *                    allowBlank:false
- *                }
- *            },
- *            {header: 'Phone', dataIndex: 'phone'}
- *        ],
- *        selType: 'cellmodel',
- *        plugins: [
- *            Ext.create('Ext.grid.plugin.CellEditing', {
- *                clicksToEdit: 1
- *            })
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
- *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data:{'items':[
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
+ *         ]},
+ *         proxy: {
+ *             type: 'memory',
+ *             reader: {
+ *                 type: 'json',
+ *                 root: 'items'
+ *             }
+ *         }
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', field: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1,
+ *                 editor: {
+ *                     xtype:'textfield',
+ *                     allowBlank:false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'cellmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.CellEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  */
 Ext.define('Ext.grid.plugin.CellEditing', {
     alias: 'plugin.cellediting',
@@ -93905,21 +94447,27 @@ grid.on('validateedit', function(e) {
         me.editors.clear();
         me.callParent(arguments);
     },
+    
+    onBodyScroll: function() {
+        var ed = this.getActiveEditor();
+        if (ed && ed.field) {
+            if (ed.field.triggerBlur) {
+                ed.field.triggerBlur();
+            } else {
+                ed.field.blur();
+            }
+        }
+    },
 
     // private
     // Template method called from base class's initEvents
     initCancelTriggers: function() {
-        var me   = this;
+        var me   = this,
             grid = me.grid,
-            view   = grid.view;
-
-        me.mon(view, {
-            mousewheel: {
-                element: 'el',
-                fn: me.cancelEdit,
-                scope: me
-            }
-        });
+            view = grid.view;
+            
+        view.addElListener('mousewheel', me.cancelEdit, me);
+        me.mon(view, 'bodyscroll', me.onBodyScroll, me);
         me.mon(grid, {
             columnresize: me.cancelEdit,
             columnmove: me.cancelEdit,
@@ -94006,7 +94554,8 @@ grid.on('validateedit', function(e) {
     },
 
     getEditor: function(record, column) {
-        var editors = this.editors,
+        var me = this,
+            editors = me.editors,
             editorId = column.itemId || column.id,
             editor = editors.getByKey(editorId);
 
@@ -94025,13 +94574,13 @@ grid.on('validateedit', function(e) {
                     field: editor
                 });
             }
-            editor.parentEl = this.grid.getEditorParent();
+            editor.parentEl = me.grid.getEditorParent();
             // editor.parentEl should be set here.
             editor.on({
-                scope: this,
-                specialkey: this.onSpecialKey,
-                complete: this.onEditComplete,
-                canceledit: this.cancelEdit
+                scope: me,
+                specialkey: me.onSpecialKey,
+                complete: me.onEditComplete,
+                canceledit: me.cancelEdit
             });
             editors.add(editor);
             return editor;
@@ -94064,18 +94613,33 @@ grid.on('validateedit', function(e) {
         var me = this,
             grid = me.grid,
             sm = grid.getSelectionModel(),
-            dataIndex = me.getActiveColumn().dataIndex;
+            activeColumn = me.getActiveColumn(),
+            dataIndex;
 
-        me.setActiveEditor(null);
-        me.setActiveColumn(null);
-        me.setActiveRecord(null);
-        delete sm.wasEditing;
+        if (activeColumn) {
+            dataIndex = activeColumn.dataIndex;
 
-        if (!me.validateEdit()) {
-            return;
+            me.setActiveEditor(null);
+            me.setActiveColumn(null);
+            me.setActiveRecord(null);
+            delete sm.wasEditing;
+    
+            if (!me.validateEdit()) {
+                return;
+            }
+            // Only update the record if the new value is different than the
+            // startValue, when the view refreshes its el will gain focus
+            if (value !== startValue) {
+                me.context.record.set(dataIndex, value);
+            // Restore focus back to the view's element.
+            } else {
+                grid.getView().el.focus();
+            }
+            me.context.value = value;
+            me.fireEvent('edit', me, me.context);
+            
+
         }
-        me.context.record.set(dataIndex, value);
-        me.fireEvent('edit', me, me.context);
     },
 
     /**
@@ -94601,6 +95165,7 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
  * {@link Ext.grid.column.Column#field field}. The editor can be a field instance or a field configuration.
  * If an editor is not specified for a particular column then that column won't be editable and the value of
  * the column will be displayed.
+ *
  * The editor may be shared for each column in the grid, or a different one may be specified for each column.
  * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
  * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
@@ -94608,50 +95173,48 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
  * {@img Ext.grid.plugin.RowEditing/Ext.grid.plugin.RowEditing.png Ext.grid.plugin.RowEditing plugin}
  *
  * ## Example Usage
- *    Ext.create('Ext.data.Store', {
- *        storeId:'simpsonsStore',
- *        fields:['name', 'email', 'phone'],
- *        data:{'items':[
- *            {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *            {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *            {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},                        
- *            {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}            
- *        ]},
- *        proxy: {
- *            type: 'memory',
- *            reader: {
- *                type: 'json',
- *                root: 'items'
- *            }
- *        }
- *    });
- *   
- *    Ext.create('Ext.grid.Panel', {
- *        title: 'Simpsons',
- *        store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *        columns: [
- *            {header: 'Name',  dataIndex: 'name', field: 'textfield'},
- *            {header: 'Email', dataIndex: 'email', flex:1, 
- *                editor: {
- *                    xtype:'textfield',
- *                    allowBlank:false
- *                }
- *            },
- *            {header: 'Phone', dataIndex: 'phone'}
- *        ],
- *        selType: 'rowmodel',
- *        plugins: [
- *            Ext.create('Ext.grid.plugin.RowEditing', {
- *                clicksToEdit: 1
- *            })
- *        ],
- *        height: 200,
- *        width: 400,
- *        renderTo: Ext.getBody()
- *    });
- * 
- * @markdown
  *
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data:{'items':[
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},                        
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}            
+ *         ]},
+ *         proxy: {
+ *             type: 'memory',
+ *             reader: {
+ *                 type: 'json',
+ *                 root: 'items'
+ *             }
+ *         }
+ *     });
+ *     
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', field: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1, 
+ *                 editor: {
+ *                     xtype:'textfield',
+ *                     allowBlank:false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'rowmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.RowEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
  */
 Ext.define('Ext.grid.plugin.RowEditing', {
     extend: 'Ext.grid.plugin.Editing',
@@ -94901,38 +95464,47 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnAdd: function(ct, column) {
-        var me = this,
+        if (column.isHeader) {
+            var me = this,
+                editor;
+            
+            me.initFieldAccessors(column);
             editor = me.getEditor();
-
-        me.initFieldAccessors(column);
-        if (editor && editor.onColumnAdd) {
-            editor.onColumnAdd(column);
+            
+            if (editor && editor.onColumnAdd) {
+                editor.onColumnAdd(column);
+            }
         }
     },
 
     // private
     onColumnRemove: function(ct, column) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnRemove) {
-            editor.onColumnRemove(column);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor && editor.onColumnRemove) {
+                editor.onColumnRemove(column);
+            }
+            me.removeFieldAccessors(column);  
         }
-        me.removeFieldAccessors(column);
     },
 
     // private
     onColumnResize: function(ct, column, width) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnResize) {
-            editor.onColumnResize(column, width);
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+    
+            if (editor && editor.onColumnResize) {
+                editor.onColumnResize(column, width);
+            }
         }
     },
 
     // private
     onColumnHide: function(ct, column) {
+        // no isHeader check here since its already a columnhide event.
         var me = this,
             editor = me.getEditor();
 
@@ -94943,6 +95515,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnShow: function(ct, column) {
+        // no isHeader check here since its already a columnshow event.
         var me = this,
             editor = me.getEditor();
 
@@ -94953,6 +95526,7 @@ grid.on('validateedit', function(e) {
 
     // private
     onColumnMove: function(ct, column, fromIdx, toIdx) {
+        // no isHeader check here since its already a columnmove event.
         var me = this,
             editor = me.getEditor();
 
@@ -94990,10 +95564,13 @@ var grid = new Ext.grid.property.Grid({
 </code></pre>
  * @constructor
  * @param {Object} config The grid config object
+ * @xtype propertygrid
  */
 Ext.define('Ext.grid.property.Grid', {
 
     extend: 'Ext.grid.Panel',
+    
+    alias: 'widget.propertygrid',
 
     alternateClassName: 'Ext.grid.PropertyGrid',
 
@@ -95183,12 +95760,12 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         if (operation == Ext.data.Model.EDIT) {
             v = record.get(me.valueField);
             oldValue = record.modified.value;
-            if (me.fireEvent('beforepropertychange', me.source, record.id, v, oldValue) !== false) {
+            if (me.fireEvent('beforepropertychange', me.source, record.getId(), v, oldValue) !== false) {
                 if (me.source) {
-                    me.source[record.id] = v;
+                    me.source[record.getId()] = v;
                 }
                 record.commit();
-                me.fireEvent('propertychange', me.source, record.id, v, oldValue);
+                me.fireEvent('propertychange', me.source, record.getId(), v, oldValue);
             } else {
                 record.reject();
             }
@@ -95202,7 +95779,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         } else if (direction == 'right') {
             direction = 'down';
         }
-        var pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
+        pos = Ext.view.Table.prototype.walkCells.call(this, pos, direction, e, preventWrap, verifierFn, scope);
         if (!pos.column) {
             pos.column = 1;
         }
@@ -95251,7 +95828,9 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 
     destroyEditors: function (editors) {
         for (var ed in editors) {
-            Ext.destroy(editors[ed]);
+            if (editors.hasOwnProperty(ed)) {
+                Ext.destroy(editors[ed]);
+            }
         }
     },
 
@@ -95469,12 +96048,14 @@ Ext.define('Ext.grid.property.Store', {
     uses: ['Ext.data.reader.Reader', 'Ext.data.proxy.Proxy', 'Ext.data.ResultSet', 'Ext.grid.property.Property'],
 
     constructor : function(grid, source){
-        this.grid = grid;
-        this.source = source;
-        this.callParent([{
+        var me = this;
+        
+        me.grid = grid;
+        me.source = source;
+        me.callParent([{
             data: source,
             model: Ext.grid.property.Property,
-            proxy: this.getProxy()
+            proxy: me.getProxy()
         }]);
     },
 
@@ -95503,18 +96084,21 @@ Ext.define('Ext.grid.property.Store', {
 
                 readRecords: function(dataObject) {
                     var val,
+                        propName,
                         result = {
                             records: [],
                             success: true
                         };
 
-                    for (var propName in dataObject) {
-                        val = dataObject[propName];
-                        if (dataObject.hasOwnProperty(propName) && this.isEditableValue(val)) {
-                            result.records.push(new Ext.grid.property.Property({
-                                name: propName,
-                                value: val
-                            }, propName));
+                    for (propName in dataObject) {
+                        if (dataObject.hasOwnProperty(propName)) {
+                            val = dataObject[propName];
+                            if (this.isEditableValue(val)) {
+                                result.records.push(new Ext.grid.property.Property({
+                                    name: propName,
+                                    value: val
+                                }, propName));
+                            }
                         }
                     }
                     result.total = result.count = result.records.length;
@@ -95545,35 +96129,37 @@ Ext.define('Ext.grid.property.Store', {
 
     // private
     getProperty : function(row) {
-       return Ext.isNumber(row) ? this.store.getAt(row) : this.store.getById(row);
+       return Ext.isNumber(row) ? this.getAt(row) : this.getById(row);
     },
 
     // private
     setValue : function(prop, value, create){
-        var r = this.getRec(prop);
-        if (r) {
-            r.set('value', value);
-            this.source[prop] = value;
+        var me = this,
+            rec = me.getRec(prop);
+            
+        if (rec) {
+            rec.set('value', value);
+            me.source[prop] = value;
         } else if (create) {
             // only create if specified.
-            this.source[prop] = value;
-            r = new Ext.grid.property.Property({name: prop, value: value}, prop);
-            this.store.add(r);
+            me.source[prop] = value;
+            rec = new Ext.grid.property.Property({name: prop, value: value}, prop);
+            me.store.add(rec);
         }
     },
 
     // private
     remove : function(prop) {
-        var r = this.getRec(prop);
-        if(r) {
-            this.store.remove(r);
+        var rec = this.getRec(prop);
+        if (rec) {
+            store.remove(rec);
             delete this.source[prop];
         }
     },
 
     // private
     getRec : function(prop) {
-        return this.store.getById(prop);
+        return this.getById(prop);
     },
 
     // protected - should only be called by the grid.  Use grid.getSource instead.
@@ -95780,46 +96366,46 @@ Ext.define('Ext.layout.component.field.Slider', {
  * {@img Ext.layout.container.Absolute/Ext.layout.container.Absolute.png Ext.layout.container.Absolute container layout}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.form.Panel', {
-        title: 'Absolute Layout',
-        width: 300,
-        height: 275,
-        layout:'absolute',
-        layoutConfig: {
-            // layout-specific configs go here
-            //itemCls: 'x-abs-layout-item',
-        },
-        url:'save-form.php',
-        defaultType: 'textfield',
-        items: [{
-            x: 10,
-            y: 10,
-            xtype:'label',
-            text: 'Send To:'
-        },{
-            x: 80,
-            y: 10,
-            name: 'to',
-            anchor:'90%'  // anchor width by percentage
-        },{
-            x: 10,
-            y: 40,
-            xtype:'label',
-            text: 'Subject:'
-        },{
-            x: 80,
-            y: 40,
-            name: 'subject',
-            anchor: '90%'  // anchor width by percentage
-        },{
-            x:0,
-            y: 80,
-            xtype: 'textareafield',
-            name: 'msg',
-            anchor: '100% 100%'  // anchor width and height
-        }],
-        renderTo: Ext.getBody()
-    });
+Ext.create('Ext.form.Panel', {
+    title: 'Absolute Layout',
+    width: 300,
+    height: 275,
+    layout:'absolute',
+    layoutConfig: {
+        // layout-specific configs go here
+        //itemCls: 'x-abs-layout-item',
+    },
+    url:'save-form.php',
+    defaultType: 'textfield',
+    items: [{
+        x: 10,
+        y: 10,
+        xtype:'label',
+        text: 'Send To:'
+    },{
+        x: 80,
+        y: 10,
+        name: 'to',
+        anchor:'90%'  // anchor width by percentage
+    },{
+        x: 10,
+        y: 40,
+        xtype:'label',
+        text: 'Subject:'
+    },{
+        x: 80,
+        y: 40,
+        name: 'subject',
+        anchor: '90%'  // anchor width by percentage
+    },{
+        x:0,
+        y: 80,
+        xtype: 'textareafield',
+        name: 'msg',
+        anchor: '100% 100%'  // anchor width and height
+    }],
+    renderTo: Ext.getBody()
+});
 </code></pre>
  */
 
@@ -95873,33 +96459,33 @@ Ext.define('Ext.layout.container.Absolute', {
  * {@img Ext.layout.container.Accordion/Ext.layout.container.Accordion.png Ext.layout.container.Accordion container layout}
  * <p>Example usage:</p>
  * <pre><code>
-    Ext.create('Ext.panel.Panel', {
-        title: 'Accordion Layout',
-        width: 300,
-        height: 300,
-        layout:'accordion',
-        defaults: {
-            // applied to each contained panel
-            bodyStyle: 'padding:15px'
-        },
-        layoutConfig: {
-            // layout-specific configs go here
-            titleCollapse: false,
-            animate: true,
-            activeOnTop: true
-        },
-        items: [{
-            title: 'Panel 1',
-            html: '<p>Panel content!</p>'
-        },{
-            title: 'Panel 2',
-            html: '<p>Panel content!</p>'
-        },{
-            title: 'Panel 3',
-            html: '<p>Panel content!</p>'
-        }],
-        renderTo: Ext.getBody()
-    });
+Ext.create('Ext.panel.Panel', {
+    title: 'Accordion Layout',
+    width: 300,
+    height: 300,
+    layout:'accordion',
+    defaults: {
+        // applied to each contained panel
+        bodyStyle: 'padding:15px'
+    },
+    layoutConfig: {
+        // layout-specific configs go here
+        titleCollapse: false,
+        animate: true,
+        activeOnTop: true
+    },
+    items: [{
+        title: 'Panel 1',
+        html: 'Panel content!'
+    },{
+        title: 'Panel 2',
+        html: 'Panel content!'
+    },{
+        title: 'Panel 3',
+        html: 'Panel content!'
+    }],
+    renderTo: Ext.getBody()
+});
 </code></pre>
  */
 Ext.define('Ext.layout.container.Accordion', {
@@ -96228,7 +96814,7 @@ Ext.define('Ext.layout.container.Accordion', {
 
         // Show temporarily hidden docked items
         for (; i < len; i++) {
-            otherDocks[i].hidden = false;
+            otherDocks[i].show();
         }
 
         // If it was an initial native collapse which hides the body
@@ -96364,6 +96950,9 @@ Ext.define('Ext.resizer.Splitter', {
         me.tracker = Ext.create('Ext.resizer.SplitterTracker', {
             el: me.el
         });
+
+        // Relay the most important events to our owner (could open wider later):
+        me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
     },
 
     getCollapseDirection: function() {
@@ -96531,6 +97120,7 @@ Ext.define('Ext.layout.container.Border', {
         }
 
         // Delegate this operation to the shadow "V" or "H" box layout, and then down to any embedded layout.
+        me.fixHeightConstraints();
         me.shadowLayout.onLayout();
         if (me.embeddedContainer) {
             me.embeddedContainer.layout.onLayout();
@@ -96748,6 +97338,17 @@ Ext.define('Ext.layout.container.Border', {
                     me.splitters.west.ownerCt = me.embeddedContainer;
                 }
 
+                // These spliiters need to be constrained by components one-level below
+                // the component in their vobx. We update the min/maxHeight on the helper
+                // (embeddedContainer) prior to starting the split/drag. This has to be
+                // done on-the-fly to allow min/maxHeight of the E/C/W regions to be set
+                // dynamically.
+                Ext.each([me.splitters.north, me.splitters.south], function (splitter) {
+                    if (splitter) {
+                        splitter.on('beforedragstart', me.fixHeightConstraints, me);
+                    }
+                });
+
                 // The east or west region wanted a percentage
                 if (horizontalFlex) {
                     regions.center.flex -= horizontalFlex;
@@ -96805,7 +97406,6 @@ Ext.define('Ext.layout.container.Border', {
 
         me.borderLayoutInitialized = true;
     },
-
 
     setupState: function(comp){
         var getState = comp.getState;
@@ -96868,6 +97468,30 @@ Ext.define('Ext.layout.container.Border', {
             scope: me
         });
         return resizer;
+    },
+
+    // Private
+    // Propogates the min/maxHeight values from the inner hbox items to its container.
+    fixHeightConstraints: function () {
+        var me = this,
+            ct = me.embeddedContainer,
+            maxHeight = 1e99, minHeight = -1;
+
+        if (!ct) {
+            return;
+        }
+
+        ct.items.each(function (item) {
+            if (Ext.isNumber(item.maxHeight)) {
+                maxHeight = Math.max(maxHeight, item.maxHeight);
+            }
+            if (Ext.isNumber(item.minHeight)) {
+                minHeight = Math.max(minHeight, item.minHeight);
+            }
+        });
+
+        ct.maxHeight = maxHeight;
+        ct.minHeight = minHeight;
     },
 
     // Hide/show a region's associated splitter when the region is hidden/shown
@@ -96950,13 +97574,15 @@ Ext.define('Ext.layout.container.Border', {
                 if ((Ext.isIE6 || Ext.isIE7 || (Ext.isIEQuirks)) && !horiz) {
                     placeholder.width = 25;
                 }
-                placeholder[horiz ? 'tools' : 'items'] = [{
-                    xtype: 'tool',
-                    client: comp,
-                    type: 'expand-' + oppositeDirection,
-                    handler: me.onPlaceHolderToolClick,
-                    scope: me
-                }];
+                if (!comp.hideCollapseTool) {
+                    placeholder[horiz ? 'tools' : 'items'] = [{
+                        xtype: 'tool',
+                        client: comp,
+                        type: 'expand-' + oppositeDirection,
+                        handler: me.onPlaceHolderToolClick,
+                        scope: me
+                    }];
+                }
             }
             placeholder = me.owner.createComponent(placeholder);
             if (comp.isXType('panel')) {
@@ -97020,12 +97646,11 @@ Ext.define('Ext.layout.container.Border', {
     onBeforeRegionCollapse: function(comp, direction, animate) {
         var me = this,
             compEl = comp.el,
+            width,
             miniCollapse = comp.collapseMode == 'mini',
             shadowContainer = comp.shadowOwnerCt,
             shadowLayout = shadowContainer.layout,
             placeholder = comp.placeholder,
-            placeholderBox,
-            targetSize = shadowLayout.getLayoutTargetSize(),
             sl = me.owner.suspendLayout,
             scsl = shadowContainer.suspendLayout,
             isNorthOrWest = (comp.region == 'north' || comp.region == 'west'); // Flag to keep the placeholder non-adjacent to any Splitter
@@ -97068,11 +97693,21 @@ Ext.define('Ext.layout.container.Border', {
 
         if (!placeholder.rendered) {
             shadowLayout.renderItem(placeholder, shadowLayout.innerCt);
+
+            // The inserted placeholder does not have the proper size, so copy the width
+            // for N/S or the height for E/W from the component. This fixes EXTJSIV-1562
+            // without recursive layouts. This is only an issue initially. After this time,
+            // placeholder will have the correct width/height set by the layout (which has
+            // already happened when we get here initially).
+            if (comp.region == 'north' || comp.region == 'south') {
+                placeholder.setCalculatedSize(comp.getWidth());
+            } else {
+                placeholder.setCalculatedSize(undefined, comp.getHeight());
+            }
         }
 
         // Jobs to be done after the collapse has been done
         function afterCollapse() {
-
             // Reinstate automatic laying out.
             me.owner.suspendLayout = sl;
             shadowContainer.suspendLayout = scsl;
@@ -97124,11 +97759,6 @@ Ext.define('Ext.layout.container.Border', {
             compEl.setLeftTop(-10000, -10000);
             shadowLayout.layout();
             afterCollapse();
-
-            // Horrible workaround for https://sencha.jira.com/browse/EXTJSIV-1562
-            if (Ext.isIE) {
-                placeholder.setCalculatedSize(placeholder.el.getWidth());
-            }
         }
 
         return false;
@@ -97504,13 +98134,13 @@ Ext.define('Ext.layout.container.Border', {
         // the panels (or "cards") within the layout
         items: [{
             id: 'card-0',
-            html: '<h1>Welcome to the Wizard!</h1><p>Step 1 of 3</p>'
+            html: '&lt;h1&gt;Welcome to the Wizard!&lt;/h1&gt;&lt;p&gt;Step 1 of 3&lt;/p&gt;'
         },{
             id: 'card-1',
-            html: '<p>Step 2 of 3</p>'
+            html: '&lt;p&gt;Step 2 of 3&lt;/p&gt;'
         },{
             id: 'card-2',
-            html: '<h1>Congratulations!</h1><p>Step 3 of 3 - Complete</p>'
+            html: '&lt;h1&gt;Congratulations!&lt;/h1&gt;&lt;p&gt;Step 3 of 3 - Complete&lt;/p&gt;'
         }],
         renderTo: Ext.getBody()
     });  
@@ -97835,16 +98465,16 @@ Ext.define('Ext.layout.container.Column', {
             bodyStyle:'padding:20px'
         },
         items: [{
-            html: '<p>Cell A content</p>',
+            html: 'Cell A content',
             rowspan: 2
         },{
-            html: '<p>Cell B content</p>',
+            html: 'Cell B content',
             colspan: 2
         },{
-            html: '<p>Cell C content</p>',
+            html: 'Cell C content',
             cellCls: 'highlight'
         },{
-            html: '<p>Cell D content</p>'
+            html: 'Cell D content'
         }],
         renderTo: Ext.getBody()
     });
@@ -99068,7 +99698,9 @@ Ext.define('Ext.menu.Menu', {
 
     initComponent: function() {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls = [prefix + 'menu'],
+            bodyCls = me.bodyCls ? [me.bodyCls] : [];
 
         me.addEvents(
             /**
@@ -99112,14 +99744,12 @@ Ext.define('Ext.menu.Menu', {
         Ext.menu.Manager.register(me);
 
         // Menu classes
-        var cls = [prefix + 'menu'];
         if (me.plain) {
             cls.push(prefix + 'menu-plain');
         }
         me.cls = cls.join(' ');
 
         // Menu body classes
-        var bodyCls = me.bodyCls ? [me.bodyCls] : [];
         bodyCls.unshift(prefix + 'menu-body');
         me.bodyCls = bodyCls.join(' ');
 
@@ -99285,7 +99915,9 @@ Ext.define('Ext.menu.Menu', {
     // private
     lookupItemFromObject: function(cmp) {
         var me = this,
-            prefix = Ext.baseCSSPrefix;
+            prefix = Ext.baseCSSPrefix,
+            cls,
+            intercept;
 
         if (!cmp.isComponent) {
             if (!cmp.xtype) {
@@ -99300,11 +99932,8 @@ Ext.define('Ext.menu.Menu', {
         }
 
         if (!cmp.isMenuItem && !cmp.dock) {
-            var cls = [
-                    prefix + 'menu-item',
-                    prefix + 'menu-item-cmp'
-                ],
-                intercept = Ext.Function.createInterceptor;
+            cls = [prefix + 'menu-item', prefix + 'menu-item-cmp'];
+            intercept = Ext.Function.createInterceptor;
 
             // Wrap focus/blur to control component focus
             cmp.focus = intercept(cmp.focus, function() {
@@ -99447,7 +100076,9 @@ Ext.define('Ext.menu.Menu', {
      * @markdown
      */
     showBy: function(cmp, pos, off) {
-        var me = this;
+        var me = this,
+            xy,
+            region;
 
         if (me.floating && cmp) {
             me.layout.autoSize = true;
@@ -99457,22 +100088,30 @@ Ext.define('Ext.menu.Menu', {
             cmp = cmp.el || cmp;
 
             // Convert absolute to floatParent-relative coordinates if necessary.
-            var xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
+            xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
             if (me.floatParent) {
-                var r = me.floatParent.getTargetEl().getViewRegion();
-                xy[0] -= r.x;
-                xy[1] -= r.y;
+                region = me.floatParent.getTargetEl().getViewRegion();
+                xy[0] -= region.x;
+                xy[1] -= region.y;
             }
             me.showAt(xy);
-            me.doConstrain();
         }
         return me;
+    },
+    
+    // inherit docs
+    showAt: function(){
+        this.callParent(arguments);
+        if (this.floating) {
+            this.doConstrain();
+        }    
     },
 
     doConstrain : function() {
         var me = this,
-            y = this.el.getY(),
+            y = me.el.getY(),
             max, full,
+            vector,
             returnY = y, normalY, parentEl, scrollTop, viewHeight;
 
         delete me.height;
@@ -99507,6 +100146,10 @@ Ext.define('Ext.menu.Menu', {
             if (me.showSeparator){
                 me.iconSepEl.setHeight(me.layout.getRenderTarget().dom.scrollHeight);
             }
+        }
+        vector = me.getConstrainVector();
+        if (vector) {
+            me.setPosition(me.getPosition()[0] + vector[0]);
         }
         me.el.setY(returnY);
     }
@@ -99897,7 +100540,7 @@ Ext.define('Ext.panel.Tool', {
             'up'
         ];
         
-        if (me.id && Ext.Array.indexOf(types, me.id) > -1) {
+        if (me.id && Ext.Array.indexOf(types, me.id) > -1 && Ext.global.console) {
             Ext.global.console.warn('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
         }
         //</debug>
@@ -100771,6 +101414,8 @@ Ext.define('Ext.resizer.SplitterTracker', {
     extend: 'Ext.dd.DragTracker',
     requires: ['Ext.util.Region'],
     enabled: true,
+    
+    overlayCls: Ext.baseCSSPrefix + 'resizable-overlay',
 
     getPrevCmp: function() {
         var splitter = this.getSplitter();
@@ -100785,37 +101430,46 @@ Ext.define('Ext.resizer.SplitterTracker', {
     // ensure the tracker is enabled, store boxes of previous and next
     // components and calculate the constrain region
     onBeforeStart: function(e) {
-        var prevCmp = this.getPrevCmp(),
-            nextCmp = this.getNextCmp();
+        var me = this,
+            prevCmp = me.getPrevCmp(),
+            nextCmp = me.getNextCmp();
 
         // SplitterTracker is disabled if any of its adjacents are collapsed.
         if (nextCmp.collapsed || prevCmp.collapsed) {
             return false;
         }
         // store boxes of previous and next
-        this.prevBox  = prevCmp.getEl().getBox();
-        this.nextBox  = nextCmp.getEl().getBox();
-        this.constrainTo = this.calculateConstrainRegion();
+        me.prevBox  = prevCmp.getEl().getBox();
+        me.nextBox  = nextCmp.getEl().getBox();
+        me.constrainTo = me.calculateConstrainRegion();
     },
 
     // We move the splitter el. Add the proxy class.
     onStart: function(e) {
-        var splitter = this.getSplitter();
+        var splitter = this.getSplitter(),
+            overlay;
+            
         splitter.addCls(splitter.baseCls + '-active');
+        overlay = this.overlay =  Ext.getBody().createChild({
+            cls: this.overlayCls, 
+            html: '&#160;'
+        });
+        overlay.unselectable();
+        overlay.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
+        overlay.show();
     },
 
     // calculate the constrain Region in which the splitter el may be moved.
     calculateConstrainRegion: function() {
-        var splitter   = this.getSplitter(),
-            topPad     = 0,
-            bottomPad  = 0,
+        var me         = this,
+            splitter   = me.getSplitter(),
             splitWidth = splitter.getWidth(),
             defaultMin = splitter.defaultSplitMin,
             orient     = splitter.orientation,
-            prevBox    = this.prevBox,
-            prevCmp    = this.getPrevCmp(),
-            nextBox    = this.nextBox,
-            nextCmp    = this.getNextCmp(),
+            prevBox    = me.prevBox,
+            prevCmp    = me.getPrevCmp(),
+            nextBox    = me.nextBox,
+            nextCmp    = me.getNextCmp(),
             // prev and nextConstrainRegions are the maximumBoxes minus the
             // minimumBoxes. The result is always the intersection
             // of these two boxes.
@@ -100865,16 +101519,17 @@ Ext.define('Ext.resizer.SplitterTracker', {
         }
 
         // intersection of the two regions to provide region draggable
-        return  prevConstrainRegion.intersect(nextConstrainRegion);
+        return prevConstrainRegion.intersect(nextConstrainRegion);
     },
 
     // Performs the actual resizing of the previous and next components
     performResize: function(e) {
-        var offset   = this.getOffset('dragTarget'),
-            splitter = this.getSplitter(),
+        var me       = this,
+            offset   = me.getOffset('dragTarget'),
+            splitter = me.getSplitter(),
             orient   = splitter.orientation,
-            prevCmp  = this.getPrevCmp(),
-            nextCmp  = this.getNextCmp(),
+            prevCmp  = me.getPrevCmp(),
+            nextCmp  = me.getNextCmp(),
             owner    = splitter.ownerCt,
             layout   = owner.getLayout();
 
@@ -100885,13 +101540,13 @@ Ext.define('Ext.resizer.SplitterTracker', {
             if (prevCmp) {
                 if (!prevCmp.maintainFlex) {
                     delete prevCmp.flex;
-                    prevCmp.setSize(this.prevBox.width + offset[0], prevCmp.getHeight());
+                    prevCmp.setSize(me.prevBox.width + offset[0], prevCmp.getHeight());
                 }
             }
             if (nextCmp) {
                 if (!nextCmp.maintainFlex) {
                     delete nextCmp.flex;
-                    nextCmp.setSize(this.nextBox.width - offset[0], nextCmp.getHeight());
+                    nextCmp.setSize(me.nextBox.width - offset[0], nextCmp.getHeight());
                 }
             }
         // verticals
@@ -100899,13 +101554,13 @@ Ext.define('Ext.resizer.SplitterTracker', {
             if (prevCmp) {
                 if (!prevCmp.maintainFlex) {
                     delete prevCmp.flex;
-                    prevCmp.setSize(prevCmp.getWidth(), this.prevBox.height + offset[1]);
+                    prevCmp.setSize(prevCmp.getWidth(), me.prevBox.height + offset[1]);
                 }
             }
             if (nextCmp) {
                 if (!nextCmp.maintainFlex) {
                     delete nextCmp.flex;
-                    nextCmp.setSize(prevCmp.getWidth(), this.nextBox.height - offset[1]);
+                    nextCmp.setSize(prevCmp.getWidth(), me.nextBox.height - offset[1]);
                 }
             }
         }
@@ -100915,23 +101570,30 @@ Ext.define('Ext.resizer.SplitterTracker', {
 
     // perform the resize and remove the proxy class from the splitter el
     onEnd: function(e) {
-        var splitter = this.getSplitter();
+        var me = this,
+            splitter = me.getSplitter();
+            
         splitter.removeCls(splitter.baseCls + '-active');
-        this.performResize();
+         if (me.overlay) {
+             me.overlay.remove();
+             delete me.overlay;
+        }
+        me.performResize();
     },
 
     // Track the proxy and set the proper XY coordinates
     // while constraining the drag
     onDrag: function(e) {
-        var offset    = this.getOffset('dragTarget'),
-            splitter  = this.getSplitter(),
+        var me        = this,
+            offset    = me.getOffset('dragTarget'),
+            splitter  = me.getSplitter(),
             splitEl   = splitter.getEl(),
             orient    = splitter.orientation;
 
         if (orient === "vertical") {
-            splitEl.setX(this.startRegion.left + offset[0]);
+            splitEl.setX(me.startRegion.left + offset[0]);
         } else {
-            splitEl.setY(this.startRegion.top + offset[1]);
+            splitEl.setY(me.startRegion.top + offset[1]);
         }
     },
 
@@ -101568,6 +102230,7 @@ Ext.define('Ext.selection.RowModel', {
  * and according to the 'injectCheckbox' configuration.
  */
 Ext.define('Ext.selection.CheckboxModel', {
+    alias: 'selection.checkboxmodel',
     extend: 'Ext.selection.RowModel',
 
     /**
@@ -103294,11 +103957,23 @@ Ext.define('Ext.tab.Tab', {
 
         if (me.fireEvent('beforeclose', me) !== false) {
             if (me.tabBar) {
-                me.tabBar.closeTab(me);
+                if (me.tabBar.closeTab(me) === false) {
+                    // beforeclose on the panel vetoed the event, stop here
+                    return;
+                }
+            } else {
+                // if there's no tabbar, fire the close event
+                me.fireEvent('close', me);
             }
-
-            me.fireEvent('close', me);
         }
+    },
+    
+    /**
+     * Fires the close event on the tab.
+     * @private
+     */
+    fireClose: function(){
+        this.fireEvent('close', this);
     },
     
     /**
@@ -103413,9 +104088,9 @@ Ext.define('Ext.tab.Bar', {
             'change'
         );
 
-        Ext.applyIf(this.renderSelectors, {
-            body : '.' + this.baseCls + '-body',
-            strip: '.' + this.baseCls + '-strip'
+        Ext.applyIf(me.renderSelectors, {
+            body : '.' + me.baseCls + '-body',
+            strip: '.' + me.baseCls + '-strip'
         });
         me.callParent(arguments);
 
@@ -103473,7 +104148,8 @@ Ext.define('Ext.tab.Bar', {
     onClick: function(e, target) {
         // The target might not be a valid tab el.
         var tab = Ext.getCmp(target.id),
-            tabPanel = this.tabPanel;
+            tabPanel = this.tabPanel,
+            allowActive = true;
 
         target = e.getTarget();
 
@@ -103481,9 +104157,11 @@ Ext.define('Ext.tab.Bar', {
             if (tab.closable && target === tab.closeEl.dom) {
                 tab.onCloseClick();
             } else {
-                this.setActiveTab(tab);
                 if (tabPanel) {
+                    // TabPanel will card setActiveTab of the TabBar
                     tabPanel.setActiveTab(tab.card);
+                } else {
+                    this.setActiveTab(tab);
                 }
                 tab.focus();
             }
@@ -103496,20 +104174,32 @@ Ext.define('Ext.tab.Bar', {
      * @param {Ext.Tab} tab The tab to close
      */
     closeTab: function(tab) {
-        var card    = tab.card,
-            tabPanel = this.tabPanel,
+        var me = this,
+            card = tab.card,
+            tabPanel = me.tabPanel,
             nextTab;
+            
+        if (card && card.fireEvent('beforeclose', card) === false) {
+            return false;
+        }
 
-        if (tab.active && this.items.getCount() > 1) {
-            nextTab = tab.next('tab') || this.items.items[0];
-            this.setActiveTab(nextTab);
+        if (tab.active && me.items.getCount() > 1) {
+            nextTab = tab.next('tab') || me.items.items[0];
+            me.setActiveTab(nextTab);
             if (tabPanel) {
                 tabPanel.setActiveTab(nextTab.card);
             }
         }
-        this.remove(tab);
+        /*
+         * force the close event to fire. By the time this function returns,
+         * the tab is already destroyed and all listeners have been purged
+         * so the tab can't fire itself.
+         */
+        tab.fireClose();
+        me.remove(tab);
 
         if (tabPanel && card) {
+            card.fireEvent('close', card);
             tabPanel.remove(card);
         }
         
@@ -104127,29 +104817,30 @@ Ext.define('Ext.tab.Panel', {
  * @extends Ext.toolbar.Item
  * A simple element that adds extra horizontal space between items in a toolbar.
  * By default a 2px wide space is added via css specification:
- * <pre><code>
-    .x-toolbar .x-toolbar-spacer {
-        width:2px;
-    }
- * </code></pre>
- * <p>Example usage:</p>
+ *
+ *     .x-toolbar .x-toolbar-spacer {
+ *         width:2px;
+ *     }
+ *
+ * ## Example
+ *
  * {@img Ext.toolbar.Spacer/Ext.toolbar.Spacer.png Toolbar Spacer}
- * <pre><code>
-    Ext.create('Ext.panel.Panel', {
-        title: 'Toolbar Spacer Example',
-        width: 300,
-        height: 200,
-        tbar : [
-            'Item 1',
-            {xtype: 'tbspacer'}, // or ' '
-            'Item 2',
-            // space width is also configurable via javascript
-            {xtype: 'tbspacer', width: 50}, // add a 50px space
-            'Item 3'
-        ],
-        renderTo: Ext.getBody()
-    });   
-</code></pre>
+ *
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Toolbar Spacer Example',
+ *         width: 300,
+ *         height: 200,
+ *         tbar : [
+ *             'Item 1',
+ *             {xtype: 'tbspacer'}, // or ' '
+ *             'Item 2',
+ *             // space width is also configurable via javascript
+ *             {xtype: 'tbspacer', width: 50}, // add a 50px space
+ *             'Item 3'
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     });   
+ *
  * @constructor
  * Creates a new Spacer
  * @xtype tbspacer
@@ -104189,7 +104880,8 @@ Ext.define('Ext.tree.Column', {
                 checkboxText= '<input type="button" role="checkbox" class="{0}" {1} />',
                 formattedValue = origRenderer.apply(origScope, arguments),
                 href = record.get('href'),
-                target = record.get('hrefTarget');
+                target = record.get('hrefTarget'),
+                cls = record.get('cls');
 
             while (record) {
                 if (!record.isRoot() || (record.isRoot() && view.rootVisible)) {
@@ -104236,6 +104928,9 @@ Ext.define('Ext.tree.Column', {
             }
             if (href) {
                 formattedValue = format('<a href="{0}" target="{1}">{2}</a>', href, target, formattedValue);
+            }
+            if (cls) {
+                metaData.tdCls += ' ' + cls;
             }
             return buf.join("") + formattedValue;
         };
@@ -104495,7 +105190,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 
@@ -104570,7 +105265,7 @@ Ext.define('Ext.tree.View', {
         var me = this,
             animWrap;
             
-        if (!me.animate) {
+        if (!me.rendered || !me.animate) {
             return;
         }
 
@@ -104872,16 +105567,17 @@ Ext.define('Ext.tree.Panel', {
         } else if (!me.useArrows) {
             cls.push(Ext.baseCSSPrefix + 'tree-no-lines');
         }
-
-        if (!me.store || Ext.isObject(me.store) && !me.store.isStore) {
+        
+        if (Ext.isString(me.store)) {
+            me.store = Ext.StoreMgr.lookup(me.store);
+        } else if (!me.store || Ext.isObject(me.store) && !me.store.isStore) {
             me.store = Ext.create('Ext.data.TreeStore', Ext.apply({}, me.store || {}, {
                 root: me.root,
                 fields: me.fields,
                 model: me.model,
                 folderSort: me.folderSort
             }));
-        }
-        else if (me.root) {
+        } else if (me.root) {
             me.store = Ext.data.StoreManager.lookup(me.store);
             me.store.setRootNode(me.root);
             if (me.folderSort !== undefined) {
@@ -105133,7 +105829,7 @@ Ext.define('Ext.tree.Panel', {
 
     /**
      * Expand the tree to the path of a particular node.
-     * @param {String} path The path to expand
+     * @param {String} path The path to expand. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
      * @param {Function} callback (optional) A function to execute when the expand finishes. The callback will be called with
@@ -105181,7 +105877,7 @@ Ext.define('Ext.tree.Panel', {
     
     /**
      * Expand the tree to the path of a particular node, then selecti t.
-     * @param {String} path The path to select
+     * @param {String} path The path to select. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
      * @param {Function} callback (optional) A function to execute when the select finishes. The callback will be called with
@@ -106146,10 +106842,28 @@ Ext.define('Ext.util.CSS', function() {
 }());
 /**
  * @class Ext.util.History
- * History management component that allows you to register arbitrary tokens that signify application
- * history state on navigation actions.  You can then handle the history {@link #change} event in order
- * to reset your application UI to the appropriate state when the user navigates forward or backward through
- * the browser history stack.
+
+History management component that allows you to register arbitrary tokens that signify application
+history state on navigation actions.  You can then handle the history {@link #change} event in order
+to reset your application UI to the appropriate state when the user navigates forward or backward through
+the browser history stack.
+
+__Initializing__
+The {@link #init} method of the History object must be called before using History. This sets up the internal
+state and must be the first thing called before using History.
+
+__Setup__
+The History objects requires elements on the page to keep track of the browser history. For older versions of IE,
+an IFrame is required to do the tracking. For other browsers, a hidden field can be used. The history objects expects
+these to be on the page before the {@link #init} method is called. The following markup is suggested in order
+to support all browsers:
+
+    <form id="history-form" class="x-hide-display">
+        <input type="hidden" id="x-history-field" />
+        <iframe id="x-history-frame"></iframe>
+    </form>
+
+ * @markdown
  * @singleton
  */
 Ext.define('Ext.util.History', {

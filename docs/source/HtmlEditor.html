@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.HtmlEditor-method-constructor'><span id='Ext-form.field.HtmlEditor'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-HtmlEditor-method-constructor'><span id='Ext-form-field-HtmlEditor'>/**
 </span></span> * @class Ext.form.field.HtmlEditor
  * @extends Ext.Component
  *
@@ -76,47 +93,47 @@ Ext.define('Ext.form.field.HtmlEditor', {
         }
     ],
 
-<span id='Ext-form.field.HtmlEditor-cfg-enableFormat'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableFormat'>    /**
 </span>     * @cfg {Boolean} enableFormat Enable the bold, italic and underline buttons (defaults to true)
      */
     enableFormat : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableFontSize'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableFontSize'>    /**
 </span>     * @cfg {Boolean} enableFontSize Enable the increase/decrease font size buttons (defaults to true)
      */
     enableFontSize : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableColors'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableColors'>    /**
 </span>     * @cfg {Boolean} enableColors Enable the fore/highlight color buttons (defaults to true)
      */
     enableColors : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableAlignments'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableAlignments'>    /**
 </span>     * @cfg {Boolean} enableAlignments Enable the left, center, right alignment buttons (defaults to true)
      */
     enableAlignments : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableLists'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableLists'>    /**
 </span>     * @cfg {Boolean} enableLists Enable the bullet and numbered list buttons. Not available in Safari. (defaults to true)
      */
     enableLists : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableSourceEdit'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableSourceEdit'>    /**
 </span>     * @cfg {Boolean} enableSourceEdit Enable the switch to source edit button. Not available in Safari. (defaults to true)
      */
     enableSourceEdit : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableLinks'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableLinks'>    /**
 </span>     * @cfg {Boolean} enableLinks Enable the create link button. Not available in Safari. (defaults to true)
      */
     enableLinks : true,
-<span id='Ext-form.field.HtmlEditor-cfg-enableFont'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-enableFont'>    /**
 </span>     * @cfg {Boolean} enableFont Enable font selection. Not available in Safari. (defaults to true)
      */
     enableFont : true,
-<span id='Ext-form.field.HtmlEditor-cfg-createLinkText'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-createLinkText'>    /**
 </span>     * @cfg {String} createLinkText The default text for the create link prompt
      */
     createLinkText : 'Please enter the URL for the link:',
-<span id='Ext-form.field.HtmlEditor-cfg-defaultLinkValue'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-defaultLinkValue'>    /**
 </span>     * @cfg {String} defaultLinkValue The default value for the create link prompt (defaults to http:/ /)
      */
     defaultLinkValue : 'http:/'+'/',
-<span id='Ext-form.field.HtmlEditor-cfg-fontFamilies'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-fontFamilies'>    /**
 </span>     * @cfg {Array} fontFamilies An array of available font families
      */
     fontFamilies : [
@@ -127,7 +144,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         'Verdana'
     ],
     defaultFont: 'tahoma',
-<span id='Ext-form.field.HtmlEditor-cfg-defaultValue'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-defaultValue'>    /**
 </span>     * @cfg {String} defaultValue A default value to be put into the editor to resolve focus issues (defaults to &amp;#160; (Non-breaking space) in Opera and IE6, &amp;#8203; (Zero-width space) in all other browsers).
      */
     defaultValue: (Ext.isOpera || Ext.isIE6) ? '&amp;#160;' : '&amp;#8203;',
@@ -150,20 +167,20 @@ Ext.define('Ext.form.field.HtmlEditor', {
         var me = this;
 
         me.addEvents(
-<span id='Ext-form.field.HtmlEditor-event-initialize'>            /**
+<span id='Ext-form-field-HtmlEditor-event-initialize'>            /**
 </span>             * @event initialize
              * Fires when the editor is fully initialized (including the iframe)
              * @param {Ext.form.field.HtmlEditor} this
              */
             'initialize',
-<span id='Ext-form.field.HtmlEditor-event-activate'>            /**
+<span id='Ext-form-field-HtmlEditor-event-activate'>            /**
 </span>             * @event activate
              * Fires when the editor is first receives the focus. Any insertion must wait
              * until after this event.
              * @param {Ext.form.field.HtmlEditor} this
              */
             'activate',
-<span id='Ext-form.field.HtmlEditor-event-beforesync'>             /**
+<span id='Ext-form-field-HtmlEditor-event-beforesync'>             /**
 </span>             * @event beforesync
              * Fires before the textarea is updated with content from the editor iframe. Return false
              * to cancel the sync.
@@ -171,7 +188,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
              * @param {String} html
              */
             'beforesync',
-<span id='Ext-form.field.HtmlEditor-event-beforepush'>             /**
+<span id='Ext-form-field-HtmlEditor-event-beforepush'>             /**
 </span>             * @event beforepush
              * Fires before the iframe editor is updated with content from the textarea. Return false
              * to cancel the push.
@@ -179,21 +196,21 @@ Ext.define('Ext.form.field.HtmlEditor', {
              * @param {String} html
              */
             'beforepush',
-<span id='Ext-form.field.HtmlEditor-event-sync'>             /**
+<span id='Ext-form-field-HtmlEditor-event-sync'>             /**
 </span>             * @event sync
              * Fires when the textarea is updated with content from the editor iframe.
              * @param {Ext.form.field.HtmlEditor} this
              * @param {String} html
              */
             'sync',
-<span id='Ext-form.field.HtmlEditor-event-push'>             /**
+<span id='Ext-form-field-HtmlEditor-event-push'>             /**
 </span>             * @event push
              * Fires when the iframe editor is updated with content from the textarea.
              * @param {Ext.form.field.HtmlEditor} this
              * @param {String} html
              */
             'push',
-<span id='Ext-form.field.HtmlEditor-event-editmodechange'>             /**
+<span id='Ext-form-field-HtmlEditor-event-editmodechange'>             /**
 </span>             * @event editmodechange
              * Fires when the editor switches edit modes
              * @param {Ext.form.field.HtmlEditor} this
@@ -420,7 +437,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         this.callParent(arguments);
     },
 
-<span id='Ext-form.field.HtmlEditor-method-setReadOnly'>    /**
+<span id='Ext-form-field-HtmlEditor-method-setReadOnly'>    /**
 </span>     * Sets the read only state of this field.
      * @param {Boolean} readOnly Whether the field should be read only.
      */
@@ -453,7 +470,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         }
     },
 
-<span id='Ext-form.field.HtmlEditor-method-getDocMarkup'>    /**
+<span id='Ext-form-field-HtmlEditor-method-getDocMarkup'>    /**
 </span>     * Protected method that will not generally be called directly. It
      * is called when the editor initializes the iframe with HTML contents. Override this method if you
      * want to change the initialization markup of the iframe (e.g. to add stylesheets).
@@ -609,7 +626,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         });
     },
 
-<span id='Ext-form.field.HtmlEditor-method-toggleSourceEdit'>    /**
+<span id='Ext-form-field-HtmlEditor-method-toggleSourceEdit'>    /**
 </span>     * Toggles the editor between standard and source edit mode.
      * @param {Boolean} sourceEditMode (optional) True for source edit, false for standard
      */
@@ -675,7 +692,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return this;
     },
 
-<span id='Ext-form.field.HtmlEditor-method-cleanHtml'>    /**
+<span id='Ext-form-field-HtmlEditor-method-cleanHtml'>    /**
 </span>     * Protected method that will not generally be called directly. If you need/want
      * custom HTML cleanup, this is the method you should override.
      * @param {String} html The HTML to be cleaned
@@ -698,7 +715,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return html;
     },
 
-<span id='Ext-form.field.HtmlEditor-method-syncValue'>    /**
+<span id='Ext-form-field-HtmlEditor-method-syncValue'>    /**
 </span>     * @protected method that will not generally be called directly. Syncs the contents
      * of the editor iframe with the textarea.
      */
@@ -735,7 +752,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return value;
     },
 
-<span id='Ext-form.field.HtmlEditor-method-pushValue'>    /**
+<span id='Ext-form-field-HtmlEditor-method-pushValue'>    /**
 </span>     * @protected method that will not generally be called directly. Pushes the value of the textarea
      * into the iframe editor.
      */
@@ -957,7 +974,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         this.updateToolbar();
     },
 
-<span id='Ext-form.field.HtmlEditor-method-updateToolbar'>    /**
+<span id='Ext-form-field-HtmlEditor-method-updateToolbar'>    /**
 </span>     * Protected method that will not generally be called directly. It triggers
      * a toolbar update by reading the markup state of the current selection in the editor.
      */
@@ -1010,7 +1027,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         this.relayCmd(btn.getItemId());
     },
 
-<span id='Ext-form.field.HtmlEditor-method-relayCmd'>    /**
+<span id='Ext-form-field-HtmlEditor-method-relayCmd'>    /**
 </span>     * Executes a Midas editor command on the editor document and performs necessary focus and
      * toolbar updates. &lt;b&gt;This should only be called after the editor is initialized.&lt;/b&gt;
      * @param {String} cmd The Midas command
@@ -1025,7 +1042,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         }, 10, this);
     },
 
-<span id='Ext-form.field.HtmlEditor-method-execCmd'>    /**
+<span id='Ext-form-field-HtmlEditor-method-execCmd'>    /**
 </span>     * Executes a Midas editor command directly on the editor document.
      * For visual commands, you should use {@link #relayCmd} instead.
      * &lt;b&gt;This should only be called after the editor is initialized.&lt;/b&gt;
@@ -1068,7 +1085,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         }
     },
 
-<span id='Ext-form.field.HtmlEditor-method-insertAtCursor'>    /**
+<span id='Ext-form-field-HtmlEditor-method-insertAtCursor'>    /**
 </span>     * Inserts the passed text at the current cursor position. Note: the editor must be initialized and activated
      * to insert text.
      * @param {String} text
@@ -1157,7 +1174,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return null; // not needed, so null
     }(),
 
-<span id='Ext-form.field.HtmlEditor-method-getToolbar'>    /**
+<span id='Ext-form-field-HtmlEditor-method-getToolbar'>    /**
 </span>     * Returns the editor's toolbar. &lt;b&gt;This is only available after the editor has been rendered.&lt;/b&gt;
      * @return {Ext.toolbar.Toolbar}
      */
@@ -1165,7 +1182,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return this.toolbar;
     },
 
-<span id='Ext-form.field.HtmlEditor-property-buttonTips'>    /**
+<span id='Ext-form-field-HtmlEditor-property-buttonTips'>    /**
 </span>     * Object collection of toolbar tooltips for the buttons in the editor. The key
      * is the command id associated with that button and the value is a valid QuickTips object.
      * For example:
@@ -1259,58 +1276,60 @@ Ext.define('Ext.form.field.HtmlEditor', {
     }
 
     // hide stuff that is not compatible
-<span id='Ext-form.field.HtmlEditor-event-blur'>    /**
+<span id='Ext-form-field-HtmlEditor-event-blur'>    /**
 </span>     * @event blur
      * @hide
      */
-<span id='Ext-form.field.HtmlEditor-event-change'>    /**
+<span id='Ext-form-field-HtmlEditor-event-change'>    /**
 </span>     * @event change
      * @hide
      */
-<span id='Ext-form.field.HtmlEditor-event-focus'>    /**
+<span id='Ext-form-field-HtmlEditor-event-focus'>    /**
 </span>     * @event focus
      * @hide
      */
-<span id='Ext-form.field.HtmlEditor-event-specialkey'>    /**
+<span id='Ext-form-field-HtmlEditor-event-specialkey'>    /**
 </span>     * @event specialkey
      * @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-fieldCls'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-fieldCls'>    /**
 </span>     * @cfg {String} fieldCls @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-focusCls'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-focusCls'>    /**
 </span>     * @cfg {String} focusCls @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-autoCreate'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-autoCreate'>    /**
 </span>     * @cfg {String} autoCreate @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-inputType'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-inputType'>    /**
 </span>     * @cfg {String} inputType @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-invalidCls'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-invalidCls'>    /**
 </span>     * @cfg {String} invalidCls @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-invalidText'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-invalidText'>    /**
 </span>     * @cfg {String} invalidText @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-msgFx'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-msgFx'>    /**
 </span>     * @cfg {String} msgFx @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-allowDomMove'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-allowDomMove'>    /**
 </span>     * @cfg {Boolean} allowDomMove  @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-applyTo'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-applyTo'>    /**
 </span>     * @cfg {String} applyTo @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-readOnly'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-readOnly'>    /**
 </span>     * @cfg {String} readOnly  @hide
      */
-<span id='Ext-form.field.HtmlEditor-cfg-tabIndex'>    /**
+<span id='Ext-form-field-HtmlEditor-cfg-tabIndex'>    /**
 </span>     * @cfg {String} tabIndex  @hide
      */
-<span id='Ext-form.field.HtmlEditor-method-validate'>    /**
+<span id='Ext-form-field-HtmlEditor-method-validate'>    /**
 </span>     * @method validate
      * @hide
      */
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>

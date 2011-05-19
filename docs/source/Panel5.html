@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-tree.Panel'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-tree-Panel'>/**
 </span> * @class Ext.tree.Panel
  * @extends Ext.panel.Table
  * 
@@ -52,17 +69,17 @@ Ext.define('Ext.tree.Panel', {
     
     treeCls: Ext.baseCSSPrefix + 'tree-panel',
     
-<span id='Ext-tree.Panel-cfg-lines'>    /**
+<span id='Ext-tree-Panel-cfg-lines'>    /**
 </span>     * @cfg {Boolean} lines false to disable tree lines (defaults to true)
      */
     lines: true,
     
-<span id='Ext-tree.Panel-cfg-useArrows'>    /**
+<span id='Ext-tree-Panel-cfg-useArrows'>    /**
 </span>     * @cfg {Boolean} useArrows true to use Vista-style arrows in the tree (defaults to false)
      */
     useArrows: false,
     
-<span id='Ext-tree.Panel-cfg-singleExpand'>    /**
+<span id='Ext-tree-Panel-cfg-singleExpand'>    /**
 </span>     * @cfg {Boolean} singleExpand &lt;tt&gt;true&lt;/tt&gt; if only 1 node per branch may be expanded
      */
     singleExpand: false,
@@ -72,21 +89,21 @@ Ext.define('Ext.tree.Panel', {
         enableDrop: true
     },
     
-<span id='Ext-tree.Panel-cfg-animate'>    /** 
+<span id='Ext-tree-Panel-cfg-animate'>    /** 
 </span>     * @cfg {Boolean} animate &lt;tt&gt;true&lt;/tt&gt; to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
      */
             
-<span id='Ext-tree.Panel-cfg-rootVisible'>    /** 
+<span id='Ext-tree-Panel-cfg-rootVisible'>    /** 
 </span>     * @cfg {Boolean} rootVisible &lt;tt&gt;false&lt;/tt&gt; to hide the root node (defaults to &lt;tt&gt;true&lt;/tt&gt;)
      */
     rootVisible: true,
     
-<span id='Ext-tree.Panel-cfg-displayField'>    /** 
+<span id='Ext-tree-Panel-cfg-displayField'>    /** 
 </span>     * @cfg {Boolean} displayField The field inside the model that will be used as the node's text. (defaults to &lt;tt&gt;text&lt;/tt&gt;)
      */    
     displayField: 'text',
 
-<span id='Ext-tree.Panel-cfg-root'>    /** 
+<span id='Ext-tree-Panel-cfg-root'>    /** 
 </span>     * @cfg {Boolean} root Allows you to not specify a store on this TreePanel. This is useful for creating a simple
      * tree with preloaded data without having to specify a TreeStore and Model. A store and model will be created and
      * root will be passed to that store.
@@ -98,12 +115,12 @@ Ext.define('Ext.tree.Panel', {
     normalCfgCopy: ['displayField', 'root', 'singleExpand', 'useArrows', 'lines', 'rootVisible', 'scroll'],
     lockedCfgCopy: ['displayField', 'root', 'singleExpand', 'useArrows', 'lines', 'rootVisible'],
 
-<span id='Ext-tree.Panel-cfg-hideHeaders'>    /**
+<span id='Ext-tree-Panel-cfg-hideHeaders'>    /**
 </span>     * @cfg {Boolean} hideHeaders
      * Specify as &lt;code&gt;true&lt;/code&gt; to hide the headers.
      */
     
-<span id='Ext-tree.Panel-cfg-folderSort'>    /**
+<span id='Ext-tree-Panel-cfg-folderSort'>    /**
 </span>     * @cfg {Boolean} folderSort Set to true to automatically prepend a leaf sorter to the store (defaults to &lt;tt&gt;undefined&lt;/tt&gt;)
      */ 
     
@@ -132,16 +149,17 @@ Ext.define('Ext.tree.Panel', {
         } else if (!me.useArrows) {
             cls.push(Ext.baseCSSPrefix + 'tree-no-lines');
         }
-
-        if (!me.store || Ext.isObject(me.store) &amp;&amp; !me.store.isStore) {
+        
+        if (Ext.isString(me.store)) {
+            me.store = Ext.StoreMgr.lookup(me.store);
+        } else if (!me.store || Ext.isObject(me.store) &amp;&amp; !me.store.isStore) {
             me.store = Ext.create('Ext.data.TreeStore', Ext.apply({}, me.store || {}, {
                 root: me.root,
                 fields: me.fields,
                 model: me.model,
                 folderSort: me.folderSort
             }));
-        }
-        else if (me.root) {
+        } else if (me.root) {
             me.store = Ext.data.StoreManager.lookup(me.store);
             me.store.setRootNode(me.root);
             if (me.folderSort !== undefined) {
@@ -170,7 +188,7 @@ Ext.define('Ext.tree.Panel', {
         });
     
         me.relayEvents(me.store, [
-<span id='Ext-tree.Panel-event-beforeload'>            /**
+<span id='Ext-tree-Panel-event-beforeload'>            /**
 </span>             * @event beforeload
              * Event description
              * @param {Ext.data.Store} store This Store
@@ -178,7 +196,7 @@ Ext.define('Ext.tree.Panel', {
              */
             'beforeload',
 
-<span id='Ext-tree.Panel-event-load'>            /**
+<span id='Ext-tree-Panel-event-load'>            /**
 </span>             * @event load
              * Fires whenever the store reads data from a remote data source.
              * @param {Ext.data.store} this
@@ -189,7 +207,7 @@ Ext.define('Ext.tree.Panel', {
         ]);
         
         me.store.on({
-<span id='Ext-tree.Panel-event-itemappend'>            /**
+<span id='Ext-tree-Panel-event-itemappend'>            /**
 </span>             * @event itemappend
              * Fires when a new child node is appended to a node in the tree.
              * @param {Tree} tree The owner tree
@@ -199,7 +217,7 @@ Ext.define('Ext.tree.Panel', {
              */
             append: me.createRelayer('itemappend'),
             
-<span id='Ext-tree.Panel-event-itemremove'>            /**
+<span id='Ext-tree-Panel-event-itemremove'>            /**
 </span>             * @event itemremove
              * Fires when a child node is removed from a node in the tree
              * @param {Tree} tree The owner tree
@@ -208,7 +226,7 @@ Ext.define('Ext.tree.Panel', {
              */
             remove: me.createRelayer('itemremove'),
             
-<span id='Ext-tree.Panel-event-itemmove'>            /**
+<span id='Ext-tree-Panel-event-itemmove'>            /**
 </span>             * @event itemmove
              * Fires when a node is moved to a new location in the tree
              * @param {Tree} tree The owner tree
@@ -219,7 +237,7 @@ Ext.define('Ext.tree.Panel', {
              */
             move: me.createRelayer('itemmove'),
             
-<span id='Ext-tree.Panel-event-iteminsert'>            /**
+<span id='Ext-tree-Panel-event-iteminsert'>            /**
 </span>             * @event iteminsert
              * Fires when a new child node is inserted in a node in tree
              * @param {Tree} tree The owner tree
@@ -229,7 +247,7 @@ Ext.define('Ext.tree.Panel', {
              */
             insert: me.createRelayer('iteminsert'),
             
-<span id='Ext-tree.Panel-event-beforeitemappend'>            /**
+<span id='Ext-tree-Panel-event-beforeitemappend'>            /**
 </span>             * @event beforeitemappend
              * Fires before a new child is appended to a node in this tree, return false to cancel the append.
              * @param {Tree} tree The owner tree
@@ -238,7 +256,7 @@ Ext.define('Ext.tree.Panel', {
              */
             beforeappend: me.createRelayer('beforeitemappend'),
             
-<span id='Ext-tree.Panel-event-beforeitemremove'>            /**
+<span id='Ext-tree-Panel-event-beforeitemremove'>            /**
 </span>             * @event beforeitemremove
              * Fires before a child is removed from a node in this tree, return false to cancel the remove.
              * @param {Tree} tree The owner tree
@@ -247,7 +265,7 @@ Ext.define('Ext.tree.Panel', {
              */
             beforeremove: me.createRelayer('beforeitemremove'),
             
-<span id='Ext-tree.Panel-event-beforeitemmove'>            /**
+<span id='Ext-tree-Panel-event-beforeitemmove'>            /**
 </span>             * @event beforeitemmove
              * Fires before a node is moved to a new location in the tree. Return false to cancel the move.
              * @param {Tree} tree The owner tree
@@ -258,7 +276,7 @@ Ext.define('Ext.tree.Panel', {
              */
             beforemove: me.createRelayer('beforeitemmove'),
             
-<span id='Ext-tree.Panel-event-beforeiteminsert'>            /**
+<span id='Ext-tree-Panel-event-beforeiteminsert'>            /**
 </span>             * @event beforeiteminsert
              * Fires before a new child is inserted in a node in this tree, return false to cancel the insert.
              * @param {Tree} tree The owner tree
@@ -268,28 +286,28 @@ Ext.define('Ext.tree.Panel', {
              */
             beforeinsert: me.createRelayer('beforeiteminsert'),
              
-<span id='Ext-tree.Panel-event-itemexpand'>            /**
+<span id='Ext-tree-Panel-event-itemexpand'>            /**
 </span>             * @event itemexpand
              * Fires when a node is expanded.
              * @param {Node} this The expanding node
              */
             expand: me.createRelayer('itemexpand'),
              
-<span id='Ext-tree.Panel-event-itemcollapse'>            /**
+<span id='Ext-tree-Panel-event-itemcollapse'>            /**
 </span>             * @event itemcollapse
              * Fires when a node is collapsed.
              * @param {Node} this The collapsing node
              */
             collapse: me.createRelayer('itemcollapse'),
              
-<span id='Ext-tree.Panel-event-beforeitemexpand'>            /**
+<span id='Ext-tree-Panel-event-beforeitemexpand'>            /**
 </span>             * @event beforeitemexpand
              * Fires before a node is expanded.
              * @param {Node} this The expanding node
              */
             beforeexpand: me.createRelayer('beforeitemexpand'),
              
-<span id='Ext-tree.Panel-event-beforeitemcollapse'>            /**
+<span id='Ext-tree-Panel-event-beforeitemcollapse'>            /**
 </span>             * @event beforeitemcollapse
              * Fires before a node is collapsed.
              * @param {Node} this The collapsing node
@@ -317,7 +335,7 @@ Ext.define('Ext.tree.Panel', {
         me.callParent();
         
         me.relayEvents(me.getView(), [
-<span id='Ext-tree.Panel-event-checkchange'>            /**
+<span id='Ext-tree-Panel-event-checkchange'>            /**
 </span>             * @event checkchange
              * Fires when a node with a checkbox's checked property changes
              * @param {Ext.data.Model} node The node who's checked property was changed
@@ -350,7 +368,7 @@ Ext.define('Ext.tree.Panel', {
         this.view.setRootNode(root);
     },
 
-<span id='Ext-tree.Panel-method-getChecked'>    /**
+<span id='Ext-tree-Panel-method-getChecked'>    /**
 </span>     * Retrieve an array of checked records.
      * @return {Array} An array containing the checked records
      */
@@ -362,7 +380,7 @@ Ext.define('Ext.tree.Panel', {
         return rec.get('checked');
     },
         
-<span id='Ext-tree.Panel-method-expandAll'>    /**
+<span id='Ext-tree-Panel-method-expandAll'>    /**
 </span>     * Expand all nodes
      * @param {Function} callback (optional) A function to execute when the expand finishes.
      * @param {Object} scope (optional) The scope of the callback function
@@ -374,7 +392,7 @@ Ext.define('Ext.tree.Panel', {
         }
     },
 
-<span id='Ext-tree.Panel-method-collapseAll'>    /**
+<span id='Ext-tree-Panel-method-collapseAll'>    /**
 </span>     * Collapse all nodes
      * @param {Function} callback (optional) A function to execute when the collapse finishes.
      * @param {Object} scope (optional) The scope of the callback function
@@ -391,9 +409,9 @@ Ext.define('Ext.tree.Panel', {
         }
     },
 
-<span id='Ext-tree.Panel-method-expandPath'>    /**
+<span id='Ext-tree-Panel-method-expandPath'>    /**
 </span>     * Expand the tree to the path of a particular node.
-     * @param {String} path The path to expand
+     * @param {String} path The path to expand. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to &lt;tt&gt;'/'&lt;/tt&gt;.
      * @param {Function} callback (optional) A function to execute when the expand finishes. The callback will be called with
@@ -439,9 +457,9 @@ Ext.define('Ext.tree.Panel', {
         current.expand(false, expander);
     },
     
-<span id='Ext-tree.Panel-method-selectPath'>    /**
+<span id='Ext-tree-Panel-method-selectPath'>    /**
 </span>     * Expand the tree to the path of a particular node, then selecti t.
-     * @param {String} path The path to select
+     * @param {String} path The path to select. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
      * @param {String} separator (optional) A separator to use. Defaults to &lt;tt&gt;'/'&lt;/tt&gt;.
      * @param {Function} callback (optional) A function to execute when the select finishes. The callback will be called with
@@ -474,4 +492,6 @@ Ext.define('Ext.tree.Panel', {
             Ext.callback(callback, scope || me, [doSuccess, node]);
         }, me);
     }
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

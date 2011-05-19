@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-layout.container.Anchor'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-layout-container-Anchor'>/**
 </span> * @class Ext.layout.container.Anchor
  * @extends Ext.layout.container.Container
  * 
@@ -51,7 +68,7 @@ Ext.define('Ext.layout.container.Anchor', {
 
     /* End Definitions */
 
-<span id='Ext-layout.container.Anchor-cfg-anchor'>    /**
+<span id='Ext-layout-container-Anchor-cfg-anchor'>    /**
 </span>     * @cfg {String} anchor
      * &lt;p&gt;This configuation option is to be applied to &lt;b&gt;child &lt;tt&gt;items&lt;/tt&gt;&lt;/b&gt; of a container managed by
      * this layout (ie. configured with &lt;tt&gt;layout:'anchor'&lt;/tt&gt;).&lt;/p&gt;&lt;br/&gt;
@@ -101,7 +118,7 @@ anchor: '-50 75%'
 
     type: 'anchor',
 
-<span id='Ext-layout.container.Anchor-cfg-defaultAnchor'>    /**
+<span id='Ext-layout-container-Anchor-cfg-defaultAnchor'>    /**
 </span>     * @cfg {String} defaultAnchor
      *
      * default anchor for all child container items applied if no anchor or specific width is set on the child item.  Defaults to '100%'.
@@ -126,7 +143,7 @@ anchor: '-50 75%'
             len = components.length,
             boxes = [],
             box, newTargetSize, anchorWidth, anchorHeight, component, anchorSpec, calcWidth, calcHeight,
-            anchorsArray, anchor, i, el;
+            anchorsArray, anchor, i, el, cleaner;
 
         if (ownerWidth &lt; 20 &amp;&amp; ownerHeight &lt; 20) {
             return;
@@ -159,6 +176,7 @@ anchor: '-50 75%'
 
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
+            cleaner = Ext.core.Element.getRightMarginFixCleaner(target);
             target.addCls(Ext.baseCSSPrefix + 'inline-children');
         }
 
@@ -201,6 +219,7 @@ anchor: '-50 75%'
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
             target.removeCls(Ext.baseCSSPrefix + 'inline-children');
+            cleaner();
         }
 
         for (i = 0; i &lt; len; i++) {
@@ -260,4 +279,6 @@ anchor: '-50 75%'
         return value;
     }
 
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

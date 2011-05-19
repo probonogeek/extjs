@@ -686,6 +686,7 @@ el.un('click', this.handlerFn);
          * @param {String} name The attribute name
          * @param {String} namespace (optional) The namespace in which to look for the attribute
          * @return {String} The attribute value
+         * @method
          */
         getAttribute: (Ext.isIE && !(Ext.isIE9 && document.documentMode === 9)) ?
         function(name, ns) {

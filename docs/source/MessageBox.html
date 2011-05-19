@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-window.MessageBox'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-window-MessageBox'>/**
 </span> * @class Ext.window.MessageBox
  * @extends Ext.window.Window
 
@@ -49,62 +66,62 @@ Ext.define('Ext.window.MessageBox', {
         'Ext.layout.container.HBox',
         'Ext.ProgressBar'
     ],
-    
+
     alternateClassName: 'Ext.MessageBox',
 
     alias: 'widget.messagebox',
 
-<span id='Ext-window.MessageBox-property-OK'>    /**
+<span id='Ext-window-MessageBox-property-OK'>    /**
 </span>     * Button config that displays a single OK button
      * @type Number
      */
     OK : 1,
-<span id='Ext-window.MessageBox-property-YES'>    /**
+<span id='Ext-window-MessageBox-property-YES'>    /**
 </span>     * Button config that displays a single Yes button
      * @type Number
      */
     YES : 2,
-<span id='Ext-window.MessageBox-property-NO'>    /**
+<span id='Ext-window-MessageBox-property-NO'>    /**
 </span>     * Button config that displays a single No button
      * @type Number
      */
     NO : 4,
-<span id='Ext-window.MessageBox-property-CANCEL'>    /**
+<span id='Ext-window-MessageBox-property-CANCEL'>    /**
 </span>     * Button config that displays a single Cancel button
      * @type Number
      */
     CANCEL : 8,
-<span id='Ext-window.MessageBox-property-OKCANCEL'>    /**
+<span id='Ext-window-MessageBox-property-OKCANCEL'>    /**
 </span>     * Button config that displays OK and Cancel buttons
      * @type Number
      */
     OKCANCEL : 9,
-<span id='Ext-window.MessageBox-property-YESNO'>    /**
+<span id='Ext-window-MessageBox-property-YESNO'>    /**
 </span>     * Button config that displays Yes and No buttons
      * @type Number
      */
     YESNO : 6,
-<span id='Ext-window.MessageBox-property-YESNOCANCEL'>    /**
+<span id='Ext-window-MessageBox-property-YESNOCANCEL'>    /**
 </span>     * Button config that displays Yes, No and Cancel buttons
      * @type Number
      */
     YESNOCANCEL : 14,
-<span id='Ext-window.MessageBox-property-INFO'>    /**
+<span id='Ext-window-MessageBox-property-INFO'>    /**
 </span>     * The CSS class that provides the INFO icon image
      * @type String
      */
     INFO : 'ext-mb-info',
-<span id='Ext-window.MessageBox-property-WARNING'>    /**
+<span id='Ext-window-MessageBox-property-WARNING'>    /**
 </span>     * The CSS class that provides the WARNING icon image
      * @type String
      */
     WARNING : 'ext-mb-warning',
-<span id='Ext-window.MessageBox-property-QUESTION'>    /**
+<span id='Ext-window-MessageBox-property-QUESTION'>    /**
 </span>     * The CSS class that provides the QUESTION icon image
      * @type String
      */
     QUESTION : 'ext-mb-question',
-<span id='Ext-window.MessageBox-property-ERROR'>    /**
+<span id='Ext-window-MessageBox-property-ERROR'>    /**
 </span>     * The CSS class that provides the ERROR icon image
      * @type String
      */
@@ -130,24 +147,24 @@ Ext.define('Ext.window.MessageBox', {
         type: 'anchor'
     },
 
-<span id='Ext-window.MessageBox-property-defaultTextHeight'>    /**
+<span id='Ext-window-MessageBox-property-defaultTextHeight'>    /**
 </span>     * The default height in pixels of the message box's multiline textarea if displayed (defaults to 75)
      * @type Number
      */
     defaultTextHeight : 75,
-<span id='Ext-window.MessageBox-property-minProgressWidth'>    /**
+<span id='Ext-window-MessageBox-property-minProgressWidth'>    /**
 </span>     * The minimum width in pixels of the message box if it is a progress-style dialog.  This is useful
      * for setting a different minimum width than text-only dialogs may need (defaults to 250).
      * @type Number
      */
     minProgressWidth : 250,
-<span id='Ext-window.MessageBox-property-minPromptWidth'>    /**
+<span id='Ext-window-MessageBox-property-minPromptWidth'>    /**
 </span>     * The minimum width in pixels of the message box if it is a prompt dialog.  This is useful
      * for setting a different minimum width than text-only dialogs may need (defaults to 250).
      * @type Number
      */
     minPromptWidth: 250,
-<span id='Ext-window.MessageBox-property-buttonText'>    /**
+<span id='Ext-window-MessageBox-property-buttonText'>    /**
 </span>     * An object containing the default button text strings that can be overriden for localized language support.
      * Supported properties are: ok, cancel, yes and no.  Generally you should include a locale-specific
      * resource file for handling language support across the framework.
@@ -171,7 +188,7 @@ Ext.define('Ext.window.MessageBox', {
         wait: 'Loading...',
         alert: 'Attention'
     },
-    
+
     iconHeight: 35,
 
     makeButton: function(btnIdx) {
@@ -295,7 +312,7 @@ Ext.define('Ext.window.MessageBox', {
     onPromptKey: function(textField, e) {
         var me = this,
             blur;
-            
+
         if (e.keyCode === Ext.EventObject.RETURN || e.keyCode === 10) {
             if (me.msgButtons.ok.isVisible()) {
                 blur = true;
@@ -304,7 +321,7 @@ Ext.define('Ext.window.MessageBox', {
                 me.msgButtons.yes.handler.call(me, me.msgButtons.yes);
                 blur = true;
             }
-            
+
             if (blur) {
                 me.textField.blur();
             }
@@ -326,7 +343,7 @@ Ext.define('Ext.window.MessageBox', {
 
         // Default to allowing the Window to take focus.
         delete me.defaultFocus;
-        
+
         // clear any old animateTarget
         me.animateTarget = cfg.animateTarget || undefined;
 
@@ -342,6 +359,7 @@ Ext.define('Ext.window.MessageBox', {
             me.width = initialWidth;
             me.render(Ext.getBody());
         } else {
+            me.hidden = false;
             me.setSize(initialWidth, me.maxHeight);
         }
         me.setPosition(-10000, -10000);
@@ -433,7 +451,7 @@ Ext.define('Ext.window.MessageBox', {
         me.hidden = true;
     },
 
-<span id='Ext-window.MessageBox-method-show'>    /**
+<span id='Ext-window-MessageBox-method-show'>    /**
 </span>     * Displays a new message box, or reinitializes an existing message box, based on the config options
      * passed in. All display functions (e.g. prompt, alert, etc.) on MessageBox call this function internally,
      * although those calls are basic shortcuts and do not support all of the config options allowed here.
@@ -508,7 +526,7 @@ icon: Ext.window.MessageBox.INFO
      */
     show: function(cfg) {
         var me = this;
-            
+
         me.reconfigure(cfg);
         me.addCls(cfg.cls);
         if (cfg.animateTarget) {
@@ -520,11 +538,11 @@ icon: Ext.window.MessageBox.INFO
         }
         return me;
     },
-    
+
     afterShow: function(){
         if (this.animateTarget) {
             this.center();
-        }    
+        }
         this.callParent(arguments);
     },
 
@@ -536,7 +554,7 @@ icon: Ext.window.MessageBox.INFO
         if (!Ext.isDefined(me.frameWidth)) {
             me.frameWidth = me.el.getWidth() - me.body.getWidth();
         }
-        
+
         // reset to the original dimensions
         icon.setHeight(iconHeight);
 
@@ -573,7 +591,7 @@ icon: Ext.window.MessageBox.INFO
         return this.doAutoSize(true);
     },
 
-<span id='Ext-window.MessageBox-method-setIcon'>    /**
+<span id='Ext-window-MessageBox-method-setIcon'>    /**
 </span>     * Adds the specified icon to the dialog.  By default, the class 'ext-mb-icon' is applied for default
      * styling, and the class passed in is expected to supply the background image url. Pass in empty string ('')
      * to clear any existing icon. This method must be called before the MessageBox is shown.
@@ -601,7 +619,7 @@ Ext.window.MessageBox.ERROR
         return me;
     },
 
-<span id='Ext-window.MessageBox-method-updateProgress'>    /**
+<span id='Ext-window-MessageBox-method-updateProgress'>    /**
 </span>     * Updates a progress-style message box's text and progress bar. Only relevant on message boxes
      * initiated via {@link Ext.window.MessageBox#progress} or {@link Ext.window.MessageBox#wait},
      * or by calling {@link Ext.window.MessageBox#show} with progress: true.
@@ -625,7 +643,7 @@ Ext.window.MessageBox.ERROR
         }
     },
 
-<span id='Ext-window.MessageBox-method-confirm'>    /**
+<span id='Ext-window-MessageBox-method-confirm'>    /**
 </span>     * Displays a confirmation message box with Yes and No buttons (comparable to JavaScript's confirm).
      * If a callback function is passed it will be called after the user clicks either button,
      * and the id of the button that was clicked will be passed as the only parameter to the callback
@@ -650,7 +668,7 @@ Ext.window.MessageBox.ERROR
         return this.show(cfg);
     },
 
-<span id='Ext-window.MessageBox-method-prompt'>    /**
+<span id='Ext-window-MessageBox-method-prompt'>    /**
 </span>     * Displays a message box with OK and Cancel buttons prompting the user to enter some text (comparable to JavaScript's prompt).
      * The prompt can be a single-line or multi-line textbox.  If a callback function is passed it will be called after the user
      * clicks either button, and the id of the button that was clicked (could also be the top-right
@@ -681,7 +699,7 @@ Ext.window.MessageBox.ERROR
         return this.show(cfg);
     },
 
-<span id='Ext-window.MessageBox-method-wait'>    /**
+<span id='Ext-window-MessageBox-method-wait'>    /**
 </span>     * Displays a message box with an infinitely auto-updating progress bar.  This can be used to block user
      * interaction while waiting for a long-running process to complete that does not have defined intervals.
      * You are responsible for closing the message box when the process is complete.
@@ -705,7 +723,7 @@ Ext.window.MessageBox.ERROR
         return this.show(cfg);
     },
 
-<span id='Ext-window.MessageBox-method-alert'>    /**
+<span id='Ext-window-MessageBox-method-alert'>    /**
 </span>     * Displays a standard read-only message box with an OK button (comparable to the basic JavaScript alert prompt).
      * If a callback function is passed it will be called after the user clicks the button, and the
      * id of the button that was clicked will be passed as the only parameter to the callback
@@ -730,7 +748,7 @@ Ext.window.MessageBox.ERROR
         return this.show(cfg);
     },
 
-<span id='Ext-window.MessageBox-method-progress'>    /**
+<span id='Ext-window-MessageBox-method-progress'>    /**
 </span>     * Displays a message box with a progress bar.  This message box has no buttons and is not closeable by
      * the user.  You are responsible for updating the progress bar as needed via {@link Ext.window.MessageBox#updateProgress}
      * and closing the message box when the process is complete.
@@ -751,4 +769,6 @@ Ext.window.MessageBox.ERROR
     }
 }, function() {
     Ext.MessageBox = Ext.Msg = new this();
-});</pre></pre></body></html>
+});</pre>
+</body>
+</html>

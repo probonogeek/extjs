@@ -1,4 +1,21 @@
-<!DOCTYPE html><html><head><title>Sencha Documentation Project</title><link rel="stylesheet" href="../reset.css" type="text/css"><link rel="stylesheet" href="../prettify.css" type="text/css"><link rel="stylesheet" href="../prettify_sa.css" type="text/css"><script type="text/javascript" src="../prettify.js"></script></head><body onload="prettyPrint()"><pre class="prettyprint"><pre><span id='Ext-form.field.Base-method-constructor'><span id='Ext-form.field.Base'>/**
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Base-method-constructor'><span id='Ext-form-field-Base'>/**
 </span></span> * @class Ext.form.field.Base
  * @extends Ext.Component
 
@@ -108,14 +125,14 @@ Ext.define('Ext.form.field.Base', {
         }
     ],
 
-<span id='Ext-form.field.Base-cfg-name'>    /**
+<span id='Ext-form-field-Base-cfg-name'>    /**
 </span>     * @cfg {String} name The name of the field (defaults to undefined). This is used as the parameter
      * name when including the field value in a {@link Ext.form.Basic#submit form submit()}. If no name is
      * configured, it falls back to the {@link #inputId}. To prevent the field from being included in the
      * form submit, set {@link #submitValue} to &lt;tt&gt;false&lt;/tt&gt;.
      */
 
-<span id='Ext-form.field.Base-cfg-inputType'>    /**
+<span id='Ext-form-field-Base-cfg-inputType'>    /**
 </span>     * @cfg {String} inputType
      * &lt;p&gt;The type attribute for input fields -- e.g. radio, text, password, file (defaults to &lt;tt&gt;'text'&lt;/tt&gt;).
      * The extended types supported by HTML5 inputs (url, email, etc.) may also be used, though using them
@@ -126,39 +143,39 @@ Ext.define('Ext.form.field.Base', {
      */
     inputType: 'text',
 
-<span id='Ext-form.field.Base-cfg-tabIndex'>    /**
+<span id='Ext-form-field-Base-cfg-tabIndex'>    /**
 </span>     * @cfg {Number} tabIndex The tabIndex for this field. Note this only applies to fields that are rendered,
      * not those which are built via applyTo (defaults to undefined).
      */
 
-<span id='Ext-form.field.Base-cfg-invalidText'>    /**
+<span id='Ext-form-field-Base-cfg-invalidText'>    /**
 </span>     * @cfg {String} invalidText The error text to use when marking a field invalid and no message is provided
      * (defaults to 'The value in this field is invalid')
      */
     invalidText : 'The value in this field is invalid',
 
-<span id='Ext-form.field.Base-cfg-fieldCls'>    /**
+<span id='Ext-form-field-Base-cfg-fieldCls'>    /**
 </span>     * @cfg {String} fieldCls The default CSS class for the field input (defaults to 'x-form-field')
      */
     fieldCls : Ext.baseCSSPrefix + 'form-field',
 
-<span id='Ext-form.field.Base-cfg-fieldStyle'>    /**
+<span id='Ext-form-field-Base-cfg-fieldStyle'>    /**
 </span>     * @cfg {String} fieldStyle Optional CSS style(s) to be applied to the {@link #inputEl field input element}.
      * Should be a valid argument to {@link Ext.core.Element#applyStyles}. Defaults to undefined. See also the
      * {@link #setFieldStyle} method for changing the style after initialization.
      */
 
-<span id='Ext-form.field.Base-cfg-focusCls'>    /**
+<span id='Ext-form-field-Base-cfg-focusCls'>    /**
 </span>     * @cfg {String} focusCls The CSS class to use when the field receives focus (defaults to 'x-form-focus')
      */
     focusCls : Ext.baseCSSPrefix + 'form-focus',
 
-<span id='Ext-form.field.Base-cfg-dirtyCls'>    /**
+<span id='Ext-form-field-Base-cfg-dirtyCls'>    /**
 </span>     * @cfg {String} dirtyCls The CSS class to use when the field value {@link #isDirty is dirty}.
      */
     dirtyCls : Ext.baseCSSPrefix + 'form-dirty',
 
-<span id='Ext-form.field.Base-cfg-checkChangeEvents'>    /**
+<span id='Ext-form-field-Base-cfg-checkChangeEvents'>    /**
 </span>     * @cfg {Array} checkChangeEvents
      * &lt;p&gt;A list of event names that will be listened for on the field's {@link #inputEl input element}, which
      * will cause the field's value to be checked for changes. If a change is detected, the
@@ -182,7 +199,7 @@ Ext.define('Ext.form.field.Base', {
                         ['change', 'propertychange'] :
                         ['change', 'input', 'textInput', 'keyup', 'dragdrop'],
 
-<span id='Ext-form.field.Base-cfg-checkChangeBuffer'>    /**
+<span id='Ext-form-field-Base-cfg-checkChangeBuffer'>    /**
 </span>     * @cfg {Number} checkChangeBuffer
      * Defines a timeout in milliseconds for buffering {@link #checkChangeEvents} that fire in rapid succession.
      * Defaults to 50 milliseconds.
@@ -191,7 +208,7 @@ Ext.define('Ext.form.field.Base', {
 
     componentLayout: 'field',
 
-<span id='Ext-form.field.Base-cfg-readOnly'>    /**
+<span id='Ext-form-field-Base-cfg-readOnly'>    /**
 </span>     * @cfg {Boolean} readOnly &lt;tt&gt;true&lt;/tt&gt; to mark the field as readOnly in HTML
      * (defaults to &lt;tt&gt;false&lt;/tt&gt;).
      * &lt;br&gt;&lt;p&gt;&lt;b&gt;Note&lt;/b&gt;: this only sets the element's readOnly DOM attribute.
@@ -202,18 +219,18 @@ Ext.define('Ext.form.field.Base', {
      */
     readOnly : false,
 
-<span id='Ext-form.field.Base-cfg-readOnlyCls'>    /**
+<span id='Ext-form-field-Base-cfg-readOnlyCls'>    /**
 </span>     * @cfg {String} readOnlyCls The CSS class applied to the component's main element when it is {@link #readOnly}.
      */
     readOnlyCls: Ext.baseCSSPrefix + 'form-readonly',
 
-<span id='Ext-form.field.Base-cfg-inputId'>    /**
+<span id='Ext-form-field-Base-cfg-inputId'>    /**
 </span>     * @cfg {String} inputId
      * The id that will be given to the generated input DOM element. Defaults to an automatically generated id.
      * If you configure this manually, you must make sure it is unique in the document.
      */
 
-<span id='Ext-form.field.Base-cfg-validateOnBlur'>    /**
+<span id='Ext-form-field-Base-cfg-validateOnBlur'>    /**
 </span>     * @cfg {Boolean} validateOnBlur
      * Whether the field should validate when it loses focus (defaults to &lt;tt&gt;true&lt;/tt&gt;). This will cause fields
      * to be validated as the user steps through the fields in the form regardless of whether they are making
@@ -237,19 +254,19 @@ Ext.define('Ext.form.field.Base', {
         me.subTplData = me.subTplData || {};
 
         me.addEvents(
-<span id='Ext-form.field.Base-event-focus'>            /**
+<span id='Ext-form-field-Base-event-focus'>            /**
 </span>             * @event focus
              * Fires when this field receives input focus.
              * @param {Ext.form.field.Base} this
              */
             'focus',
-<span id='Ext-form.field.Base-event-blur'>            /**
+<span id='Ext-form-field-Base-event-blur'>            /**
 </span>             * @event blur
              * Fires when this field loses input focus.
              * @param {Ext.form.field.Base} this
              */
             'blur',
-<span id='Ext-form.field.Base-event-specialkey'>            /**
+<span id='Ext-form-field-Base-event-specialkey'>            /**
 </span>             * @event specialkey
              * Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed.
              * To handle other keys see {@link Ext.panel.Panel#keys} or {@link Ext.util.KeyMap}.
@@ -295,7 +312,7 @@ var form = new Ext.form.Panel({
         }
     },
 
-<span id='Ext-form.field.Base-method-getInputId'>    /**
+<span id='Ext-form-field-Base-method-getInputId'>    /**
 </span>     * Returns the input id for this field. If none was specified via the {@link #inputId} config,
      * then an id will be automatically generated.
      */
@@ -303,7 +320,7 @@ var form = new Ext.form.Panel({
         return this.inputId || (this.inputId = Ext.id());
     },
 
-<span id='Ext-form.field.Base-method-getSubTplData'>    /**
+<span id='Ext-form-field-Base-method-getSubTplData'>    /**
 </span>     * @protected Creates and returns the data object to be used when rendering the {@link #fieldSubTpl}.
      * @return {Object} The template data
      */
@@ -324,7 +341,7 @@ var form = new Ext.form.Panel({
         });
     },
 
-<span id='Ext-form.field.Base-method-getSubTplMarkup'>    /**
+<span id='Ext-form-field-Base-method-getSubTplMarkup'>    /**
 </span>     * @protected
      * Gets the markup to be inserted into the outer template's bodyEl. For fields this is the
      * actual input element.
@@ -345,7 +362,7 @@ var form = new Ext.form.Panel({
         return Ext.applyIf(this.callParent(), this.getLabelableRenderData());
     },
 
-<span id='Ext-form.field.Base-method-setFieldStyle'>    /**
+<span id='Ext-form-field-Base-method-setFieldStyle'>    /**
 </span>     * Set the {@link #fieldStyle CSS style} of the {@link #inputEl field input element}.
      * @param {String/Object/Function} style The style(s) to apply. Should be a valid argument to
      * {@link Ext.core.Element#applyStyles}.
@@ -368,7 +385,7 @@ var form = new Ext.form.Panel({
         Ext.applyIf(renderSelectors, me.getLabelableSelectors());
 
         Ext.applyIf(renderSelectors, {
-<span id='Ext-form.field.Base-property-inputEl'>            /**
+<span id='Ext-form-field-Base-property-inputEl'>            /**
 </span>             * @property inputEl
              * @type Ext.core.Element
              * The input Element for this Field. Only available after the field has been rendered.
@@ -437,7 +454,7 @@ var form = new Ext.form.Panel({
         return data;
     },
 
-<span id='Ext-form.field.Base-method-getSubmitValue'>    /**
+<span id='Ext-form-field-Base-method-getSubmitValue'>    /**
 </span>     * &lt;p&gt;Returns the value that would be included in a standard form submit for this field. This will be combined
      * with the field's name to form a &lt;tt&gt;name=value&lt;/tt&gt; pair in the {@link #getSubmitData submitted parameters}.
      * If an empty string is returned then just the &lt;tt&gt;name=&lt;/tt&gt; will be submitted; if &lt;tt&gt;null&lt;/tt&gt; is returned
@@ -450,7 +467,7 @@ var form = new Ext.form.Panel({
         return this.processRawValue(this.getRawValue());
     },
 
-<span id='Ext-form.field.Base-method-getRawValue'>    /**
+<span id='Ext-form-field-Base-method-getRawValue'>    /**
 </span>     * Returns the raw value of the field, without performing any normalization, conversion, or validation.
      * To get a normalized and converted value see {@link #getValue}.
      * @return {String} value The raw String value of the field
@@ -462,7 +479,7 @@ var form = new Ext.form.Panel({
         return v;
     },
 
-<span id='Ext-form.field.Base-method-setRawValue'>    /**
+<span id='Ext-form-field-Base-method-setRawValue'>    /**
 </span>     * Sets the field's raw value directly, bypassing {@link #valueToRaw value conversion}, change detection, and
      * validation. To set the value with these additional inspections see {@link #setValue}.
      * @param {Mixed} value The value to set
@@ -480,7 +497,7 @@ var form = new Ext.form.Panel({
         return value;
     },
 
-<span id='Ext-form.field.Base-method-valueToRaw'>    /**
+<span id='Ext-form-field-Base-method-valueToRaw'>    /**
 </span>     * &lt;p&gt;Converts a mixed-type value to a raw representation suitable for displaying in the field. This allows
      * controlling how value objects passed to {@link #setValue} are shown to the user, including localization.
      * For instance, for a {@link Ext.form.field.Date}, this would control how a Date object passed to {@link #setValue}
@@ -495,7 +512,7 @@ var form = new Ext.form.Panel({
         return '' + Ext.value(value, '');
     },
 
-<span id='Ext-form.field.Base-method-rawToValue'>    /**
+<span id='Ext-form-field-Base-method-rawToValue'>    /**
 </span>     * &lt;p&gt;Converts a raw input field value into a mixed-type value that is suitable for this particular field type.
      * This allows controlling the normalization and conversion of user-entered values into field-type-appropriate
      * values, e.g. a Date object for {@link Ext.form.field.Date}, and is invoked by {@link #getValue}.&lt;/p&gt;
@@ -510,7 +527,7 @@ var form = new Ext.form.Panel({
         return rawValue;
     },
 
-<span id='Ext-form.field.Base-method-processRawValue'>    /**
+<span id='Ext-form-field-Base-method-processRawValue'>    /**
 </span>     * Performs any necessary manipulation of a raw field value to prepare it for {@link #rawToValue conversion}
      * and/or {@link #validate validation}, for instance stripping out ignored characters. In the base implementation
      * it does nothing; individual subclasses may override this as needed.
@@ -521,7 +538,7 @@ var form = new Ext.form.Panel({
         return value;
     },
 
-<span id='Ext-form.field.Base-method-getValue'>    /**
+<span id='Ext-form-field-Base-method-getValue'>    /**
 </span>     * Returns the current data value of the field. The type of value returned is particular to the type of the
      * particular field (e.g. a Date object for {@link Ext.form.field.Date}), as the result of calling {@link #rawToValue} on
      * the field's {@link #processRawValue processed} String value. To return the raw String value, see {@link #getRawValue}.
@@ -534,7 +551,7 @@ var form = new Ext.form.Panel({
         return val;
     },
 
-<span id='Ext-form.field.Base-method-setValue'>    /**
+<span id='Ext-form-field-Base-method-setValue'>    /**
 </span>     * Sets a data value into the field and runs the change detection and validation. To set the value directly
      * without these inspections see {@link #setRawValue}.
      * @param {Mixed} value The value to set
@@ -567,7 +584,7 @@ var form = new Ext.form.Panel({
         }
     },
 
-<span id='Ext-form.field.Base-method-setReadOnly'>    /**
+<span id='Ext-form-field-Base-method-setReadOnly'>    /**
 </span>     * Sets the read only state of this field.
      * @param {Boolean} readOnly Whether the field should be read only.
      */
@@ -679,7 +696,7 @@ var form = new Ext.form.Panel({
     postBlur : Ext.emptyFn,
 
 
-<span id='Ext-form.field.Base-method-onDirtyChange'>    /**
+<span id='Ext-form-field-Base-method-onDirtyChange'>    /**
 </span>     * @private Called when the field's dirty state changes. Adds/removes the {@link #dirtyCls} on the main element.
      * @param {Boolean} isDirty
      */
@@ -688,7 +705,7 @@ var form = new Ext.form.Panel({
     },
 
 
-<span id='Ext-form.field.Base-method-isValid'>    /**
+<span id='Ext-form-field-Base-method-isValid'>    /**
 </span>     * Returns whether or not the field value is currently valid by
      * {@link #getErrors validating} the {@link #processRawValue processed raw value}
      * of the field. &lt;b&gt;Note&lt;/b&gt;: {@link #disabled} fields are always treated as valid.
@@ -700,7 +717,7 @@ var form = new Ext.form.Panel({
     },
 
 
-<span id='Ext-form.field.Base-method-validateValue'>    /**
+<span id='Ext-form-field-Base-method-validateValue'>    /**
 </span>     * &lt;p&gt;Uses {@link #getErrors} to build an array of validation errors. If any errors are found, they are passed
      * to {@link #markInvalid} and false is returned, otherwise true is returned.&lt;/p&gt;
      * &lt;p&gt;Previously, subclasses were invited to provide an implementation of this to process validations - from 3.2
@@ -723,7 +740,7 @@ var form = new Ext.form.Panel({
         return isValid;
     },
 
-<span id='Ext-form.field.Base-method-markInvalid'>    /**
+<span id='Ext-form-field-Base-method-markInvalid'>    /**
 </span>     * &lt;p&gt;Display one or more error messages associated with this field, using {@link #msgTarget} to determine how to
      * display the messages and applying {@link #invalidCls} to the field's UI element.&lt;/p&gt;
      * &lt;p&gt;&lt;b&gt;Note&lt;/b&gt;: this method does not cause the Field's {@link #validate} or {@link #isValid} methods to
@@ -742,7 +759,7 @@ var form = new Ext.form.Panel({
         }
     },
 
-<span id='Ext-form.field.Base-method-clearInvalid'>    /**
+<span id='Ext-form-field-Base-method-clearInvalid'>    /**
 </span>     * &lt;p&gt;Clear any invalid styles/messages for this field.&lt;/p&gt;
      * &lt;p&gt;&lt;b&gt;Note&lt;/b&gt;: this method does not cause the Field's {@link #validate} or {@link #isValid} methods to
      * return &lt;code&gt;true&lt;/code&gt; if the value does not &lt;i&gt;pass&lt;/i&gt; validation. So simply clearing a field's errors
@@ -759,7 +776,7 @@ var form = new Ext.form.Panel({
         }
     },
 
-<span id='Ext-form.field.Base-method-renderActiveError'>    /**
+<span id='Ext-form-field-Base-method-renderActiveError'>    /**
 </span>     * @private Overrides the method from the Ext.form.Labelable mixin to also add the invalidCls to the inputEl,
      * as that is required for proper styling in IE with nested fields (due to lack of child selector)
      */
@@ -779,4 +796,6 @@ var form = new Ext.form.Panel({
     }
 
 });
-</pre></pre></body></html>
+</pre>
+</body>
+</html>
