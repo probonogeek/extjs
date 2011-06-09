@@ -76,6 +76,24 @@ Ext.define('Ext.grid.LockingView', {
         return cols.concat(this.normalGrid.headerCt.getGridColumns());
     },
     
+    getEl: function(column){
+        return this.getViewForColumn(column).getEl();
+    },
+    
+    getViewForColumn: function(column) {
+        var view = this.lockedView,
+            inLocked;
+        
+        view.headerCt.cascade(function(col){
+            if (col === column) {
+                inLocked = true;
+                return false;
+            }
+        });
+        
+        return inLocked ? view : this.normalView;
+    },
+    
     onItemMouseEnter: function(view, record){
         var me = this,
             locked = me.lockedView,
@@ -127,14 +145,9 @@ Ext.define('Ext.grid.LockingView', {
     },
     
     getCell: function(record, column){
-        var view = this.lockedView,
+        var view = this.getViewForColumn(column),
             row;
-        
-        
-        if (view.getHeaderAtIndex(column) === -1) {
-            view = this.normalView;
-        }
-        
+            
         row = view.getNode(record);
         return Ext.fly(row).down(column.getCellSelector());
     },

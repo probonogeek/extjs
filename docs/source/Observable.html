@@ -16,43 +16,41 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-util-Observable'>/**
-</span> * @class Ext.util.Observable
- * Base class that provides a common interface for publishing events. Subclasses are expected to
- * to have a property &quot;events&quot; with all the events defined, and, optionally, a property &quot;listeners&quot;
- * with configured listeners defined.&lt;br&gt;
+</span> * Base class that provides a common interface for publishing events. Subclasses are expected to to have a property
+ * &quot;events&quot; with all the events defined, and, optionally, a property &quot;listeners&quot; with configured listeners defined.
+ *
  * For example:
- * &lt;pre&gt;&lt;code&gt;
-Ext.define('Employee', {
-    extend: 'Ext.util.Observable',
-    constructor: function(config){
-        this.name = config.name;
-        this.addEvents({
-            &quot;fired&quot; : true,
-            &quot;quit&quot; : true
-        });
-
-        // Copy configured listeners into *this* object so that the base class&amp;#39;s
-        // constructor will add them.
-        this.listeners = config.listeners;
-
-        // Call our superclass constructor to complete construction process.
-        Employee.superclass.constructor.call(this, config)
-    }
-});
-&lt;/code&gt;&lt;/pre&gt;
- * This could then be used like this:&lt;pre&gt;&lt;code&gt;
-var newEmployee = new Employee({
-    name: employeeName,
-    listeners: {
-        quit: function() {
-            // By default, &quot;this&quot; will be the object that fired the event.
-            alert(this.name + &quot; has quit!&quot;);
-        }
-    }
-});
-&lt;/code&gt;&lt;/pre&gt;
+ *
+ *     Ext.define('Employee', {
+ *         extend: 'Ext.util.Observable',
+ *         constructor: function(config){
+ *             this.name = config.name;
+ *             this.addEvents({
+ *                 &quot;fired&quot; : true,
+ *                 &quot;quit&quot; : true
+ *             });
+ *
+ *             // Copy configured listeners into *this* object so that the base class's
+ *             // constructor will add them.
+ *             this.listeners = config.listeners;
+ *
+ *             // Call our superclass constructor to complete construction process.
+ *             Employee.superclass.constructor.call(this, config)
+ *         }
+ *     });
+ *
+ * This could then be used like this:
+ *
+ *     var newEmployee = new Employee({
+ *         name: employeeName,
+ *         listeners: {
+ *             quit: function() {
+ *                 // By default, &quot;this&quot; will be the object that fired the event.
+ *                 alert(this.name + &quot; has quit!&quot;);
+ *             }
+ *         }
+ *     });
  */
-
 Ext.define('Ext.util.Observable', {
 
     /* Begin Definitions */
@@ -61,7 +59,8 @@ Ext.define('Ext.util.Observable', {
 
     statics: {
 <span id='Ext-util-Observable-method-releaseCapture'>        /**
-</span>         * Removes &lt;b&gt;all&lt;/b&gt; added captures from the Observable.
+</span>         * Removes **all** added captures from the Observable.
+         *
          * @param {Observable} o The Observable to release
          * @static
          */
@@ -70,13 +69,14 @@ Ext.define('Ext.util.Observable', {
         },
 
 <span id='Ext-util-Observable-method-capture'>        /**
-</span>         * Starts capture on the specified Observable. All events will be passed
-         * to the supplied function with the event name + standard signature of the event
-         * &lt;b&gt;before&lt;/b&gt; the event is fired. If the supplied function returns false,
+</span>         * Starts capture on the specified Observable. All events will be passed to the supplied function with the event
+         * name + standard signature of the event **before** the event is fired. If the supplied function returns false,
          * the event will not fire.
+         *
          * @param {Observable} o The Observable to capture events from.
          * @param {Function} fn The function to call when an event is fired.
-         * @param {Object} scope (optional) The scope (&lt;code&gt;this&lt;/code&gt; reference) in which the function is executed. Defaults to the Observable firing the event.
+         * @param {Object} scope (optional) The scope (`this` reference) in which the function is executed. Defaults to
+         * the Observable firing the event.
          * @static
          */
         capture: function(o, fn, scope) {
@@ -84,22 +84,21 @@ Ext.define('Ext.util.Observable', {
         },
 
 <span id='Ext-util-Observable-method-observe'>        /**
-</span>Sets observability on the passed class constructor.
-
-This makes any event fired on any instance of the passed class also fire a single event through
-the __class__ allowing for central handling of events on many instances at once.
-
-Usage:
-
-    Ext.util.Observable.observe(Ext.data.Connection);
-    Ext.data.Connection.on('beforerequest', function(con, options) {
-        console.log('Ajax request made to ' + options.url);
-    });
-
+</span>         * Sets observability on the passed class constructor.
+         *
+         * This makes any event fired on any instance of the passed class also fire a single event through
+         * the **class** allowing for central handling of events on many instances at once.
+         *
+         * Usage:
+         *
+         *     Ext.util.Observable.observe(Ext.data.Connection);
+         *     Ext.data.Connection.on('beforerequest', function(con, options) {
+         *         console.log('Ajax request made to ' + options.url);
+         *     });
+         *
          * @param {Function} c The class constructor to make observable.
          * @param {Object} listeners An object containing a series of listeners to add. See {@link #addListener}.
          * @static
-         * @markdown
          */
         observe: function(cls, listeners) {
             if (cls) {
@@ -118,36 +117,38 @@ Usage:
     /* End Definitions */
 
 <span id='Ext-util-Observable-cfg-listeners'>    /**
-</span>    * @cfg {Object} listeners (optional) &lt;p&gt;A config object containing one or more event handlers to be added to this
-    * object during initialization.  This should be a valid listeners config object as specified in the
-    * {@link #addListener} example for attaching multiple handlers at once.&lt;/p&gt;
-    * &lt;br&gt;&lt;p&gt;&lt;b&gt;&lt;u&gt;DOM events from ExtJs {@link Ext.Component Components}&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-    * &lt;br&gt;&lt;p&gt;While &lt;i&gt;some&lt;/i&gt; ExtJs Component classes export selected DOM events (e.g. &quot;click&quot;, &quot;mouseover&quot; etc), this
-    * is usually only done when extra value can be added. For example the {@link Ext.view.View DataView}'s
-    * &lt;b&gt;&lt;code&gt;{@link Ext.view.View#click click}&lt;/code&gt;&lt;/b&gt; event passing the node clicked on. To access DOM
-    * events directly from a child element of a Component, we need to specify the &lt;code&gt;element&lt;/code&gt; option to
-    * identify the Component property to add a DOM listener to:
-    * &lt;pre&gt;&lt;code&gt;
-new Ext.panel.Panel({
-    width: 400,
-    height: 200,
-    dockedItems: [{
-        xtype: 'toolbar'
-    }],
-    listeners: {
-        click: {
-            element: 'el', //bind to the underlying el property on the panel
-            fn: function(){ console.log('click el'); }
-        },
-        dblclick: {
-            element: 'body', //bind to the underlying body property on the panel
-            fn: function(){ console.log('dblclick body'); }
-        }
-    }
-});
-&lt;/code&gt;&lt;/pre&gt;
-    * &lt;/p&gt;
-    */
+</span>     * @cfg {Object} listeners
+     *
+     * A config object containing one or more event handlers to be added to this object during initialization. This
+     * should be a valid listeners config object as specified in the {@link #addListener} example for attaching multiple
+     * handlers at once.
+     *
+     * **DOM events from ExtJS {@link Ext.Component Components}**
+     *
+     * While _some_ ExtJs Component classes export selected DOM events (e.g. &quot;click&quot;, &quot;mouseover&quot; etc), this is usually
+     * only done when extra value can be added. For example the {@link Ext.view.View DataView}'s **`{@link
+     * Ext.view.View#itemclick itemclick}`** event passing the node clicked on. To access DOM events directly from a
+     * child element of a Component, we need to specify the `element` option to identify the Component property to add a
+     * DOM listener to:
+     *
+     *     new Ext.panel.Panel({
+     *         width: 400,
+     *         height: 200,
+     *         dockedItems: [{
+     *             xtype: 'toolbar'
+     *         }],
+     *         listeners: {
+     *             click: {
+     *                 element: 'el', //bind to the underlying el property on the panel
+     *                 fn: function(){ console.log('click el'); }
+     *             },
+     *             dblclick: {
+     *                 element: 'body', //bind to the underlying body property on the panel
+     *                 fn: function(){ console.log('dblclick body'); }
+     *             }
+     *         }
+     *     });
+     */
     // @private
     isObservable: true,
 
@@ -170,23 +171,23 @@ new Ext.panel.Panel({
     eventOptionsRe : /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate|element|vertical|horizontal)$/,
 
 <span id='Ext-util-Observable-method-addManagedListener'>    /**
-</span>     * &lt;p&gt;Adds listeners to any Observable object (or Element) which are automatically removed when this Component
-     * is destroyed.
+</span>     * Adds listeners to any Observable object (or Element) which are automatically removed when this Component is
+     * destroyed.
+     *
      * @param {Observable/Element} item The item to which to add a listener/listeners.
      * @param {Object/String} ename The event name, or an object containing event name properties.
-     * @param {Function} fn Optional. If the &lt;code&gt;ename&lt;/code&gt; parameter was an event name, this
-     * is the handler function.
-     * @param {Object} scope Optional. If the &lt;code&gt;ename&lt;/code&gt; parameter was an event name, this
-     * is the scope (&lt;code&gt;this&lt;/code&gt; reference) in which the handler function is executed.
-     * @param {Object} opt Optional. If the &lt;code&gt;ename&lt;/code&gt; parameter was an event name, this
-     * is the {@link Ext.util.Observable#addListener addListener} options.
+     * @param {Function} fn (optional) If the `ename` parameter was an event name, this is the handler function.
+     * @param {Object} scope (optional) If the `ename` parameter was an event name, this is the scope (`this` reference)
+     * in which the handler function is executed.
+     * @param {Object} opt (optional) If the `ename` parameter was an event name, this is the
+     * {@link Ext.util.Observable#addListener addListener} options.
      */
     addManagedListener : function(item, ename, fn, scope, options) {
         var me = this,
             managedListeners = me.managedListeners = me.managedListeners || [],
             config;
 
-        if (Ext.isObject(ename)) {
+        if (typeof ename !== 'string') {
             options = ename;
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
@@ -212,14 +213,14 @@ new Ext.panel.Panel({
 
 <span id='Ext-util-Observable-method-removeManagedListener'>    /**
 </span>     * Removes listeners that were added by the {@link #mon} method.
+     *
      * @param {Observable|Element} item The item from which to remove a listener/listeners.
      * @param {Object|String} ename The event name, or an object containing event name properties.
-     * @param {Function} fn Optional. If the &lt;code&gt;ename&lt;/code&gt; parameter was an event name, this
-     * is the handler function.
-     * @param {Object} scope Optional. If the &lt;code&gt;ename&lt;/code&gt; parameter was an event name, this
-     * is the scope (&lt;code&gt;this&lt;/code&gt; reference) in which the handler function is executed.
+     * @param {Function} fn Optional. If the `ename` parameter was an event name, this is the handler function.
+     * @param {Object} scope Optional. If the `ename` parameter was an event name, this is the scope (`this` reference)
+     * in which the handler function is executed.
      */
-     removeManagedListener : function(item, ename, fn, scope) {
+    removeManagedListener : function(item, ename, fn, scope) {
         var me = this,
             options,
             config,
@@ -227,7 +228,7 @@ new Ext.panel.Panel({
             length,
             i;
 
-        if (Ext.isObject(ename)) {
+        if (typeof ename !== 'string') {
             options = ename;
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
@@ -247,9 +248,12 @@ new Ext.panel.Panel({
     },
 
 <span id='Ext-util-Observable-method-fireEvent'>    /**
-</span>     * &lt;p&gt;Fires the specified event with the passed parameters (minus the event name).&lt;/p&gt;
-     * &lt;p&gt;An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget})
-     * by calling {@link #enableBubble}.&lt;/p&gt;
+</span>     * Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed
+     * to {@link #addListener}).
+     *
+     * An event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#getBubbleTarget}) by
+     * calling {@link #enableBubble}.
+     *
      * @param {String} eventName The name of the event to fire.
      * @param {Object...} args Variable number of parameters are passed to handlers.
      * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
@@ -267,84 +271,120 @@ new Ext.panel.Panel({
             if (queue) {
                 queue.push(args);
             }
-        } else if (event &amp;&amp; Ext.isObject(event) &amp;&amp; event.bubble) {
-            if (event.fire.apply(event, args.slice(1)) === false) {
-                return false;
-            }
-            parent = me.getBubbleTarget &amp;&amp; me.getBubbleTarget();
-            if (parent &amp;&amp; parent.isObservable) {
-                if (!parent.events[ename] || !Ext.isObject(parent.events[ename]) || !parent.events[ename].bubble) {
-                    parent.enableBubble(ename);
+        } else if (event &amp;&amp; event !== true) {
+            if (event.bubble) {
+                if (event.fire.apply(event, args.slice(1)) === false) {
+                    return false;
                 }
-                return parent.fireEvent.apply(parent, args);
+                parent = me.getBubbleTarget &amp;&amp; me.getBubbleTarget();
+                if (parent &amp;&amp; parent.isObservable) {
+                    if (!parent.events[ename] || parent.events[ename] === true || !parent.events[ename].bubble) {
+                        parent.enableBubble(ename);
+                    }
+                    return parent.fireEvent.apply(parent, args);
+                }                
             }
-        } else if (event &amp;&amp; Ext.isObject(event)) {
-            args.shift();
-            ret = event.fire.apply(event, args);
+            else {
+                args.shift();
+                ret = event.fire.apply(event, args);
+            }
         }
         return ret;
     },
 
 <span id='Ext-util-Observable-method-addListener'>    /**
 </span>     * Appends an event handler to this object.
-     * @param {String}   eventName The name of the event to listen for. May also be an object who's property names are event names. See
-     * @param {Function} handler The method the event invokes.
-     * @param {Object}   scope (optional) The scope (&lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt; reference) in which the handler function is executed.
-     * &lt;b&gt;If omitted, defaults to the object which fired the event.&lt;/b&gt;
-     * @param {Object}   options (optional) An object containing handler configuration.
-     * properties. This may contain any of the following properties:&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;scope&lt;/b&gt; : Object&lt;div class=&quot;sub-desc&quot;&gt;The scope (&lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt; reference) in which the handler function is executed.
-     * &lt;b&gt;If omitted, defaults to the object which fired the event.&lt;/b&gt;&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;delay&lt;/b&gt; : Number&lt;div class=&quot;sub-desc&quot;&gt;The number of milliseconds to delay the invocation of the handler after the event fires.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;single&lt;/b&gt; : Boolean&lt;div class=&quot;sub-desc&quot;&gt;True to add a handler to handle just the next firing of the event, and then remove itself.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;buffer&lt;/b&gt; : Number&lt;div class=&quot;sub-desc&quot;&gt;Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
-     * by the specified number of milliseconds. If the event fires again within that time, the original
-     * handler is &lt;em&gt;not&lt;/em&gt; invoked, but the new handler is scheduled in its place.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;target&lt;/b&gt; : Observable&lt;div class=&quot;sub-desc&quot;&gt;Only call the handler if the event was fired on the target Observable, &lt;i&gt;not&lt;/i&gt;
-     * if the event was bubbled up from a child Observable.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;element&lt;/b&gt; : String&lt;div class=&quot;sub-desc&quot;&gt;&lt;b&gt;This option is only valid for listeners bound to {@link Ext.Component Components}.&lt;/b&gt;
-     * The name of a Component property which references an element to add a listener to.
-     * &lt;p&gt;This option is useful during Component construction to add DOM event listeners to elements of {@link Ext.Component Components} which
-     * will exist only after the Component is rendered. For example, to add a click listener to a Panel's body:&lt;pre&gt;&lt;code&gt;
-new Ext.panel.Panel({
-    title: 'The title',
-    listeners: {
-        click: this.handlePanelClick,
-        element: 'body'
-    }
-});
-&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
-     * &lt;p&gt;When added in this way, the options available are the options applicable to {@link Ext.core.Element#addListener}&lt;/p&gt;&lt;/div&gt;&lt;/li&gt;
-     * &lt;/ul&gt;&lt;br&gt;
-     * &lt;p&gt;
-     * &lt;b&gt;Combining Options&lt;/b&gt;&lt;br&gt;
-     * Using the options argument, it is possible to combine different types of listeners:&lt;br&gt;
-     * &lt;br&gt;
+     *
+     * @param {String} eventName The name of the event to listen for. May also be an object who's property names are
+     * event names.
+     * @param {Function} handler The method the event invokes.  Will be called with arguments given to
+     * {@link #fireEvent} plus the `options` parameter described below.
+     * @param {Object} scope (optional) The scope (`this` reference) in which the handler function is executed. **If
+     * omitted, defaults to the object which fired the event.**
+     * @param {Object} options (optional) An object containing handler configuration.
+     * 
+     * **Note:** Unlike in ExtJS 3.x, the options object will also be passed as the last argument to every event handler.
+     *
+     * This object may contain any of the following properties:
+     *
+     * - **scope** : Object
+     *
+     *   The scope (`this` reference) in which the handler function is executed. **If omitted, defaults to the object
+     *   which fired the event.**
+     *
+     * - **delay** : Number
+     *
+     *   The number of milliseconds to delay the invocation of the handler after the event fires.
+     *
+     * - **single** : Boolean
+     *
+     *   True to add a handler to handle just the next firing of the event, and then remove itself.
+     *
+     * - **buffer** : Number
+     *
+     *   Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed by the specified number of
+     *   milliseconds. If the event fires again within that time, the original handler is _not_ invoked, but the new
+     *   handler is scheduled in its place.
+     *
+     * - **target** : Observable
+     *
+     *   Only call the handler if the event was fired on the target Observable, _not_ if the event was bubbled up from a
+     *   child Observable.
+     *
+     * - **element** : String
+     *
+     *   **This option is only valid for listeners bound to {@link Ext.Component Components}.** The name of a Component
+     *   property which references an element to add a listener to.
+     *
+     *   This option is useful during Component construction to add DOM event listeners to elements of
+     *   {@link Ext.Component Components} which will exist only after the Component is rendered.
+     *   For example, to add a click listener to a Panel's body:
+     *
+     *       new Ext.panel.Panel({
+     *           title: 'The title',
+     *           listeners: {
+     *               click: this.handlePanelClick,
+     *               element: 'body'
+     *           }
+     *       });
+     *
+     * **Combining Options**
+     *
+     * Using the options argument, it is possible to combine different types of listeners:
+     *
      * A delayed, one-time listener.
-     * &lt;pre&gt;&lt;code&gt;
-myPanel.on('hide', this.handleClick, this, {
-single: true,
-delay: 100
-});&lt;/code&gt;&lt;/pre&gt;
-     * &lt;p&gt;
-     * &lt;b&gt;Attaching multiple handlers in 1 call&lt;/b&gt;&lt;br&gt;
-     * The method also allows for a single argument to be passed which is a config object containing properties
-     * which specify multiple events. For example:&lt;pre&gt;&lt;code&gt;
-myGridPanel.on({
-    cellClick: this.onCellClick,
-    mouseover: this.onMouseOver,
-    mouseout: this.onMouseOut,
-    scope: this // Important. Ensure &quot;this&quot; is correct during handler execution
-});
-&lt;/code&gt;&lt;/pre&gt;.
-     * &lt;p&gt;
+     *
+     *     myPanel.on('hide', this.handleClick, this, {
+     *         single: true,
+     *         delay: 100
+     *     });
+     *
+     * **Attaching multiple handlers in 1 call**
+     *
+     * The method also allows for a single argument to be passed which is a config object containing properties which
+     * specify multiple events. For example:
+     *
+     *     myGridPanel.on({
+     *         cellClick: this.onCellClick,
+     *         mouseover: this.onMouseOver,
+     *         mouseout: this.onMouseOut,
+     *         scope: this // Important. Ensure &quot;this&quot; is correct during handler execution
+     *     });
+     *
+     * One can also specify options for each event handler separately:
+     *
+     *     myGridPanel.on({
+     *         cellClick: {fn: this.onCellClick, scope: this, single: true},
+     *         mouseover: {fn: panel.onMouseOver, scope: panel}
+     *     });
+     *
      */
     addListener: function(ename, fn, scope, options) {
         var me = this,
             config,
             event;
 
-        if (Ext.isObject(ename)) {
+        if (typeof ename !== 'string') {
             options = ename;
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
@@ -368,9 +408,11 @@ myGridPanel.on({
 
 <span id='Ext-util-Observable-method-removeListener'>    /**
 </span>     * Removes an event handler.
-     * @param {String}   eventName The type of event the handler was associated with.
-     * @param {Function} handler   The handler to remove. &lt;b&gt;This must be a reference to the function passed into the {@link #addListener} call.&lt;/b&gt;
-     * @param {Object}   scope     (optional) The scope originally specified for the handler.
+     *
+     * @param {String} eventName The type of event the handler was associated with.
+     * @param {Function} handler The handler to remove. **This must be a reference to the function passed into the
+     * {@link #addListener} call.**
+     * @param {Object} scope (optional) The scope originally specified for the handler.
      */
     removeListener: function(ename, fn, scope) {
         var me = this,
@@ -378,7 +420,7 @@ myGridPanel.on({
             event,
             options;
 
-        if (Ext.isObject(ename)) {
+        if (typeof ename !== 'string') {
             options = ename;
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
@@ -468,12 +510,20 @@ myGridPanel.on({
 
 <span id='Ext-util-Observable-method-addEvents'>    /**
 </span>     * Adds the specified events to the list of events which this Observable may fire.
-     * @param {Object/String} o Either an object with event names as properties with a value of &lt;code&gt;true&lt;/code&gt;
-     * or the first event name string if multiple event names are being passed as separate parameters.
-     * @param {String} [additional] Optional additional event names if multiple event names are being passed as separate parameters.
-     * Usage:&lt;pre&gt;&lt;code&gt;
-this.addEvents('storeloaded', 'storecleared');
-&lt;/code&gt;&lt;/pre&gt;
+     *
+     * @param {Object/String} o Either an object with event names as properties with a value of `true` or the first
+     * event name string if multiple event names are being passed as separate parameters. Usage:
+     *
+     *     this.addEvents({
+     *         storeloaded: true,
+     *         storecleared: true
+     *     });
+     *
+     * @param {String...} more Optional additional event names if multiple event names are being passed as separate
+     * parameters. Usage:
+     *
+     *     this.addEvents('storeloaded', 'storecleared');
+     *
      */
     addEvents: function(o) {
         var me = this,
@@ -496,6 +546,7 @@ this.addEvents('storeloaded', 'storecleared');
 
 <span id='Ext-util-Observable-method-hasListener'>    /**
 </span>     * Checks to see if this object has any listeners for a specified event
+     *
      * @param {String} eventName The name of the event to check for
      * @return {Boolean} True if the event is being listened for, else false
      */
@@ -505,9 +556,10 @@ this.addEvents('storeloaded', 'storecleared');
     },
 
 <span id='Ext-util-Observable-method-suspendEvents'>    /**
-</span>     * Suspend the firing of all events. (see {@link #resumeEvents})
+</span>     * Suspends the firing of all events. (see {@link #resumeEvents})
+     *
      * @param {Boolean} queueSuspended Pass as true to queue up suspended events to be fired
-     * after the {@link #resumeEvents} call instead of discarding all suspended events;
+     * after the {@link #resumeEvents} call instead of discarding all suspended events.
      */
     suspendEvents: function(queueSuspended) {
         this.eventsSuspended = true;
@@ -517,9 +569,10 @@ this.addEvents('storeloaded', 'storecleared');
     },
 
 <span id='Ext-util-Observable-method-resumeEvents'>    /**
-</span>     * Resume firing events. (see {@link #suspendEvents})
-     * If events were suspended using the &lt;code&gt;&lt;b&gt;queueSuspended&lt;/b&gt;&lt;/code&gt; parameter, then all
-     * events fired during event suspension will be sent to any listeners now.
+</span>     * Resumes firing events (see {@link #suspendEvents}).
+     * 
+     * If events were suspended using the `**queueSuspended**` parameter, then all events fired
+     * during event suspension will be sent to any listeners now.
      */
     resumeEvents: function() {
         var me = this,
@@ -535,9 +588,11 @@ this.addEvents('storeloaded', 'storecleared');
     },
 
 <span id='Ext-util-Observable-method-relayEvents'>    /**
-</span>     * Relays selected events from the specified Observable as if the events were fired by &lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt;.
+</span>     * Relays selected events from the specified Observable as if the events were fired by `this`.
+     *
      * @param {Object} origin The Observable whose events this object is to relay.
-     * @param {Array} events Array of event names to relay.
+     * @param {[String]} events Array of event names to relay.
+     * @param {Object} prefix
      */
     relayEvents : function(origin, events, prefix) {
         prefix = prefix || '';
@@ -569,41 +624,45 @@ this.addEvents('storeloaded', 'storecleared');
     },
 
 <span id='Ext-util-Observable-method-enableBubble'>    /**
-</span>     * &lt;p&gt;Enables events fired by this Observable to bubble up an owner hierarchy by calling
-     * &lt;code&gt;this.getBubbleTarget()&lt;/code&gt; if present. There is no implementation in the Observable base class.&lt;/p&gt;
-     * &lt;p&gt;This is commonly used by Ext.Components to bubble events to owner Containers. See {@link Ext.Component#getBubbleTarget}. The default
-     * implementation in Ext.Component returns the Component's immediate owner. But if a known target is required, this can be overridden to
-     * access the required target more quickly.&lt;/p&gt;
-     * &lt;p&gt;Example:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;
-Ext.override(Ext.form.field.Base, {
-//  Add functionality to Field&amp;#39;s initComponent to enable the change event to bubble
-initComponent : Ext.Function.createSequence(Ext.form.field.Base.prototype.initComponent, function() {
-    this.enableBubble('change');
-}),
-
-//  We know that we want Field&amp;#39;s events to bubble directly to the FormPanel.
-getBubbleTarget : function() {
-    if (!this.formPanel) {
-        this.formPanel = this.findParentByType('form');
-    }
-    return this.formPanel;
-}
-});
-
-var myForm = new Ext.formPanel({
-title: 'User Details',
-items: [{
-    ...
-}],
-listeners: {
-    change: function() {
-        // Title goes red if form has been modified.
-        myForm.header.setStyle('color', 'red');
-    }
-}
-});
-&lt;/code&gt;&lt;/pre&gt;
-     * @param {String/Array} events The event name to bubble, or an Array of event names.
+</span>     * Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if
+     * present. There is no implementation in the Observable base class.
+     *
+     * This is commonly used by Ext.Components to bubble events to owner Containers.
+     * See {@link Ext.Component#getBubbleTarget}. The default implementation in Ext.Component returns the
+     * Component's immediate owner. But if a known target is required, this can be overridden to access the
+     * required target more quickly.
+     *
+     * Example:
+     *
+     *     Ext.override(Ext.form.field.Base, {
+     *         //  Add functionality to Field's initComponent to enable the change event to bubble
+     *         initComponent : Ext.Function.createSequence(Ext.form.field.Base.prototype.initComponent, function() {
+     *             this.enableBubble('change');
+     *         }),
+     *
+     *         //  We know that we want Field's events to bubble directly to the FormPanel.
+     *         getBubbleTarget : function() {
+     *             if (!this.formPanel) {
+     *                 this.formPanel = this.findParentByType('form');
+     *             }
+     *             return this.formPanel;
+     *         }
+     *     });
+     *
+     *     var myForm = new Ext.formPanel({
+     *         title: 'User Details',
+     *         items: [{
+     *             ...
+     *         }],
+     *         listeners: {
+     *             change: function() {
+     *                 // Title goes red if form has been modified.
+     *                 myForm.header.setStyle('color', 'red');
+     *             }
+     *         }
+     *     });
+     *
+     * @param {String/[String]} events The event name to bubble, or an Array of event names.
      */
     enableBubble: function(events) {
         var me = this;
@@ -622,28 +681,31 @@ listeners: {
         }
     }
 }, function() {
-<span id='Ext-util-Observable-method-un'>    /**
-</span>     * Removes an event handler (shorthand for {@link #removeListener}.)
-     * @param {String}   eventName     The type of event the handler was associated with.
-     * @param {Function} handler       The handler to remove. &lt;b&gt;This must be a reference to the function passed into the {@link #addListener} call.&lt;/b&gt;
-     * @param {Object}   scope         (optional) The scope originally specified for the handler.
-     * @method un
-     */
-
-<span id='Ext-util-Observable-method-on'>    /**
-</span>     * Appends an event handler to this object (shorthand for {@link #addListener}.)
-     * @param {String}   eventName     The type of event to listen for
-     * @param {Function} handler       The method the event invokes
-     * @param {Object}   scope         (optional) The scope (&lt;code&gt;&lt;b&gt;this&lt;/b&gt;&lt;/code&gt; reference) in which the handler function is executed.
-     * &lt;b&gt;If omitted, defaults to the object which fired the event.&lt;/b&gt;
-     * @param {Object}   options       (optional) An object containing handler configuration.
-     * @method on
-     */
 
     this.createAlias({
+<span id='Ext-util-Observable-method-on'>        /**
+</span>         * @method
+         * Shorthand for {@link #addListener}.
+         * @alias Ext.util.Observable#addListener
+         */
         on: 'addListener',
+<span id='Ext-util-Observable-method-un'>        /**
+</span>         * @method
+         * Shorthand for {@link #removeListener}.
+         * @alias Ext.util.Observable#removeListener
+         */
         un: 'removeListener',
+<span id='Ext-util-Observable-method-mon'>        /**
+</span>         * @method
+         * Shorthand for {@link #addManagedListener}.
+         * @alias Ext.util.Observable#addManagedListener
+         */
         mon: 'addManagedListener',
+<span id='Ext-util-Observable-method-mun'>        /**
+</span>         * @method
+         * Shorthand for {@link #removeManagedListener}.
+         * @alias Ext.util.Observable#removeManagedListener
+         */
         mun: 'removeManagedListener'
     });
 
@@ -743,13 +805,13 @@ listeners: {
                     i, len;
                 for(i = 0, len = e.before.length; i &lt; len; i++){
                     if(e.before[i].fn == fn &amp;&amp; e.before[i].scope == scope){
-                        e.before.splice(i, 1);
+                        Ext.Array.erase(e.before, i, 1);
                         return;
                     }
                 }
                 for(i = 0, len = e.after.length; i &lt; len; i++){
                     if(e.after[i].fn == fn &amp;&amp; e.after[i].scope == scope){
-                        e.after.splice(i, 1);
+                        Ext.Array.erase(e.after, i, 1);
                         return;
                     }
                 }

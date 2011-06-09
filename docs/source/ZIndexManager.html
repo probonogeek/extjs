@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-ZIndexManager-method-constructor'><span id='Ext-ZIndexManager'>/**
-</span></span> * @class Ext.ZIndexManager
+  <pre class="prettyprint lang-js"><span id='Ext-ZIndexManager'>/**
+</span> * @class Ext.ZIndexManager
  * &lt;p&gt;A class that manages a group of {@link Ext.Component#floating} Components and provides z-order management,
  * and Component activation behavior, including masking below the active (topmost) Component.&lt;/p&gt;
  * &lt;p&gt;{@link Ext.Component#floating Floating} Components which are rendered directly into the document (Such as {@link Ext.window.Window Window}s which are
@@ -25,7 +25,6 @@
  * (For example a {Ext.view.BoundList BoundList} within an {@link Ext.window.Window Window}, or a {@link Ext.menu.Menu Menu}),
  * are managed by a ZIndexManager owned by that floating Container. So ComboBox dropdowns within Windows will have managed z-indices
  * guaranteed to be correct, relative to the Window.&lt;/p&gt;
- * @constructor
  */
 Ext.define('Ext.ZIndexManager', {
 

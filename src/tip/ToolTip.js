@@ -1,7 +1,18 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.tip.ToolTip
- * @extends Ext.tip.Tip
- * 
  * ToolTip is a {@link Ext.tip.Tip} implementation that handles the common case of displaying a
  * tooltip when hovering over a certain element or elements on the page. It allows fine-grained
  * control over the tooltip's alignment relative to the target element or mouse, and the timing
@@ -14,7 +25,7 @@
  * convenient way of automatically populating and configuring a tooltip based on specific DOM
  * attributes of each target element.
  * 
- * ## Basic Example
+ * # Basic Example
  * 
  *     var tip = Ext.create('Ext.tip.ToolTip', {
  *         target: 'clearButton',
@@ -23,7 +34,7 @@
  * 
  * {@img Ext.tip.ToolTip/Ext.tip.ToolTip1.png Basic Ext.tip.ToolTip}
  * 
- * ## Delegation
+ * # Delegation
  * 
  * In addition to attaching a ToolTip to a single element, you can also use delegation to attach
  * one ToolTip to many elements under a common parent. This is more efficient than creating many
@@ -35,15 +46,43 @@
  * of the ToolTip based on each delegate element; you can do this by implementing a custom
  * listener for the {@link #beforeshow} event. Example:
  * 
- *     var myGrid = Ext.create('Ext.grid.GridPanel', gridConfig);
- *     myGrid.on('render', function(grid) {
- *         var view = grid.getView();    // Capture the grid's view.
- *         grid.tip = Ext.create('Ext.tip.ToolTip', {
- *             target: view.el,          // The overall target element.
- *             delegate: view.itemSelector, // Each grid row causes its own seperate show and hide.
- *             trackMouse: true,         // Moving within the row should not hide the tip.
- *             renderTo: Ext.getBody(),  // Render immediately so that tip.body can be referenced prior to the first show.
- *             listeners: {              // Change content dynamically depending on which element triggered the show.
+ *     var store = Ext.create('Ext.data.ArrayStore', {
+ *         fields: ['company', 'price', 'change'],
+ *         data: [
+ *             ['3m Co',                               71.72, 0.02],
+ *             ['Alcoa Inc',                           29.01, 0.42],
+ *             ['Altria Group Inc',                    83.81, 0.28],
+ *             ['American Express Company',            52.55, 0.01],
+ *             ['American International Group, Inc.',  64.13, 0.31],
+ *             ['AT&T Inc.',                           31.61, -0.48]
+ *         ]
+ *     });
+ *  
+ *     var grid = Ext.create('Ext.grid.Panel', {
+ *         title: 'Array Grid',
+ *         store: store,
+ *         columns: [
+ *             {text: 'Company', flex: 1, dataIndex: 'company'},
+ *             {text: 'Price', width: 75, dataIndex: 'price'},
+ *             {text: 'Change', width: 75, dataIndex: 'change'}
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
+ *  
+ *     grid.getView().on('render', function(view) {
+ *         view.tip = Ext.create('Ext.tip.ToolTip', {
+ *             // The overall target element.
+ *             target: view.el,
+ *             // Each grid row causes its own seperate show and hide.
+ *             delegate: view.itemSelector,
+ *             // Moving within the row should not hide the tip.
+ *             trackMouse: true,
+ *             // Render immediately so that tip.body can be referenced prior to the first show.
+ *             renderTo: Ext.getBody(),
+ *             listeners: {
+ *                 // Change content dynamically depending on which element triggered the show.
  *                 beforeshow: function updateTipBody(tip) {
  *                     tip.update('Over company "' + view.getRecord(tip.triggerElement).get('company') + '"');
  *                 }
@@ -53,32 +92,27 @@
  * 
  * {@img Ext.tip.ToolTip/Ext.tip.ToolTip2.png Ext.tip.ToolTip with delegation}
  * 
- * ## Alignment
+ * # Alignment
  * 
  * The following configuration properties allow control over how the ToolTip is aligned relative to
  * the target element and/or mouse pointer:
  * 
- *  - {@link #anchor}
- *  - {@link #anchorToTarget}
- *  - {@link #anchorOffset}
- *  - {@link #trackMouse}
- *  - {@link #mouseOffset}
+ * - {@link #anchor}
+ * - {@link #anchorToTarget}
+ * - {@link #anchorOffset}
+ * - {@link #trackMouse}
+ * - {@link #mouseOffset}
  * 
- * ## Showing/Hiding
+ * # Showing/Hiding
  * 
  * The following configuration properties allow control over how and when the ToolTip is automatically
  * shown and hidden:
  * 
- *  - {@link #autoHide}
- *  - {@link #showDelay}
- *  - {@link #hideDelay}
- *  - {@link #dismissDelay}
+ * - {@link #autoHide}
+ * - {@link #showDelay}
+ * - {@link #hideDelay}
+ * - {@link #dismissDelay}
  * 
- * @constructor
- * Create a new ToolTip instance
- * @param {Object} config The configuration options
- * @xtype tooltip
- * @markdown
  * @docauthor Jason Johnston <jason@sencha.com>
  */
 Ext.define('Ext.tip.ToolTip', {
@@ -86,8 +120,8 @@ Ext.define('Ext.tip.ToolTip', {
     alias: 'widget.tooltip',
     alternateClassName: 'Ext.ToolTip',
     /**
-     * When a ToolTip is configured with the <code>{@link #delegate}</code>
-     * option to cause selected child elements of the <code>{@link #target}</code>
+     * When a ToolTip is configured with the `{@link #delegate}`
+     * option to cause selected child elements of the `{@link #target}`
      * Element to each trigger a seperate show event, this property is set to
      * the DOM element which triggered the show.
      * @type DOMElement
@@ -99,8 +133,8 @@ Ext.define('Ext.tip.ToolTip', {
      */
     /**
      * @cfg {Boolean} autoHide True to automatically hide the tooltip after the
-     * mouse exits the target element or after the <code>{@link #dismissDelay}</code>
-     * has expired if set (defaults to true).  If <code>{@link #closable} = true</code>
+     * mouse exits the target element or after the `{@link #dismissDelay}`
+     * has expired if set (defaults to true).  If `{@link #closable} = true`
      * a close tool button will be rendered into the tooltip header.
      */
     /**
@@ -139,48 +173,35 @@ Ext.define('Ext.tip.ToolTip', {
     /**
      * @cfg {Boolean} anchorToTarget True to anchor the tooltip to the target
      * element, false to anchor it relative to the mouse coordinates (defaults
-     * to true).  When <code>anchorToTarget</code> is true, use
-     * <code>{@link #defaultAlign}</code> to control tooltip alignment to the
-     * target element.  When <code>anchorToTarget</code> is false, use
-     * <code>{@link #anchorPosition}</code> instead to control alignment.
+     * to true).  When `anchorToTarget` is true, use
+     * `{@link #defaultAlign}` to control tooltip alignment to the
+     * target element.  When `anchorToTarget` is false, use
+     * `{@link #anchorPosition}` instead to control alignment.
      */
     anchorToTarget: true,
     /**
      * @cfg {Number} anchorOffset A numeric pixel value used to offset the
      * default position of the anchor arrow (defaults to 0).  When the anchor
-     * position is on the top or bottom of the tooltip, <code>anchorOffset</code>
+     * position is on the top or bottom of the tooltip, `anchorOffset`
      * will be used as a horizontal offset.  Likewise, when the anchor position
-     * is on the left or right side, <code>anchorOffset</code> will be used as
+     * is on the left or right side, `anchorOffset` will be used as
      * a vertical offset.
      */
     anchorOffset: 0,
     /**
-     * @cfg {String} delegate <p>Optional. A {@link Ext.DomQuery DomQuery}
-     * selector which allows selection of individual elements within the
-     * <code>{@link #target}</code> element to trigger showing and hiding the
-     * ToolTip as the mouse moves within the target.</p>
-     * <p>When specified, the child element of the target which caused a show
-     * event is placed into the <code>{@link #triggerElement}</code> property
-     * before the ToolTip is shown.</p>
-     * <p>This may be useful when a Component has regular, repeating elements
-     * in it, each of which need a ToolTip which contains information specific
-     * to that element. For example:</p><pre><code>
-var myGrid = Ext.create('Ext.grid.GridPanel', gridConfig);
-myGrid.on('render', function(grid) {
-    var view = grid.getView();    // Capture the grid's view.
-    grid.tip = Ext.create('Ext.tip.ToolTip', {
-        target: view.el,          // The overall target element.
-        delegate: view.itemSelector, // Each grid row causes its own seperate show and hide.
-        trackMouse: true,         // Moving within the row should not hide the tip.
-        renderTo: Ext.getBody(),  // Render immediately so that tip.body can be referenced prior to the first show.
-        listeners: {              // Change content dynamically depending on which element triggered the show.
-            beforeshow: function(tip) {
-                tip.update('Over Record ID ' + view.getRecord(tip.triggerElement).id);
-            }
-        }
-    });
-});
-     *</code></pre>
+     * @cfg {String} delegate
+     *
+     * A {@link Ext.DomQuery DomQuery} selector which allows selection of individual elements within the
+     * `{@link #target}` element to trigger showing and hiding the ToolTip as the mouse moves within the
+     * target.
+     *
+     * When specified, the child element of the target which caused a show event is placed into the
+     * `{@link #triggerElement}` property before the ToolTip is shown.
+     *
+     * This may be useful when a Component has regular, repeating elements in it, each of which need a
+     * ToolTip which contains information specific to that element.
+     * 
+     * See the delegate example in class documentation of {@link Ext.tip.ToolTip}.
      */
 
     // private
@@ -681,3 +702,4 @@ myGrid.on('render', function(grid) {
         this.callParent();
     }
 });
+

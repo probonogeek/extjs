@@ -15,38 +15,36 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-menu-CheckItem-method-constructor'><span id='Ext-menu-CheckItem'>/**
-</span></span> * @class Ext.menu.CheckItem
+  <pre class="prettyprint lang-js"><span id='Ext-menu-CheckItem'>/**
+</span> * @class Ext.menu.CheckItem
  * @extends Ext.menu.Item
-
-A menu item that contains a togglable checkbox by default, but that can also be a part of a radio group.
-{@img Ext.menu.CheckItem/Ext.menu.CheckItem.png Ext.menu.CheckItem component}
-__Example Usage__    
-    Ext.create('Ext.menu.Menu', {
-		width: 100,
-		height: 110,
-		floating: false,  // usually you want this set to True (default)
-		renderTo: Ext.getBody(),  // usually rendered by it's containing component
-		items: [{
-		    xtype: 'menucheckitem',
-		    text: 'select all'
-		},{
-		    xtype: 'menucheckitem',
-			text: 'select specific',
-		},{
-            iconCls: 'add16',
-		    text: 'icon item' 
-		},{
-		    text: 'regular item'
-		}]
-	}); 
-	
- * @xtype menucheckitem
- * @markdown
- * @constructor
- * @param {Object} config The config object
+ *
+ * A menu item that contains a togglable checkbox by default, but that can also be a part of a radio group.
+ *
+ * {@img Ext.menu.CheckItem/Ext.menu.CheckItem.png Ext.menu.CheckItem component}
+ *
+ * __Example Usage__
+ *
+ *     Ext.create('Ext.menu.Menu', {
+ *         width: 100,
+ *         height: 110,
+ *         floating: false,  // usually you want this set to True (default)
+ *         renderTo: Ext.getBody(),  // usually rendered by it's containing component
+ *         items: [{
+ *             xtype: 'menucheckitem',
+ *             text: 'select all'
+ *         },{
+ *             xtype: 'menucheckitem',
+ *             text: 'select specific',
+ *         },{
+ *             iconCls: 'add16',
+ *             text: 'icon item'
+ *         },{
+ *             text: 'regular item'
+ *         }]
+ *     }); 
+ *     
  */
-
 Ext.define('Ext.menu.CheckItem', {
     extend: 'Ext.menu.Item',
     alias: 'widget.menucheckitem',
@@ -130,7 +128,9 @@ Ext.define('Ext.menu.CheckItem', {
     disableCheckChange: function() {
         var me = this;
 
-        me.iconEl.addCls(me.disabledCls);
+        if (me.iconEl) {
+            me.iconEl.addCls(me.disabledCls);
+        }
         me.checkChangeDisabled = true;
     },
 

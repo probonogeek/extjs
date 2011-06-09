@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.ComponentLoader
  * @extends Ext.ElementLoader
@@ -21,11 +35,11 @@
  * configuration in conjunction with a {@link Ext.Component#tpl}.
  * 
  * ## Component Renderer
- * This renderer can only be used with a {@link Ext.Container} and subclasses. It allows for
+ * This renderer can only be used with a {@link Ext.container.Container} and subclasses. It allows for
  * Components to be loaded remotely into a Container. The response is expected to be a single/series of
  * {@link Ext.Component} configuration objects. When the response is received, the data is decoded
- * and then passed to {@link Ext.Container#add}. Using this renderer has the same effect as specifying
- * the {@link Ext.Container#items} configuration on a Container. 
+ * and then passed to {@link Ext.container.Container#add}. Using this renderer has the same effect as specifying
+ * the {@link Ext.container.Container#items} configuration on a Container. 
  * 
  * ## Custom Renderer
  * A custom function can be passed to handle any other special case, see the {@link #renderer} option.
@@ -206,3 +220,4 @@ The function must return false is loading is not successful. Below is a sample o
         }
     }
 });
+

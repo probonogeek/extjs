@@ -15,17 +15,14 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-ComponentDragger-method-constructor'><span id='Ext-util-ComponentDragger'>/**
-</span></span> * @class Ext.util.ComponentDragger
+  <pre class="prettyprint lang-js"><span id='Ext-util-ComponentDragger'>/**
+</span> * @class Ext.util.ComponentDragger
  * @extends Ext.dd.DragTracker
  * &lt;p&gt;A subclass of Ext.dd.DragTracker which handles dragging any Component.&lt;/p&gt;
  * &lt;p&gt;This is configured with a Component to be made draggable, and a config object for the
  * {@link Ext.dd.DragTracker} class.&lt;/p&gt;
  * &lt;p&gt;A {@link #} delegate may be provided which may be either the element to use as the mousedown target
  * or a {@link Ext.DomQuery} selector to activate multiple mousedown targets.&lt;/p&gt;
- * @constructor Create a new ComponentTracker
- * @param {object} comp The Component to provide dragging for.
- * @param {object} config The config object
  */
 Ext.define('Ext.util.ComponentDragger', {
 
@@ -43,13 +40,18 @@ Ext.define('Ext.util.ComponentDragger', {
 
 <span id='Ext-util-ComponentDragger-cfg-constrainDelegate'>    /**
 </span>     * @cfg {Boolean} constrainDelegate
-     * Specify as &lt;code&gt;true&lt;/code&gt; to constrain the drag handles within the {@link constrainTo} region.
+     * Specify as &lt;code&gt;true&lt;/code&gt; to constrain the drag handles within the {@link #constrainTo} region.
      */
 
     extend: 'Ext.dd.DragTracker',
 
     autoStart: 500,
 
+<span id='Ext-util-ComponentDragger-method-constructor'>    /**
+</span>     * Creates new ComponentDragger.
+     * @param {object} comp The Component to provide dragging for.
+     * @param {object} config (optional) Config object
+     */
     constructor: function(comp, config) {
         this.comp = comp;
         this.initialConstrainTo = config.constrainTo;

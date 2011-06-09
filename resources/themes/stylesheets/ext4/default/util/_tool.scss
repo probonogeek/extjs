@@ -12,7 +12,7 @@
 
             background-color: transparent;
             background-repeat: no-repeat;
-            background-image: theme-image($theme-name, 'tools/tool-sprites.gif');
+            @include theme-background-image($theme-name, 'tools/tool-sprites.gif');
 
             margin: 0;
         }

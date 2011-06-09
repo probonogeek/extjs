@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.toolbar.Paging
  * @extends Ext.toolbar.Toolbar
@@ -103,9 +117,6 @@ var myStore = new Ext.data.Store({
  * <li><a href="http://sencha.com/forum/showthread.php?t=71532">Ext.ux.data.PagingStore</a></li>
  * <li>Paging Memory Proxy (examples/ux/PagingMemoryProxy.js)</li>
  * </ul></div>
- * @constructor Create a new PagingToolbar
- * @param {Object} config The config object
- * @xtype pagingtoolbar
  */
 Ext.define('Ext.toolbar.Paging', {
     extend: 'Ext.toolbar.Toolbar',
@@ -377,7 +388,6 @@ Ext.define('Ext.toolbar.Paging', {
             total : totalCount,
             currentPage : store.currentPage,
             pageCount: Math.ceil(totalCount / store.pageSize),
-            //pageCount :  store.getPageCount(),
             fromRecord: ((store.currentPage - 1) * store.pageSize) + 1,
             toRecord: Math.min(store.currentPage * store.pageSize, totalCount)
             
@@ -416,17 +426,17 @@ Ext.define('Ext.toolbar.Paging', {
 
     // private
     onPagingKeyDown : function(field, e){
-        var k = e.getKey(),
-            pageData = this.getPageData(),
+        var me = this,
+            k = e.getKey(),
+            pageData = me.getPageData(),
             increment = e.shiftKey ? 10 : 1,
-            pageNum,
-            me = this;
+            pageNum;
 
         if (k == e.RETURN) {
             e.stopEvent();
             pageNum = me.readPageFromInput(pageData);
             if (pageNum !== false) {
-                pageNum = Math.min(Math.max(1, pageNum), pageData.total);
+                pageNum = Math.min(Math.max(1, pageNum), pageData.pageCount);
                 if(me.fireEvent('beforechange', me, pageNum) !== false){
                     me.store.loadPage(pageNum);
                 }
@@ -468,9 +478,8 @@ Ext.define('Ext.toolbar.Paging', {
      * Move to the first page, has the same effect as clicking the 'first' button.
      */
     moveFirst : function(){
-        var me = this;
-        if(me.fireEvent('beforechange', me, 1) !== false){
-            me.store.loadPage(1);
+        if (this.fireEvent('beforechange', this, 1) !== false){
+            this.store.loadPage(1);
         }
     },
 
@@ -481,8 +490,10 @@ Ext.define('Ext.toolbar.Paging', {
         var me = this,
             prev = me.store.currentPage - 1;
         
-        if(me.fireEvent('beforechange', me, prev) !== false){
-            me.store.previousPage();
+        if (prev > 0) {
+            if (me.fireEvent('beforechange', me, prev) !== false) {
+                me.store.previousPage();
+            }
         }
     },
 
@@ -490,9 +501,14 @@ Ext.define('Ext.toolbar.Paging', {
      * Move to the next page, has the same effect as clicking the 'next' button.
      */
     moveNext : function(){
-        var me = this;        
-        if(me.fireEvent('beforechange', me, me.store.currentPage + 1) !== false){
-            me.store.nextPage();
+        var me = this,
+            total = me.getPageData().pageCount,
+            next = me.store.currentPage + 1;
+               
+        if (next <= total) {
+            if (me.fireEvent('beforechange', me, next) !== false) {
+                me.store.nextPage();
+            }
         }
     },
 
@@ -501,9 +517,9 @@ Ext.define('Ext.toolbar.Paging', {
      */
     moveLast : function(){
         var me = this, 
-            last = this.getPageData().pageCount;
+            last = me.getPageData().pageCount;
         
-        if(me.fireEvent('beforechange', me, last) !== false){
+        if (me.fireEvent('beforechange', me, last) !== false) {
             me.store.loadPage(last);
         }
     },
@@ -515,7 +531,7 @@ Ext.define('Ext.toolbar.Paging', {
         var me = this,
             current = me.store.currentPage;
         
-        if(me.fireEvent('beforechange', me, current) !== false){
+        if (me.fireEvent('beforechange', me, current) !== false) {
             me.store.loadPage(current);
         }
     },
@@ -574,3 +590,4 @@ Ext.define('Ext.toolbar.Paging', {
         this.callParent();
     }
 });
+

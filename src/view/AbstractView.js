@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.AbstractView
  * @extends Ext.Component
@@ -13,17 +27,17 @@ Ext.define('Ext.view.AbstractView', {
         'Ext.DomQuery',
         'Ext.selection.DataViewModel'
     ],
-    
+
     inheritableStatics: {
         getRecord: function(node) {
             return this.getBoundView(node).getRecord(node);
         },
-        
+
         getBoundView: function(node) {
             return Ext.getCmp(node.boundView);
         }
     },
-    
+
     /**
      * @cfg {String/Array/Ext.XTemplate} tpl
      * @required
@@ -44,14 +58,14 @@ Ext.define('Ext.view.AbstractView', {
      * working with. The itemSelector is used to map DOM nodes to records. As such, there should
      * only be one root level element that matches the selector for each record.
      */
-    
+
     /**
      * @cfg {String} itemCls
      * Specifies the class to be assigned to each element in the view when used in conjunction with the
      * {@link #itemTpl} configuration.
      */
     itemCls: Ext.baseCSSPrefix + 'dataview-item',
-    
+
     /**
      * @cfg {String/Array/Ext.XTemplate} itemTpl
      * The inner portion of the item template to be rendered. Follows an XTemplate
@@ -60,7 +74,7 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * @cfg {String} overItemCls
-     * A CSS class to apply to each item in the view on mouseover (defaults to undefined). 
+     * A CSS class to apply to each item in the view on mouseover (defaults to undefined).
      * Ensure {@link #trackOver} is set to `true` to make use of this.
      */
 
@@ -73,17 +87,24 @@ Ext.define('Ext.view.AbstractView', {
     loadingText: 'Loading...',
     
     /**
+     * @cfg {Boolean/Object} loadMask
+     * False to disable a load mask from displaying will the view is loading. This can also be a
+     * {@link Ext.LoadMask} configuration object. Defaults to <tt>true</tt>.
+     */
+    loadMask: true,
+
+    /**
      * @cfg {String} loadingCls
      * The CSS class to apply to the loading message element (defaults to Ext.LoadMask.prototype.msgCls "x-mask-loading")
      */
-    
+
     /**
      * @cfg {Boolean} loadingUseMsg
      * Whether or not to use the loading message.
      * @private
      */
     loadingUseMsg: true,
-    
+
 
     /**
      * @cfg {Number} loadingHeight
@@ -130,12 +151,12 @@ Ext.define('Ext.view.AbstractView', {
 
     //private
     last: false,
-    
+
     triggerEvent: 'itemclick',
     triggerCtEvent: 'containerclick',
-    
+
     addCmpEvents: function() {
-        
+
     },
 
     // private
@@ -144,7 +165,7 @@ Ext.define('Ext.view.AbstractView', {
             isDef = Ext.isDefined,
             itemTpl = me.itemTpl,
             memberFn = {};
-            
+
         if (itemTpl) {
             if (Ext.isArray(itemTpl)) {
                 // string array
@@ -154,11 +175,11 @@ Ext.define('Ext.view.AbstractView', {
                 memberFn = Ext.apply(memberFn, itemTpl.initialConfig);
                 itemTpl = itemTpl.html;
             }
-            
+
             if (!me.itemSelector) {
                 me.itemSelector = '.' + me.itemCls;
             }
-            
+
             itemTpl = Ext.String.format('<tpl for="."><div class="{0}">{1}</div></tpl>', me.itemCls, itemTpl);
             me.tpl = Ext.create('Ext.XTemplate', itemTpl, memberFn);
         }
@@ -194,7 +215,7 @@ Ext.define('Ext.view.AbstractView', {
         if (me.overItemCls) {
             me.trackOver = true;
         }
-        
+
         if (isDef(me.selectedCls) || isDef(me.selectedClass)) {
             if (Ext.isDefined(Ext.global.console)) {
                 Ext.global.console.warn('Ext.view.View: Using the deprecated selectedCls or selectedClass configuration. Use selectedItemCls instead.');
@@ -204,7 +225,7 @@ Ext.define('Ext.view.AbstractView', {
             delete me.selectedClass;
         }
         //</debug>
-        
+
         me.addEvents(
             /**
              * @event beforerefresh
@@ -249,45 +270,65 @@ Ext.define('Ext.view.AbstractView', {
             me.store = Ext.data.StoreManager.lookup(me.store);
         }
         me.all = new Ext.CompositeElementLite();
-        me.getSelectionModel().bindComponent(me);
     },
 
     onRender: function() {
         var me = this,
-            loadingText = me.loadingText,
-            loadingHeight = me.loadingHeight,
-            undef;
+            mask = me.loadMask,
+            cfg = {
+                msg: me.loadingText,
+                msgCls: me.loadingCls,
+                useMsg: me.loadingUseMsg
+            };
 
         me.callParent(arguments);
-        if (loadingText) {
-            
+
+        if (mask) {
+            // either a config object 
+            if (Ext.isObject(mask)) {
+                cfg = Ext.apply(cfg, mask);
+            }
             // Attach the LoadMask to a *Component* so that it can be sensitive to resizing during long loads.
             // If this DataView is floating, then mask this DataView.
             // Otherwise, mask its owning Container (or this, if there *is* no owning Container).
             // LoadMask captures the element upon render.
-            me.loadMask = Ext.create('Ext.LoadMask', me.floating ? me : me.ownerCt || me, {
-                msg: loadingText,
-                msgCls: me.loadingCls,
-                useMsg: me.loadingUseMsg,
-                listeners: {
-                    beforeshow: function() {
-                        me.getTargetEl().update('');
-                        me.getSelectionModel().deselectAll();
-                        me.all.clear();
-                        if (loadingHeight) {
-                            me.setCalculatedSize(undef, loadingHeight);
-                        }
-                    },
-                    hide: function() {
-                        if (loadingHeight) {
-                            me.setHeight(me.height);
-                        }
-                    }
-                }
+            me.loadMask = Ext.create('Ext.LoadMask', me.floating ? me : me.ownerCt || me, cfg);
+            me.loadMask.on({
+                scope: me,
+                beforeshow: me.onMaskBeforeShow,
+                hide: me.onMaskHide
             });
         }
     },
+    
+    onMaskBeforeShow: function(){
+        var me = this;
+        me.getSelectionModel().deselectAll();
+        me.all.clear();
+        if (me.loadingHeight) {
+            me.setCalculatedSize(undefined, me.loadingHeight);
+        }
+    },
+    
+    onMaskHide: function(){
+        if (!this.destroying && this.loadingHeight) {
+            this.setHeight(this.height);
+        }
+    },
 
+    afterRender: function() {
+        this.callParent(arguments);
+
+        // Init the SelectionModel after any on('render') listeners have been added.
+        // Drag plugins create a DragDrop instance in a render listener, and that needs
+        // to see an itemmousedown event first.
+        this.getSelectionModel().bindComponent(this);
+    },
+
+    /**
+     * Gets the selection model for this view.
+     * @return {Ext.selection.Model} The selection model
+     */
     getSelectionModel: function(){
         var me = this,
             mode = 'SINGLE';
@@ -312,7 +353,9 @@ Ext.define('Ext.view.AbstractView', {
         }
 
         if (!me.selModel.hasRelaySetup) {
-            me.relayEvents(me.selModel, ['selectionchange', 'beforeselect', 'select', 'deselect']);
+            me.relayEvents(me.selModel, [
+                'selectionchange', 'beforeselect', 'beforedeselect', 'select', 'deselect'
+            ]);
             me.selModel.hasRelaySetup = true;
         }
 
@@ -332,11 +375,11 @@ Ext.define('Ext.view.AbstractView', {
         var me = this,
             el,
             records;
-            
+
         if (!me.rendered) {
             return;
         }
-        
+
         me.fireEvent('beforerefresh', me);
         el = me.getTargetEl();
         records = me.store.getRange();
@@ -352,7 +395,7 @@ Ext.define('Ext.view.AbstractView', {
             me.all.fill(Ext.query(me.getItemSelector(), el.dom));
             me.updateIndexes(0);
         }
-        
+
         me.selModel.refresh();
         me.hasSkippedEmptyText = true;
         me.fireEvent('refresh', me);
@@ -368,12 +411,12 @@ Ext.define('Ext.view.AbstractView', {
      * (either an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'}))
      */
     prepareData: function(data, index, record) {
-        if (record) {    
-            Ext.apply(data, record.getAssociatedData());            
+        if (record) {
+            Ext.apply(data, record.getAssociatedData());
         }
         return data;
     },
-    
+
     /**
      * <p>Function which can be overridden which returns the data object passed to this
      * DataView's {@link #tpl template} to render the whole DataView.</p>
@@ -389,12 +432,13 @@ Ext.define('Ext.view.AbstractView', {
     collectData : function(records, startIndex){
         var r = [],
             i = 0,
-            len = records.length;
+            len = records.length,
+            record;
 
         for(; i < len; i++){
-            r[r.length] = this.prepareData(records[i].data, startIndex + i, records[i]);
+            record = records[i];
+            r[r.length] = this.prepareData(record[record.persistenceProperty], startIndex + i, record);
         }
-
         return r;
     },
 
@@ -409,11 +453,9 @@ Ext.define('Ext.view.AbstractView', {
     onUpdate : function(ds, record){
         var me = this,
             index = me.store.indexOf(record),
-            original,
             node;
 
         if (index > -1){
-            original = me.all.elements[index];
             node = me.bufferRender([record], index)[0];
 
             me.all.replaceElement(index, node, true);
@@ -431,12 +473,12 @@ Ext.define('Ext.view.AbstractView', {
     onAdd : function(ds, records, index) {
         var me = this,
             nodes;
-            
+
         if (me.all.getCount() === 0) {
             me.refresh();
             return;
         }
-        
+
         nodes = me.bufferRender(records, index);
         me.doAdd(nodes, records, index);
 
@@ -446,21 +488,22 @@ Ext.define('Ext.view.AbstractView', {
     },
 
     doAdd: function(nodes, records, index) {
-        var n, a = this.all.elements;
-        if (index < this.all.getCount()) {
-            n = this.all.item(index).insertSibling(nodes, 'before', true);
-            a.splice.apply(a, [index, 0].concat(nodes));
-        } 
+        var all = this.all;
+
+        if (index < all.getCount()) {
+            all.item(index).insertSibling(nodes, 'before', true);
+        }
         else {
-            n = this.all.last().insertSibling(nodes, 'after', true);
-            a.push.apply(a, nodes);
-        }    
+            all.last().insertSibling(nodes, 'after', true);
+        }
+
+        Ext.Array.insert(all.elements, index, nodes);
     },
-    
+
     // private
     onRemove : function(ds, record, index) {
         var me = this;
-        
+
         me.doRemove(record, index);
         me.updateIndexes(index);
         if (me.store.getCount() === 0){
@@ -468,7 +511,7 @@ Ext.define('Ext.view.AbstractView', {
         }
         me.fireEvent('itemremove', record, index);
     },
-    
+
     doRemove: function(record, index) {
         this.all.removeElement(index, true);
     },
@@ -510,11 +553,11 @@ Ext.define('Ext.view.AbstractView', {
      */
     bindStore : function(store, initial) {
         var me = this;
-        
+
         if (!initial && me.store) {
             if (store !== me.store && me.store.autoDestroy) {
                 me.store.destroy();
-            } 
+            }
             else {
                 me.mun(me.store, {
                     scope: me,
@@ -546,12 +589,12 @@ Ext.define('Ext.view.AbstractView', {
                 me.loadMask.bindStore(store);
             }
         }
-        
+
         me.store = store;
         // Bind the store to our selection model
         me.getSelectionModel().bind(store);
-        
-        if (store) {
+
+        if (store && (!initial || store.getCount())) {
             me.refresh(true);
         }
     },
@@ -574,7 +617,7 @@ Ext.define('Ext.view.AbstractView', {
     findItemByChild: function(node){
         return Ext.fly(node).findParent(this.getItemSelector(), this.getTargetEl());
     },
-    
+
     /**
      * Returns the template node by the Ext.EventObject or null if it is not found.
      * @param {Ext.EventObject} e
@@ -622,13 +665,13 @@ Ext.define('Ext.view.AbstractView', {
     /**
      * Gets a record from a node
      * @param {Element/HTMLElement} node The node to evaluate
-     * 
+     *
      * @return {Record} record The {@link Ext.data.Model} object
      */
     getRecord: function(node){
         return this.store.data.getByKey(Ext.getDom(node).viewRecordId);
     },
-    
+
 
     /**
      * Returns true if the passed node is selected, else false.
@@ -640,7 +683,7 @@ Ext.define('Ext.view.AbstractView', {
         var r = this.getRecord(node);
         return this.selModel.isSelected(r);
     },
-    
+
     /**
      * Selects a record instance by record instance or index.
      * @param {Ext.data.Model/Index} records An array of records or an index
@@ -676,7 +719,7 @@ Ext.define('Ext.view.AbstractView', {
         }
         return nodeInfo;
     },
-    
+
     /**
      * @private
      */
@@ -684,16 +727,16 @@ Ext.define('Ext.view.AbstractView', {
         var ns = this.all.elements,
             ln = ns.length,
             i = 0;
-        
+
         for (; i < ln; i++) {
             if (ns[i].viewRecordId === record.internalId) {
                 return ns[i];
             }
         }
-        
+
         return null;
     },
-    
+
     /**
      * Gets a range nodes.
      * @param {Number} start (optional) The index of the first node in the range
@@ -735,7 +778,7 @@ Ext.define('Ext.view.AbstractView', {
 
     onDestroy : function() {
         var me = this;
-        
+
         me.all.clear();
         me.callParent();
         me.bindStore(null);
@@ -753,7 +796,7 @@ Ext.define('Ext.view.AbstractView', {
         var node = this.getNode(record);
         Ext.fly(node).removeCls(this.selectedItemCls);
     },
-    
+
     getItemSelector: function() {
         return this.itemSelector;
     }
@@ -779,7 +822,7 @@ Ext.define('Ext.view.AbstractView', {
              * True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl,
              * false to force the user to hold Ctrl or Shift to select more than on item (defaults to false).
              */
-            
+
             /**
              * Gets the number of selected nodes.
              * @return {Number} The node count
@@ -790,7 +833,7 @@ Ext.define('Ext.view.AbstractView', {
                 }
                 return this.selModel.getSelection().length;
             },
-        
+
             /**
              * Gets an array of the selected records
              * @return {Array} An array of {@link Ext.data.Model} objects
@@ -801,7 +844,7 @@ Ext.define('Ext.view.AbstractView', {
                 }
                 return this.selModel.getSelection();
             },
-    
+
             select: function(records, keepExisting, supressEvents) {
                 if (Ext.global.console) {
                     Ext.global.console.warn("DataView: select will be removed, please access select through a DataView's SelectionModel, ie: view.getSelectionModel().select()");
@@ -809,7 +852,7 @@ Ext.define('Ext.view.AbstractView', {
                 var sm = this.getSelectionModel();
                 return sm.select.apply(sm, arguments);
             },
-            
+
             clearSelections: function() {
                 if (Ext.global.console) {
                     Ext.global.console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");
@@ -817,6 +860,7 @@ Ext.define('Ext.view.AbstractView', {
                 var sm = this.getSelectionModel();
                 return sm.deselectAll();
             }
-        });    
+        });
     });
 });
+

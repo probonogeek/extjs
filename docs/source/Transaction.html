@@ -15,12 +15,10 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-direct-Transaction-method-constructor'><span id='Ext-direct-Transaction'>/**
-</span></span> * @class Ext.direct.Transaction
+  <pre class="prettyprint lang-js"><span id='Ext-direct-Transaction'>/**
+</span> * @class Ext.direct.Transaction
  * @extends Object
  * &lt;p&gt;Supporting Class for Ext.Direct (not intended to be used directly).&lt;/p&gt;
- * @constructor
- * @param {Object} config
  */
 Ext.define('Ext.direct.Transaction', {
     
@@ -34,7 +32,11 @@ Ext.define('Ext.direct.Transaction', {
     },
    
     /* End Definitions */
-   
+
+<span id='Ext-direct-Transaction-method-constructor'>    /**
+</span>     * Creates new Transaction.
+     * @param {Object} config  (optional) Config object.
+     */
     constructor: function(config){
         var me = this;
         

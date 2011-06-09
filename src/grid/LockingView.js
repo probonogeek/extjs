@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.LockingView
  * This class is used internally to provide a single interface when using
@@ -59,6 +73,24 @@ Ext.define('Ext.grid.LockingView', {
         return cols.concat(this.normalGrid.headerCt.getGridColumns());
     },
     
+    getEl: function(column){
+        return this.getViewForColumn(column).getEl();
+    },
+    
+    getViewForColumn: function(column) {
+        var view = this.lockedView,
+            inLocked;
+        
+        view.headerCt.cascade(function(col){
+            if (col === column) {
+                inLocked = true;
+                return false;
+            }
+        });
+        
+        return inLocked ? view : this.normalView;
+    },
+    
     onItemMouseEnter: function(view, record){
         var me = this,
             locked = me.lockedView,
@@ -110,14 +142,9 @@ Ext.define('Ext.grid.LockingView', {
     },
     
     getCell: function(record, column){
-        var view = this.lockedView,
+        var view = this.getViewForColumn(column),
             row;
-        
-        
-        if (view.getHeaderAtIndex(column) === -1) {
-            view = this.normalView;
-        }
-        
+            
         row = view.getNode(record);
         return Ext.fly(row).down(column.getCellSelector());
     },

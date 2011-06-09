@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-Association-method-constructor'><span id='Ext-data-Association'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-Association'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.Association
  * @extends Object
  *
@@ -130,8 +130,6 @@ Ext.onReady(function(){
 });
  * &lt;/code&gt;&lt;/pre&gt;
  *
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.Association', {
 <span id='Ext-data-Association-cfg-ownerModel'>    /**
@@ -186,6 +184,10 @@ Ext.define('Ext.data.Association', {
         }
     },
 
+<span id='Ext-data-Association-method-constructor'>    /**
+</span>     * Creates the Association object.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
 

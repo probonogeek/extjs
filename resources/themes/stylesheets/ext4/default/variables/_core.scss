@@ -44,6 +44,12 @@ $base-color   : #C0D4ED !default;
 $neutral-color: #eeeeee !default;
 
 /**
+ * @var {boolean} $include-not-found-images
+ * True to include files which are not found when compiling your SASS
+ */
+$include-missing-images: false !default;
+
+/**
  * @var {boolean} $include-ie
  * True to include Internet Explorer specific rules
  */
@@ -99,3 +105,10 @@ $scope-reset-css: false !default;
  * The base color for CSS shadows
  */
 $css-shadow-background-color: #ccc !default;
+
+
+/**
+ * @var {color} $include-shadow-images
+ * True to include all shadow images.
+ */
+$include-shadow-images: true !default;

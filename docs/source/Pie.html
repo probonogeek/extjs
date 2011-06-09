@@ -1029,7 +1029,7 @@ Ext.define('Ext.chart.series.Pie', {
      */
     getLegendColor: function(index) {
         var me = this;
-        return me.colorArrayStyle[index % me.colorArrayStyle.length];
+        return (me.colorSet &amp;&amp; me.colorSet[index % me.colorSet.length]) || me.colorArrayStyle[index % me.colorArrayStyle.length];
     }
 });
 

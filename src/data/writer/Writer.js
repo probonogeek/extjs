@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.writer.Writer
@@ -14,9 +28,6 @@
  * {@link Ext.data.proxy.WebStorage Web Storage proxy} (see {@link Ext.data.proxy.LocalStorage localStorage}
  * and {@link Ext.data.proxy.SessionStorage sessionStorage}) or just in memory via a
  * {@link Ext.data.proxy.Memory MemoryProxy}.</p>
- * 
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.writer.Writer', {
     alias: 'writer.base',
@@ -62,6 +73,10 @@ new Ext.data.writer.Writer({
      */
     nameProperty: 'name',
 
+    /**
+     * Creates new Writer.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
     },
@@ -127,3 +142,4 @@ new Ext.data.writer.Writer({
         return data;
     }
 });
+

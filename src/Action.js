@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.Action
  * <p>An Action is a piece of reusable functionality that can be abstracted out of any particular component so that it
@@ -56,8 +70,6 @@ var btn = panel.getComponent('myAction');
 var aRef = btn.baseAction;
 aRef.setText('New text');
 </code></pre>
- * @constructor
- * @param {Object} config The configuration options
  */
 Ext.define('Ext.Action', {
 
@@ -101,6 +113,10 @@ Ext.define('Ext.Action', {
      * <code>{@link #handler}</code> is executed. Defaults to the browser window.
      */
 
+    /**
+     * Creates new Action.
+     * @param {Object} config Config object.
+     */
     constructor : function(config){
         this.initialConfig = config;
         this.itemId = config.itemId = (config.itemId || config.id || Ext.id());
@@ -261,3 +277,4 @@ Ext.define('Ext.Action', {
         this.initialConfig.handler.apply(this.initialConfig.scope || Ext.global, arguments);
     }
 });
+

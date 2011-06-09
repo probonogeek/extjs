@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Format
 
@@ -13,7 +27,7 @@ Options include:
 - currenyPrecision
 - currencySign
 - currencyAtEnd
-This class also uses the default date format defined here: {@link Ext.date#defaultFormat}.
+This class also uses the default date format defined here: {@link Ext.Date#defaultFormat}.
 
 __Using with renderers__
 There are two helper functions that return a new function that can be used in conjunction with 
@@ -315,8 +329,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * @param {String} format The way you would like to format this text.
          * @return {String} The formatted number.
          */
-        number:
-            function(v, formatString) {
+        number: function(v, formatString) {
             if (!formatString) {
                 return v;
             }
@@ -395,6 +408,15 @@ XTemplates can also directly use Ext.util.Format functions:
                     fnum = psplit[0] + dec + psplit[1];
                 }
             }
+            
+            if (neg) {
+                /*
+                 * Edge case. If we have a very small negative number it will get rounded to 0,
+                 * however the initial check at the top will still report as negative. Replace
+                 * everything but 1-9 and check if the string is empty to determine a 0 value.
+                 */
+                neg = fnum.replace(/[^1-9]/g, '') !== '';
+            }
 
             return (neg ? '-' : '') + formatString.replace(/[\d,?\.?]+/, fnum);
         },
@@ -452,7 +474,7 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
-         * See {@link Ext.string#htmlDecode}.
+         * See {@link Ext.String#htmlDecode}.
          * @method
          */
         htmlDecode: Ext.String.htmlDecode,
@@ -518,3 +540,4 @@ XTemplates can also directly use Ext.util.Format functions:
         }
     });
 })();
+

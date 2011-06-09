@@ -15,20 +15,22 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-panel-Proxy-method-constructor'><span id='Ext-panel-Proxy'>/**
-</span></span> * @class Ext.panel.Proxy
+  <pre class="prettyprint lang-js"><span id='Ext-panel-Proxy'>/**
+</span> * @class Ext.panel.Proxy
  * @extends Object
  * A custom drag proxy implementation specific to {@link Ext.panel.Panel}s. This class
  * is primarily used internally for the Panel's drag drop implementation, and
  * should never need to be created directly.
- * @constructor
- * @param panel The {@link Ext.panel.Panel} to proxy for
- * @param config Configuration options
  */
 Ext.define('Ext.panel.Proxy', {
     
     alternateClassName: 'Ext.dd.PanelProxy',
-    
+
+<span id='Ext-panel-Proxy-method-constructor'>    /**
+</span>     * Creates new panel proxy.
+     * @param {Ext.panel.Panel} panel The {@link Ext.panel.Panel} to proxy for
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(panel, config){
 <span id='Ext-panel-Proxy-property-panel'>        /**
 </span>         * @property panel

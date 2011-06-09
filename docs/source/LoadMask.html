@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-LoadMask-method-constructor'><span id='Ext-LoadMask'>/**
-</span></span> * @class Ext.LoadMask
+  <pre class="prettyprint lang-js"><span id='Ext-LoadMask'>/**
+</span> * @class Ext.LoadMask
  * A simple utility class for generically masking elements while loading data.  If the {@link #store}
  * config option is specified, the masking will be automatically synchronized with the store's loading
  * process and the mask element will be cached for reuse.
@@ -27,10 +27,6 @@ var myMask = new Ext.LoadMask(Ext.getBody(), {msg:&quot;Please wait...&quot;});
 myMask.show();
 &lt;/code&gt;&lt;/pre&gt;
 
- * @constructor
- * Create a new LoadMask
- * @param {Mixed} el The element, element ID, or DOM node you wish to mask. Also, may be a Component who's element you wish to mask.
- * @param {Object} config The config object
  */
 
 Ext.define('Ext.LoadMask', {
@@ -74,6 +70,12 @@ Ext.define('Ext.LoadMask', {
      */
     disabled: false,
 
+<span id='Ext-LoadMask-method-constructor'>    /**
+</span>     * Creates new LoadMask.
+     * @param {Mixed} el The element, element ID, or DOM node you wish to mask.
+     * Also, may be a Component who's element you wish to mask.
+     * @param {Object} config (optional) The config object
+     */
     constructor : function(el, config) {
         var me = this;
 

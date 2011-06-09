@@ -30,7 +30,7 @@ Ext.define('Ext.view.TableChunker', {
         '{[this.openTableWrap()]}',
         '&lt;table class=&quot;' + Ext.baseCSSPrefix + 'grid-table ' + Ext.baseCSSPrefix + 'grid-table-resizer&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; {[this.embedFullWidth()]}&gt;',
             '&lt;tbody&gt;',
-            '&lt;tr&gt;',
+            '&lt;tr class=&quot;' + Ext.baseCSSPrefix + 'grid-header-row&quot;&gt;',
             '&lt;tpl for=&quot;columns&quot;&gt;',
                 '&lt;th class=&quot;' + Ext.baseCSSPrefix + 'grid-col-resizer-{id}&quot; style=&quot;width: {width}px; height: 0px;&quot;&gt;&lt;/th&gt;',
             '&lt;/tpl&gt;',

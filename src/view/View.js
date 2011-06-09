@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.View
  * @extends Ext.view.AbstractView
@@ -19,7 +33,7 @@
  *             {name:'caption', type:'string'}
  *         ]
  *     });
- *     
+ *
  *     Ext.create('Ext.data.Store', {
  *         id:'imagesStore',
  *         model: 'Image',
@@ -27,10 +41,10 @@
  *             {src:'http://www.sencha.com/img/20110215-feat-drawing.png', caption:'Drawing & Charts'},
  *             {src:'http://www.sencha.com/img/20110215-feat-data.png', caption:'Advanced Data'},
  *             {src:'http://www.sencha.com/img/20110215-feat-html5.png', caption:'Overhauled Theme'},
- *             {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}            
+ *             {src:'http://www.sencha.com/img/20110215-feat-perf.png', caption:'Performance Tuned'}
  *         ]
  *     });
- *     
+ *
  *     var imageTpl = new Ext.XTemplate(
  *         '&lt;tpl for="."&gt;',
  *             '&lt;div style="thumb-wrap"&gt;',
@@ -39,7 +53,7 @@
  *             '&lt;/div&gt;',
  *         '&lt;/tpl&gt;'
  *     );
- *     
+ *
  *     Ext.create('Ext.DataView', {
  *         store: Ext.data.StoreManager.lookup('imagesStore'),
  *         tpl: imageTpl,
@@ -47,12 +61,10 @@
  *         emptyText: 'No images available',
  *         renderTo: Ext.getBody()
  *     });
- *
- * @xtype dataview
  */
 Ext.define('Ext.view.View', {
     extend: 'Ext.view.AbstractView',
-    alternateClassName: 'Ext.view.View',
+    alternateClassName: 'Ext.DataView',
     alias: 'widget.dataview',
 
     inheritableStatics: {
@@ -66,7 +78,8 @@ Ext.define('Ext.view.View', {
             mouseout: 'MouseOut',
             mouseenter: 'MouseEnter',
             mouseleave: 'MouseLeave',
-            keydown: 'KeyDown'
+            keydown: 'KeyDown',
+            focus: 'Focus'
         }
     },
 
@@ -364,6 +377,13 @@ Ext.define('Ext.view.View', {
 
         listeners = {
             scope: me,
+            /*
+             * We need to make copies of this since some of the events fired here will end up triggering
+             * a new event to be called and the shared event object will be mutated. In future we should
+             * investigate if there are any issues with creating a new event object for each event that
+             * is fired.
+             */
+            freezeEvent: true,
             click: me.handleEvent,
             mousedown: me.handleEvent,
             mouseup: me.handleEvent,
@@ -519,12 +539,14 @@ Ext.define('Ext.view.View', {
     // @private, template methods
     onItemMouseDown: Ext.emptyFn,
     onItemMouseUp: Ext.emptyFn,
+    onItemFocus: Ext.emptyFn,
     onItemClick: Ext.emptyFn,
     onItemDblClick: Ext.emptyFn,
     onItemContextMenu: Ext.emptyFn,
     onItemKeyDown: Ext.emptyFn,
     onBeforeItemMouseDown: Ext.emptyFn,
     onBeforeItemMouseUp: Ext.emptyFn,
+    onBeforeItemFocus: Ext.emptyFn,
     onBeforeItemMouseEnter: Ext.emptyFn,
     onBeforeItemMouseLeave: Ext.emptyFn,
     onBeforeItemClick: Ext.emptyFn,
@@ -577,7 +599,11 @@ Ext.define('Ext.view.View', {
     },
 
     refresh: function() {
-        this.clearHighlight();
-        this.callParent(arguments);
+        var me = this;
+        me.clearHighlight();
+        me.callParent(arguments);
+        if (!me.isFixedHeight()) {
+            me.doComponentLayout();
+        }
     }
 });

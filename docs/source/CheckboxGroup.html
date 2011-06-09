@@ -15,53 +15,55 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-CheckboxGroup-method-constructor'><span id='Ext-form-CheckboxGroup'>/**
-</span></span> * @class Ext.form.CheckboxGroup
- * @extends Ext.form.FieldContainer
- * &lt;p&gt;A {@link Ext.form.FieldContainer field container} which has a specialized layout for arranging
+  <pre class="prettyprint lang-js"><span id='Ext-form-CheckboxGroup'>/**
+</span> * A {@link Ext.form.FieldContainer field container} which has a specialized layout for arranging
  * {@link Ext.form.field.Checkbox} controls into columns, and provides convenience {@link Ext.form.field.Field} methods
  * for {@link #getValue getting}, {@link #setValue setting}, and {@link #validate validating} the group
- * of checkboxes as a whole.&lt;/p&gt;
- * &lt;p&gt;&lt;b&gt;Validation:&lt;/b&gt; Individual checkbox fields themselves have no default validation behavior, but
+ * of checkboxes as a whole.
+ *
+ * # Validation
+ *
+ * Individual checkbox fields themselves have no default validation behavior, but
  * sometimes you want to require a user to select at least one of a group of checkboxes. CheckboxGroup
- * allows this by setting the config &lt;tt&gt;{@link #allowBlank}:false&lt;/tt&gt;; when the user does not check at
+ * allows this by setting the config `{@link #allowBlank}:false`; when the user does not check at
  * least one of the checkboxes, the entire group will be highlighted as invalid and the
- * {@link #blankText error message} will be displayed according to the {@link #msgTarget} config.&lt;/p&gt;
- * &lt;p&gt;&lt;b&gt;Layout:&lt;/b&gt; The default layout for CheckboxGroup makes it easy to arrange the checkboxes into
+ * {@link #blankText error message} will be displayed according to the {@link #msgTarget} config.
+ *
+ * # Layout
+ *
+ * The default layout for CheckboxGroup makes it easy to arrange the checkboxes into
  * columns; see the {@link #columns} and {@link #vertical} config documentation for details. You may also
  * use a completely different layout by setting the {@link #layout} to one of the other supported layout
  * types; for instance you may wish to use a custom arrangement of hbox and vbox containers. In that case
- * the checkbox components at any depth will still be managed by the CheckboxGroup's validation.&lt;/p&gt;
- * {@img Ext.form.RadioGroup/Ext.form.RadioGroup.png Ext.form.RadioGroup component}
- * &lt;p&gt;Example usage:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-Ext.create('Ext.form.Panel', {
-    title: 'RadioGroup Example',
-    width: 300,
-    height: 125,
-    bodyPadding: 10,
-    renderTo: Ext.getBody(),        
-    items:[{            
-        xtype: 'radiogroup',
-        fieldLabel: 'Two Columns',
-        // Arrange radio buttons into two columns, distributed vertically
-        columns: 2,
-        vertical: true,
-        items: [
-            {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
-            {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
-            {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
-            {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
-            {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
-            {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
-        ]
-    }]
-});
- * &lt;/code&gt;&lt;/pre&gt;
- * @constructor
- * Creates a new CheckboxGroup
- * @param {Object} config Configuration options
- * @xtype checkboxgroup
+ * the checkbox components at any depth will still be managed by the CheckboxGroup's validation.
+ *
+ * {@img Ext.form.CheckboxGroup/Ext.form.CheckboxGroup.png Ext.form.CheckboxGroup component}
+ *
+ * # Example usage
+ *
+ *     Ext.create('Ext.form.Panel', {
+ *         title: 'Checkbox Group',
+ *         width: 300,
+ *         height: 125,
+ *         bodyPadding: 10,
+ *         renderTo: Ext.getBody(),        
+ *         items:[{            
+ *             xtype: 'checkboxgroup',
+ *             fieldLabel: 'Two Columns',
+ *             // Arrange radio buttons into two columns, distributed vertically
+ *             columns: 2,
+ *             vertical: true,
+ *             items: [
+ *                 {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
+ *                 {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
+ *                 {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
+ *                 {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
+ *                 {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
+ *                 {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
+ *             ]
+ *         }]
+ *     });
+ *
  */
 Ext.define('Ext.form.CheckboxGroup', {
     extend:'Ext.form.FieldContainer',

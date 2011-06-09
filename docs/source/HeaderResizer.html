@@ -123,7 +123,7 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
                         resizeHeader = resizeHeader[resizeHeader.length - 1];
                     }
 
-                    if (resizeHeader &amp;&amp; !resizeHeader.fixed) {
+                    if (resizeHeader &amp;&amp; !(resizeHeader.fixed || this.disabled)) {
                         this.activeHd = resizeHeader;
                         overHeader.el.dom.style.cursor = this.eResizeCursor;
                     }

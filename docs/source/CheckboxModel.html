@@ -168,8 +168,9 @@ Ext.define('Ext.selection.CheckboxModel', {
 </span>     * Synchronize header checker value as selection changes.
      * @private
      */
-    onSelectChange: function(record, isSelected) {
-        this.callParent([record, isSelected]);
+    onSelectChange: function() {
+        this.callParent(arguments);
+
         // check to see if all records are selected
         var hdSelectStatus = this.selected.getCount() === this.store.getCount();
         this.toggleUiHeader(hdSelectStatus);

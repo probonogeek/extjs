@@ -149,7 +149,7 @@ Ext.define('Ext.layout.component.field.Field', {
 
 <span id='Ext-layout-component-field-Field-method-getLabelStrategy'>    /**
 </span>     * Return the set of strategy functions from the {@link #labelStrategies labelStrategies collection}
-     * that is appropriate for the field's {@link Ext.form.field.Field#labelAlign labelAlign} config.
+     * that is appropriate for the field's {@link Ext.form.Labelable#labelAlign labelAlign} config.
      */
     getLabelStrategy: function() {
         var me = this,
@@ -160,7 +160,7 @@ Ext.define('Ext.layout.component.field.Field', {
 
 <span id='Ext-layout-component-field-Field-method-getErrorStrategy'>    /**
 </span>     * Return the set of strategy functions from the {@link #errorStrategies errorStrategies collection}
-     * that is appropriate for the field's {@link Ext.form.field.Field#msgTarget msgTarget} config.
+     * that is appropriate for the field's {@link Ext.form.Labelable#msgTarget msgTarget} config.
      */
     getErrorStrategy: function() {
         var me = this,
@@ -176,7 +176,7 @@ Ext.define('Ext.layout.component.field.Field', {
 
 <span id='Ext-layout-component-field-Field-property-labelStrategies'>    /**
 </span>     * Collection of named strategies for laying out and adjusting labels to accommodate error messages.
-     * An appropriate one will be chosen based on the owner field's {@link Ext.form.field.Field#labelAlign} config.
+     * An appropriate one will be chosen based on the owner field's {@link Ext.form.Labelable#labelAlign} config.
      */
     labelStrategies: (function() {
         var applyIf = Ext.applyIf,
@@ -256,7 +256,7 @@ Ext.define('Ext.layout.component.field.Field', {
 
 <span id='Ext-layout-component-field-Field-property-errorStrategies'>    /**
 </span>     * Collection of named strategies for laying out and adjusting insets to accommodate error messages.
-     * An appropriate one will be chosen based on the owner field's {@link Ext.form.field.Field#msgTarget} config.
+     * An appropriate one will be chosen based on the owner field's {@link Ext.form.Labelable#msgTarget} config.
      */
     errorStrategies: (function() {
         function setDisplayed(el, displayed) {

@@ -1,16 +1,90 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Sorter
  * @extends Object
- * Represents a single sorter that can be applied to a Store
+
+Represents a single sorter that can be applied to a Store. The sorter is used
+to compare two values against each other for the purpose of ordering them. Ordering
+is achieved by specifying either:
+- {@link #property A sorting property}
+- {@link #sorterFn A sorting function} 
+
+As a contrived example, we can specify a custom sorter that sorts by rank:
+
+    Ext.define('Person', {
+        extend: 'Ext.data.Model',
+        fields: ['name', 'rank']
+    });
+
+    Ext.create('Ext.data.Store', {
+        model: 'Person',
+        proxy: 'memory',
+        sorters: [{
+            sorterFn: function(o1, o2){
+                var getRank = function(o){
+                    var name = o.get('rank');
+                    if (name === 'first') {
+                        return 1;
+                    } else if (name === 'second') {
+                        return 2;
+                    } else {
+                        return 3;
+                    }
+                },
+                rank1 = getRank(o1),
+                rank2 = getRank(o2);
+                
+                if (rank1 === rank2) {
+                    return 0;
+                }
+                
+                return rank1 < rank2 ? -1 : 1;
+            }
+        }],
+        data: [{
+            name: 'Person1',
+            rank: 'second'
+        }, {
+            name: 'Person2',
+            rank: 'third'
+        }, {
+            name: 'Person3',
+            rank: 'first'
+        }] 
+    });
+
+ * @markdown
  */
 Ext.define('Ext.util.Sorter', {
 
     /**
-     * @cfg {String} property The property to sort by. Required unless {@link #sorter} is provided
+     * @cfg {String} property The property to sort by. Required unless {@link #sorterFn} is provided.
+     * The property is extracted from the object directly and compared for sorting using the built in
+     * comparison operators.
      */
     
     /**
-     * @cfg {Function} sorterFn A specific sorter function to execute. Can be passed instead of {@link #property}
+     * @cfg {Function} sorterFn A specific sorter function to execute. Can be passed instead of {@link #property}.
+     * This sorter function allows for any kind of custom/complex comparisons.
+     * The sorterFn receives two arguments, the objects being compared. The function should return:
+     * <ul>
+     * <li>-1 if o1 is "less than" o2</li>
+     * <li>0 if o1 is "equal" to o2</li>
+     * <li>1 if o1 is "greater than" o2</li>
+     * </ul>
      */
     
     /**
@@ -35,7 +109,7 @@ Ext.define('Ext.util.Sorter', {
         Ext.apply(me, config);
         
         //<debug>
-        if (me.property == undefined && me.sorterFn == undefined) {
+        if (me.property === undefined && me.sorterFn === undefined) {
             Ext.Error.raise("A Sorter requires either a property or a sorter function");
         }
         //</debug>
@@ -86,24 +160,36 @@ Ext.define('Ext.util.Sorter', {
      * @return {Object} The root property of the object
      */
     getRoot: function(item) {
-        return this.root == undefined ? item : item[this.root];
+        return this.root === undefined ? item : item[this.root];
     },
     
-    // @TODO: Add docs for these three methods
+    /**
+     * Set the sorting direction for this sorter.
+     * @param {String} direction The direction to sort in. Should be either 'ASC' or 'DESC'.
+     */
     setDirection: function(direction) {
         var me = this;
         me.direction = direction;
         me.updateSortFunction();
     },
     
+    /**
+     * Toggles the sorting direction for this sorter.
+     */
     toggle: function() {
         var me = this;
         me.direction = Ext.String.toggle(me.direction, "ASC", "DESC");
         me.updateSortFunction();
     },
     
-    updateSortFunction: function() {
+    /**
+     * Update the sort function for this sorter.
+     * @param {Function} fn (Optional) A new sorter function for this sorter. If not specified it will use the
+     * default sorting function.
+     */
+    updateSortFunction: function(fn) {
         var me = this;
-        me.sort = me.createSortFunction(me.sorterFn || me.defaultSorterFn);
+        fn = fn || me.sorterFn || me.defaultSorterFn;
+        me.sort = me.createSortFunction(fn);
     }
 });

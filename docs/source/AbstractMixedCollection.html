@@ -307,11 +307,11 @@ mc.add(otherEl);
             return me.add(myKey, myObj);
         }
         me.length++;
-        me.items.splice(index, 0, myObj);
+        Ext.Array.splice(me.items, index, 0, myObj);
         if (typeof myKey != 'undefined' &amp;&amp; myKey !== null) {
             me.map[myKey] = myObj;
         }
-        me.keys.splice(index, 0, myKey);
+        Ext.Array.splice(me.keys, index, 0, myKey);
         me.fireEvent('add', index, myObj, myKey);
         return myObj;
     },
@@ -351,12 +351,12 @@ mc.add(otherEl);
         if (index &lt; me.length &amp;&amp; index &gt;= 0) {
             me.length--;
             o = me.items[index];
-            me.items.splice(index, 1);
+            Ext.Array.erase(me.items, index, 1);
             key = me.keys[index];
             if (typeof key != 'undefined') {
                 delete me.map[key];
             }
-            me.keys.splice(index, 1);
+            Ext.Array.erase(me.keys, index, 1);
             me.fireEvent('remove', o, key);
             return o;
         }

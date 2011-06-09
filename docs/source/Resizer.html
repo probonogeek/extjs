@@ -96,6 +96,18 @@ Ext.define('Ext.resizer.Resizer', {
      */
     width : null,
 
+<span id='Ext-resizer-Resizer-cfg-heightIncrement'>    /**
+</span>     * @cfg {Number} heightIncrement The increment to snap the height resize in pixels.
+     * Defaults to &lt;code&gt;0&lt;/code&gt;.
+     */
+    heightIncrement : 0,
+
+<span id='Ext-resizer-Resizer-cfg-widthIncrement'>    /**
+</span>     * @cfg {Number} widthIncrement The increment to snap the width resize in pixels
+     * Defaults to &lt;code&gt;0&lt;/code&gt;.
+     */
+    widthIncrement : 0,
+
 <span id='Ext-resizer-Resizer-cfg-minHeight'>    /**
 </span>     * @cfg {Number} minHeight The minimum height for the element (defaults to 20)
      */
@@ -285,6 +297,8 @@ Ext.define('Ext.resizer.Resizer', {
             delegate: '.' + me.handleCls,
             dynamic: me.dynamic,
             preserveRatio: me.preserveRatio,
+            heightIncrement: me.heightIncrement,
+            widthIncrement: me.widthIncrement,
             minHeight: me.minHeight,
             maxHeight: me.maxHeight,
             minWidth: me.minWidth,
@@ -437,11 +451,11 @@ Ext.define('Ext.resizer.Resizer', {
         var me = this,
             handle;
         if (Ext.isIE6) {
-            handle = me.east; 
+            handle = me.east;
             if (handle) {
                 handle.setHeight(me.el.getHeight());
             }
-            handle = me.west; 
+            handle = me.west;
             if (handle) {
                 handle.setHeight(me.el.getHeight());
             }

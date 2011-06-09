@@ -9,8 +9,9 @@
             border-top-color: $grid-header-background-color;
         }
 
+        // Still needs left and right border even if it's not visible so that its available width can be calculated correctly
         .#{$prefix}grid-header-ct-hidden {
-            border-width: 0 0 0 0 !important;
+            border-top-width: 0 !important;
         }
     }
 
@@ -29,15 +30,13 @@
         border-collapse: separate;
     }
 
+    .#{$prefix}grid-row .#{$prefix}grid-table {
+        border-collapse: collapse;
+    }
+
     .#{$prefix}grid-locked .#{$prefix}grid-inner-locked {
         border-width: 0 1px 0 0 !important;
         border-style: solid;
-    }
-
-    @if $include-ie or $compile-all {
-        .#{$prefix}ie .#{$prefix}grid-table {
-            border-collapse: collapse;
-        }
     }
 
     .#{$prefix}grid-header-ct {
@@ -50,7 +49,7 @@
             @include background-gradient($grid-header-background-color, $grid-header-background-gradient);
         }
     }
-    
+
     @if $include-ie or $compile-all {
         .#{$prefix}border-box .#{$prefix}ie9 {
             .#{$prefix}grid-header-ct {
@@ -125,13 +124,15 @@
         .#{$prefix}nlg {
             .#{$prefix}grid-header-ct,
             .#{$prefix}column-header {
-                background: theme-image($theme-name, 'grid/column-header-bg.gif') repeat-x 0 top;
+                background: repeat-x 0 top;
+                @include theme-background-image($theme-name, 'grid/column-header-bg.gif');
             }
 
             .#{$prefix}column-header-over,
             .#{$prefix}column-header-sort-ASC,
             .#{$prefix}column-header-sort-DESC {
-                background: #ebf3fd theme-image($theme-name, 'grid/column-header-over-bg.gif') repeat-x 0 top;
+                background: #ebf3fd repeat-x 0 top;
+                @include theme-background-image($theme-name, 'grid/column-header-over-bg.gif');
             }
         }
     }
@@ -142,7 +143,7 @@
         width: $grid-header-trigger-width;
         background: no-repeat left center;
         background-color: #c3daf9;
-        background-image: theme-image($theme-name, 'grid/grid3-hd-btn.gif');
+        @include theme-background-image($theme-name, 'grid/grid3-hd-btn.gif');
         position: absolute;
         right: 0;
         top: 0;
@@ -161,6 +162,7 @@
 
         .#{$prefix}column-header-text {
             padding-right: 0.5ex;
+            margin-right: 6px;
         }
     }
     .#{$prefix}column-header-align-center {
@@ -173,11 +175,13 @@
     // Sort direction indicator is a background of the text span.
     .#{$prefix}column-header-sort-ASC .#{$prefix}column-header-text {
         padding-right: 16px;
-        background: theme-image($theme-name, 'grid/sort_asc.gif') no-repeat right 6px;
+        background: no-repeat right 6px;
+        @include theme-background-image($theme-name, 'grid/sort_asc.gif');
     }
     .#{$prefix}column-header-sort-DESC .#{$prefix}column-header-text {
         padding-right: 16px;
-        background: theme-image($theme-name, 'grid/sort_desc.gif') no-repeat right 6px;
+        background: no-repeat right 6px;
+        @include theme-background-image($theme-name, 'grid/sort_desc.gif');
     }
 
     //grid rows
@@ -239,35 +243,6 @@
         border-color: $grid-row-cell-selected-border-color;
 
         background-color: $grid-row-cell-selected-background-color !important;
-    }
-
-    @if $include-ie {
-        .#{$prefix}ie {
-            .#{$prefix}grid-cell {
-                border-width: 0;
-            }
-
-            .#{$prefix}grid-cell-inner {
-                border-color: $grid-row-cell-border-color;
-                border-style: $grid-row-cell-border-style;
-                border-width: $grid-row-cell-border-width;
-                border-top-color: lighten($grid-row-cell-border-color, 5);
-                height: 100%;
-            }
-
-            .#{$prefix}grid-row-over .#{$prefix}grid-cell-inner {
-                border-color: $grid-row-cell-over-border-color;
-            }
-
-            .#{$prefix}grid-row-focused .#{$prefix}grid-cell-inner {
-                border-color: $grid-row-cell-focus-border-color;
-            }
-
-            .#{$prefix}grid-row-selected .#{$prefix}grid-cell-inner {
-                border-style: $grid-row-cell-selected-border-style;
-                border-color: $grid-row-cell-selected-border-color;
-            }
-        }
     }
 
     .#{$prefix}grid-rowwrap-div {
@@ -337,22 +312,19 @@
         @include background-gradient(#f6f6f6, 'grid-cell-special');
     }
 
+    /*
+    IE6-8 have issues with shrinking the TR to 0px (even w/line-height=0), so we
+    use an IE-specific trick to make the row disappear. We cannot do this on any
+    other browser, because it is not a non-standard thing to do and those other
+    browsers will do whacky things with it.
+    */
+
     .#{$prefix}ie6,
     .#{$prefix}ie7,
     .#{$prefix}quirks .#{$prefix}ie8,
     .#{$prefix}strict .#{$prefix}ie8 {
-        .#{$prefix}grid-row .#{$prefix}grid-cell-special .#{$prefix}grid-cell-inner {
-            padding-bottom: 2px;
-        }
-    }
-    
-    
-    .#{$prefix}strict {
-        .#{$prefix}ie6, .#{$prefix}ie7 {
-            .#{$prefix}grid-cell-inner {
-                padding-top: 2px;
-                padding-bottom: 0;
-            }
+        .#{$prefix}grid-header-row {
+            position: absolute;
         }
     }
 
@@ -363,7 +335,7 @@
     }
 
     .#{$prefix}grid-dirty-cell {
-        background-image: theme-image($theme-name, 'grid/dirty.gif');
+        @include theme-background-image($theme-name, 'grid/dirty.gif');
         background-position: 0 0;
         background-repeat: no-repeat;
     }
@@ -381,18 +353,18 @@
 
             .#{$prefix}grid-row .#{$prefix}grid-cell-special,
             .#{$prefix}grid-row-over .#{$prefix}grid-cell-special {
-                background-image: theme-image($theme-name, 'grid/cell-special-bg.gif');
+                @include theme-background-image($theme-name, 'grid/cell-special-bg.gif');
 
             }
 
             .#{$prefix}grid-row-focused .#{$prefix}grid-cell-special,
             .#{$prefix}grid-row-selected .#{$prefix}grid-cell-special {
-                background-image: theme-image($theme-name, 'grid/cell-special-selected-bg.gif');
+                @include theme-background-image($theme-name, 'grid/cell-special-selected-bg.gif');
             }
         }
     }
 
-    //this is panel as gridpanel doesnt use a baseCls..........
+    //this is panel as gridpanel doesn't use a baseCls
     .#{$prefix}panel-with-col-lines .#{$prefix}grid-row .#{$prefix}grid-cell {
         padding-right: 0;
         border-right: 1px solid $grid-cell-with-col-lines-border-color;
@@ -414,7 +386,7 @@
         .#{$prefix}grid-row .#{$prefix}grid-property-name .#{$prefix}grid-cell-inner,
         .#{$prefix}grid-row-over .#{$prefix}grid-property-name .#{$prefix}grid-cell-inner {
             padding-left: 12px;
-            background: theme-image($theme-name, 'grid/property-cell-bg.gif');
+            @include theme-background-image($theme-name, 'grid/property-cell-bg.gif');
             background-repeat: no-repeat;
             background-position: -16px 1px;
         }
@@ -460,7 +432,7 @@
     }
 
     .#{$prefix}grid-row-expander {
-        background-image: theme-image($theme-name, 'grid/group-collapse.gif');
+        @include theme-background-image($theme-name, 'grid/group-collapse.gif');
         background-color: transparent;
 
         width: 9px;
@@ -474,7 +446,7 @@
 
     .#{$prefix}grid-row-collapsed {
         .#{$prefix}grid-row-expander {
-            background-image: theme-image($theme-name, 'grid/group-expand.gif');
+            @include theme-background-image($theme-name, 'grid/group-expand.gif');
         }
     }
 
@@ -501,11 +473,11 @@
     }
 
     .col-move-top {
-        background-image: theme-image($theme-name, 'grid/col-move-top.gif');
+        @include theme-background-image($theme-name, 'grid/col-move-top.gif');
     }
 
     .col-move-bottom {
-        background-image: theme-image($theme-name, 'grid/col-move-bottom.gif');
+        @include theme-background-image($theme-name, 'grid/col-move-bottom.gif');
     }
 
     //pading toolbar
@@ -538,7 +510,7 @@
 
     .#{$prefix}grid-group-title {
         background: transparent no-repeat 0 -1px;
-        background-image: theme-image($theme-name, 'grid/group-collapse.gif');
+        @include theme-background-image($theme-name, 'grid/group-collapse.gif');
 
         color: $grid-grouped-title-color;
         font: $grid-grouped-title-font;
@@ -548,7 +520,7 @@
 
     .#{$prefix}grid-group-hd-collapsed {
         .#{$prefix}grid-group-title {
-            background-image: theme-image($theme-name, 'grid/group-expand.gif');
+            @include theme-background-image($theme-name, 'grid/group-expand.gif');
         }
     }
 
@@ -557,15 +529,15 @@
     }
 
     .#{$prefix}grid-group-collapsed .#{$prefix}grid-group-title {
-        background-image: theme-image($theme-name, 'grid/group-expand.gif');
+        @include theme-background-image($theme-name, 'grid/group-expand.gif');
     }
 
     .#{$prefix}group-by-icon {
-        background-image: theme-image($theme-name, 'grid/group-by.gif');
+        @include theme-background-image($theme-name, 'grid/group-by.gif');
     }
 
     .#{$prefix}show-groups-icon {
-        background-image: theme-image($theme-name, 'grid/group-by.gif');
+        @include theme-background-image($theme-name, 'grid/group-by.gif');
     }
 
     .#{$prefix}column-header-checkbox .#{$prefix}column-header-inner {
@@ -580,7 +552,7 @@
     .#{$prefix}column-header-checkbox .#{$prefix}column-header-text {
         height: 14px;
         width: 14px;
-        background-image: theme-image($theme-name, 'grid/unchecked.gif');
+        @include theme-background-image($theme-name, 'grid/unchecked.gif');
         background-position: -1px -1px;
         background-repeat: no-repeat;
         background-color: transparent;
@@ -593,7 +565,7 @@
         margin-top: 4px;
         margin-left: 4px;
     }
-    
+
     @if $include-ie or $compile-all {
         /* All IE Quirks mode need to squish the header height or the line-height will become too tall */
         /* IE6 always needs the hack regardless of quirks/strict */
@@ -602,7 +574,7 @@
                 line-height: 18px;
             }
         }
-        
+
         /* IE 6, 7 & 9 are 1px too far to the right when centering, drop the margin 1px. */
         .#{$prefix}ie6, .#{$prefix}ie7, .#{$prefix}ie9 {
             .#{$prefix}column-header-checkbox .#{$prefix}column-header-text {
@@ -612,7 +584,7 @@
     }
 
     .#{$prefix}grid-hd-checker-on .#{$prefix}column-header-text {
-        background-image: theme-image($theme-name, 'grid/checked.gif');
+        @include theme-background-image($theme-name, 'grid/checked.gif');
     }
 
     .#{$prefix}grid-row-checker {
@@ -623,7 +595,7 @@
 
     .#{$prefix}grid-row-selected .#{$prefix}grid-row-checker,
     .#{$prefix}grid-row-checked .#{$prefix}grid-row-checker {
-        background-image: theme-image($theme-name, 'grid/checked.gif');
+        @include theme-background-image($theme-name, 'grid/checked.gif');
     }
 
     //grid icons
@@ -671,31 +643,31 @@
 
     //menu icons
     .xg-hmenu-sort-asc .#{$prefix}menu-item-icon {
-        background-image: theme-image($theme-name, 'grid/hmenu-asc.gif');
+        @include theme-background-image($theme-name, 'grid/hmenu-asc.gif');
     }
 
     .xg-hmenu-sort-desc .#{$prefix}menu-item-icon {
-        background-image: theme-image($theme-name, 'grid/hmenu-desc.gif');
+        @include theme-background-image($theme-name, 'grid/hmenu-desc.gif');
     }
 
     .xg-hmenu-lock .#{$prefix}menu-item-icon {
-        background-image: theme-image($theme-name, 'grid/hmenu-lock.gif');
+        @include theme-background-image($theme-name, 'grid/hmenu-lock.gif');
     }
 
     .xg-hmenu-unlock .#{$prefix}menu-item-icon {
-        background-image: theme-image($theme-name, 'grid/hmenu-unlock.gif');
+        @include theme-background-image($theme-name, 'grid/hmenu-unlock.gif');
     }
 
     .#{$prefix}group-by-icon {
-        background-image: theme-image($theme-name, 'grid/group-by.gif');
+        @include theme-background-image($theme-name, 'grid/group-by.gif');
     }
 
     .#{$prefix}cols-icon .#{$prefix}menu-item-icon {
-        background-image: theme-image($theme-name, 'grid/columns.gif');
+        @include theme-background-image($theme-name, 'grid/columns.gif');
     }
 
     .#{$prefix}show-groups-icon {
-        background-image: theme-image($theme-name, 'grid/group-by.gif');
+        @include theme-background-image($theme-name, 'grid/group-by.gif');
     }
 
     // Drag/drop indicator styles
@@ -710,7 +682,7 @@
             position: absolute;
             top: -8px;
             left: -12px;
-            background-image: theme-image($theme-name, 'grid/dd-insert-arrow-right.png');
+            @include theme-background-image($theme-name, 'grid/dd-insert-arrow-right.png');
             height: 16px;
             width: 16px;
         }
@@ -719,7 +691,7 @@
             position: absolute;
             top: -8px;
             right: -11px;
-            background-image: theme-image($theme-name, 'grid/dd-insert-arrow-left.png');
+            @include theme-background-image($theme-name, 'grid/dd-insert-arrow-left.png');
             height: 16px;
             width: 16px;
         }
@@ -727,11 +699,11 @@
 
     .#{$prefix}ie6 {
         .#{$prefix}grid-drop-indicator-left {
-            background-image: theme-image($theme-name, 'grid/dd-insert-arrow-right.gif');
+            @include theme-background-image($theme-name, 'grid/dd-insert-arrow-right.gif');
         }
 
         .#{$prefix}grid-drop-indicator-right {
-            background-image: theme-image($theme-name, 'grid/dd-insert-arrow-left.gif');
+            @include theme-background-image($theme-name, 'grid/dd-insert-arrow-left.gif');
         }
     }
 
@@ -798,7 +770,7 @@
             width: 4px;
             height: 4px;
             bottom: 0px;
-            background-image: theme-image($theme-name, 'panel/panel-default-framed-corners.gif');
+            @include theme-background-image($theme-name, 'panel/panel-default-framed-corners.gif');
         }
         &-bl {
             left: 0px;

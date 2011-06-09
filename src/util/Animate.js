@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Animate
  * This animation class is a mixin.
@@ -206,7 +220,7 @@ Ext.define('Ext.util.Animate', {
 
     /**
      * <p>Perform custom animation on this object.<p>
-     * <p>This method is applicable to both the the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
+     * <p>This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
      * It performs animated transitions of certain properties of this object over a specified timeline.</p>
      * <p>The sole parameter is an object which specifies start property values, end property values, and properties which
      * describe the timeline. Of the properties listed below, only <b><code>to</code></b> is mandatory.</p>
@@ -381,7 +395,9 @@ myWindow.header.el.on('click', function() {
     getActiveAnimation: function() {
         return Ext.fx.Manager.getActiveAnimation(this.id);
     }
+}, function(){
+    // Apply Animate mixin manually until Element is defined in the proper 4.x way
+    Ext.applyIf(Ext.core.Element.prototype, this.prototype);
+    // We need to call this again so the animation methods get copied over to CE
+    Ext.CompositeElementLite.importElementMethods();
 });
-
-// Apply Animate mixin manually until Element is defined in the proper 4.x way
-Ext.applyIf(Ext.core.Element.prototype, Ext.util.Animate.prototype);

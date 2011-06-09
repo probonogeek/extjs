@@ -78,7 +78,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
                         Ext.removeNode(el);
                     }
                 }
-                els.splice(val, 1);
+                Ext.Array.erase(els, val, 1);
             }
         });
         return this;

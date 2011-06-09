@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-field-Text-method-constructor'><span id='Ext-form-field-Text'>/**
-</span></span> * @class Ext.form.field.Text
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Text'>/**
+</span> * @class Ext.form.field.Text
  * @extends Ext.form.field.Base
  
 A basic text field.  Can be used as a direct replacement for traditional text inputs,
@@ -31,7 +31,7 @@ The Text field has a useful set of validations built in:
 - {@link #minLength} for requiring a minimum value length
 - {@link #maxLength} for setting a maximum value length (with {@link #enforceMaxLength} to add it
   as the `maxlength` attribute on the input element)
-- {@link regex} to specify a custom regular expression for validation
+- {@link #regex} to specify a custom regular expression for validation
 
 In addition, custom validations may be added:
  
@@ -72,10 +72,7 @@ validation: see {@link #maskRe} and {@link #stripCharsRe} for details.
         }]
     }); 
 
- * @constructor Creates a new TextField
- * @param {Object} config Configuration options
  *
- * @xtype textfield
  * @markdown
  * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
  */

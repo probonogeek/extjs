@@ -1,14 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @private
  * @class Ext.picker.Month
  * @extends Ext.Component
  * <p>A month picker component. This class is used by the {@link Ext.picker.Date DatePicker} class
  * to allow browsing and selection of year/months combinations.</p>
- * @constructor
- * Create a new MonthPicker
- * @param {Object} config The config object
- * @xtype monthpicker
- * @private
  */
 Ext.define('Ext.picker.Month', {
     extend: 'Ext.Component',
@@ -67,11 +76,10 @@ Ext.define('Ext.picker.Month', {
     /**
      * @cfg {Date/Array} value The default value to set. See {#setValue setValue}
      */
-
-    width: 175,
-
-    height: 195,
-
+    width: 178,
+    
+    // used when attached to date picker which isnt showing buttons
+    smallCls: Ext.baseCSSPrefix + 'monthpicker-small',
 
     // private
     totalYears: 10,
@@ -139,7 +147,9 @@ Ext.define('Ext.picker.Month', {
              */
             'yeardblclick'
         );
-
+        if (me.small) {
+            me.addCls(me.smallCls);
+        }
         me.setValue(me.value);
         me.activeYear = me.getYear(new Date().getFullYear() - 4, -4);
         this.callParent();
@@ -435,3 +445,4 @@ Ext.define('Ext.picker.Month', {
         this.callParent();
     }
 });
+

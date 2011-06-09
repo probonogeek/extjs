@@ -15,18 +15,19 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-Shadow-method-constructor'><span id='Ext-Shadow'>/**
-</span></span> * @class Ext.Shadow
+  <pre class="prettyprint lang-js"><span id='Ext-Shadow'>/**
+</span> * @class Ext.Shadow
  * Simple class that can provide a shadow effect for any element.  Note that the element MUST be absolutely positioned,
  * and the shadow does not provide any shimming.  This should be used only in simple cases -- for more advanced
  * functionality that can also provide the same shadow effect, see the {@link Ext.Layer} class.
- * @constructor
- * Create a new Shadow
- * @param {Object} config The config object
  */
 Ext.define('Ext.Shadow', {
     requires: ['Ext.ShadowPool'],
 
+<span id='Ext-Shadow-method-constructor'>    /**
+</span>     * Creates new Shadow.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
         if (typeof this.mode != &quot;string&quot;) {

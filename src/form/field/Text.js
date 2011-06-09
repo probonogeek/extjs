@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.form.field.Text
  * @extends Ext.form.field.Base
@@ -14,7 +28,7 @@ The Text field has a useful set of validations built in:
 - {@link #minLength} for requiring a minimum value length
 - {@link #maxLength} for setting a maximum value length (with {@link #enforceMaxLength} to add it
   as the `maxlength` attribute on the input element)
-- {@link regex} to specify a custom regular expression for validation
+- {@link #regex} to specify a custom regular expression for validation
 
 In addition, custom validations may be added:
  
@@ -55,10 +69,7 @@ validation: see {@link #maskRe} and {@link #stripCharsRe} for details.
         }]
     }); 
 
- * @constructor Creates a new TextField
- * @param {Object} config Configuration options
  *
- * @xtype textfield
  * @markdown
  * @docauthor Jason Johnston <jason@sencha.com>
  */
@@ -667,3 +678,4 @@ for any failing validations. Validation rules are processed in the following ord
     }
 
 });
+

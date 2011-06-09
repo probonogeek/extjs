@@ -1,12 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.property.Store
  * @extends Ext.data.Store
  * A custom {@link Ext.data.Store} for the {@link Ext.grid.property.Grid}. This class handles the mapping
  * between the custom data source objects supported by the grid and the {@link Ext.grid.property.Property} format
  * used by the {@link Ext.data.Store} base class.
- * @constructor
- * @param {Ext.grid.Grid} grid The grid this store will be bound to
- * @param {Object} source The source data config object
  */
 Ext.define('Ext.grid.property.Store', {
 
@@ -16,6 +27,11 @@ Ext.define('Ext.grid.property.Store', {
 
     uses: ['Ext.data.reader.Reader', 'Ext.data.proxy.Proxy', 'Ext.data.ResultSet', 'Ext.grid.property.Property'],
 
+    /**
+     * Creates new property store.
+     * @param {Ext.grid.Grid} grid The grid this store will be bound to
+     * @param {Object} source The source data config object
+     */
     constructor : function(grid, source){
         var me = this;
         
@@ -113,7 +129,7 @@ Ext.define('Ext.grid.property.Store', {
             // only create if specified.
             me.source[prop] = value;
             rec = new Ext.grid.property.Property({name: prop, value: value}, prop);
-            me.store.add(rec);
+            me.add(rec);
         }
     },
 
@@ -121,7 +137,7 @@ Ext.define('Ext.grid.property.Store', {
     remove : function(prop) {
         var rec = this.getRec(prop);
         if (rec) {
-            store.remove(rec);
+            this.callParent([rec]);
             delete this.source[prop];
         }
     },

@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-KeyMap-method-constructor'><span id='Ext-util-KeyMap'>/**
-</span></span> * @class Ext.util.KeyMap
+  <pre class="prettyprint lang-js"><span id='Ext-util-KeyMap'>/**
+</span> * @class Ext.util.KeyMap
  * Handles mapping keys to actions for an element. One key map can be used for multiple actions.
  * The constructor accepts the same config object as defined by {@link #addBinding}.
  * If you bind a callback function to a KeyMap, anytime the KeyMap handles an expected key
@@ -56,14 +56,16 @@ var map = new Ext.util.KeyMap(&quot;my-element&quot;, [
 ]);
 &lt;/code&gt;&lt;/pre&gt;
  * &lt;b&gt;Note: A KeyMap starts enabled&lt;/b&gt;
- * @constructor
- * @param {Mixed} el The element to bind to
- * @param {Object} binding The binding (see {@link #addBinding})
- * @param {String} eventName (optional) The event to bind to (defaults to &quot;keydown&quot;)
  */
 Ext.define('Ext.util.KeyMap', {
     alternateClassName: 'Ext.KeyMap',
-    
+
+<span id='Ext-util-KeyMap-method-constructor'>    /**
+</span>     * Creates new KeyMap.
+     * @param {Mixed} el The element to bind to
+     * @param {Object} binding The binding (see {@link #addBinding})
+     * @param {String} eventName (optional) The event to bind to (defaults to &quot;keydown&quot;)
+     */
     constructor: function(el, binding, eventName){
         var me = this;
         

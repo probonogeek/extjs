@@ -647,6 +647,7 @@ Ext.define('Ext.chart.series.Bar', {
             text: text
         });
 
+        label.isOutside = false;
         if (column) {
             if (display == outside) {
                 if (height + offsetY + attr.height &gt; (yValue &gt;= 0 ? zero - chartBBox.y : chartBBox.y + chartBBox.height - zero)) {
@@ -655,6 +656,7 @@ Ext.define('Ext.chart.series.Bar', {
             } else {
                 if (height + offsetY &gt; attr.height) {
                     display = outside;
+                    label.isOutside = true;
                 }
             }
             x = attr.x + groupBarWidth / 2;
@@ -672,6 +674,7 @@ Ext.define('Ext.chart.series.Bar', {
             else {
                 if (width + offsetX &gt; attr.width) {
                     display = outside;
+                    label.isOutside = true;
                 }
             }
             x = display == insideStart ?
@@ -807,8 +810,29 @@ Ext.define('Ext.chart.series.Bar', {
      * @param index
      */
     getLegendColor: function(index) {
-        var me = this;
-        return me.colorArrayStyle[index % me.colorArrayStyle.length];
+        var me = this,
+            colorLength = me.colorArrayStyle.length;
+        
+        if (me.style &amp;&amp; me.style.fill) {
+            return me.style.fill;
+        } else {
+            return me.colorArrayStyle[index % colorLength];
+        }
+    },
+
+    highlightItem: function(item) {
+        this.callParent(arguments);
+        this.renderLabels();
+    },
+
+    unHighlightItem: function() {
+        this.callParent(arguments);
+        this.renderLabels();
+    },
+
+    cleanHighlights: function() {
+        this.callParent(arguments);
+        this.renderLabels();
     }
 });</pre>
 </body>

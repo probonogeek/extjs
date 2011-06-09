@@ -223,7 +223,7 @@ Ext.define('Ext.util.Animate', {
 
 <span id='Ext-util-Animate-method-animate'>    /**
 </span>     * &lt;p&gt;Perform custom animation on this object.&lt;p&gt;
-     * &lt;p&gt;This method is applicable to both the the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
+     * &lt;p&gt;This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
      * It performs animated transitions of certain properties of this object over a specified timeline.&lt;/p&gt;
      * &lt;p&gt;The sole parameter is an object which specifies start property values, end property values, and properties which
      * describe the timeline. Of the properties listed below, only &lt;b&gt;&lt;code&gt;to&lt;/code&gt;&lt;/b&gt; is mandatory.&lt;/p&gt;
@@ -398,9 +398,11 @@ myWindow.header.el.on('click', function() {
     getActiveAnimation: function() {
         return Ext.fx.Manager.getActiveAnimation(this.id);
     }
-});
-
-// Apply Animate mixin manually until Element is defined in the proper 4.x way
-Ext.applyIf(Ext.core.Element.prototype, Ext.util.Animate.prototype);</pre>
+}, function(){
+    // Apply Animate mixin manually until Element is defined in the proper 4.x way
+    Ext.applyIf(Ext.core.Element.prototype, this.prototype);
+    // We need to call this again so the animation methods get copied over to CE
+    Ext.CompositeElementLite.importElementMethods();
+});</pre>
 </body>
 </html>

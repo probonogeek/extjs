@@ -28,7 +28,7 @@ var isToFixedBroken = (0.9).toFixed() !== '1';
 
 Ext.Number = {
 <span id='Ext-Number-method-constrain'>    /**
-</span>     * Checks whether or not the current number is within a desired range.  If the number is already within the
+</span>     * Checks whether or not the passed number is within a desired range.  If the number is already within the
      * range it is returned, otherwise the min or max value is returned depending on which side of the range is
      * exceeded. Note that this method returns the constrained value but does not change the current number.
      * @param {Number} number The number to check
@@ -46,6 +46,33 @@ Ext.Number = {
             number = Math.min(number, max);
         }
         return number;
+    },
+
+<span id='Ext-Number-method-snap'>    /**
+</span>     * Snaps the passed number between stopping points based upon a passed increment value.
+     * @param {Number} value The unsnapped value.
+     * @param {Number} increment The increment by which the value must move.
+     * @param {Number} minValue The minimum value to which the returned value must be constrained. Overrides the increment..
+     * @param {Number} maxValue The maximum value to which the returned value must be constrained. Overrides the increment..
+     * @return {Number} The value of the nearest snap target.
+     */
+    snap : function(value, increment, minValue, maxValue) {
+        var newValue = value,
+            m;
+
+        if (!(increment &amp;&amp; value)) {
+            return value;
+        }
+        m = value % increment;
+        if (m !== 0) {
+            newValue -= m;
+            if (m * 2 &gt;= increment) {
+                newValue += increment;
+            } else if (m * 2 &lt; -increment) {
+                newValue -= increment;
+            }
+        }
+        return Ext.Number.constrain(newValue, minValue,  maxValue);
     },
 
 <span id='Ext-Number-method-toFixed'>    /**

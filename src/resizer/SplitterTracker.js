@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.resizer.SplitterTracker
  * @extends Ext.dd.DragTracker
@@ -26,12 +40,27 @@ Ext.define('Ext.resizer.SplitterTracker', {
     onBeforeStart: function(e) {
         var me = this,
             prevCmp = me.getPrevCmp(),
-            nextCmp = me.getNextCmp();
+            nextCmp = me.getNextCmp(),
+            collapseEl = me.getSplitter().collapseEl,
+            overlay;
+            
+        if (collapseEl && (e.getTarget() === me.getSplitter().collapseEl.dom)) {
+            return false;
+        }
 
         // SplitterTracker is disabled if any of its adjacents are collapsed.
         if (nextCmp.collapsed || prevCmp.collapsed) {
             return false;
         }
+        
+        overlay = me.overlay =  Ext.getBody().createChild({
+            cls: me.overlayCls, 
+            html: '&#160;'
+        });
+        overlay.unselectable();
+        overlay.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
+        overlay.show();
+        
         // store boxes of previous and next
         me.prevBox  = prevCmp.getEl().getBox();
         me.nextBox  = nextCmp.getEl().getBox();
@@ -40,17 +69,8 @@ Ext.define('Ext.resizer.SplitterTracker', {
 
     // We move the splitter el. Add the proxy class.
     onStart: function(e) {
-        var splitter = this.getSplitter(),
-            overlay;
-            
+        var splitter = this.getSplitter();
         splitter.addCls(splitter.baseCls + '-active');
-        overlay = this.overlay =  Ext.getBody().createChild({
-            cls: this.overlayCls, 
-            html: '&#160;'
-        });
-        overlay.unselectable();
-        overlay.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
-        overlay.show();
     },
 
     // calculate the constrain Region in which the splitter el may be moved.
@@ -162,16 +182,26 @@ Ext.define('Ext.resizer.SplitterTracker', {
         layout.onLayout();
     },
 
+    // Cleans up the overlay (if we have one) and calls the base. This cannot be done in
+    // onEnd, because onEnd is only called if a drag is detected but the overlay is created
+    // regardless (by onBeforeStart).
+    endDrag: function () {
+        var me = this;
+
+        if (me.overlay) {
+             me.overlay.remove();
+             delete me.overlay;
+        }
+
+        me.callParent(arguments); // this calls onEnd
+    },
+
     // perform the resize and remove the proxy class from the splitter el
     onEnd: function(e) {
         var me = this,
             splitter = me.getSplitter();
             
         splitter.removeCls(splitter.baseCls + '-active');
-         if (me.overlay) {
-             me.overlay.remove();
-             delete me.overlay;
-        }
         me.performResize();
     },
 

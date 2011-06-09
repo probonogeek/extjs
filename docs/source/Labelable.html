@@ -366,6 +366,11 @@ Ext.define(&quot;Ext.form.Labelable&quot;, {
 </span>     * Sets the active error message to the given string. This replaces the entire error message
      * contents with the given string. Also see {@link #setActiveErrors} which accepts an Array of
      * messages and formats them according to the {@link #activeErrorsTpl}.
+     *
+     * Note that this only updates the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#markInvalid markInvalid} instead.
+     *
      * @param {String} msg The error message
      */
     setActiveError: function(msg) {
@@ -387,6 +392,11 @@ Ext.define(&quot;Ext.form.Labelable&quot;, {
 </span>     * Set the active error message to an Array of error messages. The messages are formatted into
      * a single message string using the {@link #activeErrorsTpl}. Also see {@link #setActiveError}
      * which allows setting the entire error contents with a single string.
+     *
+     * Note that this only updates the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#markInvalid markInvalid} instead.
+     *
      * @param {Array} errors The error messages
      */
     setActiveErrors: function(errors) {
@@ -396,7 +406,11 @@ Ext.define(&quot;Ext.form.Labelable&quot;, {
     },
 
 <span id='Ext-form-Labelable-method-unsetActiveError'>    /**
-</span>     * Clears the active error.
+</span>     * Clears the active error message(s).
+     *
+     * Note that this only clears the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#clearInvalid clearInvalid} instead.
      */
     unsetActiveError: function() {
         delete this.activeError;

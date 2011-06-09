@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.MixedCollection
  * <p>
@@ -30,15 +44,6 @@ var biggerThanZero = coll.filterBy(function(value){
 console.log(biggerThanZero.getCount()); // prints 2
  * </code></pre>
  * </p>
- *
- * @constructor
- * @param {Boolean} allowFunctions Specify <tt>true</tt> if the {@link #addAll}
- * function should add function references to the collection. Defaults to
- * <tt>false</tt>.
- * @param {Function} keyFn A function that can accept an item of the type(s) stored in this MixedCollection
- * and return the key value for that item.  This is used when available to look up the key on items that
- * were passed without an explicit key parameter to a MixedCollection method.  Passing this parameter is
- * equivalent to providing an implementation for the {@link #getKey} method.
  */
 Ext.define('Ext.util.MixedCollection', {
     extend: 'Ext.util.AbstractMixedCollection',
@@ -46,6 +51,16 @@ Ext.define('Ext.util.MixedCollection', {
         sortable: 'Ext.util.Sortable'
     },
 
+    /**
+     * Creates new MixedCollection.
+     * @param {Boolean} allowFunctions Specify <tt>true</tt> if the {@link #addAll}
+     * function should add function references to the collection. Defaults to
+     * <tt>false</tt>.
+     * @param {Function} keyFn A function that can accept an item of the type(s) stored in this MixedCollection
+     * and return the key value for that item.  This is used when available to look up the key on items that
+     * were passed without an explicit key parameter to a MixedCollection method.  Passing this parameter is
+     * equivalent to providing an implementation for the {@link #getKey} method.
+     */
     constructor: function() {
         var me = this;
         me.callParent(arguments);
@@ -201,3 +216,4 @@ Ext.define('Ext.util.MixedCollection', {
         });
     }
 });
+

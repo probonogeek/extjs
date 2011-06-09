@@ -43,6 +43,7 @@
             "doComponentLayout",
             "enable",
             "findLayoutController",
+            "forceComponentLayout",
             "getAutoId",
             "getBubbleTarget",
             "getComponentLayout",
@@ -58,6 +59,7 @@
             "getLoader",
             "getPlugin",
             "getSize",
+            "getState",
             "getTargetEl",
             "getTpl",
             "getWidth",
@@ -77,6 +79,8 @@
             "isDisabled",
             "isDraggable",
             "isDroppable",
+            "isFixedHeight",
+            "isFixedWidth",
             "isFloating",
             "isHidden",
             "isVisible",
@@ -487,6 +491,7 @@
         ],
         "alias": "series.bar",
         "functions": [
+            "cleanHighlights",
             "constructor",
             "drawSeries",
             "getBarGirth",
@@ -496,12 +501,14 @@
             "getLegendColor",
             "getPaths",
             "hideAll",
+            "highlightItem",
             "isItemInPoint",
             "onAnimate",
             "onCreateLabel",
             "onPlaceLabel",
             "renderShadows",
-            "showAll"
+            "showAll",
+            "unHighlightItem"
         ],
         "source": "/Users/jamieavins/git/SDK/platform/src/chart/series/Bar.js"
     },
@@ -1960,6 +1967,7 @@
             "addCls",
             "addGradient",
             "applyAttrs",
+            "applyViewBox",
             "createItem",
             "createSpriteElement",
             "destroy",
@@ -2541,7 +2549,7 @@
     {
         "className": "Ext.selection.Model",
         "extend": "Ext.util.Observable",
-        "alternateClassName": "Ext.AbstractStoreSelectionModel",
+        "alternateClassName": "Ext.AbstractSelectionModel",
         "requires": [
             "Ext.data.StoreManager"
         ],
@@ -2793,6 +2801,10 @@
         "source": "/Users/jamieavins/git/SDK/platform/src/util/Inflector.js"
     },
     {
+        "className": "Ext.util.Memento",
+        "source": "/Users/jamieavins/git/SDK/platform/src/util/Memento.js"
+    },
+    {
         "className": "Ext.util.MixedCollection",
         "extend": "Ext.util.AbstractMixedCollection",
         "mixins": {
@@ -2930,6 +2942,7 @@
         ],
         "functions": [
             "addCmpEvents",
+            "afterRender",
             "bindStore",
             "bufferRender",
             "collectData",
@@ -2955,6 +2968,8 @@
             "onDestroy",
             "onItemDeselect",
             "onItemSelect",
+            "onMaskBeforeShow",
+            "onMaskHide",
             "onRemove",
             "onRender",
             "onUpdate",
@@ -4321,6 +4336,7 @@
             "getSubmitValue",
             "initComponent",
             "initValue",
+            "onChange",
             "onCollapse",
             "onExpand",
             "onListSelect",
@@ -4673,7 +4689,6 @@
             "afterLayout",
             "beforeLayout",
             "calculateChildBoxes",
-            "constructor",
             "doOwnerCtLayouts",
             "updateInnerCtSize"
         ],
@@ -4947,11 +4962,13 @@
             "bindStore",
             "constructor",
             "getCell",
+            "getEl",
             "getGridColumns",
             "getNode",
             "getRecord",
             "getSelectionModel",
             "getStore",
+            "getViewForColumn",
             "onItemMouseEnter",
             "onItemMouseLeave",
             "refresh",
@@ -5005,7 +5022,8 @@
         "alias": "plugin.cellediting",
         "extend": "Ext.grid.plugin.Editing",
         "requires": [
-            "Ext.grid.CellEditor"
+            "Ext.grid.CellEditor",
+            "Ext.util.DelayedTask"
         ],
         "functions": [
             "cancelEdit",
@@ -5020,6 +5038,7 @@
             "initCancelTriggers",
             "onBodyScroll",
             "onEditComplete",
+            "onReconfigure",
             "onSpecialKey",
             "setActiveColumn",
             "setActiveEditor",
@@ -5068,6 +5087,7 @@
             "initFieldAccessors",
             "onEnterKey",
             "onEscKey",
+            "onReconfigure",
             "removeFieldAccessors",
             "setColumnField",
             "startEdit",
@@ -5181,6 +5201,7 @@
         "alternateClassName": "Ext.grid.PropertyColumnModel",
         "functions": [
             "constructor",
+            "getCellEditor",
             "getPropertyName",
             "renderBool",
             "renderCell",
@@ -5281,16 +5302,21 @@
         "extend": "Ext.Component",
         "alias": "widget.gridscroller",
         "functions": [
+            "afterComponentLayout",
             "afterRender",
             "getPanel",
             "getSizeCalculation",
             "initComponent",
+            "initRenderData",
             "invalidate",
+            "onAdded",
             "onElScroll",
-            "onOwnerAfterLayout",
+            "restoreScrollPos",
+            "saveScrollPos",
             "scrollByDeltaX",
             "scrollByDeltaY",
             "scrollToTop",
+            "setReservedSpace",
             "setScrollLeft",
             "setScrollTop"
         ],
@@ -5608,6 +5634,7 @@
         "functions": [
             "adjustHeightAnchor",
             "adjustWidthAnchor",
+            "configureItem",
             "onLayout",
             "parseAnchor"
         ],
@@ -5634,6 +5661,7 @@
             "fixHeightConstraints",
             "floatCollapsedPanel",
             "getPlaceholder",
+            "getVisibleItems",
             "initializeBorderLayout",
             "isValidParent",
             "onBeforeRegionCollapse",
@@ -5766,6 +5794,7 @@
         "alternateClassName": "Ext.layout.CardLayout",
         "extend": "Ext.layout.container.AbstractCard",
         "functions": [
+            "configureItem",
             "setActiveItem"
         ],
         "source": "/Users/jamieavins/git/SDK/extjs/src/layout/container/Card.js"
@@ -5791,6 +5820,7 @@
         ],
         "alternateClassName": "Ext.layout.ColumnLayout",
         "functions": [
+            "configureItem",
             "getRenderTarget",
             "onLayout"
         ],
@@ -5801,7 +5831,6 @@
         "extend": "Ext.layout.container.AbstractContainer",
         "alternateClassName": "Ext.layout.ContainerLayout",
         "functions": [
-            "afterLayout",
             "beforeLayout",
             "getLayoutTargetSize",
             "getRenderedItems",
@@ -5816,6 +5845,7 @@
         "alias": "layout.fit",
         "alternateClassName": "Ext.layout.FitLayout",
         "functions": [
+            "configureItem",
             "getTargetBox",
             "onLayout",
             "setItemBox"
@@ -5829,6 +5859,9 @@
         ],
         "extend": "Ext.layout.container.Box",
         "alternateClassName": "Ext.layout.HBoxLayout",
+        "functions": [
+            "configureItem"
+        ],
         "source": "/Users/jamieavins/git/SDK/extjs/src/layout/container/HBox.js"
     },
     {
@@ -5854,6 +5887,9 @@
         ],
         "extend": "Ext.layout.container.Box",
         "alternateClassName": "Ext.layout.VBoxLayout",
+        "functions": [
+            "configureItem"
+        ],
         "source": "/Users/jamieavins/git/SDK/extjs/src/layout/container/VBox.js"
     },
     {
@@ -5988,6 +6024,7 @@
             "afterLayout",
             "afterRender",
             "canActivateItem",
+            "clearStretch",
             "deactivateActiveItem",
             "doConstrain",
             "getFocusEl",
@@ -5997,11 +6034,15 @@
             "lookupComponent",
             "lookupItemFromObject",
             "lookupItemFromString",
+            "onAdd",
             "onClick",
             "onDestroy",
             "onMouseLeave",
             "onMouseOver",
+            "onRemove",
+            "redoComponentLayout",
             "setActiveItem",
+            "showAt",
             "showBy"
         ],
         "source": "/Users/jamieavins/git/SDK/extjs/src/menu/Menu.js"
@@ -6068,7 +6109,8 @@
             "Ext.util.KeyMap",
             "Ext.panel.DD",
             "Ext.XTemplate",
-            "Ext.layout.component.Dock"
+            "Ext.layout.component.Dock",
+            "Ext.util.Memento"
         ],
         "alias": "widget.panel",
         "alternateClassName": "Ext.Panel",
@@ -6076,6 +6118,7 @@
             "addTool",
             "afterCollapse",
             "afterExpand",
+            "afterRender",
             "beforeDestroy",
             "bridgeToolbars",
             "close",
@@ -6132,9 +6175,10 @@
             "Ext.grid.Lockable"
         ],
         "functions": [
+            "afterCollapse",
             "afterComponentLayout",
             "afterExpand",
-            "afterLayout",
+            "afterExpand",
             "applyState",
             "bindStore",
             "determineScrollbars",
@@ -6152,7 +6196,9 @@
             "hideHorizontalScroller",
             "hideVerticalScroller",
             "initComponent",
+            "initHorizontalScroller",
             "initStateEvents",
+            "initVerticalScroller",
             "injectView",
             "invalidateScroller",
             "onHeaderHide",
@@ -6162,16 +6208,15 @@
             "onHorizontalScroll",
             "onMouseWheel",
             "onVerticalScroll",
-            "onViewItemUpdate",
             "onViewRefresh",
             "processEvent",
             "reconfigure",
             "scrollByDeltaX",
             "scrollByDeltaY",
+            "setHeaderReserveOffset",
             "setScrollTop",
             "showHorizontalScroller",
-            "showVerticalScroller",
-            "syncCellHeight"
+            "showVerticalScroller"
         ],
         "source": "/Users/jamieavins/git/SDK/extjs/src/panel/Table.js"
     },
@@ -6422,6 +6467,7 @@
         ],
         "functions": [
             "calculateConstrainRegion",
+            "endDrag",
             "getNextCmp",
             "getPrevCmp",
             "getSplitter",
@@ -6564,7 +6610,6 @@
             "addThumb",
             "afterRender",
             "beforeDestroy",
-            "doSnap",
             "focus",
             "getNearest",
             "getRatio",
@@ -7100,6 +7145,7 @@
             "constructor",
             "doConstrain",
             "fitContainer",
+            "getConstrainVector",
             "getZIndexParent",
             "onFloatParentHide",
             "onFloatParentShow",
@@ -7341,7 +7387,7 @@
     {
         "className": "Ext.view.View",
         "extend": "Ext.view.AbstractView",
-        "alternateClassName": "Ext.view.View",
+        "alternateClassName": "Ext.DataView",
         "alias": "widget.dataview",
         "functions": [
             "addCmpEvents",

@@ -1,9 +1,24 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Region
  * @extends Object
  *
- * Represents a rectangular region and provides a number of utility methods
- * to compare regions.
+ * <p>This class represents a rectangular region in X,Y space, and performs geometric
+ * transformations or tests upon the region.</p>
+ * <p>This class may be used to compare the document regions occupied by elements.</p>
  */
 
 Ext.define('Ext.util.Region', {
@@ -15,10 +30,9 @@ Ext.define('Ext.util.Region', {
     statics: {
         /**
          * @static
-         * @param {Mixed} el A string, DomElement or Ext.core.Element representing an element
-         * on the page.
-         * @returns {Ext.util.Region} region
          * Retrieves an Ext.util.Region for a particular element.
+         * @param {Mixed} el An element ID, htmlElement or Ext.core.Element representing an element in the document.
+         * @returns {Ext.util.Region} region
          */
         getRegion: function(el) {
             return Ext.fly(el).getPageBox(true);
@@ -26,8 +40,9 @@ Ext.define('Ext.util.Region', {
 
         /**
          * @static
-         * @param {Object} o An object with top, right, bottom, left properties
-         * @return {Ext.util.Region} region The region constructed based on the passed object
+         * Creates a Region from a "box" Object which contains four numeric properties <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code>.
+         * @param {Object} o An object with <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> properties.
+         * @return {Ext.util.Region} region The Region constructed based on the passed object
          */
         from: function(o) {
             return new this(o.top, o.right, o.bottom, o.left);
@@ -37,11 +52,11 @@ Ext.define('Ext.util.Region', {
     /* End Definitions */
 
     /**
-     * @constructor
-     * @param {Number} top Top
-     * @param {Number} right Right
-     * @param {Number} bottom Bottom
-     * @param {Number} left Left
+     * Creates a region from the bounding sides.
+     * @param {Number} top Top The topmost pixel of the Region.
+     * @param {Number} right Right The rightmost pixel of the Region.
+     * @param {Number} bottom Bottom The bottom pixel of the Region.
+     * @param {Number} left Left The leftmost pixel of the Region.
      */
     constructor : function(t, r, b, l) {
         var me = this;
@@ -305,7 +320,7 @@ Ext.define('Ext.util.Region', {
     },
 
     /**
-     * Copy a new instance
+     * Create a copy of this Region.
      * @return {Ext.util.Region}
      */
     copy: function() {
@@ -315,7 +330,7 @@ Ext.define('Ext.util.Region', {
     /**
      * Copy the values of another Region to this Region
      * @param {Region} The region to copy from.
-     * @return {Ext.util.Point} this This point
+     * @return {Ext.util.Region} This Region
      */
     copyFrom: function(p) {
         var me = this;
@@ -327,14 +342,13 @@ Ext.define('Ext.util.Region', {
         return this;
     },
 
-    /**
+    /*
      * Dump this to an eye-friendly string, great for debugging
      * @return {String}
      */
     toString: function() {
         return "Region[" + this.top + "," + this.right + "," + this.bottom + "," + this.left + "]";
     },
-
 
     /**
      * Translate this region by the given offset amount
@@ -380,3 +394,4 @@ Ext.define('Ext.util.Region', {
         return (this.top == region.top && this.right == region.right && this.bottom == region.bottom && this.left == region.left);
     }
 });
+

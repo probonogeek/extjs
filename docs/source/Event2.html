@@ -157,7 +157,7 @@
                     }
 
                     // remove this listener from the listeners array
-                    me.listeners.splice(index, 1);
+                    Ext.Array.erase(me.listeners, index, 1);
                     return true;
                 }
 

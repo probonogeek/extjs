@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-app-Controller-method-constructor'><span id='Ext-app-Controller'>/**
-</span></span> * @class Ext.app.Controller
+  <pre class="prettyprint lang-js"><span id='Ext-app-Controller'>/**
+</span> * @class Ext.app.Controller
  * 
  * Controllers are the glue that binds an application together. All they really do is listen for events (usually from
  * views) and take some action. Here's how we might create a Controller to manage Users:
@@ -143,20 +143,20 @@
  * 
  * &lt;u&gt;Further Reading&lt;/u&gt;
  * 
- * For more information about writing Ext JS 4 applications, please see the &lt;a href=&quot;../guide/application_architecture&quot;&gt;
- * application architecture guide&lt;/a&gt;. Also see the {@link Ext.app.Application} documentation.
+ * For more information about writing Ext JS 4 applications, please see the
+ * [application architecture guide](#/guide/application_architecture). Also see the {@link Ext.app.Application} documentation.
  * 
  * @docauthor Ed Spencer
- * @constructor
  */  
 Ext.define('Ext.app.Controller', {
-<span id='Ext-app-Controller-cfg-id'>    /**
-</span>     * @cfg {String} id The id of this controller. You can use this id when dispatching.
-     */
 
     mixins: {
         observable: 'Ext.util.Observable'
     },
+
+<span id='Ext-app-Controller-cfg-id'>    /**
+</span>     * @cfg {String} id The id of this controller. You can use this id when dispatching.
+     */
 
     onClassExtended: function(cls, data) {
         var className = Ext.getClassName(cls),
@@ -197,6 +197,10 @@ Ext.define('Ext.app.Controller', {
         }
     },
 
+<span id='Ext-app-Controller-method-constructor'>    /**
+</span>     * Creates new Controller.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
 
@@ -279,22 +283,65 @@ Ext.define('Ext.app.Controller', {
         return cached;
     },
 
+<span id='Ext-app-Controller-method-control'>    /**
+</span>     * Adds listeners to components selected via {@link Ext.ComponentQuery}. Accepts an 
+     * object containing component paths mapped to a hash of listener functions. 
+     *
+     * In the following example the `updateUser` function is mapped to to the `click` 
+     * event on a button component, which is a child of the `useredit` component.
+     *
+     *     Ext.define('AM.controller.Users', {
+     *         init: function() {
+     *             this.control({
+     *                 'useredit button[action=save]': {
+     *                     click: this.updateUser
+     *                 }
+     *             });
+     *         },
+     *     
+     *         updateUser: function(button) {
+     *             console.log('clicked the Save button');
+     *         }
+     *     });
+     *
+     * See {@link Ext.ComponentQuery} for more information on component selectors.
+     *
+     * @param {String|Object} selectors If a String, the second argument is used as the 
+     * listeners, otherwise an object of selectors -&gt; listeners is assumed
+     * @param {Object} listeners
+     */
     control: function(selectors, listeners) {
         this.application.control(selectors, listeners, this);
     },
 
+<span id='Ext-app-Controller-method-getController'>    /**
+</span>     * Returns a reference to a {@link Ext.app.Controller controller} with the given name
+     * @param name {String}
+     */
     getController: function(name) {
         return this.application.getController(name);
     },
 
+<span id='Ext-app-Controller-method-getStore'>    /**
+</span>     * Returns a reference to a {@link Ext.data.Store store} with the given name
+     * @param name {String}
+     */
     getStore: function(name) {
         return this.application.getStore(name);
     },
 
+<span id='Ext-app-Controller-method-getModel'>    /**
+</span>     * Returns a reference to a {@link Ext.data.Model Model} with the given name
+     * @param name {String}
+     */
     getModel: function(model) {
         return this.application.getModel(model);
     },
 
+<span id='Ext-app-Controller-method-getView'>    /**
+</span>     * Returns a reference to a view with the given name
+     * @param name {String}
+     */
     getView: function(view) {
         return this.application.getView(view);
     }

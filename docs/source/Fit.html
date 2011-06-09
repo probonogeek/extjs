@@ -69,14 +69,24 @@ Ext.define('Ext.layout.container.Fit', {
     setItemBox : function(item, box) {
         var me = this;
         if (item &amp;&amp; box.height &gt; 0) {
-            if (me.isManaged('width') === true) {
+            if (!me.owner.isFixedWidth()) {
                box.width = undefined;
             }
-            if (me.isManaged('height') === true) {
+            if (!me.owner.isFixedHeight()) {
                box.height = undefined;
             }
             me.setItemSize(item, box.width, box.height);
         }
+    },
+
+    configureItem: function(item) {
+
+        // Card layout only controls dimensions which IT has controlled.
+        // That calculation has to be determined at run time by examining the ownerCt's isFixedWidth()/isFixedHeight() methods
+        item.layoutManagedHeight = 0;
+        item.layoutManagedWidth = 0;
+
+        this.callParent(arguments);
     }
 });</pre>
 </body>

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.menu.ColorPicker
  * @extends Ext.menu.Menu
@@ -10,29 +24,31 @@
  * Applying {@link Ext.picker.Color ColorPicker} configuration settings to
  * <b><tt>this</tt></b> will <b>not</b> affect the ColorPicker's configuration.</li>
  * </ul></div>
+ *
  * {@img Ext.menu.ColorPicker/Ext.menu.ColorPicker.png Ext.menu.ColorPicker component}
+ *
  * __Example Usage__
-     var colorPicker = Ext.create('Ext.menu.ColorPicker', {
-        value: '000000'
-    });
-
-    Ext.create('Ext.menu.Menu', {
-		width: 100,
-		height: 90,
-		floating: false,  // usually you want this set to True (default)
-		renderTo: Ext.getBody(),  // usually rendered by it's containing component
-		items: [{
-		    text: 'choose a color',
-		    menu: colorPicker
-		},{
-            iconCls: 'add16',
-		    text: 'icon item'
-		},{
-		    text: 'regular item'
-		}]
-	});
-
- * @xtype colormenu
+ *
+ *     var colorPicker = Ext.create('Ext.menu.ColorPicker', {
+ *         value: '000000'
+ *     });
+ *  
+ *     Ext.create('Ext.menu.Menu', {
+ *         width: 100,
+ *         height: 90,
+ *         floating: false,  // usually you want this set to True (default)
+ *         renderTo: Ext.getBody(),  // usually rendered by it's containing component
+ *         items: [{
+ *             text: 'choose a color',
+ *             menu: colorPicker
+ *         },{
+ *             iconCls: 'add16',
+ *             text: 'icon item'
+ *         },{
+ *             text: 'regular item'
+ *         }]
+ *     });
+ *
  * @author Nicolas Ferrero
  */
  Ext.define('Ext.menu.ColorPicker', {

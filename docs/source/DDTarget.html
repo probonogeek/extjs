@@ -24,23 +24,24 @@
  */
 
 
-<span id='Ext-dd-DDTarget-method-constructor'><span id='Ext-dd-DDTarget'>/**
-</span></span> * @class Ext.dd.DDTarget
+<span id='Ext-dd-DDTarget'>/**
+</span> * @class Ext.dd.DDTarget
+ * @extends Ext.dd.DragDrop
  * A DragDrop implementation that does not move, but can be a drop
  * target.  You would get the same result by simply omitting implementation
  * for the event callbacks, but this way we reduce the processing cost of the
  * event listener and the callbacks.
- * @extends Ext.dd.DragDrop
- * @constructor
- * @param {String} id the id of the element that is a drop target
- * @param {String} sGroup the group of related DragDrop objects
- * @param {object} config an object containing configurable attributes
- *                 Valid properties for DDTarget in addition to those in
- *                 DragDrop:
- *                    none
  */
 Ext.define('Ext.dd.DDTarget', {
     extend: 'Ext.dd.DragDrop',
+
+<span id='Ext-dd-DDTarget-method-constructor'>    /**
+</span>     * Creates new DDTarget.
+     * @param {String} id the id of the element that is a drop target
+     * @param {String} sGroup the group of related DragDrop objects
+     * @param {object} config an object containing configurable attributes.
+     * Valid properties for DDTarget in addition to those in DragDrop: none.
+     */
     constructor: function(id, sGroup, config) {
         if (id) {
             this.initTarget(id, sGroup, config);

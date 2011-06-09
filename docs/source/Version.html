@@ -46,15 +46,13 @@
 (function() {
 
 // Current core version
-var version = '4.0.0', Version;
+var version = '4.0.2', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
 <span id='Ext-Version-method-constructor'>        /**
-</span>         * @constructor
-         * @param {String/Number} version The version number in the follow standard format: major[.minor[.patch[.build[release]]]]
+</span>         * @param {String/Number} version The version number in the follow standard format: major[.minor[.patch[.build[release]]]]
          * Examples: 1.0 or 1.2.3beta or 1.2.3.4RC
          * @return {Ext.Version} this
-         * @param version
          */
         constructor: function(version) {
             var parts, releaseStartIndex;

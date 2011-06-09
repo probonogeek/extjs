@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-field-HtmlEditor-method-constructor'><span id='Ext-form-field-HtmlEditor'>/**
-</span></span> * @class Ext.form.field.HtmlEditor
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-HtmlEditor'>/**
+</span> * @class Ext.form.field.HtmlEditor
  * @extends Ext.Component
  *
  * Provides a lightweight HTML Editor component. Some toolbar features are not supported by Safari and will be
@@ -60,10 +60,6 @@
  *         }
  *     });
  *
- * @constructor
- * Create a new HtmlEditor
- * @param {Object} config
- * @xtype htmleditor
  */
 Ext.define('Ext.form.field.HtmlEditor', {
     extend:'Ext.Component',
@@ -483,7 +479,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
     getDocMarkup: function() {
         var me = this,
             h = me.iframeEl.getHeight() - me.iframePad * 2;
-        return Ext.String.format('&lt;html&gt;&lt;head&gt;&lt;style type=&quot;text/css&quot;&gt;body{border:0;margin:0;padding:{0}px;height:{1}px;cursor:text}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;', me.iframePad, h);
+        return Ext.String.format('&lt;html&gt;&lt;head&gt;&lt;style type=&quot;text/css&quot;&gt;body{border:0;margin:0;padding:{0}px;height:{1}px;box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;cursor:text}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;', me.iframePad, h);
     },
 
     // private

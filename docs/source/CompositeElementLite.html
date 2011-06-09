@@ -255,7 +255,7 @@ Ext.CompositeElementLite.prototype = {
                 d.parentNode.insertBefore(replacement, d);
                 Ext.removeNode(d);
             }
-            this.elements.splice(index, 1, replacement);
+            Ext.Array.splice(this.elements, index, 1, replacement);
         }
         return this;
     },

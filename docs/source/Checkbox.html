@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-field-Checkbox-method-constructor'><span id='Ext-form-field-Checkbox'>/**
-</span></span> * @class Ext.form.field.Checkbox
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Checkbox'>/**
+</span> * @class Ext.form.field.Checkbox
  * @extends Ext.form.field.Base
 
 Single checkbox field. Can be used as a direct replacement for traditional checkbox fields. Also serves as a
@@ -110,10 +110,6 @@ __Example usage:__
         renderTo: Ext.getBody()
     });
 
- * @constructor
- * Creates a new Checkbox
- * @param {Object} config Configuration options
- * @xtype checkboxfield
  * @docauthor Robert Dougan &lt;rob@sencha.com&gt;
  * @markdown
  */
@@ -303,7 +299,7 @@ Ext.define('Ext.form.field.Checkbox', {
     getSubmitValue: function() {
         var unchecked = this.uncheckedValue,
             uncheckedVal = Ext.isDefined(unchecked) ? unchecked : null;
-        return this.checked ? this.inputValue : unchecked;
+        return this.checked ? this.inputValue : uncheckedVal;
     },
 
 <span id='Ext-form-field-Checkbox-method-setRawValue'>    /**

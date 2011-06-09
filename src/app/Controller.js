@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.app.Controller
  * 
@@ -126,20 +140,20 @@
  * 
  * <u>Further Reading</u>
  * 
- * For more information about writing Ext JS 4 applications, please see the <a href="../guide/application_architecture">
- * application architecture guide</a>. Also see the {@link Ext.app.Application} documentation.
+ * For more information about writing Ext JS 4 applications, please see the
+ * [application architecture guide](#/guide/application_architecture). Also see the {@link Ext.app.Application} documentation.
  * 
  * @docauthor Ed Spencer
- * @constructor
  */  
 Ext.define('Ext.app.Controller', {
-    /**
-     * @cfg {String} id The id of this controller. You can use this id when dispatching.
-     */
 
     mixins: {
         observable: 'Ext.util.Observable'
     },
+
+    /**
+     * @cfg {String} id The id of this controller. You can use this id when dispatching.
+     */
 
     onClassExtended: function(cls, data) {
         var className = Ext.getClassName(cls),
@@ -180,6 +194,10 @@ Ext.define('Ext.app.Controller', {
         }
     },
 
+    /**
+     * Creates new Controller.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
 
@@ -262,23 +280,67 @@ Ext.define('Ext.app.Controller', {
         return cached;
     },
 
+    /**
+     * Adds listeners to components selected via {@link Ext.ComponentQuery}. Accepts an 
+     * object containing component paths mapped to a hash of listener functions. 
+     *
+     * In the following example the `updateUser` function is mapped to to the `click` 
+     * event on a button component, which is a child of the `useredit` component.
+     *
+     *     Ext.define('AM.controller.Users', {
+     *         init: function() {
+     *             this.control({
+     *                 'useredit button[action=save]': {
+     *                     click: this.updateUser
+     *                 }
+     *             });
+     *         },
+     *     
+     *         updateUser: function(button) {
+     *             console.log('clicked the Save button');
+     *         }
+     *     });
+     *
+     * See {@link Ext.ComponentQuery} for more information on component selectors.
+     *
+     * @param {String|Object} selectors If a String, the second argument is used as the 
+     * listeners, otherwise an object of selectors -> listeners is assumed
+     * @param {Object} listeners
+     */
     control: function(selectors, listeners) {
         this.application.control(selectors, listeners, this);
     },
 
+    /**
+     * Returns a reference to a {@link Ext.app.Controller controller} with the given name
+     * @param name {String}
+     */
     getController: function(name) {
         return this.application.getController(name);
     },
 
+    /**
+     * Returns a reference to a {@link Ext.data.Store store} with the given name
+     * @param name {String}
+     */
     getStore: function(name) {
         return this.application.getStore(name);
     },
 
+    /**
+     * Returns a reference to a {@link Ext.data.Model Model} with the given name
+     * @param name {String}
+     */
     getModel: function(model) {
         return this.application.getModel(model);
     },
 
+    /**
+     * Returns a reference to a view with the given name
+     * @param name {String}
+     */
     getView: function(view) {
         return this.application.getView(view);
     }
 });
+

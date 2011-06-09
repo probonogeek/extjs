@@ -15,17 +15,12 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-picker-Month-method-constructor'><span id='Ext-picker-Month'>/**
-</span></span> * @private
+  <pre class="prettyprint lang-js"><span id='Ext-picker-Month'>/**
+</span> * @private
  * @class Ext.picker.Month
  * @extends Ext.Component
  * &lt;p&gt;A month picker component. This class is used by the {@link Ext.picker.Date DatePicker} class
  * to allow browsing and selection of year/months combinations.&lt;/p&gt;
- * @constructor
- * Create a new MonthPicker
- * @param {Object} config The config object
- * @xtype monthpicker
- * @private
  */
 Ext.define('Ext.picker.Month', {
     extend: 'Ext.Component',
@@ -84,11 +79,10 @@ Ext.define('Ext.picker.Month', {
 <span id='Ext-picker-Month-cfg-value'>    /**
 </span>     * @cfg {Date/Array} value The default value to set. See {#setValue setValue}
      */
-
-    width: 175,
-
-    height: 195,
-
+    width: 178,
+    
+    // used when attached to date picker which isnt showing buttons
+    smallCls: Ext.baseCSSPrefix + 'monthpicker-small',
 
     // private
     totalYears: 10,
@@ -156,7 +150,9 @@ Ext.define('Ext.picker.Month', {
              */
             'yeardblclick'
         );
-
+        if (me.small) {
+            me.addCls(me.smallCls);
+        }
         me.setValue(me.value);
         me.activeYear = me.getYear(new Date().getFullYear() - 4, -4);
         this.callParent();

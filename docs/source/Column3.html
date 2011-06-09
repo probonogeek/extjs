@@ -66,17 +66,17 @@ Ext.define('Ext.tree.Column', {
                             }
                         }
                         if (record.isLast()) {
-                            if (record.isLeaf() || (record.isLoaded() &amp;&amp; !record.hasChildNodes())) {
-                                buf.unshift(format(imgText, (elbowPrefix + 'end'), Ext.BLANK_IMAGE_URL));
-                            } else {
+                            if (record.isExpandable()) {
                                 buf.unshift(format(imgText, (elbowPrefix + 'end-plus ' + expanderCls), Ext.BLANK_IMAGE_URL));
+                            } else {
+                                buf.unshift(format(imgText, (elbowPrefix + 'end'), Ext.BLANK_IMAGE_URL));
                             }
                             
                         } else {
-                            if (record.isLeaf() || (record.isLoaded() &amp;&amp; !record.hasChildNodes())) {
-                                buf.unshift(format(imgText, (treePrefix + 'elbow'), Ext.BLANK_IMAGE_URL));
-                            } else {
+                            if (record.isExpandable()) {
                                 buf.unshift(format(imgText, (elbowPrefix + 'plus ' + expanderCls), Ext.BLANK_IMAGE_URL));
+                            } else {
+                                buf.unshift(format(imgText, (treePrefix + 'elbow'), Ext.BLANK_IMAGE_URL));
                             }
                         }
                     } else {

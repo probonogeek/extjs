@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 Ext.Loader.setConfig({
     enabled: true
 });
@@ -174,9 +188,10 @@ Ext.onReady(function(){
  *
  */
     // Create these explicitly so we can manipulate them later
-    var wordCount = Ext.create('Ext.toolbar.TextItem', {text: 'Words: 0'});
-    var charCount = Ext.create('Ext.toolbar.TextItem', {text: 'Chars: 0'}); 
-    var clock = Ext.create('Ext.toolbar.TextItem', {text: Ext.Date.format(new Date(), 'g:i:s A')});
+    var wordCount = Ext.create('Ext.toolbar.TextItem', {text: 'Words: 0'}),
+        charCount = Ext.create('Ext.toolbar.TextItem', {text: 'Chars: 0'}), 
+        clock = Ext.create('Ext.toolbar.TextItem', {text: Ext.Date.format(new Date(), 'g:i:s A')}),
+        event = Ext.isOpera ? 'keypress' : 'keydown'; // opera behaves a little weird with keydown
 
     Ext.create('Ext.Panel', {
         title: 'Ext Word Processor',
@@ -199,24 +214,7 @@ Ext.onReady(function(){
             hideLabel: true,
             grow: true,
             growMin: 100,
-            growMax: 200,
-            listeners: {
-                // After each keypress update the word and character count text items
-                'keypress': {
-                    fn: function(t){
-                        var v = t.getValue(),
-                            wc = 0, cc = v.length ? v.length : 0;
-
-                        if(cc > 0){
-                            wc = v.match(/\b/g);
-                            wc = wc ? wc.length / 2 : 0;
-                        }
-                        Ext.fly(wordCount.getEl()).update('Words: '+wc);
-                        Ext.fly(charCount.getEl()).update('Chars: '+cc);
-                 },
-                    buffer: 1 // buffer to allow the value to update first
-                }
-            }
+            growMax: 200
         },
         listeners: {
             render: {
@@ -246,15 +244,30 @@ Ext.onReady(function(){
     // has occurred for 1.5 seconds, it updates the status message to indicate that it's saving.
     // After a fake delay so that you can see the save activity it will update again to indicate
     // that the action succeeded.
-    Ext.fly('word-textarea').on('keypress', function(){
+    Ext.getCmp('word-textarea').on(event, function(){
         var sb = Ext.getCmp('word-status');
         sb.showBusy('Saving draft...');
-         Ext.defer(function(){
+        Ext.defer(function(){
             sb.setStatus({
                 iconCls: 'x-status-saved',
                 text: 'Draft auto-saved at ' + Ext.Date.format(new Date(), 'g:i:s A')
             });
         }, 4000);
-    }, this, {buffer:1500});
+    }, null, {buffer:1500});
+    
+    // Set up our event for updating the word/char count
+    Ext.getCmp('word-textarea').on(event, function(comp){
+        var v = comp.getValue(),
+            wc = 0, 
+            cc = v.length ? v.length : 0;
+
+        if (cc > 0) {
+            wc = v.match(/\b/g);
+            wc = wc ? wc.length / 2 : 0;
+        }
+        wordCount.update('Words: ' + wc);
+        charCount.update('Chars: ' + cc);
+    }, null, {buffer: 1});
 
 });
+

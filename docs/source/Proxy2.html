@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Proxy-method-constructor'><span id='Ext-data-proxy-Proxy'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-Proxy'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.proxy.Proxy
  * 
  * &lt;p&gt;Proxies are used by {@link Ext.data.Store Stores} to handle the loading and saving of {@link Ext.data.Model Model} data.
@@ -51,9 +51,6 @@
  * 
  * &lt;p&gt;Proxies also support batching of Operations via a {@link Ext.data.Batch batch} object, invoked by the {@link #batch} method.&lt;/p&gt;
  * 
- * @constructor
- * Creates the Proxy
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.proxy.Proxy', {
     alias: 'proxy.proxy',
@@ -103,6 +100,10 @@ Ext.define('Ext.data.proxy.Proxy', {
     
     isProxy: true,
     
+<span id='Ext-data-proxy-Proxy-method-constructor'>    /**
+</span>     * Creates the Proxy
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         config = config || {};
         

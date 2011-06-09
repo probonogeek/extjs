@@ -64,7 +64,9 @@ Ext.define('Ext.app.EventBus', {
                         for (i = 0, ln = events.length; i &lt; ln; i++) {
                             event = events[i];
                             // Fire the event!
-                            return event.fire.apply(event, Array.prototype.slice.call(args, 1));
+                            if (event.fire.apply(event, Array.prototype.slice.call(args, 1)) === false) {
+                                return false;
+                            };
                         }
                     }
                 }

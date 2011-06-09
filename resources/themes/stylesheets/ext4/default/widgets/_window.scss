@@ -62,7 +62,7 @@
     .#{$prefix}window-header-text {
         @include no-select;
         white-space: nowrap;
-        overflow: visible;
+        display: block;
     }
     
     @include extjs-window-ui(
@@ -108,6 +108,8 @@
     
     $ui-background-color: null
 ){
+    $ui-header-text-height: round($ui-header-font-size * 1.46); // 11px / 16px
+    
     .#{$prefix}window-#{$ui-label} {
         @if $ui-border-color != null { border-color: $ui-border-color; }
         @if $ui-border-radius != null { @include border-radius($ui-border-radius); }
@@ -146,11 +148,7 @@
         @if $ui-header-color != null { color: $ui-header-color; }
         @if $ui-header-font-weight != null { font-weight: $ui-header-font-weight; }
         
-        line-height: $ui-header-font-size;
-        
-        @include no-select;
-        white-space: nowrap;
-        overflow: visible;
+        line-height: $ui-header-text-height;
         
         font-family: $font-family;
         font-size: $ui-header-font-size;

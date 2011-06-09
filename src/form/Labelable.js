@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.form.Labelable
 
@@ -349,6 +363,11 @@ Ext.define("Ext.form.Labelable", {
      * Sets the active error message to the given string. This replaces the entire error message
      * contents with the given string. Also see {@link #setActiveErrors} which accepts an Array of
      * messages and formats them according to the {@link #activeErrorsTpl}.
+     *
+     * Note that this only updates the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#markInvalid markInvalid} instead.
+     *
      * @param {String} msg The error message
      */
     setActiveError: function(msg) {
@@ -370,6 +389,11 @@ Ext.define("Ext.form.Labelable", {
      * Set the active error message to an Array of error messages. The messages are formatted into
      * a single message string using the {@link #activeErrorsTpl}. Also see {@link #setActiveError}
      * which allows setting the entire error contents with a single string.
+     *
+     * Note that this only updates the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#markInvalid markInvalid} instead.
+     *
      * @param {Array} errors The error messages
      */
     setActiveErrors: function(errors) {
@@ -379,7 +403,11 @@ Ext.define("Ext.form.Labelable", {
     },
 
     /**
-     * Clears the active error.
+     * Clears the active error message(s).
+     *
+     * Note that this only clears the error message element's text and attributes, you'll have
+     * to call doComponentLayout to actually update the field's layout to match. If the field extends
+     * {@link Ext.form.field.Base} you should call {@link Ext.form.field.Base#clearInvalid clearInvalid} instead.
      */
     unsetActiveError: function() {
         delete this.activeError;
@@ -439,3 +467,4 @@ Ext.define("Ext.form.Labelable", {
     }
 
 });
+

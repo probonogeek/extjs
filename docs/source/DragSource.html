@@ -15,13 +15,10 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dd-DragSource-method-constructor'><span id='Ext-dd-DragSource'>/**
-</span></span> * @class Ext.dd.DragSource
+  <pre class="prettyprint lang-js"><span id='Ext-dd-DragSource'>/**
+</span> * @class Ext.dd.DragSource
  * @extends Ext.dd.DDProxy
  * A simple class that provides the basic implementation needed to make any element draggable.
- * @constructor
- * @param {Mixed} el The container element
- * @param {Object} config
  */
 Ext.define('Ext.dd.DragSource', {
     extend: 'Ext.dd.DDProxy',
@@ -61,6 +58,12 @@ Ext.define('Ext.dd.DragSource', {
      */
     repairHighlightColor: 'c3daf9',
 
+<span id='Ext-dd-DragSource-method-constructor'>    /**
+</span>     * Creates new drag-source.
+     * @constructor
+     * @param {Mixed} el The container element
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(el, config) {
         this.el = Ext.get(el);
         if(!this.dragData){

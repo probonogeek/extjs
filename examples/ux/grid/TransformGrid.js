@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.ux.grid.TransformGrid
  * @extends Ext.grid.Panel
@@ -13,12 +27,12 @@
  */
 Ext.define('Ext.ux.grid.TransformGrid', {
     extend: 'Ext.grid.Panel',
-    
+
     constructor: function(table, config) {
         config = Ext.apply({}, config);
         table = this.table = Ext.get(table);
-    
-        var configFields = config.fields || [], 
+
+        var configFields = config.fields || [],
             configColumns = config.columns || [],
             fields = [],
             cols = [],
@@ -33,18 +47,18 @@ Ext.define('Ext.ux.grid.TransformGrid', {
             col,
             text,
             name;
-    
+
         for (; i < len; ++i) {
             col = headers[i];
-        
+
             text = col.innerHTML;
             name = 'tcol-' + i;
-        
+
             fields.push(Ext.applyIf(configFields[i] || {}, {
                 name: name,
                 mapping: 'td:nth(' + (i + 1) + ')/@innerHTML'
             }));
-        
+
             cols.push(Ext.applyIf(configColumns[i] || {}, {
                 text: text,
                 dataIndex: name,
@@ -53,24 +67,24 @@ Ext.define('Ext.ux.grid.TransformGrid', {
                 sortable: true
             }));
         }
-        
+
         if (config.width) {
-            width = config.width;   
+            width = config.width;
         } else {
-            width = table.getWidth();
+            width = table.getWidth() + 1;
         }
-        
+
         if (config.height) {
             height = config.height;
         }
-    
+
         if (config.remove !== false) {
             // Don't use table.remove() as that destroys the row/cell data in the table in
             // IE6-7 so it cannot be read by the data reader.
             data.parentNode.removeChild(data);
         }
-        
-    
+
+
         Ext.applyIf(config, {
             store: {
                 data: data,
@@ -81,7 +95,7 @@ Ext.define('Ext.ux.grid.TransformGrid', {
                         record: 'tbody tr',
                         type: 'xml'
                     }
-                }    
+                }
             },
             columns: cols,
             width: width,
@@ -89,7 +103,7 @@ Ext.define('Ext.ux.grid.TransformGrid', {
             height: height,
             el: ct
         });
-        this.callParent([config]);    
+        this.callParent([config]);
     },
 
     onDestroy: function() {

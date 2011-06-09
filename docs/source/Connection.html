@@ -724,9 +724,20 @@ failure: function(response, opts) {
     onComplete : function(request) {
         var me = this,
             options = request.options,
-            result = me.parseStatus(request.xhr.status),
-            success = result.success,
+            result,
+            success,
             response;
+            
+        try {
+            result = me.parseStatus(request.xhr.status);
+        } catch (e) {
+            // in some browsers we can't access the status if the readyState is not 4, so the request has failed
+            result = {
+                success : false, 
+                isException : false 
+            };
+        }
+        success = result.success;
 
         if (success) {
             response = me.createResponse(request);

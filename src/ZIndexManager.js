@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.ZIndexManager
  * <p>A class that manages a group of {@link Ext.Component#floating} Components and provides z-order management,
@@ -8,7 +22,6 @@
  * (For example a {Ext.view.BoundList BoundList} within an {@link Ext.window.Window Window}, or a {@link Ext.menu.Menu Menu}),
  * are managed by a ZIndexManager owned by that floating Container. So ComboBox dropdowns within Windows will have managed z-indices
  * guaranteed to be correct, relative to the Window.</p>
- * @constructor
  */
 Ext.define('Ext.ZIndexManager', {
 
@@ -417,3 +430,4 @@ MyDesktop.getDesktop().getManager().register(Ext.MessageBox);
      */
     Ext.WindowManager = Ext.WindowMgr = new this();
 });
+

@@ -1,8 +1,16 @@
 /*
-Ext JS - JavaScript Library
-Copyright (c) 2006-2011, Sencha Inc.
-All rights reserved.
-licensing@sencha.com
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
 */
 /**
  * @class Ext.JSON
@@ -154,7 +162,7 @@ Ext.JSON = new(function() {
                 Ext.Error.raise({
                     sourceClass: "Ext.JSON",
                     sourceMethod: "decode",
-                    msg: "You're trying to decode and invalid JSON String: " + json
+                    msg: "You're trying to decode an invalid JSON String: " + json
                 });
             }
         };
@@ -243,15 +251,23 @@ Ext.apply(Ext, {
      * @return {String} The generated Id.
      */
     id: function(el, prefix) {
+        var me = this,
+            sandboxPrefix = '';
         el = Ext.getDom(el, true) || {};
         if (el === document) {
-            el.id = this.documentId;
+            el.id = me.documentId;
         }
         else if (el === window) {
-            el.id = this.windowId;
+            el.id = me.windowId;
         }
         if (!el.id) {
-            el.id = (prefix || "ext-gen") + (++Ext.idSeed);
+            if (me.isSandboxed) {
+                if (!me.uniqueGlobalNamespace) {
+                    me.getUniqueGlobalNamespace();
+                }
+                sandboxPrefix = me.uniqueGlobalNamespace + '-';
+            }
+            el.id = sandboxPrefix + (prefix || "ext-gen") + (++Ext.idSeed);
         }
         return el.id;
     },
@@ -340,6 +356,12 @@ Ext.apply(Ext, {
 
     /**
      * Execute a callback function in a particular scope. If no function is passed the call is ignored.
+     * 
+     * For example, these lines are equivalent:
+     * 
+     *     Ext.callback(myFunc, this, [arg1, arg2]);
+     *     Ext.isFunction(myFunc) && myFunc.apply(this, [arg1, arg2]);
+     * 
      * @param {Function} callback The callback to execute
      * @param {Object} scope (optional) The scope to execute in
      * @param {Array} args (optional) The arguments to pass to the function
@@ -428,7 +450,7 @@ window.undefined = window.undefined;
         isWindows = check(/windows|win32/),
         isMac = check(/macintosh|mac os x/),
         isLinux = check(/linux/),
-        scrollWidth = null,
+        scrollbarSize = null,
         webKitVersion = isWebKit && (/webkit\/(\d+\.\d+)/.exec(Ext.userAgent));
 
     // remove css image flicker
@@ -436,7 +458,7 @@ window.undefined = window.undefined;
         document.execCommand("BackgroundImageCache", false, true);
     } catch(e) {}
 
-    Ext.setVersion('extjs', '4.0.1');
+    Ext.setVersion('extjs', '4.0.2');
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
@@ -709,7 +731,7 @@ function(el){
          * @param {Mixed} defaultValue The value to return if the original value is empty
          * @param {Boolean} allowBlank (optional) true to allow zero length strings to qualify as non-empty (defaults to false)
          * @return {Mixed} value, if non-empty, else defaultValue
-         * @deprecated 4.0.0 Use {Ext#valueFrom} instead
+         * @deprecated 4.0.0 Use {@link Ext#valueFrom} instead
          */
         value : function(v, defaultValue, allowBlank){
             return Ext.isEmpty(v, allowBlank) ? defaultValue : v;
@@ -767,53 +789,76 @@ Ext.addBehaviors({
         },
 
         /**
-         * Utility method for getting the width of the browser scrollbar. This can differ depending on
+         * Returns the size of the browser scrollbars. This can differ depending on
          * operating system settings, such as the theme or font size.
          * @param {Boolean} force (optional) true to force a recalculation of the value.
-         * @return {Number} The width of the scrollbar.
+         * @return {Object} An object containing the width of a vertical scrollbar and the
+         * height of a horizontal scrollbar.
          */
-        getScrollBarWidth: function(force){
+        getScrollbarSize: function (force) {
             if(!Ext.isReady){
                 return 0;
             }
 
-            if(force === true || scrollWidth === null){
+            if(force === true || scrollbarSize === null){
                 // BrowserBug: IE9
                 // When IE9 positions an element offscreen via offsets, the offsetWidth is
                 // inaccurately reported. For IE9 only, we render on screen before removing.
-                var cssClass = Ext.isIE9 ? '' : Ext.baseCSSPrefix + 'hide-offsets';
+                var cssClass = Ext.isIE9 ? '' : Ext.baseCSSPrefix + 'hide-offsets',
                     // Append our div, do our calculation and then remove it
-                var div = Ext.getBody().createChild('<div class="' + cssClass + '" style="width:100px;height:50px;overflow:hidden;"><div style="height:200px;"></div></div>'),
-                    child = div.child('div', true);
-                var w1 = child.offsetWidth;
+                    div = Ext.getBody().createChild('<div class="' + cssClass + '" style="width:100px;height:50px;overflow:hidden;"><div style="height:200px;"></div></div>'),
+                    child = div.child('div', true),
+                    w1 = child.offsetWidth;
+
                 div.setStyle('overflow', (Ext.isWebKit || Ext.isGecko) ? 'auto' : 'scroll');
-                var w2 = child.offsetWidth;
+
+                var w2 = child.offsetWidth, width = w1 - w2;
                 div.remove();
-                // Need to add 2 to ensure we leave enough space
-                scrollWidth = w1 - w2 + 2;
+
+                // We assume width == height for now. TODO: is this always true?
+                scrollbarSize = { width: width, height: width };
             }
-            return scrollWidth;
+
+            return scrollbarSize;
+        },
+
+        /**
+         * Utility method for getting the width of the browser's vertical scrollbar. This
+         * can differ depending on operating system settings, such as the theme or font size.
+         *
+         * This method is deprected in favor of {@link #getScrollbarSize}.
+         *
+         * @param {Boolean} force (optional) true to force a recalculation of the value.
+         * @return {Number} The width of a vertical scrollbar.
+         * @deprecated
+         */
+        getScrollBarWidth: function(force){
+            var size = Ext.getScrollbarSize(force);
+            return size.width + 2; // legacy fudge factor
         },
 
         /**
          * Copies a set of named properties fom the source object to the destination object.
-         * <p>example:<pre><code>
-ImageComponent = Ext.extend(Ext.Component, {
-    initComponent: function() {
-        this.autoEl = { tag: 'img' };
-        MyComponent.superclass.initComponent.apply(this, arguments);
-        this.initialBox = Ext.copyTo({}, this.initialConfig, 'x,y,width,height');
-    }
-});
-         * </code></pre>
+         *
+         * Example:
+         *
+         *     ImageComponent = Ext.extend(Ext.Component, {
+         *         initComponent: function() {
+         *             this.autoEl = { tag: 'img' };
+         *             MyComponent.superclass.initComponent.apply(this, arguments);
+         *             this.initialBox = Ext.copyTo({}, this.initialConfig, 'x,y,width,height');
+         *         }
+         *     });
+         *
          * Important note: To borrow class prototype methods, use {@link Ext.Base#borrow} instead.
+         *
          * @param {Object} dest The destination object.
          * @param {Object} source The source object.
          * @param {Array/String} names Either an Array of property names, or a comma-delimited list
          * of property names to copy.
          * @param {Boolean} usePrototypeKeys (Optional) Defaults to false. Pass true to copy keys off of the prototype as well as the instance.
          * @return {Object} The modified object.
-        */
+         */
         copyTo : function(dest, source, names, usePrototypeKeys){
             if(typeof names == 'string'){
                 names = names.split(/[,;\s]/);
@@ -832,7 +877,7 @@ ImageComponent = Ext.extend(Ext.Component, {
          * @param {Mixed} arg1 The name of the property to destroy and remove from the object.
          * @param {Mixed} etc... More property names to destroy and remove.
          */
-        destroyMembers : function(o, arg1, arg2, etc){
+        destroyMembers : function(o){
             for (var i = 1, a = arguments, len = a.length; i < len; i++) {
                 Ext.destroy(o[a[i]]);
                 delete o[a[i]];
@@ -946,7 +991,7 @@ ImageComponent = Ext.extend(Ext.Component, {
                     if (out.length >= max) {
                         // this formula allows out.max to change (via debugger), where the
                         // more obvious "max/4" would not quite be the same
-                        out.splice(0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
+                        Ext.Array.erase(out, 0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
                     }
 
                     out.push(message);
@@ -981,8 +1026,8 @@ Ext.partition(
          * </code></pre>
          * @param {Array|NodeList} arr The array to partition
          * @param {Function} truth (optional) a function to determine truth.  If this is omitted the element
-         *                   itself must be able to be evaluated for its truthfulness.
-         * @return {Array} [true<Array>,false<Array>]
+         * itself must be able to be evaluated for its truthfulness.
+         * @return {Array} [array of truish values, array of falsy values]
          * @deprecated 4.0.0 Will be removed in the next major version
          */
         partition : function(arr, truth){
@@ -1091,9 +1136,11 @@ Ext.zip(
 })();
 
 /**
- * TBD
+ * Loads Ext.app.Application class and starts it up with given configuration after the page is ready.
+ *
+ * See Ext.app.Application for details.
+ *
  * @param {Object} config
- * @method
  */
 Ext.application = function(config) {
     Ext.require('Ext.app.Application');
@@ -1118,7 +1165,7 @@ Options include:
 - currenyPrecision
 - currencySign
 - currencyAtEnd
-This class also uses the default date format defined here: {@link Ext.date#defaultFormat}.
+This class also uses the default date format defined here: {@link Ext.Date#defaultFormat}.
 
 __Using with renderers__
 There are two helper functions that return a new function that can be used in conjunction with 
@@ -1420,8 +1467,7 @@ XTemplates can also directly use Ext.util.Format functions:
          * @param {String} format The way you would like to format this text.
          * @return {String} The formatted number.
          */
-        number:
-            function(v, formatString) {
+        number: function(v, formatString) {
             if (!formatString) {
                 return v;
             }
@@ -1500,6 +1546,15 @@ XTemplates can also directly use Ext.util.Format functions:
                     fnum = psplit[0] + dec + psplit[1];
                 }
             }
+            
+            if (neg) {
+                /*
+                 * Edge case. If we have a very small negative number it will get rounded to 0,
+                 * however the initial check at the top will still report as negative. Replace
+                 * everything but 1-9 and check if the string is empty to determine a 0 value.
+                 */
+                neg = fnum.replace(/[^1-9]/g, '') !== '';
+            }
 
             return (neg ? '-' : '') + formatString.replace(/[\d,?\.?]+/, fnum);
         },
@@ -1557,7 +1612,7 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
-         * See {@link Ext.string#htmlDecode}.
+         * See {@link Ext.String#htmlDecode}.
          * @method
          */
         htmlDecode: Ext.String.htmlDecode,
@@ -2060,7 +2115,7 @@ Ext.supports = {
          * selection when their display style is changed. Essentially, if a text input
          * has focus and its display style is changed, the I-beam disappears.
          * 
-         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
          * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
          * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
          * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
@@ -2079,7 +2134,7 @@ Ext.supports = {
          * selection when their display style is changed. Essentially, if a text area has
          * focus and its display style is changed, the I-beam disappears.
          *
-         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
          * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
          * be fixed in Chrome 11.
          */

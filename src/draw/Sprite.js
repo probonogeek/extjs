@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.draw.Sprite
  * @extends Object
@@ -6,6 +20,7 @@
  * The configuration of a Sprite is an object with the following properties:
  *
  * - **type** - (String) The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'. 
+ * - **group** - (String/Array) The group that this sprite belongs to, or an array of groups. Only relevant when added to a {@link Ext.draw.Surface}.
  * - **width** - (Number) Used in rectangle sprites, the width of the rectangle.
  * - **height** - (Number) Used in rectangle sprites, the height of the rectangle.
  * - **size** - (Number) Used in square sprites, the dimension of the square.
@@ -19,9 +34,12 @@
  * - **stroke-width** - (Number) The width of the stroke.
  * - **font** - (String) Used with text type sprites. The full font description. Uses the same syntax as the CSS `font` parameter.
  * - **text** - (String) Used with text type sprites. The text itself.
+ * - **translate** - (Object) Defines a translation for the Sprite. There's more information on this property below.
+ * - **rotate** - (Object) Defines a rotation for the Sprite. There's more information on this property below.
+ * - **scale** - (Object) Defines a scaling for the Sprite. There's more information on this property below.
  * 
- * Additionally there are three transform objects that can be set with `setAttributes` which are `translate`, `rotate` and
- * `scale`.
+ *
+ * ## Translation
  * 
  * For translate, the configuration object contains x and y attributes that indicate where to
  * translate the object. For example:
@@ -32,6 +50,9 @@
  *        y: 10
  *       }
  *     }, true);
+ *
+ *
+ * ## Rotation
  * 
  * For rotation, the configuration object contains x and y attributes for the center of the rotation (which are optional),
  * and a `degrees` attribute that specifies the rotation in degrees. For example:
@@ -41,6 +62,21 @@
  *        degrees: 90
  *       }
  *     }, true);
+ *
+ * That example will create a 90 degrees rotation using the centroid of the Sprite as center of rotation, whereas:
+ *
+ *     sprite.setAttributes({
+ *       rotate: {
+ *        x: 0,
+ *        y: 0,
+ *        degrees: 90
+ *       }
+ *     }, true);
+ *
+ * will create a rotation around the `(0, 0)` axis.
+ *
+ *
+ * ## Scaling
  * 
  * For scaling, the configuration object contains x and y attributes for the x-axis and y-axis scaling. For example:
  * 
@@ -51,6 +87,22 @@
  *       }
  *     }, true);
  *
+ * You can also specify the center of scaling by adding `cx` and `cy` as properties:
+ *
+ *     sprite.setAttributes({
+ *       scale: {
+ *        cx: 0,
+ *        cy: 0,
+ *        x: 10,
+ *        y: 3
+ *       }
+ *     }, true);
+ *
+ * That last example will scale a sprite taking as centers of scaling the `(0, 0)` coordinate.
+ * 
+ * 
+ * ## Creating and adding a Sprite to a Surface
+ * 
  * Sprites can be created with a reference to a {@link Ext.draw.Surface}
  *
  *      var drawComponent = Ext.create('Ext.draw.Component', options here...);
@@ -87,6 +139,68 @@
  *     });
  */
 Ext.define('Ext.draw.Sprite', {
+    
+    /**
+     * @cfg {String} type The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'
+     */
+    
+    /**
+     * @cfg {Number} width Used in rectangle sprites, the width of the rectangle
+     */
+    
+    /**
+     * @cfg {Number} height Used in rectangle sprites, the height of the rectangle
+     */
+    
+    /**
+     * @cfg {Number} size Used in square sprites, the dimension of the square
+     */
+    
+    /**
+     * @cfg {Number} radius Used in circle sprites, the radius of the circle
+     */
+    
+    /**
+     * @cfg {Number} x The position along the x-axis
+     */
+    
+    /**
+     * @cfg {Number} y The position along the y-axis
+     */
+    
+    /**
+     * @cfg {Array} path Used in path sprites, the path of the sprite written in SVG-like path syntax
+     */
+    
+    /**
+     * @cfg {Number} opacity The opacity of the sprite
+     */
+    
+    /**
+     * @cfg {String} fill The fill color
+     */
+    
+    /**
+     * @cfg {String} stroke The stroke color
+     */
+    
+    /**
+     * @cfg {Number} stroke-width The width of the stroke
+     */
+    
+    /**
+     * @cfg {String} font Used with text type sprites. The full font description. Uses the same syntax as the CSS font parameter
+     */
+    
+    /**
+     * @cfg {String} text Used with text type sprites. The text itself
+     */
+    
+    /**
+     * @cfg {String/Array} group The group that this sprite belongs to, or an array of groups. Only relevant when added to a
+     * {@link Ext.draw.Surface}
+     */
+    
     /* Begin Definitions */
 
     mixins: {
@@ -397,3 +511,4 @@ Ext.define('Ext.draw.Sprite', {
         return this;
     }
 });
+

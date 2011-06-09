@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.axis.Axis
  * @extends Ext.chart.axis.Abstract
@@ -52,6 +66,47 @@ Ext.define('Ext.chart.axis.Axis', {
     requires: ['Ext.draw.Draw'],
 
     /* End Definitions */
+
+    /**
+     * @cfg {Boolean | Object} grid 
+     * The grid configuration enables you to set a background grid for an axis.
+     * If set to *true* on a vertical axis, vertical lines will be drawn.
+     * If set to *true* on a horizontal axis, horizontal lines will be drawn.
+     * If both are set, a proper grid with horizontal and vertical lines will be drawn.
+     *
+     * You can set specific options for the grid configuration for odd and/or even lines/rows.
+     * Since the rows being drawn are rectangle sprites, you can set to an odd or even property
+     * all styles that apply to {@link Ext.draw.Sprite}. For more information on all the style
+     * properties you can set please take a look at {@link Ext.draw.Sprite}. Some useful style properties are `opacity`, `fill`, `stroke`, `stroke-width`, etc.
+     *
+     * The possible values for a grid option are then *true*, *false*, or an object with `{ odd, even }` properties
+     * where each property contains a sprite style descriptor object that is defined in {@link Ext.draw.Sprite}.
+     *
+     * For example:
+     *
+     *     axes: [{
+     *         type: 'Numeric',
+     *         grid: true,
+     *         position: 'left',
+     *         fields: ['data1', 'data2', 'data3'],
+     *         title: 'Number of Hits',
+     *         grid: {
+     *             odd: {
+     *                 opacity: 1,
+     *                 fill: '#ddd',
+     *                 stroke: '#bbb',
+     *                 'stroke-width': 1
+     *             }
+     *         }
+     *     }, {
+     *         type: 'Category',
+     *         position: 'bottom',
+     *         fields: ['name'],
+     *         title: 'Month of the Year',
+     *         grid: true
+     *     }]
+     * 
+     */
 
     /**
      * @cfg {Number} majorTickSteps 

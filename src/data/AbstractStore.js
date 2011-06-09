@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.AbstractStore
@@ -19,11 +33,9 @@
  * in {@link Ext.data.Store} the data is saved as a flat {@link Ext.util.MixedCollection MixedCollection}, whereas in
  * {@link Ext.data.TreeStore TreeStore} we use a {@link Ext.data.Tree} to maintain the data's hierarchy.</p>
  * 
- * TODO: Update these docs to explain about the sortable and filterable mixins.
- * <p>Finally, AbstractStore provides an API for sorting and filtering data via its {@link #sorters} and {@link #filters}
- * {@link Ext.util.MixedCollection MixedCollections}. Although this functionality is provided by AbstractStore, there's a
- * good description of how to use it in the introduction of {@link Ext.data.Store}.
- * 
+ * The store provides filtering and sorting support. This sorting/filtering can happen on the client side
+ * or can be completed on the server. This is controlled by the {@link #remoteSort} and (@link #remoteFilter{ config
+ * options. For more information see the {@link #sort} and {@link #filter} methods.
  */
 Ext.define('Ext.data.AbstractStore', {
     requires: ['Ext.util.MixedCollection', 'Ext.data.Operation', 'Ext.util.Filter'],
@@ -722,3 +734,4 @@ Ext.define('Ext.data.AbstractStore', {
         return this.loading;
      }
 });
+

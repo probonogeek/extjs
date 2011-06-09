@@ -67,7 +67,6 @@
  *     });
  * &lt;p&gt;The action column can be at any index in the columns array, and a grid can have any number of
  * action columns. &lt;/p&gt;
- * @xtype actioncolumn
  */
 Ext.define('Ext.grid.column.Action', {
     extend: 'Ext.grid.column.Column',
@@ -183,7 +182,7 @@ Ext.define('Ext.grid.column.Action', {
             meta.tdCls += ' ' + Ext.baseCSSPrefix + 'action-col-cell';
             for (i = 0; i &lt; l; i++) {
                 item = items[i];
-                v += '&lt;img alt=&quot;' + me.altText + '&quot; src=&quot;' + (item.icon || Ext.BLANK_IMAGE_URL) +
+                v += '&lt;img alt=&quot;' + (item.altText || me.altText) + '&quot; src=&quot;' + (item.icon || Ext.BLANK_IMAGE_URL) +
                     '&quot; class=&quot;' + Ext.baseCSSPrefix + 'action-col-icon ' + Ext.baseCSSPrefix + 'action-col-' + String(i) + ' ' +  (item.iconCls || '') + 
                     ' ' + (Ext.isFunction(item.getClass) ? item.getClass.apply(item.scope||me.scope||me, arguments) : (me.iconCls || '')) + '&quot;' +
                     ((item.tooltip) ? ' data-qtip=&quot;' + item.tooltip + '&quot;' : '') + ' /&gt;';

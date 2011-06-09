@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.tab.Tab
@@ -6,8 +20,6 @@
  * <p>Represents a single Tab in a {@link Ext.tab.Panel TabPanel}. A Tab is simply a slightly customized {@link Ext.button.Button Button}, 
  * styled to look like a tab. Tabs are optionally closable, and can also be disabled. 99% of the time you will not
  * need to create Tabs manually as the framework does so automatically when you use a {@link Ext.tab.Panel TabPanel}</p>
- *
- * @xtype tab
  */
 Ext.define('Ext.tab.Tab', {
     extend: 'Ext.button.Button',
@@ -222,7 +234,7 @@ Ext.define('Ext.tab.Tab', {
                     tag: 'a',
                     cls: me.baseCls + '-close-btn',
                     href: '#',
-                    html: me.closeText,
+                    // html: me.closeText, // removed for EXTJSIV-1719, by rob@sencha.com
                     title: me.closeText
                 }).on('click', Ext.EventManager.preventDefault);  // mon ???
             }
@@ -337,3 +349,4 @@ Ext.define('Ext.tab.Tab', {
         }
     }
 });
+

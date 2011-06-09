@@ -1,7 +1,21 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.selection.RowModel
  * @extends Ext.selection.Model
- * 
+ *
  * Implement row based navigation via keyboard.
  *
  * Must synchronize across grid sections
@@ -10,23 +24,43 @@ Ext.define('Ext.selection.RowModel', {
     extend: 'Ext.selection.Model',
     alias: 'selection.rowmodel',
     requires: ['Ext.util.KeyNav'],
-    
+
     /**
      * @private
      * Number of pixels to scroll to the left/right when pressing
      * left/right keys.
      */
     deltaScroll: 5,
-    
+
     /**
      * @cfg {Boolean} enableKeyNav
-     * 
+     *
      * Turns on/off keyboard navigation within the grid. Defaults to true.
      */
     enableKeyNav: true,
-    
+
     constructor: function(){
         this.addEvents(
+            /**
+             * @event beforedeselect
+             * Fired before a record is deselected. If any listener returns false, the
+             * deselection is cancelled.
+             * @param {Ext.selection.RowSelectionModel} this
+             * @param {Ext.data.Model} record The deselected record
+             * @param {Number} index The row index deselected
+             */
+            'beforedeselect',
+
+            /**
+             * @event beforeselect
+             * Fired before a record is selected. If any listener returns false, the
+             * selection is cancelled.
+             * @param {Ext.selection.RowSelectionModel} this
+             * @param {Ext.data.Model} record The selected record
+             * @param {Number} index The row index selected
+             */
+            'beforeselect',
+
             /**
              * @event deselect
              * Fired after a record is deselected
@@ -35,7 +69,7 @@ Ext.define('Ext.selection.RowModel', {
              * @param {Number} index The row index deselected
              */
             'deselect',
-            
+
             /**
              * @event select
              * Fired after a record is selected
@@ -45,12 +79,12 @@ Ext.define('Ext.selection.RowModel', {
              */
             'select'
         );
-        this.callParent(arguments);    
+        this.callParent(arguments);
     },
 
     bindComponent: function(view) {
         var me = this;
-        
+
         me.views = me.views || [];
         me.views.push(view);
         me.bind(view.getStore(), true);
@@ -67,7 +101,7 @@ Ext.define('Ext.selection.RowModel', {
 
     initKeyNav: function(view) {
         var me = this;
-        
+
         if (!view.rendered) {
             view.on('render', Ext.Function.bind(me.initKeyNav, me, [view], 0), me, {single: true});
             return;
@@ -115,7 +149,7 @@ Ext.define('Ext.selection.RowModel', {
     onKeyEnd: function(e, t) {
         var me = this,
             last = me.store.getAt(me.store.getCount() - 1);
-            
+
         if (last) {
             if (e.shiftKey) {
                 me.selectRange(last, me.lastFocused || 0);
@@ -132,7 +166,7 @@ Ext.define('Ext.selection.RowModel', {
     onKeyHome: function(e, t) {
         var me = this,
             first = me.store.getAt(0);
-            
+
         if (first) {
             if (e.shiftKey) {
                 me.selectRange(first, me.lastFocused || 0);
@@ -153,7 +187,7 @@ Ext.define('Ext.selection.RowModel', {
             prevIdx,
             prevRecord,
             currRec;
-            
+
         if (rowsVisible) {
             selIdx = me.lastFocused ? me.store.indexOf(me.lastFocused) : 0;
             prevIdx = selIdx - rowsVisible;
@@ -183,7 +217,7 @@ Ext.define('Ext.selection.RowModel', {
             nextIdx,
             nextRecord,
             currRec;
-            
+
         if (rowsVisible) {
             selIdx = me.lastFocused ? me.store.indexOf(me.lastFocused) : 0;
             nextIdx = selIdx + rowsVisible;
@@ -213,7 +247,7 @@ Ext.define('Ext.selection.RowModel', {
             e.stopEvent();
             var me = this,
                 record = me.lastFocused;
-                
+
             if (record) {
                 if (me.isSelected(record)) {
                     me.doDeselect(record, false);
@@ -232,7 +266,7 @@ Ext.define('Ext.selection.RowModel', {
             view = me.views[0],
             idx  = me.store.indexOf(me.lastFocused),
             record;
-            
+
         if (idx > 0) {
             // needs to be the filtered count as thats what
             // will be visible.
@@ -257,7 +291,7 @@ Ext.define('Ext.selection.RowModel', {
         // There was no lastFocused record, and the user has pressed up
         // Ignore??
         //else if (this.selected.getCount() == 0) {
-        //    
+        //
         //    this.doSelect(record);
         //    //view.focusRow(idx - 1);
         //}
@@ -271,7 +305,7 @@ Ext.define('Ext.selection.RowModel', {
             view = me.views[0],
             idx  = me.store.indexOf(me.lastFocused),
             record;
-            
+
         // needs to be the filtered count as thats what
         // will be visible.
         if (idx + 1 < me.store.getCount()) {
@@ -297,21 +331,21 @@ Ext.define('Ext.selection.RowModel', {
             }
         }
     },
-    
+
     scrollByDeltaX: function(delta) {
         var view    = this.views[0],
             section = view.up(),
             hScroll = section.horizontalScroller;
-            
+
         if (hScroll) {
             hScroll.scrollByDeltaX(delta);
         }
     },
-    
+
     onKeyLeft: function(e, t) {
         this.scrollByDeltaX(-this.deltaScroll);
     },
-    
+
     onKeyRight: function(e, t) {
         this.scrollByDeltaX(this.deltaScroll);
     },
@@ -325,25 +359,28 @@ Ext.define('Ext.selection.RowModel', {
 
     // Allow the GridView to update the UI by
     // adding/removing a CSS class from the row.
-    onSelectChange: function(record, isSelected, suppressEvent) {
+    onSelectChange: function(record, isSelected, suppressEvent, commitFn) {
         var me      = this,
             views   = me.views,
             viewsLn = views.length,
             store   = me.store,
             rowIdx  = store.indexOf(record),
+            eventName = isSelected ? 'select' : 'deselect',
             i = 0;
-            
-        for (; i < viewsLn; i++) {
-            if (isSelected) {
-                views[i].onRowSelect(rowIdx, suppressEvent);
-                if (!suppressEvent) {
-                    me.fireEvent('select', me, record, rowIdx);
+
+        if ((suppressEvent || me.fireEvent('before' + eventName, me, record, rowIdx)) !== false &&
+                commitFn() !== false) {
+
+            for (; i < viewsLn; i++) {
+                if (isSelected) {
+                    views[i].onRowSelect(rowIdx, suppressEvent);
+                } else {
+                    views[i].onRowDeselect(rowIdx, suppressEvent);
                 }
-            } else {
-                views[i].onRowDeselect(rowIdx, suppressEvent);
-                if (!suppressEvent) {
-                    me.fireEvent('deselect', me, record, rowIdx);
-                }
+            }
+
+            if (!suppressEvent) {
+                me.fireEvent(eventName, me, record, rowIdx);
             }
         }
     },
@@ -356,7 +393,7 @@ Ext.define('Ext.selection.RowModel', {
             store   = this.store,
             rowIdx,
             i = 0;
-            
+
         if (oldFocused) {
             rowIdx = store.indexOf(oldFocused);
             if (rowIdx != -1) {
@@ -375,7 +412,7 @@ Ext.define('Ext.selection.RowModel', {
             }
         }
     },
-    
+
     onEditorTab: function(editingPlugin, e) {
         var me = this,
             view = me.views[0],
@@ -384,12 +421,12 @@ Ext.define('Ext.selection.RowModel', {
             position = view.getPosition(record, header),
             direction = e.shiftKey ? 'left' : 'right',
             newPosition  = view.walkCells(position, direction, e, this.preventWrap);
-            
+
         if (newPosition) {
             editingPlugin.startEditByPosition(newPosition);
         }
     },
-    
+
     selectByPosition: function(position) {
         var record = this.store.getAt(position.row);
         this.select(record);

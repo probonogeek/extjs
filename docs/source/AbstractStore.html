@@ -36,11 +36,9 @@
  * in {@link Ext.data.Store} the data is saved as a flat {@link Ext.util.MixedCollection MixedCollection}, whereas in
  * {@link Ext.data.TreeStore TreeStore} we use a {@link Ext.data.Tree} to maintain the data's hierarchy.&lt;/p&gt;
  * 
- * TODO: Update these docs to explain about the sortable and filterable mixins.
- * &lt;p&gt;Finally, AbstractStore provides an API for sorting and filtering data via its {@link #sorters} and {@link #filters}
- * {@link Ext.util.MixedCollection MixedCollections}. Although this functionality is provided by AbstractStore, there's a
- * good description of how to use it in the introduction of {@link Ext.data.Store}.
- * 
+ * The store provides filtering and sorting support. This sorting/filtering can happen on the client side
+ * or can be completed on the server. This is controlled by the {@link #remoteSort} and (@link #remoteFilter{ config
+ * options. For more information see the {@link #sort} and {@link #filter} methods.
  */
 Ext.define('Ext.data.AbstractStore', {
     requires: ['Ext.util.MixedCollection', 'Ext.data.Operation', 'Ext.util.Filter'],

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.tree.ViewDropZone
  * @extends Ext.view.DropZone
@@ -117,10 +131,10 @@ Ext.define('Ext.tree.ViewDropZone', {
         }
         
         // Respect the allowDrop field on Tree nodes
-        if (position === 'append' && targetNode.get('allowDrop') == false) {
+        if (position === 'append' && targetNode.get('allowDrop') === false) {
             return false;
         }
-        else if (position != 'append' && targetNode.parentNode.get('allowDrop') == false) {
+        else if (position != 'append' && targetNode.parentNode.get('allowDrop') === false) {
             return false;
         }
 
@@ -149,6 +163,7 @@ Ext.define('Ext.tree.ViewDropZone', {
             this.queueExpand(targetNode);
         }
             
+            
         if (this.isValidDropPoint(node, position, dragZone, e, data)) {
             this.valid = true;
             this.currentPosition = position;
@@ -157,24 +172,26 @@ Ext.define('Ext.tree.ViewDropZone', {
             indicator.setWidth(Ext.fly(node).getWidth());
             indicatorY = Ext.fly(node).getY() - Ext.fly(view.el).getY() - 1;
 
+            /*
+             * In the code below we show the proxy again. The reason for doing this is showing the indicator will
+             * call toFront, causing it to get a new z-index which can sometimes push the proxy behind it. We always 
+             * want the proxy to be above, so calling show on the proxy will call toFront and bring it forward.
+             */
             if (position == 'before') {
                 returnCls = targetNode.isFirst() ? Ext.baseCSSPrefix + 'tree-drop-ok-above' : Ext.baseCSSPrefix + 'tree-drop-ok-between';
                 indicator.showAt(0, indicatorY);
-                indicator.toFront();
-            }
-            else if (position == 'after') {
+                dragZone.proxy.show();
+            } else if (position == 'after') {
                 returnCls = targetNode.isLast() ? Ext.baseCSSPrefix + 'tree-drop-ok-below' : Ext.baseCSSPrefix + 'tree-drop-ok-between';
                 indicatorY += Ext.fly(node).getHeight();
                 indicator.showAt(0, indicatorY);
-                indicator.toFront();
-            }
-            else {
+                dragZone.proxy.show();
+            } else {
                 returnCls = Ext.baseCSSPrefix + 'tree-drop-ok-append';
                 // @TODO: set a class on the parent folder node to be able to style it
                 indicator.hide();
             }
-        }
-        else {
+        } else {
             this.valid = false;
         }
 
@@ -261,7 +278,9 @@ Ext.define('Ext.tree.ViewDropZone', {
                 //FIXME: the check for n.firstChild is not a great solution here. Ideally the line should simply read 
                 //Ext.fly(n.firstChild) but this yields errors in IE6 and 7. See ticket EXTJSIV-1705 for more details
                 Ext.Array.forEach(recordDomNodes, function(n) {
-                    Ext.fly(n.firstChild ? n.firstChild : n).highlight(me.dropHighlightColor);
+                    if (n) {
+                        Ext.fly(n.firstChild ? n.firstChild : n).highlight(me.dropHighlightColor);
+                    }
                 });
             }
         };

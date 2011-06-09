@@ -1,4 +1,18 @@
 /*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
+/*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
  * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
@@ -12,17 +26,18 @@
  * A DragDrop implementation where the linked element follows the
  * mouse cursor during a drag.
  * @extends Ext.dd.DragDrop
- * @constructor
- * @param {String} id the id of the linked element
- * @param {String} sGroup the group of related DragDrop items
- * @param {object} config an object containing configurable attributes
- *                Valid properties for DD:
- *                    scroll
  */
-
 Ext.define('Ext.dd.DD', {
     extend: 'Ext.dd.DragDrop',
     requires: ['Ext.dd.DragDropManager'],
+
+    /**
+     * Creates new DD instance.
+     * @param {String} id the id of the linked element
+     * @param {String} sGroup the group of related DragDrop items
+     * @param {object} config an object containing configurable attributes.
+     * Valid properties for DD: scroll
+     */
     constructor: function(id, sGroup, config) {
         if (id) {
             this.init(id, sGroup, config);
@@ -314,3 +329,4 @@ Ext.define('Ext.dd.DD', {
     */
 
 });
+

@@ -24,22 +24,23 @@
  */
 
 
-<span id='Ext-dd-DD-method-constructor'><span id='Ext-dd-DD'>/**
-</span></span> * @class Ext.dd.DD
+<span id='Ext-dd-DD'>/**
+</span> * @class Ext.dd.DD
  * A DragDrop implementation where the linked element follows the
  * mouse cursor during a drag.
  * @extends Ext.dd.DragDrop
- * @constructor
- * @param {String} id the id of the linked element
- * @param {String} sGroup the group of related DragDrop items
- * @param {object} config an object containing configurable attributes
- *                Valid properties for DD:
- *                    scroll
  */
-
 Ext.define('Ext.dd.DD', {
     extend: 'Ext.dd.DragDrop',
     requires: ['Ext.dd.DragDropManager'],
+
+<span id='Ext-dd-DD-method-constructor'>    /**
+</span>     * Creates new DD instance.
+     * @param {String} id the id of the linked element
+     * @param {String} sGroup the group of related DragDrop items
+     * @param {object} config an object containing configurable attributes.
+     * Valid properties for DD: scroll
+     */
     constructor: function(id, sGroup, config) {
         if (id) {
             this.init(id, sGroup, config);

@@ -71,6 +71,18 @@ module ExtJS4
           
           Sass::Script::String.new(url)
         end
+
+        def theme_image_exists(path)
+          result = false
+
+          where_to_look = path.value.gsub('../../resources', 'resources')
+
+          if where_to_look && FileTest.exists?("#{where_to_look}")
+            result = true
+          end
+
+          return Sass::Script::Bool.new(result)
+        end
       end
     end
   end

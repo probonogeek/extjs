@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 
 /**
  * @class Ext.grid.plugin.Editing
@@ -61,13 +75,22 @@ Ext.define('Ext.grid.plugin.Editing', {
         me.grid = grid;
         me.view = grid.view;
         me.initEvents();
-        me.initFieldAccessors(me.view.getGridColumns());
+        me.mon(grid, 'reconfigure', me.onReconfigure, me);
+        me.onReconfigure();
 
         grid.relayEvents(me, ['beforeedit', 'edit', 'validateedit']);
         // Marks the grid as editable, so that the SelectionModel
         // can make appropriate decisions during navigation
         grid.isEditable = true;
         grid.editingPlugin = grid.view.editingPlugin = me;
+    },
+    
+    /**
+     * Fires after the grid is reconfigured
+     * @private
+     */
+    onReconfigure: function(){
+        this.initFieldAccessors(this.view.getGridColumns());
     },
 
     /**

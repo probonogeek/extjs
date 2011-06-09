@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.proxy.Server
@@ -90,30 +104,31 @@ Ext.define('Ext.data.proxy.Server', {
     cacheString: "_dc",
     
     /**
-     * @cfg {Number} timeout (optional) The number of milliseconds to wait for a response. Defaults to 30 seconds.
+     * @cfg {Number} timeout (optional) The number of milliseconds to wait for a response.
+     * Defaults to 30000 milliseconds (30 seconds).
      */
     timeout : 30000,
     
     /**
      * @cfg {Object} api
-     * Specific urls to call on CRUD action methods "read", "create", "update" and "destroy".
+     * Specific urls to call on CRUD action methods "create", "read", "update" and "destroy".
      * Defaults to:<pre><code>
 api: {
-    read    : undefined,
     create  : undefined,
+    read    : undefined,
     update  : undefined,
     destroy : undefined
 }
      * </code></pre>
-     * <p>The url is built based upon the action being executed <tt>[load|create|save|destroy]</tt>
+     * <p>The url is built based upon the action being executed <tt>[create|read|update|destroy]</tt>
      * using the commensurate <tt>{@link #api}</tt> property, or if undefined default to the
      * configured {@link Ext.data.Store}.{@link Ext.data.proxy.Server#url url}.</p><br>
      * <p>For example:</p>
      * <pre><code>
 api: {
-    load :    '/controller/load',
-    create :  '/controller/new',
-    save :    '/controller/update',
+    create  : '/controller/new',
+    read    : '/controller/load',
+    update  : '/controller/update',
     destroy : '/controller/destroy_action'
 }
      * </code></pre>
@@ -459,3 +474,4 @@ api: {
         Ext.destroy(this.reader, this.writer);
     }
 });
+

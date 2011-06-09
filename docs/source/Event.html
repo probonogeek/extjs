@@ -15,15 +15,12 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-direct-Event-method-constructor'><span id='Ext-direct-Event'>/**
-</span></span> * @class Ext.direct.Event
+  <pre class="prettyprint lang-js"><span id='Ext-direct-Event'>/**
+</span> * @class Ext.direct.Event
  * A base class for all Ext.direct events. An event is
  * created after some kind of interaction with the server.
  * The event class is essentially just a data structure
  * to hold a direct response.
- * 
- * @constructor
- * @param {Object} config The config object
  */
 Ext.define('Ext.direct.Event', {
     
@@ -36,7 +33,11 @@ Ext.define('Ext.direct.Event', {
     /* End Definitions */
    
     status: true,
-    
+
+<span id='Ext-direct-Event-method-constructor'>    /**
+</span>     * Creates new Event.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
     },

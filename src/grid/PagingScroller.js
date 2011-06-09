@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.PagingScroller
  * @extends Ext.grid.Scroller
@@ -20,20 +34,20 @@ Ext.define('Ext.grid.PagingScroller', {
      * when scrolling up between records 0 and 34 and when scrolling down between records 65 and 99.
      */
     percentageFromEdge: 0.35,
-    
+
     /**
      * @cfg {Number} scrollToLoadBuffer This is the time in milliseconds to buffer load requests
      * when scrolling the PagingScrollbar.
      */
     scrollToLoadBuffer: 200,
-    
+
     activePrefetch: true,
-    
+
     chunkSize: 50,
     snapIncrement: 25,
-    
+
     syncScroll: true,
-    
+
     initComponent: function() {
         var me = this,
             ds = me.store;
@@ -41,8 +55,7 @@ Ext.define('Ext.grid.PagingScroller', {
         ds.on('guaranteedrange', this.onGuaranteedRange, this);
         this.callParent(arguments);
     },
-    
-    
+
     onGuaranteedRange: function(range, start, end) {
         var me = this,
             ds = me.store,
@@ -51,7 +64,7 @@ Ext.define('Ext.grid.PagingScroller', {
         if (range.length && me.visibleStart < range[0].index) {
             return;
         }
-        
+
         ds.loadRecords(range);
 
         if (!me.firstLoad) {
@@ -66,19 +79,19 @@ Ext.define('Ext.grid.PagingScroller', {
             me.syncTo();
         }
     },
-    
+
     syncTo: function() {
         var me            = this,
             pnl           = me.getPanel(),
             store         = pnl.store,
-            scrollerElDom = this.el.dom,
+            scrollerElDom = this.scrollEl.dom,
             rowOffset     = me.visibleStart - store.guaranteedStart,
             scrollBy      = rowOffset * me.rowHeight,
             scrollHeight  = scrollerElDom.scrollHeight,
             clientHeight  = scrollerElDom.clientHeight,
             scrollTop     = scrollerElDom.scrollTop,
             useMaximum;
-        
+
         // BrowserBug: clientHeight reports 0 in IE9 StrictMode
         // Instead we are using offsetHeight and hardcoding borders
         if (Ext.isIE9 && Ext.isStrict) {
@@ -86,16 +99,16 @@ Ext.define('Ext.grid.PagingScroller', {
         }
 
         // This should always be zero or greater than zero but staying
-        // safe and less than 0 we'll scroll to the bottom.        
+        // safe and less than 0 we'll scroll to the bottom.
         useMaximum = (scrollHeight - clientHeight - scrollTop <= 0);
         this.setViewScrollTop(scrollBy, useMaximum);
     },
-    
+
     getPageData : function(){
         var panel = this.getPanel(),
             store = panel.store,
             totalCount = store.getTotalCount();
-            
+
         return {
             total : totalCount,
             currentPage : store.currentPage,
@@ -104,7 +117,7 @@ Ext.define('Ext.grid.PagingScroller', {
             toRecord: Math.min(store.currentPage * store.pageSize, totalCount)
         };
     },
-    
+
     onElScroll: function(e, t) {
         var me = this,
             panel = me.getPanel(),
@@ -131,8 +144,7 @@ Ext.define('Ext.grid.PagingScroller', {
 
         me.visibleStart = visibleStart;
         me.visibleEnd = visibleEnd;
-        
-        
+
         me.syncScroll = true;
         if (totalCount >= pageSize) {
             // end of request was past what the total is, grab from the end back a pageSize
@@ -161,29 +173,29 @@ Ext.define('Ext.grid.PagingScroller', {
                 store.prefetchPage(nextPage);
             }
         }
-    
-    
+
         if (me.syncScroll) {
             me.syncTo();
         }
     },
-    
+
     getSizeCalculation: function() {
         // Use the direct ownerCt here rather than the scrollerOwner
         // because we are calculating widths/heights.
-        var owner = this.ownerCt,
+        var owner = this.ownerGrid,
             view   = owner.getView(),
             store  = this.store,
             dock   = this.dock,
             elDom  = this.el.dom,
             width  = 1,
             height = 1;
-        
+
         if (!this.rowHeight) {
             this.rowHeight = view.el.down(view.getItemSelector()).getHeight(false, true);
         }
 
-        height = store.getTotalCount() * this.rowHeight;
+        // If the Store is *locally* filtered, use the filtered count from getCount.
+        height = store[(!store.remoteFilter && store.isFiltered()) ? 'getCount' : 'getTotalCount']() * this.rowHeight;
 
         if (isNaN(width)) {
             width = 1;
@@ -196,7 +208,7 @@ Ext.define('Ext.grid.PagingScroller', {
             height: height
         };
     },
-    
+
     attemptLoad: function(start, end) {
         var me = this;
         if (!me.loadTask) {
@@ -204,18 +216,18 @@ Ext.define('Ext.grid.PagingScroller', {
         }
         me.loadTask.delay(me.scrollToLoadBuffer, me.doAttemptLoad, me, [start, end]);
     },
-    
+
     cancelLoad: function() {
         if (this.loadTask) {
             this.loadTask.cancel();
         }
     },
-    
+
     doAttemptLoad:  function(start, end) {
         var store = this.getPanel().store;
         store.guaranteeRange(start, end);
     },
-    
+
     setViewScrollTop: function(scrollTop, useMax) {
         var owner = this.getPanel(),
             items = owner.query('tableview'),
@@ -226,12 +238,12 @@ Ext.define('Ext.grid.PagingScroller', {
             calcScrollTop,
             maxScrollTop,
             scrollerElDom = this.el.dom;
-            
+
         owner.virtualScrollTop = scrollTop;
-            
+
         center = items[1] || items[0];
         centerEl = center.el.dom;
-        
+
         maxScrollTop = ((owner.store.pageSize * this.rowHeight) - centerEl.clientHeight);
         calcScrollTop = (scrollTop % ((owner.store.pageSize * this.rowHeight) + 1));
         if (useMax) {
@@ -247,4 +259,3 @@ Ext.define('Ext.grid.PagingScroller', {
         }
     }
 });
-

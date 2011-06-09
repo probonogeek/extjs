@@ -18,10 +18,8 @@
   <pre class="prettyprint lang-js"><span id='Ext-layout-Layout'>/**
 </span> * @class Ext.layout.Layout
  * @extends Object
- * @private
  * Base Layout class - extended by ComponentLayout and ContainerLayout
  */
-
 Ext.define('Ext.layout.Layout', {
 
     /* Begin Definitions */
@@ -37,12 +35,12 @@ Ext.define('Ext.layout.Layout', {
             if (layout instanceof Ext.layout.Layout) {
                 return Ext.createByAlias('layout.' + layout);
             } else {
-                if (Ext.isObject(layout)) {
-                    type = layout.type;
+                if (!layout || typeof layout === 'string') {
+                    type = layout || defaultType;
+                    layout = {};                    
                 }
                 else {
-                    type = layout || defaultType;
-                    layout = {};
+                    type = layout.type;
                 }
                 return Ext.createByAlias('layout.' + type, layout || {});
             }
@@ -123,10 +121,17 @@ Ext.define('Ext.layout.Layout', {
      * @param {Number} position The position within the target to render the item to
      */
     renderItem : function(item, target, position) {
+        var me = this;
         if (!item.rendered) {
+            if (me.itemCls) {
+                item.addCls(me.itemCls);
+            }
+            if (me.owner.itemCls) {
+                item.addCls(me.owner.itemCls);
+            }
             item.render(target, position);
-            this.configureItem(item);
-            this.childrenChanged = true;
+            me.configureItem(item);
+            me.childrenChanged = true;
         }
     },
 
@@ -168,22 +173,12 @@ Ext.define('Ext.layout.Layout', {
         return [];
     },
 
-<span id='Ext-layout-Layout-method-configureItem'>    /**
+<span id='Ext-layout-Layout-property-configureItem'>    /**
 </span>     * @private
      * Applies itemCls
+     * Empty template method
      */
-    configureItem: function(item) {
-        var me = this,
-            el = item.el,
-            owner = me.owner;
-            
-        if (me.itemCls) {
-            el.addCls(me.itemCls);
-        }
-        if (owner.itemCls) {
-            el.addCls(owner.itemCls);
-        }
-    },
+    configureItem: Ext.emptyFn,
     
     // Placeholder empty functions for subclasses to extend
     onLayout : Ext.emptyFn,
@@ -201,6 +196,7 @@ Ext.define('Ext.layout.Layout', {
             el = item.el,
             owner = me.owner;
             
+        // Clear managed dimensions flag when removed from the layout.
         if (item.rendered) {
             if (me.itemCls) {
                 el.removeCls(me.itemCls);
@@ -209,6 +205,12 @@ Ext.define('Ext.layout.Layout', {
                 el.removeCls(owner.itemCls);
             }
         }
+
+        // These flags are set at the time a child item is added to a layout.
+        // The layout must decide if it is managing the item's width, or its height, or both.
+        // See AbstractComponent for docs on these properties.
+        delete item.layoutManagedWidth;
+        delete item.layoutManagedHeight;
     },
 
     /*

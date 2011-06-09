@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.data.JsonPStore
  * @extends Ext.data.Store
@@ -34,8 +48,6 @@ stcCallback({
  * An object literal of this form could also be used as the {@link #data} config option.</p>
  * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of
  * <b>{@link Ext.data.reader.Json JsonReader}</b> and <b>{@link Ext.data.proxy.JsonP JsonPProxy}</b>.</p>
- * @constructor
- * @param {Object} config
  * @xtype jsonpstore
  */
 Ext.define('Ext.data.JsonPStore', {
@@ -52,3 +64,4 @@ Ext.define('Ext.data.JsonPStore', {
         }));
     }
 });
+

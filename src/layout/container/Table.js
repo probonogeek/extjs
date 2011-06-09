@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.layout.container.Table
  * @extends Ext.layout.container.Auto
@@ -113,6 +127,18 @@ Ext.define('Ext.layout.container.Table', {
     tableAttrs:null,
 
     /**
+     * @cfg {Object} trAttrs
+     * <p>An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
+     * used to create the layout's <tt>&lt;tr&gt;</tt> elements.
+     */
+
+    /**
+     * @cfg {Object} tdAttrs
+     * <p>An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
+     * used to create the layout's <tt>&lt;td&gt;</tt> elements.
+     */
+
+    /**
      * @private
      * Iterates over all passed items, ensuring they are rendered in a cell in the proper
      * location in the table structure.
@@ -140,6 +166,9 @@ Ext.define('Ext.layout.container.Table', {
             trEl = rows[rowIdx];
             if (!trEl) {
                 trEl = tbody.insertRow(rowIdx);
+                if (this.trAttrs) {
+                    trEl.set(this.trAttrs);
+                }
             }
 
             // If no cell present, create and insert one
@@ -158,6 +187,9 @@ Ext.define('Ext.layout.container.Table', {
             }
 
             // Set the cell properties
+            if (this.tdAttrs) {
+                tdEl.set(this.tdAttrs);
+            }
             tdEl.set({
                 colSpan: item.colspan || 1,
                 rowSpan: item.rowspan || 1,
@@ -239,9 +271,11 @@ Ext.define('Ext.layout.container.Table', {
             });
 
             // Increment
-            rowspans[colIdx] = item.rowspan || 1;
-            colIdx += item.colspan || 1;
-            cellIdx++;
+            for (j = item.colspan || 1; j; --j) {
+                rowspans[colIdx] = item.rowspan || 1;
+                ++colIdx;
+            }
+            ++cellIdx;
         }
 
         return cells;

@@ -179,7 +179,7 @@ Ext.define('Ext.grid.feature.Summary', {
             
         for (i = 0, length = columns.length; i &lt; length; ++i) {
             comp = Ext.getCmp(columns[i].id);
-            data[comp.dataIndex] = me.getSummary(store, comp.summaryType, comp.dataIndex, false);
+            data[comp.id] = me.getSummary(store, comp.summaryType, comp.dataIndex, false);
         }
         return data;
     }

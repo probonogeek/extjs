@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-reader-Reader-method-constructor'><span id='Ext-data-reader-Reader'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-reader-Reader'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.reader.Reader
  * @extends Object
  * 
@@ -160,8 +160,6 @@ Order ID: 50, which contains items:
 3 orders of iPhone
 &lt;/code&gt;&lt;/pre&gt;
  * 
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.reader.Reader', {
     requires: ['Ext.data.ResultSet'],
@@ -212,6 +210,10 @@ Ext.define('Ext.data.reader.Reader', {
     
     isReader: true,
     
+<span id='Ext-data-reader-Reader-method-constructor'>    /**
+</span>     * Creates new Reader.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         var me = this;
         

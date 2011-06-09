@@ -87,7 +87,7 @@
         font: $form-label-font;
     }
 
-    .#{$prefix}form-empty-field {
+    .#{$prefix}form-empty-field, textarea.#{$prefix}form-empty-field {
         color: $form-field-empty-color;
     }
     

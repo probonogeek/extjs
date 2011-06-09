@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.layout.container.Accordion
  * @extends Ext.layout.container.VBox
@@ -40,7 +54,7 @@ Ext.define('Ext.layout.container.Accordion', {
     extend: 'Ext.layout.container.VBox',
     alias: ['layout.accordion'],
     alternateClassName: 'Ext.layout.AccordionLayout',
-    
+
     align: 'stretch',
 
     /**
@@ -118,7 +132,7 @@ Ext.define('Ext.layout.container.Accordion', {
 
         me.callParent(arguments);
         if (me.fill) {
-            if (!me.owner.el.dom.style.height) {
+            if (!me.owner.el.dom.style.height || !me.getLayoutTargetSize().height) {
                 return false;
             }
         } else {
@@ -157,7 +171,6 @@ Ext.define('Ext.layout.container.Accordion', {
                 delete comp.hideHeader;
                 comp.collapsible = true;
                 comp.title = comp.title || '&#160;';
-                comp.setBorder(false);
 
                 // Set initial sizes
                 comp.width = targetSize.width;
@@ -170,12 +183,19 @@ Ext.define('Ext.layout.container.Accordion', {
                         comp.collapsed = true;
                     }
                     // Otherwise expand the first item with collapsed explicitly configured as false
-                    else if (comp.collapsed === false) {
+                    else if (comp.hasOwnProperty('collapsed') && comp.collapsed === false) {
                         comp.flex = 1;
                         me.expandedItem = i;
                     } else {
                         comp.collapsed = true;
                     }
+                    // If we are fitting, then intercept expand/collapse requests.
+                    me.owner.mon(comp, {
+                        show: me.onComponentShow,
+                        beforeexpand: me.onComponentExpand,
+                        beforecollapse: me.onComponentCollapse,
+                        scope: me
+                    });
                 } else {
                     delete comp.flex;
                     comp.animCollapse = me.initialAnimate;
@@ -194,10 +214,10 @@ Ext.define('Ext.layout.container.Accordion', {
                 comp.flex = 1;
             }
         }
-        
+
         // Render all Panels.
         me.callParent(arguments);
-                
+
         // Postprocess rendered Panels.
         ln = renderedPanels.length;
         for (i = 0; i < ln; i++) {
@@ -208,24 +228,13 @@ Ext.define('Ext.layout.container.Accordion', {
 
             comp.header.addCls(Ext.baseCSSPrefix + 'accordion-hd');
             comp.body.addCls(Ext.baseCSSPrefix + 'accordion-body');
-            
-            // If we are fitting, then intercept expand/collapse requests. 
-            if (me.fill) {
-                me.owner.mon(comp, {
-                    show: me.onComponentShow,
-                    beforeexpand: me.onComponentExpand,
-                    beforecollapse: me.onComponentCollapse,
-                    scope: me
-                });
-            }
         }
     },
 
     onLayout: function() {
         var me = this;
-        
-        me.updatePanelClasses();
-                
+
+
         if (me.fill) {
             me.callParent(arguments);
         } else {
@@ -243,24 +252,27 @@ Ext.define('Ext.layout.container.Accordion', {
                 }
             }
         }
-        
+        me.updatePanelClasses();
+
         return me;
     },
-    
+
     updatePanelClasses: function() {
         var children = this.getLayoutItems(),
             ln = children.length,
             siblingCollapsed = true,
             i, child;
-            
+
         for (i = 0; i < ln; i++) {
             child = children[i];
-            if (!siblingCollapsed) {
-                child.header.addCls(Ext.baseCSSPrefix + 'accordion-hd-sibling-expanded');
-            }
-            else {
+
+            if (siblingCollapsed) {
                 child.header.removeCls(Ext.baseCSSPrefix + 'accordion-hd-sibling-expanded');
             }
+            else {
+                child.header.addCls(Ext.baseCSSPrefix + 'accordion-hd-sibling-expanded');
+            }
+
             if (i + 1 == ln && child.collapsed) {
                 child.header.addCls(Ext.baseCSSPrefix + 'accordion-hd-last-collapsed');
             }
@@ -289,7 +301,7 @@ Ext.define('Ext.layout.container.Accordion', {
                 me.setCollapsed(comp);
             }
         }
-        
+
         me.animate = me.initialAnimate;
         me.layout();
         me.animate = false;
@@ -311,7 +323,7 @@ Ext.define('Ext.layout.container.Accordion', {
             if (expanded.length === 1 && expanded[0] === comp) {
                 me.setExpanded(toExpand);
             }
-            
+
             me.animate = me.initialAnimate;
             me.layout();
             me.animate = false;

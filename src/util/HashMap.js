@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.HashMap
  * <p>
@@ -20,8 +34,6 @@ map.each(function(key, value, length){
  * there is no guarantee when iterating over the items that they will be in any particular
  * order. If this is required, then use a {@link Ext.util.MixedCollection}.
  * </p>
- * @constructor
- * @param {Object} config The configuration options
  */
 Ext.define('Ext.util.HashMap', {
 
@@ -35,8 +47,15 @@ Ext.define('Ext.util.HashMap', {
         observable: 'Ext.util.Observable'
     },
 
+    /**
+     * Creates new HashMap.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
-        var me = this;
+        config = config || {};
+        
+        var me = this,
+            keyFn = config.keyFn;
 
         me.addEvents(
             /**
@@ -74,6 +93,10 @@ Ext.define('Ext.util.HashMap', {
 
         me.mixins.observable.constructor.call(me, config);
         me.clear(true);
+        
+        if (keyFn) {
+            me.getKey = keyFn;
+        }
     },
 
     /**
@@ -104,7 +127,6 @@ Ext.define('Ext.util.HashMap', {
 
     /**
      * Extracts the key from an object. This is a default implementation, it may be overridden
-     * @private
      * @param {Object} o The object to get the key from
      * @return {String} The key to use.
      */
@@ -340,3 +362,4 @@ Ext.define('Ext.util.HashMap', {
         return undefined;
     }
 });
+

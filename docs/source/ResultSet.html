@@ -15,15 +15,12 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-ResultSet-method-constructor'><span id='Ext-data-ResultSet'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-ResultSet'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.ResultSet
  * @extends Object
  * 
  * &lt;p&gt;Simple wrapper class that represents a set of records returned by a Proxy.&lt;/p&gt;
- * 
- * @constructor
- * Creates the new ResultSet
  */
 Ext.define('Ext.data.ResultSet', {
 <span id='Ext-data-ResultSet-cfg-loaded'>    /**
@@ -56,6 +53,10 @@ Ext.define('Ext.data.ResultSet', {
 </span>     * @cfg {Array} records The array of record instances. Required
      */
 
+<span id='Ext-data-ResultSet-method-constructor'>    /**
+</span>     * Creates the resultSet
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
         

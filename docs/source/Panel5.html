@@ -16,38 +16,30 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-tree-Panel'>/**
-</span> * @class Ext.tree.Panel
- * @extends Ext.panel.Table
- * 
- * The TreePanel provides tree-structured UI representation of tree-structured data.
+</span> * The TreePanel provides tree-structured UI representation of tree-structured data.
  * A TreePanel must be bound to a {@link Ext.data.TreeStore}. TreePanel's support
- * multiple columns through the {@link columns} configuration. 
+ * multiple columns through the {@link #columns} configuration. 
  * 
  * Simple TreePanel using inline data.
  *
  * {@img Ext.tree.Panel/Ext.tree.Panel1.png Ext.tree.Panel component}
  * 
- * ## Simple Tree Panel (no columns)
+ * Code:
  *
  *     var store = Ext.create('Ext.data.TreeStore', {
  *         root: {
  *             expanded: true, 
- *             text:&quot;&quot;,
- *             user:&quot;&quot;,
- *             status:&quot;&quot;, 
  *             children: [
- *                 { text:&quot;detention&quot;, leaf: true },
- *                 { text:&quot;homework&quot;, expanded: true, 
- *                     children: [
- *                         { text:&quot;book report&quot;, leaf: true },
- *                         { text:&quot;alegrbra&quot;, leaf: true}
- *                     ]
- *                 },
- *                 { text: &quot;buy lottery tickets&quot;, leaf:true }
+ *                 { text: &quot;detention&quot;, leaf: true },
+ *                 { text: &quot;homework&quot;, expanded: true, children: [
+ *                     { text: &quot;book report&quot;, leaf: true },
+ *                     { text: &quot;alegrbra&quot;, leaf: true}
+ *                 ] },
+ *                 { text: &quot;buy lottery tickets&quot;, leaf: true }
  *             ]
  *         }
  *     });     
- *             
+ *
  *     Ext.create('Ext.tree.Panel', {
  *         title: 'Simple Tree',
  *         width: 200,
@@ -56,8 +48,6 @@
  *         rootVisible: false,        
  *         renderTo: Ext.getBody()
  *     });
- *
- * @xtype treepanel
  */
 Ext.define('Ext.tree.Panel', {
     extend: 'Ext.panel.Table',
@@ -68,19 +58,21 @@ Ext.define('Ext.tree.Panel', {
     selType: 'treemodel',
     
     treeCls: Ext.baseCSSPrefix + 'tree-panel',
-    
+
+    deferRowRender: false,
+
 <span id='Ext-tree-Panel-cfg-lines'>    /**
-</span>     * @cfg {Boolean} lines false to disable tree lines (defaults to true)
+</span>     * @cfg {Boolean} lines False to disable tree lines. Defaults to true.
      */
     lines: true,
     
 <span id='Ext-tree-Panel-cfg-useArrows'>    /**
-</span>     * @cfg {Boolean} useArrows true to use Vista-style arrows in the tree (defaults to false)
+</span>     * @cfg {Boolean} useArrows True to use Vista-style arrows in the tree. Defaults to false.
      */
     useArrows: false,
     
 <span id='Ext-tree-Panel-cfg-singleExpand'>    /**
-</span>     * @cfg {Boolean} singleExpand &lt;tt&gt;true&lt;/tt&gt; if only 1 node per branch may be expanded
+</span>     * @cfg {Boolean} singleExpand True if only 1 node per branch may be expanded. Defaults to false.
      */
     singleExpand: false,
     
@@ -90,23 +82,37 @@ Ext.define('Ext.tree.Panel', {
     },
     
 <span id='Ext-tree-Panel-cfg-animate'>    /** 
-</span>     * @cfg {Boolean} animate &lt;tt&gt;true&lt;/tt&gt; to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
+</span>     * @cfg {Boolean} animate True to enable animated expand/collapse. Defaults to the value of {@link Ext#enableFx}.
      */
             
 <span id='Ext-tree-Panel-cfg-rootVisible'>    /** 
-</span>     * @cfg {Boolean} rootVisible &lt;tt&gt;false&lt;/tt&gt; to hide the root node (defaults to &lt;tt&gt;true&lt;/tt&gt;)
+</span>     * @cfg {Boolean} rootVisible False to hide the root node. Defaults to true.
      */
     rootVisible: true,
     
 <span id='Ext-tree-Panel-cfg-displayField'>    /** 
-</span>     * @cfg {Boolean} displayField The field inside the model that will be used as the node's text. (defaults to &lt;tt&gt;text&lt;/tt&gt;)
+</span>     * @cfg {Boolean} displayField The field inside the model that will be used as the node's text. Defaults to 'text'.
      */    
     displayField: 'text',
 
 <span id='Ext-tree-Panel-cfg-root'>    /** 
-</span>     * @cfg {Boolean} root Allows you to not specify a store on this TreePanel. This is useful for creating a simple
-     * tree with preloaded data without having to specify a TreeStore and Model. A store and model will be created and
-     * root will be passed to that store.
+</span>     * @cfg {Ext.data.Model/Ext.data.NodeInterface/Object} root
+     * Allows you to not specify a store on this TreePanel. This is useful for creating a simple tree with preloaded
+     * data without having to specify a TreeStore and Model. A store and model will be created and root will be passed
+     * to that store. For example:
+     *
+     *     Ext.create('Ext.tree.Panel', {
+     *         title: 'Simple Tree',
+     *         root: {
+     *             text: &quot;Root node&quot;,
+     *             expanded: true,
+     *             children: [
+     *                 { text: &quot;Child 1&quot;, leaf: true },
+     *                 { text: &quot;Child 2&quot;, leaf: true }
+     *             ]
+     *         },
+     *         renderTo: Ext.getBody()
+     *     });
      */
     root: null,
     
@@ -116,12 +122,11 @@ Ext.define('Ext.tree.Panel', {
     lockedCfgCopy: ['displayField', 'root', 'singleExpand', 'useArrows', 'lines', 'rootVisible'],
 
 <span id='Ext-tree-Panel-cfg-hideHeaders'>    /**
-</span>     * @cfg {Boolean} hideHeaders
-     * Specify as &lt;code&gt;true&lt;/code&gt; to hide the headers.
+</span>     * @cfg {Boolean} hideHeaders True to hide the headers. Defaults to `undefined`.
      */
     
 <span id='Ext-tree-Panel-cfg-folderSort'>    /**
-</span>     * @cfg {Boolean} folderSort Set to true to automatically prepend a leaf sorter to the store (defaults to &lt;tt&gt;undefined&lt;/tt&gt;)
+</span>     * @cfg {Boolean} folderSort True to automatically prepend a leaf sorter to the store. Defaults to `undefined`.
      */ 
     
     constructor: function(config) {
@@ -413,7 +418,7 @@ Ext.define('Ext.tree.Panel', {
 </span>     * Expand the tree to the path of a particular node.
      * @param {String} path The path to expand. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
-     * @param {String} separator (optional) A separator to use. Defaults to &lt;tt&gt;'/'&lt;/tt&gt;.
+     * @param {String} separator (optional) A separator to use. Defaults to `'/'`.
      * @param {Function} callback (optional) A function to execute when the expand finishes. The callback will be called with
      * (success, lastNode) where success is if the expand was successful and lastNode is the last node that was expanded.
      * @param {Object} scope (optional) The scope of the callback function
@@ -461,7 +466,7 @@ Ext.define('Ext.tree.Panel', {
 </span>     * Expand the tree to the path of a particular node, then selecti t.
      * @param {String} path The path to select. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
-     * @param {String} separator (optional) A separator to use. Defaults to &lt;tt&gt;'/'&lt;/tt&gt;.
+     * @param {String} separator (optional) A separator to use. Defaults to `'/'`.
      * @param {Function} callback (optional) A function to execute when the select finishes. The callback will be called with
      * (bSuccess, oLastNode) where bSuccess is if the select was successful and oLastNode is the last node that was expanded.
      * @param {Object} scope (optional) The scope of the callback function
@@ -477,7 +482,7 @@ Ext.define('Ext.tree.Panel', {
         keys = path.split(separator);
         last = keys.pop();
         
-        me.expandPath(keys.join('/'), field, separator, function(success, node){
+        me.expandPath(keys.join(separator), field, separator, function(success, node){
             var doSuccess = false;
             if (success &amp;&amp; node) {
                 node = node.findChild(field, last);
@@ -492,6 +497,7 @@ Ext.define('Ext.tree.Panel', {
             Ext.callback(callback, scope || me, [doSuccess, node]);
         }, me);
     }
-});</pre>
+});
+</pre>
 </body>
 </html>

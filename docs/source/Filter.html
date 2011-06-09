@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-Filter-method-constructor'><span id='Ext-util-Filter'>/**
-</span></span> * @class Ext.util.Filter
+  <pre class="prettyprint lang-js"><span id='Ext-util-Filter'>/**
+</span> * @class Ext.util.Filter
  * @extends Object
  * &lt;p&gt;Represents a filter that can be applied to a {@link Ext.util.MixedCollection MixedCollection}. Can either simply
  * filter on a property/value pair or pass in a filter function with custom logic. Filters are always used in the context
@@ -50,8 +50,6 @@ var longNames = allNames.filter(longNameFilter);
 //a new MixedCollection with the 2 people of age 24:
 var youngFolk = allNames.filter(ageFilter);
 &lt;/code&gt;&lt;/pre&gt;
- * @constructor
- * @param {Object} config Config object
  */
 Ext.define('Ext.util.Filter', {
 
@@ -59,7 +57,7 @@ Ext.define('Ext.util.Filter', {
 
     /* End Definitions */
 <span id='Ext-util-Filter-cfg-property'>    /**
-</span>     * @cfg {String} property The property to filter on. Required unless a {@link #filter} is passed
+</span>     * @cfg {String} property The property to filter on. Required unless a {@link #filterFn} is passed
      */
     
 <span id='Ext-util-Filter-cfg-filterFn'>    /**
@@ -87,7 +85,11 @@ Ext.define('Ext.util.Filter', {
 </span>     * @cfg {String} root Optional root property. This is mostly useful when filtering a Store, in which case we set the
      * root to 'data' to make the filter pull the {@link #property} out of the data object of each item
      */
-    
+
+<span id='Ext-util-Filter-method-constructor'>    /**
+</span>     * Creates new Filter.
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(config) {
         Ext.apply(this, config);
         

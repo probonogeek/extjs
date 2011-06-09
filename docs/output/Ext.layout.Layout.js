@@ -1,53 +1,60 @@
 Ext.data.JsonP.Ext_layout_Layout({
-  "tagname": "class",
-  "name": "Ext.layout.Layout",
-  "doc": "<p>Base Layout class - extended by ComponentLayout and ContainerLayout</p>\n",
-  "extends": "Object",
-  "mixins": [
+  "allMixins": [
 
   ],
-  "alternateClassNames": [
-
-  ],
-  "xtype": null,
-  "author": null,
+  "deprecated": null,
   "docauthor": null,
+  "members": {
+    "cfg": [
+
+    ],
+    "method": [
+
+    ],
+    "property": [
+
+    ],
+    "cssVar": [
+
+    ],
+    "cssMixin": [
+
+    ],
+    "event": [
+
+    ]
+  },
   "singleton": false,
-  "private": true,
-  "cfg": [
-
-  ],
-  "method": [
-
-  ],
-  "property": [
-
-  ],
-  "event": [
-
-  ],
-  "filename": "/Users/nick/Projects/sencha/SDK/platform/src/layout/Layout.js",
-  "linenr": 1,
-  "html_filename": "Layout.html",
-  "href": "Layout.html#Ext-layout-Layout",
-  "cssVar": [
-
-  ],
-  "cssMixin": [
-
-  ],
-  "component": false,
+  "alias": null,
   "superclasses": [
 
   ],
+  "protected": false,
+  "tagname": "class",
+  "mixins": [
+
+  ],
+  "href": "Layout.html#Ext-layout-Layout",
   "subclasses": [
-    "Ext.layout.component.Component",
     "Ext.layout.container.AbstractContainer"
   ],
+  "static": false,
+  "author": null,
+  "component": false,
+  "filename": "/mnt/ebs/nightly/git/SDK/platform/src/layout/Layout.js",
+  "private": false,
+  "alternateClassNames": [
+
+  ],
+  "name": "Ext.layout.Layout",
+  "doc": "<p>Base Layout class - extended by ComponentLayout and ContainerLayout</p>\n",
   "mixedInto": [
 
   ],
-  "allMixins": [
+  "linenr": 1,
+  "xtypes": [
 
-  ]
+  ],
+  "html_filename": "Layout.html",
+  "extends": "Object"
 });

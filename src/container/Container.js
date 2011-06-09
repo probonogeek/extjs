@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.container.Container
  * @extends Ext.container.AbstractContainer
@@ -151,8 +165,6 @@ Ext.Ajax.request({
  * <p>Note: since the code above is <i>generated</i> by a server script, the <code>autoLoad</code> params for
  * the Store, the user's preferred date format, the metadata to allow generation of the Model layout, and the ColumnModel
  * can all be generated into the code since these are all known on the server.</p>
- *
- * @xtype container
  */
 Ext.define('Ext.container.Container', {
     extend: 'Ext.container.AbstractContainer',
@@ -182,3 +194,4 @@ Ext.define('Ext.container.Container', {
         return null;
     }
 });
+

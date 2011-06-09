@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-writer-Writer-method-constructor'><span id='Ext-data-writer-Writer'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-writer-Writer'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.writer.Writer
  * @extends Object
  * 
@@ -31,9 +31,6 @@
  * {@link Ext.data.proxy.WebStorage Web Storage proxy} (see {@link Ext.data.proxy.LocalStorage localStorage}
  * and {@link Ext.data.proxy.SessionStorage sessionStorage}) or just in memory via a
  * {@link Ext.data.proxy.Memory MemoryProxy}.&lt;/p&gt;
- * 
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.writer.Writer', {
     alias: 'writer.base',
@@ -79,6 +76,10 @@ new Ext.data.writer.Writer({
      */
     nameProperty: 'name',
 
+<span id='Ext-data-writer-Writer-method-constructor'>    /**
+</span>     * Creates new Writer.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
     },

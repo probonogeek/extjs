@@ -15,16 +15,18 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dd-StatusProxy-method-constructor'><span id='Ext-dd-StatusProxy'>/**
-</span></span> * @class Ext.dd.StatusProxy
+  <pre class="prettyprint lang-js"><span id='Ext-dd-StatusProxy'>/**
+</span> * @class Ext.dd.StatusProxy
  * A specialized drag proxy that supports a drop status icon, {@link Ext.Layer} styles and auto-repair.  This is the
  * default drag proxy used by all Ext.dd components.
- * @constructor
- * @param {Object} config
  */
 Ext.define('Ext.dd.StatusProxy', {
     animRepair: false,
 
+<span id='Ext-dd-StatusProxy-method-constructor'>    /**
+</span>     * Creates new StatusProxy.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config){
         Ext.apply(this, config);
         this.id = this.id || Ext.id();

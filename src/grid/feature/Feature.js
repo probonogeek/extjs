@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.feature.Feature
  * @extends Ext.util.Observable
@@ -77,7 +91,7 @@ Ext.define('Ext.grid.feature.Feature', {
      * Abstract method to be overriden when a feature should add additional
      * arguments to its event signature. By default the event will fire:
      * - view - The underlying Ext.view.Table
-     * - featureTarget - The matched element by the defined {@link eventSelector}
+     * - featureTarget - The matched element by the defined {@link #eventSelector}
      *
      * The method must also return the eventName as the first index of the array
      * to be passed to fireEvent.

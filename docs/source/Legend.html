@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-chart-Legend-method-constructor'><span id='Ext-chart-Legend'>/**
-</span></span> * @class Ext.chart.Legend
+  <pre class="prettyprint lang-js"><span id='Ext-chart-Legend'>/**
+</span> * @class Ext.chart.Legend
  *
  * Defines a legend for a chart's series.
  * The 'chart' member must be set prior to rendering.
@@ -97,7 +97,6 @@
     });    
     &lt;/code&gt;&lt;/pre&gt;    
  *
- * @constructor
  */
 Ext.define('Ext.chart.Legend', {
 
@@ -182,6 +181,10 @@ Ext.define('Ext.chart.Legend', {
      */
     boxZIndex: 100,
 
+<span id='Ext-chart-Legend-method-constructor'>    /**
+</span>     * Creates new Legend.
+     * @param {Object} config  (optional) Config object.
+     */
     constructor: function(config) {
         var me = this;
         if (config) {

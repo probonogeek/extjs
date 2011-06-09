@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.util.Filter
  * @extends Object
@@ -33,8 +47,6 @@ var longNames = allNames.filter(longNameFilter);
 //a new MixedCollection with the 2 people of age 24:
 var youngFolk = allNames.filter(ageFilter);
 </code></pre>
- * @constructor
- * @param {Object} config Config object
  */
 Ext.define('Ext.util.Filter', {
 
@@ -42,7 +54,7 @@ Ext.define('Ext.util.Filter', {
 
     /* End Definitions */
     /**
-     * @cfg {String} property The property to filter on. Required unless a {@link #filter} is passed
+     * @cfg {String} property The property to filter on. Required unless a {@link #filterFn} is passed
      */
     
     /**
@@ -70,7 +82,11 @@ Ext.define('Ext.util.Filter', {
      * @cfg {String} root Optional root property. This is mostly useful when filtering a Store, in which case we set the
      * root to 'data' to make the filter pull the {@link #property} out of the data object of each item
      */
-    
+
+    /**
+     * Creates new Filter.
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(config) {
         Ext.apply(this, config);
         

@@ -1,12 +1,26 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.button.Button
  * @extends Ext.Component
 
-Create simple buttons with this component. Customisations include {@link #config-iconAlign aligned}
-{@link #config-iconCls icons}, {@link #config-menu dropdown menus}, {@link #config-tooltip tooltips}
-and {@link #config-scale sizing options}. Specify a {@link #config-handler handler} to run code when
-a user clicks the button, or use {@link #config-listeners listeners} for other events such as
-{@link #events-mouseover mouseover}.
+Create simple buttons with this component. Customisations include {@link #iconAlign aligned}
+{@link #iconCls icons}, {@link #menu dropdown menus}, {@link #tooltip tooltips}
+and {@link #scale sizing options}. Specify a {@link #handler handler} to run code when
+a user clicks the button, or use {@link #listeners listeners} for other events such as
+{@link #mouseover mouseover}.
 
 {@img Ext.button.Button/Ext.button.Button1.png Ext.button.Button component}
 Example usage:
@@ -125,10 +139,6 @@ Example usage:
         }
     });
 
- * @constructor
- * Create a new button
- * @param {Object} config The config object
- * @xtype button
  * @markdown
  * @docauthor Robert Dougan <rob@sencha.com>
  */
@@ -341,7 +351,10 @@ Ext.define('Ext.button.Button', {
         '<em class="{splitCls}">' +
             '<tpl if="href">' +
                 '<a href="{href}" target="{target}"<tpl if="tabIndex"> tabIndex="{tabIndex}"</tpl> role="link">' +
-                    '<span class="{baseCls}-inner">{text}</span>' +
+                    '<span class="{baseCls}-inner">' +
+                        '{text}' +
+                    '</span>' +
+                        '<span class="{baseCls}-icon"></span>' +
                 '</a>' +
             '</tpl>' +
             '<tpl if="!href">' +
@@ -349,7 +362,10 @@ Ext.define('Ext.button.Button', {
                     // the autocomplete="off" is required to prevent Firefox from remembering
                     // the button's disabled state between page reloads.
                     '<tpl if="tabIndex"> tabIndex="{tabIndex}"</tpl> role="button" autocomplete="off">' +
-                    '<span class="{baseCls}-inner" style="{innerSpanStyle}">{text}</span>' +
+                    '<span class="{baseCls}-inner" style="{innerSpanStyle}">' +
+                        '{text}' +
+                    '</span>' +
+                    '<span class="{baseCls}-icon"></span>' +
                 '</button>' +
             '</tpl>' +
         '</em>' ,
@@ -597,7 +613,8 @@ Ext.define('Ext.button.Button', {
         Ext.applyIf(me.renderSelectors, {
             btnEl  : me.href ? 'a' : 'button',
             btnWrap: 'em',
-            btnInnerEl: '.' + me.baseCls + '-inner'
+            btnInnerEl: '.' + me.baseCls + '-inner',
+            btnIconEl: '.'+ me.baseCls + '-icon'
         });
         
         if (me.scale) {
@@ -763,11 +780,11 @@ Ext.define('Ext.button.Button', {
      */
     setIconCls: function(cls) {
         var me = this,
-            btnInnerEl = me.btnInnerEl;
-        if (btnInnerEl) {
+            btnIconEl = me.btnIconEl;
+        if (btnIconEl) {
             // Remove the previous iconCls from the button
-            btnInnerEl.removeCls(me.iconCls);
-            btnInnerEl.addCls(cls || '');
+            btnIconEl.removeCls(me.iconCls);
+            btnIconEl.addCls(cls || '');
             me.setButtonCls();
         }
         me.iconCls = cls;
@@ -1333,3 +1350,4 @@ Ext.define('Ext.button.Button', {
         }
     };
 });
+

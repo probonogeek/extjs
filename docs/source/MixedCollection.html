@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-MixedCollection-method-constructor'><span id='Ext-util-MixedCollection'>/**
-</span></span> * @class Ext.util.MixedCollection
+  <pre class="prettyprint lang-js"><span id='Ext-util-MixedCollection'>/**
+</span> * @class Ext.util.MixedCollection
  * &lt;p&gt;
  * Represents a collection of a set of key and value pairs. Each key in the MixedCollection
  * must be unique, the same key cannot exist twice. This collection is ordered, items in the
@@ -47,15 +47,6 @@ var biggerThanZero = coll.filterBy(function(value){
 console.log(biggerThanZero.getCount()); // prints 2
  * &lt;/code&gt;&lt;/pre&gt;
  * &lt;/p&gt;
- *
- * @constructor
- * @param {Boolean} allowFunctions Specify &lt;tt&gt;true&lt;/tt&gt; if the {@link #addAll}
- * function should add function references to the collection. Defaults to
- * &lt;tt&gt;false&lt;/tt&gt;.
- * @param {Function} keyFn A function that can accept an item of the type(s) stored in this MixedCollection
- * and return the key value for that item.  This is used when available to look up the key on items that
- * were passed without an explicit key parameter to a MixedCollection method.  Passing this parameter is
- * equivalent to providing an implementation for the {@link #getKey} method.
  */
 Ext.define('Ext.util.MixedCollection', {
     extend: 'Ext.util.AbstractMixedCollection',
@@ -63,6 +54,16 @@ Ext.define('Ext.util.MixedCollection', {
         sortable: 'Ext.util.Sortable'
     },
 
+<span id='Ext-util-MixedCollection-method-constructor'>    /**
+</span>     * Creates new MixedCollection.
+     * @param {Boolean} allowFunctions Specify &lt;tt&gt;true&lt;/tt&gt; if the {@link #addAll}
+     * function should add function references to the collection. Defaults to
+     * &lt;tt&gt;false&lt;/tt&gt;.
+     * @param {Function} keyFn A function that can accept an item of the type(s) stored in this MixedCollection
+     * and return the key value for that item.  This is used when available to look up the key on items that
+     * were passed without an explicit key parameter to a MixedCollection method.  Passing this parameter is
+     * equivalent to providing an implementation for the {@link #getKey} method.
+     */
     constructor: function() {
         var me = this;
         me.callParent(arguments);

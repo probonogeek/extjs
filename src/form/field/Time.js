@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.form.field.Time
  * @extends Ext.form.field.Picker
@@ -35,10 +49,6 @@ Ext.create('Ext.form.Panel', {
    }]
 });
 </code></pre>
- * @constructor
- * Create a new Time field
- * @param {Object} config
- * @xtype timefield
  */
 Ext.define('Ext.form.field.Time', {
     extend:'Ext.form.field.Picker',
@@ -362,7 +372,11 @@ Ext.define('Ext.form.field.Time', {
                 forceKeyDown: true,
                 tab: function(e) {
                     if (selectOnTab) {
-                        this.selectHighlighted(e);
+                        if(me.picker.highlightedItem) {
+                            this.selectHighlighted(e);
+                        } else {
+                            me.collapse();
+                        }
                         me.triggerBlur();
                     }
                     // Tab key event is allowed to propagate to field
@@ -401,6 +415,21 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @private
+     * Clears the highlighted item in the picker on change.
+     * This prevents the highlighted item from being selected instead of the custom typed in value when the tab key is pressed.
+     */
+    onChange: function() {
+        var me = this,
+            picker = me.picker;
+
+        me.callParent(arguments);
+        if(picker) {
+            picker.clearHighlight();
+        }
+    },
+
+    /**
+     * @private
      * Handles a time being selected from the Time picker.
      */
     onListSelect: function(list, recordArray) {
@@ -414,4 +443,5 @@ Ext.define('Ext.form.field.Time', {
         me.inputEl.focus();
     }
 });
+
 

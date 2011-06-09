@@ -46,6 +46,8 @@ Ext.define('Ext.draw.engine.Svg', {
         strokeOpacity: &quot;stroke-opacity&quot;,
         strokeLinejoin: &quot;stroke-linejoin&quot;
     },
+    
+    parsers: {},
 
     minDefaults: {
         circle: {
@@ -454,6 +456,12 @@ Ext.define('Ext.draw.engine.Svg', {
             el = sprite.el,
             group = sprite.group,
             sattr = sprite.attr,
+            parsers = me.parsers,
+            //Safari does not handle linear gradients correctly in quirksmode
+            //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+            //ref: EXTJSIV-1472
+            gradientsMap = me.gradientsMap || {},
+            safariFix = Ext.isSafari &amp;&amp; !Ext.isStrict,
             groups, i, ln, attrs, font, key, style, name, rect;
 
         if (group) {
@@ -479,7 +487,6 @@ Ext.define('Ext.draw.engine.Svg', {
             }
             else if (sprite.type == &quot;path&quot; &amp;&amp; attrs.d) {
                 attrs.d = Ext.draw.Draw.pathToString(Ext.draw.Draw.pathToAbsolute(attrs.d));
-                
             }
             sprite.dirtyPath = false;
         // }
@@ -506,9 +513,22 @@ Ext.define('Ext.draw.engine.Svg', {
         }
         for (key in attrs) {
             if (attrs.hasOwnProperty(key) &amp;&amp; attrs[key] != null) {
-                el.dom.setAttribute(key, attrs[key]);
+                //Safari does not handle linear gradients correctly in quirksmode
+                //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+                //ref: EXTJSIV-1472
+                //if we're Safari in QuirksMode and we're applying some color attribute and the value of that
+                //attribute is a reference to a gradient then assign a plain color to that value instead of the gradient.
+                if (safariFix &amp;&amp; ('color|stroke|fill'.indexOf(key) &gt; -1) &amp;&amp; (attrs[key] in gradientsMap)) {
+                    attrs[key] = gradientsMap[attrs[key]];
+                }
+                if (key in parsers) {
+                    el.dom.setAttribute(key, parsers[key](attrs[key], sprite, me));
+                } else {
+                    el.dom.setAttribute(key, attrs[key]);
+                }
             }
         }
+        
         if (sprite.type == 'text') {
             me.tuneText(sprite, attrs);
         }
@@ -586,40 +606,49 @@ Ext.define('Ext.draw.engine.Svg', {
 
     addGradient: function(gradient) {
         gradient = Ext.draw.Draw.parseGradient(gradient);
-        var ln = gradient.stops.length,
+        var me = this,
+            ln = gradient.stops.length,
             vector = gradient.vector,
-            gradientEl,
-            stop,
-            stopEl,
-            i;
-        if (gradient.type == &quot;linear&quot;) {
-            gradientEl = this.createSvgElement(&quot;linearGradient&quot;);
-            gradientEl.setAttribute(&quot;x1&quot;, vector[0]);
-            gradientEl.setAttribute(&quot;y1&quot;, vector[1]);
-            gradientEl.setAttribute(&quot;x2&quot;, vector[2]);
-            gradientEl.setAttribute(&quot;y2&quot;, vector[3]);
-        }
-        else {
-            gradientEl = this.createSvgElement(&quot;radialGradient&quot;);
-            gradientEl.setAttribute(&quot;cx&quot;, gradient.centerX);
-            gradientEl.setAttribute(&quot;cy&quot;, gradient.centerY);
-            gradientEl.setAttribute(&quot;r&quot;, gradient.radius);
-            if (Ext.isNumber(gradient.focalX) &amp;&amp; Ext.isNumber(gradient.focalY)) {
-                gradientEl.setAttribute(&quot;fx&quot;, gradient.focalX);
-                gradientEl.setAttribute(&quot;fy&quot;, gradient.focalY);
+            //Safari does not handle linear gradients correctly in quirksmode
+            //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+            //ref: EXTJSIV-1472
+            usePlain = Ext.isSafari &amp;&amp; !Ext.isStrict,
+            gradientEl, stop, stopEl, i, gradientsMap;
+            
+        gradientsMap = me.gradientsMap || {};
+        
+        if (!usePlain) {
+            if (gradient.type == &quot;linear&quot;) {
+                gradientEl = me.createSvgElement(&quot;linearGradient&quot;);
+                gradientEl.setAttribute(&quot;x1&quot;, vector[0]);
+                gradientEl.setAttribute(&quot;y1&quot;, vector[1]);
+                gradientEl.setAttribute(&quot;x2&quot;, vector[2]);
+                gradientEl.setAttribute(&quot;y2&quot;, vector[3]);
             }
-        }    
-        gradientEl.id = gradient.id;
-        this.getDefs().appendChild(gradientEl);
-
-        for (i = 0; i &lt; ln; i++) {
-            stop = gradient.stops[i];
-            stopEl = this.createSvgElement(&quot;stop&quot;);
-            stopEl.setAttribute(&quot;offset&quot;, stop.offset + &quot;%&quot;);
-            stopEl.setAttribute(&quot;stop-color&quot;, stop.color);
-            stopEl.setAttribute(&quot;stop-opacity&quot;,stop.opacity);
-            gradientEl.appendChild(stopEl);
+            else {
+                gradientEl = me.createSvgElement(&quot;radialGradient&quot;);
+                gradientEl.setAttribute(&quot;cx&quot;, gradient.centerX);
+                gradientEl.setAttribute(&quot;cy&quot;, gradient.centerY);
+                gradientEl.setAttribute(&quot;r&quot;, gradient.radius);
+                if (Ext.isNumber(gradient.focalX) &amp;&amp; Ext.isNumber(gradient.focalY)) {
+                    gradientEl.setAttribute(&quot;fx&quot;, gradient.focalX);
+                    gradientEl.setAttribute(&quot;fy&quot;, gradient.focalY);
+                }
+            }
+            gradientEl.id = gradient.id;
+            me.getDefs().appendChild(gradientEl);
+            for (i = 0; i &lt; ln; i++) {
+                stop = gradient.stops[i];
+                stopEl = me.createSvgElement(&quot;stop&quot;);
+                stopEl.setAttribute(&quot;offset&quot;, stop.offset + &quot;%&quot;);
+                stopEl.setAttribute(&quot;stop-color&quot;, stop.color);
+                stopEl.setAttribute(&quot;stop-opacity&quot;,stop.opacity);
+                gradientEl.appendChild(stopEl);
+            }
+        } else {
+            gradientsMap['url(#' + gradient.id + ')'] = gradient.stops[0].color;
         }
+        me.gradientsMap = gradientsMap;
     },
 
 <span id='Ext-draw-engine-Svg-method-hasCls'>    /**
@@ -673,7 +702,7 @@ Ext.define('Ext.draw.engine.Svg', {
                     cls = cls.replace(me.trimRe, '');
                     idx = Ext.Array.indexOf(elClasses, cls);
                     if (idx != -1) {
-                        elClasses.splice(idx, 1);
+                        Ext.Array.erase(elClasses, idx, 1);
                     }
                 }
             }

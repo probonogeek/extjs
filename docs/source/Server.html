@@ -107,30 +107,31 @@ Ext.define('Ext.data.proxy.Server', {
     cacheString: &quot;_dc&quot;,
     
 <span id='Ext-data-proxy-Server-cfg-timeout'>    /**
-</span>     * @cfg {Number} timeout (optional) The number of milliseconds to wait for a response. Defaults to 30 seconds.
+</span>     * @cfg {Number} timeout (optional) The number of milliseconds to wait for a response.
+     * Defaults to 30000 milliseconds (30 seconds).
      */
     timeout : 30000,
     
 <span id='Ext-data-proxy-Server-cfg-api'>    /**
 </span>     * @cfg {Object} api
-     * Specific urls to call on CRUD action methods &quot;read&quot;, &quot;create&quot;, &quot;update&quot; and &quot;destroy&quot;.
+     * Specific urls to call on CRUD action methods &quot;create&quot;, &quot;read&quot;, &quot;update&quot; and &quot;destroy&quot;.
      * Defaults to:&lt;pre&gt;&lt;code&gt;
 api: {
-    read    : undefined,
     create  : undefined,
+    read    : undefined,
     update  : undefined,
     destroy : undefined
 }
      * &lt;/code&gt;&lt;/pre&gt;
-     * &lt;p&gt;The url is built based upon the action being executed &lt;tt&gt;[load|create|save|destroy]&lt;/tt&gt;
+     * &lt;p&gt;The url is built based upon the action being executed &lt;tt&gt;[create|read|update|destroy]&lt;/tt&gt;
      * using the commensurate &lt;tt&gt;{@link #api}&lt;/tt&gt; property, or if undefined default to the
      * configured {@link Ext.data.Store}.{@link Ext.data.proxy.Server#url url}.&lt;/p&gt;&lt;br&gt;
      * &lt;p&gt;For example:&lt;/p&gt;
      * &lt;pre&gt;&lt;code&gt;
 api: {
-    load :    '/controller/load',
-    create :  '/controller/new',
-    save :    '/controller/update',
+    create  : '/controller/new',
+    read    : '/controller/load',
+    update  : '/controller/update',
     destroy : '/controller/destroy_action'
 }
      * &lt;/code&gt;&lt;/pre&gt;

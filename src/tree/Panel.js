@@ -1,36 +1,42 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.tree.Panel
- * @extends Ext.panel.Table
- * 
  * The TreePanel provides tree-structured UI representation of tree-structured data.
  * A TreePanel must be bound to a {@link Ext.data.TreeStore}. TreePanel's support
- * multiple columns through the {@link columns} configuration. 
+ * multiple columns through the {@link #columns} configuration. 
  * 
  * Simple TreePanel using inline data.
  *
  * {@img Ext.tree.Panel/Ext.tree.Panel1.png Ext.tree.Panel component}
  * 
- * ## Simple Tree Panel (no columns)
+ * Code:
  *
  *     var store = Ext.create('Ext.data.TreeStore', {
  *         root: {
  *             expanded: true, 
- *             text:"",
- *             user:"",
- *             status:"", 
  *             children: [
- *                 { text:"detention", leaf: true },
- *                 { text:"homework", expanded: true, 
- *                     children: [
- *                         { text:"book report", leaf: true },
- *                         { text:"alegrbra", leaf: true}
- *                     ]
- *                 },
- *                 { text: "buy lottery tickets", leaf:true }
+ *                 { text: "detention", leaf: true },
+ *                 { text: "homework", expanded: true, children: [
+ *                     { text: "book report", leaf: true },
+ *                     { text: "alegrbra", leaf: true}
+ *                 ] },
+ *                 { text: "buy lottery tickets", leaf: true }
  *             ]
  *         }
  *     });     
- *             
+ *
  *     Ext.create('Ext.tree.Panel', {
  *         title: 'Simple Tree',
  *         width: 200,
@@ -39,8 +45,6 @@
  *         rootVisible: false,        
  *         renderTo: Ext.getBody()
  *     });
- *
- * @xtype treepanel
  */
 Ext.define('Ext.tree.Panel', {
     extend: 'Ext.panel.Table',
@@ -51,19 +55,21 @@ Ext.define('Ext.tree.Panel', {
     selType: 'treemodel',
     
     treeCls: Ext.baseCSSPrefix + 'tree-panel',
-    
+
+    deferRowRender: false,
+
     /**
-     * @cfg {Boolean} lines false to disable tree lines (defaults to true)
+     * @cfg {Boolean} lines False to disable tree lines. Defaults to true.
      */
     lines: true,
     
     /**
-     * @cfg {Boolean} useArrows true to use Vista-style arrows in the tree (defaults to false)
+     * @cfg {Boolean} useArrows True to use Vista-style arrows in the tree. Defaults to false.
      */
     useArrows: false,
     
     /**
-     * @cfg {Boolean} singleExpand <tt>true</tt> if only 1 node per branch may be expanded
+     * @cfg {Boolean} singleExpand True if only 1 node per branch may be expanded. Defaults to false.
      */
     singleExpand: false,
     
@@ -73,23 +79,37 @@ Ext.define('Ext.tree.Panel', {
     },
     
     /** 
-     * @cfg {Boolean} animate <tt>true</tt> to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
+     * @cfg {Boolean} animate True to enable animated expand/collapse. Defaults to the value of {@link Ext#enableFx}.
      */
             
     /** 
-     * @cfg {Boolean} rootVisible <tt>false</tt> to hide the root node (defaults to <tt>true</tt>)
+     * @cfg {Boolean} rootVisible False to hide the root node. Defaults to true.
      */
     rootVisible: true,
     
     /** 
-     * @cfg {Boolean} displayField The field inside the model that will be used as the node's text. (defaults to <tt>text</tt>)
+     * @cfg {Boolean} displayField The field inside the model that will be used as the node's text. Defaults to 'text'.
      */    
     displayField: 'text',
 
     /** 
-     * @cfg {Boolean} root Allows you to not specify a store on this TreePanel. This is useful for creating a simple
-     * tree with preloaded data without having to specify a TreeStore and Model. A store and model will be created and
-     * root will be passed to that store.
+     * @cfg {Ext.data.Model/Ext.data.NodeInterface/Object} root
+     * Allows you to not specify a store on this TreePanel. This is useful for creating a simple tree with preloaded
+     * data without having to specify a TreeStore and Model. A store and model will be created and root will be passed
+     * to that store. For example:
+     *
+     *     Ext.create('Ext.tree.Panel', {
+     *         title: 'Simple Tree',
+     *         root: {
+     *             text: "Root node",
+     *             expanded: true,
+     *             children: [
+     *                 { text: "Child 1", leaf: true },
+     *                 { text: "Child 2", leaf: true }
+     *             ]
+     *         },
+     *         renderTo: Ext.getBody()
+     *     });
      */
     root: null,
     
@@ -99,12 +119,11 @@ Ext.define('Ext.tree.Panel', {
     lockedCfgCopy: ['displayField', 'root', 'singleExpand', 'useArrows', 'lines', 'rootVisible'],
 
     /**
-     * @cfg {Boolean} hideHeaders
-     * Specify as <code>true</code> to hide the headers.
+     * @cfg {Boolean} hideHeaders True to hide the headers. Defaults to `undefined`.
      */
     
     /**
-     * @cfg {Boolean} folderSort Set to true to automatically prepend a leaf sorter to the store (defaults to <tt>undefined</tt>)
+     * @cfg {Boolean} folderSort True to automatically prepend a leaf sorter to the store. Defaults to `undefined`.
      */ 
     
     constructor: function(config) {
@@ -396,7 +415,7 @@ Ext.define('Ext.tree.Panel', {
      * Expand the tree to the path of a particular node.
      * @param {String} path The path to expand. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
-     * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
+     * @param {String} separator (optional) A separator to use. Defaults to `'/'`.
      * @param {Function} callback (optional) A function to execute when the expand finishes. The callback will be called with
      * (success, lastNode) where success is if the expand was successful and lastNode is the last node that was expanded.
      * @param {Object} scope (optional) The scope of the callback function
@@ -444,7 +463,7 @@ Ext.define('Ext.tree.Panel', {
      * Expand the tree to the path of a particular node, then selecti t.
      * @param {String} path The path to select. The path should include a leading separator.
      * @param {String} field (optional) The field to get the data from. Defaults to the model idProperty.
-     * @param {String} separator (optional) A separator to use. Defaults to <tt>'/'</tt>.
+     * @param {String} separator (optional) A separator to use. Defaults to `'/'`.
      * @param {Function} callback (optional) A function to execute when the select finishes. The callback will be called with
      * (bSuccess, oLastNode) where bSuccess is if the select was successful and oLastNode is the last node that was expanded.
      * @param {Object} scope (optional) The scope of the callback function
@@ -460,7 +479,7 @@ Ext.define('Ext.tree.Panel', {
         keys = path.split(separator);
         last = keys.pop();
         
-        me.expandPath(keys.join('/'), field, separator, function(success, node){
+        me.expandPath(keys.join(separator), field, separator, function(success, node){
             var doSuccess = false;
             if (success && node) {
                 node = node.findChild(field, last);
@@ -476,3 +495,4 @@ Ext.define('Ext.tree.Panel', {
         }, me);
     }
 });
+

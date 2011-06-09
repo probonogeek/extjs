@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.Label
  *
@@ -106,7 +120,6 @@ Ext.define('Ext.chart.Label', {
         var me = this,
             chart = me.chart,
             gradients = chart.gradients,
-            gradient,
             items = me.items,
             animate = chart.animate,
             config = me.label,
@@ -116,14 +129,12 @@ Ext.define('Ext.chart.Label', {
             group = me.labelsGroup,
             store = me.chart.store,
             len = store.getCount(),
-            ratio = items.length / len,
-            i, count, index, j, 
-            k, gradientsCount = (gradients || 0) && gradients.length,
-            colorStopTotal, colorStopIndex, colorStop,
-            item, label, storeItem,
-            sprite, spriteColor, spriteBrightness, labelColor,
+            itemLength = (items || 0) && items.length,
+            ratio = itemLength / len,
+            gradientsCount = (gradients || 0) && gradients.length,
             Color = Ext.draw.Color,
-            colorString;
+            gradient, i, count, index, j, k, colorStopTotal, colorStopIndex, colorStop, item, label,
+            storeItem, sprite, spriteColor, spriteBrightness, labelColor, colorString;
 
         if (display == 'none') {
             return;
@@ -154,7 +165,18 @@ Ext.define('Ext.chart.Label', {
                     //set contrast
                     if (config.contrast && item.sprite) {
                         sprite = item.sprite;
-                        colorString = sprite._to && sprite._to.fill || sprite.attr.fill;
+                        //set the color string to the color to be set.
+                        if (sprite._endStyle) {
+                            colorString = sprite._endStyle.fill;
+                        }
+                        else if (sprite._to) {
+                            colorString = sprite._to.fill;
+                        }
+                        else {
+                            colorString = sprite.attr.fill;
+                        }
+                        colorString = colorString || sprite.attr.fill;
+                        
                         spriteColor = Color.fromString(colorString);
                         //color wasn't parsed property maybe because it's a gradient id
                         if (colorString && !spriteColor) {
@@ -176,9 +198,11 @@ Ext.define('Ext.chart.Label', {
                         else {
                             spriteBrightness = spriteColor.getGrayscale() / 255;
                         }
+                        if (label.isOutside) {
+                            spriteBrightness = 1;
+                        }
                         labelColor = Color.fromString(label.attr.color || label.attr.fill).getHSL();
-                        
-                        labelColor[2] = spriteBrightness > 0.5? 0.2 : 0.8;
+                        labelColor[2] = spriteBrightness > 0.5 ? 0.2 : 0.8;
                         label.setAttributes({
                             fill: String(Color.fromHSL.apply({}, labelColor))
                         }, true);

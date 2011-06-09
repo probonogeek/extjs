@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-field-Hidden-method-constructor'><span id='Ext-form-field-Hidden'>/**
-</span></span> * @class Ext.form.field.Hidden
+  <pre class="prettyprint lang-js"><span id='Ext-form-field-Hidden'>/**
+</span> * @class Ext.form.field.Hidden
  * @extends Ext.form.field.Base
  * &lt;p&gt;A basic hidden field for storing hidden values in forms that need to be passed in the form submit.&lt;/p&gt;
  * &lt;p&gt;This creates an actual input element with type=&quot;submit&quot; in the DOM. While its label is
@@ -53,11 +53,6 @@
  * &lt;p&gt;Submitting the above form will result in three values sent to the server:
  * &lt;code&gt;text_field=value+from+text+field&amp;hidden_field_1=value+from+hidden+field&amp;&lt;br&gt;hidden_field_2=value+from+submit+call&lt;/code&gt;&lt;/p&gt;
  *
- * @constructor
- * Create a new Hidden field.
- * @param {Object} config Configuration options
- * 
- * @xtype hiddenfield
  */
 Ext.define('Ext.form.field.Hidden', {
     extend:'Ext.form.field.Base',

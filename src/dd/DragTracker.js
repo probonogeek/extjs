@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.dd.DragTracker
  * A DragTracker listens for drag events on an Element and fires events at the start and end of the drag,
@@ -326,9 +340,6 @@ Ext.define('Ext.dd.DragTracker', {
         // is lifted if the mouseout happens *during* a drag.
         this.mouseIsDown = false;
 
-        // Remove flag from event singleton
-        delete e.dragTracked;
-
         // If we mouseouted the el *during* the drag, the onMouseOut method will not have fired. Ensure that it gets processed.
         if (this.mouseIsOut) {
             this.mouseIsOut = false;
@@ -358,6 +369,9 @@ Ext.define('Ext.dd.DragTracker', {
         }
         // Private property calculated when first required and only cached during a drag
         delete this._constrainRegion;
+
+        // Remove flag from event singleton.  Using "Ext.EventObject" here since "endDrag" is called directly in some cases without an "e" param
+        delete Ext.EventObject.dragTracked;
     },
 
     triggerStart: function(e) {

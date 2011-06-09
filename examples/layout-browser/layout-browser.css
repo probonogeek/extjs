@@ -107,3 +107,10 @@ a:hover {
 .inner-tab-custom .x-border-layout-ct {
     background: #fff;
 }
+.x-panel-body .absolute-form-toolbar {
+    border-width: 0 0 1px 0 !important;
+}
+.absolute-form-panel-body,
+.absolute-form-panel-body .x-panel-body {
+    background: transparent;
+}

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.DragZone
  * @extends Ext.dd.DragZone
@@ -25,7 +39,7 @@ Ext.define('Ext.view.DragZone', {
         // So a View's DragZone cannot use the View's main element because the DropZone must use that
         // because the DropZone may need to scroll on hover at a scrolling boundary, and it is the View's
         // main element which handles scrolling.
-        // We use the View's parent element to drag from. Ideally, we would use the internal structure, but that 
+        // We use the View's parent element to drag from. Ideally, we would use the internal structure, but that
         // is transient; DataView's recreate the internal structure dynamically as data changes.
         // TODO: Ext 5.0 DragDrop must allow multiple DD objects to share the same element.
         me.callParent([me.view.el.dom.parentNode]);
@@ -45,6 +59,12 @@ Ext.define('Ext.view.DragZone', {
     onItemMouseDown: function(view, record, item, index, e) {
         if (!this.isPreventDrag(e, record, item, index)) {
             this.handleMouseDown(e);
+
+            // If we want to allow dragging of multi-selections, then veto the following handlers (which, in the absence of ctrlKey, would deselect)
+            // if the mousedowned record is selected
+            if (view.getSelectionModel().selectionMode == 'MULTI' && !e.ctrlKey && view.getSelectionModel().isSelected(record)) {
+                return false;
+            }
         }
     },
 
@@ -85,7 +105,7 @@ Ext.define('Ext.view.DragZone', {
         // Update the selection to match what would have been selected if the user had
         // done a full click on the target node rather than starting a drag from it
         if (!selectionModel.isSelected(record) || e.hasModifier()) {
-            selectionModel.selectWithEvent(record, e);
+            selectionModel.selectWithEvent(record, e, true);
         }
         data.records = selectionModel.getSelection();
 

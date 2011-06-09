@@ -15,7 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">Ext.define('Ext.state.LocalStorageProvider', {
+  <pre class="prettyprint lang-js"><span id='Ext-state-LocalStorageProvider'>/**
+</span> * @class Ext.state.LocalStorageProvider
+ * @extends Ext.state.Provider
+ * A Provider implementation which saves and retrieves state via the HTML5 localStorage object.
+ * If the browser does not support local storage, an exception will be thrown upon instantiating
+ * this class.
+ */
+
+Ext.define('Ext.state.LocalStorageProvider', {
     /* Begin Definitions */
     
     extend: 'Ext.state.Provider',

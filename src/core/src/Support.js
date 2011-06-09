@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.is
  * 
@@ -252,7 +266,7 @@ Ext.supports = {
          * selection when their display style is changed. Essentially, if a text input
          * has focus and its display style is changed, the I-beam disappears.
          * 
-         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
          * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
          * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
          * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
@@ -271,7 +285,7 @@ Ext.supports = {
          * selection when their display style is changed. Essentially, if a text area has
          * focus and its display style is changed, the I-beam disappears.
          *
-         * This bug is encountered due to the work around in place for the {@link RightMargin}
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
          * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
          * be fixed in Chrome 11.
          */
@@ -580,3 +594,4 @@ Ext.supports = {
         }
     ]
 };
+

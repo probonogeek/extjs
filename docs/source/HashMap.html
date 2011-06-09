@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-HashMap-method-constructor'><span id='Ext-util-HashMap'>/**
-</span></span> * @class Ext.util.HashMap
+  <pre class="prettyprint lang-js"><span id='Ext-util-HashMap'>/**
+</span> * @class Ext.util.HashMap
  * &lt;p&gt;
  * Represents a collection of a set of key and value pairs. Each key in the HashMap
  * must be unique, the same key cannot exist twice. Access to items is provided via
@@ -37,8 +37,6 @@ map.each(function(key, value, length){
  * there is no guarantee when iterating over the items that they will be in any particular
  * order. If this is required, then use a {@link Ext.util.MixedCollection}.
  * &lt;/p&gt;
- * @constructor
- * @param {Object} config The configuration options
  */
 Ext.define('Ext.util.HashMap', {
 
@@ -52,8 +50,15 @@ Ext.define('Ext.util.HashMap', {
         observable: 'Ext.util.Observable'
     },
 
+<span id='Ext-util-HashMap-method-constructor'>    /**
+</span>     * Creates new HashMap.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
-        var me = this;
+        config = config || {};
+        
+        var me = this,
+            keyFn = config.keyFn;
 
         me.addEvents(
 <span id='Ext-util-HashMap-event-add'>            /**
@@ -91,6 +96,10 @@ Ext.define('Ext.util.HashMap', {
 
         me.mixins.observable.constructor.call(me, config);
         me.clear(true);
+        
+        if (keyFn) {
+            me.getKey = keyFn;
+        }
     },
 
 <span id='Ext-util-HashMap-method-getCount'>    /**
@@ -121,7 +130,6 @@ Ext.define('Ext.util.HashMap', {
 
 <span id='Ext-util-HashMap-method-getKey'>    /**
 </span>     * Extracts the key from an object. This is a default implementation, it may be overridden
-     * @private
      * @param {Object} o The object to get the key from
      * @return {String} The key to use.
      */

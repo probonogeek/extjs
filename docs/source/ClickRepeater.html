@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-util-ClickRepeater-method-constructor'><span id='Ext-util-ClickRepeater'>/**
-</span></span> * @class Ext.util.ClickRepeater
+  <pre class="prettyprint lang-js"><span id='Ext-util-ClickRepeater'>/**
+</span> * @class Ext.util.ClickRepeater
  * @extends Ext.util.Observable
  *
  * A wrapper class which can be applied to any element. Fires a &quot;click&quot; event while the
@@ -25,14 +25,15 @@
  *
  * Optionally, a CSS class may be applied to the element during the time it is pressed.
  *
- * @constructor
- * @param {Mixed} el The element to listen on
- * @param {Object} config
  */
-
 Ext.define('Ext.util.ClickRepeater', {
     extend: 'Ext.util.Observable',
 
+<span id='Ext-util-ClickRepeater-method-constructor'>    /**
+</span>     * Creates new ClickRepeater.
+     * @param {Mixed} el The element to listen on
+     * @param {Object} config (optional) Config object.
+     */
     constructor : function(el, config){
         this.el = Ext.get(el);
         this.el.unselectable();

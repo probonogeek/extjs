@@ -1,13 +1,27 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.column.Column
  * @extends Ext.grid.header.Container
- * 
+ *
  * This class specifies the definition for a column inside a {@link Ext.grid.Panel}. It encompasses
  * both the grid header configuration as well as displaying data within the grid itself. If the
  * {@link #columns} configuration is specified, this column will become a column group and can
  * container other columns inside. In general, this class will not be created directly, rather
  * an array of column configurations will be passed to the grid:
- * 
+ *
  * {@img Ext.grid.column.Column/Ext.grid.column.Column.png Ext.grid.column.Column grid column}
  *
  * ## Code
@@ -20,38 +34,38 @@
  *             {firstname:"Dwight", lastname:"Schrute", senority:2, dep:"Sales", hired:"04/01/2004"},
  *             {firstname:"Jim", lastname:"Halpert", senority:3, dep:"Sales", hired:"02/22/2006"},
  *             {firstname:"Kevin", lastname:"Malone", senority:4, dep:"Accounting", hired:"06/10/2007"},
- *             {firstname:"Angela", lastname:"Martin", senority:5, dep:"Accounting", hired:"10/21/2008"}                        
+ *             {firstname:"Angela", lastname:"Martin", senority:5, dep:"Accounting", hired:"10/21/2008"}
  *         ]
  *     });
- *     
+ *
  *     Ext.create('Ext.grid.Panel', {
  *         title: 'Column Demo',
  *         store: Ext.data.StoreManager.lookup('employeeStore'),
  *         columns: [
  *             {text: 'First Name',  dataIndex:'firstname'},
  *             {text: 'Last Name',  dataIndex:'lastname'},
- *             {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},              
+ *             {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},
  *             {text: 'Deparment (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({senority})'}
  *         ],
  *         width: 400,
  *         renderTo: Ext.getBody()
  *     });
- *     
+ *
  * ## Convenience Subclasses
  * There are several column subclasses that provide default rendering for various data types
  *
  *  - {@link Ext.grid.column.Action}: Renders icons that can respond to click events inline
- *  - {@link Ext.grid.column.Boolean}: Renders for boolean values 
+ *  - {@link Ext.grid.column.Boolean}: Renders for boolean values
  *  - {@link Ext.grid.column.Date}: Renders for date values
  *  - {@link Ext.grid.column.Number}: Renders for numeric values
- *  - {@link Ext.grid.column.Template}: Renders a value using an {@link Ext.XTemplate} using the record data 
- * 
+ *  - {@link Ext.grid.column.Template}: Renders a value using an {@link Ext.XTemplate} using the record data
+ *
  * ## Setting Sizes
  * The columns are laid out by a {@link Ext.layout.container.HBox} layout, so a column can either
  * be given an explicit width value or a flex configuration. If no width is specified the grid will
  * automatically the size the column to 100px. For column groups, the size is calculated by measuring
  * the width of the child columns, so a width option should not be specified in that case.
- * 
+ *
  * ## Header Options
  *  - {@link #text}: Sets the header text for the column
  *  - {@link #sortable}: Specifies whether the column can be sorted by clicking the header or using the column menu
@@ -59,12 +73,10 @@
  *  - {@link #menuDisabled}: Disables the column header menu
  *  - {@link #draggable}: Specifies whether the column header can be reordered by dragging
  *  - {@link #groupable}: Specifies whether the grid can be grouped by the column dataIndex. See also {@link Ext.grid.feature.Grouping}
- * 
+ *
  * ## Data Options
  *  - {@link #dataIndex}: The dataIndex is the field in the underlying {@link Ext.data.Store} to use as the value for the column.
  *  - {@link #renderer}: Allows the underlying store value to be transformed before being displayed in the grid
- * 
- * @xtype gridcolumn
  */
 Ext.define('Ext.grid.column.Column', {
     extend: 'Ext.grid.header.Container',
@@ -118,14 +130,22 @@ Ext.define('Ext.grid.column.Column', {
      * Whether local/remote sorting is used is specified in <code>{@link Ext.data.Store#remoteSort}</code>.
      */
     sortable: true,
-    
+
     /**
      * @cfg {Boolean} groupable Optional. If the grid uses a {@link Ext.grid.feature.Grouping}, this option
      * may be used to disable the header menu item to group by the column selected. By default,
      * the header menu group option is enabled. Set to false to disable (but still show) the
      * group option in the header menu for the column.
      */
+
+    /**
+     * @cfg {Boolean} fixed Prevents the column from being resizable
+     */
      
+    /**
+     * @cfg {Boolean} resizable This config has no effect on a grid column, please see {@link #fixed} instead.
+     */
+
     /**
      * @cfg {Boolean} hideable Optional. Specify as <tt>false</tt> to prevent the user from hiding this column
      * (defaults to true).
@@ -139,7 +159,7 @@ Ext.define('Ext.grid.column.Column', {
     menuDisabled: false,
 
     /**
-     * @cfg {Function} renderer
+     * @method
      * <p>A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it
      * is rendered. Example:</p>
      * <pre><code>{
@@ -202,7 +222,7 @@ Ext.define('Ext.grid.column.Column', {
         var me = this,
             i,
             len;
-        
+
         if (Ext.isDefined(me.header)) {
             me.text = me.header;
             delete me.header;
@@ -282,7 +302,7 @@ Ext.define('Ext.grid.column.Column', {
 
     initRenderData: function() {
         var me = this;
-        
+
         Ext.applyIf(me.renderData, {
             text: me.text,
             menuDisabled: me.menuDisabled
@@ -290,12 +310,15 @@ Ext.define('Ext.grid.column.Column', {
         return me.callParent(arguments);
     },
 
-    // note that this should invalidate the menu cache
+    /**
+     * Sets the header text for this Column.
+     * @param text The header to display on this Column.
+     */
     setText: function(text) {
         this.text = text;
         if (this.rendered) {
             this.textEl.update(text);
-        } 
+        }
     },
 
     // Find the topmost HeaderContainer: An ancestor which is NOT a Header.
@@ -325,7 +348,7 @@ Ext.define('Ext.grid.column.Column', {
             dblclick:  me.onElDblClick,
             scope:     me
         });
-        
+
         // BrowserBug: Ie8 Strict Mode, this will break the focus for this browser,
         // must be fixed when focus management will be implemented.
         if (!Ext.isIE8 || !Ext.isStrict) {
@@ -356,22 +379,38 @@ Ext.define('Ext.grid.column.Column', {
             siblings,
             len, i,
             oldWidth = me.getWidth(),
-            newWidth = 0;
+            newWidth = 0,
+            readyForSizing = true,
+            hidden,
+            sibling;
 
         if (width !== oldWidth) {
 
             // Bubble size changes upwards to group headers
             if (headerCt.isGroupHeader) {
-
                 siblings = headerCt.items.items;
                 len = siblings.length;
 
-                // Size the owning group to the size of its sub headers 
-                if (siblings[len - 1].rendered) {
-
-                    for (i = 0; i < len; i++) {
-                        newWidth += (siblings[i] === me) ? width : siblings[i].getWidth();
+                /*
+                 * setSize will be called for each column as it's rendered
+                 * so we want to wait until all sub columns have been rendered
+                 * before we try and calculate the size of the outer container.
+                 * We also take into account hidden columns, because they won't
+                 * be rendered, but we'll still need to make the calculation.
+                 */
+                for (i = 0; i < len; i++) {
+                    sibling = siblings[i];
+                    hidden = sibling.hidden;
+                    if (!sibling.rendered && !hidden) {
+                        readyForSizing = false;
+                        break;
                     }
+                    if (!hidden) {
+                        newWidth += (sibling === me) ? width : sibling.getWidth();
+                    }
+                }
+
+                if (readyForSizing) {
                     headerCt.minWidth = newWidth;
                     headerCt.setWidth(newWidth);
                 }
@@ -450,7 +489,7 @@ Ext.define('Ext.grid.column.Column', {
 
     /**
      * @private
-     * Double click 
+     * Double click
      * @param e
      * @param t
      */
@@ -499,7 +538,7 @@ Ext.define('Ext.grid.column.Column', {
         var me = this,
             idx,
             nextIdx;
-            
+
         if (me.sortable) {
             idx = Ext.Array.indexOf(me.possibleSortStates, me.sortState);
 
@@ -692,7 +731,7 @@ Ext.define('Ext.grid.column.Column', {
     isOnRightEdge: function(e) {
         return (this.el.getRight() - e.getXY()[0] <= this.handleWidth);
     }
-    
+
     /**
      * Retrieves the editing field for editing associated with this header. Returns false if there
      * is no field associated with the Header the method will return false. If the
@@ -705,8 +744,8 @@ Ext.define('Ext.grid.column.Column', {
      */
     // intentionally omit getEditor and setEditor definitions bc we applyIf into columns
     // when the editing plugin is injected
-    
-    
+
+
     /**
      * Sets the form field to be used for editing. Note: This method only has an implementation
      * if an Editing plugin has been enabled on the grid.

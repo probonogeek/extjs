@@ -125,6 +125,7 @@
             margin: 0px;
             border: 1px solid $menu-item-active-border-color;
             cursor: pointer;
+            @include border-radius(3px);
         }
     }
 
@@ -176,5 +177,9 @@
                 background: $menu-item-active-background-color theme-image($theme-name, $menu-item-active-background-image) repeat-x left top;
             }
         }
+    }
+    
+    .#{$prefix}menu-date-item {
+        border-color: #99BBE8;
     }
 }

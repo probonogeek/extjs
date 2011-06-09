@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-chart-axis-Abstract'>/**
 </span> * @class Ext.chart.axis.Abstract
- * @ignore
+ * Base class for all axis classes.
  */
 Ext.define('Ext.chart.axis.Abstract', {
 
@@ -27,6 +27,10 @@ Ext.define('Ext.chart.axis.Abstract', {
 
     /* End Definitions */
 
+<span id='Ext-chart-axis-Abstract-method-constructor'>    /**
+</span>     * Creates new Axis.
+     * @param {Object} config (optional) Config options.
+     */
     constructor: function(config) {
         config = config || {};
 

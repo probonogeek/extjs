@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-container-Viewport-method-constructor'><span id='Ext-container-Viewport'>/**
-</span></span> * @class Ext.container.Viewport
+  <pre class="prettyprint lang-js"><span id='Ext-container-Viewport'>/**
+</span> * @class Ext.container.Viewport
  * @extends Ext.container.Container
 
 A specialized container representing the viewable application area (the browser viewport).
@@ -84,11 +84,7 @@ An example showing a classic application border layout:
         }]
     });
 
- * @constructor
- * Create a new Viewport
- * @param {Object} config The config object
  * @markdown
- * @xtype viewport
  */
 Ext.define('Ext.container.Viewport', {
     extend: 'Ext.container.Container',
@@ -153,16 +149,15 @@ Ext.define('Ext.container.Viewport', {
         el.setSize = Ext.emptyFn;
         el.dom.scroll = 'no';
         me.allowDomMove = false;
-        //this.autoWidth = true;
-        //this.autoHeight = true;
         Ext.EventManager.onWindowResize(me.fireResize, me);
         me.renderTo = me.el;
+        me.width = Ext.core.Element.getViewportWidth();
+        me.height = Ext.core.Element.getViewportHeight();
     },
 
     fireResize : function(w, h){
         // setSize is the single entry point to layouts
         this.setSize(w, h);
-        //this.fireEvent('resize', this, w, h, w, h);
     }
 });
 </pre>

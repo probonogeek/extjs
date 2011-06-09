@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.Component
  * @extends Ext.AbstractComponent
@@ -105,9 +119,10 @@ piechart         {@link Ext.chart.series.Pie}
  *</p>
  *<p>The Component above creates its encapsulating <code>div</code> upon render, and use the configured HTML as content. More complex
  * internal structure may be created using the {@link #renderTpl} configuration, although to display database-derived mass
- * data, it is recommended that an ExtJS data-backed Component such as a {Ext.view.DataView DataView}, or {Ext.grid.Panel GridPanel},
- * or {@link Ext.tree.Panel TreePanel} be used.</p>
+ * data, it is recommended that an ExtJS data-backed Component such as a {@link Ext.view.View View}, or
+ * {@link Ext.grid.Panel GridPanel}, or {@link Ext.tree.Panel TreePanel} be used.</p>
  * @constructor
+ * Creates new Component.
  * @param {Ext.core.Element/String/Object} config The configuration options may be specified as either:
  * <div class="mdetail-params"><ul>
  * <li><b>an element</b> :
@@ -146,7 +161,9 @@ Ext.define('Ext.Component', {
         DIRECTION_TOP: 'top',
         DIRECTION_RIGHT: 'right',
         DIRECTION_BOTTOM: 'bottom',
-        DIRECTION_LEFT: 'left'
+        DIRECTION_LEFT: 'left',
+
+        VERTICAL_DIRECTION: /^(?:top|bottom)$/
     },
 
     /* End Definitions */
@@ -643,9 +660,9 @@ new Ext.Component({
     },
 
     /**
-     * <p>Shows this Component, rendering it first if {@link #autoRender} or {{@link "floating} are <code>true</code>.</p>
+     * <p>Shows this Component, rendering it first if {@link #autoRender} or {@link #floating} are <code>true</code>.</p>
      * <p>After being shown, a {@link #floating} Component (such as a {@link Ext.window.Window}), is activated it and brought to the front of
-     * its {@link #ZIndexManager z-index stack}.</p>
+     * its {@link #zIndexManager z-index stack}.</p>
      * @param {String/Element} animateTarget Optional, and <b>only valid for {@link #floating} Components such as
      * {@link Ext.window.Window Window}s or {@link Ext.tip.ToolTip ToolTip}s, or regular Components which have been configured
      * with <code>floating: true</code>.</b> The target from which the Component should
@@ -1030,3 +1047,4 @@ alert(t.getXType());  // alerts 'textfield'
     }
 
 });
+

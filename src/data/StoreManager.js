@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.data.StoreManager
  * @extends Ext.util.MixedCollection
@@ -153,7 +167,7 @@ Ext.define('Ext.data.StoreManager', {
     };
 
     /**
-     * Gets a registered Store by id (shortcut to {@link #lookup})
+     * Gets a registered Store by id (shortcut to {@link Ext.data.StoreManager#lookup})
      * @param {String/Object} id The id of the Store, or a Store instance
      * @return {Ext.data.Store}
      * @member Ext
@@ -163,3 +177,4 @@ Ext.define('Ext.data.StoreManager', {
         return Ext.data.StoreManager.lookup(name);
     };
 });
+

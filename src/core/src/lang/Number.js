@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.Number
  *
@@ -11,7 +25,7 @@ var isToFixedBroken = (0.9).toFixed() !== '1';
 
 Ext.Number = {
     /**
-     * Checks whether or not the current number is within a desired range.  If the number is already within the
+     * Checks whether or not the passed number is within a desired range.  If the number is already within the
      * range it is returned, otherwise the min or max value is returned depending on which side of the range is
      * exceeded. Note that this method returns the constrained value but does not change the current number.
      * @param {Number} number The number to check
@@ -29,6 +43,33 @@ Ext.Number = {
             number = Math.min(number, max);
         }
         return number;
+    },
+
+    /**
+     * Snaps the passed number between stopping points based upon a passed increment value.
+     * @param {Number} value The unsnapped value.
+     * @param {Number} increment The increment by which the value must move.
+     * @param {Number} minValue The minimum value to which the returned value must be constrained. Overrides the increment..
+     * @param {Number} maxValue The maximum value to which the returned value must be constrained. Overrides the increment..
+     * @return {Number} The value of the nearest snap target.
+     */
+    snap : function(value, increment, minValue, maxValue) {
+        var newValue = value,
+            m;
+
+        if (!(increment && value)) {
+            return value;
+        }
+        m = value % increment;
+        if (m !== 0) {
+            newValue -= m;
+            if (m * 2 >= increment) {
+                newValue += increment;
+            } else if (m * 2 < -increment) {
+                newValue -= increment;
+            }
+        }
+        return Ext.Number.constrain(newValue, minValue,  maxValue);
     },
 
     /**

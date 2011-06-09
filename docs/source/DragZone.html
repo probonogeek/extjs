@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dd-DragZone-method-constructor'><span id='Ext-dd-DragZone'>/**
-</span></span> * @class Ext.dd.DragZone
+  <pre class="prettyprint lang-js"><span id='Ext-dd-DragZone'>/**
+</span> * @class Ext.dd.DragZone
  * @extends Ext.dd.DragSource
  * &lt;p&gt;This class provides a container DD instance that allows dragging of multiple child source nodes.&lt;/p&gt;
  * &lt;p&gt;This class does not move the drag target nodes, but a proxy element which may contain
@@ -69,14 +69,16 @@ myDataView.on('render', function(v) {
 });&lt;/code&gt;&lt;/pre&gt;
  * See the {@link Ext.dd.DropZone DropZone} documentation for details about building a DropZone which
  * cooperates with this DragZone.
- * @constructor
- * @param {Mixed} el The container element
- * @param {Object} config
  */
 Ext.define('Ext.dd.DragZone', {
 
     extend: 'Ext.dd.DragSource',
 
+<span id='Ext-dd-DragZone-method-constructor'>    /**
+</span>     * Creates new DragZone.
+     * @param {Mixed} el The container element
+     * @param {Object} config
+     */
     constructor : function(el, config){
         this.callParent([el, config]);
         if (this.containerScroll) {

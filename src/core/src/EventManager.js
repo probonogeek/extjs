@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides
@@ -313,7 +327,7 @@ Ext.EventManager = {
     */
     addListener: function(element, eventName, fn, scope, options){
         // Check if we've been passed a "config style" event.
-        if (Ext.isObject(eventName)) {
+        if (typeof eventName !== 'string') {
             this.prepareListenerConfig(element, eventName);
             return;
         }
@@ -379,7 +393,7 @@ Ext.EventManager = {
     */
     removeListener : function(element, eventName, fn, scope) {
         // handle our listener config object syntax
-        if (Ext.isObject(eventName)) {
+        if (typeof eventName !== 'string') {
             this.prepareListenerConfig(element, eventName, true);
             return;
         }
@@ -423,7 +437,7 @@ Ext.EventManager = {
                 }
 
                 // remove listener from cache
-                cache.splice(i, 1);
+                Ext.Array.erase(cache, i, 1);
             }
         }
     },
@@ -484,7 +498,7 @@ Ext.EventManager = {
      * @return {Function} the wrapper function
      */
     createListenerWrap : function(dom, ename, fn, scope, options) {
-        options = !Ext.isObject(options) ? {} : options;
+        options = options || {};
 
         var f, gen;
 
@@ -565,6 +579,10 @@ Ext.EventManager = {
      * @return {Array} The events for the element
      */
     getEventListenerCache : function(element, eventName) {
+        if (!element) {
+            return [];
+        }
+        
         var eventCache = this.getElementEventCache(element);
         return eventCache[eventName] || (eventCache[eventName] = []);
     },
@@ -576,6 +594,9 @@ Ext.EventManager = {
      * @return {Object} The event cache for the object
      */
     getElementEventCache : function(element) {
+        if (!element) {
+            return {};
+        }
         var elementCache = Ext.cache[this.getId(element)];
         return elementCache.events || (elementCache.events = {});
     },
@@ -868,7 +889,7 @@ Ext.EventManager.un = Ext.EventManager.removeListener;
         // find the body element
         var bd = document.body || document.getElementsByTagName('body')[0],
             baseCSSPrefix = Ext.baseCSSPrefix,
-            cls = [],
+            cls = [baseCSSPrefix + 'body'],
             htmlCls = [],
             html;
 
@@ -965,3 +986,4 @@ Ext.EventManager.un = Ext.EventManager.removeListener;
 
     Ext.onReady(initExtCss);
 })();
+

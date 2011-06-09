@@ -100,7 +100,21 @@ Ext.define('Ext.layout.container.HBox', {
     perpendicularRB: 'b',
     perpendicularLeftTop: 'top',
     perpendicularRightBottom: 'bottom',
-    perpendicularPosition: 'y'
+    perpendicularPosition: 'y',
+    configureItem: function(item) {
+        if (item.flex) {
+            item.layoutManagedWidth = 1;
+        } else {
+            item.layoutManagedWidth = 2;
+        }
+
+        if (this.align === 'stretch' || this.align === 'stretchmax') {
+            item.layoutManagedHeight = 1;
+        } else {
+            item.layoutManagedHeight = 2;
+        }
+        this.callParent(arguments);
+    }
 });</pre>
 </body>
 </html>

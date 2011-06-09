@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.series.Line
  * @extends Ext.chart.series.Cartesian
@@ -150,11 +164,21 @@ Ext.define('Ext.chart.series.Line', {
     style: {},
     
     /**
-     * @cfg {Boolean} smooth
-     * If true, the line will be smoothed/rounded around its points, otherwise straight line
-     * segments will be drawn. Defaults to false.
+     * @cfg {Boolean/Number} smooth
+     * If set to `true` or a non-zero number, the line will be smoothed/rounded around its points; otherwise
+     * straight line segments will be drawn.
+     *
+     * A numeric value is interpreted as a divisor of the horizontal distance between consecutive points in
+     * the line; larger numbers result in sharper curves while smaller numbers result in smoother curves.
+     *
+     * If set to `true` then a default numeric value of 3 will be used. Defaults to `false`.
      */
     smooth: false,
+
+    /**
+     * @private Default numeric smoothing value to be used when {@link #smooth} = true.
+     */
+    defaultSmoothness: 3,
 
     /**
      * @cfg {Boolean} fill
@@ -254,7 +278,8 @@ Ext.define('Ext.chart.series.Line', {
             markerGroup = me.markerGroup,
             enableShadows = chart.shadow,
             shadowGroups = me.shadowGroups,
-            shadowAttributes = this.shadowAttributes,
+            shadowAttributes = me.shadowAttributes,
+            smooth = me.smooth,
             lnsh = shadowGroups.length,
             dummyPath = ["M"],
             path = ["M"],
@@ -264,6 +289,7 @@ Ext.define('Ext.chart.series.Line', {
             shadowBarAttr,
             xValues = [],
             yValues = [],
+            storeIndices = [],
             numericAxis = true,
             axisCount = 0,
             onbreak = false,
@@ -278,10 +304,11 @@ Ext.define('Ext.chart.series.Line', {
                 'top': 'bottom',
                 'bottom': 'top'
             },
+            isNumber = Ext.isNumber,
             seriesIdx = me.seriesIdx, shadows, shadow, shindex, fromPath, fill, fillPath, rendererAttributes,
             x, y, prevX, prevY, firstY, markerCount, i, j, ln, axis, ends, marker, markerAux, item, xValue,
             yValue, coords, xScale, yScale, minX, maxX, minY, maxY, line, animation, endMarkerStyle,
-            endLineStyle, type, props, firstMarker, count;
+            endLineStyle, type, props, firstMarker, count, smoothPath, renderPath;
         
         //if store is empty then there's nothing to draw.
         if (!store || !store.getCount()) {
@@ -361,7 +388,7 @@ Ext.define('Ext.chart.series.Line', {
         // If a field was specified without a corresponding axis, create one to get bounds
         //only do this for the axis where real values are bound (that's why we check for
         //me.axis)
-        if (me.xField && !Ext.isNumber(minX)) {
+        if (me.xField && !isNumber(minX)) {
             if (me.axis == 'bottom' || me.axis == 'top') {
                 axis = Ext.create('Ext.chart.axis.Axis', {
                     chart: chart,
@@ -380,7 +407,7 @@ Ext.define('Ext.chart.series.Line', {
             }
         }
         
-        if (me.yField && !Ext.isNumber(minY)) {
+        if (me.yField && !isNumber(minY)) {
             if (me.axis == 'right' || me.axis == 'left') {
                 axis = Ext.create('Ext.chart.axis.Axis', {
                     chart: chart,
@@ -404,7 +431,10 @@ Ext.define('Ext.chart.series.Line', {
             xScale = bbox.width / (store.getCount() - 1);
         }
         else {
-            xScale = bbox.width / (maxX - minX);
+            //In case some person decides to set an axis' minimum and maximum
+            //configuration properties to the same value, then fallback the
+            //denominator to a > 0 value.
+            xScale = bbox.width / ((maxX - minX) || (store.getCount() - 1));
         }
 
         if (isNaN(minY)) {
@@ -412,7 +442,10 @@ Ext.define('Ext.chart.series.Line', {
             yScale = bbox.height / (store.getCount() - 1);
         } 
         else {
-            yScale = bbox.height / (maxY - minY);
+            //In case some person decides to set an axis' minimum and maximum
+            //configuration properties to the same value, then fallback the
+            //denominator to a > 0 value.
+            yScale = bbox.height / ((maxY - minY) || (store.getCount() - 1));
         }
         
         store.each(function(record, i) {
@@ -438,6 +471,7 @@ Ext.define('Ext.chart.series.Line', {
                 || (me.axis != 'left' && me.axis != 'right' && !numericAxis)) {
                 yValue = i;
             }
+            storeIndices.push(i);
             xValues.push(xValue);
             yValues.push(yValue);
         }, me);
@@ -532,12 +566,13 @@ Ext.define('Ext.chart.series.Line', {
                     };
                 }
             }
+
             me.items.push({
                 series: me,
                 value: [xValue, yValue],
                 point: [x, y],
                 sprite: marker,
-                storeItem: store.getAt(i)
+                storeItem: store.getAt(storeIndices[i])
             });
             prevX = x;
             prevY = y;
@@ -547,19 +582,23 @@ Ext.define('Ext.chart.series.Line', {
             //nothing to be rendered
             return;    
         }
-        
-        if (me.smooth) {
-            path = Ext.draw.Draw.smooth(path, 6);
+    
+        if (smooth) {
+            smoothPath = Ext.draw.Draw.smooth(path, isNumber(smooth) ? smooth : me.defaultSmoothness);
         }
         
+        renderPath = smooth ? smoothPath : path;
+
         //Correct path if we're animating timeAxis intervals
         if (chart.markerIndex && me.previousPath) {
             fromPath = me.previousPath;
-            fromPath.splice(1, 2);
+            if (!smooth) {
+                Ext.Array.erase(fromPath, 1, 2);
+            }
         } else {
             fromPath = path;
         }
-
+        
         // Only create a line if one doesn't exist.
         if (!me.line) {
             me.line = surface.add(Ext.apply({
@@ -592,7 +631,7 @@ Ext.define('Ext.chart.series.Line', {
             }
         }
         if (me.fill) {
-            fillPath = path.concat([
+            fillPath = renderPath.concat([
                 ["L", x, bbox.y + bbox.height],
                 ["L", bbox.x, bbox.y + bbox.height],
                 ["L", bbox.x, firstY]
@@ -602,7 +641,7 @@ Ext.define('Ext.chart.series.Line', {
                     group: group,
                     type: 'path',
                     opacity: endLineStyle.opacity || 0.3,
-                    fill: colorArrayStyle[seriesIdx % colorArrayLength] || endLineStyle.fill,
+                    fill: endLineStyle.fill || colorArrayStyle[seriesIdx % colorArrayLength],
                     path: dummyPath
                 });
             }
@@ -612,7 +651,7 @@ Ext.define('Ext.chart.series.Line', {
             fill = me.fill;
             line = me.line;
             //Add renderer to line. There is not unique record associated with this.
-            rendererAttributes = me.renderer(line, false, { path: path }, i, store);
+            rendererAttributes = me.renderer(line, false, { path: renderPath }, i, store);
             Ext.apply(rendererAttributes, endLineStyle || {}, {
                 stroke: endLineStyle.stroke || endLineStyle.fill
             });
@@ -636,12 +675,12 @@ Ext.define('Ext.chart.series.Line', {
                 for(j = 0; j < lnsh; j++) {
                     if (chart.markerIndex && me.previousPath) {
                         me.onAnimate(shadows[j], {
-                            to: { path: path },
+                            to: { path: renderPath },
                             from: { path: fromPath }
                         });
                     } else {
                         me.onAnimate(shadows[j], {
-                            to: { path: path }
+                            to: { path: renderPath }
                         });
                     }
                 }
@@ -651,7 +690,7 @@ Ext.define('Ext.chart.series.Line', {
                 me.onAnimate(me.fillPath, {
                     to: Ext.apply({}, {
                         path: fillPath,
-                        fill: colorArrayStyle[seriesIdx % colorArrayLength] || endLineStyle.fill
+                        fill: endLineStyle.fill || colorArrayStyle[seriesIdx % colorArrayLength]
                     }, endLineStyle || {})
                 });
             }
@@ -675,7 +714,7 @@ Ext.define('Ext.chart.series.Line', {
                 }
             }
         } else {
-            rendererAttributes = me.renderer(me.line, false, { path: path, hidden: false }, i, store);
+            rendererAttributes = me.renderer(me.line, false, { path: renderPath, hidden: false }, i, store);
             Ext.apply(rendererAttributes, endLineStyle || {}, {
                 stroke: endLineStyle.stroke || endLineStyle.fill
             });
@@ -687,7 +726,7 @@ Ext.define('Ext.chart.series.Line', {
                 shadows = me.line.shadows;
                 for(j = 0; j < lnsh; j++) {
                     shadows[j].setAttributes({
-                        path: path
+                        path: renderPath
                     }, true);
                 }
             }
@@ -715,7 +754,11 @@ Ext.define('Ext.chart.series.Line', {
         }
 
         if (chart.markerIndex) {
-            path.splice(1, 0, path[1], path[2]);
+            if (me.smooth) {
+                Ext.Array.erase(path, 1, 2);
+            } else {
+                Ext.Array.splice(path, 1, 0, path[1], path[2]);
+            }
             me.previousPath = path;
         }
         me.renderLabels();

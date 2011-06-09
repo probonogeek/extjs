@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.window.Window
  * @extends Ext.panel.Panel
@@ -26,9 +40,6 @@ Ext.create('Ext.window.Window', {
     }
 }).show();
 </pre></code>
- * @constructor
- * @param {Object} config The config object
- * @xtype window
  */
 Ext.define('Ext.window.Window', {
     extend: 'Ext.panel.Panel',
@@ -499,8 +510,18 @@ Ext.define('Ext.window.Window', {
 
     // private
     afterShow: function(animateTarget) {
-        var me = this;
+        var me = this,
+            animating = animateTarget || me.animateTarget;
 
+        
+        if (animating) {
+            /*
+             * If we're animating, constrain the positioning before calling the
+             * superclass, otherwise we'll be animating to the unconstrained
+             * window position.
+             */
+            me.doConstrain();
+        }
         // Perform superclass's afterShow tasks
         // Which might include animating a proxy from an animTarget
         me.callParent(arguments);
@@ -510,7 +531,9 @@ Ext.define('Ext.window.Window', {
         }
 
         me.syncMonitorWindowResize();
-        me.doConstrain();
+        if (!animating) {
+            me.doConstrain();
+        }
 
         if (me.keyMap) {
             me.keyMap.enable();

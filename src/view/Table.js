@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.Table
  * @extends Ext.view.View
@@ -6,7 +20,7 @@ This class encapsulates the user interface for a tabular data set.
 It acts as a centralized manager for controlling the various interface
 elements of the view. This includes handling events, such as row and cell
 level based DOM events. It also reacts to events from the underlying {@link Ext.selection.Model}
-to provide visual feedback to the user. 
+to provide visual feedback to the user.
 
 This class does not provide ways to manipulate the underlying data of the configured
 {@link Ext.data.Store}.
@@ -16,7 +30,6 @@ to be used directly.
 
  * @markdown
  * @abstract
- * @xtype tableview
  * @author Nicolas Ferrero
  */
 Ext.define('Ext.view.Table', {
@@ -89,7 +102,16 @@ viewConfig: {
 
     initComponent: function() {
         var me = this;
-        
+
+        if (me.deferRowRender !== false) {
+            me.refresh = function() {
+                delete me.refresh;
+                setTimeout(function() {
+                    me.refresh();
+                }, 0);
+            };
+        }
+
         me.scrollState = {};
         me.selModel.view = me;
         me.headerCt.view = me;
@@ -115,7 +137,7 @@ viewConfig: {
     // scroll to top of the grid when store loads
     onStoreLoad: function(){
         var me = this;
-        
+
         if (me.invalidateScrollerOnRefresh) {
             if (Ext.isGecko) {
                 if (!me.scrollToTopTask) {
@@ -130,7 +152,7 @@ viewConfig: {
 
     // scroll the view to the top
     scrollToTop: Ext.emptyFn,
-    
+
     /**
      * Add a listener to the main view element. It will be destroyed with the view.
      * @private
@@ -140,16 +162,16 @@ viewConfig: {
             element: 'el'
         });
     },
-    
+
     /**
      * Get the columns used for generating a template via TableChunker.
      * See {@link Ext.grid.header.Container#getGridColumns}.
      * @private
      */
     getGridColumns: function() {
-        return this.headerCt.getGridColumns();    
+        return this.headerCt.getGridColumns();
     },
-    
+
     /**
      * Get a leaf level header by index regardless of what the nesting
      * structure is.
@@ -159,7 +181,7 @@ viewConfig: {
     getHeaderAtIndex: function(index) {
         return this.headerCt.getHeaderAtIndex(index);
     },
-    
+
     /**
      * Get the cell (td) for a particular record and column.
      * @param {Ext.data.Model} record
@@ -192,7 +214,7 @@ viewConfig: {
             i = 0,
             features,
             len;
-            
+
         me.features = me.features || [];
         features = me.features;
         len = features.length;
@@ -228,7 +250,7 @@ viewConfig: {
 
     afterRender: function() {
         var me = this;
-        
+
         me.callParent();
         me.mon(me.el, {
             scroll: me.fireBodyScroll,
@@ -286,7 +308,7 @@ viewConfig: {
 
         jln = preppedRecords.length;
         // process row classes, rowParams has been deprecated and has been moved
-        // to the individual features that implement the behavior. 
+        // to the individual features that implement the behavior.
         if (this.getRowClass) {
             for (; j < jln; j++) {
                 rowParams = {};
@@ -336,11 +358,21 @@ viewConfig: {
     onHeaderResize: function(header, w, suppressFocus) {
         var me = this,
             el = me.el;
+
         if (el) {
             me.saveScrollState();
             // Grab the col and set the width, css
             // class is generated in TableChunker.
             // Select composites because there may be several chunks.
+
+            // IE6 and IE7 bug.
+            // Setting the width of the first TD does not work - ends up with a 1 pixel discrepancy.
+            // We need to increment the passed with in this case.
+            if (Ext.isIE6 || Ext.isIE7) {
+                if (header.el.hasCls(Ext.baseCSSPrefix + 'column-header-first')) {
+                    w += 1;
+                }
+            }
             el.select('.' + Ext.baseCSSPrefix + 'grid-col-resizer-'+header.id).setWidth(w);
             el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(me.headerCt.getFullWidth());
             me.restoreScrollState();
@@ -385,7 +417,7 @@ viewConfig: {
     setNewTemplate: function() {
         var me = this,
             columns = me.headerCt.getColumnsForTpl(true);
-            
+
         me.tpl = me.getTableChunker().getTableTpl({
             columns: columns,
             features: me.features
@@ -431,31 +463,31 @@ viewConfig: {
     // GridSelectionModel invokes onRowDeselect as selection changes
     onRowDeselect : function(rowIdx) {
         var me = this;
-        
+
         me.removeRowCls(rowIdx, me.selectedItemCls);
         me.removeRowCls(rowIdx, me.focusedItemCls);
     },
-    
+
     onCellSelect: function(position) {
         var cell = this.getCellByPosition(position);
         if (cell) {
             cell.addCls(this.selectedCellCls);
         }
     },
-    
+
     onCellDeselect: function(position) {
         var cell = this.getCellByPosition(position);
         if (cell) {
             cell.removeCls(this.selectedCellCls);
         }
-        
+
     },
-    
+
     onCellFocus: function(position) {
         //var cell = this.getCellByPosition(position);
         this.focusCell(position);
     },
-    
+
     getCellByPosition: function(position) {
         var row    = position.row,
             column = position.column,
@@ -464,7 +496,7 @@ viewConfig: {
             header = this.headerCt.getHeaderAtIndex(column),
             cellSelector,
             cell = false;
-            
+
         if (header && node) {
             cellSelector = header.getCellSelector();
             cell = Ext.fly(node).down(cellSelector);
@@ -491,7 +523,7 @@ viewConfig: {
 
     /**
      * Focus a particular row and bring it into view. Will fire the rowfocus event.
-     * @cfg {Mixed} An HTMLElement template node, index of a template node, the
+     * @param {Mixed} rowIdx An HTMLElement template node, index of a template node, the
      * id of a template node or the record associated with the node.
      */
     focusRow: function(rowIdx) {
@@ -503,7 +535,7 @@ viewConfig: {
             rowRegion,
             elRegion,
             record;
-            
+
         if (row && el) {
             elRegion  = el.getRegion();
             rowRegion = Ext.fly(row).getRegion();
@@ -613,23 +645,10 @@ viewConfig: {
      * Refresh the grid view.
      * Saves and restores the scroll state, generates a new template, stripes rows
      * and invalidates the scrollers.
-     * @param {Boolean} firstPass This is a private flag for internal use only.
      */
-    refresh: function(firstPass) {
-        var me = this,
-            table;
-
-        //this.saveScrollState();
-        me.setNewTemplate();
-        
-        me.callParent(arguments);
-
-        //this.restoreScrollState();
-
-        if (me.rendered && !firstPass) {
-            // give focus back to gridview
-            //me.el.focus();
-        }
+    refresh: function() {
+        this.setNewTemplate();
+        this.callParent(arguments);
     },
 
     processItemEvent: function(record, row, rowIndex, e) {
@@ -662,7 +681,7 @@ viewConfig: {
         }
 
         return !(
-            // We are adding cell and feature events  
+            // We are adding cell and feature events
             (me['onBeforeCell' + map[type]](cell, cellIndex, record, row, rowIndex, e) === false) ||
             (me.fireEvent('beforecell' + type, me, cell, cellIndex, record, row, rowIndex, e) === false) ||
             (me['onCell' + map[type]](cell, cellIndex, record, row, rowIndex, e) === false) ||
@@ -696,7 +715,7 @@ viewConfig: {
                     // fireEvent signature
                     beforeArgs = feature.getFireEventArgs('before' + prefix + type, me, featureTarget, e);
                     args = feature.getFireEventArgs(prefix + type, me, featureTarget, e);
-                    
+
                     if (
                         // before view event
                         (me.fireEvent.apply(me, beforeArgs) === false) ||
@@ -734,9 +753,11 @@ viewConfig: {
      * @private
      */
     expandToFit: function(header) {
-        var maxWidth = this.getMaxContentWidth(header);
-        delete header.flex;
-        header.setWidth(maxWidth);
+        if (header) {
+            var maxWidth = this.getMaxContentWidth(header);
+            delete header.flex;
+            header.setWidth(maxWidth);
+        }
     },
 
     /**

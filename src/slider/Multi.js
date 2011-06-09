@@ -1,8 +1,22 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.slider.Multi
  * @extends Ext.form.field.Base
  * <p>Slider which supports vertical or horizontal orientation, keyboard adjustments, configurable snapping, axis
- * clicking and animation. Can be added as an item to any container. In addition,  
+ * clicking and animation. Can be added as an item to any container. In addition,
  * {@img Ext.slider.Multi/Ext.slider.Multi.png Ext.slider.Multi component}
  * <p>Example usage:</p>
  * Sliders can be created with more than one thumb handle by passing an array of values instead of a single one:
@@ -17,9 +31,8 @@
         //this defaults to true, setting to false allows the thumbs to pass each other
         {@link #constrainThumbs}: false,
         renderTo: Ext.getBody()
-    });  
+    });
 </pre>
- * @xtype multislider
  */
 Ext.define('Ext.slider.Multi', {
     extend: 'Ext.form.field.Base',
@@ -159,7 +172,7 @@ Ext.define('Ext.slider.Multi', {
         var me = this,
             tipPlug,
             hasTip;
-        
+
         /**
          * @property thumbs
          * @type Array
@@ -280,7 +293,7 @@ Ext.define('Ext.slider.Multi', {
         var thumbs = this.thumbs,
             ln = thumbs.length,
             zIndex, thumb, i;
-            
+
         for (i = 0; i < ln; i++) {
             thumb = thumbs[i];
 
@@ -342,7 +355,7 @@ Ext.define('Ext.slider.Multi', {
      */
     initEvents : function() {
         var me = this;
-        
+
         me.mon(me.el, {
             scope    : me,
             mousedown: me.onMouseDown,
@@ -366,7 +379,7 @@ Ext.define('Ext.slider.Multi', {
             thumbs = me.thumbs,
             len = thumbs.length,
             local;
-            
+
         if (me.disabled) {
             return;
         }
@@ -392,7 +405,7 @@ Ext.define('Ext.slider.Multi', {
     onClickChange : function(local) {
         var me = this,
             thumb, index;
-            
+
         if (local.top > me.clickRange[0] && local.top < me.clickRange[1]) {
             //find the nearest thumb to the click event
             thumb = me.getNearest(local, 'left');
@@ -453,13 +466,13 @@ Ext.define('Ext.slider.Multi', {
         var me = this,
             k,
             val;
-        
+
         if(me.disabled || me.thumbs.length !== 1) {
             e.preventDefault();
             return;
         }
         k = e.getKey();
-        
+
         switch(k) {
             case e.UP:
             case e.RIGHT:
@@ -478,33 +491,6 @@ Ext.define('Ext.slider.Multi', {
         }
     },
 
-    /**
-     * @private
-     * If using snapping, this takes a desired new value and returns the closest snapped
-     * value to it
-     * @param {Number} value The unsnapped value
-     * @return {Number} The value of the nearest snap target
-     */
-    doSnap : function(value) {
-        var newValue = value,
-            inc = this.increment,
-            m;
-            
-        if (!(inc && value)) {
-            return value;
-        }
-        m = value % inc;
-        if (m !== 0) {
-            newValue -= m;
-            if (m * 2 >= inc) {
-                newValue += inc;
-            } else if (m * 2 < -inc) {
-                newValue -= inc;
-            }
-        }
-        return Ext.Number.constrain(newValue, this.minValue,  this.maxValue);
-    },
-
     // private
     afterRender : function() {
         var me = this,
@@ -513,7 +499,7 @@ Ext.define('Ext.slider.Multi', {
             len = thumbs.length,
             thumb,
             v;
-            
+
         me.callParent(arguments);
 
         for (; i < len; i++) {
@@ -551,8 +537,8 @@ Ext.define('Ext.slider.Multi', {
      */
     normalizeValue : function(v) {
         var me = this;
-        
-        v = me.doSnap(v);
+
+        v = Ext.Number.snap(v, this.increment, this.minValue, this.maxValue);
         v = Ext.util.Format.round(v, me.decimalPrecision);
         v = Ext.Number.constrain(v, me.minValue, me.maxValue);
         return v;
@@ -569,7 +555,7 @@ Ext.define('Ext.slider.Multi', {
             thumbs = me.thumbs,
             len = thumbs.length,
             t;
-            
+
         me.minValue = val;
         me.inputEl.dom.setAttribute('aria-valuemin', val);
 
@@ -591,7 +577,7 @@ Ext.define('Ext.slider.Multi', {
             thumbs = me.thumbs,
             len = thumbs.length,
             t;
-            
+
         me.maxValue = val;
         me.inputEl.dom.setAttribute('aria-valuemax', val);
 
@@ -671,7 +657,7 @@ Ext.define('Ext.slider.Multi', {
             thumb,
             el,
             xy;
-            
+
         me.callParent();
 
         for (; i < len; i++) {
@@ -705,7 +691,7 @@ Ext.define('Ext.slider.Multi', {
             len = thumbs.length,
             thumb,
             el;
-            
+
         this.callParent();
 
         for (; i < len; i++) {
@@ -791,7 +777,7 @@ Ext.define('Ext.slider.Multi', {
     // private
     beforeDestroy : function() {
         var me = this;
-        
+
         Ext.destroyMembers(me.innerEl, me.endEl, me.focusEl);
         Ext.each(me.thumbs, function(thumb) {
             Ext.destroy(thumb);
@@ -826,3 +812,4 @@ Ext.define('Ext.slider.Multi', {
         }
     }
 });
+

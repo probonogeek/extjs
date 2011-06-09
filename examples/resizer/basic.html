@@ -76,6 +76,23 @@ And look how simple the code is, even my grandma could write it.
     minHeight: 50,
     preserveRatio: true
 });</code></pre>
+<p>
+<b>Snapping</b><br />
+    To resize in fixed increments, specify the <code>widthIncrement</code> or <code>heightIncrement</code> options. The image below
+    resizes (maintaining its aspect ratio) in increments of 20 pixels in both directions.
+</p>
+<img id="croix-de-fer" src="CroixDeFer.jpg" width="160" height="120"/>
+<pre class="code"><code>var snapping = Ext.create('Ext.resizer.Resizer', {
+    target: 'croix-de-fer',
+    width: 160,
+    height: 120,
+    minWidth: 160,
+    minHeight: 120,
+    preserveRatio: true,
+    heightIncrement: 20,
+    widthIncrement: 20
+});
+</code></pre>
 <hr>
 <p>
 <b>Transparent Handles</b><br />

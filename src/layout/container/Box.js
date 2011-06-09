@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.layout.container.Box
  * @extends Ext.layout.container.Container
@@ -116,8 +130,6 @@ Ext.define('Ext.layout.container.Box', {
 
     bindToOwnerCtContainer: true,
 
-    fixedLayout: false,
-    
     // availableSpaceOffset is used to adjust the availableWidth, typically used
     // to reserve space for a scrollbar
     availableSpaceOffset: 0,
@@ -166,11 +178,12 @@ Ext.define('Ext.layout.container.Box', {
      */
     getChildBox: function(child) {
         child = child.el || this.owner.getComponent(child).el;
+        var size = child.getBox(false, true);
         return {
-            left: child.getLeft(true),
-            top: child.getTop(true),
-            width: child.getWidth(),
-            height: child.getHeight()
+            left: size.left,
+            top: size.top,
+            width: size.width,
+            height: size.height
         };
     },
 
@@ -227,6 +240,8 @@ Ext.define('Ext.layout.container.Box', {
             paddingPerpendicular =  perpendicularOffset + padding[me.perpendicularRightBottom],
             availPerpendicularSize = mmax(0, perpendicularSize - paddingPerpendicular),
 
+            innerCtBorderWidth = me.innerCt.getBorderWidth(me.perpendicularLT + me.perpendicularRB),
+            
             isStart = me.pack == 'start',
             isCenter = me.pack == 'center',
             isEnd = me.pack == 'end',
@@ -452,7 +467,7 @@ Ext.define('Ext.layout.container.Box', {
                 // When calculating a centered position within the content box of the innerCt, the width of the borders must be subtracted from
                 // the size to yield the space available to center within.
                 // The updateInnerCtSize method explicitly adds the border widths to the set size of the innerCt.
-                diff = mmax(availPerpendicularSize, maxSize) - me.innerCt.getBorderWidth(me.perpendicularLT + me.perpendicularRB) - calcs[perpendicularPrefix];
+                diff = mmax(availPerpendicularSize, maxSize) - innerCtBorderWidth - calcs[perpendicularPrefix];
                 if (diff > 0) {
                     calcs[me.perpendicularLeftTop] = perpendicularOffset + Math.round(diff / 2);
                 }
@@ -545,7 +560,7 @@ Ext.define('Ext.layout.container.Box', {
                 }
 
                 if (results.recalculate) {
-                    items = me.getVisibleItems(owner);
+                    items = me.getVisibleItems();
                     calcs = me.calculateChildBoxes(items, targetSize);
                     boxes = calcs.boxes;
                 }

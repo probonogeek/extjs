@@ -15,15 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-button-Button-method-constructor'><span id='Ext-button-Button'>/**
-</span></span> * @class Ext.button.Button
+  <pre class="prettyprint lang-js"><span id='Ext-button-Button'>/**
+</span> * @class Ext.button.Button
  * @extends Ext.Component
 
-Create simple buttons with this component. Customisations include {@link #config-iconAlign aligned}
-{@link #config-iconCls icons}, {@link #config-menu dropdown menus}, {@link #config-tooltip tooltips}
-and {@link #config-scale sizing options}. Specify a {@link #config-handler handler} to run code when
-a user clicks the button, or use {@link #config-listeners listeners} for other events such as
-{@link #events-mouseover mouseover}.
+Create simple buttons with this component. Customisations include {@link #iconAlign aligned}
+{@link #iconCls icons}, {@link #menu dropdown menus}, {@link #tooltip tooltips}
+and {@link #scale sizing options}. Specify a {@link #handler handler} to run code when
+a user clicks the button, or use {@link #listeners listeners} for other events such as
+{@link #mouseover mouseover}.
 
 {@img Ext.button.Button/Ext.button.Button1.png Ext.button.Button component}
 Example usage:
@@ -142,10 +142,6 @@ Example usage:
         }
     });
 
- * @constructor
- * Create a new button
- * @param {Object} config The config object
- * @xtype button
  * @markdown
  * @docauthor Robert Dougan &lt;rob@sencha.com&gt;
  */
@@ -358,7 +354,10 @@ Ext.define('Ext.button.Button', {
         '&lt;em class=&quot;{splitCls}&quot;&gt;' +
             '&lt;tpl if=&quot;href&quot;&gt;' +
                 '&lt;a href=&quot;{href}&quot; target=&quot;{target}&quot;&lt;tpl if=&quot;tabIndex&quot;&gt; tabIndex=&quot;{tabIndex}&quot;&lt;/tpl&gt; role=&quot;link&quot;&gt;' +
-                    '&lt;span class=&quot;{baseCls}-inner&quot;&gt;{text}&lt;/span&gt;' +
+                    '&lt;span class=&quot;{baseCls}-inner&quot;&gt;' +
+                        '{text}' +
+                    '&lt;/span&gt;' +
+                        '&lt;span class=&quot;{baseCls}-icon&quot;&gt;&lt;/span&gt;' +
                 '&lt;/a&gt;' +
             '&lt;/tpl&gt;' +
             '&lt;tpl if=&quot;!href&quot;&gt;' +
@@ -366,7 +365,10 @@ Ext.define('Ext.button.Button', {
                     // the autocomplete=&quot;off&quot; is required to prevent Firefox from remembering
                     // the button's disabled state between page reloads.
                     '&lt;tpl if=&quot;tabIndex&quot;&gt; tabIndex=&quot;{tabIndex}&quot;&lt;/tpl&gt; role=&quot;button&quot; autocomplete=&quot;off&quot;&gt;' +
-                    '&lt;span class=&quot;{baseCls}-inner&quot; style=&quot;{innerSpanStyle}&quot;&gt;{text}&lt;/span&gt;' +
+                    '&lt;span class=&quot;{baseCls}-inner&quot; style=&quot;{innerSpanStyle}&quot;&gt;' +
+                        '{text}' +
+                    '&lt;/span&gt;' +
+                    '&lt;span class=&quot;{baseCls}-icon&quot;&gt;&lt;/span&gt;' +
                 '&lt;/button&gt;' +
             '&lt;/tpl&gt;' +
         '&lt;/em&gt;' ,
@@ -614,7 +616,8 @@ Ext.define('Ext.button.Button', {
         Ext.applyIf(me.renderSelectors, {
             btnEl  : me.href ? 'a' : 'button',
             btnWrap: 'em',
-            btnInnerEl: '.' + me.baseCls + '-inner'
+            btnInnerEl: '.' + me.baseCls + '-inner',
+            btnIconEl: '.'+ me.baseCls + '-icon'
         });
         
         if (me.scale) {
@@ -780,11 +783,11 @@ Ext.define('Ext.button.Button', {
      */
     setIconCls: function(cls) {
         var me = this,
-            btnInnerEl = me.btnInnerEl;
-        if (btnInnerEl) {
+            btnIconEl = me.btnIconEl;
+        if (btnIconEl) {
             // Remove the previous iconCls from the button
-            btnInnerEl.removeCls(me.iconCls);
-            btnInnerEl.addCls(cls || '');
+            btnIconEl.removeCls(me.iconCls);
+            btnIconEl.addCls(cls || '');
             me.setButtonCls();
         }
         me.iconCls = cls;

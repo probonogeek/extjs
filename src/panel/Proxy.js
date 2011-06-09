@@ -1,17 +1,33 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.panel.Proxy
  * @extends Object
  * A custom drag proxy implementation specific to {@link Ext.panel.Panel}s. This class
  * is primarily used internally for the Panel's drag drop implementation, and
  * should never need to be created directly.
- * @constructor
- * @param panel The {@link Ext.panel.Panel} to proxy for
- * @param config Configuration options
  */
 Ext.define('Ext.panel.Proxy', {
     
     alternateClassName: 'Ext.dd.PanelProxy',
-    
+
+    /**
+     * Creates new panel proxy.
+     * @param {Ext.panel.Panel} panel The {@link Ext.panel.Panel} to proxy for
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(panel, config){
         /**
          * @property panel

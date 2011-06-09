@@ -22,7 +22,7 @@
 (function() {
     var global = this,
         objectPrototype = Object.prototype,
-        toString = Object.prototype.toString,
+        toString = objectPrototype.toString,
         enumerables = true,
         enumerablesTest = { toString: 1 },
         i;
@@ -97,7 +97,6 @@
 
 <span id='Ext-method-applyIf'>        /**
 </span>         * Copies all the properties of config to object if they don't already exist.
-         * @function
          * @param {Object} object The receiver of the properties
          * @param {Object} config The source of the properties
          * @return {Object} returns obj
@@ -391,7 +390,8 @@
          */
         isObject: (toString.call(null) === '[object Object]') ?
         function(value) {
-            return value !== null &amp;&amp; value !== undefined &amp;&amp; toString.call(value) === '[object Object]' &amp;&amp; value.nodeType === undefined;
+            // check ownerDocument here as well to exclude DOM nodes
+            return value !== null &amp;&amp; value !== undefined &amp;&amp; toString.call(value) === '[object Object]' &amp;&amp; value.ownerDocument === undefined;
         } :
         function(value) {
             return toString.call(value) === '[object Object]';
@@ -565,7 +565,7 @@
                 var i = 0;
 
                 do {
-                    uniqueGlobalNamespace = 'ExtSandbox' + (++i);
+                    uniqueGlobalNamespace = 'ExtBox' + (++i);
                 } while (Ext.global[uniqueGlobalNamespace] !== undefined);
 
                 Ext.global[uniqueGlobalNamespace] = Ext;
@@ -594,6 +594,7 @@
 </span>     * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
      * @method
+     * @alias Ext#typeOf
      */
     Ext.type = Ext.typeOf;
 

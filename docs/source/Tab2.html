@@ -23,8 +23,6 @@
  * &lt;p&gt;Represents a single Tab in a {@link Ext.tab.Panel TabPanel}. A Tab is simply a slightly customized {@link Ext.button.Button Button}, 
  * styled to look like a tab. Tabs are optionally closable, and can also be disabled. 99% of the time you will not
  * need to create Tabs manually as the framework does so automatically when you use a {@link Ext.tab.Panel TabPanel}&lt;/p&gt;
- *
- * @xtype tab
  */
 Ext.define('Ext.tab.Tab', {
     extend: 'Ext.button.Button',
@@ -239,7 +237,7 @@ Ext.define('Ext.tab.Tab', {
                     tag: 'a',
                     cls: me.baseCls + '-close-btn',
                     href: '#',
-                    html: me.closeText,
+                    // html: me.closeText, // removed for EXTJSIV-1719, by rob@sencha.com
                     title: me.closeText
                 }).on('click', Ext.EventManager.preventDefault);  // mon ???
             }

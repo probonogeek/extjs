@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-chart-Mask-method-constructor'><span id='Ext-chart-Mask'>/**
-</span></span> * @class Ext.chart.Mask
+  <pre class="prettyprint lang-js"><span id='Ext-chart-Mask'>/**
+</span> * @class Ext.chart.Mask
  *
  * Defines a mask for a chart's series.
  * The 'chart' member must be set prior to rendering.
@@ -48,9 +48,12 @@
  * a handle to a mask instance from the chart object. The `chart.mask` element is a
  * `Ext.Panel`.
  * 
- * @constructor
  */
 Ext.define('Ext.chart.Mask', {
+<span id='Ext-chart-Mask-method-constructor'>    /**
+</span>     * Creates new Mask.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         var me = this;
 

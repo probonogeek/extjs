@@ -27,23 +27,25 @@ Ext.define('Ext.fx.PropertyHandler', {
 
     statics: {
         defaultHandler: {
-            pixelDefaults: ['width', 'height', 'top', 'left'],
+            pixelDefaultsRE: /width|height|top$|bottom$|left$|right$/i,
             unitRE: /^(-?\d*\.?\d*){1}(em|ex|px|in|cm|mm|pt|pc|%)*$/,
+            scrollRE: /^scroll/i,
 
             computeDelta: function(from, end, damper, initial, attr) {
                 damper = (typeof damper == 'number') ? damper : 1;
-                var match = this.unitRE.exec(from),
+                var unitRE = this.unitRE,
+                    match = unitRE.exec(from),
                     start, units;
                 if (match) {
                     from = match[1];
                     units = match[2];
-                    if (!units &amp;&amp; Ext.Array.contains(this.pixelDefaults, attr)) {
+                    if (!this.scrollRE.test(attr) &amp;&amp; !units &amp;&amp; this.pixelDefaultsRE.test(attr)) {
                         units = 'px';
                     }
                 }
                 from = +from || 0;
 
-                match = this.unitRE.exec(end);
+                match = unitRE.exec(end);
                 if (match) {
                     end = match[1];
                     units = match[2] || units;

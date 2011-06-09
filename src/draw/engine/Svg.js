@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.draw.engine.Svg
  * @extends Ext.draw.Surface
@@ -29,6 +43,8 @@ Ext.define('Ext.draw.engine.Svg', {
         strokeOpacity: "stroke-opacity",
         strokeLinejoin: "stroke-linejoin"
     },
+    
+    parsers: {},
 
     minDefaults: {
         circle: {
@@ -437,6 +453,12 @@ Ext.define('Ext.draw.engine.Svg', {
             el = sprite.el,
             group = sprite.group,
             sattr = sprite.attr,
+            parsers = me.parsers,
+            //Safari does not handle linear gradients correctly in quirksmode
+            //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+            //ref: EXTJSIV-1472
+            gradientsMap = me.gradientsMap || {},
+            safariFix = Ext.isSafari && !Ext.isStrict,
             groups, i, ln, attrs, font, key, style, name, rect;
 
         if (group) {
@@ -462,7 +484,6 @@ Ext.define('Ext.draw.engine.Svg', {
             }
             else if (sprite.type == "path" && attrs.d) {
                 attrs.d = Ext.draw.Draw.pathToString(Ext.draw.Draw.pathToAbsolute(attrs.d));
-                
             }
             sprite.dirtyPath = false;
         // }
@@ -489,9 +510,22 @@ Ext.define('Ext.draw.engine.Svg', {
         }
         for (key in attrs) {
             if (attrs.hasOwnProperty(key) && attrs[key] != null) {
-                el.dom.setAttribute(key, attrs[key]);
+                //Safari does not handle linear gradients correctly in quirksmode
+                //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+                //ref: EXTJSIV-1472
+                //if we're Safari in QuirksMode and we're applying some color attribute and the value of that
+                //attribute is a reference to a gradient then assign a plain color to that value instead of the gradient.
+                if (safariFix && ('color|stroke|fill'.indexOf(key) > -1) && (attrs[key] in gradientsMap)) {
+                    attrs[key] = gradientsMap[attrs[key]];
+                }
+                if (key in parsers) {
+                    el.dom.setAttribute(key, parsers[key](attrs[key], sprite, me));
+                } else {
+                    el.dom.setAttribute(key, attrs[key]);
+                }
             }
         }
+        
         if (sprite.type == 'text') {
             me.tuneText(sprite, attrs);
         }
@@ -569,40 +603,49 @@ Ext.define('Ext.draw.engine.Svg', {
 
     addGradient: function(gradient) {
         gradient = Ext.draw.Draw.parseGradient(gradient);
-        var ln = gradient.stops.length,
+        var me = this,
+            ln = gradient.stops.length,
             vector = gradient.vector,
-            gradientEl,
-            stop,
-            stopEl,
-            i;
-        if (gradient.type == "linear") {
-            gradientEl = this.createSvgElement("linearGradient");
-            gradientEl.setAttribute("x1", vector[0]);
-            gradientEl.setAttribute("y1", vector[1]);
-            gradientEl.setAttribute("x2", vector[2]);
-            gradientEl.setAttribute("y2", vector[3]);
-        }
-        else {
-            gradientEl = this.createSvgElement("radialGradient");
-            gradientEl.setAttribute("cx", gradient.centerX);
-            gradientEl.setAttribute("cy", gradient.centerY);
-            gradientEl.setAttribute("r", gradient.radius);
-            if (Ext.isNumber(gradient.focalX) && Ext.isNumber(gradient.focalY)) {
-                gradientEl.setAttribute("fx", gradient.focalX);
-                gradientEl.setAttribute("fy", gradient.focalY);
+            //Safari does not handle linear gradients correctly in quirksmode
+            //ref: https://bugs.webkit.org/show_bug.cgi?id=41952
+            //ref: EXTJSIV-1472
+            usePlain = Ext.isSafari && !Ext.isStrict,
+            gradientEl, stop, stopEl, i, gradientsMap;
+            
+        gradientsMap = me.gradientsMap || {};
+        
+        if (!usePlain) {
+            if (gradient.type == "linear") {
+                gradientEl = me.createSvgElement("linearGradient");
+                gradientEl.setAttribute("x1", vector[0]);
+                gradientEl.setAttribute("y1", vector[1]);
+                gradientEl.setAttribute("x2", vector[2]);
+                gradientEl.setAttribute("y2", vector[3]);
             }
-        }    
-        gradientEl.id = gradient.id;
-        this.getDefs().appendChild(gradientEl);
-
-        for (i = 0; i < ln; i++) {
-            stop = gradient.stops[i];
-            stopEl = this.createSvgElement("stop");
-            stopEl.setAttribute("offset", stop.offset + "%");
-            stopEl.setAttribute("stop-color", stop.color);
-            stopEl.setAttribute("stop-opacity",stop.opacity);
-            gradientEl.appendChild(stopEl);
+            else {
+                gradientEl = me.createSvgElement("radialGradient");
+                gradientEl.setAttribute("cx", gradient.centerX);
+                gradientEl.setAttribute("cy", gradient.centerY);
+                gradientEl.setAttribute("r", gradient.radius);
+                if (Ext.isNumber(gradient.focalX) && Ext.isNumber(gradient.focalY)) {
+                    gradientEl.setAttribute("fx", gradient.focalX);
+                    gradientEl.setAttribute("fy", gradient.focalY);
+                }
+            }
+            gradientEl.id = gradient.id;
+            me.getDefs().appendChild(gradientEl);
+            for (i = 0; i < ln; i++) {
+                stop = gradient.stops[i];
+                stopEl = me.createSvgElement("stop");
+                stopEl.setAttribute("offset", stop.offset + "%");
+                stopEl.setAttribute("stop-color", stop.color);
+                stopEl.setAttribute("stop-opacity",stop.opacity);
+                gradientEl.appendChild(stopEl);
+            }
+        } else {
+            gradientsMap['url(#' + gradient.id + ')'] = gradient.stops[0].color;
         }
+        me.gradientsMap = gradientsMap;
     },
 
     /**
@@ -656,7 +699,7 @@ Ext.define('Ext.draw.engine.Svg', {
                     cls = cls.replace(me.trimRe, '');
                     idx = Ext.Array.indexOf(elClasses, cls);
                     if (idx != -1) {
-                        elClasses.splice(idx, 1);
+                        Ext.Array.erase(elClasses, idx, 1);
                     }
                 }
             }

@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-Tree-method-constructor'><span id='Ext-data-Tree'>/**
-</span></span> * @class Ext.data.Tree
+  <pre class="prettyprint lang-js"><span id='Ext-data-Tree'>/**
+</span> * @class Ext.data.Tree
  * 
  * This class is used as a container for a series of nodes. The nodes themselves maintain
  * the relationship between parent/child. The tree itself acts as a manager. It gives functionality
@@ -26,8 +26,6 @@
  * centralized fashion. In general this class is not used directly, rather used internally 
  * by other parts of the framework.
  *
- * @constructor
- * @param {Node} root (optional) The root node
  */
 Ext.define('Ext.data.Tree', {
     alias: 'data.tree',
@@ -41,7 +39,11 @@ Ext.define('Ext.data.Tree', {
      * @type Node
      */
     root: null,
-        
+
+<span id='Ext-data-Tree-method-constructor'>    /**
+</span>     * Creates new Tree object.
+     * @param {Node} root (optional) The root node
+     */
     constructor: function(root) {
         var me = this;
         

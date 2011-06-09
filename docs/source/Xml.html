@@ -208,19 +208,15 @@ Ext.define('Ext.data.reader.Xml', {
         }
         
         return function(root) {
-            var node = Ext.DomQuery.selectNode(expr, root),
-                val = me.getNodeValue(node);
-                
-            return Ext.isEmpty(val) ? null : val;
+            return me.getNodeValue(Ext.DomQuery.selectNode(expr, root));
         };
     },
     
     getNodeValue: function(node) {
-        var val;
         if (node &amp;&amp; node.firstChild) {
-            val = node.firstChild.nodeValue;
+            return node.firstChild.nodeValue;
         }
-        return val || null;
+        return undefined;
     },
 
     //inherit docs
@@ -321,7 +317,6 @@ Ext.define('Ext.data.reader.Xml', {
         this.xmlData = doc;
         return this.callParent([doc]);
     }
-});
-</pre>
+});</pre>
 </body>
 </html>

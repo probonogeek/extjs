@@ -15,19 +15,21 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dd-DropTarget-method-constructor'><span id='Ext-dd-DropTarget'>/**
-</span></span> * @class Ext.dd.DropTarget
+  <pre class="prettyprint lang-js"><span id='Ext-dd-DropTarget'>/**
+</span> * @class Ext.dd.DropTarget
  * @extends Ext.dd.DDTarget
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
  * draggable items dropped onto it.  The drop has no effect until an implementation of notifyDrop is provided.
- * @constructor
- * @param {Mixed} el The container element
- * @param {Object} config
  */
 Ext.define('Ext.dd.DropTarget', {
     extend: 'Ext.dd.DDTarget',
     requires: ['Ext.dd.ScrollManager'],
 
+<span id='Ext-dd-DropTarget-method-constructor'>    /**
+</span>     * Creates new DropTarget.
+     * @param {Mixed} el The container element
+     * @param {Object} config
+     */
     constructor : function(el, config){
         this.el = Ext.get(el);
 

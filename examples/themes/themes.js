@@ -1,7 +1,22 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 Ext.require([
     'Ext.window.Window',
     'Ext.panel.Panel',
     'Ext.toolbar.*',
+    'Ext.tree.Panel',
     'Ext.container.Viewport',
     'Ext.form.*',
     'Ext.tab.*',
@@ -14,8 +29,6 @@ Ext.require([
 ]);
 
 Ext.onReady(function() {
-    Ext.QuickTips.init();
-    
     var items = [];
 
     /**
@@ -58,7 +71,7 @@ Ext.onReady(function() {
             render: function(p) {
                 p.body.mask('Loading...');
             },
-            delay: 50
+            delay: 2000
         }
     });
 
@@ -693,15 +706,20 @@ Ext.onReady(function() {
         ]
     });
 
-    Ext.createWidget('viewport', {
-        layout: 'absolute',
-        autoScroll: true,
-        items: items
-    });
+    for (var i = 0; i < items.length; i++) {
+        items[i].style = {
+            position: 'absolute'
+        };
+        var item = Ext.ComponentManager.create(items[i], 'panel');
+        item.render(document.body);
+    };
 
-    progressbar.wait({
-        text: 'Progress text...'
-    });
+    setTimeout(function() {
+        Ext.QuickTips.init();
+        progressbar.wait({
+            text: 'Progress text...'
+        });
+    }, 7000);
         
     /**
      * Stylesheet Switcher
@@ -716,3 +734,4 @@ Ext.onReady(function() {
         }
     });
 });
+

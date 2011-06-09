@@ -67,13 +67,17 @@ Ext.define('Ext.view.BoundList', {
             me.addCls(baseCls + '-floating');
         }
 
-        // should be setting aria-posinset based on entire set of data
-        // not filtered set
-        me.tpl = Ext.create('Ext.XTemplate', 
-            '&lt;ul&gt;&lt;tpl for=&quot;.&quot;&gt;',
-                '&lt;li role=&quot;option&quot; class=&quot;' + itemCls + '&quot;&gt;' + me.getInnerTpl(me.displayField) + '&lt;/li&gt;',
-            '&lt;/tpl&gt;&lt;/ul&gt;'
-        );
+        if (!me.tpl) {
+            // should be setting aria-posinset based on entire set of data
+            // not filtered set
+            me.tpl = Ext.create('Ext.XTemplate',
+                '&lt;ul&gt;&lt;tpl for=&quot;.&quot;&gt;',
+                    '&lt;li role=&quot;option&quot; class=&quot;' + itemCls + '&quot;&gt;' + me.getInnerTpl(me.displayField) + '&lt;/li&gt;',
+                '&lt;/tpl&gt;&lt;/ul&gt;'
+            );
+        } else if (Ext.isString(me.tpl)) {
+            me.tpl = Ext.create('Ext.XTemplate', me.tpl);
+        }
 
         if (me.pageSize) {
             me.pagingToolbar = me.createPagingToolbar();
@@ -129,14 +133,14 @@ Ext.define('Ext.view.BoundList', {
             me.refreshed--;
         }
     },
-    
+
     initAria: function() {
         this.callParent();
-        
+
         var selModel = this.getSelectionModel(),
             mode     = selModel.getSelectionMode(),
             actionEl = this.getActionEl();
-        
+
         // TODO: subscribe to mode changes or allow the selModel to manipulate this attribute.
         if (mode !== 'SINGLE') {
             actionEl.dom.setAttribute('aria-multiselectable', true);

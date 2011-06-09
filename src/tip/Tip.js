@@ -1,12 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.tip.Tip
  * @extends Ext.panel.Panel
  * This is the base class for {@link Ext.tip.QuickTip} and {@link Ext.tip.ToolTip} that provides the basic layout and
  * positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned
  * tips that are displayed programmatically, or it can be extended to provide custom tip implementations.
- * @constructor
- * Create a new Tip
- * @param {Object} config The configuration options
  * @xtype tip
  */
 Ext.define('Ext.tip.Tip', {
@@ -63,6 +74,23 @@ Ext.define('Ext.tip.Tip', {
     focusOnToFront: false,
     componentLayout: 'tip',
 
+    /**
+     * @cfg {String} closeAction
+     * <p>The action to take when the close header tool is clicked:
+     * <div class="mdetail-params"><ul>
+     * <li><b><code>'{@link #destroy}'</code></b> : <div class="sub-desc">
+     * {@link #destroy remove} the window from the DOM and {@link Ext.Component#destroy destroy}
+     * it and all descendant Components. The window will <b>not</b> be available to be
+     * redisplayed via the {@link #show} method.
+     * </div></li>
+     * <li><b><code>'{@link #hide}'</code></b> : <b>Default</b><div class="sub-desc">
+     * {@link #hide} the window by setting visibility to hidden and applying negative offsets.
+     * The window will be available to be redisplayed via the {@link #show} method.
+     * </div></li>
+     * </ul></div>
+     * <p><b>Note:</b> This behavior has changed! setting *does* affect the {@link #close} method
+     * which will invoke the approriate closeAction.
+     */
     closeAction: 'hide',
 
     ariaRole: 'tooltip',
@@ -134,3 +162,4 @@ tip.showBy('my-el', 'tl-tr');
     ghost: undefined,
     unghost: undefined
 });
+

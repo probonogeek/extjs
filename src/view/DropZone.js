@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.DropZone
  * @extends Ext.dd.DropZone
@@ -31,9 +45,12 @@ Ext.define('Ext.view.DropZone', {
 //  Fire an event through the client DataView. Lock this DropZone during the event processing so that
 //  its data does not become corrupted by processing mouse events.
     fireViewEvent: function() {
-        this.lock();
-        var result = this.view.fireEvent.apply(this.view, arguments);
-        this.unlock();
+        var me = this,
+            result;
+            
+        me.lock();
+        result = me.view.fireEvent.apply(me.view, arguments);
+        me.unlock();
         return result;
     },
 
@@ -144,41 +161,46 @@ Ext.define('Ext.view.DropZone', {
 
     // The mouse is over a View node
     onNodeOver: function(node, dragZone, e, data) {
-        if (!Ext.Array.contains(data.records, this.view.getRecord(node))) {
-            this.positionIndicator(node, data, e);
+        var me = this;
+        
+        if (!Ext.Array.contains(data.records, me.view.getRecord(node))) {
+            me.positionIndicator(node, data, e);
         }
-        return this.valid ? this.dropAllowed : this.dropNotAllowed;
+        return me.valid ? me.dropAllowed : me.dropNotAllowed;
     },
 
     // Moved out of the DropZone without dropping.
     // Remove drop position indicator
     notifyOut: function(node, dragZone, e, data) {
-        this.callParent(arguments);
-        delete this.overRecord;
-        delete this.currentPosition;
-        if (this.indicator) {
-            this.indicator.hide();
+        var me = this;
+        
+        me.callParent(arguments);
+        delete me.overRecord;
+        delete me.currentPosition;
+        if (me.indicator) {
+            me.indicator.hide();
         }
     },
 
     // The mouse is past the end of all nodes (or there are no nodes)
     onContainerOver : function(dd, e, data) {
-        var v = this.view,
-            c = v.store.getCount();
+        var me = this,
+            view = me.view,
+            count = view.store.getCount();
 
         // There are records, so position after the last one
-        if (c) {
-            this.positionIndicator(v.getNode(c - 1), data, e);
+        if (count) {
+            me.positionIndicator(view.getNode(count - 1), data, e);
         }
 
         // No records, position the indicator at the top
         else {
-            delete this.overRecord;
-            delete this.currentPosition;
-            this.getIndicator().setWidth(Ext.fly(v.el).getWidth()).showAt(0, 0);
-            this.valid = true;
+            delete me.overRecord;
+            delete me.currentPosition;
+            me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, 0);
+            me.valid = true;
         }
-        return this.dropAllowed;
+        return me.dropAllowed;
     },
 
     onContainerDrop : function(dd, e, data) {
@@ -190,7 +212,7 @@ Ext.define('Ext.view.DropZone', {
             dropped = false,
 
             // Create a closure to perform the operation which the event handler may use.
-            // Users may now return <code>0</code> from the beforedrop handler, and perform any kind
+            // Users may now return <code>false</code> from the beforedrop handler, and perform any kind
             // of asynchronous processing such as an Ext.Msg.confirm, or an Ajax request,
             // and complete the drop gesture at some point in the future by calling this function.
             processDrop = function () {
@@ -199,22 +221,18 @@ Ext.define('Ext.view.DropZone', {
                 dropped = true;
                 me.fireViewEvent('drop', node, data, me.overRecord, me.currentPosition);
             },
-            performOperation;
+            performOperation = false;
 
         if (me.valid) {
             performOperation = me.fireViewEvent('beforedrop', node, data, me.overRecord, me.currentPosition, processDrop);
-            if (performOperation === 0) {
-                return;
-            } else if (performOperation !== false) {
+            if (performOperation !== false) {
                 // If the processDrop function was called in the event handler, do not do it again.
                 if (!dropped) {
                     processDrop();
                 }
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return performOperation;
     }
 });
+

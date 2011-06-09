@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-grid-RowNumberer-method-constructor'><span id='Ext-grid-RowNumberer'>/**
-</span></span> * @class Ext.grid.RowNumberer
+  <pre class="prettyprint lang-js"><span id='Ext-grid-RowNumberer'>/**
+</span> * @class Ext.grid.RowNumberer
  * @extends Ext.grid.column.Column
  * This is a utility class that can be passed into a {@link Ext.grid.column.Column} as a column config that provides
  * an automatic row numbering column.
@@ -30,8 +30,6 @@ columns: [
     {text: &quot;Last Updated&quot;, width: 120, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
 ]
  *&lt;/code&gt;&lt;/pre&gt;
- * @constructor
- * @param {Object} config The configuration options
  */
 Ext.define('Ext.grid.RowNumberer', {
     extend: 'Ext.grid.column.Column',

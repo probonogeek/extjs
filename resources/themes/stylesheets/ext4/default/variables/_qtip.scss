@@ -2,7 +2,7 @@ $tip-base-color: adjust-color($base-color, $hue: 2.121deg, $saturation: 44.444%,
 
 //background
 $tip-background-color: $tip-base-color !default;
-$tip-background-gradient: false !default;
+$tip-background-gradient: null !default;
 
 //text
 $tip-body-color      : adjust-color($neutral-color, $hue: 0deg, $saturation: 0%, $lightness: -66.667%) !default;

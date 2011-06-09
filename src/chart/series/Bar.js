@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * Creates a Bar Chart. A Bar Chart is a useful visualization technique to display quantitative information for
  * different categories that can show some progression (or regression) in the dataset. As with all other series, the Bar
@@ -630,6 +644,7 @@ Ext.define('Ext.chart.series.Bar', {
             text: text
         });
 
+        label.isOutside = false;
         if (column) {
             if (display == outside) {
                 if (height + offsetY + attr.height > (yValue >= 0 ? zero - chartBBox.y : chartBBox.y + chartBBox.height - zero)) {
@@ -638,6 +653,7 @@ Ext.define('Ext.chart.series.Bar', {
             } else {
                 if (height + offsetY > attr.height) {
                     display = outside;
+                    label.isOutside = true;
                 }
             }
             x = attr.x + groupBarWidth / 2;
@@ -655,6 +671,7 @@ Ext.define('Ext.chart.series.Bar', {
             else {
                 if (width + offsetX > attr.width) {
                     display = outside;
+                    label.isOutside = true;
                 }
             }
             x = display == insideStart ?
@@ -790,7 +807,28 @@ Ext.define('Ext.chart.series.Bar', {
      * @param index
      */
     getLegendColor: function(index) {
-        var me = this;
-        return me.colorArrayStyle[index % me.colorArrayStyle.length];
+        var me = this,
+            colorLength = me.colorArrayStyle.length;
+        
+        if (me.style && me.style.fill) {
+            return me.style.fill;
+        } else {
+            return me.colorArrayStyle[index % colorLength];
+        }
+    },
+
+    highlightItem: function(item) {
+        this.callParent(arguments);
+        this.renderLabels();
+    },
+
+    unHighlightItem: function() {
+        this.callParent(arguments);
+        this.renderLabels();
+    },
+
+    cleanHighlights: function() {
+        this.callParent(arguments);
+        this.renderLabels();
     }
 });

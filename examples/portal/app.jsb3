@@ -48,6 +48,10 @@
                     "name": "Template.js"
                 },
                 {
+                    "path": "../../../platform/src/util/",
+                    "name": "Memento.js"
+                },
+                {
                     "path": "../../src/dd/",
                     "name": "DragTracker.js"
                 },

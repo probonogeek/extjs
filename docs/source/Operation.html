@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-Operation-method-constructor'><span id='Ext-data-Operation'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-Operation'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.Operation
  * @extends Object
  * 
@@ -26,8 +26,6 @@
  * 
  * &lt;p&gt;Several Operations can be batched together in a {@link Ext.data.Batch batch}.&lt;/p&gt;
  * 
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.Operation', {
 <span id='Ext-data-Operation-cfg-synchronous'>    /**
@@ -121,7 +119,11 @@ Ext.define('Ext.data.Operation', {
      * @private
      */
     error: undefined,
-    
+
+<span id='Ext-data-Operation-method-constructor'>    /**
+</span>     * Creates new Operation object.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config || {});
     },

@@ -15,15 +15,12 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-tip-Tip-method-constructor'><span id='Ext-tip-Tip'>/**
-</span></span> * @class Ext.tip.Tip
+  <pre class="prettyprint lang-js"><span id='Ext-tip-Tip'>/**
+</span> * @class Ext.tip.Tip
  * @extends Ext.panel.Panel
  * This is the base class for {@link Ext.tip.QuickTip} and {@link Ext.tip.ToolTip} that provides the basic layout and
  * positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned
  * tips that are displayed programmatically, or it can be extended to provide custom tip implementations.
- * @constructor
- * Create a new Tip
- * @param {Object} config The configuration options
  * @xtype tip
  */
 Ext.define('Ext.tip.Tip', {
@@ -80,6 +77,23 @@ Ext.define('Ext.tip.Tip', {
     focusOnToFront: false,
     componentLayout: 'tip',
 
+<span id='Ext-tip-Tip-cfg-closeAction'>    /**
+</span>     * @cfg {String} closeAction
+     * &lt;p&gt;The action to take when the close header tool is clicked:
+     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
+     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'{@link #destroy}'&lt;/code&gt;&lt;/b&gt; : &lt;div class=&quot;sub-desc&quot;&gt;
+     * {@link #destroy remove} the window from the DOM and {@link Ext.Component#destroy destroy}
+     * it and all descendant Components. The window will &lt;b&gt;not&lt;/b&gt; be available to be
+     * redisplayed via the {@link #show} method.
+     * &lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'{@link #hide}'&lt;/code&gt;&lt;/b&gt; : &lt;b&gt;Default&lt;/b&gt;&lt;div class=&quot;sub-desc&quot;&gt;
+     * {@link #hide} the window by setting visibility to hidden and applying negative offsets.
+     * The window will be available to be redisplayed via the {@link #show} method.
+     * &lt;/div&gt;&lt;/li&gt;
+     * &lt;/ul&gt;&lt;/div&gt;
+     * &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; This behavior has changed! setting *does* affect the {@link #close} method
+     * which will invoke the approriate closeAction.
+     */
     closeAction: 'hide',
 
     ariaRole: 'tooltip',

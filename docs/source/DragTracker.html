@@ -343,9 +343,6 @@ Ext.define('Ext.dd.DragTracker', {
         // is lifted if the mouseout happens *during* a drag.
         this.mouseIsDown = false;
 
-        // Remove flag from event singleton
-        delete e.dragTracked;
-
         // If we mouseouted the el *during* the drag, the onMouseOut method will not have fired. Ensure that it gets processed.
         if (this.mouseIsOut) {
             this.mouseIsOut = false;
@@ -375,6 +372,9 @@ Ext.define('Ext.dd.DragTracker', {
         }
         // Private property calculated when first required and only cached during a drag
         delete this._constrainRegion;
+
+        // Remove flag from event singleton.  Using &quot;Ext.EventObject&quot; here since &quot;endDrag&quot; is called directly in some cases without an &quot;e&quot; param
+        delete Ext.EventObject.dragTracked;
     },
 
     triggerStart: function(e) {

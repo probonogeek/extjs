@@ -77,7 +77,7 @@
             .#{$prefix}tab-inner {
                 background-color: transparent;
                 background-repeat: no-repeat;
-                background-position: 0 -1px;
+                background-position: 0 -2px;
                 display: block;
                 text-align: center;
                 white-space: nowrap;
@@ -207,6 +207,23 @@
         }
     }
 
+    .#{$prefix}tab {
+        button, a {
+            position: relative;
+
+            .#{$prefix}tab-icon {
+                position: absolute;
+                background-repeat: no-repeat;
+                top: 0;
+                left:0;
+                right:auto;
+                bottom:0;
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+
     //over
     .#{$prefix}tab-over {
         @if $tab-border-color-over != $tab-border-color {
@@ -229,19 +246,11 @@
         }
     }
 
-    @if $tab-background-gradient-over != $tab-background-gradient {
-        .#{$prefix}tab-top-over {
-            @include background-gradient($tab-base-color-over, $tab-background-gradient-over, top);
-        }
-        .#{$prefix}tab-bottom-over {
-            @include background-gradient($tab-base-color-over, $tab-background-gradient-over, bottom);
-        }
+    .#{$prefix}tab-top-over {
+        @include background-gradient($tab-base-color-over, $tab-background-gradient-over, top);
     }
-    @else if $tab-base-color-over != $tab-base-color {
-        .#{$prefix}tab-top-over,
-        .#{$prefix}tab-bottom-over {
-            background-color: $tab-base-color-over;
-        }
+    .#{$prefix}tab-bottom-over {
+        @include background-gradient($tab-base-color-over, $tab-background-gradient-over, bottom);
     }
 
     //active
@@ -267,19 +276,11 @@
         }
     }
 
-    @if $tab-background-gradient-active != $tab-background-gradient {
-        .#{$prefix}tab-top-active {
-            @include background-gradient($tab-base-color-active, $tab-background-gradient-active, top);
-        }
-        .#{$prefix}tab-bottom-active {
-            @include background-gradient($tab-base-color-active, $tab-background-gradient-active, bottom);
-        }
+    .#{$prefix}tab-top-active {
+        @include background-gradient($tab-base-color-active, $tab-background-gradient-active, top);
     }
-    @else if $tab-base-color-active != $tab-base-color {
-        .#{$prefix}tab-top-active,
-        .#{$prefix}tab-bottom-active {
-            background-color: $tab-base-color-active;
-        }
+    .#{$prefix}tab-bottom-active {
+        @include background-gradient($tab-base-color-active, $tab-background-gradient-active, bottom);
     }
 
     //disabled
@@ -304,23 +305,15 @@
         }
     }
 
-    @if $tab-background-gradient-disabled != $tab-background-gradient {
-        .#{$prefix}tab-top-disabled {
-            background-image: none;
-            background: transparent;
-            @include background-gradient($tab-base-color-disabled, $tab-background-gradient-disabled, top);
-        }
-        .#{$prefix}tab-bottom-disabled {
-            background-image: none;
-            background: transparent;
-            @include background-gradient($tab-base-color-disabled, $tab-background-gradient-disabled, bottom);
-        }
+    .#{$prefix}tab-top-disabled {
+        background-image: none;
+        background: transparent;
+        @include background-gradient($tab-base-color-disabled, $tab-background-gradient-disabled, top);
     }
-    @else if $tab-base-color-disabled != $tab-base-color {
-        .#{$prefix}tab-top-disabled,
-        .#{$prefix}tab-bottom-disabled {
-            background-color: $tab-base-color-disabled;
-        }
+    .#{$prefix}tab-bottom-disabled {
+        background-image: none;
+        background: transparent;
+        @include background-gradient($tab-base-color-disabled, $tab-background-gradient-disabled, bottom);
     }
 
     @if not $supports-gradients or $compile-all {
@@ -344,7 +337,7 @@
     }
 
     .#{$prefix}tab-close-btn {
-        position: absolute;
+        position: absolute !important;
         top: $tab-closable-icon-top;
         right: $tab-closable-icon-right;
         width: $tab-closable-icon-width;

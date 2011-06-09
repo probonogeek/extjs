@@ -6,8 +6,8 @@ $include-panel-uis: true;
 // ===============================
 $panel-border-radius: null !default;
 $panel-border-width: 1px !default;
-$panel-base-color: adjust-color($base-color, $hue: 3.188deg, $saturation: 0.542%, $lightness: 7.843%) !default; //#DFE8F6
-$panel-border-color: adjust-color($base-color, $hue: 0.844deg, $saturation: 7.644%, $lightness: -8.627%) !default;
+$panel-base-color: adjust-color($base-color, $hue: 0deg, $saturation: 0.542%, $lightness: 7.843%) !default; //#DFE8F6
+$panel-border-color: adjust-color($base-color, $hue: 0deg, $saturation: 7.644%, $lightness: -8.627%) !default;
 
 // ===============================
 // ========= PANEL BODY ==========
@@ -16,6 +16,7 @@ $panel-body-border-style: solid !default;
 $panel-body-background-color: #fff !default;
 $panel-body-color: #000 !default;
 $panel-body-border-color: $panel-border-color !default;
+$panel-body-font-size: 12px !default;
 
 // ===============================
 // ======== PANEL TOOLS ==========
@@ -44,9 +45,9 @@ $panel-header-background-gradient: 'panel-header' !default;
 
 // UI defaults
 $panel-header-border-color: $panel-border-color !default;
-$panel-header-inner-border-color: adjust-color($panel-base-color, $hue: -6.522deg, $saturation: -6.098%, $lightness: 4.902%) !default;
-$panel-header-color: adjust-color($panel-base-color, $hue: -5.639deg, $saturation: 38.347%, $lightness: -63.725%) !default;
-$panel-header-background-color: adjust-color($panel-base-color, $hue: -3.522deg, $saturation: 6.402%, $lightness: -4.51%) !default;
+$panel-header-inner-border-color: adjust-color($panel-base-color, $hue: 0deg, $saturation: -6.098%, $lightness: 4.902%) !default;
+$panel-header-color: adjust-color($panel-base-color, $hue: 0deg, $saturation: 38.347%, $lightness: -63.725%) !default;
+$panel-header-background-color: adjust-color($panel-base-color, $hue: 0deg, $saturation: 6.402%, $lightness: -4.51%) !default;
 
 // ===============================
 // ======== FRAMED PANEL =========

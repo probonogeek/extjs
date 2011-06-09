@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-Request-method-constructor'><span id='Ext-data-Request'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-Request'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.Request
  * @extends Object
  * 
@@ -24,8 +24,6 @@
  * All this class does is standardize the representation of a Request as used by any ServerProxy subclass,
  * it does not contain any actual logic or perform the request itself.&lt;/p&gt;
  * 
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.Request', {
 <span id='Ext-data-Request-cfg-action'>    /**
@@ -48,6 +46,10 @@ Ext.define('Ext.data.Request', {
      */
     url: undefined,
 
+<span id='Ext-data-Request-method-constructor'>    /**
+</span>     * Creates the Request object.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         Ext.apply(this, config);
     }

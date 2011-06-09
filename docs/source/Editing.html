@@ -78,13 +78,22 @@ Ext.define('Ext.grid.plugin.Editing', {
         me.grid = grid;
         me.view = grid.view;
         me.initEvents();
-        me.initFieldAccessors(me.view.getGridColumns());
+        me.mon(grid, 'reconfigure', me.onReconfigure, me);
+        me.onReconfigure();
 
         grid.relayEvents(me, ['beforeedit', 'edit', 'validateedit']);
         // Marks the grid as editable, so that the SelectionModel
         // can make appropriate decisions during navigation
         grid.isEditable = true;
         grid.editingPlugin = grid.view.editingPlugin = me;
+    },
+    
+<span id='Ext-grid-plugin-Editing-method-onReconfigure'>    /**
+</span>     * Fires after the grid is reconfigured
+     * @private
+     */
+    onReconfigure: function(){
+        this.initFieldAccessors(this.view.getGridColumns());
     },
 
 <span id='Ext-grid-plugin-Editing-method-destroy'>    /**

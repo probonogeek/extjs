@@ -19,8 +19,9 @@
 </span> * @class Ext.util.Region
  * @extends Object
  *
- * Represents a rectangular region and provides a number of utility methods
- * to compare regions.
+ * &lt;p&gt;This class represents a rectangular region in X,Y space, and performs geometric
+ * transformations or tests upon the region.&lt;/p&gt;
+ * &lt;p&gt;This class may be used to compare the document regions occupied by elements.&lt;/p&gt;
  */
 
 Ext.define('Ext.util.Region', {
@@ -32,10 +33,9 @@ Ext.define('Ext.util.Region', {
     statics: {
 <span id='Ext-util-Region-method-getRegion'>        /**
 </span>         * @static
-         * @param {Mixed} el A string, DomElement or Ext.core.Element representing an element
-         * on the page.
-         * @returns {Ext.util.Region} region
          * Retrieves an Ext.util.Region for a particular element.
+         * @param {Mixed} el An element ID, htmlElement or Ext.core.Element representing an element in the document.
+         * @returns {Ext.util.Region} region
          */
         getRegion: function(el) {
             return Ext.fly(el).getPageBox(true);
@@ -43,8 +43,9 @@ Ext.define('Ext.util.Region', {
 
 <span id='Ext-util-Region-method-from'>        /**
 </span>         * @static
-         * @param {Object} o An object with top, right, bottom, left properties
-         * @return {Ext.util.Region} region The region constructed based on the passed object
+         * Creates a Region from a &quot;box&quot; Object which contains four numeric properties &lt;code&gt;top&lt;/code&gt;, &lt;code&gt;right&lt;/code&gt;, &lt;code&gt;bottom&lt;/code&gt; and &lt;code&gt;left&lt;/code&gt;.
+         * @param {Object} o An object with &lt;code&gt;top&lt;/code&gt;, &lt;code&gt;right&lt;/code&gt;, &lt;code&gt;bottom&lt;/code&gt; and &lt;code&gt;left&lt;/code&gt; properties.
+         * @return {Ext.util.Region} region The Region constructed based on the passed object
          */
         from: function(o) {
             return new this(o.top, o.right, o.bottom, o.left);
@@ -54,11 +55,11 @@ Ext.define('Ext.util.Region', {
     /* End Definitions */
 
 <span id='Ext-util-Region-method-constructor'>    /**
-</span>     * @constructor
-     * @param {Number} top Top
-     * @param {Number} right Right
-     * @param {Number} bottom Bottom
-     * @param {Number} left Left
+</span>     * Creates a region from the bounding sides.
+     * @param {Number} top Top The topmost pixel of the Region.
+     * @param {Number} right Right The rightmost pixel of the Region.
+     * @param {Number} bottom Bottom The bottom pixel of the Region.
+     * @param {Number} left Left The leftmost pixel of the Region.
      */
     constructor : function(t, r, b, l) {
         var me = this;
@@ -322,7 +323,7 @@ Ext.define('Ext.util.Region', {
     },
 
 <span id='Ext-util-Region-method-copy'>    /**
-</span>     * Copy a new instance
+</span>     * Create a copy of this Region.
      * @return {Ext.util.Region}
      */
     copy: function() {
@@ -332,7 +333,7 @@ Ext.define('Ext.util.Region', {
 <span id='Ext-util-Region-method-copyFrom'>    /**
 </span>     * Copy the values of another Region to this Region
      * @param {Region} The region to copy from.
-     * @return {Ext.util.Point} this This point
+     * @return {Ext.util.Region} This Region
      */
     copyFrom: function(p) {
         var me = this;
@@ -344,14 +345,13 @@ Ext.define('Ext.util.Region', {
         return this;
     },
 
-<span id='Ext-util-Region-method-toString'>    /**
-</span>     * Dump this to an eye-friendly string, great for debugging
+    /*
+     * Dump this to an eye-friendly string, great for debugging
      * @return {String}
      */
     toString: function() {
         return &quot;Region[&quot; + this.top + &quot;,&quot; + this.right + &quot;,&quot; + this.bottom + &quot;,&quot; + this.left + &quot;]&quot;;
     },
-
 
 <span id='Ext-util-Region-method-translateBy'>    /**
 </span>     * Translate this region by the given offset amount

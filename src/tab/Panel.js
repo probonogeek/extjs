@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer, Tommy Maintz, Brian Moeskau
  * @class Ext.tab.Panel
@@ -22,6 +36,24 @@ configuration) to accommodate the tab selector buttons. This means that a TabPan
 configured header {@link Ext.panel.Panel#tools tools}.
 
 To display a header, embed the TabPanel in a {@link Ext.panel.Panel Panel} which uses `{@link Ext.container.Container#layout layout:'fit'}`.
+
+__Controlling tabs:__
+Configuration options for the {@link Ext.tab.Tab} that represents the component can be passed in by specifying the tabConfig option:
+
+    Ext.create('Ext.tab.Panel', {
+        width: 400,
+        height: 400,
+        renderTo: document.body,
+        items: [{
+            title: 'Foo'
+        }, {
+            title: 'Bar',
+            tabConfig: {
+                title: 'Custom Title',
+                tooltip: 'A button tooltip'
+            }
+        }] 
+    });
 
 __Examples:__
 
@@ -81,7 +113,7 @@ Example usage:
         tabs.setActiveTab(users);
     }, 1000);
 
-You can remove the background of the TabBar by setting the {@link #plain} property to `false`.
+You can remove the background of the TabBar by setting the {@link #plain} property to `true`.
 
 Example usage:
 
@@ -258,9 +290,6 @@ Example usage:
     });
 
  * @extends Ext.Panel
- * @constructor
- * @param {Object} config The configuration options
- * @xtype tabpanel
  * @markdown
  */
 Ext.define('Ext.tab.Panel', {
@@ -449,16 +478,22 @@ Ext.define('Ext.tab.Panel', {
      * Makes sure we have a Tab for each item added to the TabPanel
      */
     onAdd: function(item, index) {
-        var me = this;
-
-        item.tab = me.tabBar.insert(index, {
-            xtype: 'tab',
-            card: item,
-            disabled: item.disabled,
-            closable: item.closable,
-            hidden: item.hidden,
-            tabBar: me.tabBar
-        });
+        var me = this,
+            cfg = item.tabConfig || {},
+            defaultConfig = {
+                xtype: 'tab',
+                card: item,
+                disabled: item.disabled,
+                closable: item.closable,
+                hidden: item.hidden,
+                tabBar: me.tabBar
+            };
+            
+        if (item.closeText) {
+            defaultConfig.closeText = item.closeText;
+        }
+        cfg = Ext.applyIf(cfg, defaultConfig);
+        item.tab = me.tabBar.insert(index, cfg);
         
         item.on({
             scope : me,
@@ -578,3 +613,4 @@ Ext.define('Ext.tab.Panel', {
         }
     }
 });
+

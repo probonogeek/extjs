@@ -1,14 +1,25 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.header.Container
  * @extends Ext.container.Container
- * @private
  *
  * Container which holds headers and is docked at the top or bottom of a TablePanel.
  * The HeaderContainer drives resizing/moving/hiding of columns within the TableView.
  * As headers are hidden, moved or resized the headercontainer is responsible for
  * triggering changes within the view.
- *
- * @xtype headercontainer
  */
 Ext.define('Ext.grid.header.Container', {
     extend: 'Ext.container.Container',
@@ -72,10 +83,10 @@ Ext.define('Ext.grid.header.Container', {
      * items for every header.
      */
     sortable: true,
-    
+
     initComponent: function() {
         var me = this;
-        
+
         me.headerCounter = 0;
         me.plugins = me.plugins || [];
 
@@ -89,7 +100,7 @@ Ext.define('Ext.grid.header.Container', {
             me.reorderer = Ext.create('Ext.grid.plugin.HeaderReorderer');
             if (!me.enableColumnResize) {
                 me.resizer.disable();
-            } 
+            }
             if (!me.enableColumnMove) {
                 me.reorderer.disable();
             }
@@ -240,7 +251,7 @@ Ext.define('Ext.grid.header.Container', {
                     firstHeaderEl.addCls(me.firstHeaderCls);
                     me.pastFirstHeaderEl = firstHeaderEl;
                 }
-                
+
                 lastHeaderEl = topHeaders[topHeaders.length - 1].el;
                 if (lastHeaderEl !== me.pastLastHeaderEl) {
                     if (me.pastLastHeaderEl) {
@@ -251,7 +262,7 @@ Ext.define('Ext.grid.header.Container', {
                 }
             }
         }
-        
+
     },
 
     onHeaderShow: function(header) {
@@ -367,6 +378,10 @@ Ext.define('Ext.grid.header.Container', {
             for (i = 0; i < len; i++) {
                 itemToDisable = itemsToDisable[i];
                 if (!Ext.Array.contains(me.disabledMenuItems, itemToDisable)) {
+
+                    // If we only want to disable check change: it might be a disabled item, so enable it prior to
+                    // setting its correct disablement level.
+                    itemToDisable.disabled = false;
                     itemToDisable[itemToDisable.menu ? 'disableCheckChange' : 'disable']();
                     me.disabledMenuItems.push(itemToDisable);
                 }
@@ -474,6 +489,7 @@ Ext.define('Ext.grid.header.Container', {
 
         if (!me.menu) {
             me.menu = Ext.create('Ext.menu.Menu', {
+                hideOnParentHide: false,  // Persists when owning ColumnHeader is hidden
                 items: me.getMenuItems(),
                 listeners: {
                     deactivate: me.onMenuDeactivate,
@@ -493,15 +509,11 @@ Ext.define('Ext.grid.header.Container', {
      */
     getMenuItems: function() {
         var me = this,
-            menuItems = [{
-                itemId: 'columnItem',
-                text: me.columnsText,
-                cls: Ext.baseCSSPrefix + 'cols-icon',
-                menu: me.getColumnMenu(me)
-            }];
+            menuItems = [],
+            hideableColumns = me.enableColumnHide ? me.getColumnMenu(me) : null;
 
         if (me.sortable) {
-            menuItems.unshift({
+            menuItems = [{
                 itemId: 'ascItem',
                 text: me.sortAscText,
                 cls: 'xg-hmenu-sort-asc',
@@ -513,7 +525,15 @@ Ext.define('Ext.grid.header.Container', {
                 cls: 'xg-hmenu-sort-desc',
                 handler: me.onSortDescClick,
                 scope: me
-            },'-');
+            }];
+        };
+        if (hideableColumns && hideableColumns.length) {
+            menuItems.push('-', {
+                itemId: 'columnItem',
+                text: me.columnsText,
+                cls: Ext.baseCSSPrefix + 'cols-icon',
+                menu: hideableColumns
+            });
         }
         return menuItems;
     },
@@ -591,14 +611,27 @@ Ext.define('Ext.grid.header.Container', {
             headers   = this.getGridColumns(flushCache),
             headersLn = headers.length,
             i = 0,
-            header;
+            header,
+            width;
 
         for (; i < headersLn; i++) {
             header = headers[i];
+
+            if (header.hidden) {
+                width = 0;
+            } else {
+                width = header.getDesiredWidth();
+                // IE6 and IE7 bug.
+                // Setting the width of the first TD does not work - ends up with a 1 pixel discrepancy.
+                // We need to increment the passed with in this case.
+                if ((i == 0) && (Ext.isIE6 || Ext.isIE7)) {
+                    width += 1;
+                }
+            }
             cols.push({
                 dataIndex: header.dataIndex,
                 align: header.align,
-                width: header.hidden ? 0 : header.getDesiredWidth(),
+                width: width,
                 id: header.id,
                 cls: header.tdCls,
                 columnId: header.getItemId()
@@ -658,7 +691,7 @@ Ext.define('Ext.grid.header.Container', {
     },
 
     /**
-     * Returns an array of the <b>visible<b> columns in the grid. This goes down to the lowest column header
+     * Returns an array of the <b>visible</b> columns in the grid. This goes down to the lowest column header
      * level, and does not return <i>grouped</i> headers which contain sub headers.
      * @param {Boolean} refreshCache If omitted, the cached set of columns will be returned. Pass true to refresh the cache.
      * @returns {Array}
@@ -740,7 +773,7 @@ Ext.define('Ext.grid.header.Container', {
             if (typeof renderer === "string") {
                 header.renderer = renderer = Ext.util.Format[renderer];
             }
-            
+
             if (typeof renderer === "function") {
                 value = renderer.call(
                     header.scope || this.ownerCt,
@@ -764,8 +797,8 @@ Ext.define('Ext.grid.header.Container', {
                 delete metaData.css;
             }
             // </debug>
-            
-            obj[headerId+'-modified'] = record.modified[header.dataIndex] ? Ext.baseCSSPrefix + 'grid-dirty-cell' : '';
+
+            obj[headerId+'-modified'] = record.isModified(header.dataIndex) ? Ext.baseCSSPrefix + 'grid-dirty-cell' : '';
             obj[headerId+'-tdCls'] = metaData.tdCls;
             obj[headerId+'-tdAttr'] = metaData.tdAttr;
             obj[headerId+'-style'] = metaData.style;
@@ -783,3 +816,4 @@ Ext.define('Ext.grid.header.Container', {
         }
     }
 });
+

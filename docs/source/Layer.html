@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-Layer-method-constructor'><span id='Ext-Layer-cfg-hideMode'><span id='Ext-Layer-cfg-visibilityCls'><span id='Ext-Layer-cfg-useDisplay'><span id='Ext-Layer-cfg-shadowOffset'><span id='Ext-Layer-cfg-zindex'><span id='Ext-Layer-cfg-cls'><span id='Ext-Layer-cfg-constrain'><span id='Ext-Layer-cfg-dh'><span id='Ext-Layer-cfg-shadow'><span id='Ext-Layer-cfg-shim'><span id='Ext-Layer'>/**
-</span></span></span></span></span></span></span></span></span></span></span></span> * @class Ext.Layer
+  <pre class="prettyprint lang-js"><span id='Ext-Layer-cfg-hideMode'><span id='Ext-Layer-cfg-visibilityCls'><span id='Ext-Layer-cfg-useDisplay'><span id='Ext-Layer-cfg-shadowOffset'><span id='Ext-Layer-cfg-zindex'><span id='Ext-Layer-cfg-cls'><span id='Ext-Layer-cfg-constrain'><span id='Ext-Layer-cfg-dh'><span id='Ext-Layer-cfg-shadow'><span id='Ext-Layer-cfg-shim'><span id='Ext-Layer'>/**
+</span></span></span></span></span></span></span></span></span></span></span> * @class Ext.Layer
  * @extends Ext.core.Element
  * An extended {@link Ext.core.Element} object that supports a shadow and shim, constrain to viewport and
  * automatic maintaining of shadow/shim positions.
@@ -41,9 +41,6 @@
  * &lt;li&gt;&lt;code&gt;'offsets'&lt;/code&gt; : The Component will be hidden by absolutely positioning it out of the visible area of the document. This
  * is useful when a hidden Component must maintain measurable dimensions. Hiding using &lt;code&gt;display&lt;/code&gt; results
  * in a Component having zero dimensions.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- * @constructor
- * @param {Object} config An object with config options.
- * @param {String/HTMLElement} existingEl (optional) Uses an existing DOM element. If the element is not found it creates it.
  */
 Ext.define('Ext.Layer', {
     uses: ['Ext.Shadow'],
@@ -55,6 +52,12 @@ Ext.define('Ext.Layer', {
 
     extend: 'Ext.core.Element',
 
+<span id='Ext-Layer-method-constructor'>    /**
+</span>     * Creates new Layer.
+     * @param {Object} config (optional) An object with config options.
+     * @param {String/HTMLElement} existingEl (optional) Uses an existing DOM element.
+     * If the element is not found it creates it.
+     */
     constructor: function(config, existingEl) {
         config = config || {};
         var me = this,

@@ -1,8 +1,21 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.AbstractComponent
  * <p>An abstract base class which provides shared methods for Components across the Sencha product line.</p>
  * <p>Please refer to sub class's documentation</p>
- * @constructor
  */
 
 Ext.define('Ext.AbstractComponent', {
@@ -46,6 +59,7 @@ Ext.define('Ext.AbstractComponent', {
     getAutoId: function() {
         return ++Ext.AbstractComponent.AUTO_ID;
     },
+
 
     /**
      * @cfg {String} id
@@ -94,7 +108,8 @@ var c = new Ext.panel.Panel({ //
 p1 = c.{@link Ext.container.Container#getComponent getComponent}('p1'); // not the same as {@link Ext#getCmp Ext.getCmp()}
 p2 = p1.{@link #ownerCt}.{@link Ext.container.Container#getComponent getComponent}('p2'); // reference via a sibling
      * </code></pre>
-     * <p>Also see <tt>{@link #id}</tt>, <code>{@link #query}</code>, <code>{@link #down}</code> and <code>{@link #child}</code>.</p>
+     * <p>Also see <tt>{@link #id}</tt>, <code>{@link Ext.container.Container#query}</code>,
+     * <code>{@link Ext.container.Container#down}</code> and <code>{@link Ext.container.Container#child}</code>.</p>
      * <p><b>Note</b>: to access the container of an item see <tt>{@link #ownerCt}</tt>.</p>
      */
 
@@ -105,6 +120,26 @@ p2 = p1.{@link #ownerCt}.{@link Ext.container.Container#getComponent getComponen
      * @type Ext.Container
      * @property ownerCt
      */
+
+     /**
+      * @private
+      * Flag set by the container layout to which this Component is added.
+      * If the layout manages this Component's width, it sets the value to 1.
+      * If it does NOT manage the width, it sets it to 2.
+      * If the layout MAY affect the width, but only if the owning Container has a fixed width, this is set to 0.
+      * @type boolean
+      * @property layoutManagedWidth
+      */
+
+     /**
+      * @private
+      * Flag set by the container layout to which this Component is added.
+      * If the layout manages this Component's height, it sets the value to 1.
+      * If it does NOT manage the height, it sets it to 2.
+      * If the layout MAY affect the height, but only if the owning Container has a fixed height, this is set to 0.
+      * @type boolean
+      * @property layoutManagedHeight
+      */
 
     /**
      * @cfg {Mixed} autoEl
@@ -289,14 +324,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      * A set style for a component. Can be a string or an Array of multiple strings (UIs)
      */
     ui: 'default',
-    
+
     /**
      * @cfg {Array} uiCls
      * An array of of classNames which are currently applied to this component
      * @private
      */
     uiCls: [],
-    
+
     /**
      * @cfg {String} style
      * A custom style specification to be applied to this component's Element.  Should be a valid argument to
@@ -508,8 +543,8 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
     trimRe: /^\s+|\s+$/g,
     spacesRe: /\s+/,
-    
-    
+
+
     /**
      * This is an internal flag that you use when creating custom components.
      * By default this is set to true which means that every component gets a mask when its disabled.
@@ -517,9 +552,13 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      * since they want to implement custom disable logic.
      * @property maskOnDisable
      * @type {Boolean}
-     */     
+     */
     maskOnDisable: true,
 
+    /**
+     * Creates new Component.
+     * @param {Object} config  (optional) Config object.
+     */
     constructor : function(config) {
         var me = this,
             i, len;
@@ -675,7 +714,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
                 me.plugins[i] = me.constructPlugin(me.plugins[i]);
             }
         }
-        
+
         me.initComponent();
 
         // ititComponent gets a chance to change the id property before registering
@@ -684,6 +723,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         // Dont pass the config so that it is not applied to 'this' again
         me.mixins.observable.constructor.call(me);
         me.mixins.state.constructor.call(me, config);
+
+        // Save state on resize.
+        this.addStateEvents('resize');
 
         // Move this into Observable?
         if (me.plugins) {
@@ -705,7 +747,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         if (me.autoShow) {
             me.show();
         }
-        
+
         //<debug>
         if (Ext.isDefined(me.disabledClass)) {
             if (Ext.isDefined(Ext.global.console)) {
@@ -718,6 +760,82 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     initComponent: Ext.emptyFn,
+
+    /**
+     * </p>The supplied default state gathering method for the AbstractComponent class.</p>
+     * This method returns dimension setings such as <code>flex</code>, <code>anchor</code>, <code>width</code>
+     * and <code>height</code> along with <code>collapsed</code> state.</p>
+     * <p>Subclasses which implement more complex state should call the superclass's implementation, and apply their state
+     * to the result if this basic state is to be saved.</p>
+     * <p>Note that Component state will only be saved if the Component has a {@link #stateId} and there as a StateProvider
+     * configured for the document.</p>
+     */
+    getState: function() {
+        var me = this,
+            layout = me.ownerCt ? (me.shadowOwnerCt || me.ownerCt).getLayout() : null,
+            state = {
+                collapsed: me.collapsed
+            },
+            width = me.width,
+            height = me.height,
+            cm = me.collapseMemento,
+            anchors;
+
+        // If a Panel-local collapse has taken place, use remembered values as the dimensions.
+        // TODO: remove this coupling with Panel's privates! All collapse/expand logic should be refactored into one place.
+        if (me.collapsed && cm) {
+            if (Ext.isDefined(cm.data.width)) {
+                width = cm.width;
+            }
+            if (Ext.isDefined(cm.data.height)) {
+                height = cm.height;
+            }
+        }
+
+        // If we have flex, only store the perpendicular dimension.
+        if (layout && me.flex) {
+            state.flex = me.flex;
+            state[layout.perpendicularPrefix] = me['get' + layout.perpendicularPrefixCap]();
+        }
+        // If we have anchor, only store dimensions which are *not* being anchored
+        else if (layout && me.anchor) {
+            state.anchor = me.anchor;
+            anchors = me.anchor.split(' ').concat(null);
+            if (!anchors[0]) {
+                if (me.width) {
+                    state.width = width;
+                }
+            }
+            if (!anchors[1]) {
+                if (me.height) {
+                    state.height = height;
+                }
+            }
+        }
+        // Store dimensions.
+        else {
+            if (me.width) {
+                state.width = width;
+            }
+            if (me.height) {
+                state.height = height;
+            }
+        }
+
+        // Don't save dimensions if they are unchanged from the original configuration.
+        if (state.width == me.initialConfig.width) {
+            delete state.width;
+        }
+        if (state.height == me.initialConfig.height) {
+            delete state.height;
+        }
+
+        // If a Box layout was managing the perpendicular dimension, don't save that dimension
+        if (layout && layout.align && (layout.align.indexOf('stretch') !== -1)) {
+            delete state[layout.perpendicularPrefix];
+        }
+        return state;
+    },
 
     show: Ext.emptyFn,
 
@@ -883,7 +1001,6 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     onRender : function(container, position) {
         var me = this,
             el = me.el,
-            cls = me.initCls(),
             styles = me.initStyles(),
             renderTpl, renderData, i;
 
@@ -918,7 +1035,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             }
         }
 
-        el.addCls(cls);
+        me.setUI(me.ui);
+
+        el.addCls(me.initCls());
         el.setStyle(styles);
 
         // Here we check if the component has a height set through style or css.
@@ -933,14 +1052,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         // }
 
         me.el = el;
-        
-        me.rendered = true;
-        me.addUIToElement(true);
-        //loop through all exisiting uiCls and update the ui in them
-        for (i = 0; i < me.uiCls.length; i++) {
-            me.addUIClsToElement(me.uiCls[i], true);
-        }
-        me.rendered = false;
+
         me.initFrame();
 
         renderTpl = me.initRenderTpl();
@@ -950,10 +1062,8 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
 
         me.applyRenderSelectors();
-        
+
         me.rendered = true;
-        
-        me.setUI(me.ui);
     },
 
     // @private
@@ -970,7 +1080,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
 
         // For floaters, calculate x and y if they aren't defined by aligning
-        // the sized element to the center of either the the container or the ownerCt
+        // the sized element to the center of either the container or the ownerCt
         if (me.floating && (me.x === undefined || me.y === undefined)) {
             if (me.floatParent) {
                 xy = me.el.getAlignToXY(me.floatParent.getTargetEl(), 'c-c');
@@ -993,6 +1103,18 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     frameCls: Ext.baseCSSPrefix + 'frame',
+
+    frameElementCls: {
+        tl: [],
+        tc: [],
+        tr: [],
+        ml: [],
+        mc: [],
+        mr: [],
+        bl: [],
+        bc: [],
+        br: []
+    },
 
     frameTpl: [
         '<tpl if="top">',
@@ -1039,7 +1161,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             '</tpl>',
         '</tbody></table>'
     ],
-    
+
     /**
      * @private
      */
@@ -1047,12 +1169,12 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         if (Ext.supports.CSS3BorderRadius) {
             return false;
         }
-        
+
         var me = this,
             frameInfo = me.getFrameInfo(),
             frameWidth = frameInfo.width,
             frameTpl = me.getFrameTpl(frameInfo.table);
-                        
+
         if (me.frame) {
             // Here we render the frameTpl to this component. This inserts the 9point div or the table framing.
             frameTpl.insertFirst(me.el, Ext.apply({}, {
@@ -1069,7 +1191,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
             // The frameBody is returned in getTargetEl, so that layouts render items to the correct target.=
             me.frameBody = me.el.down('.' + me.frameCls + '-mc');
-            
+
             // Add the render selectors for each of the frame elements
             Ext.apply(me.renderSelectors, {
                 frameTL: '.' + me.baseCls + '-tl',
@@ -1084,12 +1206,12 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             });
         }
     },
-    
+
     updateFrame: function() {
         if (Ext.supports.CSS3BorderRadius) {
             return false;
         }
-        
+
         var me = this,
             wasTable = this.frameSize && this.frameSize.table,
             oldFrameTL = this.frameTL,
@@ -1097,11 +1219,11 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             oldFrameML = this.frameML,
             oldFrameMC = this.frameMC,
             newMCClassName;
-        
+
         this.initFrame();
-        
+
         if (oldFrameMC) {
-            if (me.frame) {                
+            if (me.frame) {
                 // Reapply render selectors
                 delete me.frameTL;
                 delete me.frameTC;
@@ -1111,26 +1233,26 @@ and a property `descEl` referencing the `div` Element which contains the descrip
                 delete me.frameMR;
                 delete me.frameBL;
                 delete me.frameBC;
-                delete me.frameBR;    
+                delete me.frameBR;
                 this.applyRenderSelectors();
-                
+
                 // Store the class names set on the new mc
                 newMCClassName = this.frameMC.dom.className;
-                
+
                 // Replace the new mc with the old mc
                 oldFrameMC.insertAfter(this.frameMC);
                 this.frameMC.remove();
-                
+
                 // Restore the reference to the old frame mc as the framebody
                 this.frameBody = this.frameMC = oldFrameMC;
-                
+
                 // Apply the new mc classes to the old mc element
                 oldFrameMC.dom.className = newMCClassName;
-                
+
                 // Remove the old framing
                 if (wasTable) {
                     me.el.query('> table')[1].remove();
-                }                                
+                }
                 else {
                     if (oldFrameTL) {
                         oldFrameTL.remove();
@@ -1143,19 +1265,19 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             }
             else {
                 // We were framed but not anymore. Move all content from the old frame to the body
-                
+
             }
         }
         else if (me.frame) {
             this.applyRenderSelectors();
         }
     },
-    
+
     getFrameInfo: function() {
         if (Ext.supports.CSS3BorderRadius) {
             return false;
         }
-        
+
         var me = this,
             left = me.el.getStyle('background-position-x'),
             top = me.el.getStyle('background-position-y'),
@@ -1168,33 +1290,33 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             left = info[0];
             top = info[1];
         }
-        
+
         // We actually pass a string in the form of '[type][tl][tr]px [type][br][bl]px' as
         // the background position of this.el from the css to indicate to IE that this component needs
         // framing. We parse it here and change the markup accordingly.
         if (parseInt(left, 10) >= 1000000 && parseInt(top, 10) >= 1000000) {
             max = Math.max;
-            
+
             frameInfo = {
                 // Table markup starts with 110, div markup with 100.
                 table: left.substr(0, 3) == '110',
-                
+
                 // Determine if we are dealing with a horizontal or vertical component
                 vertical: top.substr(0, 3) == '110',
-                
+
                 // Get and parse the different border radius sizes
                 top:    max(left.substr(3, 2), left.substr(5, 2)),
                 right:  max(left.substr(5, 2), top.substr(3, 2)),
                 bottom: max(top.substr(3, 2), top.substr(5, 2)),
                 left:   max(top.substr(5, 2), left.substr(3, 2))
             };
-            
+
             frameInfo.width = max(frameInfo.top, frameInfo.right, frameInfo.bottom, frameInfo.left);
 
             // Just to be sure we set the background image of the el to none.
             me.el.setStyle('background-image', 'none');
-        }        
-        
+        }
+
         // This happens when you set frame: true explicitly without using the x-frame mixin in sass.
         // This way IE can't figure out what sizes to use and thus framing can't work.
         if (me.frame === true && !frameInfo) {
@@ -1204,28 +1326,28 @@ and a property `descEl` referencing the `div` Element which contains the descrip
                             "to use and thus framing on this component will be disabled.");
             //</debug>
         }
-        
+
         me.frame = me.frame || !!frameInfo;
         me.frameSize = frameInfo || false;
-        
+
         return frameInfo;
     },
-    
+
     getFramePositions: function(frameInfo) {
         var me = this,
             frameWidth = frameInfo.width,
             dock = me.dock,
             positions, tc, bc, ml, mr;
-            
+
         if (frameInfo.vertical) {
             tc = '0 -' + (frameWidth * 0) + 'px';
             bc = '0 -' + (frameWidth * 1) + 'px';
-            
+
             if (dock && dock == "right") {
                 tc = 'right -' + (frameWidth * 0) + 'px';
                 bc = 'right -' + (frameWidth * 1) + 'px';
             }
-            
+
             positions = {
                 tl: '0 -' + (frameWidth * 0) + 'px',
                 tr: '0 -' + (frameWidth * 1) + 'px',
@@ -1241,12 +1363,12 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         } else {
             ml = '-' + (frameWidth * 0) + 'px 0';
             mr = 'right 0';
-            
+
             if (dock && dock == "bottom") {
                 ml = 'left bottom';
                 mr = 'right bottom';
             }
-            
+
             positions = {
                 tl: '0 -' + (frameWidth * 2) + 'px',
                 tr: 'right -' + (frameWidth * 3) + 'px',
@@ -1260,10 +1382,10 @@ and a property `descEl` referencing the `div` Element which contains the descrip
                 bc: '0 -' + (frameWidth * 1) + 'px'
             };
         }
-        
+
         return positions;
     },
-    
+
     /**
      * @private
      */
@@ -1305,7 +1427,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         return cls.concat(me.additionalCls);
     },
-    
+
     /**
      * Sets the UI for the component. This will remove any existing UIs on the component. It will also
      * loop through any uiCls set on the component and rename them so they include the new UI
@@ -1315,77 +1437,103 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         var me = this,
             oldUICls = Ext.Array.clone(me.uiCls),
             newUICls = [],
+            classes = [],
             cls,
             i;
-        
+
         //loop through all exisiting uiCls and update the ui in them
         for (i = 0; i < oldUICls.length; i++) {
             cls = oldUICls[i];
-            
-            me.removeClsWithUI(cls);
+
+            classes = classes.concat(me.removeClsWithUI(cls, true));
             newUICls.push(cls);
         }
-        
+
+        if (classes.length) {
+            me.removeCls(classes);
+        }
+
         //remove the UI from the element
         me.removeUIFromElement();
-        
+
         //set the UI
         me.ui = ui;
-        
+
         //add the new UI to the elemend
         me.addUIToElement();
-        
+
         //loop through all exisiting uiCls and update the ui in them
+        classes = [];
         for (i = 0; i < newUICls.length; i++) {
             cls = newUICls[i];
-            
-            me.addClsWithUI(cls);
+            classes = classes.concat(me.addClsWithUI(cls, true));
+        }
+
+        if (classes.length) {
+            me.addCls(classes);
         }
     },
-    
+
     /**
      * Adds a cls to the uiCls array, which will also call {@link #addUIClsToElement} and adds
      * to all elements of this component.
      * @param {String/Array} cls A string or an array of strings to add to the uiCls
+     * @param (Boolean) skip True to skip adding it to the class and do it later (via the return)
      */
-    addClsWithUI: function(cls) {
+    addClsWithUI: function(cls, skip) {
         var me = this,
+            classes = [],
             i;
-        
+
         if (!Ext.isArray(cls)) {
             cls = [cls];
         }
-        
+
         for (i = 0; i < cls.length; i++) {
             if (cls[i] && !me.hasUICls(cls[i])) {
                 me.uiCls = Ext.Array.clone(me.uiCls);
                 me.uiCls.push(cls[i]);
-                me.addUIClsToElement(cls[i]);
+
+                classes = classes.concat(me.addUIClsToElement(cls[i]));
             }
         }
+
+        if (skip !== true) {
+            me.addCls(classes);
+        }
+
+        return classes;
     },
-    
+
     /**
-     * Removes a cls to the uiCls array, which will also call {@link #removeUIClsToElement} and removes
+     * Removes a cls to the uiCls array, which will also call {@link #removeUIClsFromElement} and removes
      * it from all elements of this component.
      * @param {String/Array} cls A string or an array of strings to remove to the uiCls
      */
-    removeClsWithUI: function(cls) {
+    removeClsWithUI: function(cls, skip) {
         var me = this,
+            classes = [],
             i;
-        
+
         if (!Ext.isArray(cls)) {
             cls = [cls];
         }
-        
+
         for (i = 0; i < cls.length; i++) {
             if (cls[i] && me.hasUICls(cls[i])) {
                 me.uiCls = Ext.Array.remove(me.uiCls, cls[i]);
-                me.removeUIClsFromElement(cls[i]);
+
+                classes = classes.concat(me.removeUIClsFromElement(cls[i]));
             }
         }
+
+        if (skip !== true) {
+            me.removeCls(classes);
+        }
+
+        return classes;
     },
-    
+
     /**
      * Checks if there is currently a specified uiCls
      * @param {String} cls The cls to check
@@ -1393,117 +1541,144 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     hasUICls: function(cls) {
         var me = this,
             uiCls = me.uiCls || [];
-        
+
         return Ext.Array.contains(uiCls, cls);
     },
-    
+
     /**
      * Method which adds a specified UI + uiCls to the components element.
      * Can be overridden to remove the UI from more than just the components element.
      * @param {String} ui The UI to remove from the element
-     * @private
      */
     addUIClsToElement: function(cls, force) {
-        var me = this;
+        var me = this,
+            result = [],
+            frameElementCls = me.frameElementCls;
         
-        me.addCls(Ext.baseCSSPrefix + cls);
-        me.addCls(me.baseCls + '-' + cls);
-        me.addCls(me.baseCls + '-' + me.ui + '-' + cls);
+        result.push(Ext.baseCSSPrefix + cls);
+        result.push(me.baseCls + '-' + cls);
+        result.push(me.baseCls + '-' + me.ui + '-' + cls);
         
-        if (!force && me.rendered && me.frame && !Ext.supports.CSS3BorderRadius) {
+        if (!force && me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
-                i, el;
-            
+                classes, i, j, el;
+
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
-                
+                classes = [me.baseCls + '-' + me.ui + '-' + els[i], me.baseCls + '-' + me.ui + '-' + cls + '-' + els[i]];
                 if (el && el.dom) {
-                    el.addCls(me.baseCls + '-' + me.ui + '-' + els[i]);
-                    el.addCls(me.baseCls + '-' + me.ui + '-' + cls + '-' + els[i]);
+                    el.addCls(classes);
+                } else {
+                    for (j = 0; j < classes.length; j++) {
+                        if (Ext.Array.indexOf(frameElementCls[els[i]], classes[j]) == -1) {
+                            frameElementCls[els[i]].push(classes[j]);
+                        }
+                    }
                 }
             }
         }
+
+        me.frameElementCls = frameElementCls;
+
+        return result;
     },
-    
+
     /**
      * Method which removes a specified UI + uiCls from the components element.
      * The cls which is added to the element will be: `this.baseCls + '-' + ui`
      * @param {String} ui The UI to add to the element
-     * @private
      */
     removeUIClsFromElement: function(cls, force) {
-        var me = this;
+        var me = this,
+            result = [],
+            frameElementCls = me.frameElementCls;
         
-        me.removeCls(Ext.baseCSSPrefix + cls);
-        me.removeCls(me.baseCls + '-' + cls);
-        me.removeCls(me.baseCls + '-' + me.ui + '-' + cls);
+        result.push(Ext.baseCSSPrefix + cls);
+        result.push(me.baseCls + '-' + cls);
+        result.push(me.baseCls + '-' + me.ui + '-' + cls);
         
-        if (!force &&me.rendered && me.frame && !Ext.supports.CSS3BorderRadius) {
+        if (!force && me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
                 i, el;
-            
+            cls = me.baseCls + '-' + me.ui + '-' + cls + '-' + els[i];
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
                 if (el && el.dom) {
-                    el.removeCls(me.baseCls + '-' + me.ui + '-' + cls + '-' + els[i]);
+                    el.removeCls(cls);
+                } else {
+                    Ext.Array.remove(frameElementCls[els[i]], cls);
                 }
             }
         }
+
+        me.frameElementCls = frameElementCls;
+
+        return result;
     },
-    
+
     /**
      * Method which adds a specified UI to the components element.
      * @private
      */
     addUIToElement: function(force) {
-        var me = this;
+        var me = this,
+            frameElementCls = me.frameElementCls;
         
         me.addCls(me.baseCls + '-' + me.ui);
         
-        if (me.rendered && me.frame && !Ext.supports.CSS3BorderRadius) {
+        if (me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
-                i, el;
+                i, el, cls;
             
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
-                
+                cls = me.baseCls + '-' + me.ui + '-' + els[i];
                 if (el) {
-                    el.addCls(me.baseCls + '-' + me.ui + '-' + els[i]);
+                    el.addCls(cls);
+                } else {
+                    if (!Ext.Array.contains(frameElementCls[els[i]], cls)) {
+                        frameElementCls[els[i]].push(cls);
+                    }
                 }
             }
         }
     },
-    
+
     /**
      * Method which removes a specified UI from the components element.
      * @private
      */
     removeUIFromElement: function() {
-        var me = this;
+        var me = this,
+            frameElementCls = me.frameElementCls;
         
         me.removeCls(me.baseCls + '-' + me.ui);
         
-        if (me.rendered && me.frame && !Ext.supports.CSS3BorderRadius) {
+        if (me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
-                i, el;
-            
+                i, j, el, cls;
+                
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
+                cls = me.baseCls + '-' + me.ui + '-' + els[i];
+
                 if (el) {
-                    el.removeCls(me.baseCls + '-' + me.ui + '-' + els[i]);
+                    el.removeCls(cls);
+                } else {
+                    Ext.Array.remove(frameElementCls[els[i]], cls);
                 }
             }
         }
     },
-    
+
     getElConfig : function() {
         var result = this.autoEl || {tag: 'div'};
         result.id = this.id;
@@ -1577,15 +1752,18 @@ and a property `descEl` referencing the `div` Element which contains the descrip
      * @private
      */
     getTpl: function(name) {
-        var prototype = this.self.prototype,
-            ownerPrototype;
+        var me = this,
+            prototype = me.self.prototype,
+            ownerPrototype,
+            tpl;
 
-        if (this.hasOwnProperty(name)) {
-            if (!(this[name] instanceof Ext.XTemplate)) {
-                this[name] = Ext.ClassManager.dynInstantiate('Ext.XTemplate', this[name]);
+        if (me.hasOwnProperty(name)) {
+            tpl = me[name];
+            if (tpl && !(tpl instanceof Ext.XTemplate)) {
+                me[name] = Ext.ClassManager.dynInstantiate('Ext.XTemplate', tpl);
             }
 
-            return this[name];
+            return me[name];
         }
 
         if (!(prototype[name] instanceof Ext.XTemplate)) {
@@ -1593,8 +1771,11 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
             do {
                 if (ownerPrototype.hasOwnProperty(name)) {
-                    ownerPrototype[name] = Ext.ClassManager.dynInstantiate('Ext.XTemplate', ownerPrototype[name]);
-                    break;
+                    tpl = ownerPrototype[name];
+                    if (tpl && !(tpl instanceof Ext.XTemplate)) {
+                        ownerPrototype[name] = Ext.ClassManager.dynInstantiate('Ext.XTemplate', tpl);
+                        break;
+                    }
                 }
 
                 ownerPrototype = ownerPrototype.superclass;
@@ -1683,13 +1864,17 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     initEvents : function() {
         var me = this,
             afterRenderEvents = me.afterRenderEvents,
-            property, listeners;
+            el,
+            property,
+            fn = function(listeners){
+                me.mon(el, listeners);
+            };
         if (afterRenderEvents) {
             for (property in afterRenderEvents) {
                 if (afterRenderEvents.hasOwnProperty(property)) {
-                    listeners = afterRenderEvents[property];
-                    if (me[property] && me[property].on) {
-                        me.mon(me[property], listeners);
+                    el = me[property];
+                    if (el && el.on) {
+                        Ext.each(afterRenderEvents[property], fn);
                     }
                 }
             }
@@ -1841,7 +2026,7 @@ var owningTabPanel = grid.up('tabpanel');
     /**
      * <p>Returns the next node in the Component tree in tree traversal order.</p>
      * <p>Note that this is not limited to siblings, and if invoked upon a node with no matching siblings, will
-     * walk the tree to attempt to find a match. Contrast with {@link #pnextSibling}.</p>
+     * walk the tree to attempt to find a match. Contrast with {@link #nextSibling}.</p>
      * @param {String} selector Optional A {@link Ext.ComponentQuery ComponentQuery} selector to filter the following nodes.
      * @returns The next node (or the next node which matches the selector). Returns null if there is no matching node.
      */
@@ -2093,12 +2278,12 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
         return me;
     },
-    
+
     // @private
     onEnable: function() {
         if (this.maskOnDisable) {
             this.el.unmask();
-        }        
+        }
     },
 
     // @private
@@ -2107,7 +2292,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
             this.el.mask();
         }
     },
-    
+
     /**
      * Method to determine whether this Component is currently disabled.
      * @return {Boolean} the disabled state of this Component.
@@ -2239,18 +2424,21 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                 me.mon(me[element], listeners);
             } else {
                 me.afterRenderEvents = me.afterRenderEvents || {};
-                me.afterRenderEvents[element] = listeners;
+                if (!me.afterRenderEvents[element]) {
+                    me.afterRenderEvents[element] = [];
+                }
+                me.afterRenderEvents[element].push(listeners);
             }
         }
 
         return me.mixins.observable.addListener.apply(me, arguments);
     },
-    
+
     // inherit docs
     removeManagedListenerItem: function(isClear, managedListener, item, ename, fn, scope){
         var me = this,
             element = managedListener.options ? managedListener.options.element : null;
-        
+
         if (element) {
             element = me[element];
             if (element && element.un) {
@@ -2388,13 +2576,39 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         return me;
     },
 
-    setCalculatedSize : function(width, height, ownerCt) {
+    isFixedWidth: function() {
+        var me = this,
+            layoutManagedWidth = me.layoutManagedWidth;
+
+        if (Ext.isDefined(me.width) || layoutManagedWidth == 1) {
+            return true;
+        }
+        if (layoutManagedWidth == 2) {
+            return false;
+        }
+        return (me.ownerCt && me.ownerCt.isFixedWidth());
+    },
+
+    isFixedHeight: function() {
+        var me = this,
+            layoutManagedHeight = me.layoutManagedHeight;
+
+        if (Ext.isDefined(me.height) || layoutManagedHeight == 1) {
+            return true;
+        }
+        if (layoutManagedHeight == 2) {
+            return false;
+        }
+        return (me.ownerCt && me.ownerCt.isFixedHeight());
+    },
+
+    setCalculatedSize : function(width, height, callingContainer) {
         var me = this,
             layoutCollection;
 
         // support for standard size objects
         if (Ext.isObject(width)) {
-            ownerCt = width.ownerCt;
+            callingContainer = width.ownerCt;
             height = width.height;
             width  = width.width;
         }
@@ -2418,11 +2632,11 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                 width: width,
                 height: height,
                 isSetSize: false,
-                ownerCt: ownerCt
+                ownerCt: callingContainer
             };
             return me;
         }
-        me.doComponentLayout(width, height, false, ownerCt);
+        me.doComponentLayout(width, height, false, callingContainer);
 
         return me;
     },
@@ -2432,24 +2646,49 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
      * layout to be recalculated.
      * @return {Ext.container.Container} this
      */
-    doComponentLayout : function(width, height, isSetSize, ownerCt) {
+    doComponentLayout : function(width, height, isSetSize, callingContainer) {
         var me = this,
-            componentLayout = me.getComponentLayout();
+            componentLayout = me.getComponentLayout(),
+            lastComponentSize = componentLayout.lastComponentSize || {
+                width: undefined,
+                height: undefined
+            };
 
         // collapsed state is not relevant here, so no testing done.
         // Only Panels have a collapse method, and that just sets the width/height such that only
         // a single docked Header parallel to the collapseTo side are visible, and the Panel body is hidden.
         if (me.rendered && componentLayout) {
-            width = (width !== undefined) ? width : me.width;
-            height = (height !== undefined) ? height : me.height;
+
+
+            // If no width passed, then only insert a value if the Component is NOT ALLOWED to autowidth itself.
+            if (!Ext.isDefined(width)) {
+                if (me.isFixedWidth()) {
+                    width = Ext.isDefined(me.width) ? me.width : lastComponentSize.width;
+                }
+            }
+
+            // If no height passed, then only insert a value if the Component is NOT ALLOWED to autoheight itself.
+            if (!Ext.isDefined(height)) {
+                if (me.isFixedHeight()) {
+                    height = Ext.isDefined(me.height) ? me.height : lastComponentSize.height;
+                }
+            }
+
             if (isSetSize) {
                 me.width = width;
                 me.height = height;
             }
 
-            componentLayout.layout(width, height, isSetSize, ownerCt);
+            componentLayout.layout(width, height, isSetSize, callingContainer);
         }
         return me;
+    },
+
+    /**
+     * Forces this component to redo its componentLayout.
+     */
+    forceComponentLayout: function () {
+        this.doComponentLayout();
     },
 
     // @private
@@ -2475,9 +2714,9 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
      * @param {Number} adjWidth The box-adjusted width that was set
      * @param {Number} adjHeight The box-adjusted height that was set
      * @param {Boolean} isSetSize Whether or not the height/width are stored on the component permanently
-     * @param {Ext.Component} layoutOwner Component which sent the layout. Only used when isSetSize is false.
+     * @param {Ext.Component} callingContainer Container requesting the layout. Only used when isSetSize is false.
      */
-    afterComponentLayout: function(width, height, isSetSize, layoutOwner) {
+    afterComponentLayout: function(width, height, isSetSize, callingContainer) {
         this.fireEvent('resize', this, width, height);
     },
 
@@ -2487,14 +2726,15 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
      * @param {Number} adjWidth The box-adjusted width that was set
      * @param {Number} adjHeight The box-adjusted height that was set
      * @param {Boolean} isSetSize Whether or not the height/width are stored on the component permanently
-     * @param {Ext.Component} layoutOwner Component which sent the layout. Only used when isSetSize is false.
+     * @param {Ext.Component} callingContainer Container requesting sent the layout. Only used when isSetSize is false.
      */
-    beforeComponentLayout: function(width, height, isSetSize, layoutOwner) {
+    beforeComponentLayout: function(width, height, isSetSize, callingContainer) {
         return true;
     },
 
     /**
-     * Sets the left and top of the component.  To set the page XY position instead, use {@link #setPagePosition}.
+     * Sets the left and top of the component.  To set the page XY position instead, use
+     * {@link Ext.Component#setPagePosition setPagePosition}.
      * This method fires the {@link #move} event.
      * @param {Number} left The new left
      * @param {Number} top The new top
@@ -2684,14 +2924,14 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                     me.ownerCt.remove(me, false);
                 }
 
-                if (me.rendered) {
-                    me.el.remove();
-                }
-
                 me.onDestroy();
 
                 // Attempt to destroy all plugins
                 Ext.destroy(me.plugins);
+
+                if (me.rendered) {
+                    me.el.remove();
+                }
 
                 Ext.ComponentManager.unregister(me);
                 me.fireEvent('destroy', me);
@@ -2720,7 +2960,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
             }
         }
     },
-    
+
     /**
      * Determines whether this component is the descendant of a particular container.
      * @param {Ext.Container} container
@@ -2738,3 +2978,4 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         next: 'nextSibling'
     });
 });
+

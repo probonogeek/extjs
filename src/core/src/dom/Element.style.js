@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.core.Element
  */
@@ -71,11 +85,11 @@
                 cls = [],
                 space = ((me.dom.className.replace(trimRe, '') == '') ? "" : " "),
                 i, len, v;
-            if (!Ext.isDefined(className)) {
+            if (className === undefined) {
                 return me;
             }
             // Separate case is for speed
-            if (!Ext.isArray(className)) {
+            if (Object.prototype.toString.call(className) !== '[object Array]') {
                 if (typeof className === 'string') {
                     className = className.replace(trimRe, '').split(spacesRe);
                     if (className.length === 1) {
@@ -109,10 +123,10 @@
         removeCls : function(className){
             var me = this,
                 i, idx, len, cls, elClasses;
-            if (!Ext.isDefined(className)) {
+            if (className === undefined) {
                 return me;
             }
-            if (!Ext.isArray(className)){
+            if (Object.prototype.toString.call(className) !== '[object Array]') {
                 className = className.replace(trimRe, '').split(spacesRe);
             }
             if (me.dom && me.dom.className) {
@@ -123,7 +137,7 @@
                         cls = cls.replace(trimRe, '');
                         idx = Ext.Array.indexOf(elClasses, cls);
                         if (idx != -1) {
-                            elClasses.splice(idx, 1);
+                            Ext.Array.erase(elClasses, idx, 1);
                         }
                     }
                 }
@@ -305,8 +319,7 @@
             if (!me.dom) {
                 return me;
             }
-
-            if (!Ext.isObject(prop)) {
+            if (typeof prop === 'string') {
                 tmp = {};
                 tmp[prop] = value;
                 prop = tmp;
@@ -776,7 +789,8 @@ Ext.fly('elId').setHeight(150, {
          */
         setSize : function(width, height, animate){
             var me = this;
-            if (Ext.isObject(width)){ // in case of object from getSize()
+            if (Ext.isObject(width)) { // in case of object from getSize()
+                animate = height;
                 height = width.height;
                 width = width.width;
             }
@@ -787,7 +801,7 @@ Ext.fly('elId').setHeight(150, {
                 me.dom.style.height = me.addUnits(height);
             }
             else {
-                if (!Ext.isObject(animate)) {
+                if (animate === true) {
                     animate = {};
                 }
                 me.animate(Ext.applyIf({

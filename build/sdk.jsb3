@@ -1,6 +1,6 @@
 {
     "projectName": "Ext JS 4 SDK",
-    "licenseText": "Ext JS - JavaScript Library\nCopyright (c) 2006-2011, Sencha Inc.\nAll rights reserved.\nlicensing@sencha.com",
+     "licenseText": "\nThis file is part of Ext JS 4\n\nCopyright (c) 2011 Sencha Inc\n\nContact:  http://www.sencha.com/contact\n\nGNU General Public License Usage\nThis file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.\n\nIf you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.\n",
     "packages": [
         {
             "name": "Foundation",
@@ -423,6 +423,10 @@
                 {
                     "path": "../../platform/src/layout/component/",
                     "name": "AbstractDock.js"
+                },
+                {
+                    "path": "../../platform/src/util/",
+                    "name": "Memento.js"
                 },
                 {
                     "path": "../../platform/src/app/",
@@ -1664,11 +1668,22 @@
     ],
     "builds": [
         {
-            "name": "All Debug",
-            "target": "ext-all-debug.js",
+            "name": "All Dev",
+            "target": "ext-all-dev.js",
             "options": {
                 "debug": true
             },
+            "packages": [
+                "foundation",
+                "extras",
+                "dom",
+                "classes",
+                "misc"
+            ]
+        },
+        {
+            "name": "All Debug",
+            "target": "ext-all-debug.js",
             "packages": [
                 "foundation",
                 "extras",
@@ -1690,11 +1705,32 @@
             ]
         },
         {
-            "name": "Sandboxed All Debug",
-            "target": "builds/ext-all-sandbox-debug.js",
+            "name": "Sandboxed All Dev",
+            "target": "builds/ext-all-sandbox-dev.js",
             "options": {
                 "debug": true
             },
+            "namespaceRewrites": [
+                {
+                    "from": "Ext",
+                    "to": "Ext4"
+                }
+            ],
+            "settings": {
+                "baseCSSPrefix": "x4-",
+                "scopeResetCSS": true
+            },
+            "packages": [
+                "foundation",
+                "extras",
+                "dom",
+                "classes",
+                "misc"
+            ]
+        },
+        {
+            "name": "Sandboxed All Debug",
+            "target": "builds/ext-all-sandbox-debug.js",
             "namespaceRewrites": [
                 {
                     "from": "Ext",
@@ -1736,11 +1772,18 @@
             ]
         },
         {
-            "name": "Foundation Debug",
-            "target": "builds/ext-foundation-debug.js",
+            "name": "Foundation Dev",
+            "target": "builds/ext-foundation-dev.js",
             "options": {
                 "debug": true
             },
+            "packages": [
+                "foundation"
+            ]
+        },
+        {
+            "name": "Foundation Debug",
+            "target": "builds/ext-foundation-debug.js",
             "packages": [
                 "foundation"
             ]
@@ -1754,11 +1797,20 @@
             ]
         },
         {
-            "name": "Core Debug",
-            "target": "builds/ext-core-debug.js",
+            "name": "Core Dev",
+            "target": "builds/ext-core-dev.js",
             "options": {
                 "debug": true
             },
+            "packages": [
+                "foundation",
+                "extras",
+                "dom"
+            ]
+        },
+        {
+            "name": "Core Debug",
+            "target": "builds/ext-core-debug.js",
             "packages": [
                 "foundation",
                 "extras",
@@ -1776,11 +1828,21 @@
             ]
         },
         {
-            "name": "Bootstrap Debug",
-            "target": "ext-debug.js",
+            "name": "Bootstrap Dev",
+            "target": "ext-dev.js",
             "options": {
                 "debug": true
             },
+            "packages": [
+                "foundation",
+                "extras",
+                "dom",
+                "manifest"
+            ]
+        },
+        {
+            "name": "Bootstrap Debug",
+            "target": "ext-debug.js",
             "packages": [
                 "foundation",
                 "extras",

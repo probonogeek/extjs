@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 Ext.require([
     'Ext.grid.*',
     'Ext.data.*',
@@ -49,7 +63,7 @@ Ext.Loader.onReady(function() {
             };
 
             // call the superclass's constructor
-            App.BookStore.superclass.constructor.call(this, config);
+            this.callParent([config]);
         }
     });
 
@@ -92,7 +106,7 @@ Ext.Loader.onReady(function() {
                 url: 'sheldon.xml'
             });
             // finally call the superclasses implementation
-            App.BookGrid.superclass.initComponent.call(this);
+            this.callParent();
         }
     });
 
@@ -135,7 +149,7 @@ Ext.Loader.onReady(function() {
                 background: '#ffffff'
             };
             // call the superclass's initComponent implementation
-            App.BookDetail.superclass.initComponent.call(this);
+            this.callParent();
         },
         // add a method which updates the details
         updateDetail: function(data) {
@@ -178,12 +192,12 @@ Ext.Loader.onReady(function() {
                 region: 'center'
             }];
             // call the superclass's initComponent implementation
-            App.BookMasterDetail.superclass.initComponent.call(this);
+            this.callParent();
         },
         // override initEvents
         initEvents: function() {
             // call the superclass's initEvents implementation
-            App.BookMasterDetail.superclass.initEvents.call(this);
+            this.callParent();
 
             // now add application specific events
             // notice we use the selectionmodel's rowselect event rather
@@ -230,3 +244,4 @@ Ext.onReady(function() {
     // via the StoreManager by its storeId
     Ext.data.StoreManager.get('gridBookStore').load();
 });
+

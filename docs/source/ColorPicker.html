@@ -27,29 +27,31 @@
  * Applying {@link Ext.picker.Color ColorPicker} configuration settings to
  * &lt;b&gt;&lt;tt&gt;this&lt;/tt&gt;&lt;/b&gt; will &lt;b&gt;not&lt;/b&gt; affect the ColorPicker's configuration.&lt;/li&gt;
  * &lt;/ul&gt;&lt;/div&gt;
+ *
  * {@img Ext.menu.ColorPicker/Ext.menu.ColorPicker.png Ext.menu.ColorPicker component}
+ *
  * __Example Usage__
-     var colorPicker = Ext.create('Ext.menu.ColorPicker', {
-        value: '000000'
-    });
-
-    Ext.create('Ext.menu.Menu', {
-		width: 100,
-		height: 90,
-		floating: false,  // usually you want this set to True (default)
-		renderTo: Ext.getBody(),  // usually rendered by it's containing component
-		items: [{
-		    text: 'choose a color',
-		    menu: colorPicker
-		},{
-            iconCls: 'add16',
-		    text: 'icon item'
-		},{
-		    text: 'regular item'
-		}]
-	});
-
- * @xtype colormenu
+ *
+ *     var colorPicker = Ext.create('Ext.menu.ColorPicker', {
+ *         value: '000000'
+ *     });
+ *  
+ *     Ext.create('Ext.menu.Menu', {
+ *         width: 100,
+ *         height: 90,
+ *         floating: false,  // usually you want this set to True (default)
+ *         renderTo: Ext.getBody(),  // usually rendered by it's containing component
+ *         items: [{
+ *             text: 'choose a color',
+ *             menu: colorPicker
+ *         },{
+ *             iconCls: 'add16',
+ *             text: 'icon item'
+ *         },{
+ *             text: 'regular item'
+ *         }]
+ *     });
+ *
  * @author Nicolas Ferrero
  */
  Ext.define('Ext.menu.ColorPicker', {

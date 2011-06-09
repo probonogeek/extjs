@@ -1,43 +1,66 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.form.RadioGroup
- * @extends Ext.form.CheckboxGroup
- * <p>A {@link Ext.form.FieldContainer field container} which has a specialized layout for arranging
- * {@link Ext.form.field.Radio} controls into columns, and provides convenience {@link Ext.form.field.Field} methods
- * for {@link #getValue getting}, {@link #setValue setting}, and {@link #validate validating} the group
- * of radio buttons as a whole.</p>
- * <p><b>Validation:</b> Individual radio buttons themselves have no default validation behavior, but
+ * A {@link Ext.form.FieldContainer field container} which has a specialized layout for arranging
+ * {@link Ext.form.field.Radio} controls into columns, and provides convenience {@link Ext.form.field.Field}
+ * methods for {@link #getValue getting}, {@link #setValue setting}, and {@link #validate validating} the
+ * group of radio buttons as a whole.
+ *
+ * # Validation
+ *
+ * Individual radio buttons themselves have no default validation behavior, but
  * sometimes you want to require a user to select one of a group of radios. RadioGroup
- * allows this by setting the config <tt>{@link #allowBlank}:false</tt>; when the user does not check at
+ * allows this by setting the config `{@link #allowBlank}:false`; when the user does not check at
  * one of the radio buttons, the entire group will be highlighted as invalid and the
  * {@link #blankText error message} will be displayed according to the {@link #msgTarget} config.</p>
- * <p><b>Layout:</b> The default layout for RadioGroup makes it easy to arrange the radio buttons into
+ *
+ * # Layout
+ *
+ * The default layout for RadioGroup makes it easy to arrange the radio buttons into
  * columns; see the {@link #columns} and {@link #vertical} config documentation for details. You may also
  * use a completely different layout by setting the {@link #layout} to one of the other supported layout
  * types; for instance you may wish to use a custom arrangement of hbox and vbox containers. In that case
- * the Radio components at any depth will still be managed by the RadioGroup's validation.</p>
- * <p>Example usage:</p>
- * <pre><code>
-var myRadioGroup = new Ext.form.RadioGroup({
-    id: 'myGroup',
-    xtype: 'radiogroup',
-    fieldLabel: 'Single Column',
-    // Arrange radio buttons into three columns, distributed vertically
-    columns: 3,
-    vertical: true,
-    items: [
-        {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
-        {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
-        {boxLabel: 'Item 3', name: 'rb', inputValue: '3'}
-        {boxLabel: 'Item 4', name: 'rb', inputValue: '4'}
-        {boxLabel: 'Item 5', name: 'rb', inputValue: '5'}
-        {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
-    ]
-});
- * </code></pre>
- * @constructor
- * Creates a new RadioGroup
- * @param {Object} config Configuration options
- * @xtype radiogroup
+ * the Radio components at any depth will still be managed by the RadioGroup's validation.
+ *
+ * {@img Ext.form.RadioGroup/Ext.form.RadioGroup.png Ext.form.RadioGroup component}
+ *
+ * # Example usage
+ *
+ *     Ext.create('Ext.form.Panel', {
+ *         title: 'RadioGroup Example',
+ *         width: 300,
+ *         height: 125,
+ *         bodyPadding: 10,
+ *         renderTo: Ext.getBody(),        
+ *         items:[{            
+ *             xtype: 'radiogroup',
+ *             fieldLabel: 'Two Columns',
+ *             // Arrange radio buttons into two columns, distributed vertically
+ *             columns: 2,
+ *             vertical: true,
+ *             items: [
+ *                 {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
+ *                 {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
+ *                 {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
+ *                 {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
+ *                 {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
+ *                 {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
+ *             ]
+ *         }]
+ *     });
+ *
  */
 Ext.define('Ext.form.RadioGroup', {
     extend: 'Ext.form.CheckboxGroup',
@@ -49,7 +72,7 @@ Ext.define('Ext.form.RadioGroup', {
      */
     /**
      * @cfg {Boolean} allowBlank True to allow every item in the group to be blank (defaults to true).
-     * If allowBlank = false and no items are selected at validation time, {@link @blankText} will
+     * If allowBlank = false and no items are selected at validation time, {@link #blankText} will
      * be used as the error text.
      */
     allowBlank : true,
@@ -70,3 +93,4 @@ Ext.define('Ext.form.RadioGroup', {
     }
 
 });
+

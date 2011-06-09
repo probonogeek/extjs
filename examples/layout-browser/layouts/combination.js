@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 function getCombinationLayouts() {
     // fake grid data used below in the tabsNestedLayouts config
     var myData = [
@@ -207,12 +221,15 @@ function getCombinationLayouts() {
             items: {
                 title: 'New Email',
                 layout: 'fit',
+                frame: true,
                 items: {
                     xtype: 'form',
                     layout:'absolute',
                     url:'save-form.php',
                     padding: '5 5 0 5',
                     border: false,
+                    cls: 'absolute-form-panel-body',
+                    
                     defaultType: 'textfield',
                     items: [{
                         x: 0,
@@ -236,7 +253,7 @@ function getCombinationLayouts() {
                         xtype: 'button',
                         text: 'Contacts...'
                     },{
-                        x: 135,
+                        x: 127,
                         y: 27,
                         name: 'to',
                         hideLabel: true,
@@ -262,23 +279,34 @@ function getCombinationLayouts() {
                     }]
                 },
 
-                tbar: [{
-                     text: 'Send',
-                     iconCls: 'icon-send'
-                },'-',{
-                     text: 'Save',
-                     iconCls: 'icon-save'
-                },{
-                     text: 'Check Spelling',
-                     iconCls: 'icon-spell'
-                },'-',{
-                     text: 'Print',
-                     iconCls: 'icon-print'
-                },'->',{
-                     text: 'Attach a File',
-                     iconCls: 'icon-attach'
-                }]
+                dockedItems: [
+                    {
+                        xtype: 'toolbar',
+                        ignoreParentFrame: true,
+                        ignoreBorderManagement: true,
+                        cls: 'absolute-form-toolbar',
+                        items: [
+                            {
+                                 text: 'Send',
+                                 iconCls: 'icon-send'
+                            },'-',{
+                                 text: 'Save',
+                                 iconCls: 'icon-save'
+                            },{
+                                 text: 'Check Spelling',
+                                 iconCls: 'icon-spell'
+                            },'-',{
+                                 text: 'Print',
+                                 iconCls: 'icon-print'
+                            },'->',{
+                                 text: 'Attach a File',
+                                 iconCls: 'icon-attach'
+                            }
+                        ]
+                    }
+                ]
             }
         }
     };
 }
+

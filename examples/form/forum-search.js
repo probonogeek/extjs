@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 Ext.require([
     'Ext.data.*',
     'Ext.form.*'
@@ -27,13 +41,12 @@ Ext.onReady(function(){
         ]
     });
 
-    var ds = Ext.create('Ext.data.Store', {
+    ds = Ext.create('Ext.data.Store', {
         pageSize: 10,
         model: 'Post'
     });
 
-
-    var panel = Ext.create('Ext.panel.Panel', {
+    panel = Ext.create('Ext.panel.Panel', {
         renderTo: Ext.getBody(),
         title: 'Search the Ext Forums',
         width: 600,
@@ -55,24 +68,13 @@ Ext.onReady(function(){
 
                 // Custom rendering template for each item
                 getInnerTpl: function() {
-                    return '<div class="search-item">' +
+                    return '<a class="search-item" href="http://www.sencha.com/forum/showthread.php?t={topicId}&p={id}">' +
                         '<h3><span>{[Ext.Date.format(values.lastPost, "M j, Y")]}<br />by {author}</span>{title}</h3>' +
                         '{excerpt}' +
-                    '</div>';
+                    '</a>';
                 }
             },
-            pageSize: 10,
-
-            // override default onSelect to do redirect
-            listeners: {
-                select: function(combo, selection) {
-                    var post = selection[0];
-                    if (post) {
-                        window.location =
-                            Ext.String.format('http://www.sencha.com/forum/showthread.php?t={0}&p={1}', post.get('topicId'), post.get('id'));
-                    }
-                }
-            }
+            pageSize: 10
         }, {
             xtype: 'component',
             style: 'margin-top:10px',

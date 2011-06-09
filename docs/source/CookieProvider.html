@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-state-CookieProvider-method-constructor'><span id='Ext-state-CookieProvider-cfg-secure'><span id='Ext-state-CookieProvider-cfg-domain'><span id='Ext-state-CookieProvider-cfg-expires'><span id='Ext-state-CookieProvider-cfg-path'><span id='Ext-state-CookieProvider'>/**
-</span></span></span></span></span></span> * @class Ext.state.CookieProvider
+  <pre class="prettyprint lang-js"><span id='Ext-state-CookieProvider-cfg-secure'><span id='Ext-state-CookieProvider-cfg-domain'><span id='Ext-state-CookieProvider-cfg-expires'><span id='Ext-state-CookieProvider-cfg-path'><span id='Ext-state-CookieProvider'>/**
+</span></span></span></span></span> * @class Ext.state.CookieProvider
  * @extends Ext.state.Provider
  * A Provider implementation which saves and retrieves state via cookies.
  * The CookieProvider supports the usual cookie options, such as:
@@ -43,13 +43,14 @@
  * all sub-domains if you need to access cookies across different sub-domains (defaults to null which uses the same
  * domain the page is running on including the 'www' like 'www.sencha.com')
  * @cfg {Boolean} secure True if the site is using SSL (defaults to false)
- * @constructor
- * Create a new CookieProvider
- * @param {Object} config The configuration object
  */
 Ext.define('Ext.state.CookieProvider', {
     extend: 'Ext.state.Provider',
 
+<span id='Ext-state-CookieProvider-method-constructor'>    /**
+</span>     * Creates a new CookieProvider.
+     * @param {Object} config (optional) Config object.
+     */
     constructor : function(config){
         var me = this;
         me.path = &quot;/&quot;;

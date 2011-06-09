@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.Store
@@ -207,8 +221,6 @@ new Ext.view.View({
  * <li>{@link Ext.data.reader.Reader Reader} - used by any subclass of {@link Ext.data.proxy.Server ServerProxy} to read a response</li>
  * </ul>
  *
- * @constructor
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.Store', {
     extend: 'Ext.data.AbstractStore',
@@ -318,7 +330,10 @@ Ext.define('Ext.data.Store', {
 
     isStore: true,
 
-    //documented above
+    /**
+     * Creates the store.
+     * @param {Object} config (optional) Config object
+     */
     constructor: function(config) {
         config = config || {};
 
@@ -1261,7 +1276,7 @@ store.load(function(records, operation, success) {
 
         if (!options.addRecords) {
             delete me.snapshot;
-            me.data.clear();
+            me.clearData();
         }
 
         me.data.addAll(records);
@@ -2152,3 +2167,4 @@ store.load(function(records, operation, success) {
         }
     }
 });
+

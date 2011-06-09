@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-grid-property-Grid-method-constructor'><span id='Ext-grid-property-Grid'>/**
-</span></span> * @class Ext.grid.property.Grid
+  <pre class="prettyprint lang-js"><span id='Ext-grid-property-Grid'>/**
+</span> * @class Ext.grid.property.Grid
  * @extends Ext.grid.Panel
  * A specialized grid implementation intended to mimic the traditional property grid as typically seen in
  * development IDEs.  Each row in the grid represents a property of some object, and the data is stored
@@ -35,14 +35,11 @@ var grid = new Ext.grid.property.Grid({
     }
 });
 &lt;/code&gt;&lt;/pre&gt;
- * @constructor
- * @param {Object} config The grid config object
- * @xtype propertygrid
  */
 Ext.define('Ext.grid.property.Grid', {
 
     extend: 'Ext.grid.Panel',
-    
+
     alias: 'widget.propertygrid',
 
     alternateClassName: 'Ext.grid.PropertyGrid',
@@ -136,6 +133,11 @@ var grid = Ext.create('Ext.grid.property.Grid', {
      */
     nameField: 'name',
 
+<span id='Ext-grid-property-Grid-cfg-nameColumnWidth'>    /**
+</span>     * @cfg {Number} nameColumnWidth
+     * Optional. Specify the width for the name column. The value column will take any remaining space. Defaults to &lt;tt&gt;115&lt;/tt&gt;.
+     */
+
     // private config overrides
     enableColumnMove: false,
     columnLines: true,
@@ -158,7 +160,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
             // Inject a startEdit which always edits the value column
             startEdit: function(record, column) {
                 // Maintainer: Do not change this 'this' to 'me'! It is the CellEditing object's own scope.
-                Ext.grid.plugin.CellEditing.prototype.startEdit.call(this, record, me.headerCt.child('#' + me.valueField));
+                return this.self.prototype.startEdit.call(this, record, me.headerCt.child('#' + me.valueField));
             }
         }));
 
@@ -167,8 +169,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
             onCellSelect: function(position) {
                 if (position.column != 1) {
                     position.column = 1;
-                    Ext.selection.CellModel.prototype.onCellSelect.call(this, position);
                 }
+                return this.self.prototype.onCellSelect.call(this, position);
             }
         };
         me.customRenderers = me.customRenderers || {};
@@ -186,7 +188,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
 <span id='Ext-grid-property-Grid-event-beforepropertychange'>            /**
 </span>             * @event beforepropertychange
              * Fires before a property value changes.  Handlers can return false to cancel the property change
-             * (this will internally call {@link Ext.data.Record#reject} on the property's record).
+             * (this will internally call {@link Ext.data.Model#reject} on the property's record).
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
@@ -222,7 +224,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
         };
 
         // Track changes to the data so we can fire our events.
-        this.store.on('update', me.onUpdate, me);
+        me.store.on('update', me.onUpdate, me);
     },
 
     // private
@@ -263,7 +265,7 @@ var grid = Ext.create('Ext.grid.property.Grid', {
     // returns the correct editor type for the property type, or a custom one keyed by the property name
     getCellEditor : function(record, column) {
         var me = this,
-            propName = record.get(me.nameField), 
+            propName = record.get(me.nameField),
             val = record.get(me.valueField),
             editor = me.customEditors[propName];
 

@@ -23,8 +23,9 @@
  * http://developer.yahoo.net/yui/license.txt
  */
 
-<span id='Ext-dd-DDProxy-method-constructor'><span id='Ext-dd-DDProxy'>/**
-</span></span> * @class Ext.dd.DDProxy
+<span id='Ext-dd-DDProxy'>/**
+</span> * @class Ext.dd.DDProxy
+ * @extends Ext.dd.DD
  * A DragDrop implementation that inserts an empty, bordered div into
  * the document that follows the cursor during drag operations.  At the time of
  * the click, the frame div is resized to the dimensions of the linked html
@@ -33,28 +34,29 @@
  * References to the &quot;frame&quot; element refer to the single proxy element that
  * was created to be dragged in place of all DDProxy elements on the
  * page.
- *
- * @extends Ext.dd.DD
- * @constructor
- * @param {String} id the id of the linked html element
- * @param {String} sGroup the group of related DragDrop objects
- * @param {object} config an object containing configurable attributes
- *                Valid properties for DDProxy in addition to those in DragDrop:
- *                   resizeFrame, centerFrame, dragElId
  */
 Ext.define('Ext.dd.DDProxy', {
     extend: 'Ext.dd.DD',
 
     statics: {
-<span id='Ext-dd-DDProxy-property-Ext'>        /**
+<span id='Ext-dd-DDProxy-property-dragElId'>        /**
 </span>         * The default drag frame div id
-         * @property Ext.dd.DDProxy.dragElId
-         * @type String
          * @static
          */
         dragElId: &quot;ygddfdiv&quot;
     },
 
+<span id='Ext-dd-DDProxy-method-constructor'>    /**
+</span>     * Creates new DDProxy.
+     * @param {String} id the id of the linked html element
+     * @param {String} sGroup the group of related DragDrop objects
+     * @param {object} config an object containing configurable attributes.
+     * Valid properties for DDProxy in addition to those in DragDrop:
+     * 
+     * - resizeFrame
+     * - centerFrame
+     * - dragElId
+     */
     constructor: function(id, sGroup, config) {
         if (id) {
             this.init(id, sGroup, config);

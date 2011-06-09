@@ -185,16 +185,26 @@ Ext.define('Ext.resizer.SplitterTracker', {
         layout.onLayout();
     },
 
+    // Cleans up the overlay (if we have one) and calls the base. This cannot be done in
+    // onEnd, because onEnd is only called if a drag is detected but the overlay is created
+    // regardless (by onBeforeStart).
+    endDrag: function () {
+        var me = this;
+
+        if (me.overlay) {
+             me.overlay.remove();
+             delete me.overlay;
+        }
+
+        me.callParent(arguments); // this calls onEnd
+    },
+
     // perform the resize and remove the proxy class from the splitter el
     onEnd: function(e) {
         var me = this,
             splitter = me.getSplitter();
             
         splitter.removeCls(splitter.baseCls + '-active');
-         if (me.overlay) {
-             me.overlay.remove();
-             delete me.overlay;
-        }
         me.performResize();
     },
 

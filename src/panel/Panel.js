@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.panel.Panel
  * @extends Ext.panel.AbstractPanel
@@ -84,9 +98,6 @@ var resultsPanel = Ext.create('Ext.panel.Panel', {
  * content area.</p>
  * <p>Using these techniques, as long as the <b>layout</b> is chosen and configured correctly, an application may have any level of
  * nested containment, all dynamically sized according to configuration, the user&#39;s preference and available browser size.</p>
- * @constructor
- * @param {Object} config The config object
- * @xtype panel
  */
 Ext.define('Ext.panel.Panel', {
     extend: 'Ext.panel.AbstractPanel',
@@ -96,7 +107,8 @@ Ext.define('Ext.panel.Panel', {
         'Ext.util.KeyMap',
         'Ext.panel.DD',
         'Ext.XTemplate',
-        'Ext.layout.component.Dock'
+        'Ext.layout.component.Dock',
+        'Ext.util.Memento'
     ],
     alias: 'widget.panel',
     alternateClassName: 'Ext.Panel',
@@ -185,13 +197,13 @@ Ext.define('Ext.panel.Panel', {
      * clicking the expand button to see it again (defaults to <tt>true</tt>).
      */
     floatable: true,
-    
+
     /**
      * @cfg {Mixed} overlapHeader
      * True to overlap the header in a panel over the framing of the panel itself. This is needed when frame:true (and is done automatically for you). Otherwise it is undefined.
      * If you manually add rounded corners to a panel header which does not have frame:true, this will need to be set to true.
      */
-    
+
     /**
      * @cfg {Boolean} collapsible
      * <p>True to make the panel collapsible and have an expand/collapse toggle Tool added into
@@ -306,36 +318,81 @@ tools:[{
 </code></pre>
      */
 
+    /**
+     * @cfg {String} title
+     * The title text to be used to display in the {@link Ext.panel.Header panel header} (defaults to '').
+     * When a `title` is specified the {@link Ext.panel.Header} will automatically be created and displayed unless
+     * {@link #preventHeader} is set to `true`.
+     */
 
     initComponent: function() {
         var me = this,
             cls;
 
         me.addEvents(
-        /**
-         * @event titlechange
-         * Fires after the Panel title has been set or changed.
-         * @param {Ext.panel.Panel} p the Panel which has been resized.
-         * @param {String} newTitle The new title.
-         * @param {String} oldTitle The previous panel title.
-         */
+            /**
+             * @event beforeexpand
+             * Fires before this panel is expanded. Return false to prevent the expand.
+             * @param {Ext.panel.Panel} p The Panel being expanded.
+             * @param {Boolean} animate True if the expand is animated, else false.
+             */
+            "beforeexpand",
+
+            /**
+             * @event beforecollapse
+             * Fires before this panel is collapsed. Return false to prevent the collapse.
+             * @param {Ext.panel.Panel} p The Panel being collapsed.
+             * @param {String} direction. The direction of the collapse. One of<ul>
+             * <li>Ext.Component.DIRECTION_TOP</li>
+             * <li>Ext.Component.DIRECTION_RIGHT</li>
+             * <li>Ext.Component.DIRECTION_BOTTOM</li>
+             * <li>Ext.Component.DIRECTION_LEFT</li></ul>
+             * @param {Boolean} animate True if the collapse is animated, else false.
+             */
+            "beforecollapse",
+
+            /**
+             * @event expand
+             * Fires after this Panel has expanded.
+             * @param {Ext.panel.Panel} p The Panel that has been expanded.
+             */
+            "expand",
+
+            /**
+             * @event collapse
+             * Fires after this Panel hass collapsed.
+             * @param {Ext.panel.Panel} p The Panel that has been collapsed.
+             */
+            "collapse",
+
+            /**
+             * @event titlechange
+             * Fires after the Panel title has been set or changed.
+             * @param {Ext.panel.Panel} p the Panel which has been resized.
+             * @param {String} newTitle The new title.
+             * @param {String} oldTitle The previous panel title.
+             */
             'titlechange',
-        /**
-         * @event iconchange
-         * Fires after the Panel iconCls has been set or changed.
-         * @param {Ext.panel.Panel} p the Panel which has been resized.
-         * @param {String} newIconCls The new iconCls.
-         * @param {String} oldIconCls The previous panel iconCls.
-         */
+
+            /**
+             * @event iconchange
+             * Fires after the Panel iconCls has been set or changed.
+             * @param {Ext.panel.Panel} p the Panel which has been resized.
+             * @param {String} newIconCls The new iconCls.
+             * @param {String} oldIconCls The previous panel iconCls.
+             */
             'iconchange'
         );
+
+        // Save state on these two events.
+        this.addStateEvents('expand', 'collapse');
 
         if (me.unstyled) {
             me.setUI('plain');
         }
 
         if (me.frame) {
-            me.setUI('default-framed');
+            me.setUI(me.ui + '-framed');
         }
 
         me.callParent();
@@ -349,20 +406,20 @@ tools:[{
     setBorder: function(border) {
         // var me     = this,
         //     method = (border === false || border === 0) ? 'addClsWithUI' : 'removeClsWithUI';
-        // 
+        //
         // me.callParent(arguments);
-        // 
+        //
         // if (me.collapsed) {
         //     me[method](me.collapsedCls + '-noborder');
         // }
-        // 
+        //
         // if (me.header) {
         //     me.header.setBorder(border);
         //     if (me.collapsed) {
         //         me.header[method](me.collapsedCls + '-noborder');
         //     }
         // }
-        
+
         this.callParent(arguments);
     },
 
@@ -435,7 +492,7 @@ tools:[{
             fbarDefaults,
             minButtonWidth = me.minButtonWidth;
 
-        function initToolbar (toolbar, pos) {
+        function initToolbar (toolbar, pos, useButtonAlign) {
             if (Ext.isArray(toolbar)) {
                 toolbar = {
                     xtype: 'toolbar',
@@ -449,10 +506,27 @@ tools:[{
             if (pos == 'left' || pos == 'right') {
                 toolbar.vertical = true;
             }
+
+            // Legacy support for buttonAlign (only used by buttons/fbar)
+            if (useButtonAlign) {
+                toolbar.layout = Ext.applyIf(toolbar.layout || {}, {
+                    // default to 'end' (right-aligned) if me.buttonAlign is undefined or invalid
+                    pack: { left:'start', center:'center' }[me.buttonAlign] || 'end'
+                });
+            }
             return toolbar;
         }
 
-        // Backwards compatibility
+        // Short-hand toolbars (tbar, bbar and fbar plus new lbar and rbar):
+
+    /**
+     * @cfg {String} buttonAlign
+     * <p>The alignment of any buttons added to this panel.  Valid values are 'right',
+     * 'left' and 'center' (defaults to 'right' for buttons/fbar, 'left' for other toolbar types).</p>
+     * <p><b>NOTE:</b> The newer way to specify toolbars is to use the dockedItems config, and
+     * instead of buttonAlign you would add the layout: { pack: 'start' | 'center' | 'end' }
+     * option to the dockedItem config.</p>
+     */
 
         /**
          * @cfg {Object/Array} tbar
@@ -509,7 +583,7 @@ is equivalent to
         /**
          * @cfg {Object/Array} buttons
 
-Convenience method used for adding buttons docked to the bottom right of the panel. This is a
+Convenience method used for adding buttons docked to the bottom of the panel. This is a
 synonym for the {@link #fbar} config.
 
     buttons: [
@@ -521,6 +595,7 @@ is equivalent to
     dockedItems: [{
         xtype: 'toolbar',
         dock: 'bottom',
+        ui: 'footer',
         defaults: {minWidth: {@link #minButtonWidth}},
         items: [
             { xtype: 'component', flex: 1 },
@@ -541,7 +616,7 @@ each of the buttons in the buttons toolbar.
         /**
          * @cfg {Object/Array} fbar
 
-Convenience method used for adding items to the bottom right of the panel. Short for Footer Bar.
+Convenience method used for adding items to the bottom of the panel. Short for Footer Bar.
 
     fbar: [
       { type: 'button', text: 'Button 1' }
@@ -552,6 +627,7 @@ is equivalent to
     dockedItems: [{
         xtype: 'toolbar',
         dock: 'bottom',
+        ui: 'footer',
         defaults: {minWidth: {@link #minButtonWidth}},
         items: [
             { xtype: 'component', flex: 1 },
@@ -565,7 +641,7 @@ each of the buttons in the fbar.
          * @markdown
          */
         if (me.fbar) {
-            fbar = initToolbar(me.fbar, 'bottom');
+            fbar = initToolbar(me.fbar, 'bottom', true); // only we useButtonAlign
             fbar.ui = 'footer';
 
             // Apply the minButtonWidth config to buttons in the toolbar
@@ -581,12 +657,7 @@ each of the buttons in the fbar.
                 };
             }
 
-            fbar = me.addDocked(fbar)[0];
-            fbar.insert(0, {
-                flex: 1,
-                xtype: 'component',
-                focusable: false
-            });
+            me.addDocked(fbar);
             me.fbar = null;
         }
 
@@ -595,19 +666,19 @@ each of the buttons in the fbar.
          *
          * Convenience method. Short for 'Left Bar' (left-docked, vertical toolbar).
          *
-         *    lbar: [
-         *      { xtype: 'button', text: 'Button 1' }
-         *    ]
+         *     lbar: [
+         *       { xtype: 'button', text: 'Button 1' }
+         *     ]
          *
          * is equivalent to
          *
-         *    dockedItems: [{
-         *        xtype: 'toolbar',
-         *        dock: 'left',
-         *        items: [
-         *            { xtype: 'button', text: 'Button 1' }
-         *        ]
-         *    }]
+         *     dockedItems: [{
+         *         xtype: 'toolbar',
+         *         dock: 'left',
+         *         items: [
+         *             { xtype: 'button', text: 'Button 1' }
+         *         ]
+         *     }]
          *
          * @markdown
          */
@@ -621,19 +692,19 @@ each of the buttons in the fbar.
          *
          * Convenience method. Short for 'Right Bar' (right-docked, vertical toolbar).
          *
-         *    rbar: [
-         *      { xtype: 'button', text: 'Button 1' }
-         *    ]
+         *     rbar: [
+         *       { xtype: 'button', text: 'Button 1' }
+         *     ]
          *
          * is equivalent to
          *
-         *    dockedItems: [{
-         *        xtype: 'toolbar',
-         *        dock: 'right',
-         *        items: [
-         *            { xtype: 'button', text: 'Button 1' }
-         *        ]
-         *    }]
+         *     dockedItems: [{
+         *         xtype: 'toolbar',
+         *         dock: 'right',
+         *         items: [
+         *             { xtype: 'button', text: 'Button 1' }
+         *         ]
+         *     }]
          *
          * @markdown
          */
@@ -726,35 +797,23 @@ each of the buttons in the fbar.
         // Dock the header/title
         me.updateHeader();
 
-        // If initially collapsed, collapsed flag must indicate true current state at this point.
-        // Do collapse after the first time the Panel's structure has been laid out.
-        if (me.collapsed) {
-            me.collapsed = false;
-            topContainer = me.findLayoutController();
-            if (!me.hidden && topContainer) {
-                topContainer.on({
-                    afterlayout: function() {
-                        me.collapse(null, false, true);
-                    },
-                    single: true
-                });
-            } else {
-                me.afterComponentLayout = function() {
-                    delete me.afterComponentLayout;
-                    Ext.getClass(me).prototype.afterComponentLayout.apply(me, arguments);
-                    me.collapse(null, false, true);
-                };
-            }
-        }
-
         // Call to super after adding the header, to prevent an unnecessary re-layout
         me.callParent(arguments);
+    },
+
+    afterRender: function() {
+        var me = this;
+        me.callParent(arguments);
+        if (me.collapsed) {
+            me.collapsed = false;
+            me.collapse(null, false, true);
+        }
     },
 
     /**
      * Create, hide, or show the header component as appropriate based on the current config.
      * @private
-     * @param {Boolean} force True to force the the header to be created
+     * @param {Boolean} force True to force the header to be created
      */
     updateHeader: function(force) {
         var me = this,
@@ -843,7 +902,7 @@ each of the buttons in the fbar.
      * Collapses the panel body so that the body becomes hidden. Docked Components parallel to the
      * border towards which the collapse takes place will remain visible.  Fires the {@link #beforecollapse} event which will
      * cancel the collapse action if it returns false.
-     * @param {Number} direction. The direction to collapse towards. Must be one of<ul>
+     * @param {String} direction. The direction to collapse towards. Must be one of<ul>
      * <li>Ext.Component.DIRECTION_TOP</li>
      * <li>Ext.Component.DIRECTION_RIGHT</li>
      * <li>Ext.Component.DIRECTION_BOTTOM</li>
@@ -991,13 +1050,13 @@ each of the buttons in the fbar.
             }
 
             frameInfo = reExpander.getFrameInfo();
-                        
+
             //get the size
             newSize = reExpander[getDimension]() + (frameInfo ? frameInfo[direction] : 0);
 
             //and remove
             reExpander.removeClsWithUI(me.collapsedCls);
-            reExpander.removeClsWithUI(me.collapsedCls + '-' + reExpander.dock);              
+            reExpander.removeClsWithUI(me.collapsedCls + '-' + reExpander.dock);
             if (me.border && (!me.frame || (me.frame && Ext.supports.CSS3BorderRadius))) {
                 reExpander.removeClsWithUI(me.collapsedCls + '-border-' + reExpander.dock);
             }
@@ -1056,10 +1115,18 @@ each of the buttons in the fbar.
         // Animate to the new size
         anim.to[collapseDimension] = newSize;
 
+        // When we collapse a panel, the panel is in control of one dimension (depending on
+        // collapse direction) and sets that on the component. We must restore the user's
+        // original value (including non-existance) when we expand. Using this technique, we
+        // mimic setCalculatedSize for the dimension we do not control and setSize for the
+        // one we do (only while collapsed).
+        if (!me.collapseMemento) {
+            me.collapseMemento = new Ext.util.Memento(me);
+        }
+        me.collapseMemento.capture(['width', 'height', 'minWidth', 'minHeight']);
+
         // Remove any flex config before we attempt to collapse.
         me.savedFlex = me.flex;
-        me.savedMinWidth = me.minWidth;
-        me.savedMinHeight = me.minHeight;
         me.minWidth = 0;
         me.minHeight = 0;
         delete me.flex;
@@ -1067,10 +1134,6 @@ each of the buttons in the fbar.
         if (animate) {
             me.animate(anim);
         } else {
-            // EXTJSIV-1937 (would like to use setCalculateSize)
-            // save width/height here, expand puts them back
-            me.uncollapsedSize = { width: me.width, height: me.height };
-
             me.setSize(anim.to.width, anim.to.height);
             if (Ext.isDefined(anim.to.left) || Ext.isDefined(anim.to.top)) {
                 me.setPosition(anim.to.left, anim.to.top);
@@ -1085,8 +1148,7 @@ each of the buttons in the fbar.
             i = 0,
             l = me.hiddenDocked.length;
 
-        me.minWidth = me.savedMinWidth;
-        me.minHeight = me.savedMinHeight;
+        me.collapseMemento.restore(['minWidth', 'minHeight']);
 
         me.body.hide();
         for (; i < l; i++) {
@@ -1104,6 +1166,13 @@ each of the buttons in the fbar.
 
         if (me.resizer) {
             me.resizer.disable();
+        }
+
+        // Now we can restore the dimension we don't control to its original state
+        if (Ext.Component.VERTICAL_DIRECTION.test(me.expandDirection)) {
+            me.collapseMemento.restore('width');
+        } else {
+            me.collapseMemento.restore('height');
         }
 
         // If me Panel was configured with a collapse tool in its header, flip it's type
@@ -1128,29 +1197,17 @@ each of the buttons in the fbar.
      * @return {Ext.panel.Panel} this
      */
     expand: function(animate) {
-        if (!this.collapsed || this.fireEvent('beforeexpand', this, animate) === false) {
+        var me = this;
+        if (!me.collapsed || me.fireEvent('beforeexpand', me, animate) === false) {
             return false;
         }
 
-        // EXTJSIV-1937 (would like to use setCalculateSize)
-        if (this.uncollapsedSize) {
-            Ext.Object.each(this.uncollapsedSize, function (name, value) {
-                if (Ext.isDefined(value)) {
-                    this[name] = value;
-                } else {
-                    delete this[name];
-                }
-            }, this);
-            delete this.uncollapsedSize;
-        }
-
-        var me = this,
-            i = 0,
+        var i = 0,
             l = me.hiddenDocked.length,
             direction = me.expandDirection,
             height = me.getHeight(),
             width = me.getWidth(),
-            pos, anim, satisfyJSLint;
+            pos, anim;
 
         // Disable toggle tool during animated expand
         if (animate && me.collapseTool) {
@@ -1267,7 +1324,7 @@ each of the buttons in the fbar.
         if (animate) {
             me.animate(anim);
         } else {
-            me.setSize(anim.to.width, anim.to.height);
+            me.setCalculatedSize(anim.to.width, anim.to.height);
             if (anim.to.x) {
                 me.setLeft(anim.to.x);
             }
@@ -1282,6 +1339,14 @@ each of the buttons in the fbar.
 
     afterExpand: function(animated) {
         var me = this;
+
+        if (me.collapseMemento) {
+            // collapse has to use setSize (since it takes control of the component's size in
+            // collapsed mode) and so we restore the original size now that the component has
+            // been expanded.
+            me.collapseMemento.restoreAll();
+        }
+
         me.setAutoScroll(me.initialConfig.autoScroll);
 
         // Restored to a calculated flex. Delete the set width and height properties so that flex works from now on.
@@ -1295,7 +1360,9 @@ each of the buttons in the fbar.
         // Reinstate layout out after Panel has re-expanded
         delete me.suspendLayout;
         if (animated && me.ownerCt) {
-            me.ownerCt.doLayout();
+            // IE 6 has an intermittent repaint issue in this case so give
+            // it a little extra time to catch up before laying out.
+            Ext.defer(me.ownerCt.doLayout, Ext.isIE6 ? 1 : 0, me);
         }
 
         if (me.resizer) {
@@ -1435,3 +1502,4 @@ each of the buttons in the fbar.
         this.callParent([resizable]);
     }
 });
+

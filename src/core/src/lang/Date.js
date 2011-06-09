@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.Date
  * A set of useful static methods to deal with date
@@ -413,8 +427,8 @@ Ext.Date.monthNumbers = {
         Dec:11
     },
     /**
-     * <p>The date format string that the {@link #dateRenderer} and {@link #date} functions use.
-     * see {@link #Date} for details.</p>
+     * <p>The date format string that the {@link Ext.util.Format#dateRenderer}
+     * and {@link Ext.util.Format#date} functions use.  See {@link Ext.Date} for details.</p>
      * <p>This defaults to <code>m/d/Y</code>, but may be overridden in a locale file.</p>
      * @property defaultFormat
      * @static
@@ -1376,3 +1390,4 @@ console.log(dt2); //returns 'Tue Sep 26 2006 00:00:00'
 var utilDate = Ext.Date;
 
 })();
+

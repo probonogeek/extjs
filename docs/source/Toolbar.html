@@ -207,7 +207,6 @@ Example usage:
  * @constructor
  * Creates a new Toolbar
  * @param {Object/Array} config A config object or an array of buttons to &lt;code&gt;{@link #add}&lt;/code&gt;
- * @xtype toolbar
  * @docauthor Robert Dougan &lt;rob@sencha.com&gt;
  * @markdown
  */
@@ -276,7 +275,8 @@ Ext.define('Ext.toolbar.Toolbar', {
             type: me.layout
         } : me.layout || {}, {
             type: me.vertical ? 'vbox' : 'hbox',
-            align: me.vertical ? 'stretchmax' : 'middle'
+            align: me.vertical ? 'stretchmax' : 'middle',
+            clearInnerCtOnLayout: true
         });
         
         if (me.vertical) {

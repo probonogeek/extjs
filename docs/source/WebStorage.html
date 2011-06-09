@@ -15,18 +15,14 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-WebStorage-method-constructor'><span id='Ext-data-proxy-WebStorage'>/**
-</span></span> * @author Ed Spencer
+  <pre class="prettyprint lang-js"><span id='Ext-data-proxy-WebStorage'>/**
+</span> * @author Ed Spencer
  * @class Ext.data.proxy.WebStorage
  * @extends Ext.data.proxy.Client
  * 
  * &lt;p&gt;WebStorageProxy is simply a superclass for the {@link Ext.data.proxy.LocalStorage localStorage} and 
  * {@link Ext.data.proxy.SessionStorage sessionStorage} proxies. It uses the new HTML5 key/value client-side storage 
  * objects to save {@link Ext.data.Model model instances} for offline use.&lt;/p&gt;
- * 
- * @constructor
- * Creates the proxy, throws an error if local storage is not supported in the current browser
- * @param {Object} config Optional config object
  */
 Ext.define('Ext.data.proxy.WebStorage', {
     extend: 'Ext.data.proxy.Client',
@@ -38,7 +34,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
     id: undefined,
 
 <span id='Ext-data-proxy-WebStorage-method-constructor'>    /**
-</span>     * @ignore
+</span>     * Creates the proxy, throws an error if local storage is not supported in the current browser
+     * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
         this.callParent(arguments);

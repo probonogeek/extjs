@@ -16,8 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-slider-Thumb'>/**
-</span> * @private
- * @class Ext.slider.Thumb
+</span> * @class Ext.slider.Thumb
  * @extends Ext.Base
  * @private
  * Represents a single thumb element on a Slider. This would not usually be created manually and would instead
@@ -33,8 +32,11 @@ Ext.define('Ext.slider.Thumb', {
      */
     topZIndex: 10000,
 <span id='Ext-slider-Thumb-cfg-slider'>    /**
-</span>     * @constructor
-     * @cfg {Ext.slider.MultiSlider} slider The Slider to render to (required)
+</span>     * @cfg {Ext.slider.MultiSlider} slider The Slider to render to (required)
+     */
+<span id='Ext-slider-Thumb-method-constructor'>    /**
+</span>     * Creates new slider thumb.
+     * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
         var me = this;

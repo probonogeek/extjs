@@ -17,27 +17,27 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-state-Stateful'>/**
 </span> * @class Ext.state.Stateful
- * A mixin for being able to save the state of an object to an underlying 
+ * A mixin for being able to save the state of an object to an underlying
  * {@link Ext.state.Provider}.
  */
 Ext.define('Ext.state.Stateful', {
-    
+
     /* Begin Definitions */
-   
+
    mixins: {
         observable: 'Ext.util.Observable'
     },
-    
+
     requires: ['Ext.state.Manager'],
-    
+
     /* End Definitions */
-    
+
 <span id='Ext-state-Stateful-cfg-stateful'>    /**
 </span>     * @cfg {Boolean} stateful
      * &lt;p&gt;A flag which causes the object to attempt to restore the state of
      * internal properties from a saved state on startup. The object must have
-     * a &lt;code&gt;{@link #stateId}&lt;/code&gt; for state to be managed. 
-     * Auto-generated ids are not guaranteed to be stable across page loads and 
+     * a &lt;code&gt;{@link #stateId}&lt;/code&gt; for state to be managed.
+     * Auto-generated ids are not guaranteed to be stable across page loads and
      * cannot be relied upon to save and restore the same state for a object.&lt;p&gt;
      * &lt;p&gt;For state saving to work, the state manager's provider must have been
      * set to an implementation of {@link Ext.state.Provider} which overrides the
@@ -58,7 +58,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      * object hash which represents the restorable state of the object.&lt;/p&gt;
      * &lt;p&gt;The value yielded by getState is passed to {@link Ext.state.Manager#set}
      * which uses the configured {@link Ext.state.Provider} to save the object
-     * keyed by the &lt;code&gt;{@link stateId}&lt;/code&gt;&lt;/p&gt;.
+     * keyed by the &lt;code&gt;{@link #stateId}&lt;/code&gt;&lt;/p&gt;.
      * &lt;p&gt;During construction, a stateful object attempts to &lt;i&gt;restore&lt;/i&gt;
      * its state by calling {@link Ext.state.Manager#get} passing the
      * &lt;code&gt;{@link #stateId}&lt;/code&gt;&lt;/p&gt;
@@ -71,13 +71,13 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      * {@link #beforestatesave} and {@link #statesave} events.&lt;/p&gt;
      */
     stateful: true,
-    
+
 <span id='Ext-state-Stateful-cfg-stateId'>    /**
 </span>     * @cfg {String} stateId
      * The unique id for this object to use for state management purposes.
      * &lt;p&gt;See {@link #stateful} for an explanation of saving and restoring state.&lt;/p&gt;
      */
-    
+
 <span id='Ext-state-Stateful-cfg-stateEvents'>    /**
 </span>     * @cfg {Array} stateEvents
      * &lt;p&gt;An array of events that, when fired, should trigger this object to
@@ -87,18 +87,18 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      * &lt;p&gt;See &lt;code&gt;{@link #stateful}&lt;/code&gt; for an explanation of saving and
      * restoring object state.&lt;/p&gt;
      */
-    
+
 <span id='Ext-state-Stateful-cfg-saveBuffer'>    /**
 </span>     * @cfg {Number} saveBuffer A buffer to be applied if many state events are fired within
      * a short period. Defaults to 100.
      */
     saveDelay: 100,
-    
+
     autoGenIdRe: /^((\w+-)|(ext-comp-))\d{4,}$/i,
-    
+
     constructor: function(config) {
         var me = this;
-        
+
         config = config || {};
         if (Ext.isDefined(config.stateful)) {
             me.stateful = config.stateful;
@@ -106,8 +106,8 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
         if (Ext.isDefined(config.saveDelay)) {
             me.saveDelay = config.saveDelay;
         }
-        me.stateId = config.stateId;
-        
+        me.stateId = me.stateId || config.stateId;
+
         if (!me.stateEvents) {
             me.stateEvents = [];
         }
@@ -125,7 +125,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
              * provide custom state restoration.
              */
             'beforestaterestore',
-            
+
 <span id='Ext-state-Stateful-event-staterestore'>            /**
 </span>             * @event staterestore
              * Fires after the state of the object is restored.
@@ -135,7 +135,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
              * object. The method maybe overriden to provide custom state restoration.
              */
             'staterestore',
-            
+
 <span id='Ext-state-Stateful-event-beforestatesave'>            /**
 </span>             * @event beforestatesave
              * Fires before the state of the object is saved to the configured state provider. Return false to stop the save.
@@ -146,7 +146,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
              * has a null implementation.
              */
             'beforestatesave',
-            
+
 <span id='Ext-state-Stateful-event-statesave'>            /**
 </span>             * @event statesave
              * Fires after the state of the object is saved to the configured state provider.
@@ -164,7 +164,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             me.initState();
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-initStateEvents'>    /**
 </span>     * Initializes any state events for this object.
      * @private
@@ -172,7 +172,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
     initStateEvents: function() {
         this.addStateEvents(this.stateEvents);
     },
-    
+
 <span id='Ext-state-Stateful-method-addStateEvents'>    /**
 </span>     * Add events that will trigger the state to be saved.
      * @param {String/Array} events The event name or an array of event names.
@@ -181,16 +181,16 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
         if (!Ext.isArray(events)) {
             events = [events];
         }
-        
+
         var me = this,
             i = 0,
             len = events.length;
-            
+
         for (; i &lt; len; ++i) {
             me.on(events[i], me.onStateChange, me);
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-onStateChange'>    /**
 </span>     * This method is called when any of the {@link #stateEvents} are fired.
      * @private
@@ -198,7 +198,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
     onStateChange: function(){
         var me = this,
             delay = me.saveDelay;
-        
+
         if (delay &gt; 0) {
             if (!me.stateTask) {
                 me.stateTask = Ext.create('Ext.util.DelayedTask', me.saveState, me);
@@ -208,7 +208,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             me.saveState();
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-saveState'>    /**
 </span>     * Saves the state of the object to the persistence store.
      * @private
@@ -217,7 +217,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
         var me = this,
             id,
             state;
-        
+
         if (me.stateful !== false) {
             id = me.getStateId();
             if (id) {
@@ -229,16 +229,16 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             }
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-getState'>    /**
 </span>     * Gets the current state of the object. By default this function returns null,
      * it should be overridden in subclasses to implement methods for getting the state.
      * @return {Object} The current state
      */
     getState: function(){
-        return null;    
+        return null;
     },
-    
+
 <span id='Ext-state-Stateful-method-applyState'>    /**
 </span>     * Applies the state to the object. This should be overridden in subclasses to do
      * more complex state operations. By default it applies the state properties onto
@@ -250,7 +250,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             Ext.apply(this, state);
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-getStateId'>    /**
 </span>     * Gets the state id for this object.
      * @return {String} The state id, null if not found.
@@ -258,13 +258,13 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
     getStateId: function() {
         var me = this,
             id = me.stateId;
-        
+
         if (!id) {
             id = me.autoGenIdRe.test(String(me.id)) ? null : me.id;
         }
         return id;
     },
-    
+
 <span id='Ext-state-Stateful-method-initState'>    /**
 </span>     * Initializes the state of the object upon construction.
      * @private
@@ -273,7 +273,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
         var me = this,
             id = me.getStateId(),
             state;
-            
+
         if (me.stateful !== false) {
             if (id) {
                 state = Ext.state.Manager.get(id);
@@ -287,7 +287,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             }
         }
     },
-    
+
 <span id='Ext-state-Stateful-method-destroy'>    /**
 </span>     * Destroys this stateful object.
      */
@@ -297,9 +297,9 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
             task.cancel();
         }
         this.clearListeners();
-        
+
     }
-    
+
 });
 </pre>
 </body>

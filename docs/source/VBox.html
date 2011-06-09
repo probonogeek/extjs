@@ -103,7 +103,21 @@ Ext.define('Ext.layout.container.VBox', {
     perpendicularRB: 'r',
     perpendicularLeftTop: 'left',
     perpendicularRightBottom: 'right',
-    perpendicularPosition: 'x'
+    perpendicularPosition: 'x',
+    configureItem: function(item) {
+        if (item.flex) {
+            item.layoutManagedHeight = 1;
+        } else {
+            item.layoutManagedHeight = 2;
+        }
+
+        if (this.align === 'stretch' || this.align === 'stretchmax') {
+            item.layoutManagedWidth = 1;
+        } else {
+            item.layoutManagedWidth = 2;
+        }
+        this.callParent(arguments);
+    }
 });</pre>
 </body>
 </html>

@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-container-ButtonGroup-method-constructor'><span id='Ext-container-ButtonGroup'>/**
-</span></span> * @class Ext.container.ButtonGroup
+  <pre class="prettyprint lang-js"><span id='Ext-container-ButtonGroup'>/**
+</span> * @class Ext.container.ButtonGroup
  * @extends Ext.panel.Panel
  * &lt;p&gt;Provides a container for arranging a group of related Buttons in a tabular manner.&lt;/p&gt;
  * Example usage:
@@ -58,10 +58,6 @@
         }]
     });
  * &lt;/code&gt;&lt;/pre&gt;
- * @constructor
- * Create a new ButtonGroup.
- * @param {Object} config The config object
- * @xtype buttongroup
  */
 Ext.define('Ext.container.ButtonGroup', {
     extend: 'Ext.panel.Panel',
@@ -130,12 +126,22 @@ Ext.define('Ext.container.ButtonGroup', {
         
         //we need to add an addition item in here so the ButtonGroup title is centered
         if (me.header) {
+            // Header text cannot flex, but must be natural size if it's being centered
+            delete me.header.items.items[0].flex;
+
+            // For Centering, surround the text with two flex:1 spacers.
+            me.suspendLayout = true;
+            me.header.insert(1, {
+                xtype: 'component',
+                ui   : me.ui,
+                flex : 1
+            });
             me.header.insert(0, {
                 xtype: 'component',
                 ui   : me.ui,
-                html : '&amp;nbsp;',
                 flex : 1
             });
+            me.suspendLayout = false;
         }
         
         me.callParent(arguments);

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.draw.engine.Vml
  * @extends Ext.draw.Surface
@@ -593,54 +607,26 @@ Ext.define('Ext.draw.engine.Vml', {
     },
 
     setSize: function(width, height) {
-        var me = this,
-            viewBox = me.viewBox,
-            scaleX, scaleY, items, i, len;
+        var me = this;
         width = width || me.width;
         height = height || me.height;
         me.width = width;
         me.height = height;
 
-        if (!me.el) {
-            return;
-        }
+        if (me.el) {
+            // Size outer div
+            if (width != undefined) {
+                me.el.setWidth(width);
+            }
+            if (height != undefined) {
+                me.el.setHeight(height);
+            }
 
-        // Size outer div
-        if (width != undefined) {
-            me.el.setWidth(width);
-        }
-        if (height != undefined) {
-            me.el.setHeight(height);
-        }
+            // Handle viewBox sizing
+            me.applyViewBox();
 
-        // Handle viewBox sizing
-        if (viewBox && (width || height)) {
-            var viewBoxX = viewBox.x,
-                viewBoxY = viewBox.y,
-                viewBoxWidth = viewBox.width,
-                viewBoxHeight = viewBox.height,
-                relativeHeight = height / viewBoxHeight,
-                relativeWidth = width / viewBoxWidth,
-                size;
-            if (viewBoxWidth * relativeHeight < width) {
-                viewBoxX -= (width - viewBoxWidth * relativeHeight) / 2 / relativeHeight;
-            }
-            if (viewBoxHeight * relativeWidth < height) {
-                viewBoxY -= (height - viewBoxHeight * relativeWidth) / 2 / relativeWidth;
-            }
-            size = 1 / Math.max(viewBoxWidth / width, viewBoxHeight / height);
-            // Scale and translate group
-            me.viewBoxShift = {
-                dx: -viewBoxX,
-                dy: -viewBoxY,
-                scale: size
-            };
-            items = me.items.items;
-            for (i = 0, len = items.length; i < len; i++) {
-                me.transform(items[i]);
-            }
+            me.callParent(arguments);
         }
-        this.callParent(arguments);
     },
 
     setViewBox: function(x, y, width, height) {
@@ -651,6 +637,47 @@ Ext.define('Ext.draw.engine.Vml', {
             width: width,
             height: height
         };
+        this.applyViewBox();
+    },
+
+    /**
+     * @private Using the current viewBox property and the surface's width and height, calculate the
+     * appropriate viewBoxShift that will be applied as a persistent transform to all sprites.
+     */
+    applyViewBox: function() {
+        var me = this,
+            viewBox = me.viewBox,
+            width = me.width,
+            height = me.height,
+            viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight,
+            relativeHeight, relativeWidth, size;
+
+        if (viewBox && (width || height)) {
+            viewBoxX = viewBox.x;
+            viewBoxY = viewBox.y;
+            viewBoxWidth = viewBox.width;
+            viewBoxHeight = viewBox.height;
+            relativeHeight = height / viewBoxHeight;
+            relativeWidth = width / viewBoxWidth;
+
+            if (viewBoxWidth * relativeHeight < width) {
+                viewBoxX -= (width - viewBoxWidth * relativeHeight) / 2 / relativeHeight;
+            }
+            if (viewBoxHeight * relativeWidth < height) {
+                viewBoxY -= (height - viewBoxHeight * relativeWidth) / 2 / relativeWidth;
+            }
+
+            size = 1 / Math.max(viewBoxWidth / width, viewBoxHeight / height);
+
+            me.viewBoxShift = {
+                dx: -viewBoxX,
+                dy: -viewBoxY,
+                scale: size
+            };
+            me.items.each(function(item) {
+                me.transform(item);
+            });
+        }
     },
 
     onAdd: function(item) {
@@ -897,3 +924,4 @@ Ext.define('Ext.draw.engine.Vml', {
         delete me.el;
     }
 });
+

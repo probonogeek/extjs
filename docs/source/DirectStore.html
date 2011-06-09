@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-data-DirectStore-method-constructor'><span id='Ext-data-DirectStore'>/**
-</span></span> * @class Ext.data.DirectStore
+  <pre class="prettyprint lang-js"><span id='Ext-data-DirectStore'>/**
+</span> * @class Ext.data.DirectStore
  * @extends Ext.data.Store
  * &lt;p&gt;Small helper class to create an {@link Ext.data.Store} configured with an
  * {@link Ext.data.proxy.Direct} and {@link Ext.data.reader.Json} to make interacting
@@ -44,9 +44,6 @@
  * &lt;li&gt;&lt;tt&gt;&lt;b&gt;{@link Ext.data.proxy.Direct#paramsAsHash paramsAsHash}&lt;/b&gt;&lt;/tt&gt;&lt;/li&gt;
  * &lt;/ul&gt;&lt;/div&gt;
  * &lt;/ul&gt;&lt;/div&gt;
- *
- * @constructor
- * @param {Object} config
  */
 
 Ext.define('Ext.data.DirectStore', {
@@ -59,8 +56,11 @@ Ext.define('Ext.data.DirectStore', {
     requires: ['Ext.data.proxy.Direct'],
    
     /* End Definitions */
-   
-   constructor : function(config){
+
+<span id='Ext-data-DirectStore-method-constructor'>    /**
+</span>     * @param {Object} config (optional) Config object.
+     */
+    constructor : function(config){
         config = Ext.apply({}, config);
         if (!config.proxy) {
             var proxy = {

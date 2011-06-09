@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 describe("Ext.Array", function() {
     var array;
 
@@ -953,4 +967,130 @@ describe("Ext.Array", function() {
             expect(Ext.Array.mean([1,2,3,4,5,6])).toEqual(3.5);
         });
     });
+
+    function testReplace (replace) {
+        it('should remove items in the middle', function () {
+            var array = [0, 1, 2, 3, 4, 5, 6, 7];
+            replace(array, 2, 2);
+            expect(Ext.encode(array)).toEqual('[0,1,4,5,6,7]');
+        });
+        it('should insert items in the middle', function () {
+            var array = [0, 1, 2, 3, 4, 5, 6, 7];
+            replace(array, 2, 0, ['a','b']);
+            expect(Ext.encode(array)).toEqual('[0,1,"a","b",2,3,4,5,6,7]');
+        });
+        it('should replace in the middle with more items', function () {
+            var array = [0, 1, 2, 3, 4, 5, 6, 7];
+            replace(array, 2, 2, ['a','b', 'c', 'd']);
+            expect(Ext.encode(array)).toEqual('[0,1,"a","b","c","d",4,5,6,7]');
+        });
+        it('should replace in the middle with fewer items', function () {
+            var array = [0, 1, 2, 3, 4, 5, 6, 7];
+            replace(array, 2, 4, ['a','b']);
+            expect(Ext.encode(array)).toEqual('[0,1,"a","b",6,7]');
+        });
+        it('should delete at front', function () {
+            var array = [0, 1, 2, 3];
+            replace(array, 0, 2);
+            expect(Ext.encode(array)).toEqual('[2,3]');
+        });
+        it('should delete at tail', function () {
+            var array = [0, 1, 2, 3];
+            replace(array, 2, 2);
+            expect(Ext.encode(array)).toEqual('[0,1]');
+        });
+        it('should delete everything', function () {
+            var array = [0, 1, 2, 3];
+            replace(array, 0, 4);
+            expect(Ext.encode(array)).toEqual('[]');
+        });
+        it('should insert at front', function () {
+            var array = [0, 1];
+            replace(array, 0, 0, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('["a","b","c","d","e",0,1]');
+        });
+        it('should insert at tail', function () {
+            var array = [0, 1];
+            replace(array, array.length, 0, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('[0,1,"a","b","c","d","e"]');
+        });
+        it('should insert into empty array', function () {
+            var array = [];
+            replace(array, 0, 0, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('["a","b","c","d","e"]');
+        });
+        it('should replace at front', function () {
+            var array = [0, 1];
+            replace(array, 0, 1, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('["a","b","c","d","e",1]');
+        });
+        it('should replace at tail', function () {
+            var array = [0, 1];
+            replace(array, 1, 1, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('[0,"a","b","c","d","e"]');
+        });
+        it('should replace entire array', function () {
+            var array = [0, 1, 2, 3];
+            replace(array, 0, array.length, ['a','b','c','d','e']);
+            expect(Ext.encode(array)).toEqual('["a","b","c","d","e"]');
+        });
+        it('should handle negative index', function () {
+            var array = [0, 1, 2, 3];
+            replace(array, -2, 20); // should clip
+            expect(Ext.encode(array)).toEqual('[0,1]');
+        });
+        it('should work around the IE8 bug', function () {
+            // see http://social.msdn.microsoft.com/Forums/en-US/iewebdevelopment/thread/6e946d03-e09f-4b22-a4dd-cd5e276bf05a/
+            var array = [],
+                lengthBefore,
+                j = 20;
+
+            while (j--) {
+                array.push("A");
+            }
+
+            array.splice(15, 0, "F", "F", "F", "F", "F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F");
+            // the fact that this is an APPLY is not instrumental to reproducing this bug
+
+            lengthBefore = array.length; // = 41
+
+            // everything above should be exactly preserved including the true splice call.
+            // That way we have produced the Array Time Bomb... now see if it explodes!
+
+            replace(array, 13, 0, ["XXX"]); // add one element (this was the failure)
+
+            expect(array.length).toEqual(lengthBefore+1);
+        });
+    }
+
+    describe('replaceSim', function () {
+        // The _replace method is our corrected method for IE8, but we make it available (in
+        // debug builds) on all browsers to see that it works.
+        testReplace(Ext.Array._replaceSim);
+    });
+
+    describe('replaceNative', function () {
+        // and test the wrapper on other browsers
+        testReplace(Ext.Array.replace);
+    });
+
+    describe('splice', function () {
+        it('returns proper result array at the front', function () {
+            var ret = Ext.Array._spliceSim([1,2,3,4], 0, 2);
+            expect(Ext.encode(ret)).toEqual('[1,2]');
+        });
+        it('returns proper result array at the end', function () {
+            var ret = Ext.Array._spliceSim([1,2,3,4], 2, 2);
+            expect(Ext.encode(ret)).toEqual('[3,4]');
+        });
+        it('returns proper result array from the middle', function () {
+            var ret = Ext.Array._spliceSim([1,2,3,4], 1, 2);
+            expect(Ext.encode(ret)).toEqual('[2,3]');
+        });
+        it('return an empty array when nothing removed', function () {
+            var ret = Ext.Array._spliceSim([1,2,3,4], 1, 0);
+            expect(Ext.encode(ret)).toEqual('[]');
+        });
+    });
 });
+

@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.grid.ColumnLayout
  * @extends Ext.layout.container.HBox
@@ -20,23 +34,24 @@ Ext.define('Ext.grid.ColumnLayout', {
     alias: 'layout.gridcolumn',
     type : 'column',
 
+    reserveOffset: false,
+
     // Height-stretched innerCt must be able to revert back to unstretched height
     clearInnerCtOnLayout: false,
-
-    constructor: function() {
-        var me = this;
-        me.callParent(arguments);
-        if (!Ext.isDefined(me.availableSpaceOffset)) {
-            me.availableSpaceOffset = (Ext.getScrollBarWidth() - 2);
-        }
-    },
 
     beforeLayout: function() {
         var me = this,
             i = 0,
             items = me.getLayoutItems(),
             len = items.length,
-            item, returnValue;
+            item, returnValue,
+            s;
+
+        // Scrollbar offset defined by width of any vertical scroller in the owning grid
+        if (!Ext.isDefined(me.availableSpaceOffset)) {
+            s = me.owner.up('tablepanel').verticalScroller;
+            me.availableSpaceOffset = s ? s.width-1 : 0;
+        }
 
         returnValue = me.callParent(arguments);
 
@@ -106,7 +121,7 @@ Ext.define('Ext.grid.ColumnLayout', {
         me.callParent(arguments);
 
         // Set up padding in items
-        if (me.align == 'stretchmax') {
+        if (!me.owner.hideHeaders && me.align == 'stretchmax') {
             for (; i < len; i++) {
                 items[i].setPadding();
             }
@@ -116,26 +131,21 @@ Ext.define('Ext.grid.ColumnLayout', {
     // FIX: when flexing we actually don't have enough space as we would
     // typically because of the scrollOffset on the GridView, must reserve this
     updateInnerCtSize: function(tSize, calcs) {
-        var me    = this,
-            extra = 0;
+        var me = this,
+            extra;
 
         // Columns must not account for scroll offset
-        if (!me.isColumn && calcs.meta.tooNarrow) {
-            if (
-                Ext.isWebKit ||
-                Ext.isGecko ||
-                (Ext.isIEQuirks && (Ext.isIE6 || Ext.isIE7 || Ext.isIE8))
-            ) {
-                extra = 1;
-            // IE6-8 not quirks
-            } else if (Ext.isIE6 || Ext.isIE7 || Ext.isIE8) {
-                extra = 2;
+        if (!me.isColumn) {
+            me.tooNarrow = calcs.meta.tooNarrow;
+            extra = (me.reserveOffset ? me.availableSpaceOffset : 0);
+
+            if (calcs.meta.tooNarrow) {
+                tSize.width = calcs.meta.desiredSize + extra;
+            } else {
+                tSize.width += extra;
             }
-            
-            // this is the 1px accounted for in the Scroller when subtracting 1px.
-            extra++;
-            tSize.width = calcs.meta.desiredSize + (me.reserveOffset ? me.availableSpaceOffset : 0) + extra;
         }
+
         return me.callParent(arguments);
     },
 

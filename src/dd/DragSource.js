@@ -1,10 +1,21 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.dd.DragSource
  * @extends Ext.dd.DDProxy
  * A simple class that provides the basic implementation needed to make any element draggable.
- * @constructor
- * @param {Mixed} el The container element
- * @param {Object} config
  */
 Ext.define('Ext.dd.DragSource', {
     extend: 'Ext.dd.DDProxy',
@@ -44,6 +55,12 @@ Ext.define('Ext.dd.DragSource', {
      */
     repairHighlightColor: 'c3daf9',
 
+    /**
+     * Creates new drag-source.
+     * @constructor
+     * @param {Mixed} el The container element
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(el, config) {
         this.el = Ext.get(el);
         if(!this.dragData){
@@ -387,3 +404,4 @@ Ext.define('Ext.dd.DragSource', {
         Ext.destroy(this.proxy);
     }
 });
+

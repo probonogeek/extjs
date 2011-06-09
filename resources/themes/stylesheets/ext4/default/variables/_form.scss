@@ -107,7 +107,7 @@ $fieldset-header-color: adjust-color($base-color, $hue: 3.785deg, $saturation: 1
 
 $fieldset-border-width: 1px !default;
 $fieldset-border-style: solid !default;
-$fieldset-border-color: adjust-color($base-color, $hue: 17.193deg, $saturation: -40.827%, $lightness: -9.412%) !default;
+$fieldset-border-color: $form-field-border-color !default;
 $fieldset-border: $fieldset-border-width $fieldset-border-style $fieldset-border-color !default;
 
 $fieldset-padding: 10px !default;

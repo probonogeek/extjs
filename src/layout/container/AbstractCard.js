@@ -1,30 +1,42 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
- * @class Ext.layout.container.AbstractCard
- * @extends Ext.layout.container.Fit
- * <p>This layout manages multiple child Components, each is fit to the Container, where only a single child Component
+ * This layout manages multiple child Components, each is fit to the Container, where only a single child Component
  * can be visible at any given time.  This layout style is most commonly used for wizards, tab implementations, etc.
  * This class is intended to be extended or created via the layout:'card' {@link Ext.container.Container#layout} config,
- * and should generally not need to be created directly via the new keyword.</p>
- * <p>The CardLayout's focal method is {@link #setActiveItem}.  Since only one panel is displayed at a time,
+ * and should generally not need to be created directly via the new keyword.
+ *
+ * The CardLayout's focal method is {@link #setActiveItem}.  Since only one panel is displayed at a time,
  * the only way to move from one Component to the next is by calling setActiveItem, passing the id or index of
  * the next panel to display.  The layout itself does not provide a user interface for handling this navigation,
- * so that functionality must be provided by the developer.</p>
- * <p>Containers that are configured with a card layout will have a method setActiveItem dynamically added to it.
- * <pre><code>
-      var p = new Ext.panel.Panel({
-          fullscreen: true,
-          layout: 'card',
-          items: [{
-              html: 'Card 1'
-          },{
-              html: 'Card 2'
-          }]
-      });
-      p.setActiveItem(1);
-   </code></pre>
- * </p>
+ * so that functionality must be provided by the developer.
+ *
+ * Containers that are configured with a card layout will have a method setActiveItem dynamically added to it.
+ *
+ *     var p = new Ext.panel.Panel({
+ *         fullscreen: true,
+ *         layout: 'card',
+ *         items: [{
+ *             html: 'Card 1'
+ *         },{
+ *             html: 'Card 2'
+ *         }]
+ *     });
+ *     p.setActiveItem(1);
+ *
  */
-
 Ext.define('Ext.layout.container.AbstractCard', {
 
     /* Begin Definitions */
@@ -149,12 +161,12 @@ Ext.define('Ext.layout.container.AbstractCard', {
 
     /**
      * Return the active (visible) component in the layout to the next card
-     * @returns {Ext.Component}
+     * @returns {Ext.Component} The next component or false.
      */
-    getNext: function(wrap) {
+    getNext: function() {
         //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
         //should come back in 4.1
-        
+        var wrap = arguments[0];
         var items = this.getLayoutItems(),
             index = Ext.Array.indexOf(items, this.activeItem);
         return items[index + 1] || (wrap ? items[0] : false);
@@ -162,22 +174,23 @@ Ext.define('Ext.layout.container.AbstractCard', {
 
     /**
      * Sets the active (visible) component in the layout to the next card
+     * @return {Ext.Component} the activated component or false when nothing activated.
      */
-    next: function(anim, wrap) {
+    next: function() {
         //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
         //should come back in 4.1
-        
+        var anim = arguments[0], wrap = arguments[1];
         return this.setActiveItem(this.getNext(wrap), anim);
     },
 
     /**
      * Return the active (visible) component in the layout to the previous card
-     * @returns {Ext.Component}
+     * @returns {Ext.Component} The previous component or false.
      */
-    getPrev: function(wrap) {
+    getPrev: function() {
         //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
         //should come back in 4.1
-        
+        var wrap = arguments[0];
         var items = this.getLayoutItems(),
             index = Ext.Array.indexOf(items, this.activeItem);
         return items[index - 1] || (wrap ? items[items.length - 1] : false);
@@ -185,11 +198,13 @@ Ext.define('Ext.layout.container.AbstractCard', {
 
     /**
      * Sets the active (visible) component in the layout to the previous card
+     * @return {Ext.Component} the activated component or false when nothing activated.
      */
-    prev: function(anim, wrap) {
+    prev: function() {
         //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
         //should come back in 4.1
-        
+        var anim = arguments[0], wrap = arguments[1];
         return this.setActiveItem(this.getPrev(wrap), anim);
     }
 });
+

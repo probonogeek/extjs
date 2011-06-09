@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-app-Application-method-constructor'><span id='Ext-app-Application'>/**
-</span></span> * @class Ext.app.Application
+  <pre class="prettyprint lang-js"><span id='Ext-app-Application'>/**
+</span> * @class Ext.app.Application
  * @extend Ext.app.Controller
  * 
  * Represents an Ext JS 4 application, which is typically a single page app using a {@link Ext.container.Viewport Viewport}.
@@ -77,11 +77,10 @@
  * files whenever we add a new class, but more importantly it enables us to create a minimized build of our entire 
  * application using the Ext JS 4 SDK Tools.
  * 
- * For more information about writing Ext JS 4 applications, please see the &lt;a href=&quot;../guide/application_architecture&quot;&gt;
- * application architecture guide&lt;/a&gt;.
+ * For more information about writing Ext JS 4 applications, please see the
+ * [application architecture guide](#/guide/application_architecture).
  * 
  * @docauthor Ed Spencer
- * @constructor
  */
 Ext.define('Ext.app.Application', {
     extend: 'Ext.app.Controller',
@@ -128,6 +127,10 @@ Ext.define('Ext.app.Application', {
      */
     autoCreateViewport: false,
 
+<span id='Ext-app-Application-method-constructor'>    /**
+</span>     * Creates new Application.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config) {
         config = config || {};
         Ext.apply(this, config);

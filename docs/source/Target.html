@@ -15,8 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-fx-target-Target-method-constructor'><span id='Ext-fx-target-Target'>/**
-</span></span> * @class Ext.fx.target.Target
+  <pre class="prettyprint lang-js"><span id='Ext-fx-target-Target'>/**
+</span> * @class Ext.fx.target.Target
 
 This class specifies a generic target for an animation. It provides a wrapper around a
 series of different types of objects to allow for a generic animation API.
@@ -26,20 +26,22 @@ underlying animation will create the appropriate Ext.fx.target.Target object by 
 the instance to be animated.
 
 The following types of objects can be animated:
-- {@link #Ext.fx.target.Component Components}
-- {@link #Ext.fx.target.Element Elements}
-- {@link #Ext.fx.target.Sprite Sprites}
+
+- {@link Ext.fx.target.Component Components}
+- {@link Ext.fx.target.Element Elements}
+- {@link Ext.fx.target.Sprite Sprites}
 
  * @markdown
  * @abstract
- * @constructor
- * @param {Mixed} target The object to be animated
  */
-
 Ext.define('Ext.fx.target.Target', {
 
     isAnimTarget: true,
 
+<span id='Ext-fx-target-Target-method-constructor'>    /**
+</span>     * Creates new Target.
+     * @param {Mixed} target The object to be animated
+     */
     constructor: function(target) {
         this.target = target;
         this.id = this.getId();

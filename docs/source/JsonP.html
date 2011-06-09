@@ -76,6 +76,11 @@ Ext.define('Ext.data.JsonP', {
      * key value pairs that will be sent along with the request.&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;timeout&lt;/b&gt; : Number (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #timeout}&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;callbackKey&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #callbackKey}&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;callbackName&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;The function name to use for this request.
+     * By default this name will be auto-generated: Ext.data.JsonP.callback1, Ext.data.JsonP.callback2, etc.
+     * Setting this option to &quot;my_name&quot; will force the function name to be Ext.data.JsonP.my_name.
+     * Use this if you want deterministic behavior, but be careful - the callbackName should be different
+     * in each JsonP request that you make.&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;disableCaching&lt;/b&gt; : Boolean (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #disableCaching}&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;disableCachingParam&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #disableCachingParam}&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;b&gt;success&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-desc&quot;&gt;A function to execute if the request succeeds.&lt;/div&gt;&lt;/li&gt;
@@ -100,7 +105,7 @@ Ext.define('Ext.data.JsonP', {
             disableCaching = Ext.isDefined(options.disableCaching) ? options.disableCaching : me.disableCaching, 
             cacheParam = options.disableCachingParam || me.disableCachingParam, 
             id = ++me.statics().requestCount, 
-            callbackName = 'callback' + id, 
+            callbackName = options.callbackName || 'callback' + id, 
             callbackKey = options.callbackKey || me.callbackKey, 
             timeout = Ext.isDefined(options.timeout) ? options.timeout : me.timeout, 
             params = Ext.apply({}, options.params), 

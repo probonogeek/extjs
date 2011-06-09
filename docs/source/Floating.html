@@ -94,8 +94,10 @@ Ext.define('Ext.util.Floating', {
     },
 
     onFloatParentHide: function() {
-        this.showOnParentShow = this.isVisible();
-        this.hide();
+        if (this.hideOnParentHide !== false) {
+            this.showOnParentShow = this.isVisible();
+            this.hide();
+        }
     },
 
     onFloatParentShow: function() {
@@ -166,8 +168,8 @@ Ext.define('Ext.util.Floating', {
             me.setPosition(xy);
         }
     },
-    
-    
+
+
 <span id='Ext-util-Floating-method-getConstrainVector'>    /**
 </span>     * Gets the x/y offsets to constrain this float
      * @private
@@ -177,7 +179,7 @@ Ext.define('Ext.util.Floating', {
     getConstrainVector: function(constrainTo){
         var me = this,
             el;
-            
+
         if (me.constrain || me.constrainHeader) {
             el = me.constrainHeader ? me.header.el : me.el;
             constrainTo = constrainTo || (me.floatParent &amp;&amp; me.floatParent.getTargetEl()) || me.container;
