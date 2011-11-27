@@ -147,14 +147,14 @@ Ext.define('Ext.draw.Matrix', {
 
     toFilter: function() {
         var me = this;
-        return "progid:DXImageTransform.Microsoft.Matrix(M11=" + me.get(0, 0) +
+        return "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand',FilterType=bilinear,M11=" + me.get(0, 0) +
             ", M12=" + me.get(0, 1) + ", M21=" + me.get(1, 0) + ", M22=" + me.get(1, 1) +
             ", Dx=" + me.get(0, 2) + ", Dy=" + me.get(1, 2) + ")";
     },
 
     offset: function() {
         var matrix = this.matrix;
-        return [matrix[0][2].toFixed(4), matrix[1][2].toFixed(4)];
+        return [(matrix[0][2] || 0).toFixed(4), (matrix[1][2] || 0).toFixed(4)];
     },
 
     // Split matrix into Translate Scale, Shear, and Rotate
@@ -175,7 +175,7 @@ Ext.define('Ext.draw.Matrix', {
             row;
 
         // scale and shear
-        row = [[matrix[0][0], matrix[0][1]], [matrix[1][1], matrix[1][1]]];
+        row = [[matrix[0][0], matrix[0][1]], [matrix[1][0], matrix[1][1]]];
         out.scaleX = Math.sqrt(norm(row[0]));
         normalize(row[0]);
 
@@ -194,3 +194,4 @@ Ext.define('Ext.draw.Matrix', {
         return out;
     }
 });
+

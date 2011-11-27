@@ -442,7 +442,9 @@ Ext.define('Ext.grid.RowEditor', {
         // Maintain mapping of fields-to-columns
         // This will fire events that maintain our container items
         me.columns.add(field.id, column);
-        
+        if (column.hidden) {
+            me.onColumnHide(column);
+        }
         if (me.isVisible() && me.context) {
             me.renderColumnData(field, me.context.record);
         }
@@ -506,8 +508,8 @@ Ext.define('Ext.grid.RowEditor', {
 
     /**
      * Start editing the specified grid at the specified position.
-     * @param {Model} record The Store data record which backs the row to be edited.
-     * @param {Model} columnHeader The Column object defining the column to be edited.
+     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
      */
     startEdit: function(record, columnHeader) {
         var me = this,

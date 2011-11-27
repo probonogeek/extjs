@@ -16,17 +16,17 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @author Ed Spencer
  * @class Ext.data.reader.Xml
  * @extends Ext.data.reader.Reader
- * 
+ *
  * <p>The XML Reader is used by a Proxy to read a server response that is sent back in XML format. This usually
  * happens as a result of loading a Store - for example we might create something like this:</p>
- * 
+ *
 <pre><code>
 Ext.define('User', {
     extend: 'Ext.data.Model',
     fields: ['id', 'name', 'email']
 });
 
-var store = new Ext.data.Store({
+var store = Ext.create('Ext.data.Store', {
     model: 'User',
     proxy: {
         type: 'ajax',
@@ -38,14 +38,14 @@ var store = new Ext.data.Store({
     }
 });
 </code></pre>
- * 
+ *
  * <p>The example above creates a 'User' model. Models are explained in the {@link Ext.data.Model Model} docs if you're
  * not already familiar with them.</p>
- * 
- * <p>We created the simplest type of XML Reader possible by simply telling our {@link Ext.data.Store Store}'s 
+ *
+ * <p>We created the simplest type of XML Reader possible by simply telling our {@link Ext.data.Store Store}'s
  * {@link Ext.data.proxy.Proxy Proxy} that we want a XML Reader. The Store automatically passes the configured model to the
  * Store, so it is as if we passed this instead:
- * 
+ *
 <pre><code>
 reader: {
     type : 'xml',
@@ -53,7 +53,7 @@ reader: {
     record: 'user'
 }
 </code></pre>
- * 
+ *
  * <p>The reader we set up is ready to read data from our server - at the moment it will accept a response like this:</p>
  *
 <pre><code>
@@ -69,16 +69,16 @@ reader: {
     &lt;email&gt;abe@sencha.com&lt;/email&gt;
 &lt;/user&gt;
 </code></pre>
- * 
+ *
  * <p>The XML Reader uses the configured {@link #record} option to pull out the data for each record - in this case we
  * set record to 'user', so each &lt;user&gt; above will be converted into a User model.</p>
- * 
+ *
  * <p><u>Reading other XML formats</u></p>
- * 
+ *
  * <p>If you already have your XML format defined and it doesn't look quite like what we have above, you can usually
- * pass XmlReader a couple of configuration options to make it parse your format. For example, we can use the 
+ * pass XmlReader a couple of configuration options to make it parse your format. For example, we can use the
  * {@link #root} configuration to parse data that comes back like this:</p>
- * 
+ *
 <pre><code>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;users&gt;
@@ -94,9 +94,9 @@ reader: {
     &lt;/user&gt;
 &lt;/users&gt;
 </code></pre>
- * 
+ *
  * <p>To parse this we just pass in a {@link #root} configuration that matches the 'users' above:</p>
- * 
+ *
 <pre><code>
 reader: {
     type  : 'xml',
@@ -104,10 +104,10 @@ reader: {
     record: 'user'
 }
 </code></pre>
- * 
+ *
  * <p>Note that XmlReader doesn't care whether your {@link #root} and {@link #record} elements are nested deep inside
  * a larger structure, so a response like this will still work:
- * 
+ *
 <pre><code>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;deeply&gt;
@@ -129,13 +129,13 @@ reader: {
     &lt;/nested&gt;
 &lt;/deeply&gt;
 </code></pre>
- * 
+ *
  * <p><u>Response metadata</u></p>
- * 
- * <p>The server can return additional data in its response, such as the {@link #totalProperty total number of records} 
+ *
+ * <p>The server can return additional data in its response, such as the {@link #totalProperty total number of records}
  * and the {@link #successProperty success status of the response}. These are typically included in the XML response
  * like this:</p>
- * 
+ *
 <pre><code>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;total&gt;100&lt;/total&gt;
@@ -153,11 +153,11 @@ reader: {
     &lt;/user&gt;
 &lt;/users&gt;
 </code></pre>
- * 
+ *
  * <p>If these properties are present in the XML response they can be parsed out by the XmlReader and used by the
- * Store that loaded it. We can set up the names of these properties by specifying a final pair of configuration 
+ * Store that loaded it. We can set up the names of these properties by specifying a final pair of configuration
  * options:</p>
- * 
+ *
 <pre><code>
 reader: {
     type: 'xml',
@@ -166,14 +166,14 @@ reader: {
     successProperty: 'success'
 }
 </code></pre>
- * 
+ *
  * <p>These final options are not necessary to make the Reader work, but can be useful when the server needs to report
  * an error or if it needs to indicate that there is a lot of data available of which only a subset is currently being
  * returned.</p>
- * 
+ *
  * <p><u>Response format</u></p>
- * 
- * <p><b>Note:</b> in order for the browser to parse a returned XML document, the Content-Type header in the HTTP 
+ *
+ * <p><b>Note:</b> in order for the browser to parse a returned XML document, the Content-Type header in the HTTP
  * response must be set to "text/xml" or "application/xml". This is very important - the XmlReader will not
  * work correctly otherwise.</p>
  */
@@ -181,9 +181,10 @@ Ext.define('Ext.data.reader.Xml', {
     extend: 'Ext.data.reader.Reader',
     alternateClassName: 'Ext.data.XmlReader',
     alias : 'reader.xml',
-    
+
     /**
-     * @cfg {String} record The DomQuery path to the repeated element which contains record information.
+     * @cfg {String} record (required)
+     * The DomQuery path to the repeated element which contains record information.
      */
 
     /**
@@ -195,20 +196,20 @@ Ext.define('Ext.data.reader.Xml', {
      */
     createAccessor: function(expr) {
         var me = this;
-        
+
         if (Ext.isEmpty(expr)) {
             return Ext.emptyFn;
         }
-        
+
         if (Ext.isFunction(expr)) {
             return expr;
         }
-        
+
         return function(root) {
             return me.getNodeValue(Ext.DomQuery.selectNode(expr, root));
         };
     },
-    
+
     getNodeValue: function(node) {
         if (node && node.firstChild) {
             return node.firstChild.nodeValue;
@@ -245,12 +246,12 @@ Ext.define('Ext.data.reader.Xml', {
      * @private
      * Given an XML object, returns the Element that represents the root as configured by the Reader's meta data
      * @param {Object} data The XML data object
-     * @return {Element} The root node element
+     * @return {XMLElement} The root node element
      */
     getRoot: function(data) {
         var nodeName = data.nodeName,
             root     = this.root;
-        
+
         if (!root || (nodeName && nodeName == root)) {
             return data;
         } else if (Ext.DomQuery.isXml(data)) {
@@ -264,18 +265,18 @@ Ext.define('Ext.data.reader.Xml', {
     /**
      * @private
      * We're just preparing the data for the superclass by pulling out the record nodes we want
-     * @param {Element} root The XML root node
-     * @return {Array} The records
+     * @param {XMLElement} root The XML root node
+     * @return {Ext.data.Model[]} The records
      */
     extractData: function(root) {
         var recordName = this.record;
-        
+
         //<debug>
         if (!recordName) {
             Ext.Error.raise('Record is a required parameter');
         }
         //</debug>
-        
+
         if (recordName != root.nodeName) {
             root = Ext.DomQuery.select(recordName, root);
         } else {
@@ -283,13 +284,13 @@ Ext.define('Ext.data.reader.Xml', {
         }
         return this.callParent([root]);
     },
-    
+
     /**
      * @private
      * See Ext.data.reader.Reader's getAssociatedDataRoot docs
-     * @param {Mixed} data The raw data object
+     * @param {Object} data The raw data object
      * @param {String} associationName The name of the association to get data for (uses associationKey if present)
-     * @return {Mixed} The root
+     * @return {XMLElement} The root
      */
     getAssociatedDataRoot: function(data, associationName) {
         return Ext.DomQuery.select(associationName, data)[0];
@@ -305,9 +306,9 @@ Ext.define('Ext.data.reader.Xml', {
         if (Ext.isArray(doc)) {
             doc = doc[0];
         }
-        
+
         /**
-         * DEPRECATED - will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead
+         * @deprecated will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead
          * @property xmlData
          * @type Object
          */

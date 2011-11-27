@@ -57,7 +57,7 @@ describe("Ext.Error", function() {
                     Ext.Error.raise('foo');
                 } 
                 catch (err) {}
-                expect(Ext.global.console.error).toHaveBeenCalledWith('foo');
+                expect(Ext.global.console.error).toHaveBeenCalledWith('[E] foo');
             });
         
             it("should log the error object to the console", function() {
@@ -114,13 +114,13 @@ describe("Ext.Error", function() {
                 }
             });
         
-            it("should log a warning to the console", function() {
+            it("should log an error to the console", function() {
                 spyOn(Ext.global.console, 'error');
                 try {
                     Ext.Error.raise({msg: 'foo'});
                 } 
                 catch (err) {}
-                expect(Ext.global.console.error).toHaveBeenCalledWith('foo');
+                expect(Ext.global.console.error).toHaveBeenCalledWith('[E] foo');
             });
         
             it("should log the error object to the console", function() {

@@ -795,12 +795,12 @@ Ext.define('Ext.draw.Draw', {
      * @param {Number} nextX X coordinate of the next point in the path
      * @param {Number} nextY Y coordinate of the next point in the path
      * @param {Number} value A value to control the smoothness of the curve; this is used to
-     *                 divide the distance between points, so a value of 2 corresponds to
-     *                 half the distance between points (a very smooth line) while higher values
-     *                 result in less smooth curves. Defaults to 4.
+     * divide the distance between points, so a value of 2 corresponds to
+     * half the distance between points (a very smooth line) while higher values
+     * result in less smooth curves. Defaults to 4.
      * @return {Object} Object containing x1, y1, x2, y2 bezier control anchor points; x1 and y1
-     *                  are the control point for the curve toward the previous path point, and
-     *                  x2 and y2 are the control point for the curve toward the next path point.
+     * are the control point for the curve toward the previous path point, and
+     * x2 and y2 are the control point for the curve toward the next path point.
      */
     getAnchors: function (prevX, prevY, curX, curY, nextX, nextY, value) {
         value = value || 4;
@@ -939,7 +939,25 @@ Ext.define('Ext.draw.Draw', {
         };
     },
 
+    /**
+     * A utility method to deduce an appropriate tick configuration for the data set of given
+     * feature.
+     * 
+     * @param {Number/Date} from The minimum value in the data
+     * @param {Number/Date} to The maximum value in the data
+     * @param {Number} stepsMax The maximum number of ticks
+     * @return {Object} The calculated step and ends info; When `from` and `to` are Dates, refer to the
+     * return value of {@link #snapEndsByDate}. For numerical `from` and `to` the return value contains:
+     * @return {Number} return.from The result start value, which may be lower than the original start value
+     * @return {Number} return.to The result end value, which may be higher than the original end value
+     * @return {Number} return.power The calculate power.
+     * @return {Number} return.step The value size of each step
+     * @return {Number} return.steps The number of steps.
+     */
     snapEnds: function (from, to, stepsMax) {
+        if (Ext.isDate(from)) {
+            return this.snapEndsByDate(from, to, stepsMax);
+        }
         var step = (to - from) / stepsMax,
             level = Math.floor(Math.log(step) / Math.LN10) + 1,
             m = Math.pow(10, level),
@@ -974,6 +992,119 @@ Ext.define('Ext.draw.Draw', {
             power: level,
             step: step,
             steps: stepCount
+        };
+    },
+
+    /**
+     * A utility method to deduce an appropriate tick configuration for the data set of given
+     * feature when data is Dates. Refer to {@link #snapEnds} for numeric data.
+     *
+     * @param {Date} from The minimum value in the data
+     * @param {Date} to The maximum value in the data
+     * @param {Number} stepsMax The maximum number of ticks
+     * @param {Boolean} lockEnds If true, the 'from' and 'to' parameters will be used as fixed end values
+     * and will not be adjusted
+     * @return {Object} The calculated step and ends info; properties are:
+     * @return {Date} return.from The result start value, which may be lower than the original start value
+     * @return {Date} return.to The result end value, which may be higher than the original end value
+     * @return {Number} return.step The value size of each step
+     * @return {Number} return.steps The number of steps.
+     * NOTE: the steps may not divide the from/to range perfectly evenly;
+     * there may be a smaller distance between the last step and the end value than between prior
+     * steps, particularly when the `endsLocked` param is true. Therefore it is best to not use
+     * the `steps` result when finding the axis tick points, instead use the `step`, `to`, and
+     * `from` to find the correct point for each tick.
+     */
+    snapEndsByDate: function (from, to, stepsMax, lockEnds) {
+        var selectedStep = false, scales = [
+                [Ext.Date.MILLI, [1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500]],
+                [Ext.Date.SECOND, [1, 2, 3, 5, 10, 15, 30]],
+                [Ext.Date.MINUTE, [1, 2, 3, 5, 10, 20, 30]],
+                [Ext.Date.HOUR, [1, 2, 3, 4, 6, 12]],
+                [Ext.Date.DAY, [1, 2, 3, 7, 14]],
+                [Ext.Date.MONTH, [1, 2, 3, 4, 6]]
+            ], j, yearDiff;
+
+        // Find the most desirable scale
+        Ext.each(scales, function(scale, i) {
+            for (j = 0; j < scale[1].length; j++) {
+                if (to < Ext.Date.add(from, scale[0], scale[1][j] * stepsMax)) {
+                    selectedStep = [scale[0], scale[1][j]];
+                    return false;
+                }
+            }
+        });
+        if (!selectedStep) {
+            yearDiff = this.snapEnds(from.getFullYear(), to.getFullYear() + 1, stepsMax, lockEnds);
+            selectedStep = [Date.YEAR, Math.round(yearDiff.step)];
+        }
+        return this.snapEndsByDateAndStep(from, to, selectedStep, lockEnds);
+    },
+
+
+    /**
+     * A utility method to deduce an appropriate tick configuration for the data set of given
+     * feature and specific step size.
+     * @param {Date} from The minimum value in the data
+     * @param {Date} to The maximum value in the data
+     * @param {Array} step An array with two components: The first is the unit of the step (day, month, year, etc).
+     * The second one is the number of units for the step (1, 2, etc.).
+     * @param {Boolean} lockEnds If true, the 'from' and 'to' parameters will be used as fixed end values
+     * and will not be adjusted
+     * @return {Object} See the return value of {@link #snapEndsByDate}.
+     */
+    snapEndsByDateAndStep: function(from, to, step, lockEnds) {
+        var fromStat = [from.getFullYear(), from.getMonth(), from.getDate(),
+                from.getHours(), from.getMinutes(), from.getSeconds(), from.getMilliseconds()],
+            steps = 0, testFrom, testTo;
+        if (lockEnds) {
+            testFrom = from;
+        } else {
+            switch (step[0]) {
+                case Ext.Date.MILLI:
+                    testFrom = new Date(fromStat[0], fromStat[1], fromStat[2], fromStat[3],
+                            fromStat[4], fromStat[5], Math.floor(fromStat[6] / step[1]) * step[1]);
+                    break;
+                case Ext.Date.SECOND:
+                    testFrom = new Date(fromStat[0], fromStat[1], fromStat[2], fromStat[3],
+                            fromStat[4], Math.floor(fromStat[5] / step[1]) * step[1], 0);
+                    break;
+                case Ext.Date.MINUTE:
+                    testFrom = new Date(fromStat[0], fromStat[1], fromStat[2], fromStat[3],
+                            Math.floor(fromStat[4] / step[1]) * step[1], 0, 0);
+                    break;
+                case Ext.Date.HOUR:
+                    testFrom = new Date(fromStat[0], fromStat[1], fromStat[2],
+                            Math.floor(fromStat[3] / step[1]) * step[1], 0, 0, 0);
+                    break;
+                case Ext.Date.DAY:
+                    testFrom = new Date(fromStat[0], fromStat[1],
+                            Math.floor(fromStat[2] - 1 / step[1]) * step[1] + 1, 0, 0, 0, 0);
+                    break;
+                case Ext.Date.MONTH:
+                    testFrom = new Date(fromStat[0], Math.floor(fromStat[1] / step[1]) * step[1], 1, 0, 0, 0, 0);
+                    break;
+                default: // Ext.Date.YEAR
+                    testFrom = new Date(Math.floor(fromStat[0] / step[1]) * step[1], 0, 1, 0, 0, 0, 0);
+                    break;
+            }
+        }
+
+        testTo = testFrom;
+        // TODO(zhangbei) : We can do it better somehow...
+        while (testTo < to) {
+            testTo = Ext.Date.add(testTo, step[0], step[1]);
+            steps++;
+        }
+
+        if (lockEnds) {
+            testTo = to;
+        }
+        return {
+            from : +testFrom,
+            to : +testTo,
+            step : (testTo - testFrom) / steps,
+            steps : steps
         };
     },
 
@@ -1056,4 +1187,5 @@ Ext.define('Ext.draw.Draw', {
         }
     }
 });
+
 

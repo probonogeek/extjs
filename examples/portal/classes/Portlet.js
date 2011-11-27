@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.ux.Portlet
- * @extends Ext.Panel
- * A {@link Ext.Panel Panel} class that is managed by {@link Ext.app.PortalPanel}.
+ * @class Ext.app.Portlet
+ * @extends Ext.panel.Panel
+ * A {@link Ext.panel.Panel Panel} class that is managed by {@link Ext.app.PortalPanel}.
  */
 Ext.define('Ext.app.Portlet', {
     extend: 'Ext.panel.Panel',

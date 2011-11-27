@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -107,7 +107,7 @@ Ext.define('Ext.fx.target.Component', {
                     o = meth.setPagePosition;
                     o.target.setPagePosition(o.x, o.y);
                 }
-                if (meth.setSize.target) {
+                if (meth.setSize.target &amp;&amp; meth.setSize.target.el) {
                     o = meth.setSize;
                     // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
                     w = (o.width === undefined) ? o.target.getWidth() : parseInt(o.width, 10);

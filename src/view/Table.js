@@ -13,24 +13,17 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.view.Table
- * @extends Ext.view.View
-
-This class encapsulates the user interface for a tabular data set.
-It acts as a centralized manager for controlling the various interface
-elements of the view. This includes handling events, such as row and cell
-level based DOM events. It also reacts to events from the underlying {@link Ext.selection.Model}
-to provide visual feedback to the user.
-
-This class does not provide ways to manipulate the underlying data of the configured
-{@link Ext.data.Store}.
-
-This is the base class for both {@link Ext.grid.View} and {@link Ext.tree.View} and is not
-to be used directly.
-
- * @markdown
- * @abstract
- * @author Nicolas Ferrero
+ * This class encapsulates the user interface for a tabular data set.
+ * It acts as a centralized manager for controlling the various interface
+ * elements of the view. This includes handling events, such as row and cell
+ * level based DOM events. It also reacts to events from the underlying {@link Ext.selection.Model}
+ * to provide visual feedback to the user.
+ *
+ * This class does not provide ways to manipulate the underlying data of the configured
+ * {@link Ext.data.Store}.
+ *
+ * This is the base class for both {@link Ext.grid.View} and {@link Ext.tree.View} and is not
+ * to be used directly.
  */
 Ext.define('Ext.view.Table', {
     extend: 'Ext.view.View',
@@ -41,7 +34,7 @@ Ext.define('Ext.view.Table', {
         'Ext.util.MixedCollection'
     ],
 
-    cls: Ext.baseCSSPrefix + 'grid-view',
+    baseCls: Ext.baseCSSPrefix + 'grid-view',
 
     // row
     itemSelector: '.' + Ext.baseCSSPrefix + 'grid-row',
@@ -60,57 +53,29 @@ Ext.define('Ext.view.Table', {
     trackOver: true,
 
     /**
-     * Override this function to apply custom CSS classes to rows during rendering.  You can also supply custom
-     * parameters to the row template for the current row to customize how it is rendered using the <b>rowParams</b>
-     * parameter.  This function should return the CSS class name (or empty string '' for none) that will be added
-     * to the row's wrapping div.  To apply multiple class names, simply return them space-delimited within the string
-     * (e.g., 'my-class another-class'). Example usage:
-    <pre><code>
-viewConfig: {
-    forceFit: true,
-    showPreview: true, // custom property
-    enableRowBody: true, // required to create a second, full-width row to show expanded Record data
-    getRowClass: function(record, rowIndex, rp, ds){ // rp = rowParams
-        if(this.showPreview){
-            rp.body = '&lt;p>'+record.data.excerpt+'&lt;/p>';
-            return 'x-grid3-row-expanded';
-        }
-        return 'x-grid3-row-collapsed';
-    }
-},
-    </code></pre>
-     * @param {Model} model The {@link Ext.data.Model} corresponding to the current row.
+     * Override this function to apply custom CSS classes to rows during rendering. This function should return the
+     * CSS class name (or empty string '' for none) that will be added to the row's wrapping div. To apply multiple
+     * class names, simply return them space-delimited within the string (e.g. 'my-class another-class').
+     * Example usage:
+     *
+     *     viewConfig: {
+     *         getRowClass: function(record, rowIndex, rowParams, store){
+     *             return record.get("valid") ? "row-valid" : "row-error";
+     *         }
+     *     }
+     *
+     * @param {Ext.data.Model} record The record corresponding to the current row.
      * @param {Number} index The row index.
-     * @param {Object} rowParams (DEPRECATED) A config object that is passed to the row template during rendering that allows
-     * customization of various aspects of a grid row.
-     * <p>If {@link #enableRowBody} is configured <b><tt></tt>true</b>, then the following properties may be set
-     * by this function, and will be used to render a full-width expansion row below each grid row:</p>
-     * <ul>
-     * <li><code>body</code> : String <div class="sub-desc">An HTML fragment to be used as the expansion row's body content (defaults to '').</div></li>
-     * <li><code>bodyStyle</code> : String <div class="sub-desc">A CSS style specification that will be applied to the expansion row's &lt;tr> element. (defaults to '').</div></li>
-     * </ul>
-     * The following property will be passed in, and may be appended to:
-     * <ul>
-     * <li><code>tstyle</code> : String <div class="sub-desc">A CSS style specification that willl be applied to the &lt;table> element which encapsulates
-     * both the standard grid row, and any expansion row.</div></li>
-     * </ul>
-     * @param {Store} store The {@link Ext.data.Store} this grid is bound to
-     * @method getRowClass
+     * @param {Object} rowParams **DEPRECATED.** For row body use the
+     * {@link Ext.grid.feature.RowBody#getAdditionalData getAdditionalData} method of the rowbody feature.
+     * @param {Ext.data.Store} store The store this grid is bound to
      * @return {String} a CSS class name to add to the row.
+     * @method
      */
     getRowClass: null,
 
     initComponent: function() {
         var me = this;
-
-        if (me.deferRowRender !== false) {
-            me.refresh = function() {
-                delete me.refresh;
-                setTimeout(function() {
-                    me.refresh();
-                }, 0);
-            };
-        }
 
         me.scrollState = {};
         me.selModel.view = me;
@@ -126,7 +91,7 @@ viewConfig: {
         // this.addEvents(
         //     /**
         //      * @event rowfocus
-        //      * @param {Ext.data.Record} record
+        //      * @param {Ext.data.Model} record
         //      * @param {HTMLElement} row
         //      * @param {Number} rowIdx
         //      */
@@ -185,7 +150,7 @@ viewConfig: {
     /**
      * Get the cell (td) for a particular record and column.
      * @param {Ext.data.Model} record
-     * @param {Ext.grid.column.Colunm} column
+     * @param {Ext.grid.column.Column} column
      * @private
      */
     getCell: function(record, column) {
@@ -376,7 +341,9 @@ viewConfig: {
             el.select('.' + Ext.baseCSSPrefix + 'grid-col-resizer-'+header.id).setWidth(w);
             el.select('.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(me.headerCt.getFullWidth());
             me.restoreScrollState();
-            me.setNewTemplate();
+            if (!me.ignoreTemplate) {
+                me.setNewTemplate();
+            }
             if (!suppressFocus) {
                 me.el.focus();
             }
@@ -388,17 +355,20 @@ viewConfig: {
      * @private
      */
     onHeaderShow: function(headerCt, header, suppressFocus) {
+        var me = this;
+        me.ignoreTemplate = true;
         // restore headers that were dynamically hidden
         if (header.oldWidth) {
-            this.onHeaderResize(header, header.oldWidth, suppressFocus);
+            me.onHeaderResize(header, header.oldWidth, suppressFocus);
             delete header.oldWidth;
         // flexed headers will have a calculated size set
         // this additional check has to do with the fact that
         // defaults: {width: 100} will fight with a flex value
         } else if (header.width && !header.flex) {
-            this.onHeaderResize(header, header.width, suppressFocus);
+            me.onHeaderResize(header, header.width, suppressFocus);
         }
-        this.setNewTemplate();
+        delete me.ignoreTemplate;
+        me.setNewTemplate();
     },
 
     /**
@@ -425,15 +395,16 @@ viewConfig: {
     },
 
     /**
-     * Get the configured chunker or default of Ext.view.TableChunker
+     * Returns the configured chunker or default of Ext.view.TableChunker
      */
     getTableChunker: function() {
         return this.chunker || Ext.view.TableChunker;
     },
 
     /**
-     * Add a CSS Class to a specific row.
-     * @param {HTMLElement/String/Number/Ext.data.Model} rowInfo An HTMLElement, index or instance of a model representing this row
+     * Adds a CSS Class to a specific row.
+     * @param {HTMLElement/String/Number/Ext.data.Model} rowInfo An HTMLElement, index or instance of a model
+     * representing this row
      * @param {String} cls
      */
     addRowCls: function(rowInfo, cls) {
@@ -444,8 +415,9 @@ viewConfig: {
     },
 
     /**
-     * Remove a CSS Class from a specific row.
-     * @param {HTMLElement/String/Number/Ext.data.Model} rowInfo An HTMLElement, index or instance of a model representing this row
+     * Removes a CSS Class from a specific row.
+     * @param {HTMLElement/String/Number/Ext.data.Model} rowInfo An HTMLElement, index or instance of a model
+     * representing this row
      * @param {String} cls
      */
     removeRowCls: function(rowInfo, cls) {
@@ -522,9 +494,10 @@ viewConfig: {
     },
 
     /**
-     * Focus a particular row and bring it into view. Will fire the rowfocus event.
-     * @param {Mixed} rowIdx An HTMLElement template node, index of a template node, the
-     * id of a template node or the record associated with the node.
+     * Focuses a particular row and brings it into view. Will fire the rowfocus event.
+     * @param {HTMLElement/String/Number/Ext.data.Model} rowIdx
+     * An HTMLElement template node, index of a template node, the id of a template node or the
+     * record associated with the node.
      */
     focusRow: function(rowIdx) {
         var me         = this,
@@ -599,7 +572,7 @@ viewConfig: {
     },
 
     /**
-     * Scroll by delta. This affects this individual view ONLY and does not
+     * Scrolls by delta. This affects this individual view ONLY and does not
      * synchronize across views or scrollers.
      * @param {Number} delta
      * @param {String} dir (optional) Valid values are scrollTop and scrollLeft. Defaults to scrollTop.
@@ -616,35 +589,37 @@ viewConfig: {
     },
 
     /**
-     * Save the scrollState in a private variable.
-     * Must be used in conjunction with restoreScrollState
+     * Saves the scrollState in a private variable. Must be used in conjunction with restoreScrollState
      */
     saveScrollState: function() {
-        var dom = this.el.dom,
-            state = this.scrollState;
-
-        state.left = dom.scrollLeft;
-        state.top = dom.scrollTop;
+        if (this.rendered) {
+            var dom = this.el.dom, 
+                state = this.scrollState;
+            
+            state.left = dom.scrollLeft;
+            state.top = dom.scrollTop;
+        }
     },
 
     /**
-     * Restore the scrollState.
+     * Restores the scrollState.
      * Must be used in conjunction with saveScrollState
      * @private
      */
     restoreScrollState: function() {
-        var dom = this.el.dom,
-            state = this.scrollState,
-            headerEl = this.headerCt.el.dom;
-
-        headerEl.scrollLeft = dom.scrollLeft = state.left;
-        dom.scrollTop = state.top;
+        if (this.rendered) {
+            var dom = this.el.dom, 
+                state = this.scrollState, 
+                headerEl = this.headerCt.el.dom;
+            
+            headerEl.scrollLeft = dom.scrollLeft = state.left;
+            dom.scrollTop = state.top;
+        }
     },
 
     /**
-     * Refresh the grid view.
-     * Saves and restores the scroll state, generates a new template, stripes rows
-     * and invalidates the scrollers.
+     * Refreshes the grid view. Saves and restores the scroll state, generates a new template, stripes rows and
+     * invalidates the scrollers.
      */
     refresh: function() {
         this.setNewTemplate();
@@ -748,7 +723,7 @@ viewConfig: {
     onBeforeCellKeyDown: Ext.emptyFn,
 
     /**
-     * Expand a particular header to fit the max content width.
+     * Expands a particular header to fit the max content width.
      * This will ONLY expand, not contract.
      * @private
      */
@@ -761,7 +736,7 @@ viewConfig: {
     },
 
     /**
-     * Get the max contentWidth of the header's text and all cells
+     * Returns the max contentWidth of the header's text and all cells
      * in the grid under this header.
      * @private
      */
@@ -803,19 +778,22 @@ viewConfig: {
     },
 
     /**
-     * @param {Object} position The current row and column: an object containing the following properties:<ul>
-     * <li>row<div class="sub-desc"> The row <b>index</b></div></li>
-     * <li>column<div class="sub-desc">The column <b>index</b></div></li>
-     * </ul>
+     * @param {Object} position The current row and column: an object containing the following properties:
+     *
+     * - row - The row index
+     * - column - The column index
+     *
      * @param {String} direction 'up', 'down', 'right' and 'left'
      * @param {Ext.EventObject} e event
      * @param {Boolean} preventWrap Set to true to prevent wrap around to the next or previous row.
-     * @param {Function} verifierFn A function to verify the validity of the calculated position. When using this function, you must return true to allow the newPosition to be returned.
-     * @param {Scope} scope Scope to run the verifierFn in
-     * @returns {Object} newPosition An object containing the following properties:<ul>
-     * <li>row<div class="sub-desc"> The row <b>index</b></div></li>
-     * <li>column<div class="sub-desc">The column <b>index</b></div></li>
-     * </ul>
+     * @param {Function} verifierFn A function to verify the validity of the calculated position.
+     * When using this function, you must return true to allow the newPosition to be returned.
+     * @param {Object} scope Scope to run the verifierFn in
+     * @returns {Object} newPosition An object containing the following properties:
+     *
+     * - row - The row index
+     * - column - The column index
+     *
      * @private
      */
     walkCells: function(pos, direction, e, preventWrap, verifierFn, scope) {

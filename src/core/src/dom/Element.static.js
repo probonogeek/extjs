@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.applyIf(Ext.core.Element, {
+Ext.applyIf(Ext.Element, {
     unitRe: /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
     camelRe: /(-[a-z])/gi,
     opacityRe: /alpha\(opacity=(.*)\)/i,
@@ -27,13 +27,13 @@ Ext.applyIf(Ext.core.Element, {
     margins: {l: 'margin-left', r: 'margin-right', t: 'margin-top', b: 'margin-bottom'},
 
     // Reference the prototype's version of the method. Signatures are identical.
-    addUnits : Ext.core.Element.prototype.addUnits,
+    addUnits : Ext.Element.prototype.addUnits,
 
     /**
      * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
      * (e.g. 10, "10", "10 10", "10 10 10" and "10 10 10 10" are all valid options and would return the same result)
      * @static
-     * @param {Number|String} box The encoded margins
+     * @param {Number/String} box The encoded margins
      * @return {Object} An object with margin sizes for top, right, bottom and left
      */
     parseBox : function(box) {
@@ -76,7 +76,7 @@ Ext.applyIf(Ext.core.Element, {
      * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
      * (e.g. 10, "10", "10 10", "10 10 10" and "10 10 10 10" are all valid options and would return the same result)
      * @static
-     * @param {Number|String} box The encoded margins
+     * @param {Number/String} box The encoded margins
      * @param {String} units The type of units to add
      * @return {String} An string with unitized (px if units is not specified) metrics for top, right, bottom and left
      */
@@ -180,7 +180,7 @@ Ext.applyIf(Ext.core.Element, {
      * Returns the top Element that is located at the passed coordinates
      * @static
      * @param {Number} x The x coordinate
-     * @param {Number} x The y coordinate
+     * @param {Number} y The y coordinate
      * @return {String} The found Element
      */
     fromPoint: function(x, y) {
@@ -194,7 +194,7 @@ Ext.applyIf(Ext.core.Element, {
      * for background-color and one for color.</p>
      * <pre><code>
 var css = 'background-color: red;color: blue; ';
-console.log(Ext.core.Element.parseStyles(css));
+console.log(Ext.Element.parseStyles(css));
      * </code></pre>
      * @static
      * @param {String} styles A CSS string

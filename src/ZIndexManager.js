@@ -16,11 +16,11 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.ZIndexManager
  * <p>A class that manages a group of {@link Ext.Component#floating} Components and provides z-order management,
  * and Component activation behavior, including masking below the active (topmost) Component.</p>
- * <p>{@link Ext.Component#floating Floating} Components which are rendered directly into the document (Such as {@link Ext.window.Window Window}s which are
+ * <p>{@link Ext.Component#floating Floating} Components which are rendered directly into the document (such as {@link Ext.window.Window Window}s) which are
  * {@link Ext.Component#show show}n are managed by a {@link Ext.WindowManager global instance}.</p>
  * <p>{@link Ext.Component#floating Floating} Components which are descendants of {@link Ext.Component#floating floating} <i>Containers</i>
- * (For example a {Ext.view.BoundList BoundList} within an {@link Ext.window.Window Window}, or a {@link Ext.menu.Menu Menu}),
- * are managed by a ZIndexManager owned by that floating Container. So ComboBox dropdowns within Windows will have managed z-indices
+ * (for example a {@link Ext.view.BoundList BoundList} within an {@link Ext.window.Window Window}, or a {@link Ext.menu.Menu Menu}),
+ * are managed by a ZIndexManager owned by that floating Container. Therefore ComboBox dropdowns within Windows will have managed z-indices
  * guaranteed to be correct, relative to the Window.</p>
  */
 Ext.define('Ext.ZIndexManager', {
@@ -103,7 +103,7 @@ Ext.define('Ext.ZIndexManager', {
 
     // private
     _setActiveChild: function(comp) {
-        if (comp != this.front) {
+        if (comp !== this.front) {
 
             if (this.front) {
                 this.front.setActive(false, comp);
@@ -112,7 +112,7 @@ Ext.define('Ext.ZIndexManager', {
             if (comp) {
                 comp.setActive(true);
                 if (comp.modal) {
-                    this._showModalMask(comp.el.getStyle('zIndex') - 4);
+                    this._showModalMask(comp);
                 }
             }
         }
@@ -137,7 +137,7 @@ Ext.define('Ext.ZIndexManager', {
 
                 // Move any modal mask down to just under the next modal floater down the stack
                 if (comp.modal) {
-                    this._showModalMask(comp.el.getStyle('zIndex') - 4);
+                    this._showModalMask(comp);
                     return;
                 }
             }
@@ -151,23 +151,39 @@ Ext.define('Ext.ZIndexManager', {
         }
     },
 
-    _showModalMask: function(zIndex) {
+    _showModalMask: function(comp) {
+        var zIndex = comp.el.getStyle('zIndex') - 4,
+            maskTarget = comp.floatParent ? comp.floatParent.getTargetEl() : Ext.get(comp.getEl().dom.parentNode),
+            parentBox;
+        
+        if (!maskTarget) {
+            //<debug>
+            Ext.global.console && Ext.global.console.warn && Ext.global.console.warn('mask target could not be found. Mask cannot be shown');
+            //</debug>
+            return;
+        }
+        
+        parentBox = maskTarget.getBox();
+
         if (!this.mask) {
-            this.mask = this.targetEl.createChild({
+            this.mask = Ext.getBody().createChild({
                 cls: Ext.baseCSSPrefix + 'mask'
             });
-            this.mask.setVisibilityMode(Ext.core.Element.DISPLAY);
+            this.mask.setVisibilityMode(Ext.Element.DISPLAY);
             this.mask.on('click', this._onMaskClick, this);
         }
-        Ext.getBody().addCls(Ext.baseCSSPrefix + 'body-masked');
-        this.mask.setSize(this.targetEl.getViewSize(true));
+        if (maskTarget.dom === document.body) {
+            parentBox.height = Ext.Element.getViewHeight();
+        }
+        maskTarget.addCls(Ext.baseCSSPrefix + 'body-masked');
+        this.mask.setBox(parentBox);
         this.mask.setStyle('zIndex', zIndex);
         this.mask.show();
     },
 
     _hideModalMask: function() {
-        if (this.mask) {
-            Ext.getBody().removeCls(Ext.baseCSSPrefix + 'body-masked');
+        if (this.mask && this.mask.dom.parentNode) {
+            Ext.get(this.mask.dom.parentNode).removeCls(Ext.baseCSSPrefix + 'body-masked');
             this.mask.hide();
         }
     },
@@ -180,7 +196,7 @@ Ext.define('Ext.ZIndexManager', {
 
     _onContainerResize: function() {
         if (this.mask && this.mask.isVisible()) {
-            this.mask.setSize(this.targetEl.getViewSize(true));
+            this.mask.setSize(Ext.get(this.mask.dom.parentNode).getViewSize(true));
         }
     },
 
@@ -193,7 +209,7 @@ Ext.define('Ext.ZIndexManager', {
      * ZIndexManager in the desktop sample app:</p><code><pre>
 MyDesktop.getDesktop().getManager().register(Ext.MessageBox);
 </pre></code>
-     * @param {Component} comp The Component to register.
+     * @param {Ext.Component} comp The Component to register.
      */
     register : function(comp) {
         if (comp.zIndexManager) {
@@ -210,7 +226,7 @@ MyDesktop.getDesktop().getManager().register(Ext.MessageBox);
      * <p>Unregisters a {@link Ext.Component} from this ZIndexManager. This should not
      * need to be called. Components are automatically unregistered upon destruction.
      * See {@link #register}.</p>
-     * @param {Component} comp The Component to unregister.
+     * @param {Ext.Component} comp The Component to unregister.
      */
     unregister : function(comp) {
         delete comp.zIndexManager;
@@ -241,16 +257,14 @@ MyDesktop.getDesktop().getManager().register(Ext.MessageBox);
      */
     bringToFront : function(comp) {
         comp = this.get(comp);
-        if (comp != this.front) {
+        if (comp !== this.front) {
             Ext.Array.remove(this.zIndexStack, comp);
             this.zIndexStack.push(comp);
             this.assignZIndices();
             return true;
         }
         if (comp.modal) {
-            Ext.getBody().addCls(Ext.baseCSSPrefix + 'body-masked');
-            this.mask.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
-            this.mask.show();
+            this._showModalMask(comp);
         }
         return false;
     },
@@ -412,6 +426,9 @@ MyDesktop.getDesktop().getManager().register(Ext.MessageBox);
     },
 
     destroy: function() {
+        this.each(function(c) {
+            c.destroy();
+        });
         delete this.zIndexStack;
         delete this.list;
         delete this.container;

@@ -57,7 +57,7 @@ Ext.define('Ext.layout.component.field.Text', {
      * size based on the text field's {@link Ext.form.field.Text#grow grow config}.
      * @param {Number} width The bodyEl width
      * @param {Number} height The bodyEl height
-     * @return {Array} [inputElWidth, inputElHeight]
+     * @return {Number[]} [inputElWidth, inputElHeight]
      */
     adjustForGrow: function(width, height) {
         var me = this,

@@ -41,7 +41,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
     /**
      * An array containing extra enumerables for old browsers
-     * @type Array
+     * @property {String[]}
      */
     Ext.enumerables = enumerables;
 
@@ -260,10 +260,10 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Returns the given value itself if it's not empty, as described in {@link Ext#isEmpty}; returns the default
          * value (second argument) otherwise.
          *
-         * @param {Mixed} value The value to test
-         * @param {Mixed} defaultValue The value to return if the original value is empty
+         * @param {Object} value The value to test
+         * @param {Object} defaultValue The value to return if the original value is empty
          * @param {Boolean} allowBlank (optional) true to allow zero length strings to qualify as non-empty (defaults to false)
-         * @return {Mixed} value, if non-empty, else defaultValue
+         * @return {Object} value, if non-empty, else defaultValue
          */
         valueFrom: function(value, defaultValue, allowBlank){
             return Ext.isEmpty(value, allowBlank) ? defaultValue : value;
@@ -286,7 +286,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * - `textnode`: If the given value is a DOM text node and contains something other than whitespace
          * - `whitespace`: If the given value is a DOM text node and contains only whitespace
          *
-         * @param {Mixed} value
+         * @param {Object} value
          * @return {String}
          * @markdown
          */
@@ -350,7 +350,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * - a zero-length array
          * - a zero-length string (Unless the `allowEmptyString` parameter is set to `true`)
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @param {Boolean} allowEmptyString (optional) true to allow empty strings (defaults to false)
          * @return {Boolean}
          * @markdown
@@ -362,7 +362,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Returns true if the passed value is a JavaScript Array, false otherwise.
          *
-         * @param {Mixed} target The target to test
+         * @param {Object} target The target to test
          * @return {Boolean}
          * @method
          */
@@ -381,7 +381,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a JavaScript Object, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          * @method
          */
@@ -396,7 +396,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a JavaScript 'primitive', a string, number or boolean.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isPrimitive: function(value) {
@@ -407,7 +407,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a JavaScript Function, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          * @method
          */
@@ -422,7 +422,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a number. Returns false for non-finite numbers.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isNumber: function(value) {
@@ -431,7 +431,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Validates that a value is numeric.
-         * @param {Mixed} value Examples: 1, '1', '2.34'
+         * @param {Object} value Examples: 1, '1', '2.34'
          * @return {Boolean} True if numeric, false otherwise
          */
         isNumeric: function(value) {
@@ -440,7 +440,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a string.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isString: function(value) {
@@ -450,7 +450,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Returns true if the passed value is a boolean.
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isBoolean: function(value) {
@@ -459,7 +459,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is an HTMLElement
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isElement: function(value) {
@@ -468,7 +468,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is a TextNode
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isTextNode: function(value) {
@@ -477,7 +477,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is defined.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isDefined: function(value) {
@@ -486,7 +486,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Returns true if the passed value is iterable, false otherwise
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isIterable: function(value) {
@@ -498,8 +498,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Clone almost any type of variable including array, object, DOM nodes and Date without keeping the old reference
-         * @param {Mixed} item The variable to clone
-         * @return {Mixed} clone
+         * @param {Object} item The variable to clone
+         * @return {Object} clone
          */
         clone: function(item) {
             if (item === null || item === undefined) {

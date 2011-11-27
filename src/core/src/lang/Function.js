@@ -94,6 +94,12 @@ Ext.Function = {
      * @return {Function} The new function
      */
     bind: function(fn, scope, args, appendArgs) {
+        if (arguments.length === 2) {
+            return function() {
+                return fn.apply(scope, arguments);
+            }
+        }
+
         var method = fn,
             slice = Array.prototype.slice;
 
@@ -104,7 +110,7 @@ Ext.Function = {
                 callArgs = slice.call(arguments, 0);
                 callArgs = callArgs.concat(args);
             }
-            else if (Ext.isNumber(appendArgs)) {
+            else if (typeof appendArgs == 'number') {
                 callArgs = slice.call(arguments, 0); // copy arguments first
                 Ext.Array.insert(callArgs, appendArgs, args);
             }
@@ -184,7 +190,7 @@ Ext.Function = {
      * @param {Function} newFn The function to call before the original
      * @param {Object} scope (optional) The scope (`this` reference) in which the passed function is executed.
      * **If omitted, defaults to the scope in which the original function is called or the browser window.**
-     * @param {Mixed} returnValue (optional) The value to return if the passed function return false (defaults to null).
+     * @param {Object} returnValue (optional) The value to return if the passed function return false (defaults to null).
      * @return {Function} The new function
      */
     createInterceptor: function(origFn, newFn, scope, returnValue) {
@@ -324,7 +330,7 @@ Ext.Function = {
             return function() {
                 var me = this;
                 if (timerId) {
-                    clearInterval(timerId);
+                    clearTimeout(timerId);
                     timerId = null;
                 }
                 timerId = setTimeout(function(){
@@ -364,6 +370,80 @@ Ext.Function = {
             } else {
                 timer = setTimeout(execute, interval - elapsed);
             }
+        };
+    },
+
+    /**
+     * Adds behavior to an existing method that is executed before the
+     * original behavior of the function.  For example:
+     * 
+     *     var soup = {
+     *         contents: [],
+     *         add: function(ingredient) {
+     *             this.contents.push(ingredient);
+     *         }
+     *     };
+     *     Ext.Function.interceptBefore(soup, "add", function(ingredient){
+     *         if (!this.contents.length && ingredient !== "water") {
+     *             // Always add water to start with
+     *             this.contents.push("water");
+     *         }
+     *     });
+     *     soup.add("onions");
+     *     soup.add("salt");
+     *     soup.contents; // will contain: water, onions, salt
+     * 
+     * @param {Object} object The target object
+     * @param {String} methodName Name of the method to override
+     * @param {Function} fn Function with the new behavior.  It will
+     * be called with the same arguments as the original method.  The
+     * return value of this function will be the return value of the
+     * new method.
+     * @return {Function} The new function just created.
+     */
+    interceptBefore: function(object, methodName, fn) {
+        var method = object[methodName] || Ext.emptyFn;
+
+        return object[methodName] = function() {
+            var ret = fn.apply(this, arguments);
+            method.apply(this, arguments);
+
+            return ret;
+        };
+    },
+
+    /**
+     * Adds behavior to an existing method that is executed after the
+     * original behavior of the function.  For example:
+     * 
+     *     var soup = {
+     *         contents: [],
+     *         add: function(ingredient) {
+     *             this.contents.push(ingredient);
+     *         }
+     *     };
+     *     Ext.Function.interceptAfter(soup, "add", function(ingredient){
+     *         // Always add a bit of extra salt
+     *         this.contents.push("salt");
+     *     });
+     *     soup.add("water");
+     *     soup.add("onions");
+     *     soup.contents; // will contain: water, salt, onions, salt
+     * 
+     * @param {Object} object The target object
+     * @param {String} methodName Name of the method to override
+     * @param {Function} fn Function with the new behavior.  It will
+     * be called with the same arguments as the original method.  The
+     * return value of this function will be the return value of the
+     * new method.
+     * @return {Function} The new function just created.
+     */
+    interceptAfter: function(object, methodName, fn) {
+        var method = object[methodName] || Ext.emptyFn;
+
+        return object[methodName] = function() {
+            method.apply(this, arguments);
+            return fn.apply(this, arguments);
         };
     }
 };

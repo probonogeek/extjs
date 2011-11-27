@@ -30,8 +30,6 @@ If you are unsure which license is appropriate for your use, please contact the 
         ],
         "Ext.ElementLoader":[""
         ],
-        "Ext.LoadMask":[""
-        ],
         "Ext.ModelManager":[""
         ],
         "Ext.PluginManager":[""
@@ -132,6 +130,8 @@ If you are unsure which license is appropriate for your use, please contact the 
         ],
         "Ext.data.HasManyAssociation":["association.hasmany"
         ],
+        "Ext.data.IdGenerator":[""
+        ],
         "Ext.data.JsonP":[""
         ],
         "Ext.data.JsonPStore":["store.jsonp"
@@ -150,6 +150,8 @@ If you are unsure which license is appropriate for your use, please contact the 
         ],
         "Ext.data.ResultSet":[""
         ],
+        "Ext.data.SequentialIdGenerator":["idgen.sequential"
+        ],
         "Ext.data.SortTypes":[""
         ],
         "Ext.data.Store":["store.store"
@@ -161,6 +163,8 @@ If you are unsure which license is appropriate for your use, please contact the 
         "Ext.data.TreeStore":["store.tree"
         ],
         "Ext.data.Types":[""
+        ],
+        "Ext.data.UuidGenerator":[""
         ],
         "Ext.data.validations":[""
         ],
@@ -348,6 +352,8 @@ If you are unsure which license is appropriate for your use, please contact the 
             "widget.imagecomponent"
         ],
         "Ext.Layer":[""
+        ],
+        "Ext.LoadMask":["widget.loadmask"
         ],
         "Ext.ProgressBar":["widget.progressbar"
         ],
@@ -911,7 +917,6 @@ If you are unsure which license is appropriate for your use, please contact the 
         "Ext.KeyNav":"Ext.util.KeyNav",
         "Ext.BoundList":"Ext.view.BoundList",
         "Ext.DataView":"Ext.view.View",
-        "Ext.MessageBox":"Ext.window.MessageBox",
         "Ext.Window":"Ext.window.Window"
     }
 };var scripts = document.getElementsByTagName('script'),

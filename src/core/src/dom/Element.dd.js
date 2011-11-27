@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.core.Element.addMethods({
+Ext.Element.addMethods({
     /**
      * Initializes a {@link Ext.dd.DD} drag drop object for this element.
      * @param {String} group The group the DD object is member of

@@ -16,8 +16,8 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.fx.target.Element
  * @extends Ext.fx.target.Target
  * 
- * This class represents a animation target for an {@link Ext.core.Element}. In general this class will not be
- * created directly, the {@link Ext.core.Element} will be passed to the animation and
+ * This class represents a animation target for an {@link Ext.Element}. In general this class will not be
+ * created directly, the {@link Ext.Element} will be passed to the animation and
  * and the appropriate target will be created.
  */
 Ext.define('Ext.fx.target.Element', {

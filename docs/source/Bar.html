@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -17,9 +17,8 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-tab-Bar'>/**
 </span> * @author Ed Spencer
- * @class Ext.tab.Bar
- * @extends Ext.panel.Header
- * &lt;p&gt;TabBar is used internally by a {@link Ext.tab.Panel TabPanel} and wouldn't usually need to be created manually.&lt;/p&gt;
+ * TabBar is used internally by a {@link Ext.tab.Panel TabPanel} and typically should not need to be created manually.
+ * The tab bar automatically removes the default title provided by {@link Ext.panel.Header}
  */
 Ext.define('Ext.tab.Bar', {
     extend: 'Ext.panel.Header',
@@ -31,30 +30,42 @@ Ext.define('Ext.tab.Bar', {
         'Ext.FocusManager'
     ],
 
+    isTabBar: true,
+    
+<span id='Ext-tab-Bar-cfg-title'>    /**
+</span>     * @cfg {String} title @hide
+     */
+    
+<span id='Ext-tab-Bar-cfg-iconCls'>    /**
+</span>     * @cfg {String} iconCls @hide
+     */
+
     // @private
     defaultType: 'tab',
 
-<span id='Ext-tab-Bar-cfg-Boolean'>    /**
-</span>     * @cfg Boolean plain
+<span id='Ext-tab-Bar-cfg-plain'>    /**
+</span>     * @cfg {Boolean} plain
      * True to not show the full background on the tabbar
      */
     plain: false,
 
     // @private
     renderTpl: [
-        '&lt;div class=&quot;{baseCls}-body&lt;tpl if=&quot;ui&quot;&gt; {baseCls}-body-{ui}&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;&lt;/div&gt;',
-        '&lt;div class=&quot;{baseCls}-strip&lt;tpl if=&quot;ui&quot;&gt; {baseCls}-strip-{ui}&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-strip-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&gt;&lt;/div&gt;'
+        '&lt;div id=&quot;{id}-body&quot; class=&quot;{baseCls}-body &lt;tpl if=&quot;bodyCls&quot;&gt; {bodyCls}&lt;/tpl&gt; &lt;tpl if=&quot;ui&quot;&gt; {baseCls}-body-{ui}&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;&lt;/div&gt;',
+        '&lt;div id=&quot;{id}-strip&quot; class=&quot;{baseCls}-strip&lt;tpl if=&quot;ui&quot;&gt; {baseCls}-strip-{ui}&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-strip-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&gt;&lt;/div&gt;'
     ],
 
 <span id='Ext-tab-Bar-cfg-minTabWidth'>    /**
-</span>     * @cfg {Number} minTabWidth The minimum width for each tab. Defaults to &lt;tt&gt;30&lt;/tt&gt;.
+</span>     * @cfg {Number} minTabWidth
+     * The minimum width for a tab in this tab Bar. Defaults to the tab Panel's {@link Ext.tab.Panel#minTabWidth minTabWidth} value.
+     * @deprecated This config is deprecated. It is much easier to use the {@link Ext.tab.Panel#minTabWidth minTabWidth} config on the TabPanel.
      */
-    minTabWidth: 30,
 
 <span id='Ext-tab-Bar-cfg-maxTabWidth'>    /**
-</span>     * @cfg {Number} maxTabWidth The maximum width for each tab. Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
+</span>     * @cfg {Number} maxTabWidth
+     * The maximum width for a tab in this tab Bar. Defaults to the tab Panel's {@link Ext.tab.Panel#maxTabWidth maxTabWidth} value.
+     * @deprecated This config is deprecated. It is much easier to use the {@link Ext.tab.Panel#maxTabWidth maxTabWidth} config on the TabPanel.
      */
-    maxTabWidth: undefined,
 
     // @private
     initComponent: function() {
@@ -64,7 +75,7 @@ Ext.define('Ext.tab.Bar', {
         if (me.plain) {
             me.setUI(me.ui + '-plain');
         }
-        
+
         me.addClsWithUI(me.dock);
 
         me.addEvents(
@@ -72,46 +83,49 @@ Ext.define('Ext.tab.Bar', {
 </span>             * @event change
              * Fired when the currently-active tab has changed
              * @param {Ext.tab.Bar} tabBar The TabBar
-             * @param {Ext.Tab} tab The new Tab
+             * @param {Ext.tab.Tab} tab The new Tab
              * @param {Ext.Component} card The card that was just shown in the TabPanel
              */
             'change'
         );
 
-        Ext.applyIf(me.renderSelectors, {
-            body : '.' + me.baseCls + '-body',
-            strip: '.' + me.baseCls + '-strip'
-        });
+        me.addChildEls('body', 'strip');
         me.callParent(arguments);
 
         // TabBar must override the Header's align setting.
         me.layout.align = (me.orientation == 'vertical') ? 'left' : 'top';
         me.layout.overflowHandler = Ext.create('Ext.layout.container.boxOverflow.Scroller', me.layout);
-        me.items.removeAt(me.items.getCount() - 1);
-        me.items.removeAt(me.items.getCount() - 1);
-        
+
+        me.remove(me.titleCmp);
+        delete me.titleCmp;
+
         // Subscribe to Ext.FocusManager for key navigation
         keys = me.orientation == 'vertical' ? ['up', 'down'] : ['left', 'right'];
         Ext.FocusManager.subscribe(me, {
             keys: keys
         });
+
+        Ext.apply(me.renderData, {
+            bodyCls: me.bodyCls
+        });
     },
 
     // @private
     onAdd: function(tab) {
-        var me = this,
-            tabPanel = me.tabPanel,
-            hasOwner = !!tabPanel;
-
-        me.callParent(arguments);
-        tab.position = me.dock;
-        if (hasOwner) {
-            tab.minWidth = tabPanel.minTabWidth;
+        tab.position = this.dock;
+        this.callParent(arguments);
+    },
+    
+    onRemove: function(tab) {
+        var me = this;
+        
+        if (tab === me.previousTab) {
+            me.previousTab = null;
         }
-        else {
-            tab.minWidth = me.minTabWidth + (tab.iconCls ? 25 : 0);
+        if (me.items.getCount() === 0) {
+            me.activeTab = null;
         }
-        tab.maxWidth = me.maxTabWidth || (hasOwner ? tabPanel.maxTabWidth : undefined);
+        me.callParent(arguments);    
     },
 
     // @private
@@ -124,12 +138,12 @@ Ext.define('Ext.tab.Bar', {
             delegate: '.' + Ext.baseCSSPrefix + 'tab'
         });
         me.callParent(arguments);
-        
+
     },
 
     afterComponentLayout : function() {
         var me = this;
-        
+
         me.callParent(arguments);
         me.strip.setWidth(me.el.getWidth());
     },
@@ -138,8 +152,7 @@ Ext.define('Ext.tab.Bar', {
     onClick: function(e, target) {
         // The target might not be a valid tab el.
         var tab = Ext.getCmp(target.id),
-            tabPanel = this.tabPanel,
-            allowActive = true;
+            tabPanel = this.tabPanel;
 
         target = e.getTarget();
 
@@ -161,20 +174,20 @@ Ext.define('Ext.tab.Bar', {
 <span id='Ext-tab-Bar-method-closeTab'>    /**
 </span>     * @private
      * Closes the given tab by removing it from the TabBar and removing the corresponding card from the TabPanel
-     * @param {Ext.Tab} tab The tab to close
+     * @param {Ext.tab.Tab} tab The tab to close
      */
     closeTab: function(tab) {
         var me = this,
             card = tab.card,
             tabPanel = me.tabPanel,
             nextTab;
-            
+
         if (card &amp;&amp; card.fireEvent('beforeclose', card) === false) {
             return false;
         }
 
         if (tab.active &amp;&amp; me.items.getCount() &gt; 1) {
-            nextTab = tab.next('tab') || me.items.items[0];
+            nextTab = me.previousTab || tab.next('tab') || me.items.first();
             me.setActiveTab(nextTab);
             if (tabPanel) {
                 tabPanel.setActiveTab(nextTab.card);
@@ -192,7 +205,7 @@ Ext.define('Ext.tab.Bar', {
             card.fireEvent('close', card);
             tabPanel.remove(card);
         }
-        
+
         if (nextTab) {
             nextTab.focus();
         }
@@ -201,7 +214,7 @@ Ext.define('Ext.tab.Bar', {
 <span id='Ext-tab-Bar-method-setActiveTab'>    /**
 </span>     * @private
      * Marks the given tab as active
-     * @param {Ext.Tab} tab The tab to mark active
+     * @param {Ext.tab.Tab} tab The tab to mark active
      */
     setActiveTab: function(tab) {
         if (tab.disabled) {
@@ -209,17 +222,19 @@ Ext.define('Ext.tab.Bar', {
         }
         var me = this;
         if (me.activeTab) {
+            me.previousTab = me.activeTab;
             me.activeTab.deactivate();
         }
         tab.activate();
-        
+
         if (me.rendered) {
             me.layout.layout();
-            tab.el.scrollIntoView(me.layout.getRenderTarget());
+            tab.el &amp;&amp; tab.el.scrollIntoView(me.layout.getRenderTarget());
         }
         me.activeTab = tab;
         me.fireEvent('change', me, tab, tab.card);
     }
-});</pre>
+});
+</pre>
 </body>
 </html>

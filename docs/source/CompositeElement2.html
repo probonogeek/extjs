@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -20,7 +20,7 @@
  * @extends Ext.CompositeElementLite
  * &lt;p&gt;This class encapsulates a &lt;i&gt;collection&lt;/i&gt; of DOM elements, providing methods to filter
  * members, or to perform collective actions upon the whole set.&lt;/p&gt;
- * &lt;p&gt;Although they are not listed, this class supports all of the methods of {@link Ext.core.Element} and
+ * &lt;p&gt;Although they are not listed, this class supports all of the methods of {@link Ext.Element} and
  * {@link Ext.fx.Anim}. The methods from these classes will be performed on all the elements in this collection.&lt;/p&gt;
  * &lt;p&gt;All methods return &lt;i&gt;this&lt;/i&gt; and can be chained.&lt;/p&gt;
  * Usage:
@@ -37,81 +37,45 @@ els.setWidth(100).hide(true);
 &lt;/code&gt;&lt;/pre&gt;
  */
 Ext.CompositeElement = Ext.extend(Ext.CompositeElementLite, {
-    
+
     constructor : function(els, root){
         this.elements = [];
         this.add(els, root);
     },
-    
+
     // private
     getElement : function(el){
         // In this case just return it, since we already have a reference to it
         return el;
     },
-    
+
     // private
     transformElement : function(el){
         return Ext.get(el);
     }
-
-<span id='Ext-CompositeElement-property-'>    /**
-</span>    * Adds elements to this composite.
-    * @param {String/Array} els A string CSS selector, an array of elements or an element
-    * @return {CompositeElement} this
-    */
-
-<span id='Ext-CompositeElement-property-'>    /**
-</span>     * Returns the Element object at the specified index
-     * @param {Number} index
-     * @return {Ext.core.Element}
-     */
-
-<span id='Ext-CompositeElement-property-'>    /**
-</span>     * Iterates each `element` in this `composite` calling the supplied function using {@link Ext#each Ext.each}.
-     * @param {Function} fn 
-
-The function to be called with each
-`element`. If the supplied function returns &lt;tt&gt;false&lt;/tt&gt;,
-iteration stops. This function is called with the following arguments:
-
-- `element` : __Ext.core.Element++
-    The element at the current `index` in the `composite`
-    
-- `composite` : __Object__ 
-    This composite.
-
-- `index` : __Number__ 
-    The current index within the `composite`
-
-     * @param {Object} scope (optional) The scope (&lt;code&gt;this&lt;/code&gt; reference) in which the specified function is executed.
-     * Defaults to the &lt;code&gt;element&lt;/code&gt; at the current &lt;code&gt;index&lt;/code&gt;
-     * within the composite.
-     * @return {CompositeElement} this
-     * @markdown
-     */
 });
 
-<span id='Ext-core-Element-method-select'>/**
-</span> * Selects elements based on the passed CSS selector to enable {@link Ext.core.Element Element} methods
+<span id='Ext-Element-method-select'>/**
+</span> * Selects elements based on the passed CSS selector to enable {@link Ext.Element Element} methods
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
- * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.core.Element for each element (defaults to a shared flyweight object)
- * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
- * @return {CompositeElementLite/CompositeElement}
- * @member Ext.core.Element
+ * @param {String/HTMLElement[]} selector The CSS selector or an array of elements
+ * @param {Boolean} [unique] true to create a unique Ext.Element for each element (defaults to a shared flyweight object)
+ * @param {HTMLElement/String} [root] The root element of the query or id of the root
+ * @return {Ext.CompositeElementLite/Ext.CompositeElement}
+ * @member Ext.Element
  * @method select
  */
-Ext.core.Element.select = function(selector, unique, root){
+Ext.Element.select = function(selector, unique, root){
     var els;
     if(typeof selector == &quot;string&quot;){
-        els = Ext.core.Element.selectorFunction(selector, root);
+        els = Ext.Element.selectorFunction(selector, root);
     }else if(selector.length !== undefined){
         els = selector;
     }else{
         //&lt;debug&gt;
         Ext.Error.raise({
-            sourceClass: &quot;Ext.core.Element&quot;,
+            sourceClass: &quot;Ext.Element&quot;,
             sourceMethod: &quot;select&quot;,
             selector: selector,
             unique: unique,
@@ -124,16 +88,11 @@ Ext.core.Element.select = function(selector, unique, root){
 };
 
 <span id='Ext-method-select'>/**
-</span> * Selects elements based on the passed CSS selector to enable {@link Ext.core.Element Element} methods
- * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
- * {@link Ext.CompositeElementLite CompositeElementLite} object.
- * @param {String/Array} selector The CSS selector or an array of elements
- * @param {Boolean} unique (optional) true to create a unique Ext.core.Element for each element (defaults to a shared flyweight object)
- * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
- * @return {CompositeElementLite/CompositeElement}
+</span> * Shorthand of {@link Ext.Element#select}.
  * @member Ext
  * @method select
+ * @alias Ext.Element#select
  */
-Ext.select = Ext.core.Element.select;</pre>
+Ext.select = Ext.Element.select;</pre>
 </body>
 </html>

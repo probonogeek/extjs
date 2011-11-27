@@ -32,13 +32,13 @@ Ext.define('Ext.util.CSS', function() {
             this.rules = {};
             this.initialized = false;
         },
- 
+
         /**
          * Creates a stylesheet from a text blob of rules.
          * These rules will be wrapped in a STYLE tag and appended to the HEAD of the document.
          * @param {String} cssText The text containing the css rules
          * @param {String} id An id to add to the stylesheet for later removal
-         * @return {StyleSheet}
+         * @return {CSSStyleSheet}
          */
         createStyleSheet : function(cssText, id) {
             var ss,
@@ -117,7 +117,7 @@ Ext.define('Ext.util.CSS', function() {
                 for (; i >= 0; --i) {
                     selectorText = ssRules[i].selectorText;
                     if (selectorText) {
- 
+
                         // Split in case there are multiple, comma-delimited selectors
                         selectorText = selectorText.split(',');
                         selectors = selectorText.length;
@@ -146,7 +146,7 @@ Ext.define('Ext.util.CSS', function() {
                         if (!ds[i].disabled) {
                             this.cacheStyleSheet(ds[i]);
                         }
-                    } catch(e) {} 
+                    } catch(e) {}
                 }
             }
             return rules;
@@ -154,9 +154,9 @@ Ext.define('Ext.util.CSS', function() {
 
         /**
          * Gets an an individual CSS rule by selector(s)
-         * @param {String/Array} selector The CSS selector or an array of selectors to try. The first selector that is found is returned.
+         * @param {String/String[]} selector The CSS selector or an array of selectors to try. The first selector that is found is returned.
          * @param {Boolean} refreshCache true to refresh the internal cache if you have recently updated any rules or added styles dynamically
-         * @return {CSSRule} The CSS rule or null if one is not found
+         * @return {CSSStyleRule} The CSS rule or null if one is not found
          */
         getRule: function(selector, refreshCache) {
             var rs = this.getRules(refreshCache);
@@ -173,7 +173,7 @@ Ext.define('Ext.util.CSS', function() {
 
         /**
          * Updates a rule property
-         * @param {String/Array} selector If it's an array it tries each selector until it finds one. Stops immediately once one is found.
+         * @param {String/String[]} selector If it's an array it tries each selector until it finds one. Stops immediately once one is found.
          * @param {String} property The css property
          * @param {String} value The new value for the property
          * @return {Boolean} true If a rule was found and updated

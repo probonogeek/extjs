@@ -38,7 +38,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
     
     /**
      * Toggle whether or not to show the summary row.
-     * @param {Boolan} visible True to show the summary row
+     * @param {Boolean} visible True to show the summary row
      */
     toggleSummaryRow: function(visible){
         this.showSummaryRow = !!visible;
@@ -66,9 +66,10 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
      * @return {String} The value of the summary row
      */
     printSummaryRow: function(index){
-        var inner = this.view.getTableChunker().metaRowTpl.join('');
+        var inner = this.view.getTableChunker().metaRowTpl.join(''),
+            prefix = Ext.baseCSSPrefix;
         
-        inner = inner.replace('x-grid-row', 'x-grid-row-summary');
+        inner = inner.replace(prefix + 'grid-row', prefix + 'grid-row-summary');
         inner = inner.replace('{{id}}', '{gridSummaryValue}');
         inner = inner.replace(this.nestedIdRe, '{id$1}');  
         inner = inner.replace('{[this.embedRowCls()]}', '{rowCls}');
@@ -112,7 +113,7 @@ Ext.define('Ext.grid.feature.AbstractSummary', {
      * be passed to the stores aggregate function.
      * @param {String} field The field to aggregate on
      * @param {Boolean} group True to aggregate in grouped mode 
-     * @return {Mixed} See the return type for the store functions.
+     * @return {Number/String/Object} See the return type for the store functions.
      */
     getSummary: function(store, type, field, group){
         if (type) {

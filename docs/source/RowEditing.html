@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,53 +16,40 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-grid-plugin-RowEditing'>/**
-</span> * @class Ext.grid.plugin.RowEditing
- * @extends Ext.grid.plugin.Editing
- * 
- * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
+</span> * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
  * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
  * for editing. There is a button to save or cancel all changes for the edit.
- * 
+ *
  * The field that will be used for the editor is defined at the
- * {@link Ext.grid.column.Column#field field}. The editor can be a field instance or a field configuration.
+ * {@link Ext.grid.column.Column#editor editor}. The editor can be a field instance or a field configuration.
  * If an editor is not specified for a particular column then that column won't be editable and the value of
  * the column will be displayed.
  *
  * The editor may be shared for each column in the grid, or a different one may be specified for each column.
  * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
  * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
- * 
- * {@img Ext.grid.plugin.RowEditing/Ext.grid.plugin.RowEditing.png Ext.grid.plugin.RowEditing plugin}
  *
- * ## Example Usage
- *
+ *     @example
  *     Ext.create('Ext.data.Store', {
  *         storeId:'simpsonsStore',
  *         fields:['name', 'email', 'phone'],
- *         data:{'items':[
+ *         data: [
  *             {&quot;name&quot;:&quot;Lisa&quot;, &quot;email&quot;:&quot;lisa@simpsons.com&quot;, &quot;phone&quot;:&quot;555-111-1224&quot;},
  *             {&quot;name&quot;:&quot;Bart&quot;, &quot;email&quot;:&quot;bart@simpsons.com&quot;, &quot;phone&quot;:&quot;555--222-1234&quot;},
- *             {&quot;name&quot;:&quot;Homer&quot;, &quot;email&quot;:&quot;home@simpsons.com&quot;, &quot;phone&quot;:&quot;555-222-1244&quot;},                        
- *             {&quot;name&quot;:&quot;Marge&quot;, &quot;email&quot;:&quot;marge@simpsons.com&quot;, &quot;phone&quot;:&quot;555-222-1254&quot;}            
- *         ]},
- *         proxy: {
- *             type: 'memory',
- *             reader: {
- *                 type: 'json',
- *                 root: 'items'
- *             }
- *         }
+ *             {&quot;name&quot;:&quot;Homer&quot;, &quot;email&quot;:&quot;home@simpsons.com&quot;, &quot;phone&quot;:&quot;555-222-1244&quot;},
+ *             {&quot;name&quot;:&quot;Marge&quot;, &quot;email&quot;:&quot;marge@simpsons.com&quot;, &quot;phone&quot;:&quot;555-222-1254&quot;}
+ *         ]
  *     });
- *     
+ *
  *     Ext.create('Ext.grid.Panel', {
  *         title: 'Simpsons',
  *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
  *         columns: [
- *             {header: 'Name',  dataIndex: 'name', field: 'textfield'},
- *             {header: 'Email', dataIndex: 'email', flex:1, 
+ *             {header: 'Name',  dataIndex: 'name', editor: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1,
  *                 editor: {
- *                     xtype:'textfield',
- *                     allowBlank:false
+ *                     xtype: 'textfield',
+ *                     allowBlank: false
  *                 }
  *             },
  *             {header: 'Phone', dataIndex: 'phone'}
@@ -90,9 +77,8 @@ Ext.define('Ext.grid.plugin.RowEditing', {
 
 <span id='Ext-grid-plugin-RowEditing-cfg-autoCancel'>    /**
 </span>     * @cfg {Boolean} autoCancel
-     * `true` to automatically cancel any pending changes when the row editor begins editing a new row.
-     * `false` to force the user to explicitly cancel the pending changes. Defaults to `true`.
-     * @markdown
+     * True to automatically cancel any pending changes when the row editor begins editing a new row.
+     * False to force the user to explicitly cancel the pending changes. Defaults to true.
      */
     autoCancel: true,
 
@@ -100,90 +86,90 @@ Ext.define('Ext.grid.plugin.RowEditing', {
 </span>     * @cfg {Number} clicksToMoveEditor
      * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
      * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
-     * @markdown
      */
 
 <span id='Ext-grid-plugin-RowEditing-cfg-errorSummary'>    /**
 </span>     * @cfg {Boolean} errorSummary
-     * `true` to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
-     * in the row editor. Set to `false` to prevent the tooltip from showing. Defaults to `true`.
-     * @markdown
+     * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
+     * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
      */
     errorSummary: true,
 
 <span id='Ext-grid-plugin-RowEditing-event-beforeedit'>    /**
 </span>     * @event beforeedit
-     * Fires before row editing is triggered. The edit event object has the following properties &lt;br /&gt;
-     * &lt;ul style=&quot;padding:5px;padding-left:16px;&quot;&gt;
-     * &lt;li&gt;grid - The grid this editor is on&lt;/li&gt;
-     * &lt;li&gt;view - The grid view&lt;/li&gt;
-     * &lt;li&gt;store - The grid store&lt;/li&gt;
-     * &lt;li&gt;record - The record being edited&lt;/li&gt;
-     * &lt;li&gt;row - The grid table row&lt;/li&gt;
-     * &lt;li&gt;column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit&lt;/li&gt;
-     * &lt;li&gt;rowIdx - The row index that is being edited&lt;/li&gt;
-     * &lt;li&gt;colIdx - The column index that initiated the edit&lt;/li&gt;
-     * &lt;li&gt;cancel - Set this to true to cancel the edit or return false from your handler.&lt;/li&gt;
-     * &lt;/ul&gt;
+     * Fires before row editing is triggered.
+     *
      * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event (see above for description)
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
+     * - cancel - Set this to true to cancel the edit or return false from your handler.
      */
+    
+<span id='Ext-grid-plugin-RowEditing-event-canceledit'>    /**
+</span>     * @event canceledit
+     * Fires when the user has started editing a row but then cancelled the edit
+     * @param {Object} grid The grid
+     */
+    
 <span id='Ext-grid-plugin-RowEditing-event-edit'>    /**
 </span>     * @event edit
-     * Fires after a row is edited. The edit event object has the following properties &lt;br /&gt;
-     * &lt;ul style=&quot;padding:5px;padding-left:16px;&quot;&gt;
-     * &lt;li&gt;grid - The grid this editor is on&lt;/li&gt;
-     * &lt;li&gt;view - The grid view&lt;/li&gt;
-     * &lt;li&gt;store - The grid store&lt;/li&gt;
-     * &lt;li&gt;record - The record being edited&lt;/li&gt;
-     * &lt;li&gt;row - The grid table row&lt;/li&gt;
-     * &lt;li&gt;column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit&lt;/li&gt;
-     * &lt;li&gt;rowIdx - The row index that is being edited&lt;/li&gt;
-     * &lt;li&gt;colIdx - The column index that initiated the edit&lt;/li&gt;
-     * &lt;/ul&gt;
+     * Fires after a row is edited. Usage example:
      *
-     * &lt;pre&gt;&lt;code&gt;
-grid.on('edit', onEdit, this);
-
-function onEdit(e) {
-    // execute an XHR to send/commit data to the server, in callback do (if successful):
-    e.record.commit();
-};
-     * &lt;/code&gt;&lt;/pre&gt;
+     *     grid.on('edit', function(editor, e) {
+     *         // commit the changes right after editing finished
+     *         e.record.commit();
+     *     };
+     *
      * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event (see above for description)
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
      */
 <span id='Ext-grid-plugin-RowEditing-event-validateedit'>    /**
 </span>     * @event validateedit
-     * Fires after a cell is edited, but before the value is set in the record. Return false
-     * to cancel the change. The edit event object has the following properties &lt;br /&gt;
-     * &lt;ul style=&quot;padding:5px;padding-left:16px;&quot;&gt;
-     * &lt;li&gt;grid - The grid this editor is on&lt;/li&gt;
-     * &lt;li&gt;view - The grid view&lt;/li&gt;
-     * &lt;li&gt;store - The grid store&lt;/li&gt;
-     * &lt;li&gt;record - The record being edited&lt;/li&gt;
-     * &lt;li&gt;row - The grid table row&lt;/li&gt;
-     * &lt;li&gt;column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit&lt;/li&gt;
-     * &lt;li&gt;rowIdx - The row index that is being edited&lt;/li&gt;
-     * &lt;li&gt;colIdx - The column index that initiated the edit&lt;/li&gt;
-     * &lt;li&gt;cancel - Set this to true to cancel the edit or return false from your handler.&lt;/li&gt;
-     * &lt;/ul&gt;
-     * Usage example showing how to remove the red triangle (dirty record indicator) from some
-     * records (not all).  By observing the grid's validateedit event, it can be cancelled if
-     * the edit occurs on a targeted row (for example) and then setting the field's new value
-     * in the Record directly:
-     * &lt;pre&gt;&lt;code&gt;
-grid.on('validateedit', function(e) {
-  var myTargetRow = 6;
-
-  if (e.rowIdx == myTargetRow) {
-    e.cancel = true;
-    e.record.data[e.field] = e.value;
-  }
-});
-     * &lt;/code&gt;&lt;/pre&gt;
+     * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
+     * edit event object has the following properties
+     *
+     * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
+     * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
+     * and then setting the field's new value in the Record directly:
+     *
+     *     grid.on('validateedit', function(editor, e) {
+     *       var myTargetRow = 6;
+     *
+     *       if (e.rowIdx == myTargetRow) {
+     *         e.cancel = true;
+     *         e.record.data[e.field] = e.value;
+     *       }
+     *     });
+     *
      * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event (see above for description)
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
+     * - cancel - Set this to true to cancel the edit or return false from your handler.
      */
 
     constructor: function() {
@@ -208,10 +194,9 @@ grid.on('validateedit', function(e) {
     },
 
 <span id='Ext-grid-plugin-RowEditing-method-startEdit'>    /**
-</span>     * Start editing the specified record, using the specified Column definition to define which field is being edited.
-     * @param {Model} record The Store data record which backs the row to be edited.
-     * @param {Model} columnHeader The Column object defining the column to be edited.
-     * @override
+</span>     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited. @override
      */
     startEdit: function(record, columnHeader) {
         var me = this,
@@ -234,6 +219,8 @@ grid.on('validateedit', function(e) {
         if (me.editing) {
             me.getEditor().cancelEdit();
             me.callParent(arguments);
+            
+            me.fireEvent('canceledit', me.context);
         }
     },
 
@@ -249,7 +236,26 @@ grid.on('validateedit', function(e) {
 
     // private
     validateEdit: function() {
-        var me = this;
+        var me             = this,
+            editor         = me.editor,
+            context        = me.context,
+            record         = context.record,
+            newValues      = {},
+            originalValues = {},
+            name;
+
+        editor.items.each(function(item) {
+            name = item.name;
+
+            newValues[name]      = item.getValue();
+            originalValues[name] = record.get(name);
+        });
+
+        Ext.apply(context, {
+            newValues      : newValues,
+            originalValues : originalValues
+        });
+
         return me.callParent(arguments) &amp;&amp; me.getEditor().completeEdit();
     },
 
@@ -329,10 +335,10 @@ grid.on('validateedit', function(e) {
         if (column.isHeader) {
             var me = this,
                 editor;
-            
+
             me.initFieldAccessors(column);
             editor = me.getEditor();
-            
+
             if (editor &amp;&amp; editor.onColumnAdd) {
                 editor.onColumnAdd(column);
             }
@@ -344,11 +350,11 @@ grid.on('validateedit', function(e) {
         if (column.isHeader) {
             var me = this,
                 editor = me.getEditor();
-    
+
             if (editor &amp;&amp; editor.onColumnRemove) {
                 editor.onColumnRemove(column);
             }
-            me.removeFieldAccessors(column);  
+            me.removeFieldAccessors(column);
         }
     },
 
@@ -357,7 +363,7 @@ grid.on('validateedit', function(e) {
         if (column.isHeader) {
             var me = this,
                 editor = me.getEditor();
-    
+
             if (editor &amp;&amp; editor.onColumnResize) {
                 editor.onColumnResize(column, width);
             }
@@ -403,6 +409,7 @@ grid.on('validateedit', function(e) {
         me.callParent(arguments);
         me.getEditor().setField(column.field, column);
     }
-});</pre>
+});
+</pre>
 </body>
 </html>

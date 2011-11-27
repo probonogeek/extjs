@@ -78,16 +78,15 @@ Ext.define('Ext.selection.TreeModel', {
     },
     
     onKeyPress: function(e, t) {
-        var selected, checked;
+        var key = e.getKey(),
+            selected, 
+            checked;
         
-        if (e.getKey() === e.SPACE || e.getKey() === e.ENTER) {
+        if (key === e.SPACE || key === e.ENTER) {
             e.stopEvent();
             selected = this.getLastSelected();
-            if (selected && selected.isLeaf()) {
-                checked = selected.get('checked');
-                if (Ext.isBoolean(checked)) {
-                    selected.set('checked', !checked);
-                }
+            if (selected) {
+                this.view.onCheckChange(selected);
             }
         } else {
             this.callParent(arguments);

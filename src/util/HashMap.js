@@ -36,16 +36,15 @@ map.each(function(key, value, length){
  * </p>
  */
 Ext.define('Ext.util.HashMap', {
+    mixins: {
+        observable: 'Ext.util.Observable'
+    },
 
     /**
      * @cfg {Function} keyFn A function that is used to retrieve a default key for a passed object.
      * A default is provided that returns the <b>id</b> property on the object. This function is only used
      * if the add method is called with a single argument.
      */
-
-    mixins: {
-        observable: 'Ext.util.Observable'
-    },
 
     /**
      * Creates new HashMap.
@@ -154,7 +153,7 @@ Ext.define('Ext.util.HashMap', {
         }
 
         if (me.containsKey(key)) {
-            me.replace(key, value);
+            return me.replace(key, value);
         }
 
         data = me.getData(key, value);

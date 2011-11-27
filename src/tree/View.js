@@ -13,8 +13,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.tree.View
- * @extends Ext.view.Table
+ * Used as a view by {@link Ext.tree.Panel TreePanel}.
  */
 Ext.define('Ext.tree.View', {
     extend: 'Ext.view.Table',
@@ -27,15 +26,22 @@ Ext.define('Ext.tree.View', {
     checkboxSelector: '.' + Ext.baseCSSPrefix + 'tree-checkbox',
     expanderIconOverCls: Ext.baseCSSPrefix + 'tree-expander-over',
 
+    // Class to add to the node wrap element used to hold nodes when a parent is being
+    // collapsed or expanded. During the animation, UI interaction is forbidden by testing
+    // for an ancestor node with this class.
+    nodeAnimWrapCls: Ext.baseCSSPrefix + 'tree-animator-wrap',
+
     blockRefresh: true,
 
     /** 
-     * @cfg {Boolean} rootVisible <tt>false</tt> to hide the root node (defaults to <tt>true</tt>)
+     * @cfg {Boolean} rootVisible
+     * False to hide the root node.
      */
     rootVisible: true,
 
     /** 
-     * @cfg {Boolean} animate <tt>true</tt> to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
+     * @cfg {Boolean} animate
+     * True to enable animated expand/collapse (defaults to the value of {@link Ext#enableFx Ext.enableFx})
      */
 
     expandDuration: 250,
@@ -68,7 +74,17 @@ Ext.define('Ext.tree.View', {
         me.animQueue = {};
         me.callParent(arguments);
     },
-    
+
+    processUIEvent: function(e) {
+        // If the clicked node is part of an animation, ignore the click.
+        // This is because during a collapse animation, the associated Records
+        // will already have been removed from the Store, and the event is not processable.
+        if (e.getTarget('.' + this.nodeAnimWrapCls, this.el)) {
+            return false;
+        }
+        return this.callParent(arguments);
+    },
+
     onClear: function(){
         this.store.removeAll();    
     },
@@ -84,7 +100,6 @@ Ext.define('Ext.tree.View', {
     
     onRender: function() {
         var me = this,
-            opts = {delegate: me.expanderSelector},
             el;
 
         me.callParent(arguments);
@@ -104,14 +119,20 @@ Ext.define('Ext.tree.View', {
     },
 
     onCheckboxChange: function(e, t) {
-        var item = e.getTarget(this.getItemSelector(), this.getTargetEl()),
-            record, value;
+        var me = this,
+            item = e.getTarget(me.getItemSelector(), me.getTargetEl());
             
         if (item) {
-            record = this.getRecord(item);
-            value = !record.get('checked');
-            record.set('checked', value);
-            this.fireEvent('checkchange', record, value);
+            me.onCheckChange(me.getRecord(item));
+        }
+    },
+    
+    onCheckChange: function(record){
+        var checked = record.get('checked');
+        if (Ext.isBoolean(checked)) {
+            checked = !checked;
+            record.set('checked', checked);
+            this.fireEvent('checkchange', record, checked);
         }
     },
 
@@ -147,7 +168,7 @@ Ext.define('Ext.tree.View', {
             tag: 'tr',
             html: [
                 '<td colspan="' + headerCt.getColumnCount() + '">',
-                    '<div class="' + Ext.baseCSSPrefix + 'tree-animator-wrap' + '">',
+                    '<div class="' + this.nodeAnimWrapCls + '">',
                         '<table class="' + Ext.baseCSSPrefix + 'grid-table" style="width: ' + headerCt.getFullWidth() + 'px;"><tbody>',
                             thHtml,
                         '</tbody></table>',
@@ -231,6 +252,36 @@ Ext.define('Ext.tree.View', {
         // because the targetEl just got higher.
         if (animWrap.isAnimating) {
             me.onExpand(parent);
+        }
+    },
+    
+    beginBulkUpdate: function(){
+        this.bulkUpdate = true;
+        this.ownerCt.changingScrollbars = true;  
+    },
+    
+    endBulkUpdate: function(){
+        var me = this,
+            ownerCt = me.ownerCt;
+        
+        me.bulkUpdate = false;
+        me.ownerCt.changingScrollbars = true;  
+        me.resetScrollers();  
+    },
+    
+    onRemove : function(ds, record, index) {
+        var me = this,
+            bulk = me.bulkUpdate;
+
+        me.doRemove(record, index);
+        if (!bulk) {
+            me.updateIndexes(index);
+        }
+        if (me.store.getCount() === 0){
+            me.refresh();
+        }
+        if (!bulk) {
+            me.fireEvent('itemremove', record, index);
         }
     },
     
@@ -321,10 +372,12 @@ Ext.define('Ext.tree.View', {
     },
     
     resetScrollers: function(){
-        var panel = this.panel;
-        
-        panel.determineScrollbars();
-        panel.invalidateScroller();
+        if (!this.bulkUpdate) {
+            var panel = this.panel;
+            
+            panel.determineScrollbars();
+            panel.invalidateScroller();
+        }
     },
 
     onBeforeCollapse: function(parent, records, index) {
@@ -422,7 +475,7 @@ Ext.define('Ext.tree.View', {
     },
     
     /**
-     * Expand a record that is loaded in the view.
+     * Expands a record that is loaded in the view.
      * @param {Ext.data.Model} record The record to expand
      * @param {Boolean} deep (optional) True to expand nodes all the way down the tree hierarchy.
      * @param {Function} callback (optional) The function to run after the expand is completed
@@ -433,7 +486,7 @@ Ext.define('Ext.tree.View', {
     },
     
     /**
-     * Collapse a record that is loaded in the view.
+     * Collapses a record that is loaded in the view.
      * @param {Ext.data.Model} record The record to collapse
      * @param {Boolean} deep (optional) True to collapse nodes all the way up the tree hierarchy.
      * @param {Function} callback (optional) The function to run after the collapse is completed
@@ -444,8 +497,8 @@ Ext.define('Ext.tree.View', {
     },
     
     /**
-     * Toggle a record between expanded and collapsed.
-     * @param {Ext.data.Record} recordInstance
+     * Toggles a record between expanded and collapsed.
+     * @param {Ext.data.Model} recordInstance
      */
     toggle: function(record) {
         this[record.isExpanded() ? 'collapse' : 'expand'](record);

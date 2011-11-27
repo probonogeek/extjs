@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -30,10 +30,26 @@ Ext.define('Ext.panel.Header', {
     indicateDrag   : false,
     weight         : -1,
 
-    renderTpl: ['&lt;div class=&quot;{baseCls}-body&lt;tpl if=&quot;bodyCls&quot;&gt; {bodyCls}&lt;/tpl&gt;&lt;tpl if=&quot;uiCls&quot;&gt;&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;&lt;/div&gt;'],
+    renderTpl: [
+        '&lt;div id=&quot;{id}-body&quot; class=&quot;{baseCls}-body&lt;tpl if=&quot;bodyCls&quot;&gt; {bodyCls}&lt;/tpl&gt;',
+        '&lt;tpl if=&quot;uiCls&quot;&gt;',
+            '&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;',
+        '&lt;/tpl&gt;&quot;',
+        '&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;&lt;/div&gt;'],
+
+<span id='Ext-panel-Header-cfg-title'>    /**
+</span>     * @cfg {String} title
+     * The title text to display
+     */
+
+<span id='Ext-panel-Header-cfg-iconCls'>    /**
+</span>     * @cfg {String} iconCls
+     * CSS class for icon in header. Used for displaying an icon to the left of a title.
+     */
 
     initComponent: function() {
         var me = this,
+            ruleStyle,
             rule,
             style,
             titleTextEl,
@@ -51,9 +67,7 @@ Ext.define('Ext.panel.Header', {
         me.addClsWithUI(me.orientation);
         me.addClsWithUI(me.dock);
 
-        Ext.applyIf(me.renderSelectors, {
-            body: '.' + me.baseCls + '-body'
-        });
+        me.addChildEls('body');
 
         // Add Icon
         if (!Ext.isEmpty(me.iconCls)) {
@@ -88,7 +102,11 @@ Ext.define('Ext.panel.Header', {
             if (Ext.isArray(ui)) {
                 ui = ui[0];
             }
-            rule = Ext.util.CSS.getRule('.' + me.baseCls + '-text-' + ui);
+            ruleStyle = '.' + me.baseCls + '-text-' + ui;
+            if (Ext.scopeResetCSS) {
+                ruleStyle = '.' + Ext.baseCSSPrefix + 'reset ' + ruleStyle;
+            }
+            rule = Ext.util.CSS.getRule(ruleStyle);
             if (rule) {
                 style = rule.style;
             }
@@ -108,6 +126,8 @@ Ext.define('Ext.panel.Header', {
                 autoSize: true,
                 margins: '5 0 0 0',
                 items: [ me.textConfig ],
+                // this is a bit of a cheat: we are not selecting an element of titleCmp
+                // but rather of titleCmp.items[0] (so we cannot use childEls)
                 renderSelectors: {
                     textEl: '.' + me.baseCls + '-text'
                 }
@@ -124,15 +144,16 @@ Ext.define('Ext.panel.Header', {
                 ariaRole  : 'heading',
                 focusable: false,
                 flex : 1,
-                renderTpl : ['&lt;span class=&quot;{cls}-text {cls}-text-{ui}&quot;&gt;{title}&lt;/span&gt;'],
+                cls: me.baseCls + '-text-container',
+                renderTpl : [
+                    '&lt;span id=&quot;{id}-textEl&quot; class=&quot;{cls}-text {cls}-text-{ui}&quot;&gt;{title}&lt;/span&gt;'
+                ],
                 renderData: {
                     title: me.title,
                     cls  : me.baseCls,
                     ui   : me.ui
                 },
-                renderSelectors: {
-                    textEl: '.' + me.baseCls + '-text'
-                }
+                childEls: ['textEl']
             });
         }
         me.items.push(me.titleCmp);
@@ -145,16 +166,16 @@ Ext.define('Ext.panel.Header', {
     initIconCmp: function() {
         this.iconCmp = Ext.create('Ext.Component', {
             focusable: false,
-            renderTpl : ['&lt;img alt=&quot;&quot; src=&quot;{blank}&quot; class=&quot;{cls}-icon {iconCls}&quot;/&gt;'],
+            renderTpl : [
+                '&lt;img id=&quot;{id}-iconEl&quot; alt=&quot;&quot; src=&quot;{blank}&quot; class=&quot;{cls}-icon {iconCls}&quot;/&gt;'
+            ],
             renderData: {
                 blank  : Ext.BLANK_IMAGE_URL,
                 cls    : this.baseCls,
                 iconCls: this.iconCls,
                 orientation: this.orientation
             },
-            renderSelectors: {
-                iconEl: '.' + this.baseCls + '-icon'
-            },
+            childEls: ['iconEl'],
             iconCls: this.iconCls
         });
     },
@@ -211,7 +232,7 @@ Ext.define('Ext.panel.Header', {
                 me.bodyCls = classes.join(' ');
             }
         }
- 
+
         return result;
     },
 
@@ -362,24 +383,25 @@ Ext.define('Ext.panel.Header', {
     },
 
 <span id='Ext-panel-Header-method-setIconCls'>    /**
-</span>     * Sets the CSS class that provides the icon image for this panel.  This method will replace any existing
-     * icon class if one has already been set and fire the {@link #iconchange} event after completion.
+</span>     * Sets the CSS class that provides the icon image for this header.  This method will replace any existing
+     * icon class if one has already been set.
      * @param {String} cls The new CSS class name
      */
     setIconCls: function(cls) {
-        this.iconCls = cls;
-        if (!this.iconCmp) {
-            this.initIconCmp();
-            this.insert(0, this.iconCmp);
-        }
-        else {
-            if (!cls || !cls.length) {
-                this.iconCmp.destroy();
-            }
-            else {
-                var iconCmp = this.iconCmp,
-                    el      = iconCmp.iconEl;
-
+        var me = this,
+            isEmpty = !cls || !cls.length,
+            iconCmp = me.iconCmp,
+            el;
+        
+        me.iconCls = cls;
+        if (!me.iconCmp &amp;&amp; !isEmpty) {
+            me.initIconCmp();
+            me.insert(0, me.iconCmp);
+        } else if (iconCmp) {
+            if (isEmpty) {
+                me.iconCmp.destroy();
+            } else {
+                el = iconCmp.iconEl;
                 el.removeCls(iconCmp.iconCls);
                 el.addCls(cls);
                 iconCmp.iconCls = cls;

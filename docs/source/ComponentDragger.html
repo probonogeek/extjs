@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -21,7 +21,7 @@
  * &lt;p&gt;A subclass of Ext.dd.DragTracker which handles dragging any Component.&lt;/p&gt;
  * &lt;p&gt;This is configured with a Component to be made draggable, and a config object for the
  * {@link Ext.dd.DragTracker} class.&lt;/p&gt;
- * &lt;p&gt;A {@link #} delegate may be provided which may be either the element to use as the mousedown target
+ * &lt;p&gt;A {@link #delegate} may be provided which may be either the element to use as the mousedown target
  * or a {@link Ext.DomQuery} selector to activate multiple mousedown targets.&lt;/p&gt;
  */
 Ext.define('Ext.util.ComponentDragger', {
@@ -32,7 +32,7 @@ Ext.define('Ext.util.ComponentDragger', {
      */
 
 <span id='Ext-util-ComponentDragger-cfg-delegate'>    /**
-</span>     * @cfg {String/Element} delegate
+</span>     * @cfg {String/Ext.Element} delegate
      * Optional. &lt;p&gt;A {@link Ext.DomQuery DomQuery} selector which identifies child elements within the Component's encapsulating
      * Element which are the drag handles. This limits dragging to only begin when the matching elements are mousedowned.&lt;/p&gt;
      * &lt;p&gt;This may also be a specific child element within the Component's encapsulating element to use as the drag handle.&lt;/p&gt;
@@ -49,8 +49,8 @@ Ext.define('Ext.util.ComponentDragger', {
 
 <span id='Ext-util-ComponentDragger-method-constructor'>    /**
 </span>     * Creates new ComponentDragger.
-     * @param {object} comp The Component to provide dragging for.
-     * @param {object} config (optional) Config object
+     * @param {Object} comp The Component to provide dragging for.
+     * @param {Object} config (optional) Config object
      */
     constructor: function(comp, config) {
         this.comp = comp;

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,9 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-view-BoundList'>/**
-</span> * @class Ext.view.BoundList
- * @extends Ext.view.View
- * An internal used DataView for ComboBox, MultiSelect and ItemSelector.
+</span> * An internally used DataView for {@link Ext.form.field.ComboBox ComboBox}.
  */
 Ext.define('Ext.view.BoundList', {
     extend: 'Ext.view.View',
@@ -27,15 +25,15 @@ Ext.define('Ext.view.BoundList', {
     requires: ['Ext.layout.component.BoundList', 'Ext.toolbar.Paging'],
 
 <span id='Ext-view-BoundList-cfg-pageSize'>    /**
-</span>     * @cfg {Number} pageSize If greater than &lt;tt&gt;0&lt;/tt&gt;, a {@link Ext.toolbar.Paging} is displayed at the
-     * bottom of the list and store queries will execute with page start and
-     * {@link Ext.toolbar.Paging#pageSize limit} parameters.
+</span>     * @cfg {Number} pageSize
+     * If greater than `0`, a {@link Ext.toolbar.Paging} is displayed at the bottom of the list and store
+     * queries will execute with page {@link Ext.data.Operation#start start} and
+     * {@link Ext.data.Operation#limit limit} parameters. Defaults to `0`.
      */
     pageSize: 0,
 
 <span id='Ext-view-BoundList-property-pagingToolbar'>    /**
-</span>     * @property pagingToolbar
-     * @type {Ext.toolbar.Paging}
+</span>     * @property {Ext.toolbar.Paging} pagingToolbar
      * A reference to the PagingToolbar instance in this view. Only populated if {@link #pageSize} is greater
      * than zero and the BoundList has been rendered.
      */
@@ -43,6 +41,7 @@ Ext.define('Ext.view.BoundList', {
     // private overrides
     autoScroll: true,
     baseCls: Ext.baseCSSPrefix + 'boundlist',
+    itemCls: Ext.baseCSSPrefix + 'boundlist-item',
     listItemCls: '',
     shadow: false,
     trackOver: true,
@@ -52,13 +51,13 @@ Ext.define('Ext.view.BoundList', {
 
     componentLayout: 'boundlist',
 
-    renderTpl: ['&lt;div class=&quot;list-ct&quot;&gt;&lt;/div&gt;'],
+    renderTpl: ['&lt;div id=&quot;{id}-listEl&quot; class=&quot;list-ct&quot;&gt;&lt;/div&gt;'],
 
     initComponent: function() {
         var me = this,
             baseCls = me.baseCls,
-            itemCls = baseCls + '-item';
-        me.itemCls = itemCls;
+            itemCls = me.itemCls;
+            
         me.selectedItemCls = baseCls + '-selected';
         me.overItemCls = baseCls + '-item-over';
         me.itemSelector = &quot;.&quot; + itemCls;
@@ -85,9 +84,7 @@ Ext.define('Ext.view.BoundList', {
 
         me.callParent();
 
-        Ext.applyIf(me.renderSelectors, {
-            listEl: '.list-ct'
-        });
+        me.addChildEls('listEl');
     },
 
     createPagingToolbar: function() {

@@ -35,7 +35,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
     /**
      * @private
      * @property autoSizing
-     * @type boolean
+     * @type Boolean
      * This flag is set to indicate this layout may have an autoHeight/autoWidth.
      */
     autoSizing: true,
@@ -137,10 +137,14 @@ Ext.define('Ext.layout.component.AbstractDock', {
     /**
      * @protected
      * @param {Ext.Component} owner The Panel that owns this DockLayout
-     * @param {Ext.core.Element} target The target in which we are going to render the docked items
+     * @param {Ext.Element} target The target in which we are going to render the docked items
      * @param {Array} args The arguments passed to the ComponentLayout.layout method
      */
     onLayout: function(width, height) {
+        if (this.onLayout_running) {
+            return;
+        }
+        this.onLayout_running = true;
         var me = this,
             owner = me.owner,
             body = owner.body,
@@ -175,20 +179,20 @@ Ext.define('Ext.layout.component.AbstractDock', {
         }
 
         // Determine if we have an autoHeight or autoWidth.
-        if (height === undefined || height === null || width === undefined || width === null) {
+        if (height == null || width == null) {
             padding = info.padding;
             border = info.border;
             frameSize = me.frameSize;
 
             // Auto-everything, clear out any style height/width and read from css
-            if ((height === undefined || height === null) && (width === undefined || width === null)) {
+            if ((height == null) && (width == null)) {
                 autoHeight = true;
                 autoWidth = true;
                 me.setTargetSize(null);
                 me.setBodyBox({width: null, height: null});
             }
             // Auto-height
-            else if (height === undefined || height === null) {
+            else if (height == null) {
                 autoHeight = true;
                 // Clear any sizing that we already set in a previous layout
                 me.setTargetSize(width);
@@ -223,6 +227,8 @@ Ext.define('Ext.layout.component.AbstractDock', {
                 // to fit the dock items in.  This is valid because the target container is
                 // suppose to be autosized to fit everything accordingly.
                 info.autoSizedCtLayout = layout.autoSize === true;
+                info.autoHeight = autoHeight;
+                info.autoWidth = autoWidth;
             }
 
             // The dockItems method will add all the top and bottom docked items height
@@ -230,7 +236,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
             // we dock all the items to actually set the panel's width and height.
             // We have to do this because the panel body and docked items will be position
             // absolute which doesn't stretch the panel.
-            me.dockItems(autoWidth, autoHeight);
+            me.dockItems();
             me.setTargetSize(info.size.width, info.size.height);
         }
         else {
@@ -238,6 +244,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
             me.dockItems();
         }
         me.callParent(arguments);
+        this.onLayout_running = false;
     },
 
     /**
@@ -249,25 +256,28 @@ Ext.define('Ext.layout.component.AbstractDock', {
      * @param {Boolean} autoBoxes Set this to true if the Panel is part of an
      * AutoContainerLayout
      */
-    dockItems : function(autoWidth, autoHeight) {
-        this.calculateDockBoxes(autoWidth, autoHeight);
+    dockItems : function() {
+        this.calculateDockBoxes();
 
         // Both calculateAutoBoxes and calculateSizedBoxes are changing the
         // information about the body, panel size, and boxes for docked items
         // inside a property called info.
         var info = this.info,
+            autoWidth = info.autoWidth,
+            autoHeight = info.autoHeight,
             boxes = info.boxes,
             ln = boxes.length,
-            dock, i;
+            dock, i, item;
 
         // We are going to loop over all the boxes that were calculated
         // and set the position of each item the box belongs to.
         for (i = 0; i < ln; i++) {
             dock = boxes[i];
-            dock.item.setPosition(dock.x, dock.y);
-            if ((autoWidth || autoHeight) && dock.layout && dock.layout.isLayout) {
+            item = dock.item;
+            item.setPosition(dock.x, dock.y);
+            if ((autoWidth || autoHeight) && item.layout && item.layout.isLayout) {
                 // Auto-Sized so have the container layout notify the component layout.
-                dock.layout.bindToOwnerCtComponent = true;
+                item.layout.bindToOwnerCtComponent = true;
             }
         }
 
@@ -294,7 +304,12 @@ Ext.define('Ext.layout.component.AbstractDock', {
      * dock position and all calculations involved with adjusting the body box.
      * @param {Array} items Array containing all the docked items we have to layout
      */
-    calculateDockBoxes : function(autoWidth, autoHeight) {
+    calculateDockBoxes : function() {
+        if (this.calculateDockBoxes_running) {
+            // [AbstractDock#calculateDockBoxes] attempted to run again while it was already running
+            return;
+        }
+        this.calculateDockBoxes_running = true;
         // We want to use the Panel's el width, and the Panel's body height as the initial
         // size we are going to use in calculateDockBoxes. We also want to account for
         // the border of the panel.
@@ -304,6 +319,8 @@ Ext.define('Ext.layout.component.AbstractDock', {
             owner = me.owner,
             bodyEl = owner.body,
             info = me.info,
+            autoWidth = info.autoWidth,
+            autoHeight = info.autoHeight,
             size = info.size,
             ln = items.length,
             padding = info.padding,
@@ -353,6 +370,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
             // all the docked items that have changed.
             info.boxes.push(box);
         }
+        this.calculateDockBoxes_running = false;
     },
 
     /**
@@ -472,20 +490,20 @@ Ext.define('Ext.layout.component.AbstractDock', {
                 box.y = bodyBox.y;
                 if (!box.overlay) {
                     bodyBox.y += box.height;
-                    if (owner.isFixedHeight()) {
-                        bodyBox.height -= box.height;
-                    } else {
+                    if (info.autoHeight) {
                         size.height += box.height;
+                    } else {
+                        bodyBox.height -= box.height;
                     }
                 }
                 break;
 
             case 'bottom':
                 if (!box.overlay) {
-                    if (owner.isFixedHeight()) {
-                        bodyBox.height -= box.height;
-                    } else {
+                    if (info.autoHeight) {
                         size.height += box.height;
+                    } else {
+                        bodyBox.height -= box.height;
                     }
                 }
                 box.y = (bodyBox.y + bodyBox.height);
@@ -495,20 +513,20 @@ Ext.define('Ext.layout.component.AbstractDock', {
                 box.x = bodyBox.x;
                 if (!box.overlay) {
                     bodyBox.x += box.width;
-                    if (owner.isFixedWidth()) {
-                        bodyBox.width -= box.width;
-                    } else {
+                    if (info.autoWidth) {
                         size.width += box.width;
+                    } else {
+                        bodyBox.width -= box.width;
                     }
                 }
                 break;
 
             case 'right':
                 if (!box.overlay) {
-                    if (owner.isFixedWidth()) {
-                        bodyBox.width -= box.width;
-                    } else {
+                    if (info.autoWidth) {
                         size.width += box.width;
+                    } else {
+                        bodyBox.width -= box.width;
                     }
                 }
                 box.x = (bodyBox.x + bodyBox.width);
@@ -553,7 +571,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
                 item: item,
                 overlay: item.overlay,
                 type: item.dock,
-                offsets: Ext.core.Element.parseBox(item.offsets || {}),
+                offsets: Ext.Element.parseBox(item.offsets || {}),
                 ignoreFrame: item.ignoreParentFrame
             };
         // First we are going to take care of stretch and align properties for all four dock scenarios.
@@ -595,10 +613,10 @@ Ext.define('Ext.layout.component.AbstractDock', {
 
         // If we haven't calculated the width or height of the docked item yet
         // do so, since we need this for our upcoming calculations
-        if (box.width == undefined) {
+        if (box.width === undefined) {
             box.width = item.getWidth() + item.el.getMargin('lr');
         }
-        if (box.height == undefined) {
+        if (box.height === undefined) {
             box.height = item.getHeight() + item.el.getMargin('tb');
         }
 
@@ -642,7 +660,7 @@ Ext.define('Ext.layout.component.AbstractDock', {
             cn = Ext.get(cns[i]);
             for (j = 0; j < ln; j++) {
                 item = items[j];
-                if (item.rendered && (cn.id == item.el.id || cn.down('#' + item.el.id))) {
+                if (item.rendered && (cn.id == item.el.id || cn.contains(item.el.id))) {
                     break;
                 }
             }

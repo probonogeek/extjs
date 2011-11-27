@@ -43,7 +43,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 (function() {
 
 // Current core version
-var version = '4.0.2', Version;
+var version = '4.0.7', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**
@@ -183,7 +183,7 @@ var version = '4.0.2', Version;
 
         /**
          * Returns this format: [major, minor, patch, build, release]. Useful for comparison
-         * @return {Array}
+         * @return {Number[]}
          */
         toArray: function() {
             return [this.getMajor(), this.getMinor(), this.getPatch(), this.getBuild(), this.getRelease()];
@@ -216,8 +216,8 @@ var version = '4.0.2', Version;
          * Converts a version component to a comparable value
          *
          * @static
-         * @param {Mixed} value The value to convert
-         * @return {Mixed}
+         * @param {Object} value The value to convert
+         * @return {Object}
          */
         getComponentValue: function(value) {
             return !value ? 0 : (isNaN(value) ? this.releaseValueMap[value] || value : parseInt(value, 10));

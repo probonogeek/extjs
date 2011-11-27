@@ -39,7 +39,8 @@ Ext.onReady(function () {
                 fields: ['data1'],
                 title: 'Hits',
                 grid: true,
-                minimum: 0
+                minimum: 0,
+                maximum: 100
             }, {
                 type: 'Category',
                 position: 'bottom',

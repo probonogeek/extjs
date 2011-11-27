@@ -62,7 +62,7 @@ Ext.define('Ext.App', {
     // @protected, onReady, executes when Ext.onReady fires.
     onReady : function() {
         // create the msgBox container.  used for App.setAlert
-        this.msgCt = Ext.core.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
+        this.msgCt = Ext.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
         this.msgCt.setStyle('position', 'absolute');
         this.msgCt.setStyle('z-index', 9999);
         this.msgCt.setWidth(300);
@@ -154,7 +154,7 @@ Ext.define('Ext.App', {
         }
 
         this.msgCt.alignTo(document, 't-t');
-        Ext.core.DomHelper.append(this.msgCt, {html:this.buildMessageBox(status, String.format.apply(String, Array.prototype.slice.call(arguments, 1)))}, true).slideIn('t').pause(delay).ghost("t", {remove:true});
+        Ext.DomHelper.append(this.msgCt, {html:this.buildMessageBox(status, String.format.apply(String, Array.prototype.slice.call(arguments, 1)))}, true).slideIn('t').pause(delay).ghost("t", {remove:true});
     },
 
     /***

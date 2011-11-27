@@ -72,7 +72,7 @@ Ext.define('Ext.util.Memento', function () {
          * Creates a new memento and optionally captures properties from the target object.
          * @param {Object} target The target from which to capture properties. If specified in the
          * constructor, this target becomes the default target for all other operations.
-         * @param {String|Array} props The property or array of properties to capture.
+         * @param {String/String[]} props The property or array of properties to capture.
          */
         constructor: function (target, props) {
             if (target) {
@@ -85,7 +85,7 @@ Ext.define('Ext.util.Memento', function () {
 
         /**
          * Captures the specified properties from the target object in this memento.
-         * @param {String|Array} props The property or array of properties to capture.
+         * @param {String/String[]} props The property or array of properties to capture.
          * @param {Object} target The object from which to capture properties.
          */
         capture: function (props, target) {
@@ -95,7 +95,7 @@ Ext.define('Ext.util.Memento', function () {
         /**
          * Removes the specified properties from this memento. These properties will not be
          * restored later without re-capturing their values.
-         * @param {String|Array} props The property or array of properties to remove.
+         * @param {String/String[]} props The property or array of properties to remove.
          */
         remove: function (props) {
             doMany(removeOne, this.data, null, props);
@@ -103,7 +103,7 @@ Ext.define('Ext.util.Memento', function () {
 
         /**
          * Restores the specified properties from this memento to the target object.
-         * @param {String|Array} props The property or array of properties to restore.
+         * @param {String/String[]} props The property or array of properties to restore.
          * @param {Boolean} clear True to remove the restored properties from this memento or
          * false to keep them (default is true).
          * @param {Object} target The object to which to restore properties.

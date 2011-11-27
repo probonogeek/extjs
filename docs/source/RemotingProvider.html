@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -119,7 +119,7 @@ TestAction.multiply(
 </span>     * @cfg {Number/Boolean} enableBuffer
      * &lt;p&gt;&lt;tt&gt;true&lt;/tt&gt; or &lt;tt&gt;false&lt;/tt&gt; to enable or disable combining of method
      * calls. If a number is specified this is the amount of time in milliseconds
-     * to wait before sending a batched request (defaults to &lt;tt&gt;10&lt;/tt&gt;).&lt;/p&gt;
+     * to wait before sending a batched request.&lt;/p&gt;
      * &lt;br&gt;&lt;p&gt;Calls which are received within the specified timeframe will be
      * concatenated together and sent in a single request, optimizing the
      * application by reducing the amount of round trips that have to be made
@@ -129,13 +129,13 @@ TestAction.multiply(
     
 <span id='Ext-direct-RemotingProvider-cfg-maxRetries'>    /**
 </span>     * @cfg {Number} maxRetries
-     * Number of times to re-attempt delivery on failure of a call. Defaults to &lt;tt&gt;1&lt;/tt&gt;.
+     * Number of times to re-attempt delivery on failure of a call.
      */
     maxRetries: 1,
     
 <span id='Ext-direct-RemotingProvider-cfg-timeout'>    /**
 </span>     * @cfg {Number} timeout
-     * The timeout to use for each request. Defaults to &lt;tt&gt;undefined&lt;/tt&gt;.
+     * The timeout to use for each request.
      */
     timeout: undefined,
     
@@ -466,7 +466,7 @@ TestAction.multiply(
      * @param {Object} method The method being executed
      * @param {HTMLElement} form The form being submitted
      * @param {Function} callback (optional) A callback to run after the form submits
-     * @param {Object} scope A scope to execute the callback in
+     * @param {Object} scope (optional) A scope to execute the callback in
      */
     configureFormRequest : function(action, method, form, callback, scope){
         var me = this,

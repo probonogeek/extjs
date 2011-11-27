@@ -84,7 +84,7 @@ describe("Ext.EventManager", function() {
                     afterEach(function() {
                         delete Ext.cache[Ext.documentId];
                     });
-                    it("should add document Ext.core.Element to cache", function() {
+                    it("should add document Ext.Element to cache", function() {
                         expect(Ext.cache[Ext.documentId].el.dom).toBe(document);
                     });
                     
@@ -106,7 +106,7 @@ describe("Ext.EventManager", function() {
                     afterEach(function() {
                         delete Ext.cache[Ext.windowId];
                     });
-                    it("should add window Ext.core.Element to cache", function() {
+                    it("should add window Ext.Element to cache", function() {
                         expect(Ext.cache[Ext.windowId].el.dom).toBe(window);
                     });
                     

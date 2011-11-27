@@ -18,13 +18,12 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * A type of axis that displays items in categories. This axis is generally used to
  * display categorical information like names of items, month names, quarters, etc.
- * but no quantitative values. For that other type of information <em>Number</em>
+ * but no quantitative values. For that other type of information `Number`
  * axis are more suitable.
  *
  * As with other axis you can set the position of the axis and its title. For example:
  *
- * {@img Ext.chart.axis.Category/Ext.chart.axis.Category.png Ext.chart.axis.Category chart axis}
- *
+ *     @example
  *     var store = Ext.create('Ext.data.JsonStore', {
  *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
  *         data: [
@@ -32,10 +31,10 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
  *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
  *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
- *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
  *         ]
  *     });
- *  
+ *
  *     Ext.create('Ext.chart.Chart', {
  *         renderTo: Ext.getBody(),
  *         width: 500,
@@ -82,9 +81,8 @@ If you are unsure which license is appropriate for your use, please contact the 
  *     });
  *
  * In this example with set the category axis to the bottom of the surface, bound the axis to
- * the <em>name</em> property and set as title <em>Month of the Year</em>.
+ * the `name` property and set as title _Month of the Year_.
  */
-
 Ext.define('Ext.chart.axis.Category', {
 
     /* Begin Definitions */
@@ -99,9 +97,7 @@ Ext.define('Ext.chart.axis.Category', {
 
     /**
      * A list of category names to display along this axis.
-     *
-     * @property categoryNames
-     * @type Array
+     * @property {String} categoryNames
      */
     categoryNames: null,
 

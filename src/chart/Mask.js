@@ -47,6 +47,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * 
  */
 Ext.define('Ext.chart.Mask', {
+    require: ['Ext.chart.MaskLayer'],
     /**
      * Creates new Mask.
      * @param {Object} config (optional) Config object.
@@ -193,12 +194,7 @@ Ext.define('Ext.chart.Mask', {
                 width: abs(width),
                 height: abs(height)
             };
-            me.mask.updateBox({
-                x: posX - abs(width),
-                y: posY - abs(height),
-                width: abs(width),
-                height: abs(height)
-            });
+            me.mask.updateBox(me.maskSelection);
             me.mask.show();
             me.maskSprite.setAttributes({
                 hidden: true    

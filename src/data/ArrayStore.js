@@ -47,8 +47,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * An object literal of this form could also be used as the {@link #data} config option.
  *
- * **Note:** Although not listed here, this class accepts all of the configuration options of
- * **{@link Ext.data.reader.Array ArrayReader}**.
+ * **Note:** This class accepts all of the configuration options of {@link Ext.data.reader.Array ArrayReader}.
  */
 Ext.define('Ext.data.ArrayStore', {
     extend: 'Ext.data.Store',

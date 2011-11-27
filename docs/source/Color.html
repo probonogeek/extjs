@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,80 +16,76 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-picker-Color'>/**
-</span> * @class Ext.picker.Color
- * @extends Ext.Component
- * &lt;p&gt;ColorPicker provides a simple color palette for choosing colors. The picker can be rendered to any container.
- * The available default to a standard 40-color palette; this can be customized with the {@link #colors} config.&lt;/p&gt;
- * &lt;p&gt;Typically you will need to implement a handler function to be notified when the user chooses a color from the
- * picker; you can register the handler using the {@link #select} event, or by implementing the {@link #handler}
- * method.&lt;/p&gt;
- * &lt;p&gt;Here's an example of typical usage:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;var cp = new Ext.picker.Color({
-    value: '993300',  // initial selected color
-    renderTo: 'my-div'
-});
-
-cp.on('select', function(picker, selColor){
-    // do something with selColor
-});
-&lt;/code&gt;&lt;/pre&gt;
- * {@img Ext.picker.Color/Ext.picker.Color.png Ext.picker.Color component}
+</span> * Color picker provides a simple color palette for choosing colors. The picker can be rendered to any container. The
+ * available default to a standard 40-color palette; this can be customized with the {@link #colors} config.
  *
+ * Typically you will need to implement a handler function to be notified when the user chooses a color from the picker;
+ * you can register the handler using the {@link #select} event, or by implementing the {@link #handler} method.
+ *
+ *     @example
+ *     Ext.create('Ext.picker.Color', {
+ *         value: '993300',  // initial selected color
+ *         renderTo: Ext.getBody(),
+ *         listeners: {
+ *             select: function(picker, selColor) {
+ *                 alert(selColor);
+ *             }
+ *         }
+ *     });
  */
 Ext.define('Ext.picker.Color', {
     extend: 'Ext.Component',
     requires: 'Ext.XTemplate',
     alias: 'widget.colorpicker',
     alternateClassName: 'Ext.ColorPalette',
-    
+
 <span id='Ext-picker-Color-cfg-componentCls'>    /**
-</span>     * @cfg {String} componentCls
-     * The CSS class to apply to the containing element (defaults to 'x-color-picker')
+</span>     * @cfg {String} [componentCls='x-color-picker']
+     * The CSS class to apply to the containing element.
      */
     componentCls : Ext.baseCSSPrefix + 'color-picker',
-    
+
 <span id='Ext-picker-Color-cfg-selectedCls'>    /**
-</span>     * @cfg {String} selectedCls
+</span>     * @cfg {String} [selectedCls='x-color-picker-selected']
      * The CSS class to apply to the selected element
      */
     selectedCls: Ext.baseCSSPrefix + 'color-picker-selected',
-    
+
 <span id='Ext-picker-Color-cfg-value'>    /**
 </span>     * @cfg {String} value
-     * The initial color to highlight (should be a valid 6-digit color hex code without the # symbol).  Note that
-     * the hex codes are case-sensitive.
+     * The initial color to highlight (should be a valid 6-digit color hex code without the # symbol). Note that the hex
+     * codes are case-sensitive.
      */
     value : null,
-    
+
 <span id='Ext-picker-Color-cfg-clickEvent'>    /**
 </span>     * @cfg {String} clickEvent
      * The DOM event that will cause a color to be selected. This can be any valid event name (dblclick, contextmenu).
-     * Defaults to &lt;tt&gt;'click'&lt;/tt&gt;.
      */
     clickEvent :'click',
 
 <span id='Ext-picker-Color-cfg-allowReselect'>    /**
-</span>     * @cfg {Boolean} allowReselect If set to true then reselecting a color that is already selected fires the {@link #select} event
+</span>     * @cfg {Boolean} allowReselect
+     * If set to true then reselecting a color that is already selected fires the {@link #select} event
      */
     allowReselect : false,
 
 <span id='Ext-picker-Color-property-colors'>    /**
-</span>     * &lt;p&gt;An array of 6-digit color hex code strings (without the # symbol).  This array can contain any number
-     * of colors, and each hex code should be unique.  The width of the picker is controlled via CSS by adjusting
-     * the width property of the 'x-color-picker' class (or assigning a custom class), so you can balance the number
-     * of colors with the width setting until the box is symmetrical.&lt;/p&gt;
-     * &lt;p&gt;You can override individual colors if needed:&lt;/p&gt;
-     * &lt;pre&gt;&lt;code&gt;
-var cp = new Ext.picker.Color();
-cp.colors[0] = 'FF0000';  // change the first box to red
-&lt;/code&gt;&lt;/pre&gt;
-
-Or you can provide a custom array of your own for complete control:
-&lt;pre&gt;&lt;code&gt;
-var cp = new Ext.picker.Color();
-cp.colors = ['000000', '993300', '333300'];
-&lt;/code&gt;&lt;/pre&gt;
-     * @type Array
+</span>     * @property {String[]} colors
+     * An array of 6-digit color hex code strings (without the # symbol). This array can contain any number of colors,
+     * and each hex code should be unique. The width of the picker is controlled via CSS by adjusting the width property
+     * of the 'x-color-picker' class (or assigning a custom class), so you can balance the number of colors with the
+     * width setting until the box is symmetrical.
+     *
+     * You can override individual colors if needed:
+     *
+     *     var cp = new Ext.picker.Color();
+     *     cp.colors[0] = 'FF0000';  // change the first box to red
+     *
+     * Or you can provide a custom array of your own for complete control:
+     *
+     *     var cp = new Ext.picker.Color();
+     *     cp.colors = ['000000', '993300', '333300'];
      */
     colors : [
         '000000', '993300', '333300', '003300', '003366', '000080', '333399', '333333',
@@ -101,30 +97,38 @@ cp.colors = ['000000', '993300', '333300'];
 
 <span id='Ext-picker-Color-cfg-handler'>    /**
 </span>     * @cfg {Function} handler
-     * Optional. A function that will handle the select event of this picker.
-     * The handler is passed the following parameters:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;code&gt;picker&lt;/code&gt; : ColorPicker&lt;div class=&quot;sub-desc&quot;&gt;The {@link #picker Ext.picker.Color}.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;code&gt;color&lt;/code&gt; : String&lt;div class=&quot;sub-desc&quot;&gt;The 6-digit color hex code (without the # symbol).&lt;/div&gt;&lt;/li&gt;
-     * &lt;/ul&gt;&lt;/div&gt;
+     * A function that will handle the select event of this picker. The handler is passed the following parameters:
+     *
+     * - `picker` : ColorPicker
+     *
+     *   The {@link Ext.picker.Color picker}.
+     *
+     * - `color` : String
+     *
+     *   The 6-digit color hex code (without the # symbol).
      */
+
 <span id='Ext-picker-Color-cfg-scope'>    /**
 </span>     * @cfg {Object} scope
-     * The scope (&lt;tt&gt;&lt;b&gt;this&lt;/b&gt;&lt;/tt&gt; reference) in which the &lt;code&gt;{@link #handler}&lt;/code&gt;
-     * function will be called.  Defaults to this ColorPicker instance.
+     * The scope (`this` reference) in which the `{@link #handler}` function will be called. Defaults to this
+     * Color picker instance.
      */
-    
+
     colorRe: /(?:^|\s)color-(.{6})(?:\s|$)/,
     
-    constructor: function() {
-        this.renderTpl = Ext.create('Ext.XTemplate', '&lt;tpl for=&quot;colors&quot;&gt;&lt;a href=&quot;#&quot; class=&quot;color-{.}&quot; hidefocus=&quot;on&quot;&gt;&lt;em&gt;&lt;span style=&quot;background:#{.}&quot; unselectable=&quot;on&quot;&gt;&amp;#160;&lt;/span&gt;&lt;/em&gt;&lt;/a&gt;&lt;/tpl&gt;');
-        this.callParent(arguments);
-    },
-    
+    renderTpl: [
+        '&lt;tpl for=&quot;colors&quot;&gt;',
+            '&lt;a href=&quot;#&quot; class=&quot;color-{.}&quot; hidefocus=&quot;on&quot;&gt;',
+                '&lt;em&gt;&lt;span style=&quot;background:#{.}&quot; unselectable=&quot;on&quot;&gt;&amp;#160;&lt;/span&gt;&lt;/em&gt;',
+            '&lt;/a&gt;',
+        '&lt;/tpl&gt;'
+    ],
+
     // private
     initComponent : function(){
         var me = this;
-        
-        this.callParent(arguments);
+
+        me.callParent(arguments);
         me.addEvents(
 <span id='Ext-picker-Color-event-select'>            /**
 </span>             * @event select
@@ -145,12 +149,12 @@ cp.colors = ['000000', '993300', '333300'];
     onRender : function(container, position){
         var me = this,
             clickEvent = me.clickEvent;
-            
+
         Ext.apply(me.renderData, {
             itemCls: me.itemCls,
-            colors: me.colors    
+            colors: me.colors
         });
-        this.callParent(arguments);
+        me.callParent(arguments);
 
         me.mon(me.el, clickEvent, me.handleClick, me, {delegate: 'a'});
         // always stop following the anchors
@@ -163,8 +167,8 @@ cp.colors = ['000000', '993300', '333300'];
     afterRender : function(){
         var me = this,
             value;
-            
-        this.callParent(arguments);
+
+        me.callParent(arguments);
         if (me.value) {
             value = me.value;
             me.value = null;
@@ -176,7 +180,7 @@ cp.colors = ['000000', '993300', '333300'];
     handleClick : function(event, target){
         var me = this,
             color;
-            
+
         event.stopEvent();
         if (!me.disabled) {
             color = target.className.match(me.colorRe)[1];
@@ -187,22 +191,22 @@ cp.colors = ['000000', '993300', '333300'];
 <span id='Ext-picker-Color-method-select'>    /**
 </span>     * Selects the specified color in the picker (fires the {@link #select} event)
      * @param {String} color A valid 6-digit color hex code (# will be stripped if included)
-     * @param {Boolean} suppressEvent (optional) True to stop the select event from firing. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
+     * @param {Boolean} suppressEvent (optional) True to stop the select event from firing. Defaults to false.
      */
     select : function(color, suppressEvent){
-        
+
         var me = this,
             selectedCls = me.selectedCls,
             value = me.value,
             el;
-            
+
         color = color.replace('#', '');
         if (!me.rendered) {
             me.value = color;
             return;
         }
-        
-        
+
+
         if (color != value || me.allowReselect) {
             el = me.el;
 
@@ -216,7 +220,7 @@ cp.colors = ['000000', '993300', '333300'];
             }
         }
     },
-    
+
 <span id='Ext-picker-Color-method-getValue'>    /**
 </span>     * Get the currently selected color value.
      * @return {String} value The selected value. Null if nothing is selected.

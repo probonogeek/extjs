@@ -26,7 +26,7 @@ Ext.String = {
     escapeRegexRe: /([-.*+?^${}()|[\]\/\\])/g,
 
     /**
-     * Convert certain characters (&, <, >, and ') to their HTML character equivalents for literal display in web pages.
+     * Convert certain characters (&, <, >, and ") to their HTML character equivalents for literal display in web pages.
      * @param {String} value The string to encode
      * @return {String} The encoded text
      * @method
@@ -53,7 +53,7 @@ Ext.String = {
     })(),
 
     /**
-     * Convert certain characters (&, <, >, and ') from their HTML character equivalents.
+     * Convert certain characters (&, <, >, and ") from their HTML character equivalents.
      * @param {String} value The string to decode
      * @return {String} The decoded text
      * @method
@@ -221,6 +221,24 @@ var s = Ext.String.format('&lt;div class="{0}">{1}&lt;/div>', cls, text);
         return format.replace(Ext.String.formatRe, function(m, i) {
             return args[i];
         });
+    },
+
+    /**
+     * Returns a string with a specified number of repititions a given string pattern.
+     * The pattern be separated by a different string.
+     *
+     *      var s = Ext.String.repeat('---', 4); // = '------------'
+     *      var t = Ext.String.repeat('--', 3, '/'); // = '--/--/--'
+     *
+     * @param {String} pattern The pattern to repeat.
+     * @param {Number} count The number of times to repeat the pattern (may be 0).
+     * @param {String} sep An option string to separate each pattern.
+     */
+    repeat: function(pattern, count, sep) {
+        for (var buf = [], i = count; i--; ) {
+            buf.push(pattern);
+        }
+        return buf.join(sep || '');
     }
 };
 

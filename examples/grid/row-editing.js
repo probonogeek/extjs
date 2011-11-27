@@ -126,7 +126,7 @@ Ext.onReady(function(){
             header: 'Start Date',
             dataIndex: 'start',
             width: 90,
-            field: {
+            editor: {
                 xtype: 'datefield',
                 allowBlank: false,
                 format: 'm/d/Y',
@@ -167,14 +167,14 @@ Ext.onReady(function(){
             handler : function() {
                 rowEditing.cancelEdit();
 
-                // Create a record instance through the ModelManager
-                var r = Ext.ModelManager.create({
+                // Create a model instance
+                var r = Ext.create('Employee', {
                     name: 'New Guy',
                     email: 'new@sencha-test.com',
                     start: new Date(),
                     salary: 50000,
                     active: true
-                }, 'Employee');
+                });
 
                 store.insert(0, r);
                 rowEditing.startEdit(0, 0);

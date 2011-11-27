@@ -23,7 +23,7 @@ Ext.define('Ext.draw.engine.Svg', {
 
     extend: 'Ext.draw.Surface',
 
-    requires: ['Ext.draw.Draw', 'Ext.draw.Sprite', 'Ext.draw.Matrix', 'Ext.core.Element'],
+    requires: ['Ext.draw.Draw', 'Ext.draw.Sprite', 'Ext.draw.Matrix', 'Ext.Element'],
 
     /* End Definitions */
 
@@ -580,17 +580,19 @@ Ext.define('Ext.draw.engine.Svg', {
      * @param {Ext.draw.Sprite} sprite
      */
     applyZIndex: function(sprite) {
-        var idx = this.normalizeSpriteCollection(sprite),
+        var me = this,
+            items = me.items,
+            idx = items.indexOf(sprite),
             el = sprite.el,
             prevEl;
-        if (this.el.dom.childNodes[idx + 2] !== el.dom) { //shift by 2 to account for defs and bg rect 
+        if (me.el.dom.childNodes[idx + 2] !== el.dom) { //shift by 2 to account for defs and bg rect
             if (idx > 0) {
                 // Find the first previous sprite which has its DOM element created already
                 do {
-                    prevEl = this.items.getAt(--idx).el;
+                    prevEl = items.getAt(--idx).el;
                 } while (!prevEl && idx > 0);
             }
-            el.insertAfter(prevEl || this.bgRect);
+            el.insertAfter(prevEl || me.bgRect);
         }
         sprite.zIndexDirty = false;
     },

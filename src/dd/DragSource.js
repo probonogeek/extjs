@@ -27,30 +27,30 @@ Ext.define('Ext.dd.DragSource', {
     /**
      * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
-     * interact with other drag drop objects in the same group (defaults to undefined).
+     * interact with other drag drop objects in the same group.
      */
 
     /**
-     * @cfg {String} dropAllowed
-     * The CSS class returned to the drag source when drop is allowed (defaults to "x-dd-drop-ok").
+     * @cfg {String} [dropAllowed="x-dd-drop-ok"]
+     * The CSS class returned to the drag source when drop is allowed.
      */
-
     dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
     /**
-     * @cfg {String} dropNotAllowed
-     * The CSS class returned to the drag source when drop is not allowed (defaults to "x-dd-drop-nodrop").
+     * @cfg {String} [dropNotAllowed="x-dd-drop-nodrop"]
+     * The CSS class returned to the drag source when drop is not allowed.
      */
     dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 
     /**
      * @cfg {Boolean} animRepair
-     * Defaults to true. If true, animates the proxy element back to the position of the handle element used to trigger the drag.
+     * If true, animates the proxy element back to the position of the handle element used to trigger the drag.
      */
     animRepair: true,
 
     /**
-     * @cfg {String} repairHighlightColor The color to use when visually highlighting the drag source in the afterRepair
-     * method after a failed drop (defaults to 'c3daf9' - light blue). The color must be a 6 digit hex value, without
+     * @cfg {String} repairHighlightColor
+     * The color to use when visually highlighting the drag source in the afterRepair
+     * method after a failed drop (defaults to light blue). The color must be a 6 digit hex value, without
      * a preceding '#'.
      */
     repairHighlightColor: 'c3daf9',
@@ -58,7 +58,7 @@ Ext.define('Ext.dd.DragSource', {
     /**
      * Creates new drag-source.
      * @constructor
-     * @param {Mixed} el The container element
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
      * @param {Object} config (optional) Config object.
      */
     constructor: function(el, config) {
@@ -253,7 +253,7 @@ Ext.define('Ext.dd.DragSource', {
              * @param {Object} target The target DD
              * @param {Event} e The event object
              * @param {String} id The id of the dropped element
-             * @method afterInvalidDrop
+             * @method afterValidDrop
              */
             this.afterValidDrop(target, e, id);
         }

@@ -13,10 +13,6 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.ComponentQuery
- * @extends Object
- * @singleton
- *
  * Provides searching of Components within Ext.ComponentManager (globally) or a specific
  * Ext.container.Container on the document with a similar syntax to a CSS selector.
  *
@@ -63,6 +59,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * Default pseudos include:
  *
  * - not
+ * - last
  *
  * Queries return an array of components.
  * Here are some example queries.
@@ -244,28 +241,22 @@ Ext.define('Ext.ComponentQuery', {
             method: filterFnPattern
         }];
 
-    /**
-     * @class Ext.ComponentQuery.Query
-     * @extends Object
-     * @private
-     */
+    // @class Ext.ComponentQuery.Query
+    // This internal class is completely hidden in documentation.
     cq.Query = Ext.extend(Object, {
         constructor: function(cfg) {
             cfg = cfg || {};
             Ext.apply(this, cfg);
         },
 
-        /**
-         * @private
-         * Executes this Query upon the selected root.
-         * The root provides the initial source of candidate Component matches which are progressively
-         * filtered by iterating through this Query's operations cache.
-         * If no root is provided, all registered Components are searched via the ComponentManager.
-         * root may be a Container who's descendant Components are filtered
-         * root may be a Component with an implementation of getRefItems which provides some nested Components such as the
-         * docked items within a Panel.
-         * root may be an array of candidate Components to filter using this Query.
-         */
+        // Executes this Query upon the selected root.
+        // The root provides the initial source of candidate Component matches which are progressively
+        // filtered by iterating through this Query's operations cache.
+        // If no root is provided, all registered Components are searched via the ComponentManager.
+        // root may be a Container who's descendant Components are filtered
+        // root may be a Component with an implementation of getRefItems which provides some nested Components such as the
+        // docked items within a Panel.
+        // root may be an array of candidate Components to filter using this Query.
         execute : function(root) {
             var operations = this.operations,
                 i = 0,
@@ -356,6 +347,9 @@ Ext.define('Ext.ComponentQuery', {
                     }
                 }
                 return results;
+            },
+            last: function(components) {
+                return components[components.length - 1];
             }
         },
 
@@ -372,7 +366,7 @@ Ext.define('Ext.ComponentQuery', {
          * If omitted, all Components within the document are included in the search.
          * 
          * This parameter may also be an array of Components to filter according to the selector.</p>
-         * @returns {[Ext.Component]} The matched Components.
+         * @returns {Ext.Component[]} The matched Components.
          * 
          * @member Ext.ComponentQuery
          */

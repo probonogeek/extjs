@@ -163,7 +163,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
             boundList = me.boundList;
 
         if (oldStore && !initial && oldStore !== store && oldStore.autoDestroy) {
-            oldStore.destroy();
+            oldStore.destroyStore();
         }
 
         me.store = store ? Ext.data.StoreManager.lookup(store) : null;
@@ -181,10 +181,12 @@ Ext.define('Ext.ux.form.MultiSelect', {
         me.callParent(arguments);
 
         boundList = me.boundList = Ext.create('Ext.view.BoundList', {
+            deferInitialRefresh: false,
             multiSelect: true,
             store: me.store,
             displayField: me.displayField,
-            border: false
+            border: false,
+            disabled: me.disabled
         });
 
         selModel = boundList.getSelectionModel();
@@ -362,15 +364,23 @@ Ext.define('Ext.ux.form.MultiSelect', {
     },
 
     onDisable: function() {
-        this.callParent();
-        this.disabled = true;
-        this.updateReadOnly();
+        var me = this;
+        
+        me.callParent();
+        me.updateReadOnly();
+        if (me.boundList) {
+            me.boundList.disable();
+        }
     },
 
     onEnable: function() {
-        this.callParent();
-        this.disabled = false;
-        this.updateReadOnly();
+        var me = this;
+        
+        me.callParent();
+        me.updateReadOnly();
+        if (me.boundList) {
+            me.boundList.enable();
+        }
     },
 
     setReadOnly: function(readOnly) {

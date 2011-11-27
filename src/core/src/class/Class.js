@@ -16,194 +16,16 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
  * @class Ext.Class
- * 
- * Handles class creation throughout the whole framework. Note that most of the time {@link Ext#define Ext.define} should
- * be used instead, since it's a higher level wrapper that aliases to {@link Ext.ClassManager#create}
- * to enable namespacing and dynamic dependency resolution.
- * 
- * # Basic syntax: #
- * 
- *     Ext.define(className, properties);
- * 
- * in which `properties` is an object represent a collection of properties that apply to the class. See
- * {@link Ext.ClassManager#create} for more detailed instructions.
- * 
- *     Ext.define('Person', {
- *          name: 'Unknown',
- * 
- *          constructor: function(name) {
- *              if (name) {
- *                  this.name = name;
- *              }
- * 
- *              return this;
- *          },
- * 
- *          eat: function(foodType) {
- *              alert("I'm eating: " + foodType);
- * 
- *              return this;
- *          }
- *     });
- * 
- *     var aaron = new Person("Aaron");
- *     aaron.eat("Sandwich"); // alert("I'm eating: Sandwich");
- * 
- * Ext.Class has a powerful set of extensible {@link Ext.Class#registerPreprocessor pre-processors} which takes care of
- * everything related to class creation, including but not limited to inheritance, mixins, configuration, statics, etc.
- * 
- * # Inheritance: #
- * 
- *     Ext.define('Developer', {
- *          extend: 'Person',
- * 
- *          constructor: function(name, isGeek) {
- *              this.isGeek = isGeek;
- * 
- *              // Apply a method from the parent class' prototype
- *              this.callParent([name]);
- * 
- *              return this;
- * 
- *          },
- * 
- *          code: function(language) {
- *              alert("I'm coding in: " + language);
- * 
- *              this.eat("Bugs");
- * 
- *              return this;
- *          }
- *     });
- * 
- *     var jacky = new Developer("Jacky", true);
- *     jacky.code("JavaScript"); // alert("I'm coding in: JavaScript");
- *                               // alert("I'm eating: Bugs");
- * 
- * See {@link Ext.Base#callParent} for more details on calling superclass' methods
- * 
- * # Mixins: #
- * 
- *     Ext.define('CanPlayGuitar', {
- *          playGuitar: function() {
- *             alert("F#...G...D...A");
- *          }
- *     });
- * 
- *     Ext.define('CanComposeSongs', {
- *          composeSongs: function() { ... }
- *     });
- * 
- *     Ext.define('CanSing', {
- *          sing: function() {
- *              alert("I'm on the highway to hell...")
- *          }
- *     });
- * 
- *     Ext.define('Musician', {
- *          extend: 'Person',
- * 
- *          mixins: {
- *              canPlayGuitar: 'CanPlayGuitar',
- *              canComposeSongs: 'CanComposeSongs',
- *              canSing: 'CanSing'
- *          }
- *     })
- * 
- *     Ext.define('CoolPerson', {
- *          extend: 'Person',
- * 
- *          mixins: {
- *              canPlayGuitar: 'CanPlayGuitar',
- *              canSing: 'CanSing'
- *          },
- * 
- *          sing: function() {
- *              alert("Ahem....");
- * 
- *              this.mixins.canSing.sing.call(this);
- * 
- *              alert("[Playing guitar at the same time...]");
- * 
- *              this.playGuitar();
- *          }
- *     });
- * 
- *     var me = new CoolPerson("Jacky");
- * 
- *     me.sing(); // alert("Ahem...");
- *                // alert("I'm on the highway to hell...");
- *                // alert("[Playing guitar at the same time...]");
- *                // alert("F#...G...D...A");
- * 
- * # Config: #
- * 
- *     Ext.define('SmartPhone', {
- *          config: {
- *              hasTouchScreen: false,
- *              operatingSystem: 'Other',
- *              price: 500
- *          },
- * 
- *          isExpensive: false,
- * 
- *          constructor: function(config) {
- *              this.initConfig(config);
- * 
- *              return this;
- *          },
- * 
- *          applyPrice: function(price) {
- *              this.isExpensive = (price > 500);
- * 
- *              return price;
- *          },
- * 
- *          applyOperatingSystem: function(operatingSystem) {
- *              if (!(/^(iOS|Android|BlackBerry)$/i).test(operatingSystem)) {
- *                  return 'Other';
- *              }
- * 
- *              return operatingSystem;
- *          }
- *     });
- * 
- *     var iPhone = new SmartPhone({
- *          hasTouchScreen: true,
- *          operatingSystem: 'iOS'
- *     });
- * 
- *     iPhone.getPrice(); // 500;
- *     iPhone.getOperatingSystem(); // 'iOS'
- *     iPhone.getHasTouchScreen(); // true;
- *     iPhone.hasTouchScreen(); // true
- * 
- *     iPhone.isExpensive; // false;
- *     iPhone.setPrice(600);
- *     iPhone.getPrice(); // 600
- *     iPhone.isExpensive; // true;
- * 
- *     iPhone.setOperatingSystem('AlienOS');
- *     iPhone.getOperatingSystem(); // 'Other'
- * 
- * # Statics: #
- * 
- *     Ext.define('Computer', {
- *          statics: {
- *              factory: function(brand) {
- *                 // 'this' in static methods refer to the class itself
- *                  return new this(brand);
- *              }
- *          },
- * 
- *          constructor: function() { ... }
- *     });
- * 
- *     var dellComputer = Computer.factory('Dell');
- * 
- * Also see {@link Ext.Base#statics} and {@link Ext.Base#self} for more details on accessing
- * static properties within class methods
  *
+ * Handles class creation throughout the framework. This is a low level factory that is used by Ext.ClassManager and generally
+ * should not be used directly. If you choose to use Ext.Class you will lose out on the namespace, aliasing and depency loading
+ * features made available by Ext.ClassManager. The only time you would use Ext.Class directly is to create an anonymous class.
+ *
+ * If you wish to create a class you should use {@link Ext#define Ext.define} which aliases
+ * {@link Ext.ClassManager#create Ext.ClassManager.create} to enable namespacing and dynamic dependency resolution.
+ *
+ * Ext.Class is the factory and **not** the superclass of everything. For the base class that **all** Ext classes inherit
+ * from, see {@link Ext.Base}.
  */
 (function() {
 
@@ -222,12 +44,12 @@ If you are unsure which license is appropriate for your use, please contact the 
      * @method constructor
      * Creates new class.
      * @param {Object} classData An object represent the properties of this class
-     * @param {Function} createdFn Optional, the callback function to be executed when this class is fully created.
+     * @param {Function} createdFn (Optional) The callback function to be executed when this class is fully created.
      * Note that the creation process can be asynchronous depending on the pre-processors used.
      * @return {Ext.Base} The newly created class
      */
     Ext.Class = Class = function(newClass, classData, onClassCreated) {
-        if (typeof newClass !== 'function') {
+        if (typeof newClass != 'function') {
             onClassCreated = classData;
             classData = newClass;
             newClass = function() {
@@ -243,7 +65,7 @@ If you are unsure which license is appropriate for your use, please contact the 
             registeredPreprocessors = Class.getPreprocessors(),
             index = 0,
             preprocessors = [],
-            preprocessor, preprocessors, staticPropertyName, process, i, j, ln;
+            preprocessor, staticPropertyName, process, i, j, ln;
 
         for (i = 0, ln = baseStaticProperties.length; i < ln; i++) {
             staticPropertyName = baseStaticProperties[i];
@@ -255,7 +77,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         for (j = 0, ln = preprocessorStack.length; j < ln; j++) {
             preprocessor = preprocessorStack[j];
 
-            if (typeof preprocessor === 'string') {
+            if (typeof preprocessor == 'string') {
                 preprocessor = registeredPreprocessors[preprocessor];
 
                 if (!preprocessor.always) {
@@ -272,7 +94,7 @@ If you are unsure which license is appropriate for your use, please contact the 
             }
         }
 
-        classData.onClassCreated = onClassCreated;
+        classData.onClassCreated = onClassCreated || Ext.emptyFn;
 
         classData.onBeforeClassCreated = function(cls, data) {
             onClassCreated = data.onClassCreated;
@@ -282,9 +104,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
             cls.implement(data);
 
-            if (onClassCreated) {
-                onClassCreated.call(cls, cls);
-            }
+            onClassCreated.call(cls, cls);
         };
 
         process = function(cls, data) {
@@ -313,29 +133,27 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Register a new pre-processor to be used during the class creation process
          *
-         * @member Ext.Class registerPreprocessor
+         * @member Ext.Class
          * @param {String} name The pre-processor's name
          * @param {Function} fn The callback function to be executed. Typical format:
-
-    function(cls, data, fn) {
-        // Your code here
-
-        // Execute this when the processing is finished.
-        // Asynchronous processing is perfectly ok
-        if (fn) {
-            fn.call(this, cls, data);
-        }
-    });
-
-         * Passed arguments for this function are:
          *
-         * - `{Function} cls`: The created class
-         * - `{Object} data`: The set of properties passed in {@link Ext.Class} constructor
-         * - `{Function} fn`: The callback function that <b>must</b> to be executed when this pre-processor finishes,
+         *     function(cls, data, fn) {
+         *         // Your code here
+         *
+         *         // Execute this when the processing is finished.
+         *         // Asynchronous processing is perfectly ok
+         *         if (fn) {
+         *             fn.call(this, cls, data);
+         *         }
+         *     });
+         *
+         * @param {Function} fn.cls The created class
+         * @param {Object} fn.data The set of properties passed in {@link Ext.Class} constructor
+         * @param {Function} fn.fn The callback function that **must** to be executed when this pre-processor finishes,
          * regardless of whether the processing is synchronous or aynchronous
          *
          * @return {Ext.Class} this
-         * @markdown
+         * @static
          */
         registerPreprocessor: function(name, fn, always) {
             this.preprocessors[name] = {
@@ -352,6 +170,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * @param {String} name
          * @return {Function} preprocessor
+         * @static
          */
         getPreprocessor: function(name) {
             return this.preprocessors[name];
@@ -364,7 +183,8 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Retrieve the array stack of default pre-processors
          *
-         * @return {Function} defaultPreprocessors
+         * @return {Function[]} defaultPreprocessors
+         * @static
          */
         getDefaultPreprocessors: function() {
             return this.defaultPreprocessors || [];
@@ -373,8 +193,9 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Set the default array stack of default pre-processors
          *
-         * @param {Array} preprocessors
+         * @param {Function/Function[]} preprocessors
          * @return {Ext.Class} this
+         * @static
          */
         setDefaultPreprocessors: function(preprocessors) {
             this.defaultPreprocessors = Ext.Array.from(preprocessors);
@@ -383,30 +204,30 @@ If you are unsure which license is appropriate for your use, please contact the 
         },
 
         /**
-         * Insert this pre-processor at a specific position in the stack, optionally relative to
+         * Inserts this pre-processor at a specific position in the stack, optionally relative to
          * any existing pre-processor. For example:
-
-    Ext.Class.registerPreprocessor('debug', function(cls, data, fn) {
-        // Your code here
-
-        if (fn) {
-            fn.call(this, cls, data);
-        }
-    }).insertDefaultPreprocessor('debug', 'last');
-
+         *
+         *     Ext.Class.registerPreprocessor('debug', function(cls, data, fn) {
+         *         // Your code here
+         *
+         *         if (fn) {
+         *             fn.call(this, cls, data);
+         *         }
+         *     }).setDefaultPreprocessorPosition('debug', 'last');
+         *
          * @param {String} name The pre-processor name. Note that it needs to be registered with
-         * {@link Ext#registerPreprocessor registerPreprocessor} before this
+         * {@link #registerPreprocessor registerPreprocessor} before this
          * @param {String} offset The insertion position. Four possible values are:
          * 'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)
          * @param {String} relativeName
          * @return {Ext.Class} this
-         * @markdown
+         * @static
          */
         setDefaultPreprocessorPosition: function(name, offset, relativeName) {
             var defaultPreprocessors = this.defaultPreprocessors,
                 index;
 
-            if (typeof offset === 'string') {
+            if (typeof offset == 'string') {
                 if (offset === 'first') {
                     defaultPreprocessors.unshift(name);
 
@@ -478,6 +299,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         delete data.extend;
 
+        //<feature classSystem.inheritableStatics>
         // Statics inheritance
         parentStatics = parentPrototype.$inheritableStatics;
 
@@ -490,7 +312,9 @@ If you are unsure which license is appropriate for your use, please contact the 
                 }
             }
         }
+        //</feature>
 
+        //<feature classSystem.config>
         // Merge the parent class' config object without referencing it
         if (parentPrototype.config) {
             clsPrototype.config = Ext.Object.merge({}, parentPrototype.config);
@@ -498,7 +322,9 @@ If you are unsure which license is appropriate for your use, please contact the 
         else {
             clsPrototype.config = {};
         }
+        //</feature>
 
+        //<feature classSystem.onClassExtended>
         if (clsPrototype.$onExtended) {
             clsPrototype.$onExtended.call(cls, cls, data);
         }
@@ -507,9 +333,11 @@ If you are unsure which license is appropriate for your use, please contact the 
             clsPrototype.$onExtended = data.onClassExtended;
             delete data.onClassExtended;
         }
+        //</feature>
 
     }, true);
 
+    //<feature classSystem.statics>
     /**
      * @cfg {Object} statics
      * List of static methods for this class. For example:
@@ -528,69 +356,26 @@ If you are unsure which license is appropriate for your use, please contact the 
      *     var dellComputer = Computer.factory('Dell');
      */
     Class.registerPreprocessor('statics', function(cls, data) {
-        var statics = data.statics,
-            name;
-
-        for (name in statics) {
-            if (statics.hasOwnProperty(name)) {
-                cls[name] = statics[name];
-            }
-        }
+        cls.addStatics(data.statics);
 
         delete data.statics;
     });
+    //</feature>
 
+    //<feature classSystem.inheritableStatics>
     /**
      * @cfg {Object} inheritableStatics
      * List of inheritable static methods for this class.
      * Otherwise just like {@link #statics} but subclasses inherit these methods.
      */
     Class.registerPreprocessor('inheritableStatics', function(cls, data) {
-        var statics = data.inheritableStatics,
-            inheritableStatics,
-            prototype = cls.prototype,
-            name;
-
-        inheritableStatics = prototype.$inheritableStatics;
-
-        if (!inheritableStatics) {
-            inheritableStatics = prototype.$inheritableStatics = [];
-        }
-
-        for (name in statics) {
-            if (statics.hasOwnProperty(name)) {
-                cls[name] = statics[name];
-                inheritableStatics.push(name);
-            }
-        }
+        cls.addInheritableStatics(data.inheritableStatics);
 
         delete data.inheritableStatics;
     });
+    //</feature>
 
-    /**
-     * @cfg {Object} mixins
-     * List of classes to mix into this class. For example:
-     *
-     *     Ext.define('CanSing', {
-     *          sing: function() {
-     *              alert("I'm on the highway to hell...")
-     *          }
-     *     });
-     *
-     *     Ext.define('Musician', {
-     *          extend: 'Person',
-     *
-     *          mixins: {
-     *              canSing: 'CanSing'
-     *          }
-     *     })
-     */
-    Class.registerPreprocessor('mixins', function(cls, data) {
-        cls.mixin(data.mixins);
-
-        delete data.mixins;
-    });
-
+    //<feature classSystem.config>
     /**
      * @cfg {Object} config
      * List of configuration options with their default values, for which automatically
@@ -637,7 +422,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                 data[setter] = function(val) {
                     var ret = this[apply].call(this, val, this[pName]);
 
-                    if (ret !== undefined) {
+                    if (typeof ret != 'undefined') {
                         this[pName] = ret;
                     }
 
@@ -655,9 +440,71 @@ If you are unsure which license is appropriate for your use, please contact the 
         Ext.Object.merge(prototype.config, data.config);
         delete data.config;
     });
+    //</feature>
 
-    Class.setDefaultPreprocessors(['extend', 'statics', 'inheritableStatics', 'mixins', 'config']);
+    //<feature classSystem.mixins>
+    /**
+     * @cfg {Object} mixins
+     * List of classes to mix into this class. For example:
+     *
+     *     Ext.define('CanSing', {
+     *          sing: function() {
+     *              alert("I'm on the highway to hell...")
+     *          }
+     *     });
+     *
+     *     Ext.define('Musician', {
+     *          extend: 'Person',
+     *
+     *          mixins: {
+     *              canSing: 'CanSing'
+     *          }
+     *     })
+     */
+    Class.registerPreprocessor('mixins', function(cls, data) {
+        var mixins = data.mixins,
+            name, mixin, i, ln;
 
+        delete data.mixins;
+
+        Ext.Function.interceptBefore(data, 'onClassCreated', function(cls) {
+            if (mixins instanceof Array) {
+                for (i = 0,ln = mixins.length; i < ln; i++) {
+                    mixin = mixins[i];
+                    name = mixin.prototype.mixinId || mixin.$className;
+
+                    cls.mixin(name, mixin);
+                }
+            }
+            else {
+                for (name in mixins) {
+                    if (mixins.hasOwnProperty(name)) {
+                        cls.mixin(name, mixins[name]);
+                    }
+                }
+            }
+        });
+    });
+
+    //</feature>
+
+    Class.setDefaultPreprocessors([
+        'extend'
+        //<feature classSystem.statics>
+        ,'statics'
+        //</feature>
+        //<feature classSystem.inheritableStatics>
+        ,'inheritableStatics'
+        //</feature>
+        //<feature classSystem.config>
+        ,'config'
+        //</feature>
+        //<feature classSystem.mixins>
+        ,'mixins'
+        //</feature>
+    ]);
+
+    //<feature classSystem.backwardsCompatible>
     // Backwards compatible
     Ext.extend = function(subclass, superclass, members) {
         if (arguments.length === 2 && Ext.isObject(superclass)) {
@@ -673,7 +520,21 @@ If you are unsure which license is appropriate for your use, please contact the 
         }
 
         members.extend = superclass;
-        members.preprocessors = ['extend', 'mixins', 'config', 'statics'];
+        members.preprocessors = [
+            'extend'
+            //<feature classSystem.statics>
+            ,'statics'
+            //</feature>
+            //<feature classSystem.inheritableStatics>
+            ,'inheritableStatics'
+            //</feature>
+            //<feature classSystem.mixins>
+            ,'mixins'
+            //</feature>
+            //<feature classSystem.config>
+            ,'config'
+            //</feature>
+        ];
 
         if (subclass) {
             cls = new Class(subclass, members);
@@ -692,6 +553,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         return cls;
     };
+    //</feature>
 
 })();
 

@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.override(Ext.core.Element, {
+Ext.override(Ext.Element, {
     /**
      * Returns true if this element is scrollable.
      * @return {Boolean}
@@ -65,7 +65,7 @@ Ext.override(Ext.core.Element, {
      * @param {String} side Either "left" for scrollLeft values or "top" for scrollTop values.
      * @param {Number} value The new scroll value
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Element} this
+     * @return {Ext.Element} this
      */
     scrollTo : function(side, value, animate) {
         //check if we're scrolling top or left
@@ -93,10 +93,10 @@ Ext.override(Ext.core.Element, {
 
     /**
      * Scrolls this element into view within the passed container.
-     * @param {Mixed} container (optional) The container element to scroll (defaults to document.body).  Should be a
-     * string (id), dom node, or Ext.core.Element.
+     * @param {String/HTMLElement/Ext.Element} container (optional) The container element to scroll (defaults to document.body).  Should be a
+     * string (id), dom node, or Ext.Element.
      * @param {Boolean} hscroll (optional) False to disable horizontal scroll (defaults to true)
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     scrollIntoView : function(container, hscroll) {
         container = Ext.getDom(container) || Ext.getBody().dom;

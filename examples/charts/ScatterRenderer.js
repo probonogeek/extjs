@@ -396,9 +396,11 @@ Ext.onReady(function () {
                ]
     });
 
-    var win = Ext.create('Ext.Window', {
+     var win = Ext.create('Ext.Window', {
         width: 800,
         height: 600,
+        minHeight: 400,
+        minWidth: 550,
         hidden: false,
         maximizable: true,
         title: 'Scatter Chart Renderer',

@@ -13,72 +13,76 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.layout.container.Border
- * @extends Ext.layout.container.Container
- * <p>This is a multi-pane, application-oriented UI layout style that supports multiple
- * nested panels, automatic bars between regions and built-in
- * {@link Ext.panel.Panel#collapsible expanding and collapsing} of regions.</p>
- * <p>This class is intended to be extended or created via the <code>layout:'border'</code>
- * {@link Ext.container.Container#layout} config, and should generally not need to be created directly
- * via the new keyword.</p>
- * {@img Ext.layout.container.Border/Ext.layout.container.Border.png Ext.layout.container.Border container layout}
- * <p>Example usage:</p>
- * <pre><code>
-     Ext.create('Ext.panel.Panel', {
-        width: 500,
-        height: 400,
-        title: 'Border Layout',
-        layout: 'border',
-        items: [{
-            title: 'South Region is resizable',
-            region: 'south',     // position for region
-            xtype: 'panel',
-            height: 100,
-            split: true,         // enable resizing
-            margins: '0 5 5 5'
-        },{
-            // xtype: 'panel' implied by default
-            title: 'West Region is collapsible',
-            region:'west',
-            xtype: 'panel',
-            margins: '5 0 0 5',
-            width: 200,
-            collapsible: true,   // make collapsible
-            id: 'west-region-container',
-            layout: 'fit'
-        },{
-            title: 'Center Region',
-            region: 'center',     // center region is required, no width/height specified
-            xtype: 'panel',
-            layout: 'fit',
-            margins: '5 5 0 0'
-        }],
-        renderTo: Ext.getBody()
-    });
-</code></pre>
- * <p><b><u>Notes</u></b>:</p><div class="mdetail-params"><ul>
- * <li>Any Container using the Border layout <b>must</b> have a child item with <code>region:'center'</code>.
- * The child item in the center region will always be resized to fill the remaining space not used by
- * the other regions in the layout.</li>
- * <li>Any child items with a region of <code>west</code> or <code>east</code> may be configured with either
- * an initial <code>width</code>, or a {@link Ext.layout.container.Box#flex} value, or an initial percentage width <b>string</b> (Which is simply divided by 100 and used as a flex value). The 'center' region has a flex value of <code>1</code>.</li>
- * <li>Any child items with a region of <code>north</code> or <code>south</code> may be configured with either
- * an initial <code>height</code>, or a {@link Ext.layout.container.Box#flex} value, or an initial percentage height <b>string</b> (Which is simply divided by 100 and used as a flex value). The 'center' region has a flex value of <code>1</code>.</li>
- * <li>The regions of a BorderLayout are <b>fixed at render time</b> and thereafter, its child Components may not be removed or added</b>.To add/remove
- * Components within a BorderLayout, have them wrapped by an additional Container which is directly
- * managed by the BorderLayout.  If the region is to be collapsible, the Container used directly
- * by the BorderLayout manager should be a Panel.  In the following example a Container (an Ext.panel.Panel)
- * is added to the west region:<pre><code>
-wrc = {@link Ext#getCmp Ext.getCmp}('west-region-container');
-wrc.{@link Ext.container.Container#removeAll removeAll}();
-wrc.{@link Ext.container.Container#add add}({
-    title: 'Added Panel',
-    html: 'Some content'
-});
- * </code></pre>
- * </li>
- * <li><b>There is no BorderLayout.Region class in ExtJS 4.0+</b></li>
- * </ul></div>
+ * This is a multi-pane, application-oriented UI layout style that supports multiple nested panels, automatic bars
+ * between regions and built-in {@link Ext.panel.Panel#collapsible expanding and collapsing} of regions.
+ *
+ * This class is intended to be extended or created via the `layout:'border'` {@link Ext.container.Container#layout}
+ * config, and should generally not need to be created directly via the new keyword.
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         width: 500,
+ *         height: 400,
+ *         title: 'Border Layout',
+ *         layout: 'border',
+ *         items: [{
+ *             title: 'South Region is resizable',
+ *             region: 'south',     // position for region
+ *             xtype: 'panel',
+ *             height: 100,
+ *             split: true,         // enable resizing
+ *             margins: '0 5 5 5'
+ *         },{
+ *             // xtype: 'panel' implied by default
+ *             title: 'West Region is collapsible',
+ *             region:'west',
+ *             xtype: 'panel',
+ *             margins: '5 0 0 5',
+ *             width: 200,
+ *             collapsible: true,   // make collapsible
+ *             id: 'west-region-container',
+ *             layout: 'fit'
+ *         },{
+ *             title: 'Center Region',
+ *             region: 'center',     // center region is required, no width/height specified
+ *             xtype: 'panel',
+ *             layout: 'fit',
+ *             margins: '5 5 0 0'
+ *         }],
+ *         renderTo: Ext.getBody()
+ *     });
+ *
+ * # Notes
+ *
+ * - Any Container using the Border layout **must** have a child item with `region:'center'`.
+ *   The child item in the center region will always be resized to fill the remaining space
+ *   not used by the other regions in the layout.
+ *
+ * - Any child items with a region of `west` or `east` may be configured with either an initial
+ *   `width`, or a {@link Ext.layout.container.Box#flex} value, or an initial percentage width
+ *   **string** (Which is simply divided by 100 and used as a flex value).
+ *   The 'center' region has a flex value of `1`.
+ *
+ * - Any child items with a region of `north` or `south` may be configured with either an initial
+ *   `height`, or a {@link Ext.layout.container.Box#flex} value, or an initial percentage height
+ *   **string** (Which is simply divided by 100 and used as a flex value).
+ *   The 'center' region has a flex value of `1`.
+ *
+ * - The regions of a BorderLayout are **fixed at render time** and thereafter, its child
+ *   Components may not be removed or added**. To add/remove Components within a BorderLayout,
+ *   have them wrapped by an additional Container which is directly managed by the BorderLayout.
+ *   If the region is to be collapsible, the Container used directly by the BorderLayout manager
+ *   should be a Panel. In the following example a Container (an Ext.panel.Panel) is added to
+ *   the west region:
+ *
+ *       wrc = {@link Ext#getCmp Ext.getCmp}('west-region-container');
+ *       wrc.{@link Ext.container.Container#removeAll removeAll}();
+ *       wrc.{@link Ext.container.Container#add add}({
+ *           title: 'Added Panel',
+ *           html: 'Some content'
+ *       });
+ *
+ * - **There is no BorderLayout.Region class in ExtJS 4.0+**
  */
 Ext.define('Ext.layout.container.Border', {
 
@@ -148,6 +152,8 @@ Ext.define('Ext.layout.container.Border', {
 
         // Delegate this operation to the shadow "V" or "H" box layout.
         this.shadowLayout.beforeLayout();
+
+        // note: don't call base because that does a renderItems again
     },
 
     renderItems: function(items, target) {
@@ -160,6 +166,14 @@ Ext.define('Ext.layout.container.Border', {
         //<debug>
         Ext.Error.raise('This should not be called');
         //</debug>
+    },
+
+    renderChildren: function() {
+        if (!this.borderLayoutInitialized) {
+            this.initializeBorderLayout();
+        }
+
+        this.shadowLayout.renderChildren();
     },
 
     /*
@@ -195,7 +209,7 @@ Ext.define('Ext.layout.container.Border', {
 
                 // This layout intercepts any initial collapsed state. Panel must not do this itself.
                 comp.borderCollapse = comp.collapsed;
-                delete comp.collapsed;
+                comp.collapsed = false;
 
                 comp.on({
                     beforecollapse: me.onBeforeRegionCollapse,
@@ -517,13 +531,16 @@ Ext.define('Ext.layout.container.Border', {
     },
 
     /**
-     * <p>Return the {@link Ext.panel.Panel#placeholder placeholder} Component to which the passed child Panel of the layout will collapse.
-     * By default, this will be a {@link Ext.panel.Header Header} component (Docked to the appropriate border). See {@link Ext.panel.Panel#placeholder placeholder}.
-     * config to customize this.</p>
-     * <p><b>Note that this will be a fully instantiated Component, but will only be <i>rendered</i> when the Panel is first collapsed.</b></p>
-     * @param {Panel} panel The child Panel of the layout for which to return the {@link Ext.panel.Panel#placeholder placeholder}.
-     * @returns {Component} The Panel's {@link Ext.panel.Panel#placeholder placeholder} unless the {@link Ext.panel.Panel#collapseMode collapseMode} is
-     * <code>'header'</code>, in which case <i>undefined</i> is returned.
+     * Return the {@link Ext.panel.Panel#placeholder placeholder} Component to which the passed child Panel of the
+     * layout will collapse. By default, this will be a {@link Ext.panel.Header Header} component (Docked to the
+     * appropriate border). See {@link Ext.panel.Panel#placeholder placeholder}. config to customize this.
+     *
+     * **Note that this will be a fully instantiated Component, but will only be _rendered_ when the Panel is first
+     * collapsed.**
+     * @param {Ext.panel.Panel} panel The child Panel of the layout for which to return the {@link
+     * Ext.panel.Panel#placeholder placeholder}.
+     * @return {Ext.Component} The Panel's {@link Ext.panel.Panel#placeholder placeholder} unless the {@link
+     * Ext.panel.Panel#collapseMode collapseMode} is `'header'`, in which case _undefined_ is returned.
      */
     getPlaceholder: function(comp) {
         var me = this,
@@ -626,7 +643,7 @@ Ext.define('Ext.layout.container.Border', {
      * @private
      * Calculates the size and positioning of the passed child item. Must be present because Panel's expand,
      * when configured with a flex, calls this method on its ownerCt's layout.
-     * @param {Component} child The child Component to calculate the box for
+     * @param {Ext.Component} child The child Component to calculate the box for
      * @return {Object} Object containing box measurements for the child. Properties are left,top,width,height.
      */
     calculateChildBox: function(comp) {
@@ -649,6 +666,15 @@ Ext.define('Ext.layout.container.Border', {
      * @returns {Boolean} false to inhibit the Panel from performing its own collapse.
      */
     onBeforeRegionCollapse: function(comp, direction, animate) {
+        if (comp.collapsedChangingLayout) {
+            //<debug warn>
+            if (Ext.global.console && Ext.global.console.warn) {
+                Ext.global.console.warn(Ext.getDisplayName(arguments.callee), 'aborted because the collapsed state is in the middle of changing');
+            }
+            //</debug>
+            return false;
+        }
+        comp.collapsedChangingLayout = true;
         var me = this,
             compEl = comp.el,
             width,
@@ -723,6 +749,7 @@ Ext.define('Ext.layout.container.Border', {
             delete me.shadowContainer.layout.layoutBusy;
             delete me.layoutBusy;
             delete me.owner.componentLayout.layoutBusy;
+            delete comp.collapsedChangingLayout;
 
             // Fire the collapse event: The Panel has in fact been collapsed, but by substitution of an alternative Component
             comp.collapsed = true;
@@ -771,7 +798,8 @@ Ext.define('Ext.layout.container.Border', {
 
     // Hijack the expand operation to remove the placeholder and slide the region back in.
     onBeforeRegionExpand: function(comp, animate) {
-        this.onPlaceHolderToolClick(null, null, null, {client: comp});
+        // We don't check for comp.collapsedChangingLayout here because onPlaceHolderToolClick does it
+        this.onPlaceHolderToolClick(null, null, null, {client: comp, shouldFireBeforeexpand: false});
         return false;
     },
 
@@ -793,6 +821,18 @@ Ext.define('Ext.layout.container.Border', {
             scsl = shadowContainer.suspendLayout,
             isFloating;
 
+        if (comp.collapsedChangingLayout) {
+            //<debug warn>
+            if (Ext.global.console && Ext.global.console.warn) {
+                Ext.global.console.warn(Ext.getDisplayName(arguments.callee), 'aborted because the collapsed state is in the middle of changing');
+            }
+            //</debug>
+            return false;
+        }
+        if (tool.shouldFireBeforeexpand !== false && comp.fireEvent('beforeexpand', comp, true) === false) {
+            return false;
+        }
+        comp.collapsedChangingLayout = true;
         // If the slide in is still going, stop it.
         // This will either leave the Component in its fully floated state (which is processed below)
         // or in its collapsed state. Either way, we expand it..
@@ -868,6 +908,7 @@ Ext.define('Ext.layout.container.Border', {
             delete me.shadowContainer.layout.layoutBusy;
             delete me.layoutBusy;
             delete me.owner.componentLayout.layoutBusy;
+            delete comp.collapsedChangingLayout;
 
             // In case it was floated out and they clicked the re-expand tool
             comp.removeCls(Ext.baseCSSPrefix + 'border-region-slide-in');

@@ -17,6 +17,10 @@
                 },
                 {
                     "path": "../../../../platform/src/data/",
+                    "name": "IdGenerator.js"
+                },
+                {
+                    "path": "../../../../platform/src/data/",
                     "name": "Operation.js"
                 },
                 {
@@ -126,10 +130,6 @@
                 {
                     "path": "../../../src/util/",
                     "name": "ClickRepeater.js"
-                },
-                {
-                    "path": "../../../../platform/src/",
-                    "name": "ElementLoader.js"
                 },
                 {
                     "path": "../../../src/util/",
@@ -328,22 +328,6 @@
                     "name": "DD.js"
                 },
                 {
-                    "path": "../../../../platform/src/",
-                    "name": "PluginManager.js"
-                },
-                {
-                    "path": "../../../../platform/src/",
-                    "name": "LoadMask.js"
-                },
-                {
-                    "path": "../../../../platform/src/",
-                    "name": "ComponentLoader.js"
-                },
-                {
-                    "path": "../../../../platform/src/layout/component/",
-                    "name": "Auto.js"
-                },
-                {
                     "path": "../../../../platform/src/state/",
                     "name": "Manager.js"
                 },
@@ -460,6 +444,18 @@
                     "name": "Request.js"
                 },
                 {
+                    "path": "../../../../platform/src/",
+                    "name": "PluginManager.js"
+                },
+                {
+                    "path": "../../../../platform/src/layout/component/",
+                    "name": "Auto.js"
+                },
+                {
+                    "path": "../../../src/",
+                    "name": "LoadMask.js"
+                },
+                {
                     "path": "../../../src/resizer/",
                     "name": "Resizer.js"
                 },
@@ -470,6 +466,10 @@
                 {
                     "path": "../../../src/util/",
                     "name": "CSS.js"
+                },
+                {
+                    "path": "../../../../platform/src/",
+                    "name": "ElementLoader.js"
                 },
                 {
                     "path": "../../../src/dd/",
@@ -506,6 +506,10 @@
                 {
                     "path": "../../../../platform/src/layout/container/",
                     "name": "AbstractFit.js"
+                },
+                {
+                    "path": "../../../../platform/src/",
+                    "name": "ComponentLoader.js"
                 },
                 {
                     "path": "../../../src/util/",
@@ -600,14 +604,6 @@
                     "name": "View.js"
                 },
                 {
-                    "path": "app/store/",
-                    "name": "Books.js"
-                },
-                {
-                    "path": "app/store/",
-                    "name": "Reviews.js"
-                },
-                {
                     "path": "../../../../platform/src/data/",
                     "name": "BelongsToAssociation.js"
                 },
@@ -636,12 +632,20 @@
                     "name": "Review.js"
                 },
                 {
+                    "path": "app/store/",
+                    "name": "Reviews.js"
+                },
+                {
                     "path": "../../../../platform/src/data/",
                     "name": "HasManyAssociation.js"
                 },
                 {
                     "path": "app/model/",
                     "name": "Book.js"
+                },
+                {
+                    "path": "app/store/",
+                    "name": "Books.js"
                 },
                 {
                     "path": "app/controller/",

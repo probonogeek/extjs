@@ -11,8 +11,11 @@
 Ext.define('User', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id', type: 'int'},
-        {name: 'name', type: 'string'}
+        { name: 'id', type: 'int' },
+        { name: 'name', type: 'string' },
+        { name: 'age', type: 'int' },
+        { name: 'bob', type: 'int' }
+
     ]
 });
 
@@ -29,11 +32,8 @@ Ext.onReady(function() {
             property: 'name',
             value: 'Ed'
         },
-        groupers: {
-            // group the users by age in ascending order
-            property: 'age',
-            direction: 'ASC'
-        },
+        groupField: 'age',
+        groupDir: 'DESC',
 
         proxy: {
             type: 'ajax',

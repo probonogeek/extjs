@@ -15,11 +15,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.layout.component.Component
  * @extends Ext.layout.Layout
+ *
+ * This class is intended to be extended or created via the {@link Ext.Component#componentLayout layout}
+ * configuration property.  See {@link Ext.Component#componentLayout} for additional details.
+ *
  * @private
- * <p>This class is intended to be extended or created via the <tt><b>{@link Ext.Component#componentLayout layout}</b></tt>
- * configuration property.  See <tt><b>{@link Ext.Component#componentLayout}</b></tt> for additional details.</p>
  */
-
 Ext.define('Ext.layout.component.Component', {
 
     /* Begin Definitions */
@@ -47,7 +48,7 @@ Ext.define('Ext.layout.component.Component', {
                     left: 0,
                     bottom: 0,
                     right: 0
-                }; 
+                };
             }
         }
         me.callParent(arguments);
@@ -67,8 +68,13 @@ Ext.define('Ext.layout.component.Component', {
         // Cache the size we began with so we can see if there has been any effect.
         me.previousComponentSize = me.lastComponentSize;
 
-        //Do not allow autoing of any dimensions which are fixed, unless we are being told to do so by the ownerCt's layout.
-        if (!isSetSize && ((!Ext.isNumber(width) && owner.isFixedWidth()) || (!Ext.isNumber(height) && owner.isFixedHeight())) && callingContainer !== ownerCt) {
+        // Do not allow autoing of any dimensions which are fixed
+        if (!isSetSize
+            && ((!Ext.isNumber(width) && owner.isFixedWidth()) ||
+                (!Ext.isNumber(height) && owner.isFixedHeight()))
+            // unless we are being told to do so by the ownerCt's layout
+            && callingContainer && callingContainer !== ownerCt) {
+            
             me.doContainerLayout();
             return false;
         }
@@ -99,8 +105,8 @@ Ext.define('Ext.layout.component.Component', {
     /**
     * Check if the new size is different from the current size and only
     * trigger a layout if it is necessary.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     needsLayout : function(width, height) {
         var me = this,
@@ -110,7 +116,7 @@ Ext.define('Ext.layout.component.Component', {
                 width: -Infinity,
                 height: -Infinity
             };
-        
+
         // If autoWidthing, or an explicitly different width is passed, then the width is being changed.
         widthBeingChanged  = !Ext.isDefined(width)  || me.lastComponentSize.width  !== width;
 
@@ -124,8 +130,8 @@ Ext.define('Ext.layout.component.Component', {
 
     /**
     * Set the size of any element supporting undefined, null, and values.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     setElementSize: function(el, width, height) {
         if (width !== undefined && height !== undefined) {
@@ -141,7 +147,7 @@ Ext.define('Ext.layout.component.Component', {
 
     /**
      * Returns the owner component's resize element.
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
      getTarget : function() {
          return this.owner.el;
@@ -150,7 +156,7 @@ Ext.define('Ext.layout.component.Component', {
     /**
      * <p>Returns the element into which rendering must take place. Defaults to the owner Component's encapsulating element.</p>
      * May be overridden in Component layout managers which implement an inner element.
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
     getRenderTarget : function() {
         return this.owner.el;
@@ -158,8 +164,8 @@ Ext.define('Ext.layout.component.Component', {
 
     /**
     * Set the size of the target element.
-    * @param {Mixed} width The new width to set.
-    * @param {Mixed} height The new height to set.
+    * @param {Number} width The new width to set.
+    * @param {Number} height The new height to set.
     */
     setTargetSize : function(width, height) {
         var me = this;
@@ -211,7 +217,7 @@ Ext.define('Ext.layout.component.Component', {
                     right: body.getMargin('r'),
                     bottom: body.getMargin('b'),
                     left: body.getMargin('l')
-                } 
+                }
             };
         }
         return this.targetInfo;
@@ -224,15 +230,14 @@ Ext.define('Ext.layout.component.Component', {
             ownerCtComponentLayout, ownerCtContainerLayout,
             curSize = this.lastComponentSize,
             prevSize = this.previousComponentSize,
-            widthChange  = (prevSize && curSize && curSize.width) ? curSize.width !== prevSize.width : true,
-            heightChange = (prevSize && curSize && curSize.height) ? curSize.height !== prevSize.height : true;
-
+            widthChange  = (prevSize && curSize && Ext.isNumber(curSize.width )) ? curSize.width  !== prevSize.width  : true,
+            heightChange = (prevSize && curSize && Ext.isNumber(curSize.height)) ? curSize.height !== prevSize.height : true;
 
         // If size has not changed, do not inform upstream layouts
         if (!ownerCt || (!widthChange && !heightChange)) {
             return;
         }
-        
+
         ownerCtComponentLayout = ownerCt.componentLayout;
         ownerCtContainerLayout = ownerCt.layout;
 

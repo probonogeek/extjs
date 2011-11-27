@@ -84,14 +84,14 @@ Ext.onReady(function(){
             header: 'Common Name',
             dataIndex: 'common',
             flex: 1,
-            field: {
+            editor: {
                 allowBlank: false
             }
         }, {
             header: 'Light',
             dataIndex: 'light',
             width: 130,
-            field: {
+            editor: {
                 xtype: 'combobox',
                 typeAhead: true,
                 triggerAction: 'all',
@@ -112,7 +112,7 @@ Ext.onReady(function(){
             width: 70,
             align: 'right',
             renderer: 'usMoney',
-            field: {
+            editor: {
                 xtype: 'numberfield',
                 allowBlank: false,
                 minValue: 0,
@@ -123,7 +123,7 @@ Ext.onReady(function(){
             dataIndex: 'availDate',
             width: 95,
             renderer: formatDate,
-            field: {
+            editor: {
                 xtype: 'datefield',
                 format: 'm/d/y',
                 minValue: '01/01/06',
@@ -147,14 +147,14 @@ Ext.onReady(function(){
         tbar: [{
             text: 'Add Plant',
             handler : function(){
-                // Create a record instance through the ModelManager
-                var r = Ext.ModelManager.create({
+                // Create a model instance
+                var r = Ext.create('Plant', {
                     common: 'New Plant 1',
                     light: 'Mostly Shady',
                     price: 0,
                     availDate: Ext.Date.clearTime(new Date()),
                     indoor: false
-                }, 'Plant');
+                });
                 store.insert(0, r);
                 cellEditing.startEditByPosition({row: 0, column: 0});
             }

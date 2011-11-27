@@ -1,5 +1,9 @@
 /* Styles used by Ext.ux.form.ItemSelector */
 
+.x-form-multiselect-body .x-boundlist .x-mask {
+    background: none;
+}
+
 .x-form-itemselector-body .x-form-item {
     margin: 0;
 }

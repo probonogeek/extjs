@@ -13,12 +13,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.core.Element.addMethods({
+Ext.Element.addMethods({
     /**
      * Convenience method for constructing a KeyMap
-     * @param {Number/Array/Object/String} key Either a string with the keys to listen for, the numeric key code, array of key codes or an object with the following options:
+     * @param {String/Number/Number[]/Object} key Either a string with the keys to listen for, the numeric key code, array of key codes or an object with the following options:
      * <code>{key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}</code>
      * @param {Function} fn The function to call
      * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the specified function is executed. Defaults to this Element.
@@ -55,7 +55,7 @@ Ext.core.Element.addMethods({
     }
 });
 
-//Import the newly-added Ext.core.Element functions into CompositeElementLite. We call this here because
-//Element.keys.js is the last extra Ext.core.Element include in the ext-all.js build
+//Import the newly-added Ext.Element functions into CompositeElementLite. We call this here because
+//Element.keys.js is the last extra Ext.Element include in the ext-all.js build
 Ext.CompositeElementLite.importElementMethods();
 

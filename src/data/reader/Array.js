@@ -63,16 +63,18 @@ Ext.define('Ext.data.reader.Array', {
         this.callParent(arguments);
         
         var fields = this.model.prototype.fields.items,
+            i = 0,
             length = fields.length,
             extractorFunctions = [],
-            i;
+            map;
         
-        for (i = 0; i < length; i++) {
+        for (; i < length; i++) {
+            map = fields[i].mapping;
             extractorFunctions.push(function(index) {
                 return function(data) {
                     return data[index];
                 };
-            }(fields[i].mapping || i));
+            }(map !== null ? map : i));
         }
         
         this.extractorFunctions = extractorFunctions;

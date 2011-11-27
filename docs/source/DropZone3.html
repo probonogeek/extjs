@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,255 +15,233 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-grid-header-DropZone'>/**
-</span> * @class Ext.grid.header.DropZone
+  <pre class="prettyprint lang-js"><span id='Ext-view-DropZone'>/**
+</span> * @class Ext.view.DropZone
  * @extends Ext.dd.DropZone
  * @private
  */
-Ext.define('Ext.grid.header.DropZone', {
+Ext.define('Ext.view.DropZone', {
     extend: 'Ext.dd.DropZone',
-    colHeaderCls: Ext.baseCSSPrefix + 'column-header',
-    proxyOffsets: [-4, -9],
 
-    constructor: function(headerCt){
-        this.headerCt = headerCt;
-        this.ddGroup = this.getDDGroup();
-        this.callParent([headerCt.el]);
-    },
+    indicatorHtml: '&lt;div class=&quot;x-grid-drop-indicator-left&quot;&gt;&lt;/div&gt;&lt;div class=&quot;x-grid-drop-indicator-right&quot;&gt;&lt;/div&gt;',
+    indicatorCls: 'x-grid-drop-indicator',
 
-    getDDGroup: function() {
-        return 'header-dd-zone-' + this.headerCt.up('[scrollerOwner]').id;
-    },
+    constructor: function(config) {
+        var me = this;
+        Ext.apply(me, config);
 
-    getTargetFromEvent : function(e){
-        return e.getTarget('.' + this.colHeaderCls);
-    },
-
-    getTopIndicator: function() {
-        if (!this.topIndicator) {
-            this.topIndicator = Ext.core.DomHelper.append(Ext.getBody(), {
-                cls: &quot;col-move-top&quot;,
-                html: &quot;&amp;#160;&quot;
-            }, true);
-        }
-        return this.topIndicator;
-    },
-
-    getBottomIndicator: function() {
-        if (!this.bottomIndicator) {
-            this.bottomIndicator = Ext.core.DomHelper.append(Ext.getBody(), {
-                cls: &quot;col-move-bottom&quot;,
-                html: &quot;&amp;#160;&quot;
-            }, true);
-        }
-        return this.bottomIndicator;
-    },
-
-    getLocation: function(e, t) {
-        var x      = e.getXY()[0],
-            region = Ext.fly(t).getRegion(),
-            pos, header;
-
-        if ((region.right - x) &lt;= (region.right - region.left) / 2) {
-            pos = &quot;after&quot;;
-        } else {
-            pos = &quot;before&quot;;
-        }
-        return {
-            pos: pos,
-            header: Ext.getCmp(t.id),
-            node: t
-        };
-    },
-
-    positionIndicator: function(draggedHeader, node, e){
-        var location = this.getLocation(e, node),
-            header = location.header,
-            pos    = location.pos,
-            nextHd = draggedHeader.nextSibling('gridcolumn:not([hidden])'),
-            prevHd = draggedHeader.previousSibling('gridcolumn:not([hidden])'),
-            region, topIndicator, bottomIndicator, topAnchor, bottomAnchor,
-            topXY, bottomXY, headerCtEl, minX, maxX;
-
-        // Cannot drag beyond non-draggable start column
-        if (!header.draggable &amp;&amp; header.getIndex() == 0) {
-            return false;
+        // Create a ddGroup unless one has been configured.
+        // User configuration of ddGroups allows users to specify which
+        // DD instances can interact with each other. Using one
+        // based on the id of the View would isolate it and mean it can only
+        // interact with a DragZone on the same View also using a generated ID.
+        if (!me.ddGroup) {
+            me.ddGroup = 'view-dd-zone-' + me.view.id;
         }
 
-        this.lastLocation = location;
+        // The DropZone's encapsulating element is the View's main element. It must be this because drop gestures
+        // may require scrolling on hover near a scrolling boundary. In Ext 4.x two DD instances may not use the
+        // same element, so a DragZone on this same View must use the View's parent element as its element.
+        me.callParent([me.view.el]);
+    },
 
-        if ((draggedHeader !== header) &amp;&amp;
-            ((pos === &quot;before&quot; &amp;&amp; nextHd !== header) ||
-            (pos === &quot;after&quot; &amp;&amp; prevHd !== header)) &amp;&amp;
-            !header.isDescendantOf(draggedHeader)) {
+//  Fire an event through the client DataView. Lock this DropZone during the event processing so that
+//  its data does not become corrupted by processing mouse events.
+    fireViewEvent: function() {
+        var me = this,
+            result;
 
-            // As we move in between different DropZones that are in the same
-            // group (such as the case when in a locked grid), invalidateDrop
-            // on the other dropZones.
-            var allDropZones = Ext.dd.DragDropManager.getRelated(this),
-                ln = allDropZones.length,
-                i  = 0,
-                dropZone;
+        me.lock();
+        result = me.view.fireEvent.apply(me.view, arguments);
+        me.unlock();
+        return result;
+    },
 
-            for (; i &lt; ln; i++) {
-                dropZone = allDropZones[i];
-                if (dropZone !== this &amp;&amp; dropZone.invalidateDrop) {
-                    dropZone.invalidateDrop();
+    getTargetFromEvent : function(e) {
+        var node = e.getTarget(this.view.getItemSelector()),
+            mouseY, nodeList, testNode, i, len, box;
+
+//      Not over a row node: The content may be narrower than the View's encapsulating element, so return the closest.
+//      If we fall through because the mouse is below the nodes (or there are no nodes), we'll get an onContainerOver call.
+        if (!node) {
+            mouseY = e.getPageY();
+            for (i = 0, nodeList = this.view.getNodes(), len = nodeList.length; i &lt; len; i++) {
+                testNode = nodeList[i];
+                box = Ext.fly(testNode).getBox();
+                if (mouseY &lt;= box.bottom) {
+                    return testNode;
                 }
             }
+        }
+        return node;
+    },
 
+    getIndicator: function() {
+        var me = this;
 
-            this.valid = true;
-            topIndicator = this.getTopIndicator();
-            bottomIndicator = this.getBottomIndicator();
-            if (pos === 'before') {
-                topAnchor = 'tl';
-                bottomAnchor = 'bl';
-            } else {
-                topAnchor = 'tr';
-                bottomAnchor = 'br';
-            }
-            topXY = header.el.getAnchorXY(topAnchor);
-            bottomXY = header.el.getAnchorXY(bottomAnchor);
+        if (!me.indicator) {
+            me.indicator = Ext.createWidget('component', {
+                html: me.indicatorHtml,
+                cls: me.indicatorCls,
+                ownerCt: me.view,
+                floating: true,
+                shadow: false
+            });
+        }
+        return me.indicator;
+    },
 
-            // constrain the indicators to the viewable section
-            headerCtEl = this.headerCt.el;
-            minX = headerCtEl.getLeft();
-            maxX = headerCtEl.getRight();
+    getPosition: function(e, node) {
+        var y      = e.getXY()[1],
+            region = Ext.fly(node).getRegion(),
+            pos;
 
-            topXY[0] = Ext.Number.constrain(topXY[0], minX, maxX);
-            bottomXY[0] = Ext.Number.constrain(bottomXY[0], minX, maxX);
-
-            // adjust by offsets, this is to center the arrows so that they point
-            // at the split point
-            topXY[0] -= 4;
-            topXY[1] -= 9;
-            bottomXY[0] -= 4;
-
-            // position and show indicators
-            topIndicator.setXY(topXY);
-            bottomIndicator.setXY(bottomXY);
-            topIndicator.show();
-            bottomIndicator.show();
-        // invalidate drop operation and hide indicators
+        if ((region.bottom - y) &gt;= (region.bottom - region.top) / 2) {
+            pos = &quot;before&quot;;
         } else {
-            this.invalidateDrop();
+            pos = &quot;after&quot;;
+        }
+        return pos;
+    },
+
+<span id='Ext-view-DropZone-method-containsRecordAtOffset'>    /**
+</span>     * @private Determines whether the record at the specified offset from the passed record
+     * is in the drag payload.
+     * @param records
+     * @param record
+     * @param offset
+     * @returns {Boolean} True if the targeted record is in the drag payload
+     */
+    containsRecordAtOffset: function(records, record, offset) {
+        if (!record) {
+            return false;
+        }
+        var view = this.view,
+            recordIndex = view.indexOf(record),
+            nodeBefore = view.getNode(recordIndex + offset),
+            recordBefore = nodeBefore ? view.getRecord(nodeBefore) : null;
+
+        return recordBefore &amp;&amp; Ext.Array.contains(records, recordBefore);
+    },
+
+    positionIndicator: function(node, data, e) {
+        var me = this,
+            view = me.view,
+            pos = me.getPosition(e, node),
+            overRecord = view.getRecord(node),
+            draggingRecords = data.records,
+            indicator, indicatorY;
+
+        if (!Ext.Array.contains(draggingRecords, overRecord) &amp;&amp; (
+            pos == 'before' &amp;&amp; !me.containsRecordAtOffset(draggingRecords, overRecord, -1) ||
+            pos == 'after' &amp;&amp; !me.containsRecordAtOffset(draggingRecords, overRecord, 1)
+        )) {
+            me.valid = true;
+
+            if (me.overRecord != overRecord || me.currentPosition != pos) {
+
+                indicatorY = Ext.fly(node).getY() - view.el.getY() - 1;
+                if (pos == 'after') {
+                    indicatorY += Ext.fly(node).getHeight();
+                }
+                me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, indicatorY);
+
+                // Cache the overRecord and the 'before' or 'after' indicator.
+                me.overRecord = overRecord;
+                me.currentPosition = pos;
+            }
+        } else {
+            me.invalidateDrop();
         }
     },
 
     invalidateDrop: function() {
-        this.valid = false;
-        this.hideIndicators();
-    },
-
-    onNodeOver: function(node, dragZone, e, data) {
-        if (data.header.el.dom !== node) {
-            this.positionIndicator(data.header, node, e);
+        if (this.valid) {
+            this.valid = false;
+            this.getIndicator().hide();
         }
-        return this.valid ? this.dropAllowed : this.dropNotAllowed;
     },
 
-    hideIndicators: function() {
-        this.getTopIndicator().hide();
-        this.getBottomIndicator().hide();
+    // The mouse is over a View node
+    onNodeOver: function(node, dragZone, e, data) {
+        var me = this;
+
+        if (!Ext.Array.contains(data.records, me.view.getRecord(node))) {
+            me.positionIndicator(node, data, e);
+        }
+        return me.valid ? me.dropAllowed : me.dropNotAllowed;
     },
 
-    onNodeOut: function() {
-        this.hideIndicators();
+    // Moved out of the DropZone without dropping.
+    // Remove drop position indicator
+    notifyOut: function(node, dragZone, e, data) {
+        var me = this;
+
+        me.callParent(arguments);
+        delete me.overRecord;
+        delete me.currentPosition;
+        if (me.indicator) {
+            me.indicator.hide();
+        }
+    },
+
+    // The mouse is past the end of all nodes (or there are no nodes)
+    onContainerOver : function(dd, e, data) {
+        var me = this,
+            view = me.view,
+            count = view.store.getCount();
+
+        // There are records, so position after the last one
+        if (count) {
+            me.positionIndicator(view.getNode(count - 1), data, e);
+        }
+
+        // No records, position the indicator at the top
+        else {
+            delete me.overRecord;
+            delete me.currentPosition;
+            me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, 0);
+            me.valid = true;
+        }
+        return me.dropAllowed;
+    },
+
+    onContainerDrop : function(dd, e, data) {
+        return this.onNodeDrop(dd, null, e, data);
     },
 
     onNodeDrop: function(node, dragZone, e, data) {
-        if (this.valid) {
-            this.invalidateDrop();
-            var hd = data.header,
-                lastLocation = this.lastLocation,
-                fromCt  = hd.ownerCt,
-                fromIdx = fromCt.items.indexOf(hd), // Container.items is a MixedCollection
-                toCt    = lastLocation.header.ownerCt,
-                toIdx   = toCt.items.indexOf(lastLocation.header),
-                headerCt = this.headerCt,
-                groupCt,
-                scrollerOwner;
+        var me = this,
+            dropped = false,
 
-            if (lastLocation.pos === 'after') {
-                toIdx++;
-            }
+            // Create a closure to perform the operation which the event handler may use.
+            // Users may now return &lt;code&gt;false&lt;/code&gt; from the beforedrop handler, and perform any kind
+            // of asynchronous processing such as an Ext.Msg.confirm, or an Ajax request,
+            // and complete the drop gesture at some point in the future by calling this function.
+            processDrop = function () {
+                me.invalidateDrop();
+                me.handleNodeDrop(data, me.overRecord, me.currentPosition);
+                dropped = true;
+                me.fireViewEvent('drop', node, data, me.overRecord, me.currentPosition);
+            },
+            performOperation = false;
 
-            // If we are dragging in between two HeaderContainers that have had the lockable
-            // mixin injected we will lock/unlock headers in between sections. Note that lockable
-            // does NOT currently support grouped headers.
-            if (fromCt !== toCt &amp;&amp; fromCt.lockableInjected &amp;&amp; toCt.lockableInjected &amp;&amp; toCt.lockedCt) {
-                scrollerOwner = fromCt.up('[scrollerOwner]');
-                scrollerOwner.lock(hd, toIdx);
-            } else if (fromCt !== toCt &amp;&amp; fromCt.lockableInjected &amp;&amp; toCt.lockableInjected &amp;&amp; fromCt.lockedCt) {
-                scrollerOwner = fromCt.up('[scrollerOwner]');
-                scrollerOwner.unlock(hd, toIdx);
-            } else {
-                // If dragging rightwards, then after removal, the insertion index will be one less when moving
-                // in between the same container.
-                if ((fromCt === toCt) &amp;&amp; (toIdx &gt; fromCt.items.indexOf(hd))) {
-                    toIdx--;
-                }
-
-                // Remove dragged header from where it was without destroying it or relaying its Container
-                if (fromCt !== toCt) {
-                    fromCt.suspendLayout = true;
-                    fromCt.remove(hd, false);
-                    fromCt.suspendLayout = false;
-                }
-
-                // Dragged the last header out of the fromCt group... The fromCt group must die
-                if (fromCt.isGroupHeader) {
-                    if (!fromCt.items.getCount()) {
-                        groupCt = fromCt.ownerCt;
-                        groupCt.suspendLayout = true;
-                        groupCt.remove(fromCt, false);
-                        fromCt.el.dom.parentNode.removeChild(fromCt.el.dom);
-                        groupCt.suspendLayout = false;
-                    } else {
-                        fromCt.minWidth = fromCt.getWidth() - hd.getWidth();
-                        fromCt.setWidth(fromCt.minWidth);
-                    }
-                }
-
-                // Move dragged header into its drop position
-                toCt.suspendLayout = true;
-                if (fromCt === toCt) {
-                    toCt.move(fromIdx, toIdx);
-                } else {
-                    toCt.insert(toIdx, hd);
-                }
-                toCt.suspendLayout = false;
-
-                // Group headers acquire the aggregate width of their child headers
-                // Therefore a child header may not flex; it must contribute a fixed width.
-                // But we restore the flex value when moving back into the main header container
-                if (toCt.isGroupHeader) {
-                    hd.savedFlex = hd.flex;
-                    delete hd.flex;
-                    hd.width = hd.getWidth();
-                    // When there was previously a flex, we need to ensure we don't count for the
-                    // border twice.
-                    toCt.minWidth = toCt.getWidth() + hd.getWidth() - (hd.savedFlex ? 1 : 0);
-                    toCt.setWidth(toCt.minWidth);
-                } else {
-                    if (hd.savedFlex) {
-                        hd.flex = hd.savedFlex;
-                        delete hd.width;
-                    }
-                }
-
-
-                // Refresh columns cache in case we remove an emptied group column
-                headerCt.purgeCache();
-                headerCt.doLayout();
-                headerCt.onHeaderMoved(hd, fromIdx, toIdx);
-                // Emptied group header can only be destroyed after the header and grid have been refreshed
-                if (!fromCt.items.getCount()) {
-                    fromCt.destroy();
+        if (me.valid) {
+            performOperation = me.fireViewEvent('beforedrop', node, data, me.overRecord, me.currentPosition, processDrop);
+            if (performOperation !== false) {
+                // If the processDrop function was called in the event handler, do not do it again.
+                if (!dropped) {
+                    processDrop();
                 }
             }
         }
+        return performOperation;
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.indicator);
+        delete this.indicator;
+        this.callParent();
     }
 });
 </pre>

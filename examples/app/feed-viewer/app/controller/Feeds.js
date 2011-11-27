@@ -73,6 +73,7 @@ Ext.define('FV.controller.Feeds', {
             feed = selected[0];
 
         if (feed) {
+            this.getFeedShow().setTitle(feed.get('name'));
             grid.enable();
             store.load({
                 params: {

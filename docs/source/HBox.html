@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,36 +16,35 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-layout-container-HBox'>/**
-</span> * @class Ext.layout.container.HBox
- * @extends Ext.layout.container.Box
- * &lt;p&gt;A layout that arranges items horizontally across a Container. This layout optionally divides available horizontal
- * space between child items containing a numeric &lt;code&gt;flex&lt;/code&gt; configuration.&lt;/p&gt;
+</span> * A layout that arranges items horizontally across a Container. This layout optionally divides available horizontal
+ * space between child items containing a numeric `flex` configuration.
+ *
  * This layout may also be used to set the heights of child items by configuring it with the {@link #align} option.
- * {@img Ext.layout.container.HBox/Ext.layout.container.HBox.png Ext.layout.container.HBox container layout}
- * Example usage:
-    Ext.create('Ext.Panel', {
-        width: 500,
-        height: 300,
-        title: &quot;HBoxLayout Panel&quot;,
-        layout: {
-            type: 'hbox',
-            align: 'stretch'
-        },
-        renderTo: document.body,
-        items: [{
-            xtype: 'panel',
-            title: 'Inner Panel One',
-            flex: 2
-        },{
-            xtype: 'panel',
-            title: 'Inner Panel Two',
-            flex: 1
-        },{
-            xtype: 'panel',
-            title: 'Inner Panel Three',
-            flex: 1
-        }]
-    });
+ *
+ *     @example
+ *     Ext.create('Ext.Panel', {
+ *         width: 500,
+ *         height: 300,
+ *         title: &quot;HBoxLayout Panel&quot;,
+ *         layout: {
+ *             type: 'hbox',
+ *             align: 'stretch'
+ *         },
+ *         renderTo: document.body,
+ *         items: [{
+ *             xtype: 'panel',
+ *             title: 'Inner Panel One',
+ *             flex: 2
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Inner Panel Two',
+ *             flex: 1
+ *         },{
+ *             xtype: 'panel',
+ *             title: 'Inner Panel Three',
+ *             flex: 1
+ *         }]
+ *     });
  */
 Ext.define('Ext.layout.container.HBox', {
 
@@ -54,23 +53,17 @@ Ext.define('Ext.layout.container.HBox', {
     alias: ['layout.hbox'],
     extend: 'Ext.layout.container.Box',
     alternateClassName: 'Ext.layout.HBoxLayout',
-    
+
     /* End Definitions */
 
 <span id='Ext-layout-container-HBox-cfg-align'>    /**
 </span>     * @cfg {String} align
-     * Controls how the child items of the container are aligned. Acceptable configuration values for this
-     * property are:
-     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;tt&gt;top&lt;/tt&gt;&lt;/b&gt; : &lt;b&gt;Default&lt;/b&gt;&lt;div class=&quot;sub-desc&quot;&gt;child items are aligned vertically
-     * at the &lt;b&gt;top&lt;/b&gt; of the container&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;tt&gt;middle&lt;/tt&gt;&lt;/b&gt; : &lt;div class=&quot;sub-desc&quot;&gt;child items are aligned vertically in the
-     * &lt;b&gt;middle&lt;/b&gt; of the container&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;tt&gt;stretch&lt;/tt&gt;&lt;/b&gt; : &lt;div class=&quot;sub-desc&quot;&gt;child items are stretched vertically to fill
-     * the height of the container&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;tt&gt;stretchmax&lt;/tt&gt;&lt;/b&gt; : &lt;div class=&quot;sub-desc&quot;&gt;child items are stretched vertically to
-     * the height of the largest item.&lt;/div&gt;&lt;/li&gt;
-     * &lt;/ul&gt;&lt;/div&gt;
+     * Controls how the child items of the container are aligned. Acceptable configuration values for this property are:
+     *
+     * - **top** : **Default** child items are aligned vertically at the **top** of the container
+     * - **middle** : child items are aligned vertically in the **middle** of the container
+     * - **stretch** : child items are stretched vertically to fill the height of the container
+     * - **stretchmax** : child items are stretched vertically to the height of the largest item.
      */
     align: 'top', // top, middle, stretch, strechmax
 

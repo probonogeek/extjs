@@ -58,7 +58,7 @@ Ext.define('Ext.resizer.SplitterTracker', {
             html: '&#160;'
         });
         overlay.unselectable();
-        overlay.setSize(Ext.core.Element.getViewWidth(true), Ext.core.Element.getViewHeight(true));
+        overlay.setSize(Ext.Element.getViewWidth(true), Ext.Element.getViewHeight(true));
         overlay.show();
         
         // store boxes of previous and next

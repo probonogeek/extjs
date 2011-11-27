@@ -132,7 +132,7 @@ Ext.define('Ext.flash.Component', {
 
     /**
      * @property swf
-     * @type {Ext.core.Element}
+     * @type {Ext.Element}
      * A reference to the object or embed element into which the SWF file is loaded. Only
      * populated after the component is rendered and the SWF has been successfully embedded.
      */

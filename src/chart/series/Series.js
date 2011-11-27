@@ -14,9 +14,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @class Ext.chart.series.Series
- * 
- * Series is the abstract class containing the common logic to all chart series. Series includes 
- * methods from Labels, Highlights, Tips and Callouts mixins. This class implements the logic of handling 
+ *
+ * Series is the abstract class containing the common logic to all chart series. Series includes
+ * methods from Labels, Highlights, Tips and Callouts mixins. This class implements the logic of handling
  * mouse events, animating, hiding, showing all elements and returning the color of the series to be used as a legend item.
  *
  * ## Listeners
@@ -41,7 +41,6 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             xField: 'category',
  *             yField: 'data1'
  *     }]
- *     
  */
 Ext.define('Ext.chart.series.Series', {
 
@@ -58,7 +57,7 @@ Ext.define('Ext.chart.series.Series', {
     /* End Definitions */
 
     /**
-     * @cfg {Boolean|Object} highlight
+     * @cfg {Boolean/Object} highlight
      * If set to `true` it will highlight the markers or the series when hovering
      * with the mouse. This parameter can also be an object with the same style
      * properties you would apply to a {@link Ext.draw.Sprite} to apply custom
@@ -112,30 +111,28 @@ Ext.define('Ext.chart.series.Series', {
      * An array with shadow attributes
      */
     shadowAttributes: null,
-    
+
     //@private triggerdrawlistener flag
     triggerAfterDraw: false,
 
     /**
-     * @cfg {Object} listeners  
+     * @cfg {Object} listeners
      * An (optional) object with event callbacks. All event callbacks get the target *item* as first parameter. The callback functions are:
-     *  
-     *  <ul>
-     *      <li>itemmouseover</li>
-     *      <li>itemmouseout</li>
-     *      <li>itemmousedown</li>
-     *      <li>itemmouseup</li>
-     *  </ul>
+     *
+     *  - itemmouseover
+     *  - itemmouseout
+     *  - itemmousedown
+     *  - itemmouseup
      */
-    
+
     constructor: function(config) {
         var me = this;
         if (config) {
             Ext.apply(me, config);
         }
-        
+
         me.shadowGroups = [];
-        
+
         me.mixins.labels.constructor.call(me, config);
         me.mixins.highlights.constructor.call(me, config);
         me.mixins.tips.constructor.call(me, config);
@@ -167,6 +164,37 @@ Ext.define('Ext.chart.series.Series', {
             itemmouseout: me.onItemMouseOut,
             mouseleave: me.onMouseLeave
         });
+    },
+    
+    /**
+     * Iterate over each of the records for this series. The default implementation simply iterates
+     * through the entire data store, but individual series implementations can override this to
+     * provide custom handling, e.g. adding/removing records.
+     * @param {Function} fn The function to execute for each record.
+     * @param {Object} scope Scope for the fn.
+     */
+    eachRecord: function(fn, scope) {
+        var chart = this.chart;
+        (chart.substore || chart.store).each(fn, scope);
+    },
+
+    /**
+     * Return the number of records being displayed in this series. Defaults to the number of
+     * records in the store; individual series implementations can override to provide custom handling.
+     */
+    getRecordCount: function() {
+        var chart = this.chart,
+            store = chart.substore || chart.store;
+        return store ? store.getCount() : 0;
+    },
+
+    /**
+     * Determines whether the series item at the given index has been excluded, i.e. toggled off in the legend.
+     * @param index
+     */
+    isExcluded: function(index) {
+        var excludes = this.__excludes;
+        return !!(excludes && excludes[index]);
     },
 
     // @private set the bbox and clipBox for the series
@@ -208,19 +236,19 @@ Ext.define('Ext.chart.series.Series', {
                     'afteranimate': function() {
                         me.triggerAfterDraw = false;
                         me.fireEvent('afterrender');
-                    }    
-                }    
+                    }
+                }
             }));
         }
     },
-    
+
     // @private return the gutter.
     getGutters: function() {
         return [0, 0];
     },
 
     // @private wrapper for the itemmouseover event.
-    onItemMouseOver: function(item) { 
+    onItemMouseOver: function(item) {
         var me = this;
         if (item.series === me) {
             if (me.highlight) {
@@ -257,15 +285,13 @@ Ext.define('Ext.chart.series.Series', {
      * series, if any.
      * @param {Number} x
      * @param {Number} y
-     * @return {Object} An object describing the item, or null if there is no matching item. The exact contents of
-     *                  this object will vary by series type, but should always contain at least the following:
-     *                  <ul>
-     *                    <li>{Ext.chart.series.Series} series - the Series object to which the item belongs</li>
-     *                    <li>{Object} value - the value(s) of the item's data point</li>
-     *                    <li>{Array} point - the x/y coordinates relative to the chart box of a single point
-     *                        for this data item, which can be used as e.g. a tooltip anchor point.</li>
-     *                    <li>{Ext.draw.Sprite} sprite - the item's rendering Sprite.
-     *                  </ul>
+     * @return {Object} An object describing the item, or null if there is no matching item.
+     * The exact contents of this object will vary by series type, but should always contain the following:
+     * @return {Ext.chart.series.Series} return.series the Series object to which the item belongs
+     * @return {Object} return.value the value(s) of the item's data point
+     * @return {Array} return.point the x/y coordinates relative to the chart box of a single point
+     * for this data item, which can be used as e.g. a tooltip anchor point.
+     * @return {Ext.draw.Sprite} return.sprite the item's rendering Sprite.
      */
     getItemForPoint: function(x, y) {
         //if there are no items to query just return null.
@@ -285,10 +311,10 @@ Ext.define('Ext.chart.series.Series', {
                 return items[i];
             }
         }
-        
+
         return null;
     },
-    
+
     isItemInPoint: function(x, y, item, i) {
         return false;
     },
@@ -299,7 +325,7 @@ Ext.define('Ext.chart.series.Series', {
     hideAll: function() {
         var me = this,
             items = me.items,
-            item, len, i, sprite;
+            item, len, i, j, l, sprite, shadows;
 
         me.seriesIsHidden = true;
         me._prevShowMarkers = me.showMarkers;
@@ -316,6 +342,15 @@ Ext.define('Ext.chart.series.Series', {
                     hidden: true
                 }, true);
             }
+
+            if (sprite && sprite.shadows) {
+                shadows = sprite.shadows;
+                for (j = 0, l = shadows.length; j < l; ++j) {
+                    shadows[j].setAttributes({
+                        hidden: true
+                    }, true);
+                }
+            }
         }
     },
 
@@ -331,9 +366,9 @@ Ext.define('Ext.chart.series.Series', {
         me.drawSeries();
         me.chart.animate = prevAnimate;
     },
-    
+
     /**
-     * Returns a string with the color to be used for the series legend item. 
+     * Returns a string with the color to be used for the series legend item.
      */
     getLegendColor: function(index) {
         var me = this, fill, stroke;
@@ -347,7 +382,7 @@ Ext.define('Ext.chart.series.Series', {
         }
         return '#000';
     },
-    
+
     /**
      * Checks whether the data field should be visible in the legend
      * @private

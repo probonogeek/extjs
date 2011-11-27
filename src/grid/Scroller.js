@@ -13,19 +13,14 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.grid.Scroller
- * @extends Ext.Component
- *
  * Docked in an Ext.grid.Panel, controls virtualized scrolling and synchronization
  * across different sections.
- *
- * @private
  */
 Ext.define('Ext.grid.Scroller', {
     extend: 'Ext.Component',
     alias: 'widget.gridscroller',
     weight: 110,
-    cls: Ext.baseCSSPrefix + 'scroller',
+    baseCls: Ext.baseCSSPrefix + 'scroller',
     focusable: false,
     reservedSpace: 0,
 
@@ -38,22 +33,20 @@ Ext.define('Ext.grid.Scroller', {
     initComponent: function() {
         var me       = this,
             dock     = me.dock,
-            cls      = Ext.baseCSSPrefix + 'scroller-vertical',
-            sizeProp = 'width';
+            cls      = Ext.baseCSSPrefix + 'scroller-vertical';
 
         me.offsets = {bottom: 0};
         me.scrollProp = 'scrollTop';
         me.vertical = true;
+        me.sizeProp = 'width';
 
         if (dock === 'top' || dock === 'bottom') {
             cls = Ext.baseCSSPrefix + 'scroller-horizontal';
-            sizeProp = 'height';
+            me.sizeProp = 'height';
             me.scrollProp = 'scrollLeft';
             me.vertical = false;
             me.weight += 5;
         }
-
-        me[sizeProp] = me.scrollerSize = Ext.getScrollbarSize()[sizeProp];
 
         me.cls += (' ' + cls);
 
@@ -62,6 +55,13 @@ Ext.define('Ext.grid.Scroller', {
             scrollEl: '.' + Ext.baseCSSPrefix + 'scroller-ct'
         });
         me.callParent();
+    },
+    
+    ensureDimension: function(){
+        var me = this,
+            sizeProp = me.sizeProp;
+            
+        me[sizeProp] = me.scrollerSize = Ext.getScrollbarSize()[sizeProp];  
     },
 
     initRenderData: function () {

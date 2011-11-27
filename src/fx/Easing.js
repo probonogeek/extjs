@@ -14,31 +14,30 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @class Ext.fx.Easing
- * 
-This class contains a series of function definitions used to modify values during an animation.
-They describe how the intermediate values used during a transition will be calculated. It allows for a transition to change
-speed over its duration. The following options are available: 
-
-- linear The default easing type
-- backIn
-- backOut
-- bounceIn
-- bounceOut
-- ease
-- easeIn
-- easeOut
-- easeInOut
-- elasticIn
-- elasticOut
-- cubic-bezier(x1, y1, x2, y2)
-
-Note that cubic-bezier will create a custom easing curve following the CSS3 [transition-timing-function][0]
-specification.  The four values specify points P1 and P2 of the curve as (x1, y1, x2, y2). All values must
-be in the range [0, 1] or the definition is invalid.
-
-[0]: http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
-
- * @markdown
+ *
+ * This class contains a series of function definitions used to modify values during an animation.
+ * They describe how the intermediate values used during a transition will be calculated. It allows for a transition to change
+ * speed over its duration. The following options are available: 
+ *
+ * - linear The default easing type
+ * - backIn
+ * - backOut
+ * - bounceIn
+ * - bounceOut
+ * - ease
+ * - easeIn
+ * - easeOut
+ * - easeInOut
+ * - elasticIn
+ * - elasticOut
+ * - cubic-bezier(x1, y1, x2, y2)
+ *
+ * Note that cubic-bezier will create a custom easing curve following the CSS3 [transition-timing-function][0]
+ * specification.  The four values specify points P1 and P2 of the curve as (x1, y1, x2, y2). All values must
+ * be in the range [0, 1] or the definition is invalid.
+ *
+ * [0]: http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
+ *
  * @singleton
  */
 Ext.ns('Ext.fx');

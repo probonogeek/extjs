@@ -13,14 +13,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.ShadowPool
- * @extends Object
  * Private utility class that manages the internal Shadow cache
  * @private
  */
 Ext.define('Ext.ShadowPool', {
     singleton: true,
-    requires: ['Ext.core.DomHelper'],
+    requires: ['Ext.DomHelper'],
 
     markup: function() {
         if (Ext.supports.CSS3BoxShadow) {
@@ -53,7 +51,7 @@ Ext.define('Ext.ShadowPool', {
     pull: function() {
         var sh = this.shadows.shift();
         if (!sh) {
-            sh = Ext.get(Ext.core.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
+            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
             sh.autoBoxAdjust = false;
         }
         return sh;

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -29,7 +29,7 @@ Ext.define('Ext.selection.DataViewModel', {
 <span id='Ext-selection-DataViewModel-cfg-enableKeyNav'>    /**
 </span>     * @cfg {Boolean} enableKeyNav
      *
-     * Turns on/off keyboard navigation within the DataView. Defaults to true.
+     * Turns on/off keyboard navigation within the DataView.
      */
     enableKeyNav: true,
 
@@ -164,6 +164,11 @@ Ext.define('Ext.selection.DataViewModel', {
                 me.fireEvent(eventName, me, record);
             }
         }
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.keyNav);
+        this.callParent();
     }
 });
 </pre>

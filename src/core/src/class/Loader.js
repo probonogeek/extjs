@@ -25,13 +25,13 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * # Asynchronous Loading
  *
- * - *Advantages:*
+ * - Advantages:
  * 	 + Cross-domain
  * 	 + No web server needed: you can run the application via the file system protocol
  *     (i.e: `file://path/to/your/index.html`)
  * 	 + Best possible debugging experience: error messages come with the exact file name and line number
  *
- * - *Disadvantages:*
+ * - Disadvantages:
  * 	 + Dependencies need to be specified before-hand
  *
  * ### Method 1: Explicitly include what you need:
@@ -66,11 +66,11 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * # Synchronous Loading on Demand
  *
- * - *Advantages:*
+ * - Advantages:
  * 	 + There's no need to specify dependencies before-hand, which is always the convenience of including
  *     ext-all.js before
  *
- * - *Disadvantages:*
+ * - Disadvantages:
  * 	 + Not as good debugging experience since file name won't be shown (except in Firebug at the moment)
  * 	 + Must be from the same domain due to XHR restriction
  * 	 + Need a web server, same reason as above
@@ -92,7 +92,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * It has all the advantages combined from asynchronous and synchronous loading. The development flow is simple:
  *
  * ### Step 1: Start writing your application using synchronous approach.
- * 
+ *
  * Ext.Loader will automatically fetch all dependencies on demand as they're needed during run-time. For example:
  *
  *     Ext.onReady(function(){
@@ -221,7 +221,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         classNameToFilePathMap: {},
 
         /**
-         * @property {[String]} history
+         * @property {String[]} history
          * An array of class names to keep track of the dependency loading order.
          * This is not guaranteed to be the same everytime due to the asynchronous nature of the Loader.
          */
@@ -234,19 +234,19 @@ If you are unsure which license is appropriate for your use, please contact the 
         config: {
             /**
              * @cfg {Boolean} enabled
-             * Whether or not to enable the dynamic dependency loading feature Defaults to false
+             * Whether or not to enable the dynamic dependency loading feature.
              */
             enabled: false,
 
             /**
              * @cfg {Boolean} disableCaching
-             * Appends current timestamp to script files to prevent caching Defaults to true
+             * Appends current timestamp to script files to prevent caching.
              */
             disableCaching: true,
 
             /**
              * @cfg {String} disableCachingParam
-             * The get parameter name for the cache buster's timestamp. Defaults to '_dc'
+             * The get parameter name for the cache buster's timestamp.
              */
             disableCachingParam: '_dc',
 
@@ -313,7 +313,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Get the config value corresponding to the specified name.
          * If no name is given, will return the config object.
          * @param {String} name The config property name
-         * @return {Object/Mixed}
+         * @return {Object}
          */
         getConfig: function(name) {
             if (name) {
@@ -515,7 +515,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * @param {String} url
          * @param {Function} onLoad
-         * @param {Scope} scope
+         * @param {Object} scope
          * @param {Boolean} synchronous
          * @private
          */
@@ -605,7 +605,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * {@link Ext#exclude Ext.exclude} is alias for {@link Ext.Loader#exclude Ext.Loader.exclude} for convenience.
          *
-         * @param {String/[String]} excludes
+         * @param {String/String[]} excludes
          * @return {Object} object contains `require` method for chaining
          */
         exclude: function(excludes) {
@@ -628,10 +628,10 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * {@link Ext#syncRequire Ext.syncRequire} is alias for {@link Ext.Loader#syncRequire Ext.Loader.syncRequire} for convenience.
          *
-         * @param {String/[String]} expressions Can either be a string or an array of string
+         * @param {String/String[]} expressions Can either be a string or an array of string
          * @param {Function} fn (Optional) The callback function
          * @param {Object} scope (Optional) The execution scope (`this`) of the callback function
-         * @param {String/[String]} excludes (Optional) Classes to be excluded, useful when being used with expressions
+         * @param {String/String[]} excludes (Optional) Classes to be excluded, useful when being used with expressions
          */
         syncRequire: function() {
             this.syncModeEnabled = true;
@@ -646,10 +646,10 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * {@link Ext#require Ext.require} is alias for {@link Ext.Loader#require Ext.Loader.require} for convenience.
          *
-         * @param {String/[String]} expressions Can either be a string or an array of string
+         * @param {String/String[]} expressions Can either be a string or an array of string
          * @param {Function} fn (Optional) The callback function
          * @param {Object} scope (Optional) The execution scope (`this`) of the callback function
-         * @param {String/[String]} excludes (Optional) Classes to be excluded, useful when being used with expressions
+         * @param {String/String[]} excludes (Optional) Classes to be excluded, useful when being used with expressions
          */
         require: function(expressions, fn, scope, excludes) {
             var filePath, expression, exclude, className, excluded = {},
@@ -983,9 +983,9 @@ If you are unsure which license is appropriate for your use, please contact the 
     };
 
     /**
-     * @cfg {[String]} requires
+     * @cfg {String[]} requires
      * @member Ext.Class
-     * List of classes that have to be loaded before instanciating this class.
+     * List of classes that have to be loaded before instantiating this class.
      * For example:
      *
      *     Ext.define('Mother', {
@@ -1040,7 +1040,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                         }
                     }
                 }
-                else {
+                else if (typeof propertyValue != 'function') {
                     for (j in propertyValue) {
                         if (propertyValue.hasOwnProperty(j)) {
                             value = propertyValue[j];
@@ -1121,7 +1121,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                             }
                         }
                     }
-                    else {
+                    else if (typeof propertyValue != 'function') {
                         for (var k in propertyValue) {
                             if (propertyValue.hasOwnProperty(k)) {
                                 value = propertyValue[k];
@@ -1144,10 +1144,10 @@ If you are unsure which license is appropriate for your use, please contact the 
     Class.setDefaultPreprocessorPosition('loader', 'after', 'className');
 
     /**
-     * @cfg {[String]} uses
+     * @cfg {String[]} uses
      * @member Ext.Class
      * List of classes to load together with this class.  These aren't neccessarily loaded before
-     * this class is instanciated. For example:
+     * this class is instantiated. For example:
      *
      *     Ext.define('Mother', {
      *         uses: ['Child'],

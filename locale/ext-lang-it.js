@@ -168,7 +168,8 @@ Ext.onReady(function(){
        Ext.apply(Ext.form.field.Number.prototype, {
           minText : "Il valore minimo \u00E8 {0}",
           maxText : "Il valore massimo \u00E8 {0}",
-          nanText : "{0} non \u00E8 un valore numerico corretto"
+          nanText : "{0} non \u00E8 un valore numerico corretto",
+          decimalSeparator: ','
        });
     }
 
@@ -186,9 +187,11 @@ Ext.onReady(function(){
 
     if(Ext.form.field.ComboBox){
        Ext.apply(Ext.form.field.ComboBox.prototype, {
-          loadingText       : "Caricamento in corso...",
           valueNotFoundText : undefined
        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Caricamento in corso..."
+        });
     }
 
     if(Ext.form.field.VTypes){

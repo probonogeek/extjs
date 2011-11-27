@@ -190,9 +190,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
       Ext.apply(Ext.form.field.ComboBox.prototype, {
-        loadingText       : "読み込み中...",
         valueNotFoundText : undefined
       });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "読み込み中..."
+        });
     }
 
     if(Ext.form.field.VTypes){

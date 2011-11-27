@@ -13,13 +13,14 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.core.Element.addMethods({
+Ext.Element.addMethods({
     /**
      * Appends the passed element(s) to this element
-     * @param {String/HTMLElement/Array/Element/CompositeElement} el
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} el
+     * The id of the node, a DOM Node or an existing Element.
+     * @return {Ext.Element} this
      */
     appendChild : function(el) {
         return Ext.get(el).appendTo(this);
@@ -27,8 +28,9 @@ Ext.core.Element.addMethods({
 
     /**
      * Appends this element to the passed element
-     * @param {Mixed} el The new parent element
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} el The new parent element.
+     * The id of the node, a DOM Node or an existing Element.
+     * @return {Ext.Element} this
      */
     appendTo : function(el) {
         Ext.getDom(el).appendChild(this.dom);
@@ -37,8 +39,9 @@ Ext.core.Element.addMethods({
 
     /**
      * Inserts this element before the passed element in the DOM
-     * @param {Mixed} el The element before which this element will be inserted
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} el The element before which this element will be inserted.
+     * The id of the node, a DOM Node or an existing Element.
+     * @return {Ext.Element} this
      */
     insertBefore : function(el) {
         el = Ext.getDom(el);
@@ -48,8 +51,9 @@ Ext.core.Element.addMethods({
 
     /**
      * Inserts this element after the passed element in the DOM
-     * @param {Mixed} el The element to insert after
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} el The element to insert after.
+     * The id of the node, a DOM Node or an existing Element.
+     * @return {Ext.Element} this
      */
     insertAfter : function(el) {
         el = Ext.getDom(el);
@@ -59,8 +63,9 @@ Ext.core.Element.addMethods({
 
     /**
      * Inserts (or creates) an element (or DomHelper config) as the first child of this element
-     * @param {Mixed/Object} el The id or element to insert or a DomHelper config to create and insert
-     * @return {Ext.core.Element} The new child
+     * @param {String/HTMLElement/Ext.Element/Object} el The id or element to insert or a DomHelper config
+     * to create and insert
+     * @return {Ext.Element} The new child
      */
     insertFirst : function(el, returnDom) {
         el = el || {};
@@ -76,10 +81,11 @@ Ext.core.Element.addMethods({
 
     /**
      * Inserts (or creates) the passed element (or DomHelper config) as a sibling of this element
-     * @param {Mixed/Object/Array} el The id, element to insert or a DomHelper config to create and insert *or* an array of any of those.
+     * @param {String/HTMLElement/Ext.Element/Object/Array} el The id, element to insert or a DomHelper config
+     * to create and insert *or* an array of any of those.
      * @param {String} where (optional) 'before' or 'after' defaults to before
-     * @param {Boolean} returnDom (optional) True to return the .;ll;l,raw DOM element instead of Ext.core.Element
-     * @return {Ext.core.Element} The inserted Element. If an array is passed, the last inserted element is returned.
+     * @param {Boolean} returnDom (optional) True to return the .;ll;l,raw DOM element instead of Ext.Element
+     * @return {Ext.Element} The inserted Element. If an array is passed, the last inserted element is returned.
      */
     insertSibling: function(el, where, returnDom){
         var me = this, rt,
@@ -106,9 +112,9 @@ Ext.core.Element.addMethods({
             }
         }else{
             if (isAfter && !me.dom.nextSibling) {
-                rt = Ext.core.DomHelper.append(me.dom.parentNode, el, !returnDom);
+                rt = Ext.DomHelper.append(me.dom.parentNode, el, !returnDom);
             } else {
-                rt = Ext.core.DomHelper[isAfter ? 'insertAfter' : 'insertBefore'](me.dom, el, !returnDom);
+                rt = Ext.DomHelper[isAfter ? 'insertAfter' : 'insertBefore'](me.dom, el, !returnDom);
             }
         }
         return rt;
@@ -116,8 +122,9 @@ Ext.core.Element.addMethods({
 
     /**
      * Replaces the passed element with this element
-     * @param {Mixed} el The element to replace
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} el The element to replace.
+     * The id of the node, a DOM Node or an existing Element.
+     * @return {Ext.Element} this
      */
     replace : function(el) {
         el = Ext.get(el);
@@ -128,8 +135,9 @@ Ext.core.Element.addMethods({
     
     /**
      * Replaces this element with the passed element
-     * @param {Mixed/Object} el The new element or a DomHelper config of an element to create
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element/Object} el The new element (id of the node, a DOM Node
+     * or an existing Element) or a DomHelper config of an element to create
+     * @return {Ext.Element} this
      */
     replaceWith: function(el){
         var me = this;
@@ -138,13 +146,13 @@ Ext.core.Element.addMethods({
             el = Ext.get(el);
             me.dom.parentNode.insertBefore(el, me.dom);
         }else{
-            el = Ext.core.DomHelper.insertBefore(me.dom, el);
+            el = Ext.DomHelper.insertBefore(me.dom, el);
         }
         
         delete Ext.cache[me.id];
         Ext.removeNode(me.dom);      
         me.id = Ext.id(me.dom = el);
-        Ext.core.Element.addToCache(me.isFlyweight ? new Ext.core.Element(me.dom) : me);     
+        Ext.Element.addToCache(me.isFlyweight ? new Ext.Element(me.dom) : me);     
         return me;
     },
     
@@ -154,26 +162,26 @@ Ext.core.Element.addMethods({
      * automatically generated with the specified attributes.
      * @param {HTMLElement} insertBefore (optional) a child element of this element
      * @param {Boolean} returnDom (optional) true to return the dom node instead of creating an Element
-     * @return {Ext.core.Element} The new child element
+     * @return {Ext.Element} The new child element
      */
     createChild : function(config, insertBefore, returnDom) {
         config = config || {tag:'div'};
         if (insertBefore) {
-            return Ext.core.DomHelper.insertBefore(insertBefore, config, returnDom !== true);
+            return Ext.DomHelper.insertBefore(insertBefore, config, returnDom !== true);
         }
         else {
-            return Ext.core.DomHelper[!this.dom.firstChild ? 'insertFirst' : 'append'](this.dom, config,  returnDom !== true);
+            return Ext.DomHelper[!this.dom.firstChild ? 'insertFirst' : 'append'](this.dom, config,  returnDom !== true);
         }
     },
 
     /**
      * Creates and wraps this element with another element
      * @param {Object} config (optional) DomHelper element config object for the wrapper element or null for an empty div
-     * @param {Boolean} returnDom (optional) True to return the raw DOM element instead of Ext.core.Element
-     * @return {HTMLElement/Element} The newly created wrapper element
+     * @param {Boolean} returnDom (optional) True to return the raw DOM element instead of Ext.Element
+     * @return {HTMLElement/Ext.Element} The newly created wrapper element
      */
     wrap : function(config, returnDom) {
-        var newEl = Ext.core.DomHelper.insertBefore(this.dom, config || {tag: "div"}, !returnDom),
+        var newEl = Ext.DomHelper.insertBefore(this.dom, config || {tag: "div"}, !returnDom),
             d = newEl.dom || newEl;
 
         d.appendChild(this.dom);
@@ -183,12 +191,13 @@ Ext.core.Element.addMethods({
     /**
      * Inserts an html fragment into this element
      * @param {String} where Where to insert the html in relation to this element - beforeBegin, afterBegin, beforeEnd, afterEnd.
+     * See {@link Ext.DomHelper#insertHtml} for details.
      * @param {String} html The HTML fragment
-     * @param {Boolean} returnEl (optional) True to return an Ext.core.Element (defaults to false)
-     * @return {HTMLElement/Ext.core.Element} The inserted node (or nearest related if more than 1 inserted)
+     * @param {Boolean} returnEl (optional) True to return an Ext.Element (defaults to false)
+     * @return {HTMLElement/Ext.Element} The inserted node (or nearest related if more than 1 inserted)
      */
     insertHtml : function(where, html, returnEl) {
-        var el = Ext.core.DomHelper.insertHtml(where, this.dom, html);
+        var el = Ext.DomHelper.insertHtml(where, this.dom, html);
         return returnEl ? Ext.get(el) : el;
     }
 });

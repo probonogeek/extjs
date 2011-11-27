@@ -18,7 +18,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * <p>A subclass of Ext.dd.DragTracker which handles dragging any Component.</p>
  * <p>This is configured with a Component to be made draggable, and a config object for the
  * {@link Ext.dd.DragTracker} class.</p>
- * <p>A {@link #} delegate may be provided which may be either the element to use as the mousedown target
+ * <p>A {@link #delegate} may be provided which may be either the element to use as the mousedown target
  * or a {@link Ext.DomQuery} selector to activate multiple mousedown targets.</p>
  */
 Ext.define('Ext.util.ComponentDragger', {
@@ -29,7 +29,7 @@ Ext.define('Ext.util.ComponentDragger', {
      */
 
     /**
-     * @cfg {String/Element} delegate
+     * @cfg {String/Ext.Element} delegate
      * Optional. <p>A {@link Ext.DomQuery DomQuery} selector which identifies child elements within the Component's encapsulating
      * Element which are the drag handles. This limits dragging to only begin when the matching elements are mousedowned.</p>
      * <p>This may also be a specific child element within the Component's encapsulating element to use as the drag handle.</p>
@@ -46,8 +46,8 @@ Ext.define('Ext.util.ComponentDragger', {
 
     /**
      * Creates new ComponentDragger.
-     * @param {object} comp The Component to provide dragging for.
-     * @param {object} config (optional) Config object
+     * @param {Object} comp The Component to provide dragging for.
+     * @param {Object} config (optional) Config object
      */
     constructor: function(comp, config) {
         this.comp = comp;

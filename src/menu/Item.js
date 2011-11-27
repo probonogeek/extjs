@@ -13,16 +13,10 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.menu.Item
- * @extends Ext.Component
- *
  * A base class for all menu items that require menu-related functionality such as click handling,
  * sub-menus, icons, etc.
  *
- * {@img Ext.menu.Menu/Ext.menu.Menu.png Ext.menu.Menu component}
- *
- * __Example Usage:__
- *
+ *     @example
  *     Ext.create('Ext.menu.Menu', {
  *         width: 100,
  *         height: 100,
@@ -32,13 +26,12 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             text: 'icon item',
  *             iconCls: 'add16'
  *         },{
- *             text: 'text item',
+ *             text: 'text item'
  *         },{
  *             text: 'plain item',
  *             plain: true
  *         }]
  *     });
- *
  */
 Ext.define('Ext.menu.Item', {
     extend: 'Ext.Component',
@@ -51,10 +44,14 @@ Ext.define('Ext.menu.Item', {
      */
 
     /**
+     * @property {Ext.menu.Menu} parentMenu
+     * The parent Menu of this item.
+     */
+
+    /**
      * @cfg {String} activeCls
      * The CSS class added to the menu item when the item is activated (focused/mouseover).
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-active'`.
-     * @markdown
      */
     activeCls: Ext.baseCSSPrefix + 'menu-item-active',
 
@@ -66,7 +63,6 @@ Ext.define('Ext.menu.Item', {
     /**
      * @cfg {Boolean} canActivate
      * Whether or not this menu item can be activated when focused/mouseovered. Defaults to `true`.
-     * @markdown
      */
     canActivate: true,
 
@@ -74,7 +70,6 @@ Ext.define('Ext.menu.Item', {
      * @cfg {Number} clickHideDelay
      * The delay in milliseconds to wait before hiding the menu after clicking the menu item.
      * This only has an effect when `hideOnClick: true`. Defaults to `1`.
-     * @markdown
      */
     clickHideDelay: 1,
 
@@ -88,7 +83,6 @@ Ext.define('Ext.menu.Item', {
      * @cfg {String} disabledCls
      * The CSS class added to the menu item when the item is disabled.
      * Defaults to `Ext.baseCSSPrefix + 'menu-item-disabled'`.
-     * @markdown
      */
     disabledCls: Ext.baseCSSPrefix + 'menu-item-disabled',
 
@@ -135,7 +129,7 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {String} menuAlign
-     * The default {@link Ext.core.Element#getAlignToXY Ext.Element.getAlignToXY} anchor position value for this
+     * The default {@link Ext.Element#getAlignToXY Ext.Element.getAlignToXY} anchor position value for this
      * item's sub-menu relative to this item's position. Defaults to `'tl-tr?'`.
      * @markdown
      */
@@ -166,11 +160,11 @@ Ext.define('Ext.menu.Item', {
             '{text}',
         '</tpl>',
         '<tpl if="!plain">',
-            '<a class="' + Ext.baseCSSPrefix + 'menu-item-link" href="{href}" <tpl if="hrefTarget">target="{hrefTarget}"</tpl> hidefocus="true" unselectable="on">',
-                '<img src="{icon}" class="' + Ext.baseCSSPrefix + 'menu-item-icon {iconCls}" />',
-                '<span class="' + Ext.baseCSSPrefix + 'menu-item-text" <tpl if="menu">style="margin-right: 17px;"</tpl> >{text}</span>',
+            '<a id="{id}-itemEl" class="' + Ext.baseCSSPrefix + 'menu-item-link" href="{href}" <tpl if="hrefTarget">target="{hrefTarget}"</tpl> hidefocus="true" unselectable="on">',
+                '<img id="{id}-iconEl" src="{icon}" class="' + Ext.baseCSSPrefix + 'menu-item-icon {iconCls}" />',
+                '<span id="{id}-textEl" class="' + Ext.baseCSSPrefix + 'menu-item-text" <tpl if="menu">style="margin-right: 17px;"</tpl> >{text}</span>',
                 '<tpl if="menu">',
-                    '<img src="' + Ext.BLANK_IMAGE_URL + '" class="' + Ext.baseCSSPrefix + 'menu-item-arrow" />',
+                    '<img id="{id}-arrowEl" src="{blank}" class="' + Ext.baseCSSPrefix + 'menu-item-arrow" />',
                 '</tpl>',
             '</a>',
         '</tpl>'
@@ -360,24 +354,20 @@ Ext.define('Ext.menu.Item', {
 
     onRender: function(ct, pos) {
         var me = this,
-            prefix = '.' + Ext.baseCSSPrefix;
+            blank = Ext.BLANK_IMAGE_URL;
 
         Ext.applyIf(me.renderData, {
             href: me.href || '#',
             hrefTarget: me.hrefTarget,
-            icon: me.icon || Ext.BLANK_IMAGE_URL,
+            icon: me.icon || blank,
             iconCls: me.iconCls + (me.checkChangeDisabled ? ' ' + me.disabledCls : ''),
             menu: Ext.isDefined(me.menu),
             plain: me.plain,
-            text: me.text
+            text: me.text,
+            blank: blank
         });
 
-        Ext.applyIf(me.renderSelectors, {
-            itemEl: prefix + 'menu-item-link',
-            iconEl: prefix + 'menu-item-icon',
-            textEl: prefix + 'menu-item-text',
-            arrowEl: prefix + 'menu-item-arrow'
-        });
+        me.addChildEls('itemEl', 'iconEl', 'textEl', 'arrowEl');
 
         me.callParent(arguments);
     },

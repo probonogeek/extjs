@@ -13,20 +13,20 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
 /**
  * Visibility mode constant for use with {@link #setVisibilityMode}. Use visibility to hide element
  * @static
  * @type Number
  */
-Ext.core.Element.VISIBILITY = 1;
+Ext.Element.VISIBILITY = 1;
 /**
  * Visibility mode constant for use with {@link #setVisibilityMode}. Use display to hide element
  * @static
  * @type Number
  */
-Ext.core.Element.DISPLAY = 2;
+Ext.Element.DISPLAY = 2;
 
 /**
  * Visibility mode constant for use with {@link #setVisibilityMode}. Use offsets (x and y positioning offscreen)
@@ -34,20 +34,20 @@ Ext.core.Element.DISPLAY = 2;
  * @static
  * @type Number
  */
-Ext.core.Element.OFFSETS = 3;
+Ext.Element.OFFSETS = 3;
 
 
-Ext.core.Element.ASCLASS = 4;
+Ext.Element.ASCLASS = 4;
 
 /**
  * Defaults to 'x-hide-nosize'
  * @static
  * @type String
  */
-Ext.core.Element.visibilityCls = Ext.baseCSSPrefix + 'hide-nosize';
+Ext.Element.visibilityCls = Ext.baseCSSPrefix + 'hide-nosize';
 
-Ext.core.Element.addMethods(function(){
-    var El = Ext.core.Element,
+Ext.Element.addMethods(function(){
+    var El = Ext.Element,
         OPACITY = "opacity",
         VISIBILITY = "visibility",
         DISPLAY = "display",
@@ -77,8 +77,8 @@ Ext.core.Element.addMethods(function(){
 
     return {
         /**
-         * The element's default display mode  (defaults to "")
-         * @type String
+         * @property {String} originalDisplay
+         * The element's default display mode
          */
         originalDisplay : "",
         visibilityMode : 1,
@@ -86,8 +86,8 @@ Ext.core.Element.addMethods(function(){
         /**
          * Sets the element's visibility mode. When setVisible() is called it
          * will use this to determine whether to set the visibility or the display property.
-         * @param {Number} visMode Ext.core.Element.VISIBILITY or Ext.core.Element.DISPLAY
-         * @return {Ext.core.Element} this
+         * @param {Number} visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
+         * @return {Ext.Element} this
          */
         setVisibilityMode : function(visMode){
             data(this.dom, VISMODE, visMode);
@@ -120,7 +120,7 @@ Ext.core.Element.addMethods(function(){
          * the display property to hide the element, otherwise it uses visibility. The default is to hide and show using the visibility property.
          * @param {Boolean} visible Whether the element is visible
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setVisible : function(visible, animate){
             var me = this, isDisplay, isVisibility, isOffsets, isNosize,
@@ -223,7 +223,7 @@ Ext.core.Element.addMethods(function(){
         /**
          * Toggles the element's visibility or display, depending on visibility mode.
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         toggle : function(animate){
             var me = this;
@@ -233,8 +233,8 @@ Ext.core.Element.addMethods(function(){
 
         /**
          * Sets the CSS display property. Uses originalDisplay if the specified value is a boolean true.
-         * @param {Mixed} value Boolean value to display the element using its default display, or a string to set the display directly.
-         * @return {Ext.core.Element} this
+         * @param {Boolean/String} value Boolean value to display the element using its default display, or a string to set the display directly.
+         * @return {Ext.Element} this
          */
         setDisplayed : function(value) {
             if(typeof value == "boolean"){
@@ -259,7 +259,7 @@ Ext.core.Element.addMethods(function(){
         /**
          * Hide this element - Uses display mode to determine whether to use "display" or "visibility". See {@link #setVisible}.
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         hide : function(animate){
             // hideMode override
@@ -274,7 +274,7 @@ Ext.core.Element.addMethods(function(){
         /**
         * Show this element - Uses display mode to determine whether to use "display" or "visibility". See {@link #setVisible}.
         * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         show : function(animate){
             // hideMode override

@@ -38,7 +38,7 @@ Ext.define('Ext.grid.header.DropZone', {
 
     getTopIndicator: function() {
         if (!this.topIndicator) {
-            this.topIndicator = Ext.core.DomHelper.append(Ext.getBody(), {
+            this.topIndicator = Ext.DomHelper.append(Ext.getBody(), {
                 cls: "col-move-top",
                 html: "&#160;"
             }, true);
@@ -48,7 +48,7 @@ Ext.define('Ext.grid.header.DropZone', {
 
     getBottomIndicator: function() {
         if (!this.bottomIndicator) {
-            this.bottomIndicator = Ext.core.DomHelper.append(Ext.getBody(), {
+            this.bottomIndicator = Ext.DomHelper.append(Ext.getBody(), {
                 cls: "col-move-bottom",
                 html: "&#160;"
             }, true);

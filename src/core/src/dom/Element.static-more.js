@@ -13,16 +13,16 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
 (function(){
     var doc = document,
         activeElement = null,
         isCSS1 = doc.compatMode == "CSS1Compat",
-        ELEMENT = Ext.core.Element,
+        ELEMENT = Ext.Element,
         fly = function(el){
             if (!_fly) {
-                _fly = new Ext.core.Element.Flyweight();
+                _fly = new Ext.Element.Flyweight();
             }
             _fly.dom = el;
             return _fly;
@@ -158,6 +158,17 @@ If you are unsure which license is appropriate for your use, please contact the 
             return ELEMENT.getXY(el)[0];
         },
 
+        getOffsetParent: function (el) {
+            el = Ext.getDom(el);
+            try {
+                // accessing offsetParent can throw "Unspecified Error" in IE6-8 (not 9)
+                return el.offsetParent;
+            } catch (e) {
+                var body = document.body; // safe bet, unless...
+                return (el == body) ? null : body;
+            }
+        },
+
         getXY : function(el) {
             var p,
                 pe,
@@ -170,7 +181,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                 scroll,
                 hasAbsolute,
                 bd = (doc.body || doc.documentElement),
-                ret = [0,0];
+                ret;
 
             el = Ext.getDom(el);
 
@@ -178,13 +189,17 @@ If you are unsure which license is appropriate for your use, please contact the 
                 hasAbsolute = fly(el).isStyle("position", "absolute");
 
                 if (el.getBoundingClientRect) {
-                    b = el.getBoundingClientRect();
-                    scroll = fly(document).getScroll();
-                    ret = [Math.round(b.left + scroll.left), Math.round(b.top + scroll.top)];
-                } else {
-                    p = el;
+                    try {
+                        b = el.getBoundingClientRect();
+                        scroll = fly(document).getScroll();
+                        ret = [ Math.round(b.left + scroll.left), Math.round(b.top + scroll.top) ];
+                    } catch (e) {
+                        // IE6-8 can also throw from getBoundingClientRect...
+                    }
+                }
 
-                    while (p) {
+                if (!ret) {
+                    for (p = el; p; p = ELEMENT.getOffsetParent(p)) {
                         pe = fly(p);
                         x += p.offsetLeft;
                         y += p.offsetTop;
@@ -200,7 +215,6 @@ If you are unsure which license is appropriate for your use, please contact the 
                                 y += bt;
                             }
                         }
-                        p = p.offsetParent;
                     }
 
                     if (Ext.isSafari && hasAbsolute) {
@@ -225,7 +239,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                     ret = [x,y];
                 }
             }
-            return ret;
+            return ret || [0,0];
         },
 
         setXY : function(el, xy) {

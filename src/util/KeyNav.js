@@ -61,7 +61,7 @@ Ext.define('Ext.util.KeyNav', {
 
     /**
      * Creates new KeyNav.
-     * @param {Mixed} el The element to bind to
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
      * @param {Object} config The config
      */
     constructor: function(el, config){
@@ -71,8 +71,8 @@ Ext.define('Ext.util.KeyNav', {
     /**
      * Sets up a configuration for the KeyNav.
      * @private
-     * @param {Mixed} el The element to bind to
-     * @param {Object}A configuration object as specified in the constructor.
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
+     * @param {Object} config A configuration object as specified in the constructor.
      */
     setConfig: function(el, config) {
         if (this.map) {
@@ -117,7 +117,7 @@ Ext.define('Ext.util.KeyNav', {
     
     /**
      * @cfg {Boolean} disabled
-     * True to disable this KeyNav instance (defaults to false)
+     * True to disable this KeyNav instance.
      */
     disabled: false,
     
@@ -125,13 +125,13 @@ Ext.define('Ext.util.KeyNav', {
      * @cfg {String} defaultEventAction
      * The method to call on the {@link Ext.EventObject} after this KeyNav intercepts a key.  Valid values are
      * {@link Ext.EventObject#stopEvent}, {@link Ext.EventObject#preventDefault} and
-     * {@link Ext.EventObject#stopPropagation} (defaults to 'stopEvent')
+     * {@link Ext.EventObject#stopPropagation}.
      */
     defaultEventAction: "stopEvent",
     
     /**
      * @cfg {Boolean} forceKeyDown
-     * Handle the keydown event instead of keypress (defaults to false).  KeyNav automatically does this for IE since
+     * Handle the keydown event instead of keypress.  KeyNav automatically does this for IE since
      * IE does not propagate special keys on keypress, but setting this to true will force other browsers to also
      * handle keydown instead of keypress.
      */

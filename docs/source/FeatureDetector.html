@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,21 +16,34 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-env-FeatureDetector'>/**
-</span> * @class Ext.env.FeatureDetector
+</span> * Provides useful information about the current browser features.
+ * Don't instantiate directly, but use the {@link Ext#features} property instead.
  */
 Ext.define('Ext.env.FeatureDetector', {
 
     statics: {
         defaultTests: {
+<span id='Ext-env-FeatureDetector-property-Canvas'>            /**
+</span>             * @property {Boolean}
+             * True if canvas element supported.
+             */
             Canvas: function() {
                 var element = this.getTestElement('canvas');
                 return !!(element &amp;&amp; element.getContext &amp;&amp; element.getContext('2d'));
             },
+<span id='Ext-env-FeatureDetector-property-SVG'>            /**
+</span>             * @property {Boolean}
+             * True if SVG supported.
+             */
             SVG: function() {
                 var doc = Ext.global.document;
 
                 return !!(doc.createElementNS &amp;&amp; !!doc.createElementNS(&quot;http:/&quot; + &quot;/www.w3.org/2000/svg&quot;, &quot;svg&quot;).createSVGRect);
             },
+<span id='Ext-env-FeatureDetector-property-VML'>            /**
+</span>             * @property {Boolean}
+             * True if VML supported.
+             */
             VML: function() {
                 var element = this.getTestElement(),
                     ret = false;
@@ -41,39 +54,87 @@ Ext.define('Ext.env.FeatureDetector', {
 
                 return ret;
             },
+<span id='Ext-env-FeatureDetector-property-Touch'>            /**
+</span>             * @property {Boolean}
+             * True if we're in Sencha Touch environment.
+             */
             Touch: function() {
                 return ('ontouchstart' in Ext.global) &amp;&amp; !(Ext.platform &amp;&amp; Ext.platform.name.match(/Windows|MacOSX|Linux/));
             },
+<span id='Ext-env-FeatureDetector-property-Orientation'>            /**
+</span>             * @property {Boolean}
+             * True if orientation API supported.
+             */
             Orientation: function() {
                 return ('orientation' in Ext.global);
             },
+<span id='Ext-env-FeatureDetector-property-Geolocation'>            /**
+</span>             * @property {Boolean}
+             * True if geolocation API supported.
+             */
             Geolocation: function() {
                 return !!Ext.global.navigator.geolocation;
             },
+<span id='Ext-env-FeatureDetector-property-SqlDatabase'>            /**
+</span>             * @property {Boolean}
+             * True if openDatabase API supported.
+             */
             SqlDatabase: function() {
                 return !!Ext.global.openDatabase;
             },
+<span id='Ext-env-FeatureDetector-property-Websockets'>            /**
+</span>             * @property {Boolean}
+             * True if WebSocket API supported.
+             */
             Websockets: function() {
                 return 'WebSocket' in Ext.global;
             },
+<span id='Ext-env-FeatureDetector-property-History'>            /**
+</span>             * @property {Boolean}
+             * True if history.pushState supported.
+             */
             History: function() {
                 return !!(Ext.global.history &amp;&amp; Ext.global.history.pushState);
             },
+<span id='Ext-env-FeatureDetector-property-CSSTransforms'>            /**
+</span>             * @property {Boolean}
+             * True if CSS transforms supported.
+             */
             CSSTransforms: function() {
                 return this.isStyleSupported('transform');
             },
+<span id='Ext-env-FeatureDetector-property-CSS3DTransforms'>            /**
+</span>             * @property {Boolean}
+             * True if CSS 3D transforms supported.
+             */
             CSS3DTransforms: function() {
                 return this.has('csstransforms') &amp;&amp; this.isStyleSupported('perspective');
             },
+<span id='Ext-env-FeatureDetector-property-CSSAnimations'>            /**
+</span>             * @property {Boolean}
+             * True if CSS animations supported.
+             */
             CSSAnimations: function() {
                 return this.isStyleSupported('animationName');
             },
+<span id='Ext-env-FeatureDetector-property-CSSTransitions'>            /**
+</span>             * @property {Boolean}
+             * True if CSS transitions supported.
+             */
             CSSTransitions: function() {
                 return this.isStyleSupported('transitionProperty');
             },
+<span id='Ext-env-FeatureDetector-property-Audio'>            /**
+</span>             * @property {Boolean}
+             * True if audio element supported.
+             */
             Audio: function() {
                 return !!this.getTestElement('audio').canPlayType;
             },
+<span id='Ext-env-FeatureDetector-property-Video'>            /**
+</span>             * @property {Boolean}
+             * True if video element supported.
+             */
             Video: function() {
                 return !!this.getTestElement('video').canPlayType;
             }
@@ -216,11 +277,12 @@ Ext.define('Ext.env.FeatureDetector', {
 
 }, function() {
 
-/*
- * Global convenient instance of {@link Ext.env.FeatureDetector Ext.env.FeatureDetector}
- * @member Ext features
- */
-Ext.features = new Ext.env.FeatureDetector();
+<span id='Ext-property-features'>    /**
+</span>     * @property {Ext.env.FeatureDetector} features
+     * @member Ext
+     * Global convenient instance of {@link Ext.env.FeatureDetector}.
+     */
+    Ext.features = new Ext.env.FeatureDetector();
 
 });
 </pre>

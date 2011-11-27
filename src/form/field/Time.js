@@ -13,42 +13,42 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.form.field.Time
- * @extends Ext.form.field.Picker
- * <p>Provides a time input field with a time dropdown and automatic time validation.</p>
- * <p>This field recognizes and uses JavaScript Date objects as its main {@link #value} type (only the time
- * portion of the date is used; the month/day/year are ignored). In addition, it recognizes string values which
- * are parsed according to the {@link #format} and/or {@link #altFormats} configs. These may be reconfigured
- * to use time formats appropriate for the user's locale.</p>
- * <p>The field may be limited to a certain range of times by using the {@link #minValue} and {@link #maxValue}
- * configs, and the interval between time options in the dropdown can be changed with the {@link #increment} config.</p>
- * {@img Ext.form.Time/Ext.form.Time.png Ext.form.Time component}
- * <p>Example usage:</p>
- * <pre><code>
-Ext.create('Ext.form.Panel', {
-    title: 'Time Card',
-    width: 300,
-    bodyPadding: 10,
-    renderTo: Ext.getBody(),        
-    items: [{
-        xtype: 'timefield',
-        name: 'in',
-        fieldLabel: 'Time In',
-        minValue: '6:00 AM',
-        maxValue: '8:00 PM',
-        increment: 30,
-        anchor: '100%'
-    }, {
-        xtype: 'timefield',
-        name: 'out',
-        fieldLabel: 'Time Out',
-        minValue: '6:00 AM',
-        maxValue: '8:00 PM',
-        increment: 30,
-        anchor: '100%'
-   }]
-});
-</code></pre>
+ * Provides a time input field with a time dropdown and automatic time validation.
+ *
+ * This field recognizes and uses JavaScript Date objects as its main {@link #value} type (only the time portion of the
+ * date is used; the month/day/year are ignored). In addition, it recognizes string values which are parsed according to
+ * the {@link #format} and/or {@link #altFormats} configs. These may be reconfigured to use time formats appropriate for
+ * the user's locale.
+ *
+ * The field may be limited to a certain range of times by using the {@link #minValue} and {@link #maxValue} configs,
+ * and the interval between time options in the dropdown can be changed with the {@link #increment} config.
+ *
+ * Example usage:
+ *
+ *     @example
+ *     Ext.create('Ext.form.Panel', {
+ *         title: 'Time Card',
+ *         width: 300,
+ *         bodyPadding: 10,
+ *         renderTo: Ext.getBody(),
+ *         items: [{
+ *             xtype: 'timefield',
+ *             name: 'in',
+ *             fieldLabel: 'Time In',
+ *             minValue: '6:00 AM',
+ *             maxValue: '8:00 PM',
+ *             increment: 30,
+ *             anchor: '100%'
+ *         }, {
+ *             xtype: 'timefield',
+ *             name: 'out',
+ *             fieldLabel: 'Time Out',
+ *             minValue: '6:00 AM',
+ *             maxValue: '8:00 PM',
+ *             increment: 30,
+ *             anchor: '100%'
+ *        }]
+ *     });
  */
 Ext.define('Ext.form.field.Time', {
     extend:'Ext.form.field.Picker',
@@ -58,80 +58,78 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @cfg {String} triggerCls
-     * An additional CSS class used to style the trigger button.  The trigger will always get the
-     * {@link #triggerBaseCls} by default and <tt>triggerCls</tt> will be <b>appended</b> if specified.
-     * Defaults to <tt>'x-form-time-trigger'</tt> for the Time field trigger.
+     * An additional CSS class used to style the trigger button. The trigger will always get the {@link #triggerBaseCls}
+     * by default and triggerCls will be **appended** if specified. Defaults to 'x-form-time-trigger' for the Time field
+     * trigger.
      */
     triggerCls: Ext.baseCSSPrefix + 'form-time-trigger',
 
     /**
      * @cfg {Date/String} minValue
-     * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string
-     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
+     * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a
+     * valid format -- see {@link #format} and {@link #altFormats}.
      */
 
     /**
      * @cfg {Date/String} maxValue
-     * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string
-     * time in a valid format -- see {@link #format} and {@link #altFormats} (defaults to undefined).
+     * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a
+     * valid format -- see {@link #format} and {@link #altFormats}.
      */
 
     /**
      * @cfg {String} minText
-     * The error text to display when the entered time is before {@link #minValue} (defaults to
-     * 'The time in this field must be equal to or after {0}').
+     * The error text to display when the entered time is before {@link #minValue}.
      */
     minText : "The time in this field must be equal to or after {0}",
 
     /**
      * @cfg {String} maxText
-     * The error text to display when the entered time is after {@link #maxValue} (defaults to
-     * 'The time in this field must be equal to or before {0}').
+     * The error text to display when the entered time is after {@link #maxValue}.
      */
     maxText : "The time in this field must be equal to or before {0}",
 
     /**
      * @cfg {String} invalidText
-     * The error text to display when the time in the field is invalid (defaults to
-     * '{value} is not a valid time').
+     * The error text to display when the time in the field is invalid.
      */
     invalidText : "{0} is not a valid time",
 
     /**
      * @cfg {String} format
-     * The default time format string which can be overriden for localization support.  The format must be
-     * valid according to {@link Ext.Date#parse} (defaults to 'g:i A', e.g., '3:15 PM').  For 24-hour time
-     * format try 'H:i' instead.
+     * The default time format string which can be overriden for localization support. The format must be valid
+     * according to {@link Ext.Date#parse} (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i'
+     * instead.
      */
     format : "g:i A",
 
     /**
-     * @cfg {String} submitFormat The date format string which will be submitted to the server.
-     * The format must be valid according to {@link Ext.Date#parse} (defaults to <tt>{@link #format}</tt>).
+     * @cfg {String} submitFormat
+     * The date format string which will be submitted to the server. The format must be valid according to {@link
+     * Ext.Date#parse} (defaults to {@link #format}).
      */
 
     /**
      * @cfg {String} altFormats
      * Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined
-     * format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').
+     * format.
      */
     altFormats : "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A",
 
     /**
      * @cfg {Number} increment
-     * The number of minutes between each time value in the list (defaults to 15).
+     * The number of minutes between each time value in the list.
      */
     increment: 15,
 
     /**
      * @cfg {Number} pickerMaxHeight
-     * The maximum height of the {@link Ext.picker.Time} dropdown. Defaults to 300.
+     * The maximum height of the {@link Ext.picker.Time} dropdown.
      */
     pickerMaxHeight: 300,
 
     /**
      * @cfg {Boolean} selectOnTab
-     * Whether the Tab key should select the currently highlighted item. Defaults to <tt>true</tt>.
+     * Whether the Tab key should select the currently highlighted item.
      */
     selectOnTab: true,
 
@@ -226,12 +224,12 @@ Ext.define('Ext.form.field.Time', {
     },
 
     /**
-     * Runs all of Time's validations and returns an array of any errors. Note that this first
-     * runs Text's validations, so the returned array is an amalgamation of all field errors.
-     * The additional validation checks are testing that the time format is valid, that the chosen
-     * time is within the {@link #minValue} and {@link #maxValue} constraints set.
-     * @param {Mixed} value The value to get errors for (defaults to the current field value)
-     * @return {Array} All validation errors for this field
+     * Runs all of Time's validations and returns an array of any errors. Note that this first runs Text's validations,
+     * so the returned array is an amalgamation of all field errors. The additional validation checks are testing that
+     * the time format is valid, that the chosen time is within the {@link #minValue} and {@link #maxValue} constraints
+     * set.
+     * @param {Object} [value] The value to get errors for (defaults to the current field value)
+     * @return {String[]} All validation errors for this field
      */
     getErrors: function(value) {
         var me = this,
@@ -330,6 +328,7 @@ Ext.define('Ext.form.field.Time', {
     createPicker: function() {
         var me = this,
             picker = Ext.create('Ext.picker.Time', {
+                pickerField: me,
                 selModel: {
                     mode: 'SINGLE'
                 },

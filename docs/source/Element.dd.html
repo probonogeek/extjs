@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,11 +15,11 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
-Ext.core.Element.addMethods({
-<span id='Ext-core-Element-method-initDD'>    /**
+Ext.Element.addMethods({
+<span id='Ext-Element-method-initDD'>    /**
 </span>     * Initializes a {@link Ext.dd.DD} drag drop object for this element.
      * @param {String} group The group the DD object is member of
      * @param {Object} config The DD config object
@@ -31,7 +31,7 @@ Ext.core.Element.addMethods({
         return Ext.apply(dd, overrides);
     },
 
-<span id='Ext-core-Element-method-initDDProxy'>    /**
+<span id='Ext-Element-method-initDDProxy'>    /**
 </span>     * Initializes a {@link Ext.dd.DDProxy} object for this element.
      * @param {String} group The group the DDProxy object is member of
      * @param {Object} config The DDProxy config object
@@ -43,7 +43,7 @@ Ext.core.Element.addMethods({
         return Ext.apply(dd, overrides);
     },
 
-<span id='Ext-core-Element-method-initDDTarget'>    /**
+<span id='Ext-Element-method-initDDTarget'>    /**
 </span>     * Initializes a {@link Ext.dd.DDTarget} object for this element.
      * @param {String} group The group the DDTarget object is member of
      * @param {Object} config The DDTarget config object

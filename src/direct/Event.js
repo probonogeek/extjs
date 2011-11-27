@@ -17,18 +17,18 @@ If you are unsure which license is appropriate for your use, please contact the 
  * A base class for all Ext.direct events. An event is
  * created after some kind of interaction with the server.
  * The event class is essentially just a data structure
- * to hold a direct response.
+ * to hold a Direct response.
  */
 Ext.define('Ext.direct.Event', {
-    
+
     /* Begin Definitions */
-   
+
     alias: 'direct.event',
-    
+
     requires: ['Ext.direct.Manager'],
-    
+
     /* End Definitions */
-   
+
     status: true,
 
     /**
@@ -38,7 +38,7 @@ Ext.define('Ext.direct.Event', {
     constructor: function(config) {
         Ext.apply(this, config);
     },
-    
+
     /**
      * Return the raw data for this event.
      * @return {Object} The data from the event

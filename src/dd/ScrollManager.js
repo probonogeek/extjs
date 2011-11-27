@@ -29,7 +29,7 @@ el.ddScrollConfig = {
 };
 Ext.dd.ScrollManager.register(el);
 </code></pre>
- * <b>Note: This class uses "Point Mode" and is untested in "Intersect Mode".</b>
+ * Note: This class is designed to be used in "Point Mode
  * @singleton
  */
 Ext.define('Ext.dd.ScrollManager', {
@@ -149,7 +149,8 @@ Ext.define('Ext.dd.ScrollManager', {
 
     /**
      * Registers new overflow element(s) to auto scroll
-     * @param {Mixed/Array} el The id of or the element to be scrolled or an array of either
+     * @param {String/HTMLElement/Ext.Element/String[]/HTMLElement[]/Ext.Element[]} el
+     * The id of or the element to be scrolled or an array of either
      */
     register : function(el){
         if (Ext.isArray(el)) {
@@ -164,7 +165,8 @@ Ext.define('Ext.dd.ScrollManager', {
 
     /**
      * Unregisters overflow element(s) so they are no longer scrolled
-     * @param {Mixed/Array} el The id of or the element to be removed or an array of either
+     * @param {String/HTMLElement/Ext.Element/String[]/HTMLElement[]/Ext.Element[]} el
+     * The id of or the element to be removed or an array of either
      */
     unregister : function(el){
         if(Ext.isArray(el)){
@@ -179,44 +181,43 @@ Ext.define('Ext.dd.ScrollManager', {
 
     /**
      * The number of pixels from the top or bottom edge of a container the pointer needs to be to
-     * trigger scrolling (defaults to 25)
+     * trigger scrolling
      * @type Number
      */
     vthresh : 25,
     /**
      * The number of pixels from the right or left edge of a container the pointer needs to be to
-     * trigger scrolling (defaults to 25)
+     * trigger scrolling
      * @type Number
      */
     hthresh : 25,
 
     /**
-     * The number of pixels to scroll in each scroll increment (defaults to 100)
+     * The number of pixels to scroll in each scroll increment
      * @type Number
      */
     increment : 100,
 
     /**
-     * The frequency of scrolls in milliseconds (defaults to 500)
+     * The frequency of scrolls in milliseconds
      * @type Number
      */
     frequency : 500,
 
     /**
-     * True to animate the scroll (defaults to true)
+     * True to animate the scroll
      * @type Boolean
      */
     animate: true,
 
     /**
-     * The animation duration in seconds -
-     * MUST BE less than Ext.dd.ScrollManager.frequency! (defaults to .4)
+     * The animation duration in seconds - MUST BE less than Ext.dd.ScrollManager.frequency!
      * @type Number
      */
     animDuration: 0.4,
 
     /**
-     * The named drag drop {@link Ext.dd.DragSource#ddGroup group} to which this container belongs (defaults to undefined).
+     * The named drag drop {@link Ext.dd.DragSource#ddGroup group} to which this container belongs.
      * If a ddGroup is specified, then container scrolling will only occur when a dragged object is in the same ddGroup.
      * @type String
      */

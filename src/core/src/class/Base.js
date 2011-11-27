@@ -17,9 +17,10 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @docauthor Jacky Nguyen <jacky@sencha.com>
  * @class Ext.Base
  *
- * The root of all classes created with {@link Ext#define}
- * All prototype and static members of this class are inherited by any other class
+ * The root of all classes created with {@link Ext#define}.
  *
+ * Ext.Base is the building block of all Ext classes. All classes in Ext inherit from Ext.Base.
+ * All prototype and static members of this class are inherited by all other classes.
  */
 (function(flexSetter) {
 
@@ -64,7 +65,7 @@ var Base = Ext.Base = function() {};
          *     var clone = snowLeopard.clone();
          *     alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'
          *
-         * @type Class
+         * @type Ext.Class
          * @protected
          */
         self: Base,
@@ -74,6 +75,7 @@ var Base = Ext.Base = function() {};
             return this;
         },
 
+        //<feature classSystem.config>
         /**
          * Initialize configuration for this class. a typical example:
          *
@@ -134,6 +136,7 @@ var Base = Ext.Base = function() {};
 
             return this;
         }),
+        //</feature>
 
         /**
          * Call the parent's overridden method. For example:
@@ -172,7 +175,7 @@ var Base = Ext.Base = function() {};
          * @protected
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * from the current method, for example: `this.callParent(arguments)`
-         * @return {Mixed} Returns the result from the superclass' method
+         * @return {Object} Returns the result from the superclass' method
          */
         callParent: function(args) {
             var method = this.callParent.caller,
@@ -220,25 +223,25 @@ var Base = Ext.Base = function() {};
          *             totalCreated: 0,
          *             speciesName: 'Cat' // My.Cat.speciesName = 'Cat'
          *         },
-         *  
+         *
          *         constructor: function() {
          *             var statics = this.statics();
-         *  
+         *
          *             alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to
          *                                             // equivalent to: My.Cat.speciesName
-         *  
+         *
          *             alert(this.self.speciesName);   // dependent on 'this'
-         *  
+         *
          *             statics.totalCreated++;
-         *  
+         *
          *             return this;
          *         },
-         *  
+         *
          *         clone: function() {
          *             var cloned = new this.self;                      // dependent on 'this'
-         *  
+         *
          *             cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName
-         *  
+         *
          *             return cloned;
          *         }
          *     });
@@ -246,11 +249,11 @@ var Base = Ext.Base = function() {};
          *
          *     Ext.define('My.SnowLeopard', {
          *         extend: 'My.Cat',
-         *  
+         *
          *         statics: {
          *             speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'
          *         },
-         *  
+         *
          *         constructor: function() {
          *             this.callParent();
          *         }
@@ -267,7 +270,7 @@ var Base = Ext.Base = function() {};
          *     alert(My.Cat.totalCreated);             // alerts 3
          *
          * @protected
-         * @return {Class}
+         * @return {Ext.Class}
          */
         statics: function() {
             var method = this.statics.caller,
@@ -286,7 +289,7 @@ var Base = Ext.Base = function() {};
          *     Ext.define('My.Cat', {
          *         constructor: function() {
          *             alert("I'm a cat!");
-         *   
+         *
          *             return this;
          *         }
          *     });
@@ -294,11 +297,11 @@ var Base = Ext.Base = function() {};
          *     My.Cat.override({
          *         constructor: function() {
          *             alert("I'm going to be a cat!");
-         *   
+         *
          *             var instance = this.callOverridden();
-         *   
+         *
          *             alert("Meeeeoooowwww");
-         *   
+         *
          *             return instance;
          *         }
          *     });
@@ -308,7 +311,8 @@ var Base = Ext.Base = function() {};
          *                               // alerts "Meeeeoooowwww"
          *
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
-         * @return {Mixed} Returns the result after calling the overridden method
+         * @return {Object} Returns the result after calling the overridden method
+         * @protected
          */
         callOverridden: function(args) {
             var method = this.callOverridden.caller;
@@ -346,7 +350,7 @@ var Base = Ext.Base = function() {};
          *     Ext.define('My.cool.Class', {
          *         ...
          *     });
-         *      
+         *
          *     My.cool.Class.create({
          *         someConfig: true
          *     });
@@ -355,6 +359,7 @@ var Base = Ext.Base = function() {};
          *
          * @return {Object} the created instance.
          * @static
+         * @inheritable
          */
         create: function() {
             return Ext.create.apply(Ext, [this].concat(Array.prototype.slice.call(arguments, 0)));
@@ -362,23 +367,25 @@ var Base = Ext.Base = function() {};
 
         /**
          * @private
+         * @inheritable
          */
-        own: flexSetter(function(name, value) {
-            if (typeof value === 'function') {
+        own: function(name, value) {
+            if (typeof value == 'function') {
                 this.ownMethod(name, value);
             }
             else {
                 this.prototype[name] = value;
             }
-        }),
+        },
 
         /**
          * @private
+         * @inheritable
          */
         ownMethod: function(name, fn) {
             var originalFn;
 
-            if (fn.$owner !== undefined && fn !== Ext.emptyFn) {
+            if (typeof fn.$owner !== 'undefined' && fn !== Ext.emptyFn) {
                 originalFn = fn;
 
                 fn = function() {
@@ -415,11 +422,54 @@ var Base = Ext.Base = function() {};
          * @param {Object} members
          * @return {Ext.Base} this
          * @static
+         * @inheritable
          */
         addStatics: function(members) {
             for (var name in members) {
                 if (members.hasOwnProperty(name)) {
                     this[name] = members[name];
+                }
+            }
+
+            return this;
+        },
+
+        /**
+         * @private
+         * @param {Object} members
+         */
+        addInheritableStatics: function(members) {
+            var inheritableStatics,
+                hasInheritableStatics,
+                prototype = this.prototype,
+                name, member;
+
+            inheritableStatics = prototype.$inheritableStatics;
+            hasInheritableStatics = prototype.$hasInheritableStatics;
+
+            if (!inheritableStatics) {
+                inheritableStatics = prototype.$inheritableStatics = [];
+                hasInheritableStatics = prototype.$hasInheritableStatics = {};
+            }
+
+            //<debug>
+            var className = Ext.getClassName(this);
+            //</debug>
+
+            for (name in members) {
+                if (members.hasOwnProperty(name)) {
+                    member = members[name];
+                    //<debug>
+                    if (typeof member == 'function') {
+                        member.displayName = className + '.' + name;
+                    }
+                    //</debug>
+                    this[name] = member;
+
+                    if (!hasInheritableStatics[name]) {
+                        hasInheritableStatics[name] = true;
+                        inheritableStatics.push(name);
+                    }
                 }
             }
 
@@ -446,10 +496,12 @@ var Base = Ext.Base = function() {};
          *
          * @param {Object} members
          * @static
+         * @inheritable
          */
         implement: function(members) {
             var prototype = this.prototype,
-                name, i, member, previous;
+                enumerables = Ext.enumerables,
+                name, i, member;
             //<debug>
             var className = Ext.getClassName(this);
             //</debug>
@@ -471,9 +523,7 @@ var Base = Ext.Base = function() {};
                 }
             }
 
-            if (Ext.enumerables) {
-                var enumerables = Ext.enumerables;
-
+            if (enumerables) {
                 for (i = enumerables.length; i--;) {
                     name = enumerables[i];
 
@@ -509,10 +559,10 @@ var Base = Ext.Base = function() {};
          *     steve.printMoney(); // alerts '$$$$$$$'
          *
          * @param {Ext.Base} fromClass The class to borrow members from
-         * @param {Array/String} members The names of the members to borrow
+         * @param {String/String[]} members The names of the members to borrow
          * @return {Ext.Base} this
          * @static
-         * @private
+         * @inheritable
          */
         borrow: function(fromClass, members) {
             var fromPrototype = fromClass.prototype,
@@ -560,10 +610,31 @@ var Base = Ext.Base = function() {};
          * @param {Object} members
          * @return {Ext.Base} this
          * @static
+         * @inheritable
          */
         override: function(members) {
             var prototype = this.prototype,
+                enumerables = Ext.enumerables,
                 name, i, member, previous;
+
+            if (arguments.length === 2) {
+                name = members;
+                member = arguments[1];
+
+                if (typeof member == 'function') {
+                    if (typeof prototype[name] == 'function') {
+                        previous = prototype[name];
+                        member.$previous = previous;
+                    }
+
+                    this.ownMethod(name, member);
+                }
+                else {
+                    prototype[name] = member;
+                }
+
+                return this;
+            }
 
             for (name in members) {
                 if (members.hasOwnProperty(name)) {
@@ -583,14 +654,12 @@ var Base = Ext.Base = function() {};
                 }
             }
 
-            if (Ext.enumerables) {
-                var enumerables = Ext.enumerables;
-
+            if (enumerables) {
                 for (i = enumerables.length; i--;) {
                     name = enumerables[i];
 
                     if (members.hasOwnProperty(name)) {
-                        if (prototype[name] !== undefined) {
+                        if (typeof prototype[name] !== 'undefined') {
                             previous = prototype[name];
                             members[name].$previous = previous;
                         }
@@ -603,44 +672,58 @@ var Base = Ext.Base = function() {};
             return this;
         },
 
+        //<feature classSystem.mixins>
         /**
          * Used internally by the mixins pre-processor
          * @private
+         * @inheritable
          */
-        mixin: flexSetter(function(name, cls) {
+        mixin: function(name, cls) {
             var mixin = cls.prototype,
                 my = this.prototype,
-                i, fn;
+                key, fn;
 
-            for (i in mixin) {
-                if (mixin.hasOwnProperty(i)) {
-                    if (my[i] === undefined) {
-                        if (typeof mixin[i] === 'function') {
-                            fn = mixin[i];
+            for (key in mixin) {
+                if (mixin.hasOwnProperty(key)) {
+                    if (typeof my[key] === 'undefined' && key !== 'mixins' && key !== 'mixinId') {
+                        if (typeof mixin[key] === 'function') {
+                            fn = mixin[key];
 
-                            if (fn.$owner === undefined) {
-                                this.ownMethod(i, fn);
+                            if (typeof fn.$owner === 'undefined') {
+                                this.ownMethod(key, fn);
                             }
                             else {
-                                my[i] = fn;
+                                my[key] = fn;
                             }
                         }
                         else {
-                            my[i] = mixin[i];
+                            my[key] = mixin[key];
                         }
                     }
-                    else if (i === 'config' && my.config && mixin.config) {
+                    //<feature classSystem.config>
+                    else if (key === 'config' && my.config && mixin.config) {
                         Ext.Object.merge(my.config, mixin.config);
                     }
+                    //</feature>
                 }
             }
 
-            if (my.mixins === undefined) {
-                my.mixins = {};
+            if (typeof mixin.onClassMixedIn !== 'undefined') {
+                mixin.onClassMixedIn.call(cls, this);
+            }
+
+            if (!my.hasOwnProperty('mixins')) {
+                if ('mixins' in my) {
+                    my.mixins = Ext.Object.merge({}, my.mixins);
+                }
+                else {
+                    my.mixins = {};
+                }
             }
 
             my.mixins[name] = mixin;
-        }),
+        },
+        //</feature>
 
         /**
          * Get the current class' name in string format.
@@ -654,6 +737,8 @@ var Base = Ext.Base = function() {};
          *     My.cool.Class.getName(); // 'My.cool.Class'
          *
          * @return {String} className
+         * @static
+         * @inheritable
          */
         getName: function() {
             return Ext.getClassName(this);
@@ -684,10 +769,13 @@ var Base = Ext.Base = function() {};
          * {@link Ext.Function#flexSetter flexSetter}
          * @param {String/Object} origin The original method name
          * @static
+         * @inheritable
          * @method
          */
         createAlias: flexSetter(function(alias, origin) {
-            this.prototype[alias] = this.prototype[origin];
+            this.prototype[alias] = function() {
+                return this[origin].apply(this, arguments);
+            }
         })
     });
 

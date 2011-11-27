@@ -15,6 +15,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.chart.axis.Abstract
  * Base class for all axis classes.
+ * @private
  */
 Ext.define('Ext.chart.axis.Abstract', {
 

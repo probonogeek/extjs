@@ -39,21 +39,30 @@ Ext.define('Ext.chart.axis.Gauge', {
     extend: 'Ext.chart.axis.Abstract',
 
     /* End Definitions */
-    
+
     /**
-     * @cfg {Number} minimum (required) the minimum value of the interval to be displayed in the axis.
+     * @cfg {Number} minimum (required)
+     * The minimum value of the interval to be displayed in the axis.
      */
 
     /**
-     * @cfg {Number} maximum (required) the maximum value of the interval to be displayed in the axis.
+     * @cfg {Number} maximum (required)
+     * The maximum value of the interval to be displayed in the axis.
      */
 
     /**
-     * @cfg {Number} steps (required) the number of steps and tick marks to add to the interval.
+     * @cfg {Number} steps (required)
+     * The number of steps and tick marks to add to the interval.
      */
 
     /**
-     * @cfg {Number} margin (optional) the offset positioning of the tick marks and labels in pixels. Default's 10.
+     * @cfg {Number} [margin=10]
+     * The offset positioning of the tick marks and labels in pixels.
+     */
+
+    /**
+     * @cfg {String} title
+     * The title for the Axis.
      */
 
     position: 'gauge',
@@ -116,7 +125,7 @@ Ext.define('Ext.chart.axis.Gauge', {
             this.drawTitle();
         }
     },
-    
+
     drawTitle: function() {
         var me = this,
             chart = me.chart,
@@ -124,12 +133,12 @@ Ext.define('Ext.chart.axis.Gauge', {
             bbox = chart.chartBBox,
             labelSprite = me.titleSprite,
             labelBBox;
-        
+
         if (!labelSprite) {
             me.titleSprite = labelSprite = surface.add({
                 type: 'text',
                 zIndex: 2
-            });    
+            });
         }
         labelSprite.setAttributes(Ext.apply({
             text: me.title

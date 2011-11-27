@@ -13,69 +13,59 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.layout.container.Table
- * @extends Ext.layout.container.Auto
- * <p>This layout allows you to easily render content into an HTML table.  The total number of columns can be
- * specified, and rowspan and colspan can be used to create complex layouts within the table.
- * This class is intended to be extended or created via the <code>layout: {type: 'table'}</code>
- * {@link Ext.container.Container#layout} config, and should generally not need to be created directly via the new keyword.</p>
- * <p>Note that when creating a layout via config, the layout-specific config properties must be passed in via
- * the {@link Ext.container.Container#layout} object which will then be applied internally to the layout.  In the
- * case of TableLayout, the only valid layout config properties are {@link #columns} and {@link #tableAttrs}.
- * However, the items added to a TableLayout can supply the following table-specific config properties:</p>
- * <ul>
- * <li><b>rowspan</b> Applied to the table cell containing the item.</li>
- * <li><b>colspan</b> Applied to the table cell containing the item.</li>
- * <li><b>cellId</b> An id applied to the table cell containing the item.</li>
- * <li><b>cellCls</b> A CSS class name added to the table cell containing the item.</li>
- * </ul>
- * <p>The basic concept of building up a TableLayout is conceptually very similar to building up a standard
- * HTML table.  You simply add each panel (or "cell") that you want to include along with any span attributes
- * specified as the special config properties of rowspan and colspan which work exactly like their HTML counterparts.
- * Rather than explicitly creating and nesting rows and columns as you would in HTML, you simply specify the
- * total column count in the layoutConfig and start adding panels in their natural order from left to right,
- * top to bottom.  The layout will automatically figure out, based on the column count, rowspans and colspans,
- * how to position each panel within the table.  Just like with HTML tables, your rowspans and colspans must add
- * up correctly in your overall layout or you'll end up with missing and/or extra cells!  Example usage:</p>
- * {@img Ext.layout.container.Table/Ext.layout.container.Table.png Ext.layout.container.Table container layout}
- * <pre><code>
-// This code will generate a layout table that is 3 columns by 2 rows
-// with some spanning included.  The basic layout will be:
-// +--------+-----------------+
-// |   A    |   B             |
-// |        |--------+--------|
-// |        |   C    |   D    |
-// +--------+--------+--------+
-    Ext.create('Ext.panel.Panel', {
-        title: 'Table Layout',
-        width: 300,
-        height: 150,
-        layout: {
-            type: 'table',
-            // The total column count must be specified here
-            columns: 3
-        },
-        defaults: {
-            // applied to each contained panel
-            bodyStyle:'padding:20px'
-        },
-        items: [{
-            html: 'Cell A content',
-            rowspan: 2
-        },{
-            html: 'Cell B content',
-            colspan: 2
-        },{
-            html: 'Cell C content',
-            cellCls: 'highlight'
-        },{
-            html: 'Cell D content'
-        }],
-        renderTo: Ext.getBody()
-    });
-</code></pre>
+ * This layout allows you to easily render content into an HTML table. The total number of columns can be specified, and
+ * rowspan and colspan can be used to create complex layouts within the table. This class is intended to be extended or
+ * created via the `layout: {type: 'table'}` {@link Ext.container.Container#layout} config, and should generally not
+ * need to be created directly via the new keyword.
+ *
+ * Note that when creating a layout via config, the layout-specific config properties must be passed in via the {@link
+ * Ext.container.Container#layout} object which will then be applied internally to the layout. In the case of
+ * TableLayout, the only valid layout config properties are {@link #columns} and {@link #tableAttrs}. However, the items
+ * added to a TableLayout can supply the following table-specific config properties:
+ *
+ *   - **rowspan** Applied to the table cell containing the item.
+ *   - **colspan** Applied to the table cell containing the item.
+ *   - **cellId** An id applied to the table cell containing the item.
+ *   - **cellCls** A CSS class name added to the table cell containing the item.
+ *
+ * The basic concept of building up a TableLayout is conceptually very similar to building up a standard HTML table. You
+ * simply add each panel (or "cell") that you want to include along with any span attributes specified as the special
+ * config properties of rowspan and colspan which work exactly like their HTML counterparts. Rather than explicitly
+ * creating and nesting rows and columns as you would in HTML, you simply specify the total column count in the
+ * layoutConfig and start adding panels in their natural order from left to right, top to bottom. The layout will
+ * automatically figure out, based on the column count, rowspans and colspans, how to position each panel within the
+ * table. Just like with HTML tables, your rowspans and colspans must add up correctly in your overall layout or you'll
+ * end up with missing and/or extra cells! Example usage:
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Table Layout',
+ *         width: 300,
+ *         height: 150,
+ *         layout: {
+ *             type: 'table',
+ *             // The total column count must be specified here
+ *             columns: 3
+ *         },
+ *         defaults: {
+ *             // applied to each contained panel
+ *             bodyStyle: 'padding:20px'
+ *         },
+ *         items: [{
+ *             html: 'Cell A content',
+ *             rowspan: 2
+ *         },{
+ *             html: 'Cell B content',
+ *             colspan: 2
+ *         },{
+ *             html: 'Cell C content',
+ *             cellCls: 'highlight'
+ *         },{
+ *             html: 'Cell D content'
+ *         }],
+ *         renderTo: Ext.getBody()
+ *     });
  */
-
 Ext.define('Ext.layout.container.Table', {
 
     /* Begin Definitions */
@@ -88,7 +78,7 @@ Ext.define('Ext.layout.container.Table', {
 
     /**
      * @cfg {Number} columns
-     * The total number of columns to create in the table for this layout.  If not specified, all Components added to
+     * The total number of columns to create in the table for this layout. If not specified, all Components added to
      * this layout will be rendered into a single row using one column per Component.
      */
 
@@ -109,33 +99,34 @@ Ext.define('Ext.layout.container.Table', {
 
     /**
      * @cfg {Object} tableAttrs
-     * <p>An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
-     * used to create the layout's <tt>&lt;table&gt;</tt> element. Example:</p><pre><code>
-{
-    xtype: 'panel',
-    layout: {
-        type: 'table',
-        columns: 3,
-        tableAttrs: {
-            style: {
-                width: '100%'
-            }
-        }
-    }
-}</code></pre>
+     * An object containing properties which are added to the {@link Ext.DomHelper DomHelper} specification used to
+     * create the layout's `<table>` element. Example:
+     *
+     *     {
+     *         xtype: 'panel',
+     *         layout: {
+     *             type: 'table',
+     *             columns: 3,
+     *             tableAttrs: {
+     *                 style: {
+     *                     width: '100%'
+     *                 }
+     *             }
+     *         }
+     *     }
      */
     tableAttrs:null,
 
     /**
      * @cfg {Object} trAttrs
-     * <p>An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
-     * used to create the layout's <tt>&lt;tr&gt;</tt> elements.
+     * An object containing properties which are added to the {@link Ext.DomHelper DomHelper} specification used to
+     * create the layout's <tr> elements.
      */
 
     /**
      * @cfg {Object} tdAttrs
-     * <p>An object containing properties which are added to the {@link Ext.core.DomHelper DomHelper} specification
-     * used to create the layout's <tt>&lt;td&gt;</tt> elements.
+     * An object containing properties which are added to the {@link Ext.DomHelper DomHelper} specification used to
+     * create the layout's <td> elements.
      */
 
     /**
@@ -229,7 +220,7 @@ Ext.define('Ext.layout.container.Table', {
      * Determine the row and cell indexes for each component, taking into consideration
      * the number of columns and each item's configured colspan/rowspan values.
      * @param {Array} items The layout components
-     * @return {Array} List of row and cell indexes for each of the components
+     * @return {Object[]} List of row and cell indexes for each of the components
      */
     calculateCells: function(items) {
         var cells = [],

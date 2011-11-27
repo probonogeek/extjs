@@ -13,19 +13,18 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.form.FieldSet
- * @extends Ext.container.Container
- * 
+ * @docauthor Jason Johnston <jason@sencha.com>
+ *
  * A container for grouping sets of fields, rendered as a HTML `fieldset` element. The {@link #title}
  * config will be rendered as the fieldset's `legend`.
- * 
+ *
  * While FieldSets commonly contain simple groups of fields, they are general {@link Ext.container.Container Containers}
  * and may therefore contain any type of components in their {@link #items}, including other nested containers.
  * The default {@link #layout} for the FieldSet's items is `'anchor'`, but it can be configured to use any other
  * layout type.
- * 
+ *
  * FieldSets may also be collapsed if configured to do so; this can be done in two ways:
- * 
+ *
  * 1. Set the {@link #collapsible} config to true; this will result in a collapse button being rendered next to
  *    the {@link #title legend title}, or:
  * 2. Set the {@link #checkboxToggle} config to true; this is similar to using {@link #collapsible} but renders
@@ -33,10 +32,9 @@ If you are unsure which license is appropriate for your use, please contact the 
  *    checkbox is checked and collapsed when it is unchecked. The checkbox will also be included in the
  *    {@link Ext.form.Basic#submit form submit parameters} using the {@link #checkboxName} as its parameter name.
  *
- * {@img Ext.form.FieldSet/Ext.form.FieldSet.png Ext.form.FieldSet component}
+ * # Example usage
  *
- * ## Example usage
- * 
+ *     @example
  *     Ext.create('Ext.form.Panel', {
  *         title: 'Simple Form with FieldSets',
  *         labelWidth: 75, // label settings here cascade unless overridden
@@ -82,8 +80,6 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             }]
  *         }]
  *     });
- * 
- * @docauthor Jason Johnston <jason@sencha.com>
  */
 Ext.define('Ext.form.FieldSet', {
     extend: 'Ext.container.Container',
@@ -96,48 +92,48 @@ Ext.define('Ext.form.FieldSet', {
      */
 
     /**
-     * @cfg {Boolean} checkboxToggle
-     * Set to <tt>true</tt> to render a checkbox into the fieldset frame just
-     * in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults
-     * to <tt>false</tt>). This checkbox will be included in form submits using the {@link #checkboxName}.
+     * @cfg {Boolean} [checkboxToggle=false]
+     * Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the
+     * fieldset when the checkbox is toggled.. This checkbox will be included in form submits using
+     * the {@link #checkboxName}.
      */
 
     /**
      * @cfg {String} checkboxName
-     * The name to assign to the fieldset's checkbox if <tt>{@link #checkboxToggle} = true</tt>
-     * (defaults to <tt>'[fieldset id]-checkbox'</tt>).
+     * The name to assign to the fieldset's checkbox if {@link #checkboxToggle} = true
+     * (defaults to '[fieldset id]-checkbox').
      */
 
     /**
-     * @cfg {Boolean} collapsible
-     * Set to <tt>true</tt> to make the fieldset collapsible and have the expand/collapse toggle button automatically
-     * rendered into the legend element, <tt>false</tt> to keep the fieldset statically sized with no collapse
-     * button (defaults to <tt>false</tt>). Another option is to configure <tt>{@link #checkboxToggle}</tt>.
-     * Use the {@link #collapsed} config to collapse the fieldset by default.
+     * @cfg {Boolean} [collapsible=false]
+     * Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered
+     * into the legend element, false to keep the fieldset statically sized with no collapse button.
+     * Another option is to configure {@link #checkboxToggle}. Use the {@link #collapsed} config to collapse the
+     * fieldset by default.
      */
 
     /**
      * @cfg {Boolean} collapsed
-     * Set to <tt>true</tt> to render the fieldset as collapsed by default. If {@link #checkboxToggle} is specified,
-     * the checkbox will also be unchecked by default.
+     * Set to true to render the fieldset as collapsed by default. If {@link #checkboxToggle} is specified, the checkbox
+     * will also be unchecked by default.
      */
     collapsed: false,
 
     /**
-     * @property legend
-     * @type Ext.Component
-     * The component for the fieldset's legend. Will only be defined if the configuration requires a legend
-     * to be created, by setting the {@link #title} or {@link #checkboxToggle} options.
+     * @property {Ext.Component} legend
+     * The component for the fieldset's legend. Will only be defined if the configuration requires a legend to be
+     * created, by setting the {@link #title} or {@link #checkboxToggle} options.
      */
 
     /**
-     * @cfg {String} baseCls The base CSS class applied to the fieldset (defaults to <tt>'x-fieldset'</tt>).
+     * @cfg {String} [baseCls='x-fieldset']
+     * The base CSS class applied to the fieldset.
      */
     baseCls: Ext.baseCSSPrefix + 'fieldset',
 
     /**
-     * @cfg {String} layout The {@link Ext.container.Container#layout} for the fieldset's immediate child items.
-     * Defaults to <tt>'anchor'</tt>.
+     * @cfg {String} layout
+     * The {@link Ext.container.Container#layout} for the fieldset's immediate child items.
      */
     layout: 'anchor',
 
@@ -146,8 +142,8 @@ Ext.define('Ext.form.FieldSet', {
     // No aria role necessary as fieldset has its own recognized semantics
     ariaRole: '',
 
-    renderTpl: ['<div class="{baseCls}-body"></div>'],
-    
+    renderTpl: ['<div id="{id}-body" class="{baseCls}-body"></div>'],
+
     maskOnDisable: false,
 
     getElConfig: function(){
@@ -163,10 +159,8 @@ Ext.define('Ext.form.FieldSet', {
         // Create the Legend component if needed
         me.initLegend();
 
-        // Add body el selector
-        Ext.applyIf(me.renderSelectors, {
-            body: '.' + baseCls + '-body'
-        });
+        // Add body el
+        me.addChildEls('body');
 
         if (me.collapsed) {
             me.addCls(baseCls + '-collapsed');
@@ -209,8 +203,23 @@ Ext.define('Ext.form.FieldSet', {
             legend = me.legend = Ext.create('Ext.container.Container', {
                 baseCls: me.baseCls + '-header',
                 ariaRole: '',
+                ownerCt: this,
                 getElConfig: function(){
-                    return {tag: 'legend', cls: this.baseCls};
+                    var result = {
+                        tag: 'legend',
+                        cls: this.baseCls
+                    };
+
+                    // Gecko3 will kick every <div> out of <legend> and mess up every thing.
+                    // So here we change every <div> into <span>s. Therefore the following
+                    // clearer is not needed and since div introduces a lot of subsequent
+                    // problems, it is actually harmful.
+                    if (!Ext.isGecko3) {
+                        result.children = [{
+                            cls: Ext.baseCSSPrefix + 'clear'
+                        }];
+                    }
+                    return result;
                 },
                 items: legendItems
             });
@@ -223,39 +232,51 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * @protected
-     * Creates the legend title component. This is only called internally, but could be overridden in subclasses
-     * to customize the title component.
+     * Creates the legend title component. This is only called internally, but could be overridden in subclasses to
+     * customize the title component.
      * @return Ext.Component
+     * @protected
      */
     createTitleCmp: function() {
         var me = this;
         me.titleCmp = Ext.create('Ext.Component', {
             html: me.title,
+            getElConfig: function() {
+                return {
+                    tag: Ext.isGecko3 ? 'span' : 'div',
+                    cls: me.titleCmp.cls,
+                    id: me.titleCmp.id
+                };
+            },
             cls: me.baseCls + '-header-text'
         });
         return me.titleCmp;
-        
     },
 
     /**
-     * @property checkboxCmp
-     * @type Ext.form.field.Checkbox
+     * @property {Ext.form.field.Checkbox} checkboxCmp
      * Refers to the {@link Ext.form.field.Checkbox} component that is added next to the title in the legend. Only
-     * populated if the fieldset is configured with <tt>{@link #checkboxToggle}:true</tt>.
+     * populated if the fieldset is configured with {@link #checkboxToggle}:true.
      */
 
     /**
-     * @protected
-     * Creates the checkbox component. This is only called internally, but could be overridden in subclasses
-     * to customize the checkbox's configuration or even return an entirely different component type.
+     * Creates the checkbox component. This is only called internally, but could be overridden in subclasses to
+     * customize the checkbox's configuration or even return an entirely different component type.
      * @return Ext.Component
+     * @protected
      */
     createCheckboxCmp: function() {
         var me = this,
             suffix = '-checkbox';
-            
+
         me.checkboxCmp = Ext.create('Ext.form.field.Checkbox', {
+            getElConfig: function() {
+                return {
+                    tag: Ext.isGecko3 ? 'span' : 'div',
+                    id: me.checkboxCmp.id,
+                    cls: me.checkboxCmp.cls
+                };
+            },
             name: me.checkboxName || me.id + suffix,
             cls: me.baseCls + '-header' + suffix,
             checked: !me.collapsed,
@@ -268,28 +289,34 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * @property toggleCmp
-     * @type Ext.panel.Tool
-     * Refers to the {@link Ext.panel.Tool} component that is added as the collapse/expand button next
-     * to the title in the legend. Only populated if the fieldset is configured with <tt>{@link #collapsible}:true</tt>.
+     * @property {Ext.panel.Tool} toggleCmp
+     * Refers to the {@link Ext.panel.Tool} component that is added as the collapse/expand button next to the title in
+     * the legend. Only populated if the fieldset is configured with {@link #collapsible}:true.
      */
 
     /**
-     * @protected
-     * Creates the toggle button component. This is only called internally, but could be overridden in
-     * subclasses to customize the toggle component.
+     * Creates the toggle button component. This is only called internally, but could be overridden in subclasses to
+     * customize the toggle component.
      * @return Ext.Component
+     * @protected
      */
     createToggleCmp: function() {
         var me = this;
         me.toggleCmp = Ext.create('Ext.panel.Tool', {
+            getElConfig: function() {
+                return {
+                    tag: Ext.isGecko3 ? 'span' : 'div',
+                    id: me.toggleCmp.id,
+                    cls: me.toggleCmp.cls
+                };
+            },
             type: 'toggle',
             handler: me.toggle,
             scope: me
         });
         return me.toggleCmp;
     },
-    
+
     /**
      * Sets the title of this fieldset
      * @param {String} title The new title
@@ -302,15 +329,15 @@ Ext.define('Ext.form.FieldSet', {
         me.titleCmp.update(title);
         return me;
     },
-    
+
     getTargetEl : function() {
         return this.body || this.frameBody || this.el;
     },
-    
+
     getContentTarget: function() {
         return this.body;
     },
-    
+
     /**
      * @private
      * Include the legend component in the items for ComponentQuery
@@ -336,7 +363,7 @@ Ext.define('Ext.form.FieldSet', {
     expand : function(){
         return this.setExpanded(true);
     },
-    
+
     /**
      * Collapses the fieldset.
      * @return {Ext.form.FieldSet} this
@@ -353,11 +380,11 @@ Ext.define('Ext.form.FieldSet', {
             checkboxCmp = me.checkboxCmp;
 
         expanded = !!expanded;
-        
+
         if (checkboxCmp) {
             checkboxCmp.setValue(expanded);
         }
-        
+
         if (expanded) {
             me.removeCls(me.baseCls + '-collapsed');
         } else {
@@ -380,7 +407,8 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * @private Handle changes in the checkbox checked state
+     * @private
+     * Handle changes in the checkbox checked state
      */
     onCheckChange: function(cmp, checked) {
         this.setExpanded(checked);

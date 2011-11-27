@@ -13,18 +13,18 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.core.Element.addMethods({
+Ext.Element.addMethods({
     /**
      * Gets the x,y coordinates specified by the anchor position on the element.
-     * @param {String} anchor (optional) The specified anchor position (defaults to "c").  See {@link #alignTo}
+     * @param {String} [anchor='c'] The specified anchor position.  See {@link #alignTo}
      * for details on supported anchor positions.
-     * @param {Boolean} local (optional) True to get the local (element top/left-relative) anchor position instead
+     * @param {Boolean} [local] True to get the local (element top/left-relative) anchor position instead
      * of page coordinates
-     * @param {Object} size (optional) An object containing the size to use for calculating anchor position
+     * @param {Object} [size] An object containing the size to use for calculating anchor position
      * {width: (target width), height: (target height)} (defaults to the element's current size)
-     * @return {Array} [x, y] An array containing the element's x and y coordinates
+     * @return {Number[]} [x, y] An array containing the element's x and y coordinates
      */
     getAnchorXY : function(anchor, local, s){
         //Passing a different size is useful for pre-calculating anchors,
@@ -34,8 +34,8 @@ Ext.core.Element.addMethods({
 
         var me = this,
             vp = me.dom == document.body || me.dom == document,
-            w = s.width || vp ? Ext.core.Element.getViewWidth() : me.getWidth(),
-            h = s.height || vp ? Ext.core.Element.getViewHeight() : me.getHeight(),
+            w = s.width || vp ? Ext.Element.getViewWidth() : me.getWidth(),
+            h = s.height || vp ? Ext.Element.getViewHeight() : me.getHeight(),
             xy,
             r = Math.round,
             o = me.getXY(),
@@ -60,14 +60,14 @@ Ext.core.Element.addMethods({
 
     /**
      * Anchors an element to another element and realigns it when the window is resized.
-     * @param {Mixed} element The element to align to.
+     * @param {String/HTMLElement/Ext.Element} element The element to align to.
      * @param {String} position The position to align to.
-     * @param {Array} offsets (optional) Offset the positioning by [x, y]
-     * @param {Boolean/Object} animate (optional) True for the default animation or a standard Element animation config object
-     * @param {Boolean/Number} monitorScroll (optional) True to monitor body scroll and reposition. If this parameter
+     * @param {Number[]} [offsets] Offset the positioning by [x, y]
+     * @param {Boolean/Object} [animate] True for the default animation or a standard Element animation config object
+     * @param {Boolean/Number} [monitorScroll] True to monitor body scroll and reposition. If this parameter
      * is a number, it is used as the buffer delay (defaults to 50ms).
-     * @param {Function} callback The function to call after the animation finishes
-     * @return {Ext.core.Element} this
+     * @param {Function} [callback] The function to call after the animation finishes
+     * @return {Ext.Element} this
      */
     anchorTo : function(el, alignment, offsets, animate, monitorScroll, callback){
         var me = this,
@@ -98,7 +98,7 @@ Ext.core.Element.addMethods({
 
     /**
      * Remove any anchor to this element. See {@link #anchorTo}.
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     removeAnchor : function(){
         var me = this,
@@ -116,7 +116,7 @@ Ext.core.Element.addMethods({
 
     // private
     getAnchor : function(){
-        var data = Ext.core.Element.data,
+        var data = Ext.Element.data,
             dom = this.dom;
             if (!dom) {
                 return;
@@ -139,7 +139,7 @@ Ext.core.Element.addMethods({
         if(!el || !el.dom){
             //<debug>
             Ext.Error.raise({
-                sourceClass: 'Ext.core.Element',
+                sourceClass: 'Ext.Element',
                 sourceMethod: 'getAlignVector',
                 msg: 'Attempted to align an element that doesn\'t exist'
             });
@@ -152,10 +152,10 @@ Ext.core.Element.addMethods({
     /**
      * Gets the x,y coordinates to align this element with another element. See {@link #alignTo} for more info on the
      * supported position values.
-     * @param {Mixed} element The element to align to.
-     * @param {String} position (optional, defaults to "tl-bl?") The position to align to.
-     * @param {Array} offsets (optional) Offset the positioning by [x, y]
-     * @return {Array} [x, y]
+     * @param {String/HTMLElement/Ext.Element} element The element to align to.
+     * @param {String} [position="tl-bl?"] The position to align to (defaults to )
+     * @param {Number[]} [offsets] Offset the positioning by [x, y]
+     * @return {Number[]} [x, y]
      */
     getAlignToXY : function(el, p, o){
         el = Ext.get(el);
@@ -163,7 +163,7 @@ Ext.core.Element.addMethods({
         if(!el || !el.dom){
             //<debug>
             Ext.Error.raise({
-                sourceClass: 'Ext.core.Element',
+                sourceClass: 'Ext.Element',
                 sourceMethod: 'getAlignToXY',
                 msg: 'Attempted to align an element that doesn\'t exist'
             });
@@ -183,8 +183,8 @@ Ext.core.Element.addMethods({
             w,
             h,
             r,
-            dw = Ext.core.Element.getViewWidth() -10, // 10px of margin for ie
-            dh = Ext.core.Element.getViewHeight()-10, // 10px of margin for ie
+            dw = Ext.Element.getViewWidth() -10, // 10px of margin for ie
+            dh = Ext.Element.getViewHeight()-10, // 10px of margin for ie
             p1y,
             p1x,
             p2y,
@@ -204,7 +204,7 @@ Ext.core.Element.addMethods({
         if(!m){
             //<debug>
             Ext.Error.raise({
-                sourceClass: 'Ext.core.Element',
+                sourceClass: 'Ext.Element',
                 sourceMethod: 'getAlignToXY',
                 el: el,
                 position: p,
@@ -302,11 +302,11 @@ el.alignTo("other-el", "br-l?");
 // adjust the x position by -6 pixels (and the y position by 0)
 el.alignTo("other-el", "c-bl", [-6, 0]);
 </code></pre>
-     * @param {Mixed} element The element to align to.
-     * @param {String} position (optional, defaults to "tl-bl?") The position to align to.
-     * @param {Array} offsets (optional) Offset the positioning by [x, y]
-     * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @param {String/HTMLElement/Ext.Element} element The element to align to.
+     * @param {String} [position="tl-bl?"] The position to align to
+     * @param {Number[]} [offsets] Offset the positioning by [x, y]
+     * @param {Boolean/Object} [animate] true for the default animation or a standard Element animation config object
+     * @return {Ext.Element} this
      */
     alignTo : function(element, position, offsets, animate){
         var me = this;
@@ -333,7 +333,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
      * @param constrainTo {Mixed} The Element or {@link Ext.util.Region Region} into which this element is to be constrained.
      * @param proposedPosition {Array} A proposed <code>[X, Y]</code> position to test for validity and to produce a vector for instead
      * of using this Element's current position;
-     * @returns {Array} <b>If</b> this element <i>needs</i> to be translated, an <code>[X, Y]</code>
+     * @returns {Number[]/Boolean} <b>If</b> this element <i>needs</i> to be translated, an <code>[X, Y]</code>
      * vector by which this element must be translated. Otherwise, <code>false</code>.
      */
     getConstrainVector: function(constrainTo, proposedPosition) {
@@ -380,7 +380,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
 
     /**
     * Calculates the x, y to center this element on the screen
-    * @return {Array} The x, y values [x, y]
+    * @return {Number[]} The x, y values [x, y]
     */
     getCenterXY : function(){
         return this.getAlignToXY(document, 'c-c');
@@ -388,7 +388,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
 
     /**
     * Centers the Element in either the viewport, or another Element.
-    * @param {Mixed} centerIn (optional) The element in which to center the element.
+    * @param {String/HTMLElement/Ext.Element} centerIn (optional) The element in which to center the element.
     */
     center : function(centerIn){
         return this.alignTo(centerIn || document, 'c-c');

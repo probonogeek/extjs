@@ -229,7 +229,7 @@ Ext.ux.DataViewTransition = Ext.extend(Object, {
             for (var k in added) {
                 count++;
             }
-            if (Ext.global.console) {
+            if (Ext.global.console && Ext.global.console.log) {
                 Ext.global.console.log('added:', count);
             }
             //</debug>

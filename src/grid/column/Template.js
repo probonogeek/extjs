@@ -13,25 +13,21 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.grid.column.Template
- * @extends Ext.grid.column.Column
- * 
  * A Column definition class which renders a value by processing a {@link Ext.data.Model Model}'s
- * {@link Ext.data.Model#data data} using a {@link #tpl configured} {@link Ext.XTemplate XTemplate}.
+ * {@link Ext.data.Model#persistenceProperty data} using a {@link #tpl configured}
+ * {@link Ext.XTemplate XTemplate}.
  * 
- *  {@img Ext.grid.column.Template/Ext.grid.column.Template.png Ext.grid.column.Template grid column}
- * 
- * ## Code
+ *     @example
  *     Ext.create('Ext.data.Store', {
  *         storeId:'employeeStore',
  *         fields:['firstname', 'lastname', 'senority', 'department'],
  *         groupField: 'department',
  *         data:[
- *             {firstname:"Michael", lastname:"Scott", senority:7, department:"Manangement"},
- *             {firstname:"Dwight", lastname:"Schrute", senority:2, department:"Sales"},
- *             {firstname:"Jim", lastname:"Halpert", senority:3, department:"Sales"},
- *             {firstname:"Kevin", lastname:"Malone", senority:4, department:"Accounting"},
- *             {firstname:"Angela", lastname:"Martin", senority:5, department:"Accounting"}                        
+ *             { firstname: "Michael", lastname: "Scott",   senority: 7, department: "Manangement" },
+ *             { firstname: "Dwight",  lastname: "Schrute", senority: 2, department: "Sales" },
+ *             { firstname: "Jim",     lastname: "Halpert", senority: 3, department: "Sales" },
+ *             { firstname: "Kevin",   lastname: "Malone",  senority: 4, department: "Accounting" },
+ *             { firstname: "Angela",  lastname: "Martin",  senority: 5, department: "Accounting" }                        
  *         ]
  *     });
  *     
@@ -39,15 +35,13 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         title: 'Column Template Demo',
  *         store: Ext.data.StoreManager.lookup('employeeStore'),
  *         columns: [
- *             {text: 'Full Name',  xtype:'templatecolumn', tpl:'{firstname} {lastname}', flex:1},
- *             {text: 'Deparment (Yrs)', xtype:'templatecolumn', tpl:'{department} ({senority})'}
+ *             { text: 'Full Name',       xtype: 'templatecolumn', tpl: '{firstname} {lastname}', flex:1 },
+ *             { text: 'Deparment (Yrs)', xtype: 'templatecolumn', tpl: '{department} ({senority})' }
  *         ],
  *         height: 200,
  *         width: 300,
  *         renderTo: Ext.getBody()
  *     });
- * 
- * @markdown
  */
 Ext.define('Ext.grid.column.Template', {
     extend: 'Ext.grid.column.Column',
@@ -56,10 +50,12 @@ Ext.define('Ext.grid.column.Template', {
     alternateClassName: 'Ext.grid.TemplateColumn',
 
     /**
-     * @cfg {String/XTemplate} tpl
-     * An {@link Ext.XTemplate XTemplate}, or an XTemplate <i>definition string</i> to use to process a
-     * {@link Ext.data.Model Model}'s {@link Ext.data.Model#data data} to produce a column's rendered value.
+     * @cfg {String/Ext.XTemplate} tpl
+     * An {@link Ext.XTemplate XTemplate}, or an XTemplate *definition string* to use to process a
+     * {@link Ext.data.Model Model}'s {@link Ext.data.Model#persistenceProperty data} to produce a
+     * column's rendered value.
      */
+
     constructor: function(cfg){
         var me = this,
             tpl;

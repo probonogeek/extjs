@@ -34,7 +34,7 @@ Ext.define('Ext.app.ChartPortlet', {
             i;
         for (i = 1; i < 50; i++) {
             data.push({
-                name: 'x',
+                name: 'x' + i,
                 sp500: data[i - 1].sp500 + ((Math.floor(Math.random() * 2) % 2) ? -1 : 1) * Math.floor(Math.random() * 7),
                 djia: data[i - 1].djia + ((Math.floor(Math.random() * 2) % 2) ? -1 : 1) * Math.floor(Math.random() * 7)
             });
@@ -82,7 +82,7 @@ Ext.define('Ext.app.ChartPortlet', {
                     lineWidth: 1,
                     showMarkers: false,
                     fill: true,
-                    axis: 'left',
+                    axis: ['left', 'bottom'],
                     xField: 'name',
                     yField: 'djia',
                     style: {
@@ -92,7 +92,7 @@ Ext.define('Ext.app.ChartPortlet', {
                     type: 'line',
                     lineWidth: 1,
                     showMarkers: false,
-                    axis: 'right',
+                    axis: ['right', 'bottom'],
                     xField: 'name',
                     yField: 'sp500',
                     style: {

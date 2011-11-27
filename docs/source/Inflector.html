@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,51 +16,40 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-util-Inflector'>/**
-</span> * @class Ext.util.Inflector
- * @extends Object
- * &lt;p&gt;General purpose inflector class that {@link #pluralize pluralizes}, {@link #singularize singularizes} and 
- * {@link #ordinalize ordinalizes} words. Sample usage:&lt;/p&gt;
- * 
-&lt;pre&gt;&lt;code&gt;
-//turning singular words into plurals
-Ext.util.Inflector.pluralize('word'); //'words'
-Ext.util.Inflector.pluralize('person'); //'people'
-Ext.util.Inflector.pluralize('sheep'); //'sheep'
-
-//turning plurals into singulars
-Ext.util.Inflector.singularize('words'); //'word'
-Ext.util.Inflector.singularize('people'); //'person'
-Ext.util.Inflector.singularize('sheep'); //'sheep'
-
-//ordinalizing numbers
-Ext.util.Inflector.ordinalize(11); //&quot;11th&quot;
-Ext.util.Inflector.ordinalize(21); //&quot;21th&quot;
-Ext.util.Inflector.ordinalize(1043); //&quot;1043rd&quot;
-&lt;/code&gt;&lt;/pre&gt;
- * 
- * &lt;p&gt;&lt;u&gt;Customization&lt;/u&gt;&lt;/p&gt;
- * 
- * &lt;p&gt;The Inflector comes with a default set of US English pluralization rules. These can be augmented with additional
+</span> * General purpose inflector class that {@link #pluralize pluralizes}, {@link #singularize singularizes} and
+ * {@link #ordinalize ordinalizes} words. Sample usage:
+ *
+ *     //turning singular words into plurals
+ *     Ext.util.Inflector.pluralize('word'); //'words'
+ *     Ext.util.Inflector.pluralize('person'); //'people'
+ *     Ext.util.Inflector.pluralize('sheep'); //'sheep'
+ *
+ *     //turning plurals into singulars
+ *     Ext.util.Inflector.singularize('words'); //'word'
+ *     Ext.util.Inflector.singularize('people'); //'person'
+ *     Ext.util.Inflector.singularize('sheep'); //'sheep'
+ *
+ *     //ordinalizing numbers
+ *     Ext.util.Inflector.ordinalize(11); //&quot;11th&quot;
+ *     Ext.util.Inflector.ordinalize(21); //&quot;21th&quot;
+ *     Ext.util.Inflector.ordinalize(1043); //&quot;1043rd&quot;
+ *
+ * # Customization
+ *
+ * The Inflector comes with a default set of US English pluralization rules. These can be augmented with additional
  * rules if the default rules do not meet your application's requirements, or swapped out entirely for other languages.
- * Here is how we might add a rule that pluralizes &quot;ox&quot; to &quot;oxen&quot;:&lt;/p&gt;
- * 
-&lt;pre&gt;&lt;code&gt;
-Ext.util.Inflector.plural(/^(ox)$/i, &quot;$1en&quot;);
-&lt;/code&gt;&lt;/pre&gt;
- * 
- * &lt;p&gt;Each rule consists of two items - a regular expression that matches one or more rules, and a replacement string.
- * In this case, the regular expression will only match the string &quot;ox&quot;, and will replace that match with &quot;oxen&quot;. 
- * Here's how we could add the inverse rule:&lt;/p&gt;
- * 
-&lt;pre&gt;&lt;code&gt;
-Ext.util.Inflector.singular(/^(ox)en$/i, &quot;$1&quot;);
-&lt;/code&gt;&lt;/pre&gt;
- * 
- * &lt;p&gt;Note that the ox/oxen rules are present by default.&lt;/p&gt;
- * 
- * @singleton
+ * Here is how we might add a rule that pluralizes &quot;ox&quot; to &quot;oxen&quot;:
+ *
+ *     Ext.util.Inflector.plural(/^(ox)$/i, &quot;$1en&quot;);
+ *
+ * Each rule consists of two items - a regular expression that matches one or more rules, and a replacement string. In
+ * this case, the regular expression will only match the string &quot;ox&quot;, and will replace that match with &quot;oxen&quot;. Here's
+ * how we could add the inverse rule:
+ *
+ *     Ext.util.Inflector.singular(/^(ox)en$/i, &quot;$1&quot;);
+ *
+ * Note that the ox/oxen rules are present by default.
  */
-
 Ext.define('Ext.util.Inflector', {
 
     /* Begin Definitions */
@@ -74,8 +63,7 @@ Ext.define('Ext.util.Inflector', {
      * The registered plural tuples. Each item in the array should contain two items - the first must be a regular
      * expression that matchers the singular form of a word, the second must be a String that replaces the matched
      * part of the regular expression. This is managed by the {@link #plural} method.
-     * @property plurals
-     * @type Array
+     * @property {Array} plurals
      */
     plurals: [
         [(/(quiz)$/i),                &quot;$1zes&quot;  ],
@@ -99,14 +87,13 @@ Ext.define('Ext.util.Inflector', {
         [(/s$/i),                     &quot;s&quot;      ],
         [(/$/),                       &quot;s&quot;      ]
     ],
-    
+
 <span id='Ext-util-Inflector-property-singulars'>    /**
 </span>     * @private
-     * The set of registered singular matchers. Each item in the array should contain two items - the first must be a 
-     * regular expression that matches the plural form of a word, the second must be a String that replaces the 
+     * The set of registered singular matchers. Each item in the array should contain two items - the first must be a
+     * regular expression that matches the plural form of a word, the second must be a String that replaces the
      * matched part of the regular expression. This is managed by the {@link #singular} method.
-     * @property singulars
-     * @type Array
+     * @property {Array} singulars
      */
     singulars: [
       [(/(quiz)zes$/i),                                                    &quot;$1&quot;     ],
@@ -135,12 +122,11 @@ Ext.define('Ext.util.Inflector', {
       [(/people$/i),                                                       &quot;person&quot; ],
       [(/s$/i),                                                            &quot;&quot;       ]
     ],
-    
+
 <span id='Ext-util-Inflector-property-uncountable'>    /**
 </span>     * @private
      * The registered uncountable words
-     * @property uncountable
-     * @type Array
+     * @property {String[]} uncountable
      */
      uncountable: [
         &quot;sheep&quot;,
@@ -157,7 +143,7 @@ Ext.define('Ext.util.Inflector', {
         &quot;deer&quot;,
         &quot;means&quot;
     ],
-    
+
 <span id='Ext-util-Inflector-method-singular'>    /**
 </span>     * Adds a new singularization rule to the Inflector. See the intro docs for more information
      * @param {RegExp} matcher The matcher regex
@@ -166,7 +152,7 @@ Ext.define('Ext.util.Inflector', {
     singular: function(matcher, replacer) {
         this.singulars.unshift([matcher, replacer]);
     },
-    
+
 <span id='Ext-util-Inflector-method-plural'>    /**
 </span>     * Adds a new pluralization rule to the Inflector. See the intro docs for more information
      * @param {RegExp} matcher The matcher regex
@@ -175,21 +161,21 @@ Ext.define('Ext.util.Inflector', {
     plural: function(matcher, replacer) {
         this.plurals.unshift([matcher, replacer]);
     },
-    
+
 <span id='Ext-util-Inflector-method-clearSingulars'>    /**
 </span>     * Removes all registered singularization rules
      */
     clearSingulars: function() {
         this.singulars = [];
     },
-    
+
 <span id='Ext-util-Inflector-method-clearPlurals'>    /**
 </span>     * Removes all registered pluralization rules
      */
     clearPlurals: function() {
         this.plurals = [];
     },
-    
+
 <span id='Ext-util-Inflector-method-isTransnumeral'>    /**
 </span>     * Returns true if the given word is transnumeral (the word is its own singular and plural form - e.g. sheep, fish)
      * @param {String} word The word to test
@@ -212,19 +198,19 @@ Ext.define('Ext.util.Inflector', {
         var plurals = this.plurals,
             length  = plurals.length,
             tuple, regex, i;
-        
+
         for (i = 0; i &lt; length; i++) {
             tuple = plurals[i];
             regex = tuple[0];
-            
+
             if (regex == word || (regex.test &amp;&amp; regex.test(word))) {
                 return word.replace(regex, tuple[1]);
             }
         }
-        
+
         return word;
     },
-    
+
 <span id='Ext-util-Inflector-method-singularize'>    /**
 </span>     * Returns the singularized form of a word (e.g. Ext.util.Inflector.singularize('words') returns 'word')
      * @param {String} word The word to singularize
@@ -238,21 +224,21 @@ Ext.define('Ext.util.Inflector', {
         var singulars = this.singulars,
             length    = singulars.length,
             tuple, regex, i;
-        
+
         for (i = 0; i &lt; length; i++) {
             tuple = singulars[i];
             regex = tuple[0];
-            
+
             if (regex == word || (regex.test &amp;&amp; regex.test(word))) {
                 return word.replace(regex, tuple[1]);
             }
         }
-        
+
         return word;
     },
-    
+
 <span id='Ext-util-Inflector-method-classify'>    /**
-</span>     * Returns the correct {@link Ext.data.Model Model} name for a given string. Mostly used internally by the data 
+</span>     * Returns the correct {@link Ext.data.Model Model} name for a given string. Mostly used internally by the data
      * package
      * @param {String} word The word to classify
      * @return {String} The classified version of the word
@@ -260,9 +246,9 @@ Ext.define('Ext.util.Inflector', {
     classify: function(word) {
         return Ext.String.capitalize(this.singularize(word));
     },
-    
+
 <span id='Ext-util-Inflector-method-ordinalize'>    /**
-</span>     * Ordinalizes a given number by adding a prefix such as 'st', 'nd', 'rd' or 'th' based on the last digit of the 
+</span>     * Ordinalizes a given number by adding a prefix such as 'st', 'nd', 'rd' or 'th' based on the last digit of the
      * number. 21 -&gt; 21st, 22 -&gt; 22nd, 23 -&gt; 23rd, 24 -&gt; 24th etc
      * @param {Number} number The number to ordinalize
      * @return {String} The ordinalized number
@@ -271,7 +257,7 @@ Ext.define('Ext.util.Inflector', {
         var parsed = parseInt(number, 10),
             mod10  = parsed % 10,
             mod100 = parsed % 100;
-        
+
         //11 through 13 are a special case
         if (11 &lt;= mod100 &amp;&amp; mod100 &lt;= 13) {
             return number + &quot;th&quot;;
@@ -320,7 +306,7 @@ Ext.define('Ext.util.Inflector', {
             vita: 'vitae'
         },
         singular;
-    
+
     for (singular in irregulars) {
         this.plural(singular, irregulars[singular]);
         this.singular(irregulars[singular], singular);

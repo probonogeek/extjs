@@ -195,6 +195,61 @@ Ext.define('Ext.grid.header.Container', {
         Ext.destroy(this.resizer, this.reorderer);
         this.callParent();
     },
+    
+    applyDefaults: function(config){
+        /*
+         * Ensure header.Container defaults don't get applied to a RowNumberer 
+         * if an xtype is supplied. This isn't an ideal solution however it's 
+         * much more likely that a RowNumberer with no options will be created, 
+         * wanting to use the defaults specified on the class as opposed to 
+         * those setup on the Container.
+         */
+        if (config && !config.isComponent && config.xtype == 'rownumberer') {
+            return config;
+        }
+        return this.callParent([config]);
+    },
+
+    applyColumnsState: function(columns) {
+        if (!columns || !columns.length) {
+            return;
+        }
+
+        var me = this,
+            i = 0,
+            index,
+            col;
+
+        Ext.each(columns, function (columnState) {
+            col = me.down('gridcolumn[headerId=' + columnState.id + ']');
+            if (col) {
+                index = me.items.indexOf(col);
+                if (i !== index) {
+                    me.moveHeader(index, i);
+                }
+
+                if (col.applyColumnState) {
+                    col.applyColumnState(columnState);
+                }
+                ++i;
+            }
+        });
+    },
+
+    getColumnsState: function () {
+        var me = this,
+            columns = [],
+            state;
+
+        me.items.each(function (col) {
+            state = col.getColumnState && col.getColumnState();
+            if (state) {
+                columns.push(state);
+            }
+        });
+
+        return columns;
+    },
 
     // Invalidate column cache on add
     // We cannot refresh the View on every add because this method is called
@@ -202,8 +257,17 @@ Ext.define('Ext.grid.header.Container', {
     onAdd: function(c) {
         var me = this;
         if (!c.headerId) {
-            c.headerId = 'h' + (++me.headerCounter);
+            c.headerId = c.initialConfig.id || ('h' + (++me.headerCounter));
         }
+        //<debug warn>
+        if (Ext.global.console && Ext.global.console.warn) {
+            if (!me._usedIDs) me._usedIDs = {};
+            if (me._usedIDs[c.headerId]) {
+                Ext.global.console.warn(this.$className, 'attempted to reuse an existing id', c.headerId);
+            }
+            me._usedIDs[c.headerId] = true;
+        }
+        //</debug>
         me.callParent(arguments);
         me.purgeCache();
     },
@@ -258,14 +322,14 @@ Ext.define('Ext.grid.header.Container', {
                         me.pastLastHeaderEl.removeCls(me.lastHeaderCls);
                     }
                     lastHeaderEl.addCls(me.lastHeaderCls);
-                    me.pastLastHeaderEl = lastHeaderEl
+                    me.pastLastHeaderEl = lastHeaderEl;
                 }
             }
         }
 
     },
 
-    onHeaderShow: function(header) {
+    onHeaderShow: function(header, preventLayout) {
         // Pass up to the GridSection
         var me = this,
             gridSection = me.ownerCt,
@@ -316,7 +380,20 @@ Ext.define('Ext.grid.header.Container', {
         me.fireEvent('columnshow', me, header);
 
         // The header's own hide suppresses cascading layouts, so lay the headers out now
-        me.doLayout();
+        if (preventLayout !== true) {
+            me.doLayout();
+        }
+    },
+
+    doComponentLayout: function(){
+        var me = this;
+        if (me.view && me.view.saveScrollState) {
+            me.view.saveScrollState();
+        }
+        me.callParent(arguments);
+        if (me.view && me.view.restoreScrollState) {
+            me.view.restoreScrollState();
+        }
     },
 
     onHeaderHide: function(header, suppressLayout) {
@@ -408,7 +485,6 @@ Ext.define('Ext.grid.header.Container', {
         if (this.view && this.view.rendered) {
             this.view.onHeaderResize(header, w, suppressFocus);
         }
-        this.fireEvent('columnresize', this, header, w);
     },
 
     onHeaderClick: function(header, e, t) {
@@ -462,6 +538,7 @@ Ext.define('Ext.grid.header.Container', {
         var me = this;
         // Delete column cache - column order has changed.
         delete me.gridDataColumns;
+        delete me.hideableColumns;
 
         // Menu changes when columns are moved. It will be recreated.
         if (me.menu) {
@@ -474,7 +551,7 @@ Ext.define('Ext.grid.header.Container', {
         var me = this,
             gridSection = me.ownerCt;
 
-        if (gridSection) {
+        if (gridSection && gridSection.onHeaderMove) {
             gridSection.onHeaderMove(me, header, fromIdx, toIdx);
         }
         me.fireEvent("columnmove", me, header, fromIdx, toIdx);
@@ -516,17 +593,17 @@ Ext.define('Ext.grid.header.Container', {
             menuItems = [{
                 itemId: 'ascItem',
                 text: me.sortAscText,
-                cls: 'xg-hmenu-sort-asc',
+                cls: Ext.baseCSSPrefix + 'hmenu-sort-asc',
                 handler: me.onSortAscClick,
                 scope: me
             },{
                 itemId: 'descItem',
                 text: me.sortDescText,
-                cls: 'xg-hmenu-sort-desc',
+                cls: Ext.baseCSSPrefix + 'hmenu-sort-desc',
                 handler: me.onSortDescClick,
                 scope: me
             }];
-        };
+        }
         if (hideableColumns && hideableColumns.length) {
             menuItems.push('-', {
                 itemId: 'columnItem',
@@ -617,14 +694,14 @@ Ext.define('Ext.grid.header.Container', {
         for (; i < headersLn; i++) {
             header = headers[i];
 
-            if (header.hidden) {
+            if (header.hidden || header.up('headercontainer[hidden=true]')) {
                 width = 0;
             } else {
                 width = header.getDesiredWidth();
                 // IE6 and IE7 bug.
                 // Setting the width of the first TD does not work - ends up with a 1 pixel discrepancy.
                 // We need to increment the passed with in this case.
-                if ((i == 0) && (Ext.isIE6 || Ext.isIE7)) {
+                if ((i === 0) && (Ext.isIE6 || Ext.isIE7)) {
                     width += 1;
                 }
             }
@@ -720,6 +797,21 @@ Ext.define('Ext.grid.header.Container', {
             });
         }
 
+        return result;
+    },
+
+    /**
+     * @private
+     * For use by column headers in determining whether there are any hideable columns when deciding whether or not
+     * the header menu should be disabled.
+     */
+    getHideableColumns: function(refreshCache) {
+        var me = this,
+            result = refreshCache ? null : me.hideableColumns;
+
+        if (!result) {
+            result = me.hideableColumns = me.query('[hideable]');
+        }
         return result;
     },
 

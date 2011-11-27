@@ -120,7 +120,7 @@ __application.scss__ The application.scss file is written in SCSS and has the fo
  
 As you can see, the main gist of this is that we are importing styles from Sencha Touch, component by component. The area above (1) is where we can actually override variables used by the default Sencha Touch theme to change the output when the actually stylesheets are created/included. There are currently about 50 variables available to override, though we’ll just focus on a few key ones in this article.
 
-![Base color](basecolor.png)
+{@img basecolor.png Base color}
 
 ## Sencha Touch Variables
 __$base-color__ Perhaps the easiest way to create a sweeping change in your app’s design, you can change the $base-color to drastically alter the appearance of all components. The screenshots above demonstrate how the UI changes by simply altering the $base-color.
@@ -159,7 +159,7 @@ __@include sencha-button-ui($ui-label, $color, $gradient)__ By default, Sencha T
         text: 'Orange Round'
     });
 
-![Buttons](btn.png)
+{@img btn.png Buttons}
 
 ## Compiling Our Stylesheet & Adding to Our Application
 To compile our stylesheet, we simply run the command “compass compile” in the Terminal from within the scss directory. This command will automatically look for the config.rb, and take care of compiling the CSS into the proper directory.
@@ -189,7 +189,7 @@ When you add the stylesheet to your HTML file, don’t forget to remove the incl
     @include sencha-form;
     @include sencha-loading-spinner;
  
-![Demo 1](demo1.png)
+{@img demo1.png Demo 1}
  
 ### Demo #2
 
@@ -221,7 +221,7 @@ When you add the stylesheet to your HTML file, don’t forget to remove the incl
         color: #5a3d23;
     }
 
-![Demo 2](demo2.png)
+{@img demo2.png Demo 2}
  
 ### Demo #3
 
@@ -271,7 +271,7 @@ When you add the stylesheet to your HTML file, don’t forget to remove the incl
         }
     }
 
-![Demo 3](demo3.png)
+{@img demo3.png Demo 3}
 
 ### Next Steps & Extended Resources
 We’ve really just touched on the power of theming in Sencha Touch, but already, with just a few small changes, we have radically changed the style of the base Sencha Touch theme. For other great examples of custom stylesheets, look at the Kiva and GeoCongress demos bundled with Sencha Touch. Also be sure to look out for my second article on the subject, “Optimizing Sencha Touch Themes,” where I show how we can take a full-fledged application and reduce the included CSS to under 50kb (with base64 encoded icons!).

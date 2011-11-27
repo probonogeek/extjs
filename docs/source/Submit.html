@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -44,7 +44,7 @@
  * &lt;p&gt;Other data may be placed into the response for processing by the {@link Ext.form.Basic}'s callback
  * or event handler methods. The object decoded from this JSON is available in the
  * {@link Ext.form.action.Action#result result} property.&lt;/p&gt;
- * &lt;p&gt;Alternatively, if an {@link #errorReader} is specified as an {@link Ext.data.reader.Xml XmlReader}:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;
+ * &lt;p&gt;Alternatively, if an {@link Ext.form.Basic#errorReader errorReader} is specified as an {@link Ext.data.reader.Xml XmlReader}:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;
     errorReader: new Ext.data.reader.Xml({
             record : 'field',
             success: '@success'
@@ -69,7 +69,8 @@
 &amp;lt;/message&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
  * &lt;p&gt;Other elements may be placed into the response XML for processing by the {@link Ext.form.Basic}'s callback
- * or event handler methods. The XML document is available in the {@link #errorReader}'s {@link Ext.data.reader.Xml#xmlData xmlData} property.&lt;/p&gt;
+ * or event handler methods. The XML document is available in the {@link Ext.form.Basic#errorReader errorReader}'s
+ * {@link Ext.data.reader.Xml#xmlData xmlData} property.&lt;/p&gt;
  */
 Ext.define('Ext.form.action.Submit', {
     extend:'Ext.form.action.Action',
@@ -79,7 +80,7 @@ Ext.define('Ext.form.action.Submit', {
     type: 'submit',
 
 <span id='Ext-form-action-Submit-cfg-clientValidation'>    /**
-</span>     * @cfg {boolean} clientValidation Determines whether a Form's fields are validated
+</span>     * @cfg {Boolean} clientValidation Determines whether a Form's fields are validated
      * in a final call to {@link Ext.form.Basic#isValid isValid} prior to submission.
      * Pass &lt;tt&gt;false&lt;/tt&gt; in the Form's submit options to prevent this. Defaults to true.
      */
@@ -192,7 +193,7 @@ Ext.define('Ext.form.action.Submit', {
         }
 
         // Create the form
-        formEl = Ext.core.DomHelper.append(Ext.getBody(), formSpec);
+        formEl = Ext.DomHelper.append(Ext.getBody(), formSpec);
 
         // Special handling for file upload fields: since browser security measures prevent setting
         // their values programatically, and prevent carrying their selected values over when cloning,

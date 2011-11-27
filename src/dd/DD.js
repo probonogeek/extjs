@@ -35,7 +35,7 @@ Ext.define('Ext.dd.DD', {
      * Creates new DD instance.
      * @param {String} id the id of the linked element
      * @param {String} sGroup the group of related DragDrop items
-     * @param {object} config an object containing configurable attributes.
+     * @param {Object} config an object containing configurable attributes.
      * Valid properties for DD: scroll
      */
     constructor: function(id, sGroup, config) {
@@ -49,7 +49,7 @@ Ext.define('Ext.dd.DD', {
      * window when a drag and drop element is dragged near the viewport boundary.
      * Defaults to true.
      * @property scroll
-     * @type boolean
+     * @type Boolean
      */
     scroll: true,
 
@@ -57,8 +57,8 @@ Ext.define('Ext.dd.DD', {
      * Sets the pointer offset to the distance between the linked element's top
      * left corner and the location the element was clicked
      * @method autoOffset
-     * @param {int} iPageX the X coordinate of the click
-     * @param {int} iPageY the Y coordinate of the click
+     * @param {Number} iPageX the X coordinate of the click
+     * @param {Number} iPageY the Y coordinate of the click
      */
     autoOffset: function(iPageX, iPageY) {
         var x = iPageX - this.startPageX;
@@ -71,8 +71,8 @@ Ext.define('Ext.dd.DD', {
      * offset to be in a particular location (e.g., pass in 0,0 to set it
      * to the center of the object)
      * @method setDelta
-     * @param {int} iDeltaX the distance from the left
-     * @param {int} iDeltaY the distance from the top
+     * @param {Number} iDeltaX the distance from the left
+     * @param {Number} iDeltaY the distance from the top
      */
     setDelta: function(iDeltaX, iDeltaY) {
         this.deltaX = iDeltaX;
@@ -85,8 +85,8 @@ Ext.define('Ext.dd.DD', {
      * that was clicked.  Override this if you want to place the element in a
      * location other than where the cursor is.
      * @method setDragElPos
-     * @param {int} iPageX the X coordinate of the mousedown or drag event
-     * @param {int} iPageY the Y coordinate of the mousedown or drag event
+     * @param {Number} iPageX the X coordinate of the mousedown or drag event
+     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
      */
     setDragElPos: function(iPageX, iPageY) {
         // the first time we do this, we are going to check to make sure
@@ -103,14 +103,14 @@ Ext.define('Ext.dd.DD', {
      * location other than where the cursor is.
      * @method alignElWithMouse
      * @param {HTMLElement} el the element to move
-     * @param {int} iPageX the X coordinate of the mousedown or drag event
-     * @param {int} iPageY the Y coordinate of the mousedown or drag event
+     * @param {Number} iPageX the X coordinate of the mousedown or drag event
+     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
      */
     alignElWithMouse: function(el, iPageX, iPageY) {
         var oCoord = this.getTargetCoord(iPageX, iPageY),
             fly = el.dom ? el : Ext.fly(el, '_dd'),
             elSize = fly.getSize(),
-            EL = Ext.core.Element,
+            EL = Ext.Element,
             vpSize;
 
         if (!this.deltaSetXY) {
@@ -141,9 +141,9 @@ Ext.define('Ext.dd.DD', {
      * tick marks on-demand.  We need to know this so that we can calculate the
      * number of pixels the element is offset from its original position.
      * @method cachePosition
-     * @param iPageX the current x position (optional, this just makes it so we
+     * @param {Number} iPageX (optional) the current x position (this just makes it so we
      * don't have to look it up again)
-     * @param iPageY the current y position (optional, this just makes it so we
+     * @param {Number} iPageY (optional) the current y position (this just makes it so we
      * don't have to look it up again)
      */
     cachePosition: function(iPageX, iPageY) {
@@ -151,7 +151,7 @@ Ext.define('Ext.dd.DD', {
             this.lastPageX = iPageX;
             this.lastPageY = iPageY;
         } else {
-            var aCoord = Ext.core.Element.getXY(this.getEl());
+            var aCoord = Ext.Element.getXY(this.getEl());
             this.lastPageX = aCoord[0];
             this.lastPageY = aCoord[1];
         }
@@ -161,20 +161,20 @@ Ext.define('Ext.dd.DD', {
      * Auto-scroll the window if the dragged object has been moved beyond the
      * visible window boundary.
      * @method autoScroll
-     * @param {int} x the drag element's x position
-     * @param {int} y the drag element's y position
-     * @param {int} h the height of the drag element
-     * @param {int} w the width of the drag element
+     * @param {Number} x the drag element's x position
+     * @param {Number} y the drag element's y position
+     * @param {Number} h the height of the drag element
+     * @param {Number} w the width of the drag element
      * @private
      */
     autoScroll: function(x, y, h, w) {
 
         if (this.scroll) {
             // The client height
-            var clientH = Ext.core.Element.getViewHeight();
+            var clientH = Ext.Element.getViewHeight();
 
             // The client width
-            var clientW = Ext.core.Element.getViewWidth();
+            var clientW = Ext.Element.getViewWidth();
 
             // The amt scrolled down
             var st = this.DDMInstance.getScrollTop();
@@ -236,8 +236,8 @@ Ext.define('Ext.dd.DD', {
      * Finds the location the element should be placed if we want to move
      * it to where the mouse location less the click offset would place us.
      * @method getTargetCoord
-     * @param {int} iPageX the X coordinate of the click
-     * @param {int} iPageY the Y coordinate of the click
+     * @param {Number} iPageX the X coordinate of the click
+     * @param {Number} iPageY the Y coordinate of the click
      * @return an object that contains the coordinates (Object.x and Object.y)
      * @private
      */

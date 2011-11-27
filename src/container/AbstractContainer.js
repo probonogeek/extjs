@@ -15,8 +15,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.container.AbstractContainer
  * @extends Ext.Component
- * <p>An abstract base class which provides shared methods for Containers across the Sencha product line.</p>
- * Please refer to sub class's documentation
+ * An abstract base class which provides shared methods for Containers across the Sencha product line.
+ * @private
  */
 Ext.define('Ext.container.AbstractContainer', {
 
@@ -33,10 +33,10 @@ Ext.define('Ext.container.AbstractContainer', {
     /* End Definitions */
     /**
      * @cfg {String/Object} layout
-     * <p><b>*Important</b>: In order for child items to be correctly sized and
+     * <p><b>Important</b>: In order for child items to be correctly sized and
      * positioned, typically a layout manager <b>must</b> be specified through
      * the <code>layout</code> configuration option.</p>
-     * <br><p>The sizing and positioning of child {@link #items} is the responsibility of
+     * <p>The sizing and positioning of child {@link #items} is the responsibility of
      * the Container's layout manager which creates and manages the type of layout
      * you have in mind.  For example:</p>
      * <p>If the {@link #layout} configuration is not explicitly specified for
@@ -44,9 +44,8 @@ Ext.define('Ext.container.AbstractContainer', {
      * {@link Ext.layout.container.Auto default layout manager} will be used
      * which does nothing but render child components sequentially into the
      * Container (no sizing or positioning will be performed in this situation).</p>
-     * <br><p><b><code>layout</code></b> may be specified as either as an Object or
-     * as a String:</p><div><ul class="mdetail-params">
-     *
+     * <p><b><code>layout</code></b> may be specified as either as an Object or as a String:</p>
+     * <div><ul class="mdetail-params">
      * <li><u>Specify as an Object</u></li>
      * <div><ul class="mdetail-params">
      * <li>Example usage:</li>
@@ -60,7 +59,7 @@ layout: {
      * <li><code><b>type</b></code></li>
      * <br/><p>The layout type to be used for this container.  If not specified,
      * a default {@link Ext.layout.container.Auto} will be created and used.</p>
-     * <br/><p>Valid layout <code>type</code> values are:</p>
+     * <p>Valid layout <code>type</code> values are:</p>
      * <div class="sub-desc"><ul class="mdetail-params">
      * <li><code><b>{@link Ext.layout.container.Auto Auto}</b></code> &nbsp;&nbsp;&nbsp; <b>Default</b></li>
      * <li><code><b>{@link Ext.layout.container.Card card}</b></code></li>
@@ -72,7 +71,7 @@ layout: {
      * </ul></div>
      *
      * <li>Layout specific configuration properties</li>
-     * <br/><p>Additional layout specific configuration properties may also be
+     * <p>Additional layout specific configuration properties may also be
      * specified. For complete details regarding the valid config options for
      * each layout type, see the layout class corresponding to the <code>type</code>
      * specified.</p>
@@ -83,16 +82,12 @@ layout: {
      * <div><ul class="mdetail-params">
      * <li>Example usage:</li>
      * <pre><code>
-layout: {
-    type: 'vbox',
-    padding: '5',
-    align: 'left'
-}
+layout: 'vbox'
        </code></pre>
      * <li><code><b>layout</b></code></li>
-     * <br/><p>The layout <code>type</code> to be used for this container (see list
-     * of valid layout type values above).</p><br/>
-     * <br/><p>Additional layout specific configuration properties. For complete
+     * <p>The layout <code>type</code> to be used for this container (see list
+     * of valid layout type values above).</p>
+     * <p>Additional layout specific configuration properties. For complete
      * details regarding the valid config options for each layout type, see the
      * layout class corresponding to the <code>layout</code> specified.</p>
      * </ul></div></ul></div>
@@ -106,7 +101,7 @@ layout: {
      * items one at a time (like {@link Ext.layout.container.Card} and {@link Ext.layout.container.Fit}).
      */
     /**
-     * @cfg {Object/Array} items
+     * @cfg {Object/Object[]} items
      * <p>A single item, or an array of child Components to be added to this container</p>
      * <p><b>Unless configured with a {@link #layout}, a Container simply renders child Components serially into
      * its encapsulating element and performs no sizing or positioning upon them.</b><p>
@@ -134,36 +129,41 @@ layout: 'hbox', // The items are arranged horizontally
      * <p>Ext uses lazy rendering. Child Components will only be rendered
      * should it become necessary. Items are automatically laid out when they are first
      * shown (no sizing is done while hidden), or in response to a {@link #doLayout} call.</p>
-     * <p>Do not specify <code>{@link Ext.panel.Panel#contentEl contentEl}</code> or 
+     * <p>Do not specify <code>{@link Ext.panel.Panel#contentEl contentEl}</code> or
      * <code>{@link Ext.panel.Panel#html html}</code> with <code>items</code>.</p>
      */
     /**
-     * @cfg {Object|Function} defaults
-     * <p>This option is a means of applying default settings to all added items whether added through the {@link #items}
-     * config or via the {@link #add} or {@link #insert} methods.</p>
-     * <p>If an added item is a config object, and <b>not</b> an instantiated Component, then the default properties are
-     * unconditionally applied. If the added item <b>is</b> an instantiated Component, then the default properties are
-     * applied conditionally so as not to override existing properties in the item.</p>
-     * <p>If the defaults option is specified as a function, then the function will be called using this Container as the
-     * scope (<code>this</code> reference) and passing the added item as the first parameter. Any resulting object
-     * from that call is then applied to the item as default properties.</p>
-     * <p>For example, to automatically apply padding to the body of each of a set of
-     * contained {@link Ext.panel.Panel} items, you could pass: <code>defaults: {bodyStyle:'padding:15px'}</code>.</p>
-     * <p>Usage:</p><pre><code>
-defaults: {               // defaults are applied to items, not the container
-    autoScroll:true
-},
-items: [
-    {
-        xtype: 'panel',   // defaults <b>do not</b> have precedence over
-        id: 'panel1',     // options in config objects, so the defaults
-        autoScroll: false // will not be applied here, panel1 will be autoScroll:false
-    },
-    new Ext.panel.Panel({       // defaults <b>do</b> have precedence over options
-        id: 'panel2',     // options in components, so the defaults
-        autoScroll: false // will be applied here, panel2 will be autoScroll:true.
-    })
-]</code></pre>
+     * @cfg {Object/Function} defaults
+     * This option is a means of applying default settings to all added items whether added through the {@link #items}
+     * config or via the {@link #add} or {@link #insert} methods.
+     *
+     * Defaults are applied to both config objects and instantiated components conditionally so as not to override
+     * existing properties in the item (see {@link Ext#applyIf}).
+     *
+     * If the defaults option is specified as a function, then the function will be called using this Container as the
+     * scope (`this` reference) and passing the added item as the first parameter. Any resulting object
+     * from that call is then applied to the item as default properties.
+     *
+     * For example, to automatically apply padding to the body of each of a set of
+     * contained {@link Ext.panel.Panel} items, you could pass: `defaults: {bodyStyle:'padding:15px'}`.
+     *
+     * Usage:
+     *
+     *     defaults: { // defaults are applied to items, not the container
+     *         autoScroll: true
+     *     },
+     *     items: [
+     *         // default will not be applied here, panel1 will be autoScroll: false
+     *         {
+     *             xtype: 'panel',
+     *             id: 'panel1',
+     *             autoScroll: false
+     *         },
+     *         // this component will have autoScroll: true
+     *         new Ext.panel.Panel({
+     *             id: 'panel2'
+     *         })
+     *     ]
      */
 
     /** @cfg {Boolean} suspendLayout
@@ -188,16 +188,24 @@ items: [
 
     isContainer : true,
 
+    /**
+     * The number of container layout calls made on this object.
+     * @property layoutCounter
+     * @type {Number}
+     * @private
+     */
+    layoutCounter : 0,
+
     baseCls: Ext.baseCSSPrefix + 'container',
 
     /**
-     * @cfg {Array} bubbleEvents
+     * @cfg {String[]} bubbleEvents
      * <p>An array of events that, when fired, should be bubbled to any parent container.
      * See {@link Ext.util.Observable#enableBubble}.
      * Defaults to <code>['add', 'remove']</code>.
      */
     bubbleEvents: ['add', 'remove'],
-    
+
     // @private
     initComponent : function(){
         var me = this;
@@ -206,7 +214,7 @@ items: [
              * @event afterlayout
              * Fires when the components in this container are arranged by the associated layout manager.
              * @param {Ext.container.Container} this
-             * @param {ContainerLayout} layout The ContainerLayout implementation for this container
+             * @param {Ext.layout.container.Container} layout The ContainerLayout implementation for this container
              */
             'afterlayout',
             /**
@@ -242,35 +250,7 @@ items: [
              * @param {Ext.container.Container} this
              * @param {Ext.Component} component The component that was removed
              */
-            'remove',
-            /**
-             * @event beforecardswitch
-             * Fires before this container switches the active card. This event
-             * is only available if this container uses a CardLayout. Note that
-             * TabPanel and Carousel both get a CardLayout by default, so both
-             * will have this event.
-             * A handler can return false to cancel the card switch.
-             * @param {Ext.container.Container} this
-             * @param {Ext.Component} newCard The card that will be switched to
-             * @param {Ext.Component} oldCard The card that will be switched from
-             * @param {Number} index The index of the card that will be switched to
-             * @param {Boolean} animated True if this cardswitch will be animated
-             */
-            'beforecardswitch',
-            /**
-             * @event cardswitch
-             * Fires after this container switches the active card. If the card
-             * is switched using an animation, this event will fire after the
-             * animation has finished. This event is only available if this container
-             * uses a CardLayout. Note that TabPanel and Carousel both get a CardLayout
-             * by default, so both will have this event.
-             * @param {Ext.container.Container} this
-             * @param {Ext.Component} newCard The card that has been switched to
-             * @param {Ext.Component} oldCard The card that has been switched from
-             * @param {Number} index The index of the card that has been switched to
-             * @param {Boolean} animated True if this cardswitch was animated
-             */
-            'cardswitch'
+            'remove'
         );
 
         // layoutOnShow stack
@@ -306,6 +286,20 @@ items: [
         this.callParent();
     },
 
+    renderChildren: function () {
+        var me = this,
+            layout = me.getLayout();
+
+        me.callParent();
+        // this component's elements exist, so now create the child components' elements
+
+        if (layout) {
+            me.suspendLayout = true;
+            layout.renderChildren();
+            delete me.suspendLayout;
+        }
+    },
+
     // @private
     setLayout : function(layout) {
         var currentLayout = this.layout;
@@ -333,7 +327,7 @@ items: [
     },
 
     /**
-     * Manually force this container's layout to be recalculated.  The framwork uses this internally to refresh layouts
+     * Manually force this container's layout to be recalculated. The framework uses this internally to refresh layouts
      * form most cases.
      * @return {Ext.container.Container} this
      */
@@ -366,6 +360,7 @@ items: [
 
     // @private
     afterLayout : function(layout) {
+        ++this.layoutCounter;
         this.fireEvent('afterlayout', this, layout);
     },
 
@@ -401,12 +396,8 @@ items: [
 
             if (Ext.isString(config)) {
                 config = Ext.ComponentManager.get(config);
-                Ext.applyIf(config, defaults);
-            } else if (!config.isComponent) {
-                Ext.applyIf(config, defaults);
-            } else {
-                Ext.applyIf(config, defaults);
             }
+            Ext.applyIf(config, defaults);
         }
 
         return config;
@@ -462,17 +453,17 @@ If adding multiple new child Components, pass them as an array to the `add` meth
     });  // toolbar is rendered
     tb.add([{text:'Button 1'}, {text:'Button 2'}]); // add multiple items. ({@link #defaultType} for {@link Ext.toolbar.Toolbar Toolbar} is 'button')
 
-##Warning:## 
+##Warning:##
 
 Components directly managed by the BorderLayout layout manager
 may not be removed or added.  See the Notes for {@link Ext.layout.container.Border BorderLayout}
 for more details.
 
-     * @param {...Object/Array} Component
+     * @param {Ext.Component[]/Ext.Component...} component
      * Either one or more Components to add or an Array of Components to add.
      * See `{@link #items}` for additional information.
      *
-     * @return {Ext.Component/Array} The Components that were added.
+     * @return {Ext.Component[]/Ext.Component} The Components that were added.
      * @markdown
      */
     add : function() {
@@ -499,13 +490,13 @@ for more details.
             me.suspendLayout = true;
             for (i = 0, ln = items.length; i < ln; i++) {
                 item = items[i];
-                
+
                 //<debug>
                 if (!item) {
                     Ext.Error.raise("Trying to add a null item as a child of Container with itemId/id: " + me.getItemId());
                 }
                 //</debug>
-                
+
                 if (index != -1) {
                     item = me.add(index + i, item);
                 } else {
@@ -537,22 +528,6 @@ for more details.
             me.doLayout();
         }
         return cmp;
-    },
-
-    /**
-     * @private
-     * <p>Called by Component#doAutoRender</p>
-     * <p>Register a Container configured <code>floating: true</code> with this Container's {@link Ext.ZIndexManager ZIndexManager}.</p>
-     * <p>Components added in ths way will not participate in the layout, but will be rendered
-     * upon first show in the way that {@link Ext.window.Window Window}s are.</p>
-     * <p></p>
-     */
-    registerFloatingItem: function(cmp) {
-        var me = this;
-        if (!me.floatingItems) {
-            me.floatingItems = Ext.create('Ext.ZIndexManager', me);
-        }
-        me.floatingItems.register(cmp);
     },
 
     onAdd : Ext.emptyFn,
@@ -601,7 +576,7 @@ for more details.
     // @private
     onBeforeAdd : function(item) {
         var me = this;
-        
+
         if (item.ownerCt) {
             item.ownerCt.remove(item, false);
         }
@@ -614,7 +589,7 @@ for more details.
     /**
      * Removes a component from this container.  Fires the {@link #beforeremove} event before removing, then fires
      * the {@link #remove} event after the component has been removed.
-     * @param {Component/String} component The component reference or id to remove.
+     * @param {Ext.Component/String} component The component reference or id to remove.
      * @param {Boolean} autoDestroy (optional) True to automatically invoke the removed Component's {@link Ext.Component#destroy} function.
      * Defaults to the value of this Container's {@link #autoDestroy} config.
      * @return {Ext.Component} component The Component that was removed.
@@ -668,7 +643,7 @@ for more details.
      * Removes all components from this container.
      * @param {Boolean} autoDestroy (optional) True to automatically invoke the removed Component's {@link Ext.Component#destroy} function.
      * Defaults to the value of this Container's {@link #autoDestroy} config.
-     * @return {Array} Array of the destroyed components
+     * @return {Ext.Component[]} Array of the destroyed components
      */
     removeAll : function(autoDestroy) {
         var me = this,
@@ -737,8 +712,8 @@ for more details.
      * will be the args provided or the current component. If the function returns false at any point,
      * the cascade is stopped on that branch.
      * @param {Function} fn The function to call
-     * @param {Object} scope (optional) The scope of the function (defaults to current component)
-     * @param {Array} args (optional) The args to call the function with. The current component always passed as the last argument.
+     * @param {Object} [scope] The scope of the function (defaults to current component)
+     * @param {Array} [args] The args to call the function with. The current component always passed as the last argument.
      * @return {Ext.Container} this
      */
     cascade : function(fn, scope, origArgs){
@@ -788,27 +763,32 @@ for more details.
     /**
      * Retrieves all descendant components which match the passed selector.
      * Executes an Ext.ComponentQuery.query using this container as its root.
-     * @param {String} selector Selector complying to an Ext.ComponentQuery selector
-     * @return {Array} Ext.Component's which matched the selector
+     * @param {String} selector (optional) Selector complying to an Ext.ComponentQuery selector.
+     * If no selector is specified all items will be returned.
+     * @return {Ext.Component[]} Components which matched the selector
      */
     query : function(selector) {
+        selector = selector || '*';
         return Ext.ComponentQuery.query(selector, this);
     },
 
     /**
      * Retrieves the first direct child of this container which matches the passed selector.
      * The passed in selector must comply with an Ext.ComponentQuery selector.
-     * @param {String} selector An Ext.ComponentQuery selector
+     * @param {String} selector (optional) An Ext.ComponentQuery selector. If no selector is
+     * specified, the first child will be returned.
      * @return Ext.Component
      */
     child : function(selector) {
+        selector = selector || '';
         return this.query('> ' + selector)[0] || null;
     },
 
     /**
      * Retrieves the first descendant of this container which matches the passed selector.
      * The passed in selector must comply with an Ext.ComponentQuery selector.
-     * @param {String} selector An Ext.ComponentQuery selector
+     * @param {String} selector (optional) An Ext.ComponentQuery selector. If no selector is
+     * specified, the first child will be returned.
      * @return Ext.Component
      */
     down : function(selector) {
@@ -840,20 +820,20 @@ for more details.
             }
         }
         layoutCollection.clear();
-    },    
-    
+    },
+
     //@private
     // Enable all immediate children that was previously disabled
     onEnable: function() {
         Ext.Array.each(this.query('[isFormField]'), function(item) {
             if (item.resetDisable) {
                 item.enable();
-                delete item.resetDisable;             
+                delete item.resetDisable;
             }
         });
         this.callParent();
     },
-    
+
     // @private
     // Disable all immediate children that was previously disabled
     onDisable: function() {
@@ -887,9 +867,9 @@ for more details.
         }
 
         Ext.destroy(
-            me.layout,
-            me.floatingItems
+            me.layout
         );
         me.callParent();
     }
 });
+

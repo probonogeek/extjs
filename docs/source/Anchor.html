@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -21,43 +21,45 @@
  * 
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
- * &lt;b&gt;&lt;tt&gt;{@link #anchor}&lt;/tt&gt;&lt;/b&gt; rules.
+ * `{@link #anchor}` rules.
  *
- * This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
- * config, and should generally not need to be created directly via the new keyword.&lt;/p&gt;
+ * This class is intended to be extended or created via the {@link Ext.container.AbstractContainer#layout layout}: 'anchor' 
+ * config, and should generally not need to be created directly via the new keyword.
  * 
  * AnchorLayout does not have any direct config options (other than inherited ones). By default,
  * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
- * container using the AnchorLayout can supply an anchoring-specific config property of &lt;b&gt;anchorSize&lt;/b&gt;.
+ * container using the AnchorLayout can supply an anchoring-specific config property of `anchorSize`.
+ *
  * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
  * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
  * logic if necessary.  
  *
- * {@img Ext.layout.container.Anchor/Ext.layout.container.Anchor.png Ext.layout.container.Anchor container layout}
- *
- * For example:
+ *     @example
  *     Ext.create('Ext.Panel', {
  *         width: 500,
  *         height: 400,
  *         title: &quot;AnchorLayout Panel&quot;,
  *         layout: 'anchor',
  *         renderTo: Ext.getBody(),
- *         items: [{
- *             xtype: 'panel',
- *             title: '75% Width and 20% Height',
- *             anchor: '75% 20%'
- *         },{
- *             xtype: 'panel',
- *             title: 'Offset -300 Width &amp; -200 Height',
- *             anchor: '-300 -200'		
- *         },{
- *             xtype: 'panel',
- *             title: 'Mixed Offset and Percent',
- *             anchor: '-250 20%'
- *         }]
+ *         items: [
+ *             {
+ *                 xtype: 'panel',
+ *                 title: '75% Width and 20% Height',
+ *                 anchor: '75% 20%'
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Offset -300 Width &amp; -200 Height',
+ *                 anchor: '-300 -200'		
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Mixed Offset and Percent',
+ *                 anchor: '-250 20%'
+ *             }
+ *         ]
  *     });
  */
-
 Ext.define('Ext.layout.container.Anchor', {
 
     /* Begin Definitions */
@@ -70,52 +72,51 @@ Ext.define('Ext.layout.container.Anchor', {
 
 <span id='Ext-layout-container-Anchor-cfg-anchor'>    /**
 </span>     * @cfg {String} anchor
-     * &lt;p&gt;This configuation option is to be applied to &lt;b&gt;child &lt;tt&gt;items&lt;/tt&gt;&lt;/b&gt; of a container managed by
-     * this layout (ie. configured with &lt;tt&gt;layout:'anchor'&lt;/tt&gt;).&lt;/p&gt;&lt;br/&gt;
      *
-     * &lt;p&gt;This value is what tells the layout how an item should be anchored to the container. &lt;tt&gt;items&lt;/tt&gt;
-     * added to an AnchorLayout accept an anchoring-specific config property of &lt;b&gt;anchor&lt;/b&gt; which is a string
+     * This configuation option is to be applied to **child `items`** of a container managed by
+     * this layout (ie. configured with `layout:'anchor'`).
+     *
+     * This value is what tells the layout how an item should be anchored to the container. `items`
+     * added to an AnchorLayout accept an anchoring-specific config property of **anchor** which is a string
      * containing two values: the horizontal anchor value and the vertical anchor value (for example, '100% 50%').
-     * The following types of anchor values are supported:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
+     * The following types of anchor values are supported:
      *
-     * &lt;li&gt;&lt;b&gt;Percentage&lt;/b&gt; : Any value between 1 and 100, expressed as a percentage.&lt;div class=&quot;sub-desc&quot;&gt;
-     * The first anchor is the percentage width that the item should take up within the container, and the
-     * second is the percentage height.  For example:&lt;pre&gt;&lt;code&gt;
-// two values specified
-anchor: '100% 50%' // render item complete width of the container and
-                   // 1/2 height of the container
-// one value specified
-anchor: '100%'     // the width value; the height will default to auto
-     * &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+     * - **Percentage** : Any value between 1 and 100, expressed as a percentage.
      *
-     * &lt;li&gt;&lt;b&gt;Offsets&lt;/b&gt; : Any positive or negative integer value.&lt;div class=&quot;sub-desc&quot;&gt;
-     * This is a raw adjustment where the first anchor is the offset from the right edge of the container,
-     * and the second is the offset from the bottom edge. For example:&lt;pre&gt;&lt;code&gt;
-// two values specified
-anchor: '-50 -100' // render item the complete width of the container
-                   // minus 50 pixels and
-                   // the complete height minus 100 pixels.
-// one value specified
-anchor: '-50'      // anchor value is assumed to be the right offset value
-                   // bottom offset will default to 0
-     * &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+     *   The first anchor is the percentage width that the item should take up within the container, and the
+     *   second is the percentage height.  For example:
      *
-     * &lt;li&gt;&lt;b&gt;Sides&lt;/b&gt; : Valid values are &lt;tt&gt;'right'&lt;/tt&gt; (or &lt;tt&gt;'r'&lt;/tt&gt;) and &lt;tt&gt;'bottom'&lt;/tt&gt;
-     * (or &lt;tt&gt;'b'&lt;/tt&gt;).&lt;div class=&quot;sub-desc&quot;&gt;
-     * Either the container must have a fixed size or an anchorSize config value defined at render time in
-     * order for these to have any effect.&lt;/div&gt;&lt;/li&gt;
+     *       // two values specified
+     *       anchor: '100% 50%' // render item complete width of the container and
+     *                          // 1/2 height of the container
+     *       // one value specified
+     *       anchor: '100%'     // the width value; the height will default to auto
      *
-     * &lt;li&gt;&lt;b&gt;Mixed&lt;/b&gt; : &lt;div class=&quot;sub-desc&quot;&gt;
-     * Anchor values can also be mixed as needed.  For example, to render the width offset from the container
-     * right edge by 50 pixels and 75% of the container's height use:
-     * &lt;pre&gt;&lt;code&gt;
-anchor: '-50 75%'
-     * &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+     * - **Offsets** : Any positive or negative integer value.
      *
+     *   This is a raw adjustment where the first anchor is the offset from the right edge of the container,
+     *   and the second is the offset from the bottom edge. For example:
      *
-     * &lt;/ul&gt;&lt;/div&gt;
+     *       // two values specified
+     *       anchor: '-50 -100' // render item the complete width of the container
+     *                          // minus 50 pixels and
+     *                          // the complete height minus 100 pixels.
+     *       // one value specified
+     *       anchor: '-50'      // anchor value is assumed to be the right offset value
+     *                          // bottom offset will default to 0
+     *
+     * - **Sides** : Valid values are `right` (or `r`) and `bottom` (or `b`).
+     *
+     *   Either the container must have a fixed size or an anchorSize config value defined at render time in
+     *   order for these to have any effect.
+     *   
+     * - **Mixed** :
+     *
+     *   Anchor values can also be mixed as needed.  For example, to render the width offset from the container
+     *   right edge by 50 pixels and 75% of the container's height use:
+     *   
+     *       anchor:   '-50 75%'
      */
-
     type: 'anchor',
 
 <span id='Ext-layout-container-Anchor-cfg-defaultAnchor'>    /**
@@ -159,7 +160,7 @@ anchor: '-50 75%'
 
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
-            cleaner = Ext.core.Element.getRightMarginFixCleaner(target);
+            cleaner = Ext.Element.getRightMarginFixCleaner(target);
             target.addCls(Ext.baseCSSPrefix + 'inline-children');
         }
 

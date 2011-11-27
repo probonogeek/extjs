@@ -48,6 +48,8 @@ describe("Ext.Class", function() {
             cls.ownMethod = function(name, fn) {
                 this.prototype[name] = fn;
             };
+            cls.addStatics = Ext.Base.addStatics;
+			cls.addInheritableStatics = Ext.Base.addInheritableStatics;
         });
 
         describe("extend", function() {

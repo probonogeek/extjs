@@ -17,7 +17,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @extends Ext.form.action.Submit
  * <p>A class which handles submission of data from {@link Ext.form.Basic Form}s using a standard
  * <tt>&lt;form&gt;</tt> element submit. It does not handle the response from the submit.</p>
- * <p>If validation of the form fields fails, the Form's {@link Ext.form.Basic#afterAction} method
+ * <p>If validation of the form fields fails, the Form's afterAction method
  * will be called. Otherwise, afterAction will not be called.</p>
  * <p>Instances of this class are only created by a {@link Ext.form.Basic Form} when
  * {@link Ext.form.Basic#submit submit}ting, when the form's {@link Ext.form.Basic#standardSubmit}

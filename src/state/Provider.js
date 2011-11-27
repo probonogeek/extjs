@@ -42,7 +42,7 @@ Ext.define('Ext.state.Provider', {
         /**
          * @event statechange
          * Fires when a state change occurs.
-         * @param {Provider} this This state provider
+         * @param {Ext.state.Provider} this This state provider
          * @param {String} key The state key which was changed
          * @param {String} value The encoded value for the state
          */
@@ -54,8 +54,8 @@ Ext.define('Ext.state.Provider', {
     /**
      * Returns the current value for a key
      * @param {String} name The key name
-     * @param {Mixed} defaultValue A default value to return if the key's value is not found
-     * @return {Mixed} The state data
+     * @param {Object} defaultValue A default value to return if the key's value is not found
+     * @return {Object} The state data
      */
     get : function(name, defaultValue){
         return typeof this.state[name] == "undefined" ?
@@ -75,7 +75,7 @@ Ext.define('Ext.state.Provider', {
     /**
      * Sets the value for a key
      * @param {String} name The key name
-     * @param {Mixed} value The value to set
+     * @param {Object} value The value to set
      */
     set : function(name, value){
         var me = this;
@@ -86,7 +86,7 @@ Ext.define('Ext.state.Provider', {
     /**
      * Decodes a string previously encoded with {@link #encodeValue}.
      * @param {String} value The value to decode
-     * @return {Mixed} The decoded value
+     * @return {Object} The decoded value
      */
     decodeValue : function(value){
 
@@ -145,7 +145,7 @@ Ext.define('Ext.state.Provider', {
 
     /**
      * Encodes a value including type information.  Decode with {@link #decodeValue}.
-     * @param {Mixed} value The value to encode
+     * @param {Object} value The value to encode
      * @return {String} The encoded value
      */
     encodeValue : function(value){

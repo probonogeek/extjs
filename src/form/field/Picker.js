@@ -13,17 +13,15 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.form.field.Picker
- * @extends Ext.form.field.Trigger
- * <p>An abstract class for fields that have a single trigger which opens a "picker" popup below
- * the field, e.g. a combobox menu list or a date picker. It provides a base implementation for
- * toggling the picker's visibility when the trigger is clicked, as well as keyboard navigation
- * and some basic events. Sizing and alignment of the picker can be controlled via the {@link #matchFieldWidth}
- * and {@link #pickerAlign}/{@link #pickerOffset} config properties respectively.</p>
- * <p>You would not normally use this class directly, but instead use it as the parent class for
- * a specific picker field implementation. Subclasses must implement the {@link #createPicker} method
- * to create a picker component appropriate for the field.</p>
+ * An abstract class for fields that have a single trigger which opens a "picker" popup below the field, e.g. a combobox
+ * menu list or a date picker. It provides a base implementation for toggling the picker's visibility when the trigger
+ * is clicked, as well as keyboard navigation and some basic events. Sizing and alignment of the picker can be
+ * controlled via the {@link #matchFieldWidth} and {@link #pickerAlign}/{@link #pickerOffset} config properties
+ * respectively.
  *
+ * You would not normally use this class directly, but instead use it as the parent class for a specific picker field
+ * implementation. Subclasses must implement the {@link #createPicker} method to create a picker component appropriate
+ * for the field.
  */
 Ext.define('Ext.form.field.Picker', {
     extend: 'Ext.form.field.Trigger',
@@ -33,42 +31,39 @@ Ext.define('Ext.form.field.Picker', {
 
     /**
      * @cfg {Boolean} matchFieldWidth
-     * Whether the picker dropdown's width should be explicitly set to match the width of the field.
-     * Defaults to <tt>true</tt>.
+     * Whether the picker dropdown's width should be explicitly set to match the width of the field. Defaults to true.
      */
     matchFieldWidth: true,
 
     /**
      * @cfg {String} pickerAlign
-     * The {@link Ext.core.Element#alignTo alignment position} with which to align the picker. Defaults
-     * to <tt>"tl-bl?"</tt>
+     * The {@link Ext.Element#alignTo alignment position} with which to align the picker. Defaults to "tl-bl?"
      */
     pickerAlign: 'tl-bl?',
 
     /**
-     * @cfg {Array} pickerOffset
+     * @cfg {Number[]} pickerOffset
      * An offset [x,y] to use in addition to the {@link #pickerAlign} when positioning the picker.
      * Defaults to undefined.
      */
 
     /**
      * @cfg {String} openCls
-     * A class to be added to the field's {@link #bodyEl} element when the picker is opened. Defaults
-     * to 'x-pickerfield-open'.
+     * A class to be added to the field's {@link #bodyEl} element when the picker is opened.
+     * Defaults to 'x-pickerfield-open'.
      */
     openCls: Ext.baseCSSPrefix + 'pickerfield-open',
 
     /**
-     * @property isExpanded
-     * @type Boolean
+     * @property {Boolean} isExpanded
      * True if the picker is currently expanded, false if not.
      */
 
     /**
-     * @cfg {Boolean} editable <tt>false</tt> to prevent the user from typing text directly into the field;
-     * the field can only have its value set via selecting a value from the picker. In this state, the picker
-     * can also be opened by clicking directly on the input field itself.
-     * (defaults to <tt>true</tt>).
+     * @cfg {Boolean} editable
+     * False to prevent the user from typing text directly into the field; the field can only have its value set via
+     * selecting a value from the picker. In this state, the picker can also be opened by clicking directly on the input
+     * field itself.
      */
     editable: true,
 
@@ -94,7 +89,7 @@ Ext.define('Ext.form.field.Picker', {
              * @event select
              * Fires when a value is selected via the picker.
              * @param {Ext.form.field.Picker} field This field instance
-             * @param {Mixed} value The value that was selected. The exact type of this value is dependent on
+             * @param {Object} value The value that was selected. The exact type of this value is dependent on
              * the individual field and picker implementations.
              */
             'select'
@@ -133,7 +128,7 @@ Ext.define('Ext.form.field.Picker', {
 
 
     /**
-     * Expand this field's picker dropdown.
+     * Expands this field's picker dropdown.
      */
     expand: function() {
         var me = this,
@@ -165,34 +160,45 @@ Ext.define('Ext.form.field.Picker', {
     onExpand: Ext.emptyFn,
 
     /**
+     * Aligns the picker to the input element
      * @protected
-     * Aligns the picker to the
      */
     alignPicker: function() {
         var me = this,
-            picker, isAbove,
-            aboveSfx = '-above';
+            picker;
 
-        if (this.isExpanded) {
+        if (me.isExpanded) {
             picker = me.getPicker();
             if (me.matchFieldWidth) {
                 // Auto the height (it will be constrained by min and max width) unless there are no records to display.
                 picker.setSize(me.bodyEl.getWidth(), picker.store && picker.store.getCount() ? null : 0);
             }
             if (picker.isFloating()) {
-                picker.alignTo(me.inputEl, me.pickerAlign, me.pickerOffset);
-
-                // add the {openCls}-above class if the picker was aligned above
-                // the field due to hitting the bottom of the viewport
-                isAbove = picker.el.getY() < me.inputEl.getY();
-                me.bodyEl[isAbove ? 'addCls' : 'removeCls'](me.openCls + aboveSfx);
-                picker.el[isAbove ? 'addCls' : 'removeCls'](picker.baseCls + aboveSfx);
+                me.doAlign();
             }
         }
     },
 
     /**
-     * Collapse this field's picker dropdown.
+     * Performs the alignment on the picker using the class defaults
+     * @private
+     */
+    doAlign: function(){
+        var me = this,
+            picker = me.picker,
+            aboveSfx = '-above',
+            isAbove;
+
+        me.picker.alignTo(me.inputEl, me.pickerAlign, me.pickerOffset);
+        // add the {openCls}-above class if the picker was aligned above
+        // the field due to hitting the bottom of the viewport
+        isAbove = picker.el.getY() < me.inputEl.getY();
+        me.bodyEl[isAbove ? 'addCls' : 'removeCls'](me.openCls + aboveSfx);
+        picker[isAbove ? 'addCls' : 'removeCls'](picker.baseCls + aboveSfx);
+    },
+
+    /**
+     * Collapses this field's picker dropdown.
      */
     collapse: function() {
         if (this.isExpanded && !this.isDestroyed) {
@@ -235,7 +241,7 @@ Ext.define('Ext.form.field.Picker', {
     },
 
     /**
-     * Return a reference to the picker component for this field, creating it if necessary by
+     * Returns a reference to the picker component for this field, creating it if necessary by
      * calling {@link #createPicker}.
      * @return {Ext.Component} The picker component
      */
@@ -245,15 +251,16 @@ Ext.define('Ext.form.field.Picker', {
     },
 
     /**
-     * Create and return the component to be used as this field's picker. Must be implemented
-     * by subclasses of Picker.
-     * @return {Ext.Component} The picker component
+     * @method
+     * Creates and returns the component to be used as this field's picker. Must be implemented by subclasses of Picker.
+     * The current field should also be passed as a configuration option to the picker component as the pickerField
+     * property.
      */
     createPicker: Ext.emptyFn,
 
     /**
-     * Handles the trigger click; by default toggles between expanding and collapsing the
-     * picker component.
+     * Handles the trigger click; by default toggles between expanding and collapsing the picker component.
+     * @protected
      */
     onTriggerClick: function() {
         var me = this;
@@ -277,9 +284,15 @@ Ext.define('Ext.form.field.Picker', {
     },
 
     onDestroy : function(){
-        var me = this;
+        var me = this,
+            picker = me.picker;
+
         Ext.EventManager.removeResizeListener(me.alignPicker, me);
-        Ext.destroy(me.picker, me.keyNav);
+        Ext.destroy(me.keyNav);
+        if (picker) {
+            delete picker.pickerField;
+            picker.destroy();
+        }
         me.callParent();
     }
 

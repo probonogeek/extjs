@@ -13,8 +13,6 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.layout.container.boxOverflow.None
- * @extends Object
  * @private
  * Base class for Box Layout overflow handlers. These specialized classes are invoked when a Box Layout
  * (either an HBox or a VBox) has child items that are either too wide (for HBox) or too tall (for VBox)
@@ -38,7 +36,7 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     /**
      * @private
      * Normalizes an item reference, string id or numerical index into a reference to the item
-     * @param {Ext.Component|String|Number} item The item reference, id or index
+     * @param {Ext.Component/String/Number} item The item reference, id or index
      * @return {Ext.Component} The item
      */
     getItem: function(item) {

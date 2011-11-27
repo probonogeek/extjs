@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,42 +15,42 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
-<span id='Ext-core-Element-property-VISIBILITY'>/**
+<span id='Ext-Element-static-property-VISIBILITY'>/**
 </span> * Visibility mode constant for use with {@link #setVisibilityMode}. Use visibility to hide element
  * @static
  * @type Number
  */
-Ext.core.Element.VISIBILITY = 1;
-<span id='Ext-core-Element-property-DISPLAY'>/**
+Ext.Element.VISIBILITY = 1;
+<span id='Ext-Element-static-property-DISPLAY'>/**
 </span> * Visibility mode constant for use with {@link #setVisibilityMode}. Use display to hide element
  * @static
  * @type Number
  */
-Ext.core.Element.DISPLAY = 2;
+Ext.Element.DISPLAY = 2;
 
-<span id='Ext-core-Element-property-OFFSETS'>/**
+<span id='Ext-Element-static-property-OFFSETS'>/**
 </span> * Visibility mode constant for use with {@link #setVisibilityMode}. Use offsets (x and y positioning offscreen)
  * to hide element.
  * @static
  * @type Number
  */
-Ext.core.Element.OFFSETS = 3;
+Ext.Element.OFFSETS = 3;
 
 
-Ext.core.Element.ASCLASS = 4;
+Ext.Element.ASCLASS = 4;
 
-<span id='Ext-core-Element-property-visibilityCls'>/**
+<span id='Ext-Element-static-property-visibilityCls'>/**
 </span> * Defaults to 'x-hide-nosize'
  * @static
  * @type String
  */
-Ext.core.Element.visibilityCls = Ext.baseCSSPrefix + 'hide-nosize';
+Ext.Element.visibilityCls = Ext.baseCSSPrefix + 'hide-nosize';
 
-Ext.core.Element.addMethods(function(){
-    var El = Ext.core.Element,
+Ext.Element.addMethods(function(){
+    var El = Ext.Element,
         OPACITY = &quot;opacity&quot;,
         VISIBILITY = &quot;visibility&quot;,
         DISPLAY = &quot;display&quot;,
@@ -79,25 +79,25 @@ Ext.core.Element.addMethods(function(){
         };
 
     return {
-<span id='Ext-core-Element-property-originalDisplay'>        /**
-</span>         * The element's default display mode  (defaults to &quot;&quot;)
-         * @type String
+<span id='Ext-Element-property-originalDisplay'>        /**
+</span>         * @property {String} originalDisplay
+         * The element's default display mode
          */
         originalDisplay : &quot;&quot;,
         visibilityMode : 1,
 
-<span id='Ext-core-Element-method-setVisibilityMode'>        /**
+<span id='Ext-Element-method-setVisibilityMode'>        /**
 </span>         * Sets the element's visibility mode. When setVisible() is called it
          * will use this to determine whether to set the visibility or the display property.
-         * @param {Number} visMode Ext.core.Element.VISIBILITY or Ext.core.Element.DISPLAY
-         * @return {Ext.core.Element} this
+         * @param {Number} visMode Ext.Element.VISIBILITY or Ext.Element.DISPLAY
+         * @return {Ext.Element} this
          */
         setVisibilityMode : function(visMode){
             data(this.dom, VISMODE, visMode);
             return this;
         },
 
-<span id='Ext-core-Element-method-isVisible'>        /**
+<span id='Ext-Element-method-isVisible'>        /**
 </span>         * Checks whether the element is currently visible using both visibility and display properties.
          * @return {Boolean} True if the element is currently visible, else false
          */
@@ -118,12 +118,12 @@ Ext.core.Element.addMethods(function(){
             return visible;
         },
 
-<span id='Ext-core-Element-method-setVisible'>        /**
+<span id='Ext-Element-method-setVisible'>        /**
 </span>         * Sets the visibility of the element (see details). If the visibilityMode is set to Element.DISPLAY, it will use
          * the display property to hide the element, otherwise it uses visibility. The default is to hide and show using the visibility property.
          * @param {Boolean} visible Whether the element is visible
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setVisible : function(visible, animate){
             var me = this, isDisplay, isVisibility, isOffsets, isNosize,
@@ -213,7 +213,7 @@ Ext.core.Element.addMethods(function(){
         },
 
 
-<span id='Ext-core-Element-method-hasMetrics'>        /**
+<span id='Ext-Element-method-hasMetrics'>        /**
 </span>         * @private
          * Determine if the Element has a relevant height and width available based
          * upon current logical visibility state
@@ -223,10 +223,10 @@ Ext.core.Element.addMethods(function(){
             return this.isVisible() || (getVisMode(dom) == El.OFFSETS) || (getVisMode(dom) == El.VISIBILITY);
         },
 
-<span id='Ext-core-Element-method-toggle'>        /**
+<span id='Ext-Element-method-toggle'>        /**
 </span>         * Toggles the element's visibility or display, depending on visibility mode.
          * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         toggle : function(animate){
             var me = this;
@@ -234,10 +234,10 @@ Ext.core.Element.addMethods(function(){
             return me;
         },
 
-<span id='Ext-core-Element-method-setDisplayed'>        /**
+<span id='Ext-Element-method-setDisplayed'>        /**
 </span>         * Sets the CSS display property. Uses originalDisplay if the specified value is a boolean true.
-         * @param {Mixed} value Boolean value to display the element using its default display, or a string to set the display directly.
-         * @return {Ext.core.Element} this
+         * @param {Boolean/String} value Boolean value to display the element using its default display, or a string to set the display directly.
+         * @return {Ext.Element} this
          */
         setDisplayed : function(value) {
             if(typeof value == &quot;boolean&quot;){
@@ -259,10 +259,10 @@ Ext.core.Element.addMethods(function(){
             }
         },
 
-<span id='Ext-core-Element-method-hide'>        /**
+<span id='Ext-Element-method-hide'>        /**
 </span>         * Hide this element - Uses display mode to determine whether to use &quot;display&quot; or &quot;visibility&quot;. See {@link #setVisible}.
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         hide : function(animate){
             // hideMode override
@@ -274,10 +274,10 @@ Ext.core.Element.addMethods(function(){
             return this;
         },
 
-<span id='Ext-core-Element-method-show'>        /**
+<span id='Ext-Element-method-show'>        /**
 </span>        * Show this element - Uses display mode to determine whether to use &quot;display&quot; or &quot;visibility&quot;. See {@link #setVisible}.
         * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         show : function(animate){
             // hideMode override

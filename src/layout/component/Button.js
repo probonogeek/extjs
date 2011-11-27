@@ -64,7 +64,7 @@ Ext.define('Ext.layout.component.Button', {
             // In IE7 strict mode button elements with width:auto get strange extra side margins within
             // the wrapping table cell, but they go away if the width is explicitly set. So we measure
             // the size of the text and set the width to match.
-            if (owner.text && Ext.isIE7 && Ext.isStrict && btnEl && btnEl.getWidth() > 20) {
+            if (owner.text && (Ext.isIE6 || Ext.isIE7) && Ext.isStrict && btnEl && btnEl.getWidth() > 20) {
                 btnFrameWidth = me.btnFrameWidth;
                 metrics = Ext.util.TextMetrics.measure(btnInnerEl, owner.text);
                 ownerEl.setWidth(metrics.width + btnFrameWidth + me.adjWidth);
@@ -112,7 +112,7 @@ Ext.define('Ext.layout.component.Button', {
         me.callParent(arguments);
         me.setElementSize(owner.btnEl, btnWidth, btnHeight);
         me.setElementSize(btnInnerEl, btnWidth, btnHeight);
-        if (isNum(btnHeight)) {
+        if (btnHeight >= 0) {
             btnInnerEl.setStyle('line-height', btnHeight - btnFrameHeight + 'px');
         }
 

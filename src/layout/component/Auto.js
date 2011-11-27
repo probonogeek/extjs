@@ -18,7 +18,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @private
  *
  * <p>The AutoLayout is the default layout manager delegated by {@link Ext.Component} to
- * render any child Elements when no <tt>{@link Ext.Component#layout layout}</tt> is configured.</p>
+ * render any child Elements when no <tt>{@link Ext.container.Container#layout layout}</tt> is configured.</p>
  */
 
 Ext.define('Ext.layout.component.Auto', {

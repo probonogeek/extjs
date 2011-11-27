@@ -13,6 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 describe("Ext-more", function() {
+    beforeEach(function() {
+        addGlobal("ExtBox1"); 
+    });
     describe("Ext.id", function(){
         var el;
         describe("if element passed as first argument is different of document or window", function() {
@@ -55,13 +58,13 @@ describe("Ext-more", function() {
     });
 
     describe("Ext.getBody", function() {
-        it("should return current document body as an Ext.core.Element", function() {
+        it("should return current document body as an Ext.Element", function() {
             expect(Ext.getBody()).toEqual(Ext.get(document.body)); 
         });
     });
 
     describe("Ext.getHead", function() {
-        it("should return current document head as an Ext.core.Element", function() {
+        it("should return current document head as an Ext.Element", function() {
             expect(Ext.getHead()).toEqual(Ext.get(document.getElementsByTagName("head")[0]));
         });
     });
@@ -71,14 +74,15 @@ describe("Ext-more", function() {
             expect(Ext.getDoc()).toEqual(Ext.get(document));
         });
     });
-
-    describe("Ext.getCmp", function() {
-        it("should return a component", function() {
-            var cmp = new Ext.Component({id: 'foobar'});
-            expect(Ext.getCmp('foobar')).toBe(cmp);
-            cmp.destroy();
+    if (Ext.Component) {
+        describe("Ext.getCmp", function() {
+            it("should return a component", function() {
+                var cmp = new Ext.Component({id: 'foobar'});
+                expect(Ext.getCmp('foobar')).toBe(cmp);
+                cmp.destroy();
+            });
         });
-    });
+    }
     if (!Ext.isWindows && !Ext.isMac && !Ext.isLinux) {
         describe("Ext.getOrientation", function() {
             it("should return the current orientation of the mobile device", function() {
@@ -278,12 +282,15 @@ describe("Ext-more", function() {
                     html: 'foobar'
                 });
                 id = el.id;
-
             });
 
             it("should remove a dom element from document", function(){
                 Ext.removeNode(el.dom);
-                expect(document.body.childNodes[0]).toBeUndefined();
+               if (!Ext.isIE) {
+                    expect(el.dom.parentNode).toBe(null);
+               } else {
+                   expect(el.dom.parentNode.innerHTML).toBe(undefined);
+               }
             });
 
             it("should delete the cache reference", function() {

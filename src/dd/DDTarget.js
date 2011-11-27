@@ -36,7 +36,7 @@ Ext.define('Ext.dd.DDTarget', {
      * Creates new DDTarget.
      * @param {String} id the id of the element that is a drop target
      * @param {String} sGroup the group of related DragDrop objects
-     * @param {object} config an object containing configurable attributes.
+     * @param {Object} config an object containing configurable attributes.
      * Valid properties for DDTarget in addition to those in DragDrop: none.
      */
     constructor: function(id, sGroup, config) {

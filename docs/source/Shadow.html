@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -29,17 +29,21 @@ Ext.define('Ext.Shadow', {
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
-        Ext.apply(this, config);
-        if (typeof this.mode != &quot;string&quot;) {
-            this.mode = this.defaultMode;
-        }
-        var offset = this.offset,
+        var me = this,
             adjusts = {
                 h: 0
             },
-            rad = Math.floor(this.offset / 2);
-
-        switch (this.mode.toLowerCase()) {
+            offset,
+            rad;
+        
+        Ext.apply(me, config);
+        if (!Ext.isString(me.mode)) {
+            me.mode = me.defaultMode;
+        }
+        offset = me.offset;
+        rad = Math.floor(offset / 2);
+        me.opacity = 50;
+        switch (me.mode.toLowerCase()) {
             // all this hideous nonsense calculates the various offsets for shadows
             case &quot;drop&quot;:
                 if (Ext.supports.CSS3BoxShadow) {
@@ -96,7 +100,7 @@ Ext.define('Ext.Shadow', {
                     break;
                 }
         }
-        this.adjusts = adjusts;
+        me.adjusts = adjusts;
     },
 
 <span id='Ext-Shadow-cfg-mode'>    /**
@@ -108,8 +112,8 @@ Ext.define('Ext.Shadow', {
      * &lt;/ul&gt;&lt;/div&gt;
      */
 <span id='Ext-Shadow-cfg-offset'>    /**
-</span>     * @cfg {String} offset
-     * The number of pixels to offset the shadow from the element (defaults to &lt;tt&gt;4&lt;/tt&gt;)
+</span>     * @cfg {Number} offset
+     * The number of pixels to offset the shadow from the element
      */
     offset: 4,
 
@@ -118,27 +122,31 @@ Ext.define('Ext.Shadow', {
 
 <span id='Ext-Shadow-method-show'>    /**
 </span>     * Displays the shadow under the target element
-     * @param {Mixed} targetEl The id or element under which the shadow should display
+     * @param {String/HTMLElement/Ext.Element} targetEl The id or element under which the shadow should display
      */
     show: function(target) {
+        var me = this,
+            index;
+        
         target = Ext.get(target);
-        if (!this.el) {
-            this.el = Ext.ShadowPool.pull();
-            if (this.el.dom.nextSibling != target.dom) {
-                this.el.insertBefore(target);
+        if (!me.el) {
+            me.el = Ext.ShadowPool.pull();
+            if (me.el.dom.nextSibling != target.dom) {
+                me.el.insertBefore(target);
             }
         }
-        this.el.setStyle(&quot;z-index&quot;, this.zIndex || parseInt(target.getStyle(&quot;z-index&quot;), 10) - 1);
+        index = (parseInt(target.getStyle(&quot;z-index&quot;), 10) - 1) || 0;
+        me.el.setStyle(&quot;z-index&quot;, me.zIndex || index);
         if (Ext.isIE &amp;&amp; !Ext.supports.CSS3BoxShadow) {
-            this.el.dom.style.filter = &quot;progid:DXImageTransform.Microsoft.alpha(opacity=50) progid:DXImageTransform.Microsoft.Blur(pixelradius=&quot; + (this.offset) + &quot;)&quot;;
+            me.el.dom.style.filter = &quot;progid:DXImageTransform.Microsoft.alpha(opacity=&quot; + me.opacity + &quot;) progid:DXImageTransform.Microsoft.Blur(pixelradius=&quot; + (me.offset) + &quot;)&quot;;
         }
-        this.realign(
+        me.realign(
             target.getLeft(true),
             target.getTop(true),
-            target.getWidth(),
-            target.getHeight()
+            target.dom.offsetWidth,
+            target.dom.offsetHeight
         );
-        this.el.dom.style.display = &quot;block&quot;;
+        me.el.dom.style.display = &quot;block&quot;;
     },
 
 <span id='Ext-Shadow-method-isVisible'>    /**
@@ -200,10 +208,12 @@ Ext.define('Ext.Shadow', {
 </span>     * Hides this shadow
      */
     hide: function() {
-        if (this.el) {
-            this.el.dom.style.display = &quot;none&quot;;
-            Ext.ShadowPool.push(this.el);
-            delete this.el;
+        var me = this;
+        
+        if (me.el) {
+            me.el.dom.style.display = &quot;none&quot;;
+            Ext.ShadowPool.push(me.el);
+            delete me.el;
         }
     },
 
@@ -215,6 +225,20 @@ Ext.define('Ext.Shadow', {
         this.zIndex = z;
         if (this.el) {
             this.el.setStyle(&quot;z-index&quot;, z);
+        }
+    },
+    
+<span id='Ext-Shadow-method-setOpacity'>    /**
+</span>     * Sets the opacity of the shadow
+     * @param {Number} opacity The opacity
+     */
+    setOpacity: function(opacity){
+        if (this.el) {
+            if (Ext.isIE &amp;&amp; !Ext.supports.CSS3BoxShadow) {
+                opacity = Math.floor(opacity * 100 / 2) / 100;
+            }
+            this.opacity = opacity;
+            this.el.setOpacity(opacity);
         }
     }
 });</pre>

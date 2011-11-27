@@ -21,11 +21,23 @@
         }
         /* custom icon for the "buy" ActionColumn icon */
         .x-action-col-cell img.buy-col {
-            background-image: url(../shared/icons/fam/accept.gif);
+            background-image: url(../shared/icons/fam/accept.png);
         }
         /* custom icon for the "alert" ActionColumn icon */
         .x-action-col-cell img.alert-col {
+            background-image: url(../shared/icons/fam/error.png);
+        }
+
+        .x-ie6 .x-action-col-cell img.buy-col {
+            background-image: url(../shared/icons/fam/accept.gif);
+        }
+        .x-ie6.x-action-col-cell img.alert-col {
             background-image: url(../shared/icons/fam/error.gif);
+        }
+
+        .x-ie6 .x-action-col-cell img {
+            position:relative;
+            top:-1px;
         }
     </style>
     <script type="text/javascript" src="array-grid.js"></script>

@@ -16,32 +16,32 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.layout.container.Auto
  * @extends Ext.layout.container.Container
  *
- * <p>The AutoLayout is the default layout manager delegated by {@link Ext.container.Container} to
- * render any child Components when no <tt>{@link Ext.container.Container#layout layout}</tt> is configured into
- * a <tt>{@link Ext.container.Container Container}.</tt>.  AutoLayout provides only a passthrough of any layout calls
- * to any child containers.</p>
- * {@img Ext.layout.container.Auto/Ext.layout.container.Auto.png Ext.layout.container.Auto container layout}
- * Example usage:
- 	Ext.create('Ext.Panel', {
-		width: 500,
-		height: 280,
-		title: "AutoLayout Panel",
-		layout: 'auto',
-		renderTo: document.body,
-		items: [{
-			xtype: 'panel',
-			title: 'Top Inner Panel',
-			width: '75%',
-			height: 90
-		},{
-			xtype: 'panel',
-			title: 'Bottom Inner Panel',
-			width: '75%',
-			height: 90
-		}]
-	});
+ * The AutoLayout is the default layout manager delegated by {@link Ext.container.Container} to
+ * render any child Components when no `{@link Ext.container.Container#layout layout}` is configured into
+ * a `{@link Ext.container.Container Container}.` AutoLayout provides only a passthrough of any layout calls
+ * to any child containers.
+ *
+ *     @example
+ *     Ext.create('Ext.Panel', {
+ *         width: 500,
+ *         height: 280,
+ *         title: "AutoLayout Panel",
+ *         layout: 'auto',
+ *         renderTo: document.body,
+ *         items: [{
+ *             xtype: 'panel',
+ *             title: 'Top Inner Panel',
+ *             width: '75%',
+ *             height: 90
+ *         },
+ *         {
+ *             xtype: 'panel',
+ *             title: 'Bottom Inner Panel',
+ *             width: '75%',
+ *             height: 90
+ *         }]
+ *     });
  */
-
 Ext.define('Ext.layout.container.Auto', {
 
     /* Begin Definitions */
@@ -83,14 +83,10 @@ Ext.define('Ext.layout.container.Auto', {
     },
 
     configureItem: function(item) {
+        this.callParent(arguments);
 
         // Auto layout does not manage any dimensions.
-        // We have to check our type, because this could be called as a superclass method in a subclass
-        if (this.type === 'autocontainer') {
-            item.layoutManagedHeight = 2;
-            item.layoutManagedWidth = 2;
-        }
-
-        this.callParent(arguments);
+        item.layoutManagedHeight = 2;
+        item.layoutManagedWidth = 2;
     }
 });

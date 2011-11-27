@@ -47,7 +47,7 @@ Ext.define('Ext.dd.DDProxy', {
      * Creates new DDProxy.
      * @param {String} id the id of the linked html element
      * @param {String} sGroup the group of related DragDrop objects
-     * @param {object} config an object containing configurable attributes.
+     * @param {Object} config an object containing configurable attributes.
      * Valid properties for DDProxy in addition to those in DragDrop:
      * 
      * - resizeFrame
@@ -66,7 +66,7 @@ Ext.define('Ext.dd.DDProxy', {
      * we want to drag (this is to get the frame effect).  We can turn it off
      * if we want a different behavior.
      * @property resizeFrame
-     * @type boolean
+     * @type Boolean
      */
     resizeFrame: true,
 
@@ -76,7 +76,7 @@ Ext.define('Ext.dd.DDProxy', {
      * you do not have constraints on the obj is to have the drag frame centered
      * around the cursor.  Set centerFrame to true for this effect.
      * @property centerFrame
-     * @type boolean
+     * @type Boolean
      */
     centerFrame: false,
 
@@ -134,8 +134,8 @@ Ext.define('Ext.dd.DDProxy', {
      * Resizes the drag frame to the dimensions of the clicked object, positions
      * it over the object, and finally displays it
      * @method showFrame
-     * @param {int} iPageX X click position
-     * @param {int} iPageY Y click position
+     * @param {Number} iPageX X click position
+     * @param {Number} iPageY Y click position
      * @private
      */
     showFrame: function(iPageX, iPageY) {

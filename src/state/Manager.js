@@ -41,7 +41,7 @@ Ext.define('Ext.state.Manager', {
     
     /**
      * Configures the default state provider for your application
-     * @param {Provider} stateProvider The state provider to set
+     * @param {Ext.state.Provider} stateProvider The state provider to set
      */
     setProvider : function(stateProvider){
         this.provider = stateProvider;
@@ -50,8 +50,8 @@ Ext.define('Ext.state.Manager', {
     /**
      * Returns the current value for a key
      * @param {String} name The key name
-     * @param {Mixed} defaultValue The default value to return if the key lookup does not match
-     * @return {Mixed} The state data
+     * @param {Object} defaultValue The default value to return if the key lookup does not match
+     * @return {Object} The state data
      */
     get : function(key, defaultValue){
         return this.provider.get(key, defaultValue);
@@ -60,7 +60,7 @@ Ext.define('Ext.state.Manager', {
     /**
      * Sets the value for a key
      * @param {String} name The key name
-     * @param {Mixed} value The state data
+     * @param {Object} value The state data
      */
      set : function(key, value){
         this.provider.set(key, value);
@@ -76,7 +76,7 @@ Ext.define('Ext.state.Manager', {
 
     /**
      * Gets the currently configured state provider
-     * @return {Provider} The state provider
+     * @return {Ext.state.Provider} The state provider
      */
     getProvider : function(){
         return this.provider;

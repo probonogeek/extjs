@@ -13,17 +13,17 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.resizer.Splitter
- * @extends Ext.Component
- * <p>This class functions <b>between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
- * layout</b> to resize both immediate siblings.</p>
- * <p>By default it will set the size of both siblings. <b>One</b> of the siblings may be configured with
- * <code>{@link Ext.Component#maintainFlex maintainFlex}: true</code> which will cause it not to receive a new size explicitly, but to be resized
- * by the layout.</p>
- * <p>A Splitter may be configured to show a centered mini-collapse tool orientated to collapse the {@link #collapseTarget}.
+ * This class functions between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
+ * layout to resize both immediate siblings.
+ *
+ * By default it will set the size of both siblings. <b>One</b> of the siblings may be configured with
+ * `{@link Ext.Component#maintainFlex maintainFlex}: true` which will cause it not to receive a new size explicitly, but to be resized
+ * by the layout.
+ *
+ * A Splitter may be configured to show a centered mini-collapse tool orientated to collapse the {@link #collapseTarget}.
  * The Splitter will then call that sibling Panel's {@link Ext.panel.Panel#collapse collapse} or {@link Ext.panel.Panel#expand expand} method
  * to perform the appropriate operation (depending on the sibling collapse state). To create the mini-collapse tool but take care
- * of collapsing yourself, configure the splitter with <code>{@link #performCollapse} false</code>.</p>
+ * of collapsing yourself, configure the splitter with <code>{@link #performCollapse} false</code>.
  */
 Ext.define('Ext.resizer.Splitter', {
     extend: 'Ext.Component',
@@ -32,7 +32,10 @@ Ext.define('Ext.resizer.Splitter', {
     alias: 'widget.splitter',
 
     renderTpl: [
-        '<tpl if="collapsible===true"><div class="' + Ext.baseCSSPrefix + 'collapse-el ' + Ext.baseCSSPrefix + 'layout-split-{collapseDir}">&nbsp;</div></tpl>'
+        '<tpl if="collapsible===true">',
+            '<div id="{id}-collapseEl" class="', Ext.baseCSSPrefix, 'collapse-el ',
+                    Ext.baseCSSPrefix, 'layout-split-{collapseDir}">&nbsp;</div>',
+        '</tpl>'
     ],
 
     baseCls: Ext.baseCSSPrefix + 'splitter',
@@ -70,7 +73,7 @@ Ext.define('Ext.resizer.Splitter', {
      * that the splitter is between.
      */
     defaultSplitMax: 1000,
-    
+
     /**
      * @cfg {String} collapsedCls
      * A class to add to the splitter when it is collapsed. See {@link #collapsible}.
@@ -80,7 +83,7 @@ Ext.define('Ext.resizer.Splitter', {
     height: 5,
 
     /**
-     * @cfg {Mixed} collapseTarget
+     * @cfg {String/Ext.panel.Panel} collapseTarget
      * <p>A string describing the relative position of the immediate sibling Panel to collapse. May be 'prev' or 'next' (Defaults to 'next')</p>
      * <p>Or the immediate sibling Panel to collapse.</p>
      * <p>The orientation of the mini-collapse tool will be inferred from this setting.</p>
@@ -104,9 +107,8 @@ Ext.define('Ext.resizer.Splitter', {
             collapseDir: collapseDir,
             collapsible: me.collapsible || target.collapsible
         });
-        Ext.applyIf(me.renderSelectors, {
-            collapseEl: '.' + Ext.baseCSSPrefix + 'collapse-el'
-        });
+
+        me.addChildEls('collapseEl');
 
         this.callParent(arguments);
 
@@ -160,7 +162,7 @@ Ext.define('Ext.resizer.Splitter', {
 
     getCollapseTarget: function() {
         var me = this;
-        
+
         return me.collapseTarget.isComponent ? me.collapseTarget : me.collapseTarget == 'prev' ? me.previousSibling() : me.nextSibling();
     },
 

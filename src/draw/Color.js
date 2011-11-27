@@ -73,7 +73,7 @@ Ext.define('Ext.draw.Color', {
 
     /**
      * Get the RGB values.
-     * @return {[Number]}
+     * @return {Number[]}
      */
     getRGB: function() {
         var me = this;
@@ -82,7 +82,7 @@ Ext.define('Ext.draw.Color', {
 
     /**
      * Get the equivalent HSL components of the color.
-     * @return {[Number]}
+     * @return {Number[]}
      */
     getHSL: function() {
         var me = this,
@@ -159,7 +159,7 @@ Ext.define('Ext.draw.Color', {
      *
      * **Note:** This method is both static and instance.
      *
-     * @param {String/[String]} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
+     * @param {String/String[]} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
      * Can also be an Array, in this case the function handles the first member.
      * @returns {String} The color in hexadecimal format.
      * @static

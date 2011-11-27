@@ -78,6 +78,7 @@ Ext.onReady(function() {
     });
 
     var dataview = Ext.create('Ext.view.View', {
+        deferInitialRefresh: false,
         store: store,
         tpl  : Ext.create('Ext.XTemplate',
             '<tpl for=".">',

@@ -15,9 +15,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.data.JsonPStore
  * @extends Ext.data.Store
- * @ignore
  * @private
- * <p><b>NOTE:</b> This class is in need of migration to the new API.</p>
  * <p>Small helper class to make creating {@link Ext.data.Store}s from different domain JSON data easier.
  * A JsonPStore will be automatically configured with a {@link Ext.data.reader.Json} and a {@link Ext.data.proxy.JsonP JsonPProxy}.</p>
  * <p>A store configuration would be something like:<pre><code>

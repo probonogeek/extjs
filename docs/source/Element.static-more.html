@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,17 +15,17 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
 (function(){
     var doc = document,
         activeElement = null,
         isCSS1 = doc.compatMode == &quot;CSS1Compat&quot;,
-        ELEMENT = Ext.core.Element,
+        ELEMENT = Ext.Element,
         fly = function(el){
             if (!_fly) {
-                _fly = new Ext.core.Element.Flyweight();
+                _fly = new Ext.Element.Flyweight();
             }
             _fly.dom = el;
             return _fly;
@@ -73,7 +73,7 @@
             return ret;
         },
 
-<span id='Ext-core-Element-method-getActiveElement'>        /**
+<span id='Ext-Element-method-getActiveElement'>        /**
 </span>         * Returns the active element in the DOM. If the browser supports activeElement
          * on the document, this is returned. If not, the focus is tracked and the active
          * element is maintained internally.
@@ -83,7 +83,7 @@
             return doc.activeElement || activeElement;
         },
 
-<span id='Ext-core-Element-method-getRightMarginFixCleaner'>        /**
+<span id='Ext-Element-method-getRightMarginFixCleaner'>        /**
 </span>         * Creates a function to call to clean up problems with the work-around for the
          * WebKit RightMargin bug. The work-around is to add &quot;display: 'inline-block'&quot; to
          * the element before calling getComputedStyle and then to restore its original
@@ -161,6 +161,17 @@
             return ELEMENT.getXY(el)[0];
         },
 
+        getOffsetParent: function (el) {
+            el = Ext.getDom(el);
+            try {
+                // accessing offsetParent can throw &quot;Unspecified Error&quot; in IE6-8 (not 9)
+                return el.offsetParent;
+            } catch (e) {
+                var body = document.body; // safe bet, unless...
+                return (el == body) ? null : body;
+            }
+        },
+
         getXY : function(el) {
             var p,
                 pe,
@@ -173,7 +184,7 @@
                 scroll,
                 hasAbsolute,
                 bd = (doc.body || doc.documentElement),
-                ret = [0,0];
+                ret;
 
             el = Ext.getDom(el);
 
@@ -181,13 +192,17 @@
                 hasAbsolute = fly(el).isStyle(&quot;position&quot;, &quot;absolute&quot;);
 
                 if (el.getBoundingClientRect) {
-                    b = el.getBoundingClientRect();
-                    scroll = fly(document).getScroll();
-                    ret = [Math.round(b.left + scroll.left), Math.round(b.top + scroll.top)];
-                } else {
-                    p = el;
+                    try {
+                        b = el.getBoundingClientRect();
+                        scroll = fly(document).getScroll();
+                        ret = [ Math.round(b.left + scroll.left), Math.round(b.top + scroll.top) ];
+                    } catch (e) {
+                        // IE6-8 can also throw from getBoundingClientRect...
+                    }
+                }
 
-                    while (p) {
+                if (!ret) {
+                    for (p = el; p; p = ELEMENT.getOffsetParent(p)) {
                         pe = fly(p);
                         x += p.offsetLeft;
                         y += p.offsetTop;
@@ -203,7 +218,6 @@
                                 y += bt;
                             }
                         }
-                        p = p.offsetParent;
                     }
 
                     if (Ext.isSafari &amp;&amp; hasAbsolute) {
@@ -228,7 +242,7 @@
                     ret = [x,y];
                 }
             }
-            return ret;
+            return ret || [0,0];
         },
 
         setXY : function(el, xy) {
@@ -253,7 +267,7 @@
             ELEMENT.setXY(el, [false, y]);
         },
 
-<span id='Ext-core-Element-method-serializeForm'>        /**
+<span id='Ext-Element-method-serializeForm'>        /**
 </span>         * Serializes a DOM form into a url encoded string
          * @param {Object} form The form
          * @return {String} The url encoded form

@@ -15,8 +15,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.panel.AbstractPanel
  * @extends Ext.container.Container
- * <p>A base class which provides methods common to Panel classes across the Sencha product range.</p>
- * <p>Please refer to sub class's documentation</p>
+ * A base class which provides methods common to Panel classes across the Sencha product range.
+ * @private
  */
 Ext.define('Ext.panel.AbstractPanel', {
 
@@ -24,13 +24,13 @@ Ext.define('Ext.panel.AbstractPanel', {
 
     extend: 'Ext.container.Container',
 
-    requires: ['Ext.util.MixedCollection', 'Ext.core.Element', 'Ext.toolbar.Toolbar'],
+    requires: ['Ext.util.MixedCollection', 'Ext.Element', 'Ext.toolbar.Toolbar'],
 
     /* End Definitions */
 
     /**
-     * @cfg {String} baseCls
-     * The base CSS class to apply to this panel's element (defaults to <code>'x-panel'</code>).
+     * @cfg {String} [baseCls='x-panel']
+     * The base CSS class to apply to this panel's element.
      */
     baseCls : Ext.baseCSSPrefix + 'panel',
 
@@ -38,13 +38,12 @@ Ext.define('Ext.panel.AbstractPanel', {
      * @cfg {Number/String} bodyPadding
      * A shortcut for setting a padding style on the body element. The value can either be
      * a number to be applied to all sides, or a normal css string describing padding.
-     * Defaults to <code>undefined</code>.
      */
 
     /**
      * @cfg {Boolean} bodyBorder
-     * A shortcut to add or remove the border on the body of a panel. This only applies to a panel which has the {@link #frame} configuration set to `true`.
-     * Defaults to <code>undefined</code>.
+     * A shortcut to add or remove the border on the body of a panel. This only applies to a panel
+     * which has the {@link #frame} configuration set to `true`.
      */
 
     /**
@@ -62,7 +61,7 @@ bodyStyle: {
      */
 
     /**
-     * @cfg {String/Array} bodyCls
+     * @cfg {String/String[]} bodyCls
      * A CSS class, space-delimited string of classes, or array of classes to be applied to the panel's body element.
      * The following examples are all valid:<pre><code>
 bodyCls: 'foo'
@@ -80,7 +79,7 @@ bodyCls: ['foo', 'bar']
      * This object holds the default weights applied to dockedItems that have no weight. These start with a
      * weight of 1, to allow negative weights to insert before top items and are odd numbers
      * so that even weights can be used to get between different dock orders.
-     * 
+     *
      * To make default docking order match border layout, do this:
      * <pre><code>
 Ext.panel.AbstractPanel.prototype.defaultDockWeights = { top: 1, bottom: 3, left: 5, right: 7 };</code></pre>
@@ -105,11 +104,17 @@ initComponent: function () {
      */
     defaultDockWeights: { top: 1, left: 3, right: 5, bottom: 7 },
 
-    renderTpl: ['<div class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl> {baseCls}-body-{ui}<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl></tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>></div>'],
+    renderTpl: [
+        '<div id="{id}-body" class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl>',
+            ' {baseCls}-body-{ui}<tpl if="uiCls">',
+                '<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl>',
+            '</tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
+        '</div>'
+    ],
 
     // TODO: Move code examples into product-specific files. The code snippet below is Touch only.
     /**
-     * @cfg {Object/Array} dockedItems
+     * @cfg {Object/Object[]} dockedItems
      * A component or series of components to be added as docked items to this panel.
      * The docked items can be docked to either the top, right, left or bottom of a panel.
      * This is typically used for things like toolbars or tab bars:
@@ -146,9 +151,7 @@ var panel = new Ext.panel.Panel({
             // 'deactivate'
         );
 
-        Ext.applyIf(me.renderSelectors, {
-            body: '.' + me.baseCls + '-body'
-        });
+        me.addChildEls('body');
 
         //!frame
         //!border
@@ -189,7 +192,7 @@ var panel = new Ext.panel.Panel({
 
     /**
      * Attempts a default component lookup (see {@link Ext.container.Container#getComponent}). If the component is not found in the normal
-     * items, the dockedItems are searched and the matched component (if any) returned (see {@loink #getDockedComponent}). Note that docked
+     * items, the dockedItems are searched and the matched component (if any) returned (see {@link #getDockedComponent}). Note that docked
      * items will only be matched by component id or itemId -- if you pass a numeric index only non-docked child components will be searched.
      * @param {String/Number} comp The component id, itemId or position to find
      * @return {Ext.Component} The component (if found)
@@ -213,7 +216,7 @@ var panel = new Ext.panel.Panel({
         var me = this,
             bodyStyle = me.bodyStyle,
             styles = [],
-            Element = Ext.core.Element,
+            Element = Ext.Element,
             prop;
 
         if (Ext.isFunction(bodyStyle)) {
@@ -276,7 +279,7 @@ var panel = new Ext.panel.Panel({
 
     /**
      * Adds docked item(s) to the panel.
-     * @param {Object/Array} component The Component or array of components to add. The components
+     * @param {Object/Object[]} component The Component or array of components to add. The components
      * must include a 'dock' parameter on each component to indicate where it should be docked ('top', 'right',
      * 'bottom', 'left').
      * @param {Number} pos (optional) The index at which the Component will be added
@@ -323,7 +326,7 @@ var panel = new Ext.panel.Panel({
     /**
      * Inserts docked item(s) to the panel at the indicated position.
      * @param {Number} pos The index at which the Component will be inserted
-     * @param {Object/Array} component. The Component or array of components to add. The components
+     * @param {Object/Object[]} component. The Component or array of components to add. The components
      * must include a 'dock' paramater on each component to indicate where it should be docked ('top', 'right',
      * 'bottom', 'left').
      */
@@ -358,10 +361,9 @@ var panel = new Ext.panel.Panel({
 
         if (autoDestroy === true || (autoDestroy !== false && me.autoDestroy)) {
             item.destroy();
-        }
-
-        if (hasLayout && !autoDestroy) {
-            layout.afterRemove(item);
+        } else if (hasLayout) {
+            // not destroying, make any layout related removals
+            layout.afterRemove(item);    
         }
 
 
@@ -377,7 +379,7 @@ var panel = new Ext.panel.Panel({
     /**
      * Retrieve an array of all currently docked Components.
      * @param {String} cqSelector A {@link Ext.ComponentQuery ComponentQuery} selector string to filter the returned items.
-     * @return {Array} An array of components.
+     * @return {Ext.Component[]} An array of components.
      */
     getDockedItems : function(cqSelector) {
         var me = this,

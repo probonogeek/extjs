@@ -17,117 +17,110 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.data.BelongsToAssociation
  * @extends Ext.data.Association
  *
- * <p>Represents a many to one association with another model. The owner model is expected to have
- * a foreign key which references the primary key of the associated model:</p>
+ * Represents a many to one association with another model. The owner model is expected to have
+ * a foreign key which references the primary key of the associated model:
  *
-<pre><code>
-Ext.define('Category', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'id',   type: 'int'},
-        {name: 'name', type: 'string'}
-    ]
-});
-
-Ext.define('Product', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'id',          type: 'int'},
-        {name: 'category_id', type: 'int'},
-        {name: 'name',        type: 'string'}
-    ],
-    // we can use the belongsTo shortcut on the model to create a belongsTo association
-    belongsTo: {type: 'belongsTo', model: 'Category'}
-});
-</code></pre>
- * <p>In the example above we have created models for Products and Categories, and linked them together
+ *     Ext.define('Category', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',   type: 'int' },
+ *             { name: 'name', type: 'string' }
+ *         ]
+ *     });
+ *
+ *     Ext.define('Product', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',          type: 'int' },
+ *             { name: 'category_id', type: 'int' },
+ *             { name: 'name',        type: 'string' }
+ *         ],
+ *         // we can use the belongsTo shortcut on the model to create a belongsTo association
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category' }
+ *         ]
+ *     });
+ *
+ * In the example above we have created models for Products and Categories, and linked them together
  * by saying that each Product belongs to a Category. This automatically links each Product to a Category
- * based on the Product's category_id, and provides new functions on the Product model:</p>
+ * based on the Product's category_id, and provides new functions on the Product model:
  *
- * <p><u>Generated getter function</u></p>
+ * ## Generated getter function
  *
- * <p>The first function that is added to the owner model is a getter function:</p>
+ * The first function that is added to the owner model is a getter function:
  *
-<pre><code>
-var product = new Product({
-    id: 100,
-    category_id: 20,
-    name: 'Sneakers'
-});
-
-product.getCategory(function(category, operation) {
-    //do something with the category object
-    alert(category.get('id')); //alerts 20
-}, this);
-</code></pre>
-*
- * <p>The getCategory function was created on the Product model when we defined the association. This uses the
+ *     var product = new Product({
+ *         id: 100,
+ *         category_id: 20,
+ *         name: 'Sneakers'
+ *     });
+ *
+ *     product.getCategory(function(category, operation) {
+ *         // do something with the category object
+ *         alert(category.get('id')); // alerts 20
+ *     }, this);
+ *
+ * The getCategory function was created on the Product model when we defined the association. This uses the
  * Category's configured {@link Ext.data.proxy.Proxy proxy} to load the Category asynchronously, calling the provided
- * callback when it has loaded.</p>
+ * callback when it has loaded.
  *
- * <p>The new getCategory function will also accept an object containing success, failure and callback properties
+ * The new getCategory function will also accept an object containing success, failure and callback properties
  * - callback will always be called, success will only be called if the associated model was loaded successfully
- * and failure will only be called if the associatied model could not be loaded:</p>
+ * and failure will only be called if the associatied model could not be loaded:
  *
-<pre><code>
-product.getCategory({
-    callback: function(category, operation) {}, //a function that will always be called
-    success : function(category, operation) {}, //a function that will only be called if the load succeeded
-    failure : function(category, operation) {}, //a function that will only be called if the load did not succeed
-    scope   : this //optionally pass in a scope object to execute the callbacks in
-});
-</code></pre>
+ *     product.getCategory({
+ *         callback: function(category, operation) {}, // a function that will always be called
+ *         success : function(category, operation) {}, // a function that will only be called if the load succeeded
+ *         failure : function(category, operation) {}, // a function that will only be called if the load did not succeed
+ *         scope   : this // optionally pass in a scope object to execute the callbacks in
+ *     });
  *
- * <p>In each case above the callbacks are called with two arguments - the associated model instance and the
+ * In each case above the callbacks are called with two arguments - the associated model instance and the
  * {@link Ext.data.Operation operation} object that was executed to load that instance. The Operation object is
- * useful when the instance could not be loaded.</p>
+ * useful when the instance could not be loaded.
  *
- * <p><u>Generated setter function</u></p>
+ * ## Generated setter function
  *
- * <p>The second generated function sets the associated model instance - if only a single argument is passed to
- * the setter then the following two calls are identical:</p>
+ * The second generated function sets the associated model instance - if only a single argument is passed to
+ * the setter then the following two calls are identical:
  *
-<pre><code>
-//this call
-product.setCategory(10);
-
-//is equivalent to this call:
-product.set('category_id', 10);
-</code></pre>
- * <p>If we pass in a second argument, the model will be automatically saved and the second argument passed to
- * the owner model's {@link Ext.data.Model#save save} method:</p>
-<pre><code>
-product.setCategory(10, function(product, operation) {
-    //the product has been saved
-    alert(product.get('category_id')); //now alerts 10
-});
-
-//alternative syntax:
-product.setCategory(10, {
-    callback: function(product, operation), //a function that will always be called
-    success : function(product, operation), //a function that will only be called if the load succeeded
-    failure : function(product, operation), //a function that will only be called if the load did not succeed
-    scope   : this //optionally pass in a scope object to execute the callbacks in
-})
-</code></pre>
-*
- * <p><u>Customisation</u></p>
+ *     // this call...
+ *     product.setCategory(10);
  *
- * <p>Associations reflect on the models they are linking to automatically set up properties such as the
- * {@link #primaryKey} and {@link #foreignKey}. These can alternatively be specified:</p>
+ *     // is equivalent to this call:
+ *     product.set('category_id', 10);
  *
-<pre><code>
-Ext.define('Product', {
-    fields: [...],
-
-    associations: [
-        {type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id'}
-    ]
-});
- </code></pre>
+ * If we pass in a second argument, the model will be automatically saved and the second argument passed to
+ * the owner model's {@link Ext.data.Model#save save} method:
  *
- * <p>Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
- * with our own settings. Usually this will not be needed.</p>
+ *     product.setCategory(10, function(product, operation) {
+ *         // the product has been saved
+ *         alert(product.get('category_id')); //now alerts 10
+ *     });
+ *
+ *     //alternative syntax:
+ *     product.setCategory(10, {
+ *         callback: function(product, operation), // a function that will always be called
+ *         success : function(product, operation), // a function that will only be called if the load succeeded
+ *         failure : function(product, operation), // a function that will only be called if the load did not succeed
+ *         scope   : this //optionally pass in a scope object to execute the callbacks in
+ *     })
+ *
+ * ## Customisation
+ *
+ * Associations reflect on the models they are linking to automatically set up properties such as the
+ * {@link #primaryKey} and {@link #foreignKey}. These can alternatively be specified:
+ *
+ *     Ext.define('Product', {
+ *         fields: [...],
+ *
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
+ *         ]
+ *     });
+ *
+ * Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
+ * with our own settings. Usually this will not be needed.
  */
 Ext.define('Ext.data.BelongsToAssociation', {
     extend: 'Ext.data.Association',
@@ -138,26 +131,25 @@ Ext.define('Ext.data.BelongsToAssociation', {
      * @cfg {String} foreignKey The name of the foreign key on the owner model that links it to the associated
      * model. Defaults to the lowercased name of the associated model plus "_id", e.g. an association with a
      * model called Product would set up a product_id foreign key.
-     * <pre><code>
-Ext.define('Order', {
-    extend: 'Ext.data.Model',
-    fields: ['id', 'date'],
-    hasMany: 'Product'
-});
-
-Ext.define('Product', {
-    extend: 'Ext.data.Model',
-    fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
-    belongsTo: 'Group'
-});
-var product = new Product({
-    id: 1,
-    name: 'Product 1',
-    order_id: 22
-}, 1);
-product.getOrder(); // Will make a call to the server asking for order_id 22
-
-     * </code></pre>
+     *
+     *     Ext.define('Order', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'date'],
+     *         hasMany: 'Product'
+     *     });
+     *
+     *     Ext.define('Product', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
+     *         belongsTo: 'Group'
+     *     });
+     *     var product = new Product({
+     *         id: 1,
+     *         name: 'Product 1',
+     *         order_id: 22
+     *     }, 1);
+     *     product.getOrder(); // Will make a call to the server asking for order_id 22
+     *
      */
 
     /**
@@ -169,18 +161,16 @@ product.getOrder(); // Will make a call to the server asking for order_id 22
      * @cfg {String} setterName The name of the setter function that will be added to the local model's prototype.
      * Defaults to 'set' + the name of the foreign model, e.g. setCategory
      */
-    
+
     /**
      * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'belongsTo' to create a HasManyAssocation
-     * <pre><code>
-associations: [{
-    type: 'belongsTo',
-    model: 'User'
-}]
-     * </code></pre>
+     *
+     *     associations: [{
+     *         type: 'belongsTo',
+     *         model: 'User'
+     *     }]
      */
-
     constructor: function(config) {
         this.callParent(arguments);
 
@@ -272,7 +262,7 @@ associations: [{
                 instance = model[instanceName];
                 args = [instance];
                 scope = scope || model;
-                
+
                 //TODO: We're duplicating the callback invokation code that the instance.load() call above
                 //makes here - ought to be able to normalize this - perhaps by caching at the Model.load layer
                 //instead of the association layer.

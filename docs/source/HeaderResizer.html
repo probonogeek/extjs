@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -18,18 +18,15 @@
   <pre class="prettyprint lang-js"><span id='Ext-grid-plugin-HeaderResizer'>/**
 </span> * @class Ext.grid.plugin.HeaderResizer
  * @extends Ext.util.Observable
- * 
+ *
  * Plugin to add header resizing functionality to a HeaderContainer.
  * Always resizing header to the left of the splitter you are resizing.
- * 
- * Todo: Consider RTL support, columns would always calculate to the right of
- *    the splitter instead of to the left.
  */
 Ext.define('Ext.grid.plugin.HeaderResizer', {
     extend: 'Ext.util.Observable',
     requires: ['Ext.dd.DragTracker', 'Ext.util.Region'],
     alias: 'plugin.gridheaderresizer',
-    
+
     disabled: false,
 
 <span id='Ext-grid-plugin-HeaderResizer-cfg-dynamic'>    /**
@@ -100,9 +97,10 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
             if (headerEl){
                 overHeader = Ext.getCmp(headerEl.id);
 
-                // On left edge, we are resizing the previous non-hidden, base level column.
+                // On left edge, go back to the previous non-hidden header.
                 if (overHeader.isOnLeftEdge(e)) {
-                    resizeHeader = overHeader.previousNode('gridcolumn:not([hidden]):not([isGroupHeader])');
+                    resizeHeader = overHeader.previousNode('gridcolumn:not([hidden])');
+
                 }
                 // Else, if on the right edge, we're resizing the column we are over
                 else if (overHeader.isOnRightEdge(e)) {
@@ -116,14 +114,15 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
                 // We *are* resizing
                 if (resizeHeader) {
                     // If we're attempting to resize a group header, that cannot be resized,
-                    // so find its last base level column header; Group headers are sized
+                    // so find its last visible leaf header; Group headers are sized
                     // by the size of their child headers.
                     if (resizeHeader.isGroupHeader) {
-                        resizeHeader = resizeHeader.getVisibleGridColumns();
-                        resizeHeader = resizeHeader[resizeHeader.length - 1];
+                        resizeHeader = resizeHeader.down(':not([isGroupHeader]):not([hidden]):last');
                     }
 
-                    if (resizeHeader &amp;&amp; !(resizeHeader.fixed || this.disabled)) {
+                    // Check if the header is resizable. Continue checking the old &quot;fixed&quot; property, bug also
+                    // check whether the resizablwe property is set to false.
+                    if (resizeHeader &amp;&amp; !(resizeHeader.fixed || (resizeHeader.resizable === false) || this.disabled)) {
                         this.activeHd = resizeHeader;
                         overHeader.el.dom.style.cursor = this.eResizeCursor;
                     }
@@ -253,38 +252,32 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
                 delete dragHd.flex;
             }
 
+            this.headerCt.suspendLayout = true;
+            dragHd.setWidth(this.origWidth + offset[0], false);
+
+            // In the case of forceFit, change the following Header width.
+            // Then apply the two width changes by laying out the owning HeaderContainer
             // If HeaderContainer is configured forceFit, inhibit upstream layout notification, so that
             // we can also shrink the following Header by an equal amount, and *then* inform the upstream layout.
             if (this.headerCt.forceFit) {
                 nextHd = dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
                 if (nextHd) {
-                    this.headerCt.componentLayout.layoutBusy = true;
+                    delete nextHd.flex;
+                    nextHd.setWidth(nextHd.getWidth() - offset[0], false);
                 }
             }
-
-            // Non-flexed Headers may never be squeezed in the event of a shortfall so
-            // always set the minWidth to their current width.
-            dragHd.minWidth = this.origWidth + offset[0];
-            dragHd.setWidth(dragHd.minWidth);
-
-            // In the case of forceFit, change the following Header width.
-            // Then apply the two width changes by laying out the owning HeaderContainer
-            if (nextHd) {
-                delete nextHd.flex;
-                nextHd.setWidth(nextHd.getWidth() - offset[0]);
-                this.headerCt.componentLayout.layoutBusy = false;
-                this.headerCt.doComponentLayout();
-            }
+            this.headerCt.suspendLayout = false;
+            this.headerCt.doComponentLayout(this.headerCt.getFullWidth());
         }
     },
-    
+
     disable: function() {
         this.disabled = true;
         if (this.tracker) {
             this.tracker.disable();
         }
     },
-    
+
     enable: function() {
         this.disabled = false;
         if (this.tracker) {

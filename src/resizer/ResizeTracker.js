@@ -25,6 +25,8 @@ Ext.define('Ext.resizer.ResizeTracker', {
 
     // Default to no constraint
     constrainTo: null,
+    
+    proxyCls:  Ext.baseCSSPrefix + 'resizable-proxy',
 
     constructor: function(config) {
         var me = this;
@@ -81,15 +83,45 @@ Ext.define('Ext.resizer.ResizeTracker', {
      * If dynamic is false, this will be a proxy, otherwise it will be our actual target.
      */
     getDynamicTarget: function() {
-        var d = this.target;
-        if (this.dynamic) {
-            return d;
-        } else if (!this.proxy) {
-            this.proxy = d.isComponent ? d.getProxy().addCls(Ext.baseCSSPrefix + 'resizable-proxy') : d.createProxy({tag: 'div', cls: Ext.baseCSSPrefix + 'resizable-proxy', id: d.id + '-rzproxy'}, Ext.getBody());
-            this.proxy.removeCls(Ext.baseCSSPrefix + 'proxy-el');
+        var me = this,
+            target = me.target;
+            
+        if (me.dynamic) {
+            return target;
+        } else if (!me.proxy) {
+            me.proxy = me.createProxy(target);
         }
-        this.proxy.show();
-        return this.proxy;
+        me.proxy.show();
+        return me.proxy;
+    },
+    
+    /**
+     * Create a proxy for this resizer
+     * @param {Ext.Component/Ext.Element} target The target
+     * @return {Ext.Element} A proxy element
+     */
+    createProxy: function(target){
+        var proxy,
+            cls = this.proxyCls,
+            renderTo;
+            
+        if (target.isComponent) {
+            proxy = target.getProxy().addCls(cls);
+        } else {
+            renderTo = Ext.getBody();
+            if (Ext.scopeResetCSS) {
+                renderTo = Ext.getBody().createChild({
+                    cls: Ext.baseCSSPrefix + 'reset'
+                });
+            }
+            proxy = target.createProxy({
+                tag: 'div',
+                cls: cls,
+                id: target.id + '-rzproxy'
+            }, renderTo);
+        }
+        proxy.removeCls(Ext.baseCSSPrefix + 'proxy-el');
+        return proxy;
     },
 
     onStart: function(e) {

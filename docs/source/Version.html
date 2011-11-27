@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -46,7 +46,7 @@
 (function() {
 
 // Current core version
-var version = '4.0.2', Version;
+var version = '4.0.7', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
 <span id='Ext-Version-method-constructor'>        /**
@@ -186,7 +186,7 @@ var version = '4.0.2', Version;
 
 <span id='Ext-Version-method-toArray'>        /**
 </span>         * Returns this format: [major, minor, patch, build, release]. Useful for comparison
-         * @return {Array}
+         * @return {Number[]}
          */
         toArray: function() {
             return [this.getMajor(), this.getMinor(), this.getPatch(), this.getBuild(), this.getRelease()];
@@ -215,18 +215,18 @@ var version = '4.0.2', Version;
             'pl': -1
         },
 
-<span id='Ext-Version-method-getComponentValue'>        /**
+<span id='Ext-Version-static-method-getComponentValue'>        /**
 </span>         * Converts a version component to a comparable value
          *
          * @static
-         * @param {Mixed} value The value to convert
-         * @return {Mixed}
+         * @param {Object} value The value to convert
+         * @return {Object}
          */
         getComponentValue: function(value) {
             return !value ? 0 : (isNaN(value) ? this.releaseValueMap[value] || value : parseInt(value, 10));
         },
 
-<span id='Ext-Version-method-compare'>        /**
+<span id='Ext-Version-static-method-compare'>        /**
 </span>         * Compare 2 specified versions, starting from left to right. If a part contains special version strings,
          * they are handled in the following order:
          * 'dev' &lt; 'alpha' = 'a' &lt; 'beta' = 'b' &lt; 'RC' = 'rc' &lt; '#' &lt; 'pl' = 'p' &lt; 'anything else'

@@ -148,8 +148,10 @@ Ext.onReady(function(){
 
     if(Ext.form.field.ComboBox){
         Ext.apply(Ext.form.field.ComboBox.prototype, {
-            loadingText       : "Öüñôùóç...",
             valueNotFoundText : undefined
+        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Öüñôùóç..."
         });
     }
 

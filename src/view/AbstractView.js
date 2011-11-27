@@ -16,6 +16,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.view.AbstractView
  * @extends Ext.Component
  * This is an abstract superclass and should not be used directly. Please see {@link Ext.view.View}.
+ * @private
  */
 Ext.define('Ext.view.AbstractView', {
     extend: 'Ext.Component',
@@ -39,20 +40,28 @@ Ext.define('Ext.view.AbstractView', {
     },
 
     /**
-     * @cfg {String/Array/Ext.XTemplate} tpl
-     * @required
+     * @cfg {String/String[]/Ext.XTemplate} tpl (required)
      * The HTML fragment or an array of fragments that will make up the template used by this DataView.  This should
      * be specified in the same format expected by the constructor of {@link Ext.XTemplate}.
      */
     /**
-     * @cfg {Ext.data.Store} store
-     * @required
+     * @cfg {Ext.data.Store} store (required)
      * The {@link Ext.data.Store} to bind this DataView to.
      */
 
     /**
-     * @cfg {String} itemSelector
-     * @required
+     * @cfg {Boolean} deferInitialRefresh
+     * <p>Defaults to <code>true</code> to defer the initial refresh of the view.</p>
+     * <p>This allows the View to execute its render and initial layout more quickly because the process will not be encumbered
+     * by the expensive update of the view structure.</p>
+     * <p><b>Important: </b>Be aware that this will mean that the View's item elements will not be available immediately upon render, so
+     * <i>selection</i> may not take place at render time. To access a View's item elements as soon as possible, use the {@link #viewready} event.
+     * Or set <code>deferInitialrefresh</code> to false, but this will be at the cost of slower rendering.</p>
+     */
+    deferInitialRefresh: true,
+
+    /**
+     * @cfg {String} itemSelector (required)
      * <b>This is a required setting</b>. A simple CSS selector (e.g. <tt>div.some-class</tt> or
      * <tt>span:first-child</tt>) that will be used to determine what nodes this DataView will be
      * working with. The itemSelector is used to map DOM nodes to records. As such, there should
@@ -67,35 +76,35 @@ Ext.define('Ext.view.AbstractView', {
     itemCls: Ext.baseCSSPrefix + 'dataview-item',
 
     /**
-     * @cfg {String/Array/Ext.XTemplate} itemTpl
+     * @cfg {String/String[]/Ext.XTemplate} itemTpl
      * The inner portion of the item template to be rendered. Follows an XTemplate
      * structure and will be placed inside of a tpl.
      */
 
     /**
      * @cfg {String} overItemCls
-     * A CSS class to apply to each item in the view on mouseover (defaults to undefined).
+     * A CSS class to apply to each item in the view on mouseover.
      * Ensure {@link #trackOver} is set to `true` to make use of this.
      */
 
     /**
      * @cfg {String} loadingText
-     * A string to display during data load operations (defaults to undefined).  If specified, this text will be
+     * A string to display during data load operations.  If specified, this text will be
      * displayed in a loading div and the view's contents will be cleared while loading, otherwise the view's
      * contents will continue to display normally until the new data is loaded and the contents are replaced.
      */
     loadingText: 'Loading...',
-    
+
     /**
      * @cfg {Boolean/Object} loadMask
      * False to disable a load mask from displaying will the view is loading. This can also be a
-     * {@link Ext.LoadMask} configuration object. Defaults to <tt>true</tt>.
+     * {@link Ext.LoadMask} configuration object.
      */
     loadMask: true,
 
     /**
      * @cfg {String} loadingCls
-     * The CSS class to apply to the loading message element (defaults to Ext.LoadMask.prototype.msgCls "x-mask-loading")
+     * The CSS class to apply to the loading message element. Defaults to Ext.LoadMask.prototype.msgCls "x-mask-loading".
      */
 
     /**
@@ -110,42 +119,46 @@ Ext.define('Ext.view.AbstractView', {
      * @cfg {Number} loadingHeight
      * If specified, gives an explicit height for the data view when it is showing the {@link #loadingText},
      * if that is specified. This is useful to prevent the view's height from collapsing to zero when the
-     * loading mask is applied and there are no other contents in the data view. Defaults to undefined.
+     * loading mask is applied and there are no other contents in the data view.
      */
 
     /**
-     * @cfg {String} selectedItemCls
-     * A CSS class to apply to each selected item in the view (defaults to 'x-view-selected').
+     * @cfg {String} [selectedItemCls='x-view-selected']
+     * A CSS class to apply to each selected item in the view.
      */
     selectedItemCls: Ext.baseCSSPrefix + 'item-selected',
 
     /**
      * @cfg {String} emptyText
-     * The text to display in the view when there is no data to display (defaults to '').
+     * The text to display in the view when there is no data to display.
      * Note that when using local data the emptyText will not be displayed unless you set
      * the {@link #deferEmptyText} option to false.
      */
     emptyText: "",
 
     /**
-     * @cfg {Boolean} deferEmptyText True to defer emptyText being applied until the store's first load
+     * @cfg {Boolean} deferEmptyText
+     * True to defer emptyText being applied until the store's first load.
      */
     deferEmptyText: true,
 
     /**
-     * @cfg {Boolean} trackOver True to enable mouseenter and mouseleave events
+     * @cfg {Boolean} trackOver
+     * True to enable mouseenter and mouseleave events
      */
     trackOver: false,
 
     /**
-     * @cfg {Boolean} blockRefresh Set this to true to ignore datachanged events on the bound store. This is useful if
-     * you wish to provide custom transition animations via a plugin (defaults to false)
+     * @cfg {Boolean} blockRefresh
+     * Set this to true to ignore datachanged events on the bound store. This is useful if
+     * you wish to provide custom transition animations via a plugin
      */
     blockRefresh: false,
 
     /**
-     * @cfg {Boolean} disableSelection <p><tt>true</tt> to disable selection within the DataView. Defaults to <tt>false</tt>.
-     * This configuration will lock the selection model that the DataView uses.</p>
+     * @cfg {Boolean} disableSelection
+     * True to disable selection within the DataView. This configuration will lock the selection model
+     * that the DataView uses.
      */
 
 
@@ -240,6 +253,14 @@ Ext.define('Ext.view.AbstractView', {
              */
             'refresh',
             /**
+             * @event viewready
+             * Fires when the View's item elements representing Store items has been rendered. If the {@link #deferInitialRefresh} flag
+             * was set (and it is <code>true</code> by default), this will be <b>after</b> initial render, and no items will be available
+             * for selection until this event fires.
+             * @param {Ext.view.View} this
+             */
+            'viewready',
+            /**
              * @event itemupdate
              * Fires when the node associated with an individual record is updated
              * @param {Ext.data.Model} record The model instance
@@ -250,9 +271,9 @@ Ext.define('Ext.view.AbstractView', {
             /**
              * @event itemadd
              * Fires when the nodes associated with an recordset have been added to the underlying store
-             * @param {Array[Ext.data.Model]} records The model instance
+             * @param {Ext.data.Model[]} records The model instance
              * @param {Number} index The index at which the set of record/nodes starts
-             * @param {Array[HTMLElement]} node The node that has just been updated
+             * @param {HTMLElement[]} node The node that has just been updated
              */
             'itemadd',
             /**
@@ -266,9 +287,8 @@ Ext.define('Ext.view.AbstractView', {
 
         me.addCmpEvents();
 
-        if (me.store) {
-            me.store = Ext.data.StoreManager.lookup(me.store);
-        }
+        // Look up the configured Store. If none configured, use the fieldless, empty Store defined in Ext.data.Store.
+        me.store = Ext.data.StoreManager.lookup(me.store || 'ext-empty-store');
         me.all = new Ext.CompositeElementLite();
     },
 
@@ -284,7 +304,7 @@ Ext.define('Ext.view.AbstractView', {
         me.callParent(arguments);
 
         if (mask) {
-            // either a config object 
+            // either a config object
             if (Ext.isObject(mask)) {
                 cfg = Ext.apply(cfg, mask);
             }
@@ -292,7 +312,7 @@ Ext.define('Ext.view.AbstractView', {
             // If this DataView is floating, then mask this DataView.
             // Otherwise, mask its owning Container (or this, if there *is* no owning Container).
             // LoadMask captures the element upon render.
-            me.loadMask = Ext.create('Ext.LoadMask', me.floating ? me : me.ownerCt || me, cfg);
+            me.loadMask = Ext.create('Ext.LoadMask', me, cfg);
             me.loadMask.on({
                 scope: me,
                 beforeshow: me.onMaskBeforeShow,
@@ -300,19 +320,21 @@ Ext.define('Ext.view.AbstractView', {
             });
         }
     },
-    
+
     onMaskBeforeShow: function(){
-        var me = this;
-        me.getSelectionModel().deselectAll();
-        me.all.clear();
-        if (me.loadingHeight) {
-            me.setCalculatedSize(undefined, me.loadingHeight);
+        var loadingHeight = this.loadingHeight;
+        
+        this.getSelectionModel().deselectAll();
+        if (loadingHeight) {
+            this.setCalculatedSize(undefined, loadingHeight);
         }
     },
-    
+
     onMaskHide: function(){
-        if (!this.destroying && this.loadingHeight) {
-            this.setHeight(this.height);
+        var me = this;
+        
+        if (!me.destroying && me.loadingHeight) {
+            me.setHeight(me.height);
         }
     },
 
@@ -376,7 +398,7 @@ Ext.define('Ext.view.AbstractView', {
             el,
             records;
 
-        if (!me.rendered) {
+        if (!me.rendered || me.isDestroyed) {
             return;
         }
 
@@ -399,14 +421,23 @@ Ext.define('Ext.view.AbstractView', {
         me.selModel.refresh();
         me.hasSkippedEmptyText = true;
         me.fireEvent('refresh', me);
+
+        // Upon first refresh, fire the viewready event.
+        // Reconfiguring the grid "renews" this event.
+        if (!me.viewReady) {
+            // Fire an event when deferred content becomes available.
+            // This supports grid Panel's deferRowRender capability
+            me.viewReady = true;
+            me.fireEvent('viewready', me);
+        }
     },
 
     /**
      * Function which can be overridden to provide custom formatting for each Record that is used by this
      * DataView's {@link #tpl template} to render each node.
-     * @param {Array/Object} data The raw data object that was used to create the Record.
+     * @param {Object/Object[]} data The raw data object that was used to create the Record.
      * @param {Number} recordIndex the index number of the Record being prepared for rendering.
-     * @param {Record} record The Record being prepared for rendering.
+     * @param {Ext.data.Model} record The Record being prepared for rendering.
      * @return {Array/Object} The formatted data in a format expected by the internal {@link #tpl template}'s overwrite() method.
      * (either an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'}))
      */
@@ -424,9 +455,9 @@ Ext.define('Ext.view.AbstractView', {
      * {@link Ext.XTemplate XTemplate} which uses <tt>'&lt;tpl for="."&gt;'</tt> to iterate over its supplied
      * data object as an Array. However, <i>named</i> properties may be placed into the data object to
      * provide non-repeating data such as headings, totals etc.</p>
-     * @param {Array} records An Array of {@link Ext.data.Model}s to be rendered into the DataView.
+     * @param {Ext.data.Model[]} records An Array of {@link Ext.data.Model}s to be rendered into the DataView.
      * @param {Number} startIndex the index number of the Record being prepared for rendering.
-     * @return {Array} An Array of data objects to be processed by a repeating XTemplate. May also
+     * @return {Object[]} An Array of data objects to be processed by a repeating XTemplate. May also
      * contain <i>named</i> properties.
      */
     collectData : function(records, startIndex){
@@ -457,14 +488,15 @@ Ext.define('Ext.view.AbstractView', {
 
         if (index > -1){
             node = me.bufferRender([record], index)[0];
-
-            me.all.replaceElement(index, node, true);
-            me.updateIndexes(index, index);
-
-            // Maintain selection after update
-            // TODO: Move to approriate event handler.
-            me.selModel.refresh();
-            me.fireEvent('itemupdate', record, index, node);
+            // ensure the node actually exists in the DOM
+            if (me.getNode(record)) {
+                me.all.replaceElement(index, node, true);
+                me.updateIndexes(index, index);
+                // Maintain selection after update
+                // TODO: Move to approriate event handler.
+                me.selModel.refresh();
+                me.fireEvent('itemupdate', record, index, node);
+            }
         }
 
     },
@@ -492,8 +524,7 @@ Ext.define('Ext.view.AbstractView', {
 
         if (index < all.getCount()) {
             all.item(index).insertSibling(nodes, 'before', true);
-        }
-        else {
+        } else {
             all.last().insertSibling(nodes, 'after', true);
         }
 
@@ -527,10 +558,12 @@ Ext.define('Ext.view.AbstractView', {
     // private
     updateIndexes : function(startIndex, endIndex) {
         var ns = this.all.elements,
-            records = this.store.getRange();
+            records = this.store.getRange(),
+            i;
+            
         startIndex = startIndex || 0;
         endIndex = endIndex || ((endIndex === 0) ? 0 : (ns.length - 1));
-        for(var i = startIndex; i <= endIndex; i++){
+        for(i = startIndex; i <= endIndex; i++){
             ns[i].viewIndex = i;
             ns[i].viewRecordId = records[i].internalId;
             if (!ns[i].boundView) {
@@ -549,14 +582,15 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Changes the data store bound to this view and refreshes it.
-     * @param {Store} store The store to bind to this view
+     * @param {Ext.data.Store} store The store to bind to this view
      */
     bindStore : function(store, initial) {
-        var me = this;
+        var me = this,
+            maskStore;
 
         if (!initial && me.store) {
             if (store !== me.store && me.store.autoDestroy) {
-                me.store.destroy();
+                me.store.destroyStore();
             }
             else {
                 me.mun(me.store, {
@@ -569,7 +603,8 @@ Ext.define('Ext.view.AbstractView', {
                 });
             }
             if (!store) {
-                if (me.loadMask) {
+                // Ensure we have an instantiated LoadMask before we unbind it.
+                if (me.loadMask && me.loadMask.bindStore) {
                     me.loadMask.bindStore(null);
                 }
                 me.store = null;
@@ -585,17 +620,43 @@ Ext.define('Ext.view.AbstractView', {
                 update: me.onUpdate,
                 clear: me.refresh
             });
-            if (me.loadMask) {
-                me.loadMask.bindStore(store);
+            // Ensure we have an instantiated LoadMask before we bind it.
+            if (me.loadMask && me.loadMask.bindStore) {
+                // View's store is a NodeStore, use owning TreePanel's Store
+                if (Ext.Array.contains(store.alias, 'store.node')) {
+                    maskStore = this.ownerCt.store;
+                } else {
+                    maskStore = store;
+                }
+                me.loadMask.bindStore(maskStore);
             }
         }
+
+        // Flag to say that initial refresh has not been performed.
+        // Set here rather than at initialization time, so that a reconfigure with a new store will refire viewready
+        me.viewReady = false;
 
         me.store = store;
         // Bind the store to our selection model
         me.getSelectionModel().bind(store);
 
-        if (store && (!initial || store.getCount())) {
-            me.refresh(true);
+        /*
+         * This code used to have checks for:
+         * if (store && (!initial || store.getCount() || me.emptyText)) {
+         * Instead, just trigger a refresh and let the view itself figure out
+         * what needs to happen. It can cause incorrect display if our store
+         * has no data.
+         */
+        if (store) {
+            if (initial && me.deferInitialRefresh) {
+                Ext.Function.defer(function () {
+                    if (!me.isDestroyed) {
+                        me.refresh(true);
+                    }
+                }, 1);
+            } else {
+                me.refresh(true);
+            }
         }
     },
 
@@ -629,7 +690,7 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Gets the currently selected nodes.
-     * @return {Array} An array of HTMLElements
+     * @return {HTMLElement[]} An array of HTMLElements
      */
     getSelectedNodes: function(){
         var nodes   = [],
@@ -646,8 +707,8 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Gets an array of the records from an array of nodes
-     * @param {Array} nodes The nodes to evaluate
-     * @return {Array} records The {@link Ext.data.Model} objects
+     * @param {HTMLElement[]} nodes The nodes to evaluate
+     * @return {Ext.data.Model[]} records The {@link Ext.data.Model} objects
      */
     getRecords: function(nodes) {
         var records = [],
@@ -664,9 +725,9 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Gets a record from a node
-     * @param {Element/HTMLElement} node The node to evaluate
+     * @param {Ext.Element/HTMLElement} node The node to evaluate
      *
-     * @return {Record} record The {@link Ext.data.Model} object
+     * @return {Ext.data.Model} record The {@link Ext.data.Model} object
      */
     getRecord: function(node){
         return this.store.data.getByKey(Ext.getDom(node).viewRecordId);
@@ -686,9 +747,9 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Selects a record instance by record instance or index.
-     * @param {Ext.data.Model/Index} records An array of records or an index
-     * @param {Boolean} keepExisting
-     * @param {Boolean} suppressEvent Set to false to not fire a select event
+     * @param {Ext.data.Model[]/Number} records An array of records or an index
+     * @param {Boolean} [keepExisting] True to keep existing selections
+     * @param {Boolean} [suppressEvent] Set to true to not fire a select event
      */
     select: function(records, keepExisting, suppressEvent) {
         this.selModel.select(records, keepExisting, suppressEvent);
@@ -696,8 +757,8 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Deselects a record instance by record instance or index.
-     * @param {Ext.data.Model/Index} records An array of records or an index
-     * @param {Boolean} suppressEvent Set to false to not fire a deselect event
+     * @param {Ext.data.Model[]/Number} records An array of records or an index
+     * @param {Boolean} [suppressEvent] Set to true to not fire a deselect event
      */
     deselect: function(records, suppressEvent) {
         this.selModel.deselect(records, suppressEvent);
@@ -710,14 +771,19 @@ Ext.define('Ext.view.AbstractView', {
      * @return {HTMLElement} The node or null if it wasn't found
      */
     getNode : function(nodeInfo) {
+        if (!this.rendered) {
+            return null;
+        }
         if (Ext.isString(nodeInfo)) {
             return document.getElementById(nodeInfo);
-        } else if (Ext.isNumber(nodeInfo)) {
+        }
+        if (Ext.isNumber(nodeInfo)) {
             return this.all.elements[nodeInfo];
-        } else if (nodeInfo instanceof Ext.data.Model) {
+        }
+        if (nodeInfo instanceof Ext.data.Model) {
             return this.getNodeByRecord(nodeInfo);
         }
-        return nodeInfo;
+        return nodeInfo; // already an HTMLElement
     },
 
     /**
@@ -741,7 +807,7 @@ Ext.define('Ext.view.AbstractView', {
      * Gets a range nodes.
      * @param {Number} start (optional) The index of the first node in the range
      * @param {Number} end (optional) The index of the last node in the range
-     * @return {Array} An array of nodes
+     * @return {HTMLElement[]} An array of nodes
      */
     getNodes: function(start, end) {
         var ns = this.all.elements,
@@ -764,7 +830,7 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * Finds the index of the passed node.
-     * @param {HTMLElement/String/Number/Record} nodeInfo An HTMLElement template node, index of a template node, the id of a template node
+     * @param {HTMLElement/String/Number/Ext.data.Model} nodeInfo An HTMLElement template node, index of a template node, the id of a template node
      * or a record associated with a node.
      * @return {Number} The index of the node or -1
      */
@@ -788,13 +854,19 @@ Ext.define('Ext.view.AbstractView', {
     // invoked by the selection model to maintain visual UI cues
     onItemSelect: function(record) {
         var node = this.getNode(record);
-        Ext.fly(node).addCls(this.selectedItemCls);
+        
+        if (node) {
+            Ext.fly(node).addCls(this.selectedItemCls);
+        }
     },
 
     // invoked by the selection model to maintain visual UI cues
     onItemDeselect: function(record) {
         var node = this.getNode(record);
-        Ext.fly(node).removeCls(this.selectedItemCls);
+        
+        if (node) {
+            Ext.fly(node).removeCls(this.selectedItemCls);
+        }
     },
 
     getItemSelector: function() {
@@ -808,19 +880,19 @@ Ext.define('Ext.view.AbstractView', {
     Ext.deprecate('extjs', '4.0', function() {
         Ext.view.AbstractView.override({
             /**
-             * @cfg {Boolean} multiSelect
+             * @cfg {Boolean} [multiSelect=false]
              * True to allow selection of more than one item at a time, false to allow selection of only a single item
-             * at a time or no selection at all, depending on the value of {@link #singleSelect} (defaults to false).
+             * at a time or no selection at all, depending on the value of {@link #singleSelect}.
              */
             /**
-             * @cfg {Boolean} singleSelect
-             * True to allow selection of exactly one item at a time, false to allow no selection at all (defaults to false).
+             * @cfg {Boolean} [singleSelect=false]
+             * True to allow selection of exactly one item at a time, false to allow no selection at all.
              * Note that if {@link #multiSelect} = true, this value will be ignored.
              */
             /**
-             * @cfg {Boolean} simpleSelect
+             * @cfg {Boolean} [simpleSelect=false]
              * True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl,
-             * false to force the user to hold Ctrl or Shift to select more than on item (defaults to false).
+             * false to force the user to hold Ctrl or Shift to select more than on item.
              */
 
             /**
@@ -836,7 +908,7 @@ Ext.define('Ext.view.AbstractView', {
 
             /**
              * Gets an array of the selected records
-             * @return {Array} An array of {@link Ext.data.Model} objects
+             * @return {Ext.data.Model[]} An array of {@link Ext.data.Model} objects
              */
             getSelectedRecords : function(){
                 if (Ext.global.console) {

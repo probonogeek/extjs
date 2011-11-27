@@ -22,7 +22,7 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
     /* Begin Definitions */
 
     extend: 'Ext.layout.container.boxOverflow.None',
-    requires: ['Ext.util.ClickRepeater', 'Ext.core.Element'],
+    requires: ['Ext.util.ClickRepeater', 'Ext.Element'],
     alternateClassName: 'Ext.layout.boxOverflow.Scroller',
     mixins: {
         observable: 'Ext.util.Observable'
@@ -32,31 +32,31 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
 
     /**
      * @cfg {Boolean} animateScroll
-     * True to animate the scrolling of items within the layout (defaults to true, ignored if enableScroll is false)
+     * True to animate the scrolling of items within the layout (ignored if enableScroll is false)
      */
     animateScroll: false,
 
     /**
      * @cfg {Number} scrollIncrement
-     * The number of pixels to scroll by on scroller click (defaults to 24)
+     * The number of pixels to scroll by on scroller click
      */
     scrollIncrement: 20,
 
     /**
      * @cfg {Number} wheelIncrement
-     * The number of pixels to increment on mouse wheel scrolling (defaults to <tt>3</tt>).
+     * The number of pixels to increment on mouse wheel scrolling.
      */
     wheelIncrement: 10,
 
     /**
      * @cfg {Number} scrollRepeatInterval
-     * Number of milliseconds between each scroll while a scroller button is held down (defaults to 20)
+     * Number of milliseconds between each scroll while a scroller button is held down
      */
     scrollRepeatInterval: 60,
 
     /**
      * @cfg {Number} scrollDuration
-     * Number of milliseconds that each scroll animation lasts (defaults to 400)
+     * Number of milliseconds that each scroll animation lasts
      */
     scrollDuration: 400,
 
@@ -73,7 +73,7 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
      */
 
     /**
-     * @cfg {String} scrollerCls
+     * @cfg {String} [scrollerCls='x-box-scroller']
      * CSS class added to both scroller elements if enableScroll is used
      */
     scrollerCls: Ext.baseCSSPrefix + 'box-scroller',
@@ -215,8 +215,8 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
             before.addClsOnOver(this.beforeScrollerCls + '-hover');
             after.addClsOnOver(this.afterScrollerCls + '-hover');
 
-            before.setVisibilityMode(Ext.core.Element.DISPLAY);
-            after.setVisibilityMode(Ext.core.Element.DISPLAY);
+            before.setVisibilityMode(Ext.Element.DISPLAY);
+            after.setVisibilityMode(Ext.Element.DISPLAY);
 
             this.beforeRepeater = Ext.create('Ext.util.ClickRepeater', before, {
                 interval: this.scrollRepeatInterval,
@@ -232,14 +232,14 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
 
             /**
              * @property beforeScroller
-             * @type Ext.core.Element
+             * @type Ext.Element
              * The left scroller element. Only created when needed.
              */
             this.beforeScroller = before;
 
             /**
              * @property afterScroller
-             * @type Ext.core.Element
+             * @type Ext.Element
              * The left scroller element. Only created when needed.
              */
             this.afterScroller = after;
@@ -377,7 +377,7 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
 
     /**
      * Scrolls to the given component.
-     * @param {String|Number|Ext.Component} item The item to scroll to. Can be a numerical index, component id 
+     * @param {String/Number/Ext.Component} item The item to scroll to. Can be a numerical index, component id 
      * or a reference to the component itself.
      * @param {Boolean} animate True to animate the scrolling
      */

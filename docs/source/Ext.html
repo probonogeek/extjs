@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -44,7 +44,7 @@
 
 <span id='Ext-property-enumerables'>    /**
 </span>     * An array containing extra enumerables for old browsers
-     * @type Array
+     * @property {String[]}
      */
     Ext.enumerables = enumerables;
 
@@ -263,10 +263,10 @@
 </span>         * Returns the given value itself if it's not empty, as described in {@link Ext#isEmpty}; returns the default
          * value (second argument) otherwise.
          *
-         * @param {Mixed} value The value to test
-         * @param {Mixed} defaultValue The value to return if the original value is empty
+         * @param {Object} value The value to test
+         * @param {Object} defaultValue The value to return if the original value is empty
          * @param {Boolean} allowBlank (optional) true to allow zero length strings to qualify as non-empty (defaults to false)
-         * @return {Mixed} value, if non-empty, else defaultValue
+         * @return {Object} value, if non-empty, else defaultValue
          */
         valueFrom: function(value, defaultValue, allowBlank){
             return Ext.isEmpty(value, allowBlank) ? defaultValue : value;
@@ -289,7 +289,7 @@
          * - `textnode`: If the given value is a DOM text node and contains something other than whitespace
          * - `whitespace`: If the given value is a DOM text node and contains only whitespace
          *
-         * @param {Mixed} value
+         * @param {Object} value
          * @return {String}
          * @markdown
          */
@@ -353,7 +353,7 @@
          * - a zero-length array
          * - a zero-length string (Unless the `allowEmptyString` parameter is set to `true`)
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @param {Boolean} allowEmptyString (optional) true to allow empty strings (defaults to false)
          * @return {Boolean}
          * @markdown
@@ -365,7 +365,7 @@
 <span id='Ext-method-isArray'>        /**
 </span>         * Returns true if the passed value is a JavaScript Array, false otherwise.
          *
-         * @param {Mixed} target The target to test
+         * @param {Object} target The target to test
          * @return {Boolean}
          * @method
          */
@@ -384,7 +384,7 @@
 
 <span id='Ext-method-isObject'>        /**
 </span>         * Returns true if the passed value is a JavaScript Object, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          * @method
          */
@@ -399,7 +399,7 @@
 
 <span id='Ext-method-isPrimitive'>        /**
 </span>         * Returns true if the passed value is a JavaScript 'primitive', a string, number or boolean.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isPrimitive: function(value) {
@@ -410,7 +410,7 @@
 
 <span id='Ext-method-isFunction'>        /**
 </span>         * Returns true if the passed value is a JavaScript Function, false otherwise.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          * @method
          */
@@ -425,7 +425,7 @@
 
 <span id='Ext-method-isNumber'>        /**
 </span>         * Returns true if the passed value is a number. Returns false for non-finite numbers.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isNumber: function(value) {
@@ -434,7 +434,7 @@
 
 <span id='Ext-method-isNumeric'>        /**
 </span>         * Validates that a value is numeric.
-         * @param {Mixed} value Examples: 1, '1', '2.34'
+         * @param {Object} value Examples: 1, '1', '2.34'
          * @return {Boolean} True if numeric, false otherwise
          */
         isNumeric: function(value) {
@@ -443,7 +443,7 @@
 
 <span id='Ext-method-isString'>        /**
 </span>         * Returns true if the passed value is a string.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isString: function(value) {
@@ -453,7 +453,7 @@
 <span id='Ext-method-isBoolean'>        /**
 </span>         * Returns true if the passed value is a boolean.
          *
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isBoolean: function(value) {
@@ -462,7 +462,7 @@
 
 <span id='Ext-method-isElement'>        /**
 </span>         * Returns true if the passed value is an HTMLElement
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isElement: function(value) {
@@ -471,7 +471,7 @@
 
 <span id='Ext-method-isTextNode'>        /**
 </span>         * Returns true if the passed value is a TextNode
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isTextNode: function(value) {
@@ -480,7 +480,7 @@
 
 <span id='Ext-method-isDefined'>        /**
 </span>         * Returns true if the passed value is defined.
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isDefined: function(value) {
@@ -489,7 +489,7 @@
 
 <span id='Ext-method-isIterable'>        /**
 </span>         * Returns true if the passed value is iterable, false otherwise
-         * @param {Mixed} value The value to test
+         * @param {Object} value The value to test
          * @return {Boolean}
          */
         isIterable: function(value) {
@@ -501,8 +501,8 @@
 
 <span id='Ext-method-clone'>        /**
 </span>         * Clone almost any type of variable including array, object, DOM nodes and Date without keeping the old reference
-         * @param {Mixed} item The variable to clone
-         * @return {Mixed} clone
+         * @param {Object} item The variable to clone
+         * @return {Object} clone
          */
         clone: function(item) {
             if (item === null || item === undefined) {

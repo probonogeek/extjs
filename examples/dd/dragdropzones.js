@@ -123,15 +123,19 @@ Ext.onReady(function() {
         width: 920,
         height: 500,
         closeAction: 'hide',
-        renderTpl: [
-            '<textarea readonly class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl><tpl if="frame"> {baseCls}-body-framed</tpl><tpl if="ui"> {baseCls}-body-{ui}</tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>></div>'
+        layout: 'fit',
+        items: [
+            {
+                xtype: 'textarea',
+                itemId: 'srcTextArea'
+            }
         ],
         listeners: {
             render: function(w) {
                 Ext.Ajax.request({
                     url: 'dragdropzones.js',
                     success: function(r) {
-                        w.body.dom.value = r.responseText;
+                        w.down('#srcTextArea').setValue(r.responseText);
                     }
                 });
             }

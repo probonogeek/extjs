@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -20,18 +20,18 @@
  * A base class for all Ext.direct events. An event is
  * created after some kind of interaction with the server.
  * The event class is essentially just a data structure
- * to hold a direct response.
+ * to hold a Direct response.
  */
 Ext.define('Ext.direct.Event', {
-    
+
     /* Begin Definitions */
-   
+
     alias: 'direct.event',
-    
+
     requires: ['Ext.direct.Manager'],
-    
+
     /* End Definitions */
-   
+
     status: true,
 
 <span id='Ext-direct-Event-method-constructor'>    /**
@@ -41,7 +41,7 @@ Ext.define('Ext.direct.Event', {
     constructor: function(config) {
         Ext.apply(this, config);
     },
-    
+
 <span id='Ext-direct-Event-method-getData'>    /**
 </span>     * Return the raw data for this event.
      * @return {Object} The data from the event

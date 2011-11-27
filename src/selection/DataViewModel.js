@@ -26,7 +26,7 @@ Ext.define('Ext.selection.DataViewModel', {
     /**
      * @cfg {Boolean} enableKeyNav
      *
-     * Turns on/off keyboard navigation within the DataView. Defaults to true.
+     * Turns on/off keyboard navigation within the DataView.
      */
     enableKeyNav: true,
 
@@ -161,6 +161,11 @@ Ext.define('Ext.selection.DataViewModel', {
                 me.fireEvent(eventName, me, record);
             }
         }
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.keyNav);
+        this.callParent();
     }
 });
 

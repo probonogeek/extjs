@@ -51,7 +51,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  *     drawComponent.surface.on({
  *        'mousemove': function() {
- *             console.log('moving the mouse over the surface');   
+ *             console.log('moving the mouse over the surface');
  *         }
  *     });
  *
@@ -62,7 +62,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         height: 600,
  *         renderTo: document.body
  *     }), surface = drawComponent.surface;
- *   
+ *
  *     surface.add([{
  *         type: 'circle',
  *         radius: 10,
@@ -109,7 +109,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         y: 100,
  *         group: 'rectangles'
  *     }]);
- *   
+ *
  *     // Get references to my groups
  *     circles = surface.getGroup('circles');
  *     rectangles = surface.getGroup('rectangles');
@@ -123,7 +123,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             }
  *         }
  *     });
- *   
+ *
  *     // Animate the rectangles across
  *     rectangles.animate({
  *         duration: 1000,
@@ -151,7 +151,7 @@ Ext.define('Ext.draw.Surface', {
         /**
          * Creates and returns a new concrete Surface instance appropriate for the current environment.
          * @param {Object} config Initial configuration for the Surface instance
-         * @param {[String]} enginePriority Optional order of implementations to use; the first one that is
+         * @param {String[]} enginePriority (Optional) order of implementations to use; the first one that is
          * available in the current environment will be used. Defaults to `['Svg', 'Vml']`.
          * @return {Object} The created Surface or false.
          * @static
@@ -220,12 +220,10 @@ Ext.define('Ext.draw.Surface', {
     /**
      * @cfg {Number} height
      * The height of this component in pixels (defaults to auto).
-     * **Note** to express this dimension as a percentage or offset see {@link Ext.Component#anchor}.
      */
     /**
      * @cfg {Number} width
      * The width of this component in pixels (defaults to auto).
-     * **Note** to express this dimension as a percentage or offset see {@link Ext.Component#anchor}.
      */
 
     container: undefined,
@@ -233,6 +231,13 @@ Ext.define('Ext.draw.Surface', {
     width: 512,
     x: 0,
     y: 0,
+
+    /**
+     * @private Flag indicating that the surface implementation requires sprites to be maintained
+     * in order of their zIndex. Impls that don't require this can set it to false.
+     */
+    orderSpritesByZIndex: true,
+
 
     /**
      * Creates new Surface.
@@ -244,7 +249,7 @@ Ext.define('Ext.draw.Surface', {
         Ext.apply(me, config);
 
         me.domRef = Ext.getDoc().dom;
-        
+
         me.customAttributes = {};
 
         me.addEvents(
@@ -282,7 +287,12 @@ Ext.define('Ext.draw.Surface', {
     renderItems: Ext.emptyFn,
 
     // @private
-    setViewBox: Ext.emptyFn,
+    setViewBox: function (x, y, width, height) {
+        if (isFinite(x) && isFinite(y) && isFinite(width) && isFinite(height)) {
+            this.viewBox = {x: x, y: y, width: width, height: height};
+            this.applyViewBox();
+        }
+    },
 
     /**
      * Adds one or more CSS classes to the element. Duplicate classes are automatically filtered out.
@@ -292,7 +302,7 @@ Ext.define('Ext.draw.Surface', {
      *     drawComponent.surface.addCls(sprite, 'x-visible');
      *
      * @param {Object} sprite The sprite to add the class to.
-     * @param {String/[String]} className The CSS class to add, or an array of classes
+     * @param {String/String[]} className The CSS class to add, or an array of classes
      * @method
      */
     addCls: Ext.emptyFn,
@@ -305,7 +315,7 @@ Ext.define('Ext.draw.Surface', {
      *     drawComponent.surface.removeCls(sprite, 'x-visible');
      *
      * @param {Object} sprite The sprite to remove the class from.
-     * @param {String/[String]} className The CSS class to remove, or an array of classes
+     * @param {String/String[]} className The CSS class to remove, or an array of classes
      * @method
      */
     removeCls: Ext.emptyFn,
@@ -342,7 +352,7 @@ Ext.define('Ext.draw.Surface', {
             this.add(items);
         }
     },
-    
+
     // @private
     initBackground: function(config) {
         var me = this,
@@ -383,7 +393,7 @@ Ext.define('Ext.draw.Surface', {
             }
         }
     },
-    
+
     /**
      * Sets the size of the surface. Accomodates the background (if any) to fit the new size too.
      *
@@ -392,7 +402,7 @@ Ext.define('Ext.draw.Surface', {
      *     drawComponent.surface.setSize(500, 500);
      *
      * This method is generally called when also setting the size of the draw Component.
-     * 
+     *
      * @param {Number} w The new width of the canvas.
      * @param {Number} h The new height of the canvas.
      */
@@ -404,6 +414,7 @@ Ext.define('Ext.draw.Surface', {
                 hidden: false
             }, true);
         }
+        this.applyViewBox();
     },
 
     // @private
@@ -412,7 +423,7 @@ Ext.define('Ext.draw.Surface', {
             attrs = {},
             exclude = {},
             sattr = sprite.attr;
-        for (i in sattr) {    
+        for (i in sattr) {
             // Narrow down attributes to the main set
             if (this.translateAttrs.hasOwnProperty(i)) {
                 // Translated attr
@@ -472,7 +483,7 @@ Ext.define('Ext.draw.Surface', {
      * configuration object please refer to {@link Ext.chart.Chart}.
      *
      * The gradient object to be passed into this method is composed by:
-     * 
+     *
      * - **id** - string - The unique name of the gradient.
      * - **angle** - number, optional - The angle of the gradient in degrees.
      * - **stops** - object - An object with numbers as keys (from 0 to 100) and style objects as values.
@@ -531,38 +542,53 @@ Ext.define('Ext.draw.Surface', {
             return results;
         }
         sprite = this.prepareItems(args[0], true)[0];
-        this.normalizeSpriteCollection(sprite);
+        this.insertByZIndex(sprite);
         this.onAdd(sprite);
         return sprite;
     },
 
     /**
      * @private
-     * Inserts or moves a given sprite into the correct position in the items
-     * MixedCollection, according to its zIndex. Will be inserted at the end of
-     * an existing series of sprites with the same or lower zIndex. If the sprite
-     * is already positioned within an appropriate zIndex group, it will not be moved.
-     * This ordering can be used by subclasses to assist in rendering the sprites in
-     * the correct order for proper z-index stacking.
+     * Inserts a given sprite into the correct position in the items collection, according to
+     * its zIndex. It will be inserted at the end of an existing series of sprites with the same or
+     * lower zIndex. By ensuring sprites are always ordered, this allows surface subclasses to render
+     * the sprites in the correct order for proper z-index stacking.
      * @param {Ext.draw.Sprite} sprite
      * @return {Number} the sprite's new index in the list
      */
-    normalizeSpriteCollection: function(sprite) {
-        var items = this.items,
+    insertByZIndex: function(sprite) {
+        var me = this,
+            sprites = me.items.items,
+            len = sprites.length,
+            ceil = Math.ceil,
             zIndex = sprite.attr.zIndex,
-            idx = items.indexOf(sprite);
+            idx = len,
+            high = idx - 1,
+            low = 0,
+            otherZIndex;
 
-        if (idx < 0 || (idx > 0 && items.getAt(idx - 1).attr.zIndex > zIndex) ||
-                (idx < items.length - 1 && items.getAt(idx + 1).attr.zIndex < zIndex)) {
-            items.removeAt(idx);
-            idx = items.findIndexBy(function(otherSprite) {
-                return otherSprite.attr.zIndex > zIndex;
-            });
-            if (idx < 0) {
-                idx = items.length;
+        if (me.orderSpritesByZIndex && len && zIndex < sprites[high].attr.zIndex) {
+            // Find the target index via a binary search for speed
+            while (low <= high) {
+                idx = ceil((low + high) / 2);
+                otherZIndex = sprites[idx].attr.zIndex;
+                if (otherZIndex > zIndex) {
+                    high = idx - 1;
+                }
+                else if (otherZIndex < zIndex) {
+                    low = idx + 1;
+                }
+                else {
+                    break;
+                }
             }
-            items.insert(idx, sprite);
+            // Step forward to the end of a sequence of the same or lower z-index
+            while (idx < len && sprites[idx].attr.zIndex <= zIndex) {
+                idx++;
+            }
         }
+
+        me.items.insert(idx, sprite);
         return idx;
     },
 
@@ -633,6 +659,52 @@ Ext.define('Ext.draw.Surface', {
     onRemove: Ext.emptyFn,
 
     onDestroy: Ext.emptyFn,
+
+    /**
+     * @private Using the current viewBox property and the surface's width and height, calculate the
+     * appropriate viewBoxShift that will be applied as a persistent transform to all sprites.
+     */
+    applyViewBox: function() {
+        var me = this,
+            viewBox = me.viewBox,
+            width = me.width,
+            height = me.height,
+            viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight,
+            relativeHeight, relativeWidth, size;
+
+        if (viewBox && (width || height)) {
+            viewBoxX = viewBox.x;
+            viewBoxY = viewBox.y;
+            viewBoxWidth = viewBox.width;
+            viewBoxHeight = viewBox.height;
+            relativeHeight = height / viewBoxHeight;
+            relativeWidth = width / viewBoxWidth;
+
+            if (viewBoxWidth * relativeHeight < width) {
+                viewBoxX -= (width - viewBoxWidth * relativeHeight) / 2 / relativeHeight;
+            }
+            if (viewBoxHeight * relativeWidth < height) {
+                viewBoxY -= (height - viewBoxHeight * relativeWidth) / 2 / relativeWidth;
+            }
+
+            size = 1 / Math.min(viewBoxWidth, relativeHeight);
+
+            me.viewBoxShift = {
+                dx: -viewBoxX,
+                dy: -viewBoxY,
+                scale: size
+            };
+        }
+    },
+
+    transformToViewBox: function (x, y) {
+        if (this.viewBoxShift) {
+            var me = this, shift = me.viewBoxShift;
+            return [x * shift.scale - shift.dx, y * shift.scale - shift.dy];
+        } else {
+            return [x, y];
+        }
+    },
 
     // @private
     applyTransformations: function(sprite) {
@@ -819,7 +891,7 @@ Ext.define('Ext.draw.Surface', {
         }
         return items;
     },
-    
+
     /**
      * Changes the text in the sprite element. The sprite must be a `text` sprite.
      * This method can also be called from {@link Ext.draw.Sprite}.
@@ -833,7 +905,7 @@ Ext.define('Ext.draw.Surface', {
      * @method
      */
     setText: Ext.emptyFn,
-    
+
     //@private Creates an item and appends it to the surface. Called
     //as an internal method when calling `add`.
     createItem: Ext.emptyFn,

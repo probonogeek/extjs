@@ -59,7 +59,7 @@ Ext.define('Ext.tree.Column', {
                                 record.get('checked') ? 'aria-checked="true"' : ''
                             ));
                             if (record.get('checked')) {
-                                metaData.tdCls += (' ' + Ext.baseCSSPrefix + 'tree-checked');
+                                metaData.tdCls += (' ' + treePrefix + 'checked');
                             }
                         }
                         if (record.isLast()) {
@@ -87,12 +87,14 @@ Ext.define('Ext.tree.Column', {
                 record = record.parentNode;
             }
             if (href) {
-                formattedValue = format('<a href="{0}" target="{1}">{2}</a>', href, target, formattedValue);
+                buf.push('<a href="', href, '" target="', target, '">', formattedValue, '</a>');
+            } else {
+                buf.push(formattedValue);
             }
             if (cls) {
                 metaData.tdCls += ' ' + cls;
             }
-            return buf.join("") + formattedValue;
+            return buf.join('');
         };
         this.callParent(arguments);
     },

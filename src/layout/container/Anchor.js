@@ -18,43 +18,45 @@ If you are unsure which license is appropriate for your use, please contact the 
  * 
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
- * <b><tt>{@link #anchor}</tt></b> rules.
+ * `{@link #anchor}` rules.
  *
- * This class is intended to be extended or created via the layout: 'anchor' {@link Ext.layout.container.AbstractContainer#layout}
- * config, and should generally not need to be created directly via the new keyword.</p>
+ * This class is intended to be extended or created via the {@link Ext.container.AbstractContainer#layout layout}: 'anchor' 
+ * config, and should generally not need to be created directly via the new keyword.
  * 
  * AnchorLayout does not have any direct config options (other than inherited ones). By default,
  * AnchorLayout will calculate anchor measurements based on the size of the container itself. However, the
- * container using the AnchorLayout can supply an anchoring-specific config property of <b>anchorSize</b>.
+ * container using the AnchorLayout can supply an anchoring-specific config property of `anchorSize`.
+ *
  * If anchorSize is specifed, the layout will use it as a virtual container for the purposes of calculating
  * anchor measurements based on it instead, allowing the container to be sized independently of the anchoring
  * logic if necessary.  
  *
- * {@img Ext.layout.container.Anchor/Ext.layout.container.Anchor.png Ext.layout.container.Anchor container layout}
- *
- * For example:
+ *     @example
  *     Ext.create('Ext.Panel', {
  *         width: 500,
  *         height: 400,
  *         title: "AnchorLayout Panel",
  *         layout: 'anchor',
  *         renderTo: Ext.getBody(),
- *         items: [{
- *             xtype: 'panel',
- *             title: '75% Width and 20% Height',
- *             anchor: '75% 20%'
- *         },{
- *             xtype: 'panel',
- *             title: 'Offset -300 Width & -200 Height',
- *             anchor: '-300 -200'		
- *         },{
- *             xtype: 'panel',
- *             title: 'Mixed Offset and Percent',
- *             anchor: '-250 20%'
- *         }]
+ *         items: [
+ *             {
+ *                 xtype: 'panel',
+ *                 title: '75% Width and 20% Height',
+ *                 anchor: '75% 20%'
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Offset -300 Width & -200 Height',
+ *                 anchor: '-300 -200'		
+ *             },
+ *             {
+ *                 xtype: 'panel',
+ *                 title: 'Mixed Offset and Percent',
+ *                 anchor: '-250 20%'
+ *             }
+ *         ]
  *     });
  */
-
 Ext.define('Ext.layout.container.Anchor', {
 
     /* Begin Definitions */
@@ -67,52 +69,51 @@ Ext.define('Ext.layout.container.Anchor', {
 
     /**
      * @cfg {String} anchor
-     * <p>This configuation option is to be applied to <b>child <tt>items</tt></b> of a container managed by
-     * this layout (ie. configured with <tt>layout:'anchor'</tt>).</p><br/>
      *
-     * <p>This value is what tells the layout how an item should be anchored to the container. <tt>items</tt>
-     * added to an AnchorLayout accept an anchoring-specific config property of <b>anchor</b> which is a string
+     * This configuation option is to be applied to **child `items`** of a container managed by
+     * this layout (ie. configured with `layout:'anchor'`).
+     *
+     * This value is what tells the layout how an item should be anchored to the container. `items`
+     * added to an AnchorLayout accept an anchoring-specific config property of **anchor** which is a string
      * containing two values: the horizontal anchor value and the vertical anchor value (for example, '100% 50%').
-     * The following types of anchor values are supported:<div class="mdetail-params"><ul>
+     * The following types of anchor values are supported:
      *
-     * <li><b>Percentage</b> : Any value between 1 and 100, expressed as a percentage.<div class="sub-desc">
-     * The first anchor is the percentage width that the item should take up within the container, and the
-     * second is the percentage height.  For example:<pre><code>
-// two values specified
-anchor: '100% 50%' // render item complete width of the container and
-                   // 1/2 height of the container
-// one value specified
-anchor: '100%'     // the width value; the height will default to auto
-     * </code></pre></div></li>
+     * - **Percentage** : Any value between 1 and 100, expressed as a percentage.
      *
-     * <li><b>Offsets</b> : Any positive or negative integer value.<div class="sub-desc">
-     * This is a raw adjustment where the first anchor is the offset from the right edge of the container,
-     * and the second is the offset from the bottom edge. For example:<pre><code>
-// two values specified
-anchor: '-50 -100' // render item the complete width of the container
-                   // minus 50 pixels and
-                   // the complete height minus 100 pixels.
-// one value specified
-anchor: '-50'      // anchor value is assumed to be the right offset value
-                   // bottom offset will default to 0
-     * </code></pre></div></li>
+     *   The first anchor is the percentage width that the item should take up within the container, and the
+     *   second is the percentage height.  For example:
      *
-     * <li><b>Sides</b> : Valid values are <tt>'right'</tt> (or <tt>'r'</tt>) and <tt>'bottom'</tt>
-     * (or <tt>'b'</tt>).<div class="sub-desc">
-     * Either the container must have a fixed size or an anchorSize config value defined at render time in
-     * order for these to have any effect.</div></li>
+     *       // two values specified
+     *       anchor: '100% 50%' // render item complete width of the container and
+     *                          // 1/2 height of the container
+     *       // one value specified
+     *       anchor: '100%'     // the width value; the height will default to auto
      *
-     * <li><b>Mixed</b> : <div class="sub-desc">
-     * Anchor values can also be mixed as needed.  For example, to render the width offset from the container
-     * right edge by 50 pixels and 75% of the container's height use:
-     * <pre><code>
-anchor: '-50 75%'
-     * </code></pre></div></li>
+     * - **Offsets** : Any positive or negative integer value.
      *
+     *   This is a raw adjustment where the first anchor is the offset from the right edge of the container,
+     *   and the second is the offset from the bottom edge. For example:
      *
-     * </ul></div>
+     *       // two values specified
+     *       anchor: '-50 -100' // render item the complete width of the container
+     *                          // minus 50 pixels and
+     *                          // the complete height minus 100 pixels.
+     *       // one value specified
+     *       anchor: '-50'      // anchor value is assumed to be the right offset value
+     *                          // bottom offset will default to 0
+     *
+     * - **Sides** : Valid values are `right` (or `r`) and `bottom` (or `b`).
+     *
+     *   Either the container must have a fixed size or an anchorSize config value defined at render time in
+     *   order for these to have any effect.
+     *   
+     * - **Mixed** :
+     *
+     *   Anchor values can also be mixed as needed.  For example, to render the width offset from the container
+     *   right edge by 50 pixels and 75% of the container's height use:
+     *   
+     *       anchor:   '-50 75%'
      */
-
     type: 'anchor',
 
     /**
@@ -156,7 +157,7 @@ anchor: '-50 75%'
 
         // Work around WebKit RightMargin bug. We're going to inline-block all the children only ONCE and remove it when we're done
         if (!Ext.supports.RightMargin) {
-            cleaner = Ext.core.Element.getRightMarginFixCleaner(target);
+            cleaner = Ext.Element.getRightMarginFixCleaner(target);
             target.addCls(Ext.baseCSSPrefix + 'inline-children');
         }
 

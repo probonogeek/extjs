@@ -14,8 +14,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @class Ext.app.PortalPanel
- * @extends Ext.Panel
- * A {@link Ext.Panel Panel} class used for providing drag-drop-enabled portal layouts.
+ * @extends Ext.panel.Panel
+ * A {@link Ext.panel.Panel Panel} class used for providing drag-drop-enabled portal layouts.
  */
 Ext.define('Ext.app.PortalPanel', {
     extend: 'Ext.panel.Panel',

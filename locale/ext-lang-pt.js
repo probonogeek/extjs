@@ -159,9 +159,11 @@ if(Ext.form.field.Date){
 
 if(Ext.form.field.ComboBox){
    Ext.apply(Ext.form.field.ComboBox.prototype, {
-      loadingText       : "Carregando...",
       valueNotFoundText : undefined
    });
+    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+        loadingText       : "Carregando..."
+    });
 }
 
 if(Ext.form.field.VTypes){

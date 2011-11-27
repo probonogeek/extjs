@@ -31,7 +31,7 @@ Ext.define('Ext.ux.desktop.Video', {
     extend: 'Ext.panel.Panel',
 
     alias: 'widget.video',
-
+    layout: 'fit',
     width: '100%',
     height: '100%',
     autoplay: false,
@@ -61,7 +61,7 @@ Ext.define('Ext.ux.desktop.Video', {
 
                 if (Ext.isIE) {
                     fallback += ', ' + chrome +
-                        ' or <a href="http://www.google.com/chromeframe">Chrome Frame for IE</a>.';
+                        ' or <a href="http://www.apple.com/safari/">Safari</a>.';
                 } else {
                     fallback += ' or ' + chrome + '.';
                 }

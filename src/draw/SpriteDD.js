@@ -42,7 +42,7 @@ Ext.define('Ext.draw.SpriteDD', {
         bbox = sprite.getBBox();
         
         try {
-            pos = Ext.core.Element.getXY(el);
+            pos = Ext.Element.getXY(el);
         } catch (e) { }
 
         if (!pos) {
@@ -70,33 +70,29 @@ Ext.define('Ext.draw.SpriteDD', {
      
     startDrag: function(x, y) {
         var me = this,
-            attr = me.sprite.attr,
-            trans = attr.translation;
-        if (me.sprite.vml) {
-            me.prevX = x + attr.x;
-            me.prevY = y + attr.y;
-        } else {
-            me.prevX = x - trans.x;
-            me.prevY = y - trans.y;
-        }
+            attr = me.sprite.attr;
+        me.prev = me.sprite.surface.transformToViewBox(x, y);
     },
 
     onDrag: function(e) {
         var xy = e.getXY(),
             me = this,
             sprite = me.sprite,
-            attr = sprite.attr;
-        me.translateX = xy[0] - me.prevX;
-        me.translateY = xy[1] - me.prevY;
+            attr = sprite.attr, dx, dy;
+        xy = me.sprite.surface.transformToViewBox(xy[0], xy[1]);
+        dx = xy[0] - me.prev[0];
+        dy = xy[1] - me.prev[1];
         sprite.setAttributes({
             translate: {
-                x: me.translateX,
-                y: me.translateY
+                x: attr.translation.x + dx,
+                y: attr.translation.y + dy
             }
         }, true);
-        if (sprite.vml) {
-            me.prevX = xy[0] + attr.x || 0;
-            me.prevY = xy[1] + attr.y || 0;
-        }
+        me.prev = xy;
+    },
+
+    setDragElPos: function () {
+        // Disable automatic DOM move in DD that spoils layout of VML engine.
+        return false;
     }
 });

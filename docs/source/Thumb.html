@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -20,30 +20,31 @@
  * @extends Ext.Base
  * @private
  * Represents a single thumb element on a Slider. This would not usually be created manually and would instead
- * be created internally by an {@link Ext.slider.Multi Ext.Slider}.
+ * be created internally by an {@link Ext.slider.Multi Multi slider}.
  */
 Ext.define('Ext.slider.Thumb', {
     requires: ['Ext.dd.DragTracker', 'Ext.util.Format'],
 <span id='Ext-slider-Thumb-property-topThumbZIndex'>    /**
 </span>     * @private
-     * @property topThumbZIndex
-     * @type Number
+     * @property {Number} topThumbZIndex
      * The number used internally to set the z index of the top thumb (see promoteThumb for details)
      */
     topZIndex: 10000,
+
 <span id='Ext-slider-Thumb-cfg-slider'>    /**
-</span>     * @cfg {Ext.slider.MultiSlider} slider The Slider to render to (required)
+</span>     * @cfg {Ext.slider.MultiSlider} slider (required)
+     * The Slider to render to.
      */
+
 <span id='Ext-slider-Thumb-method-constructor'>    /**
 </span>     * Creates new slider thumb.
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
         var me = this;
-        
+
 <span id='Ext-slider-Thumb-property-slider'>        /**
-</span>         * @property slider
-         * @type Ext.slider.MultiSlider
+</span>         * @property {Ext.slider.MultiSlider} slider
          * The slider this thumb is contained within
          */
         Ext.apply(me, config || {}, {
@@ -66,14 +67,14 @@ Ext.define('Ext.slider.Thumb', {
      */
     render: function() {
         var me = this;
-        
+
         me.el = me.slider.innerEl.insertFirst({cls: me.cls});
         if (me.disabled) {
             me.disable();
         }
         me.initEvents();
     },
-    
+
 <span id='Ext-slider-Thumb-method-move'>    /**
 </span>     * @private
      * move the thumb
@@ -99,7 +100,7 @@ Ext.define('Ext.slider.Thumb', {
     bringToFront: function() {
         this.el.setStyle('zIndex', this.topZIndex);
     },
-    
+
 <span id='Ext-slider-Thumb-method-sendToBack'>    /**
 </span>     * @private
      * Send thumb dom element to back.
@@ -107,13 +108,13 @@ Ext.define('Ext.slider.Thumb', {
     sendToBack: function() {
         this.el.setStyle('zIndex', '');
     },
-    
+
 <span id='Ext-slider-Thumb-method-enable'>    /**
 </span>     * Enables the thumb if it is currently disabled
      */
     enable: function() {
         var me = this;
-        
+
         me.disabled = false;
         if (me.el) {
             me.el.removeCls(me.slider.disabledCls);
@@ -125,7 +126,7 @@ Ext.define('Ext.slider.Thumb', {
      */
     disable: function() {
         var me = this;
-        
+
         me.disabled = true;
         if (me.el) {
             me.el.addCls(me.slider.disabledCls);
@@ -174,7 +175,7 @@ Ext.define('Ext.slider.Thumb', {
      */
     onDragStart: function(e){
         var me = this;
-        
+
         me.el.addCls(Ext.baseCSSPrefix + 'slider-thumb-drag');
         me.dragging = true;
         me.dragStartValue = me.value;
@@ -202,7 +203,7 @@ Ext.define('Ext.slider.Thumb', {
             if (below !== undefined &amp;&amp; newValue &lt;= below.value) {
                 newValue = below.value;
             }
-            
+
             if (above !== undefined &amp;&amp; newValue &gt;= above.value) {
                 newValue = above.value;
             }

@@ -53,6 +53,10 @@
                 },
                 {
                     "path": "../../../platform/src/data/",
+                    "name": "IdGenerator.js"
+                },
+                {
+                    "path": "../../../platform/src/data/",
                     "name": "Operation.js"
                 },
                 {
@@ -148,10 +152,6 @@
                     "name": "Proxy.js"
                 },
                 {
-                    "path": "../../../platform/src/",
-                    "name": "PluginManager.js"
-                },
-                {
                     "path": "../../../platform/src/layout/",
                     "name": "Layout.js"
                 },
@@ -170,10 +170,6 @@
                 {
                     "path": "../../src/dd/",
                     "name": "StatusProxy.js"
-                },
-                {
-                    "path": "../../../platform/src/",
-                    "name": "ElementLoader.js"
                 },
                 {
                     "path": "../../../platform/src/fx/target/",
@@ -366,14 +362,6 @@
                 {
                     "path": "../../src/layout/component/",
                     "name": "Dock.js"
-                },
-                {
-                    "path": "../../../platform/src/",
-                    "name": "LoadMask.js"
-                },
-                {
-                    "path": "../../../platform/src/",
-                    "name": "ComponentLoader.js"
                 },
                 {
                     "path": "../../../platform/src/layout/component/",
@@ -676,6 +664,10 @@
                     "name": "TreeStore.js"
                 },
                 {
+                    "path": "../../src/",
+                    "name": "LoadMask.js"
+                },
+                {
                     "path": "../../../platform/src/selection/",
                     "name": "DataViewModel.js"
                 },
@@ -860,6 +852,10 @@
                     "name": "Video.js"
                 },
                 {
+                    "path": "../../../platform/src/",
+                    "name": "PluginManager.js"
+                },
+                {
                     "path": "../../src/resizer/",
                     "name": "Resizer.js"
                 },
@@ -924,6 +920,10 @@
                     "name": "Matrix.js"
                 },
                 {
+                    "path": "../../../platform/src/",
+                    "name": "ElementLoader.js"
+                },
+                {
                     "path": "../../../platform/src/data/proxy/",
                     "name": "Client.js"
                 },
@@ -962,6 +962,10 @@
                 {
                     "path": "../../src/dd/",
                     "name": "ScrollManager.js"
+                },
+                {
+                    "path": "../../../platform/src/",
+                    "name": "ComponentLoader.js"
                 },
                 {
                     "path": "../../src/menu/",

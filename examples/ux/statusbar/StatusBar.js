@@ -335,7 +335,7 @@ statusBar.setStatus({
             iconCls = o.useDefaults ? (this.defaultIconCls ? this.defaultIconCls : '') : '';
 
         if (o.anim) {
-            // animate the statusEl Ext.core.Element
+            // animate the statusEl Ext.Element
             this.statusEl.el.puff({
                 remove: false,
                 useDisplay: true,

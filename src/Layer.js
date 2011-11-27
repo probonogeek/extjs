@@ -14,22 +14,40 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @class Ext.Layer
- * @extends Ext.core.Element
- * An extended {@link Ext.core.Element} object that supports a shadow and shim, constrain to viewport and
+ * @extends Ext.Element
+ * An extended {@link Ext.Element} object that supports a shadow and shim, constrain to viewport and
  * automatic maintaining of shadow/shim positions.
- * @cfg {Boolean} shim False to disable the iframe shim in browsers which need one (defaults to true)
- * @cfg {String/Boolean} shadow True to automatically create an {@link Ext.Shadow}, or a string indicating the
- * shadow's display {@link Ext.Shadow#mode}. False to disable the shadow. (defaults to false)
- * @cfg {Object} dh DomHelper object config to create element with (defaults to {tag: 'div', cls: 'x-layer'}).
- * @cfg {Boolean} constrain False to disable constrain to viewport (defaults to true)
- * @cfg {String} cls CSS class to add to the element
- * @cfg {Number} zindex Starting z-index (defaults to 11000)
- * @cfg {Number} shadowOffset Number of pixels to offset the shadow (defaults to 4)
- * @cfg {Boolean} useDisplay
+ *
+ * @cfg {Boolean} [shim=true]
+ * False to disable the iframe shim in browsers which need one.
+ *
+ * @cfg {String/Boolean} [shadow=false]
+ * True to automatically create an {@link Ext.Shadow}, or a string indicating the
+ * shadow's display {@link Ext.Shadow#mode}. False to disable the shadow.
+ *
+ * @cfg {Object} [dh={tag: 'div', cls: 'x-layer'}]
+ * DomHelper object config to create element with.
+ *
+ * @cfg {Boolean} [constrain=true]
+ * False to disable constrain to viewport.
+ *
+ * @cfg {String} cls
+ * CSS class to add to the element
+ *
+ * @cfg {Number} [zindex=11000]
+ * Starting z-index.
+ *
+ * @cfg {Number} [shadowOffset=4]
+ * Number of pixels to offset the shadow
+ *
+ * @cfg {Boolean} [useDisplay=false]
  * Defaults to use css offsets to hide the Layer. Specify <tt>true</tt>
  * to use css style <tt>'display:none;'</tt> to hide the Layer.
- * @cfg {String} visibilityCls The CSS class name to add in order to hide this Layer if this layer
+ *
+ * @cfg {String} visibilityCls
+ * The CSS class name to add in order to hide this Layer if this layer
  * is configured with <code>{@link #hideMode}: 'asclass'</code>
+ *
  * @cfg {String} hideMode
  * A String which specifies how this Layer will be hidden.
  * Values may be<div class="mdetail-params"><ul>
@@ -47,7 +65,7 @@ Ext.define('Ext.Layer', {
         shims: []
     },
 
-    extend: 'Ext.core.Element',
+    extend: 'Ext.Element',
 
     /**
      * Creates new Layer.
@@ -58,7 +76,7 @@ Ext.define('Ext.Layer', {
     constructor: function(config, existingEl) {
         config = config || {};
         var me = this,
-            dh = Ext.core.DomHelper,
+            dh = Ext.DomHelper,
             cp = config.parentEl,
             pel = cp ? Ext.getDom(cp) : document.body,
         hm = config.hideMode;
@@ -87,14 +105,14 @@ Ext.define('Ext.Layer', {
         // Otherwise, allow useDisplay to override the default hiding method which is visibility.
         // TODO: Have ExtJS's Element implement visibilityMode by using classes as in Mobile.
         if (hm) {
-            me.setVisibilityMode(Ext.core.Element[hm.toUpperCase()]);
-            if (me.visibilityMode == Ext.core.Element.ASCLASS) {
+            me.setVisibilityMode(Ext.Element[hm.toUpperCase()]);
+            if (me.visibilityMode == Ext.Element.ASCLASS) {
                 me.visibilityCls = config.visibilityCls;
             }
         } else if (config.useDisplay) {
-            me.setVisibilityMode(Ext.core.Element.DISPLAY);
+            me.setVisibilityMode(Ext.Element.DISPLAY);
         } else {
-            me.setVisibilityMode(Ext.core.Element.VISIBILITY);
+            me.setVisibilityMode(Ext.Element.VISIBILITY);
         }
 
         if (config.id) {
@@ -117,7 +135,7 @@ Ext.define('Ext.Layer', {
         if (config.hidden === true) {
             me.hide();
         } else {
-            this.show();
+            me.show();
         }
     },
 
@@ -149,29 +167,35 @@ Ext.define('Ext.Layer', {
     },
 
     hideShim: function() {
-        if (this.shim) {
-            this.shim.setDisplayed(false);
-            this.self.shims.push(this.shim);
-            delete this.shim;
+        var me = this;
+        
+        if (me.shim) {
+            me.shim.setDisplayed(false);
+            me.self.shims.push(me.shim);
+            delete me.shim;
         }
     },
 
     disableShadow: function() {
-        if (this.shadow) {
-            this.shadowDisabled = true;
-            this.shadow.hide();
-            this.lastShadowOffset = this.shadowOffset;
-            this.shadowOffset = 0;
+        var me = this;
+        
+        if (me.shadow && !me.shadowDisabled) {
+            me.shadowDisabled = true;
+            me.shadow.hide();
+            me.lastShadowOffset = me.shadowOffset;
+            me.shadowOffset = 0;
         }
     },
 
     enableShadow: function(show) {
-        if (this.shadow) {
-            this.shadowDisabled = false;
-            this.shadowOffset = this.lastShadowOffset;
-            delete this.lastShadowOffset;
+        var me = this;
+        
+        if (me.shadow && me.shadowDisabled) {
+            me.shadowDisabled = false;
+            me.shadowOffset = me.lastShadowOffset;
+            delete me.lastShadowOffset;
             if (show) {
-                this.sync(true);
+                me.sync(true);
             }
         }
     },
@@ -189,17 +213,17 @@ Ext.define('Ext.Layer', {
             shadow = me.shadow,
             shadowPos, shimStyle, shadowSize;
 
-        if (!this.updating && this.isVisible() && (shadow || this.useShim)) {
-            var shim = this.getShim(),
-                l = this.getLeft(true),
-                t = this.getTop(true),
-                w = this.getWidth(),
-                h = this.getHeight(),
+        if (!me.updating && me.isVisible() && (shadow || me.useShim)) {
+            var shim = me.getShim(),
+                l = me.getLeft(true),
+                t = me.getTop(true),
+                w = me.dom.offsetWidth,
+                h = me.dom.offsetHeight,
                 shimIndex;
 
-            if (shadow && !this.shadowDisabled) {
+            if (shadow && !me.shadowDisabled) {
                 if (doShow && !shadow.isVisible()) {
-                    shadow.show(this);
+                    shadow.show(me);
                 } else {
                     shadow.realign(l, t, w, h);
                 }
@@ -215,6 +239,12 @@ Ext.define('Ext.Layer', {
                         shadowPos = shadow.el.getXY();
                         shimStyle = shim.dom.style;
                         shadowSize = shadow.el.getSize();
+                        if (Ext.supports.CSS3BoxShadow) {
+                            shadowSize.height += 6;
+                            shadowSize.width += 4;
+                            shadowPos[0] -= 2;
+                            shadowPos[1] -= 4;
+                        }
                         shimStyle.left = (shadowPos[0]) + 'px';
                         shimStyle.top = (shadowPos[1]) + 'px';
                         shimStyle.width = (shadowSize.width) + 'px';
@@ -235,7 +265,7 @@ Ext.define('Ext.Layer', {
                 shim.setLeftTop(l, t);
             }
         }
-        return this;
+        return me;
     },
 
     remove: function() {
@@ -265,8 +295,8 @@ Ext.define('Ext.Layer', {
     // private
     constrainXY: function() {
         if (this.constrain) {
-            var vw = Ext.core.Element.getViewWidth(),
-                vh = Ext.core.Element.getViewHeight(),
+            var vw = Ext.Element.getViewWidth(),
+                vh = Ext.Element.getViewHeight(),
                 s = Ext.getDoc().getScroll(),
                 xy = this.getXY(),
                 x = xy[0],
@@ -322,13 +352,13 @@ Ext.define('Ext.Layer', {
 
         // Hide shadow and shim if hiding
         if (!visible) {
-            this.hideUnders(true);
+            me.hideUnders(true);
         }
-        this.callParent([visible, animate, duration, callback, easing]);
+        me.callParent([visible, animate, duration, callback, easing]);
         if (!animate) {
             cb();
         }
-        return this;
+        return me;
     },
 
     // private
@@ -367,17 +397,18 @@ Ext.define('Ext.Layer', {
     },
 
     setXY: function(xy, animate, duration, callback, easing) {
-
+        var me = this;
+        
         // Callback will restore shadow state and call the passed callback
-        callback = this.createCB(callback);
+        callback = me.createCB(callback);
 
-        this.fixDisplay();
-        this.beforeAction();
-        this.callParent([xy, animate, duration, callback, easing]);
+        me.fixDisplay();
+        me.beforeAction();
+        me.callParent([xy, animate, duration, callback, easing]);
         if (!animate) {
             callback();
         }
-        return this;
+        return me;
     },
 
     // private
@@ -408,57 +439,65 @@ Ext.define('Ext.Layer', {
 
     // overridden Element method
     setSize: function(w, h, animate, duration, callback, easing) {
+        var me = this;
+        
         // Callback will restore shadow state and call the passed callback
-        callback = this.createCB(callback);
+        callback = me.createCB(callback);
 
-        this.beforeAction();
-        this.callParent([w, h, animate, duration, callback, easing]);
+        me.beforeAction();
+        me.callParent([w, h, animate, duration, callback, easing]);
         if (!animate) {
             callback();
         }
-        return this;
+        return me;
     },
 
     // overridden Element method
     setWidth: function(w, animate, duration, callback, easing) {
+        var me = this;
+        
         // Callback will restore shadow state and call the passed callback
-        callback = this.createCB(callback);
+        callback = me.createCB(callback);
 
-        this.beforeAction();
-        this.callParent([w, animate, duration, callback, easing]);
+        me.beforeAction();
+        me.callParent([w, animate, duration, callback, easing]);
         if (!animate) {
             callback();
         }
-        return this;
+        return me;
     },
 
     // overridden Element method
     setHeight: function(h, animate, duration, callback, easing) {
+        var me = this;
+        
         // Callback will restore shadow state and call the passed callback
-        callback = this.createCB(callback);
+        callback = me.createCB(callback);
 
-        this.beforeAction();
-        this.callParent([h, animate, duration, callback, easing]);
+        me.beforeAction();
+        me.callParent([h, animate, duration, callback, easing]);
         if (!animate) {
             callback();
         }
-        return this;
+        return me;
     },
 
     // overridden Element method
     setBounds: function(x, y, width, height, animate, duration, callback, easing) {
+        var me = this;
+        
         // Callback will restore shadow state and call the passed callback
-        callback = this.createCB(callback);
+        callback = me.createCB(callback);
 
-        this.beforeAction();
+        me.beforeAction();
         if (!animate) {
-            Ext.Layer.superclass.setXY.call(this, [x, y]);
-            Ext.Layer.superclass.setSize.call(this, width, height);
+            Ext.Layer.superclass.setXY.call(me, [x, y]);
+            Ext.Layer.superclass.setSize.call(me, width, height);
             callback();
         } else {
-            this.callParent([x, y, width, height, animate, duration, callback, easing]);
+            me.callParent([x, y, width, height, animate, duration, callback, easing]);
         }
-        return this;
+        return me;
     },
 
     /**
@@ -467,18 +506,26 @@ Ext.define('Ext.Layer', {
      * <p>Any shim, will be assigned the passed z-index. A shadow will be assigned the next highet z-index, and the Layer's
      * element will receive the highest  z-index.
      * @param {Number} zindex The new z-index to set
-     * @return {this} The Layer
+     * @return {Ext.Layer} The Layer
      */
     setZIndex: function(zindex) {
-        this.zindex = zindex;
-        if (this.getShim()) {
-            this.shim.setStyle('z-index', zindex++);
+        var me = this;
+        
+        me.zindex = zindex;
+        if (me.getShim()) {
+            me.shim.setStyle('z-index', zindex++);
         }
+        if (me.shadow) {
+            me.shadow.setZIndex(zindex++);
+        }
+        return me.setStyle('z-index', zindex);
+    },
+    
+    setOpacity: function(opacity){
         if (this.shadow) {
-            this.shadow.setZIndex(zindex++);
+            this.shadow.setOpacity(opacity);
         }
-        this.setStyle('z-index', zindex);
-        return this;
+        return this.callParent(arguments);
     }
 });
 

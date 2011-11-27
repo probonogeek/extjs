@@ -34,40 +34,72 @@ Ext.define('Ext.selection.CheckboxModel', {
     mode: 'MULTI',
 
     /**
-     * @cfg {Mixed} injectCheckbox
+     * @cfg {Number/Boolean/String} injectCheckbox
      * Instructs the SelectionModel whether or not to inject the checkbox header
      * automatically or not. (Note: By not placing the checkbox in manually, the
      * grid view will need to be rendered 2x on initial render.)
      * Supported values are a Number index, false and the strings 'first' and 'last'.
-     * Default is 0.
      */
     injectCheckbox: 0,
 
     /**
      * @cfg {Boolean} checkOnly <tt>true</tt> if rows can only be selected by clicking on the
-     * checkbox column (defaults to <tt>false</tt>).
+     * checkbox column.
      */
     checkOnly: false,
+
+    headerWidth: 24,
 
     // private
     checkerOnCls: Ext.baseCSSPrefix + 'grid-hd-checker-on',
 
-    bindComponent: function() {
-        this.sortable = false;
-        this.callParent(arguments);
+    bindComponent: function(view) {
+        var me = this;
 
-        var view     = this.views[0],
+        me.sortable = false;
+        me.callParent(arguments);
+        if (!me.hasLockedHeader() || view.headerCt.lockedCt) {
+            // if we have a locked header, only hook up to the first
+            view.headerCt.on('headerclick', me.onHeaderClick, me);
+            me.addCheckbox(true);
+            me.mon(view.ownerCt, 'reconfigure', me.addCheckbox, me);
+        }
+    },
+
+    hasLockedHeader: function(){
+        var hasLocked = false;
+        Ext.each(this.views, function(view){
+            if (view.headerCt.lockedCt) {
+                hasLocked = true;
+                return false;
+            }
+        });
+        return hasLocked;
+    },
+
+    /**
+     * Add the header checkbox to the header row
+     * @private
+     * @param {Boolean} initial True if we're binding for the first time.
+     */
+    addCheckbox: function(initial){
+        var me = this,
+            checkbox = me.injectCheckbox,
+            view = me.views[0],
             headerCt = view.headerCt;
 
-        if (this.injectCheckbox !== false) {
-            if (this.injectCheckbox == 'first') {
-                this.injectCheckbox = 0;
-            } else if (this.injectCheckbox == 'last') {
-                this.injectCheckbox = headerCt.getColumnCount();
+        if (checkbox !== false) {
+            if (checkbox == 'first') {
+                checkbox = 0;
+            } else if (checkbox == 'last') {
+                checkbox = headerCt.getColumnCount();
             }
-            headerCt.add(this.injectCheckbox,  this.getHeaderConfig());
+            headerCt.add(checkbox,  me.getHeaderConfig());
         }
-        headerCt.on('headerclick', this.onHeaderClick, this);
+
+        if (initial !== true) {
+            view.refresh();
+        }
     },
 
     /**
@@ -112,17 +144,21 @@ Ext.define('Ext.selection.CheckboxModel', {
      * This should be used when injectCheckbox is set to false.
      */
     getHeaderConfig: function() {
+        var me = this;
+
         return {
             isCheckerHd: true,
             text : '&#160;',
-            width: 24,
+            width: me.headerWidth,
             sortable: false,
-            fixed: true,
+            draggable: false,
+            resizable: false,
             hideable: false,
             menuDisabled: true,
             dataIndex: '',
             cls: Ext.baseCSSPrefix + 'column-header-checkbox ',
-            renderer: Ext.Function.bind(this.renderer, this)
+            renderer: Ext.Function.bind(me.renderer, me),
+            locked: me.hasLockedHeader()
         };
     },
 
@@ -141,6 +177,10 @@ Ext.define('Ext.selection.CheckboxModel', {
         view.el.focus();
         var me = this,
             checker = e.getTarget('.' + Ext.baseCSSPrefix + 'grid-row-checker');
+            
+        if (!me.allowRightMouseSelection(e)) {
+            return;
+        }
 
         // checkOnly set, but we didn't click on a checker.
         if (me.checkOnly && !checker) {

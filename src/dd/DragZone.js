@@ -73,7 +73,7 @@ Ext.define('Ext.dd.DragZone', {
 
     /**
      * Creates new DragZone.
-     * @param {Mixed} el The container element
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
      * @param {Object} config
      */
     constructor : function(el, config){
@@ -101,7 +101,7 @@ Ext.define('Ext.dd.DragZone', {
      * for a valid target to drag based on the mouse down. Override this method
      * to provide your own lookup logic (e.g. finding a child by class name). Make sure your returned
      * object has a "ddel" attribute (with an HTML Element) for other functions to work.
-     * @param {EventObject} e The mouse down event
+     * @param {Event} e The mouse down event
      * @return {Object} The dragData
      */
     getDragData : function(e){
@@ -135,11 +135,11 @@ Ext.define('Ext.dd.DragZone', {
     /**
      * Called before a repair of an invalid drop to get the XY to animate to. By default returns
      * the XY of this.dragData.ddel
-     * @param {EventObject} e The mouse up event
-     * @return {Array} The xy location (e.g. [100, 200])
+     * @param {Event} e The mouse up event
+     * @return {Number[]} The xy location (e.g. [100, 200])
      */
     getRepairXY : function(e){
-        return Ext.core.Element.fly(this.dragData.ddel).getXY();
+        return Ext.Element.fly(this.dragData.ddel).getXY();
     },
 
     destroy : function(){

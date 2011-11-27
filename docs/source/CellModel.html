@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -18,23 +18,22 @@
   <pre class="prettyprint lang-js"><span id='Ext-selection-CellModel'>/**
 </span> * @class Ext.selection.CellModel
  * @extends Ext.selection.Model
- * @private
  */
 Ext.define('Ext.selection.CellModel', {
     extend: 'Ext.selection.Model',
     alias: 'selection.cellmodel',
     requires: ['Ext.util.KeyNav'],
-    
+
 <span id='Ext-selection-CellModel-cfg-enableKeyNav'>    /**
 </span>     * @cfg {Boolean} enableKeyNav
-     * Turns on/off keyboard navigation within the grid. Defaults to true.
+     * Turns on/off keyboard navigation within the grid.
      */
     enableKeyNav: true,
-    
+
 <span id='Ext-selection-CellModel-cfg-preventWrap'>    /**
 </span>     * @cfg {Boolean} preventWrap
      * Set this configuration to true to prevent wrapping around of selection as
-     * a user navigates to the first or last column. Defaults to false.
+     * a user navigates to the first or last column.
      */
     preventWrap: false,
 
@@ -49,7 +48,7 @@ Ext.define('Ext.selection.CellModel', {
              * @param {Number} column The column index deselected
              */
             'deselect',
-            
+
 <span id='Ext-selection-CellModel-event-select'>            /**
 </span>             * @event select
              * Fired after a cell is selected
@@ -60,7 +59,7 @@ Ext.define('Ext.selection.CellModel', {
              */
             'select'
         );
-        this.callParent(arguments);    
+        this.callParent(arguments);
     },
 
     bindComponent: function(view) {
@@ -83,7 +82,7 @@ Ext.define('Ext.selection.CellModel', {
 
     initKeyNav: function(view) {
         var me = this;
-        
+
         if (!view.rendered) {
             view.on('render', Ext.Function.bind(me.initKeyNav, me, [view], 0), me, {single: true});
             return;
@@ -104,7 +103,7 @@ Ext.define('Ext.selection.CellModel', {
             scope: me
         });
     },
-    
+
     getHeaderCt: function() {
         return this.primaryView.headerCt;
     },
@@ -120,11 +119,11 @@ Ext.define('Ext.selection.CellModel', {
     onKeyLeft: function(e, t) {
         this.move('left', e);
     },
-    
+
     onKeyRight: function(e, t) {
         this.move('right', e);
     },
-    
+
     move: function(dir, e) {
         var me = this,
             pos = me.primaryView.walkCells(me.getCurrentPosition(), dir, e, me.preventWrap);
@@ -140,14 +139,14 @@ Ext.define('Ext.selection.CellModel', {
     getCurrentPosition: function() {
         return this.position;
     },
-    
+
 <span id='Ext-selection-CellModel-method-setCurrentPosition'>    /**
 </span>     * Sets the current position
      * @param {Object} position The position to set.
      */
     setCurrentPosition: function(pos) {
         var me = this;
-        
+
         if (me.position) {
             me.onCellDeselect(me.position);
         }

@@ -176,9 +176,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
       Ext.apply(Ext.form.field.ComboBox.prototype, {
-        loadingText       : "Зареждане...",
         valueNotFoundText : undefined
       });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Зареждане..."
+        });
     }
 
     if(Ext.form.field.VTypes){

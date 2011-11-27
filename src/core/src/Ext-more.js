@@ -45,8 +45,6 @@ Ext.apply(Ext, {
     userAgent: navigator.userAgent.toLowerCase(),
     cache: {},
     idSeed: 1000,
-    BLANK_IMAGE_URL : 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
-    isStrict: document.compatMode == "CSS1Compat",
     windowId: 'ext-window',
     documentId: 'ext-document',
 
@@ -57,20 +55,20 @@ Ext.apply(Ext, {
     isReady: false,
 
     /**
-     * True to automatically uncache orphaned Ext.core.Elements periodically (defaults to true)
+     * True to automatically uncache orphaned Ext.Elements periodically
      * @type Boolean
      */
     enableGarbageCollector: true,
 
     /**
-     * True to automatically purge event listeners during garbageCollection (defaults to true).
+     * True to automatically purge event listeners during garbageCollection.
      * @type Boolean
      */
     enableListenerCollection: true,
 
     /**
      * Generates unique ids. If the element already has an id, it is unchanged
-     * @param {Mixed} el (optional) The element to generate an id for
+     * @param {HTMLElement/Ext.Element} el (optional) The element to generate an id for
      * @param {String} prefix (optional) Id prefix (defaults "ext-gen")
      * @return {String} The generated Id.
      */
@@ -97,16 +95,16 @@ Ext.apply(Ext, {
     },
 
     /**
-     * Returns the current document body as an {@link Ext.core.Element}.
-     * @return Ext.core.Element The document body
+     * Returns the current document body as an {@link Ext.Element}.
+     * @return Ext.Element The document body
      */
     getBody: function() {
         return Ext.get(document.body || false);
     },
 
     /**
-     * Returns the current document head as an {@link Ext.core.Element}.
-     * @return Ext.core.Element The document head
+     * Returns the current document head as an {@link Ext.Element}.
+     * @return Ext.Element The document head
      * @method
      */
     getHead: function() {
@@ -122,8 +120,8 @@ Ext.apply(Ext, {
     }(),
 
     /**
-     * Returns the current HTML document object as an {@link Ext.core.Element}.
-     * @return Ext.core.Element The document
+     * Returns the current HTML document object as an {@link Ext.Element}.
+     * @return Ext.Element The document
      */
     getDoc: function() {
         return Ext.get(document);
@@ -151,12 +149,11 @@ Ext.apply(Ext, {
     /**
      * Attempts to destroy any objects passed to it by removing all event listeners, removing them from the
      * DOM (if applicable) and calling their destroy functions (if available).  This method is primarily
-     * intended for arguments of type {@link Ext.core.Element} and {@link Ext.Component}, but any subclass of
+     * intended for arguments of type {@link Ext.Element} and {@link Ext.Component}, but any subclass of
      * {@link Ext.util.Observable} can be passed in.  Any number of elements and/or components can be
      * passed into this function in a single call as separate arguments.
-     * @param {Mixed} arg1 An {@link Ext.core.Element}, {@link Ext.Component}, or an Array of either of these to destroy
-     * @param {Mixed} arg2 (optional)
-     * @param {Mixed} etc... (optional)
+     * @param {Ext.Element/Ext.Component/Ext.Element[]/Ext.Component[]...} arg1
+     * An {@link Ext.Element}, {@link Ext.Component}, or an Array of either of these to destroy
      */
     destroy: function() {
         var ln = arguments.length,
@@ -180,12 +177,12 @@ Ext.apply(Ext, {
 
     /**
      * Execute a callback function in a particular scope. If no function is passed the call is ignored.
-     * 
+     *
      * For example, these lines are equivalent:
-     * 
+     *
      *     Ext.callback(myFunc, this, [arg1, arg2]);
      *     Ext.isFunction(myFunc) && myFunc.apply(this, [arg1, arg2]);
-     * 
+     *
      * @param {Function} callback The callback to execute
      * @param {Object} scope (optional) The scope to execute in
      * @param {Array} args (optional) The arguments to pass to the function
@@ -248,8 +245,29 @@ window.undefined = window.undefined;
  * @singleton
  */
 (function(){
+/*
+FF 3.6      - Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17
+FF 4.0.1    - Mozilla/5.0 (Windows NT 5.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1
+FF 5.0      - Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0
+
+IE6         - Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1;)
+IE7         - Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; SV1;)
+IE8         - Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)
+IE9         - Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)
+
+Chrome 11   - Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.60 Safari/534.24
+
+Safari 5    - Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1
+
+Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
+*/
     var check = function(regex){
             return regex.test(Ext.userAgent);
+        },
+        isStrict = document.compatMode == "CSS1Compat",
+        version = function (is, regex) {
+            var m;
+            return (is && (m = regex.exec(Ext.userAgent))) ? parseFloat(m[1]) : 0;
         },
         docMode = document.documentMode,
         isOpera = check(/opera/),
@@ -260,6 +278,7 @@ window.undefined = window.undefined;
         isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
         isSafari3 = isSafari && check(/version\/3/),
         isSafari4 = isSafari && check(/version\/4/),
+        isSafari5 = isSafari && check(/version\/5/),
         isIE = !isOpera && check(/msie/),
         isIE7 = isIE && (check(/msie 7/) || docMode == 7),
         isIE8 = isIE && (check(/msie 8/) && docMode != 7 && docMode != 9 || docMode == 8),
@@ -268,6 +287,7 @@ window.undefined = window.undefined;
         isGecko = !isWebKit && check(/gecko/),
         isGecko3 = isGecko && check(/rv:1\.9/),
         isGecko4 = isGecko && check(/rv:2\.0/),
+        isGecko5 = isGecko && check(/rv:5\./),
         isFF3_0 = isGecko3 && check(/rv:1\.9\.0/),
         isFF3_5 = isGecko3 && check(/rv:1\.9\.1/),
         isFF3_6 = isGecko3 && check(/rv:1\.9\.2/),
@@ -275,21 +295,162 @@ window.undefined = window.undefined;
         isMac = check(/macintosh|mac os x/),
         isLinux = check(/linux/),
         scrollbarSize = null,
-        webKitVersion = isWebKit && (/webkit\/(\d+\.\d+)/.exec(Ext.userAgent));
+        chromeVersion = version(true, /\bchrome\/(\d+\.\d+)/),
+        firefoxVersion = version(true, /\bfirefox\/(\d+\.\d+)/),
+        ieVersion = version(isIE, /msie (\d+\.\d+)/),
+        operaVersion = version(isOpera, /version\/(\d+\.\d+)/),
+        safariVersion = version(isSafari, /version\/(\d+\.\d+)/),
+        webKitVersion = version(isWebKit, /webkit\/(\d+\.\d+)/),
+        isSecure = /^https/i.test(window.location.protocol);
 
     // remove css image flicker
     try {
         document.execCommand("BackgroundImageCache", false, true);
     } catch(e) {}
 
-    Ext.setVersion('extjs', '4.0.2');
+    //<debug>
+    function dumpObject (object) {
+        var member, members = [];
+
+        // Cannot use Ext.encode since it can recurse endlessly (if we're lucky)
+        // ...and the data could be prettier!
+        Ext.Object.each(object, function (name, value) {
+            if (typeof(value) === "function") {
+                return;
+            }
+
+            if (!Ext.isDefined(value) || value === null ||
+                    Ext.isDate(value) ||
+                    Ext.isString(value) || (typeof(value) == "number") ||
+                    Ext.isBoolean(value)) {
+                member = Ext.encode(value);
+            } else if (Ext.isArray(value)) {
+                member = '[ ]';
+            } else if (Ext.isObject(value)) {
+                member = '{ }';
+            } else {
+                member = 'undefined';
+            }
+            members.push(Ext.encode(name) + ': ' + member);
+        });
+
+        if (members.length) {
+            return ' \nData: {\n  ' + members.join(',\n  ') + '\n}';
+        }
+        return '';
+    }
+
+    function log (message) {
+        var options, dump,
+            con = Ext.global.console,
+            level = 'log',
+            indent = log.indent || 0,
+            stack;
+
+        log.indent = indent;
+
+        if (!Ext.isString(message)) {
+            options = message;
+            message = options.msg || '';
+            level = options.level || level;
+            dump = options.dump;
+            stack = options.stack;
+
+            if (options.indent) {
+                ++log.indent;
+            } else if (options.outdent) {
+                log.indent = indent = Math.max(indent - 1, 0);
+            }
+
+            if (dump && !(con && con.dir)) {
+                message += dumpObject(dump);
+                dump = null;
+            }
+        }
+
+        if (arguments.length > 1) {
+            message += Array.prototype.slice.call(arguments, 1).join('');
+        }
+
+        message = indent ? Ext.String.repeat('   ', indent) + message : message;
+        // w/o console, all messages are equal, so munge the level into the message:
+        if (level != 'log') {
+            message = '[' + level.charAt(0).toUpperCase() + '] ' + message;
+        }
+
+        // Not obvious, but 'console' comes and goes when Firebug is turned on/off, so
+        // an early test may fail either direction if Firebug is toggled.
+        //
+        if (con) { // if (Firebug-like console)
+            if (con[level]) {
+                con[level](message);
+            } else {
+                con.log(message);
+            }
+
+            if (dump) {
+                con.dir(dump);
+            }
+
+            if (stack && con.trace) {
+                // Firebug's console.error() includes a trace already...
+                if (!con.firebug || level != 'error') {
+                    con.trace();
+                }
+            }
+        } else {
+            if (Ext.isOpera) {
+                opera.postError(message);
+            } else {
+                var out = log.out,
+                    max = log.max;
+
+                if (out.length >= max) {
+                    // this formula allows out.max to change (via debugger), where the
+                    // more obvious "max/4" would not quite be the same
+                    Ext.Array.erase(out, 0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
+                }
+
+                out.push(message);
+            }
+        }
+
+        // Mostly informational, but the Ext.Error notifier uses them:
+        ++log.count;
+        ++log.counters[level];
+    }
+
+    log.count = 0;
+    log.counters = { error: 0, warn: 0, info: 0, log: 0 };
+    log.out = [];
+    log.max = 250;
+    log.show = function () {
+        window.open('','extlog').document.write([
+            '<html><head><script type="text/javascript">',
+                'var lastCount = 0;',
+                'function update () {',
+                    'var ext = window.opener.Ext,',
+                        'extlog = ext && ext.log;',
+                    'if (extlog && extlog.out && lastCount != extlog.count) {',
+                        'lastCount = extlog.count;',
+                        'var s = "<tt>" + extlog.out.join("<br>").replace(/[ ]/g, "&nbsp;") + "</tt>";',
+                        'document.body.innerHTML = s;',
+                    '}',
+                    'setTimeout(update, 1000);',
+                '}',
+                'setTimeout(update, 1000);',
+            '</script></head><body></body></html>'].join(''));
+    };
+    //</debug>
+
+    Ext.setVersion('extjs', '4.0.7');
     Ext.apply(Ext, {
         /**
          * URL to a blank file used by Ext when in secure mode for iframe src and onReady src to prevent
          * the IE insecure content warning (<tt>'about:blank'</tt>, except for IE in secure mode, which is <tt>'javascript:""'</tt>).
          * @type String
          */
-        SSL_SECURE_URL : Ext.isSecure && isIE ? 'javascript:""' : 'about:blank',
+        SSL_SECURE_URL : isSecure && isIE ? 'javascript:""' : 'about:blank',
 
         /**
          * True if the {@link Ext.fx.Anim} Class is available
@@ -322,7 +483,7 @@ window.undefined = window.undefined;
         USE_NATIVE_JSON : false,
 
         /**
-         * Return the dom node for the passed String (id), dom node, or Ext.core.Element.
+         * Return the dom node for the passed String (id), dom node, or Ext.Element.
          * Optional 'strict' flag is needed for IE since it can return 'name' and
          * 'id' elements by using getElementById.
          * Here are some examples:
@@ -333,7 +494,7 @@ var elDom = Ext.getDom('elId');
 var elDom1 = Ext.getDom(elDom);
 
 // If we don&#39;t know if we are working with an
-// Ext.core.Element or a dom node use Ext.getDom
+// Ext.Element or a dom node use Ext.getDom
 function(el){
     var dom = Ext.getDom(el);
     // do something with the dom node
@@ -341,7 +502,7 @@ function(el){
          * </code></pre>
          * <b>Note</b>: the dom node to be found actually needs to exist (be rendered, etc)
          * when this method is called to be successful.
-         * @param {Mixed} el
+         * @param {String/HTMLElement/Ext.Element} el
          * @return HTMLElement
          */
         getDom : function(el, strict) {
@@ -397,6 +558,10 @@ function(el){
             }
         },
 
+        isStrict: isStrict,
+
+        isIEQuirks: isIE && !isStrict,
+
         /**
          * True if the detected browser is Opera.
          * @type Boolean
@@ -438,6 +603,12 @@ function(el){
          * @type Boolean
          */
         isSafari4 : isSafari4,
+
+        /**
+         * True if the detected browser is Safari 5.x.
+         * @type Boolean
+         */
+        isSafari5 : isSafari5,
 
         /**
          * True if the detected browser is Safari 2.x.
@@ -494,22 +665,40 @@ function(el){
         isGecko4 : isGecko4,
 
         /**
+         * True if the detected browser uses a Gecko 5.0+ layout engine (e.g. Firefox 5.x).
+         * @type Boolean
+         */
+        isGecko5 : isGecko5,
+
+        /**
          * True if the detected browser uses FireFox 3.0
          * @type Boolean
          */
-
         isFF3_0 : isFF3_0,
+
         /**
          * True if the detected browser uses FireFox 3.5
          * @type Boolean
          */
-
         isFF3_5 : isFF3_5,
+
         /**
          * True if the detected browser uses FireFox 3.6
          * @type Boolean
          */
         isFF3_6 : isFF3_6,
+
+        /**
+         * True if the detected browser uses FireFox 4
+         * @type Boolean
+         */
+        isFF4 : 4 <= firefoxVersion && firefoxVersion < 5,
+
+        /**
+         * True if the detected browser uses FireFox 5
+         * @type Boolean
+         */
+        isFF5 : 5 <= firefoxVersion && firefoxVersion < 6,
 
         /**
          * True if the detected platform is Linux.
@@ -530,10 +719,52 @@ function(el){
         isMac : isMac,
 
         /**
-         * The current version of WebKit (-1 if the browser does not use WebKit).
-         * @type Float
+         * The current version of Chrome (0 if the browser is not Chrome).
+         * @type Number
          */
-        webKitVersion: webKitVersion ? parseFloat(webKitVersion[1]) : -1,
+        chromeVersion: chromeVersion,
+
+        /**
+         * The current version of Firefox (0 if the browser is not Firefox).
+         * @type Number
+         */
+        firefoxVersion: firefoxVersion,
+
+        /**
+         * The current version of IE (0 if the browser is not IE). This does not account
+         * for the documentMode of the current page, which is factored into {@link #isIE7},
+         * {@link #isIE8} and {@link #isIE9}. Thus this is not always true:
+         *
+         *      Ext.isIE8 == (Ext.ieVersion == 8)
+         *
+         * @type Number
+         * @markdown
+         */
+        ieVersion: ieVersion,
+
+        /**
+         * The current version of Opera (0 if the browser is not Opera).
+         * @type Number
+         */
+        operaVersion: operaVersion,
+
+        /**
+         * The current version of Safari (0 if the browser is not Safari).
+         * @type Number
+         */
+        safariVersion: safariVersion,
+
+        /**
+         * The current version of WebKit (0 if the browser does not use WebKit).
+         * @type Number
+         */
+        webKitVersion: webKitVersion,
+
+        /**
+         * True if the page is running over SSL
+         * @type Boolean
+         */
+        isSecure: isSecure,
 
         /**
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with CSS background images.
@@ -541,7 +772,7 @@ function(el){
          * For other browsers it uses an inline data URL.
          * @type String
          */
-        BLANK_IMAGE_URL : (isIE6 || isIE7) ? 'http:/' + '/www.sencha.com/s.gif' : 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+        BLANK_IMAGE_URL : (isIE6 || isIE7) ? '/' + '/www.sencha.com/s.gif' : 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
 
         /**
          * <p>Utility method for returning a default value if the passed value is empty.</p>
@@ -551,10 +782,10 @@ function(el){
          * <li>an empty array</li>
          * <li>a zero length string (Unless the <tt>allowBlank</tt> parameter is <tt>true</tt>)</li>
          * </ul></div>
-         * @param {Mixed} value The value to test
-         * @param {Mixed} defaultValue The value to return if the original value is empty
+         * @param {Object} value The value to test
+         * @param {Object} defaultValue The value to return if the original value is empty
          * @param {Boolean} allowBlank (optional) true to allow zero length strings to qualify as non-empty (defaults to false)
-         * @return {Mixed} value, if non-empty, else defaultValue
+         * @return {Object} value, if non-empty, else defaultValue
          * @deprecated 4.0.0 Use {@link Ext#valueFrom} instead
          */
         value : function(v, defaultValue, allowBlank){
@@ -678,7 +909,7 @@ Ext.addBehaviors({
          *
          * @param {Object} dest The destination object.
          * @param {Object} source The source object.
-         * @param {Array/String} names Either an Array of property names, or a comma-delimited list
+         * @param {String/String[]} names Either an Array of property names, or a comma-delimited list
          * of property names to copy.
          * @param {Boolean} usePrototypeKeys (Optional) Defaults to false. Pass true to copy keys off of the prototype as well as the instance.
          * @return {Object} The modified object.
@@ -698,8 +929,7 @@ Ext.addBehaviors({
         /**
          * Attempts to destroy and then remove a set of named properties of the passed object.
          * @param {Object} o The object (most likely a Component) who's properties you wish to destroy.
-         * @param {Mixed} arg1 The name of the property to destroy and remove from the object.
-         * @param {Mixed} etc... More property names to destroy and remove.
+         * @param {String...} args One or more names of the properties to destroy and remove from the object.
          */
         destroyMembers : function(o){
             for (var i = 1, a = arguments, len = a.length; i < len; i++) {
@@ -712,123 +942,42 @@ Ext.addBehaviors({
          * Logs a message. If a console is present it will be used. On Opera, the method
          * "opera.postError" is called. In other cases, the message is logged to an array
          * "Ext.log.out". An attached debugger can watch this array and view the log. The
-         * log buffer is limited to a maximum of "Ext.log.max" entries (defaults to 100).
+         * log buffer is limited to a maximum of "Ext.log.max" entries (defaults to 250).
+         * The `Ext.log.out` array can also be written to a popup window by entering the
+         * following in the URL bar (a "bookmarklet"):
+         *
+         *    javascript:void(Ext.log.show());
          *
          * If additional parameters are passed, they are joined and appended to the message.
-         * 
+         * A technique for tracing entry and exit of a function is this:
+         *
+         *      function foo () {
+         *          Ext.log({ indent: 1 }, '>> foo');
+         *
+         *          // log statements in here or methods called from here will be indented
+         *          // by one step
+         *
+         *          Ext.log({ outdent: 1 }, '<< foo');
+         *      }
+         *
          * This method does nothing in a release build.
          *
-         * @param {String|Object} message The message to log or an options object with any
+         * @param {String/Object} message The message to log or an options object with any
          * of the following properties:
          *
          *  - `msg`: The message to log (required).
          *  - `level`: One of: "error", "warn", "info" or "log" (the default is "log").
          *  - `dump`: An object to dump to the log as part of the message.
          *  - `stack`: True to include a stack trace in the log.
+         *  - `indent`: Cause subsequent log statements to be indented one step.
+         *  - `outdent`: Cause this and following statements to be one step less indented.
          * @markdown
          */
-        log : function (message) {
+        log :
             //<debug>
-            var options, dump,
-                con = Ext.global.console,
-                log = Ext.log,
-                level = 'log',
-                stack,
-                members,
-                member;
-
-            if (!Ext.isString(message)) {
-                options = message;
-                message = options.msg || '';
-                level = options.level || level;
-                dump = options.dump;
-                stack = options.stack;
-
-                if (dump && !(con && con.dir)) {
-                    members = [];
-
-                    // Cannot use Ext.encode since it can recurse endlessly (if we're lucky)
-                    // ...and the data could be prettier!
-                    Ext.Object.each(dump, function (name, value) {
-                        if (typeof(value) === "function") {
-                            return;
-                        }
-
-                        if (!Ext.isDefined(value) || value === null ||
-                                Ext.isDate(value) ||
-                                Ext.isString(value) || (typeof(value) == "number") ||
-                                Ext.isBoolean(value)) {
-                            member = Ext.encode(value);
-                        } else if (Ext.isArray(value)) {
-                            member = '[ ]';
-                        } else if (Ext.isObject(value)) {
-                            member = '{ }';
-                        } else {
-                            member = 'undefined';
-                        }
-                        members.push(Ext.encode(name) + ': ' + member);
-                    });
-
-                    if (members.length) {
-                        message += ' \nData: {\n  ' + members.join(',\n  ') + '\n}';
-                    }
-                    dump = null;
-                }
-            }
-
-            if (arguments.length > 1) {
-                message += Array.prototype.slice.call(arguments, 1).join('');
-            }
-
-            // Not obvious, but 'console' comes and goes when Firebug is turned on/off, so
-            // an early test may fail either direction if Firebug is toggled.
-            //
-            if (con) { // if (Firebug-like console)
-                if (con[level]) {
-                    con[level](message);
-                } else {
-                    con.log(message);
-                }
-
-                if (dump) {
-                    con.dir(dump);
-                }
-
-                if (stack && con.trace) {
-                    // Firebug's console.error() includes a trace already...
-                    if (!con.firebug || level != 'error') {
-                        con.trace();
-                    }
-                }
-            } else {
-                // w/o console, all messages are equal, so munge the level into the message:
-                if (level != 'log') {
-                    message = level.toUpperCase() + ': ' + message;
-                }
-
-                if (Ext.isOpera) {
-                    opera.postError(message);
-                } else {
-                    var out = log.out || (log.out = []),
-                        max = log.max || (log.max = 100);
-
-                    if (out.length >= max) {
-                        // this formula allows out.max to change (via debugger), where the
-                        // more obvious "max/4" would not quite be the same
-                        Ext.Array.erase(out, 0, out.length - 3 * Math.floor(max / 4)); // keep newest 75%
-                    }
-
-                    out.push(message);
-                }
-            }
-
-            // Mostly informational, but the Ext.Error notifier uses them:
-            var counters = log.counters ||
-                          (log.counters = { error: 0, warn: 0, info: 0, log: 0 });
-
-            ++counters[level];
+            log ||
             //</debug>
-        },
+            Ext.emptyFn,
 
         /**
          * Partitions the set into two sets: a true set and a false set.
@@ -848,7 +997,7 @@ Ext.partition(
 // true are those paragraph elements with a className of "class1",
 // false set are those that do not have that className.
          * </code></pre>
-         * @param {Array|NodeList} arr The array to partition
+         * @param {Array/NodeList} arr The array to partition
          * @param {Function} truth (optional) a function to determine truth.  If this is omitted the element
          * itself must be able to be evaluated for its truthfulness.
          * @return {Array} [array of truish values, array of falsy values]
@@ -869,9 +1018,9 @@ Ext.partition(
 Ext.invoke(Ext.query("p"), "getAttribute", "id");
 // [el1.getAttribute("id"), el2.getAttribute("id"), ..., elN.getAttribute("id")]
          * </code></pre>
-         * @param {Array|NodeList} arr The Array of items to invoke the method on.
+         * @param {Array/NodeList} arr The Array of items to invoke the method on.
          * @param {String} methodName The method name to invoke.
-         * @param {...*} args Arguments to send into the method invocation.
+         * @param {Object...} args Arguments to send into the method invocation.
          * @return {Array} The results of invoking the method on each item in the array.
          * @deprecated 4.0.0 Will be removed in the next major version
          */
@@ -903,7 +1052,7 @@ Ext.zip(
     }
 ); // ["$+12.43", "$-10.15", "$+22.96"]
          * </code></pre>
-         * @param {Arrays|NodeLists} arr This argument may be repeated. Array(s) to contribute values.
+         * @param {Array/NodeList...} arr This argument may be repeated. Array(s) to contribute values.
          * @param {Function} zipper (optional) The last item in the argument list. This will drive how the items are zipped together.
          * @return {Array} The zipped set.
          * @deprecated 4.0.0 Will be removed in the next major version
@@ -932,7 +1081,7 @@ Ext.zip(
          * Turns an array into a sentence, joined by a specified connector - e.g.:
          * Ext.toSentence(['Adama', 'Tigh', 'Roslin']); //'Adama, Tigh and Roslin'
          * Ext.toSentence(['Adama', 'Tigh', 'Roslin'], 'or'); //'Adama, Tigh or Roslin'
-         * @param {Array} items The array to create a sentence from
+         * @param {String[]} items The array to create a sentence from
          * @param {String} connector The string to use to connect the last two words. Usually 'and' or 'or' - defaults to 'and'.
          * @return {String} The sentence string
          * @deprecated 4.0.0 Will be removed in the next major version

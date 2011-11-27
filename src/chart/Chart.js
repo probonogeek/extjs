@@ -13,36 +13,141 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.chart.Chart
- * @extends Ext.draw.Component
- *
- * The Ext.chart package provides the capability to visualize data.
- * Each chart binds directly to an Ext.data.Store enabling automatic updates of the chart.
- * A chart configuration object has some overall styling options as well as an array of axes
- * and series. A chart instance example could look like:
- *
-  <pre><code>
-    Ext.create('Ext.chart.Chart', {
-        renderTo: Ext.getBody(),
-        width: 800,
-        height: 600,
-        animate: true,
-        store: store1,
-        shadow: true,
-        theme: 'Category1',
-        legend: {
-            position: 'right'
-        },
-        axes: [ ...some axes options... ],
-        series: [ ...some series options... ]
-    });
-  </code></pre>
- *
- * In this example we set the `width` and `height` of the chart, we decide whether our series are
- * animated or not and we select a store to be bound to the chart. We also turn on shadows for all series,
- * select a color theme `Category1` for coloring the series, set the legend to the right part of the chart and
- * then tell the chart to render itself in the body element of the document. For more information about the axes and
- * series configurations please check the documentation of each series (Line, Bar, Pie, etc).
+ * Charts provide a flexible way to achieve a wide range of data visualization capablitities.
+ * Each Chart gets its data directly from a {@link Ext.data.Store Store}, and automatically
+ * updates its display whenever data in the Store changes. In addition, the look and feel
+ * of a Chart can be customized using {@link Ext.chart.theme.Theme Theme}s.
+ * 
+ * ## Creating a Simple Chart
+ * 
+ * Every Chart has three key parts - a {@link Ext.data.Store Store} that contains the data,
+ * an array of {@link Ext.chart.axis.Axis Axes} which define the boundaries of the Chart,
+ * and one or more {@link Ext.chart.series.Series Series} to handle the visual rendering of the data points.
+ * 
+ * ### 1. Creating a Store
+ * 
+ * The first step is to create a {@link Ext.data.Model Model} that represents the type of
+ * data that will be displayed in the Chart. For example the data for a chart that displays
+ * a weather forecast could be represented as a series of "WeatherPoint" data points with
+ * two fields - "temperature", and "date":
+ * 
+ *     Ext.define('WeatherPoint', {
+ *         extend: 'Ext.data.Model',
+ *         fields: ['temperature', 'date']
+ *     });
+ * 
+ * Next a {@link Ext.data.Store Store} must be created.  The store contains a collection of "WeatherPoint" Model instances.
+ * The data could be loaded dynamically, but for sake of ease this example uses inline data:
+ * 
+ *     var store = Ext.create('Ext.data.Store', {
+ *         model: 'WeatherPoint',
+ *         data: [
+ *             { temperature: 58, date: new Date(2011, 1, 1, 8) },
+ *             { temperature: 63, date: new Date(2011, 1, 1, 9) },
+ *             { temperature: 73, date: new Date(2011, 1, 1, 10) },
+ *             { temperature: 78, date: new Date(2011, 1, 1, 11) },
+ *             { temperature: 81, date: new Date(2011, 1, 1, 12) }
+ *         ]
+ *     });
+ *    
+ * For additional information on Models and Stores please refer to the [Data Guide](#/guide/data).
+ * 
+ * ### 2. Creating the Chart object
+ * 
+ * Now that a Store has been created it can be used in a Chart:
+ * 
+ *     Ext.create('Ext.chart.Chart', {
+ *        renderTo: Ext.getBody(),
+ *        width: 400,
+ *        height: 300,
+ *        store: store
+ *     });
+ *    
+ * That's all it takes to create a Chart instance that is backed by a Store.
+ * However, if the above code is run in a browser, a blank screen will be displayed.
+ * This is because the two pieces that are responsible for the visual display,
+ * the Chart's {@link #cfg-axes axes} and {@link #cfg-series series}, have not yet been defined.
+ * 
+ * ### 3. Configuring the Axes
+ * 
+ * {@link Ext.chart.axis.Axis Axes} are the lines that define the boundaries of the data points that a Chart can display.
+ * This example uses one of the most common Axes configurations - a horizontal "x" axis, and a vertical "y" axis:
+ * 
+ *     Ext.create('Ext.chart.Chart', {
+ *         ...
+ *         axes: [
+ *             {
+ *                 title: 'Temperature',
+ *                 type: 'Numeric',
+ *                 position: 'left',
+ *                 fields: ['temperature'],
+ *                 minimum: 0,
+ *                 maximum: 100
+ *             },
+ *             {
+ *                 title: 'Time',
+ *                 type: 'Time',
+ *                 position: 'bottom',
+ *                 fields: ['date'],
+ *                 dateFormat: 'ga'
+ *             }
+ *         ]
+ *     });
+ *    
+ * The "Temperature" axis is a vertical {@link Ext.chart.axis.Numeric Numeric Axis} and is positioned on the left edge of the Chart.
+ * It represents the bounds of the data contained in the "WeatherPoint" Model's "temperature" field that was
+ * defined above. The minimum value for this axis is "0", and the maximum is "100".
+ * 
+ * The horizontal axis is a {@link Ext.chart.axis.Time Time Axis} and is positioned on the bottom edge of the Chart.
+ * It represents the bounds of the data contained in the "WeatherPoint" Model's "date" field.
+ * The {@link Ext.chart.axis.Time#cfg-dateFormat dateFormat}
+ * configuration tells the Time Axis how to format it's labels.
+ * 
+ * Here's what the Chart looks like now that it has its Axes configured:
+ * 
+ * {@img Ext.chart.Chart/Ext.chart.Chart1.png Chart Axes}
+ * 
+ * ### 4. Configuring the Series
+ * 
+ * The final step in creating a simple Chart is to configure one or more {@link Ext.chart.series.Series Series}.
+ * Series are responsible for the visual representation of the data points contained in the Store.
+ * This example only has one Series:
+ * 
+ *     Ext.create('Ext.chart.Chart', {
+ *         ...
+ *         axes: [
+ *             ...
+ *         ],
+ *         series: [
+ *             {
+ *                 type: 'line',
+ *                 xField: 'date',
+ *                 yField: 'temperature'
+ *             }
+ *         ]
+ *     });
+ *     
+ * This Series is a {@link Ext.chart.series.Line Line Series}, and it uses the "date" and "temperature" fields
+ * from the "WeatherPoint" Models in the Store to plot its data points:
+ * 
+ * {@img Ext.chart.Chart/Ext.chart.Chart2.png Line Series}
+ * 
+ * See the [Simple Chart Example](doc-resources/Ext.chart.Chart/examples/simple_chart/index.html) for a live demo.
+ * 
+ * ## Themes
+ * 
+ * The color scheme for a Chart can be easily changed using the {@link #cfg-theme theme} configuration option:
+ * 
+ *     Ext.create('Ext.chart.Chart', {
+ *         ...
+ *         theme: 'Green',
+ *         ...
+ *     });
+ * 
+ * {@img Ext.chart.Chart/Ext.chart.Chart3.png Green Theme}
+ * 
+ * For more information on Charts please refer to the [Drawing and Charting Guide](#/guide/drawing_and_charting).
+ * 
  */
 Ext.define('Ext.chart.Chart', {
 
@@ -71,134 +176,166 @@ Ext.define('Ext.chart.Chart', {
     viewBox: false,
 
     /**
-     * @cfg {String} theme (optional) The name of the theme to be used. A theme defines the colors and
-     * other visual displays of tick marks on axis, text, title text, line colors, marker colors and styles, etc.
-     * Possible theme values are 'Base', 'Green', 'Sky', 'Red', 'Purple', 'Blue', 'Yellow' and also six category themes
-     * 'Category1' to 'Category6'. Default value is 'Base'.
+     * @cfg {String} theme
+     * The name of the theme to be used. A theme defines the colors and other visual displays of tick marks
+     * on axis, text, title text, line colors, marker colors and styles, etc. Possible theme values are 'Base', 'Green',
+     * 'Sky', 'Red', 'Purple', 'Blue', 'Yellow' and also six category themes 'Category1' to 'Category6'. Default value
+     * is 'Base'.
      */
 
     /**
-     * @cfg {Boolean/Object} animate (optional) true for the default animation (easing: 'ease' and duration: 500)
-     * or a standard animation config object to be used for default chart animations. Defaults to false.
+     * @cfg {Boolean/Object} animate
+     * True for the default animation (easing: 'ease' and duration: 500) or a standard animation config
+     * object to be used for default chart animations. Defaults to false.
      */
     animate: false,
 
     /**
-     * @cfg {Boolean/Object} legend (optional) true for the default legend display or a legend config object. Defaults to false.
+     * @cfg {Boolean/Object} legend
+     * True for the default legend display or a legend config object. Defaults to false.
      */
     legend: false,
 
     /**
-     * @cfg {integer} insetPadding (optional) Set the amount of inset padding in pixels for the chart. Defaults to 10.
+     * @cfg {Number} insetPadding
+     * The amount of inset padding in pixels for the chart. Defaults to 10.
      */
     insetPadding: 10,
 
     /**
-     * @cfg {Array} enginePriority
-     * Defines the priority order for which Surface implementation to use. The first
-     * one supported by the current environment will be used.
+     * @cfg {String[]} enginePriority
+     * Defines the priority order for which Surface implementation to use. The first one supported by the current
+     * environment will be used. Defaults to `['Svg', 'Vml']`.
      */
     enginePriority: ['Svg', 'Vml'],
 
     /**
-     * @cfg {Object|Boolean} background (optional) Set the chart background. This can be a gradient object, image, or color.
-     * Defaults to false for no background.
+     * @cfg {Object/Boolean} background
+     * The chart background. This can be a gradient object, image, or color. Defaults to false for no
+     * background. For example, if `background` were to be a color we could set the object as
      *
-     * For example, if `background` were to be a color we could set the object as
+     *     background: {
+     *         //color string
+     *         fill: '#ccc'
+     *     }
      *
-     <pre><code>
-        background: {
-            //color string
-            fill: '#ccc'
-        }
-     </code></pre>
-
-     You can specify an image by using:
-
-     <pre><code>
-        background: {
-            image: 'http://path.to.image/'
-        }
-     </code></pre>
-
-     Also you can specify a gradient by using the gradient object syntax:
-
-     <pre><code>
-        background: {
-            gradient: {
-                id: 'gradientId',
-                angle: 45,
-                stops: {
-                    0: {
-                        color: '#555'
-                    }
-                    100: {
-                        color: '#ddd'
-                    }
-                }
-            }
-        }
-     </code></pre>
+     * You can specify an image by using:
+     *
+     *     background: {
+     *         image: 'http://path.to.image/'
+     *     }
+     *
+     * Also you can specify a gradient by using the gradient object syntax:
+     *
+     *     background: {
+     *         gradient: {
+     *             id: 'gradientId',
+     *             angle: 45,
+     *             stops: {
+     *                 0: {
+     *                     color: '#555'
+     *                 }
+     *                 100: {
+     *                     color: '#ddd'
+     *                 }
+     *             }
+     *         }
+     *     }
      */
     background: false,
 
     /**
-     * @cfg {Array} gradients (optional) Define a set of gradients that can be used as `fill` property in sprites.
-     * The gradients array is an array of objects with the following properties:
+     * @cfg {Object[]} gradients
+     * Define a set of gradients that can be used as `fill` property in sprites. The gradients array is an
+     * array of objects with the following properties:
      *
-     * <ul>
-     * <li><strong>id</strong> - string - The unique name of the gradient.</li>
-     * <li><strong>angle</strong> - number, optional - The angle of the gradient in degrees.</li>
-     * <li><strong>stops</strong> - object - An object with numbers as keys (from 0 to 100) and style objects
-     * as values</li>
-     * </ul>
+     * - **id** - string - The unique name of the gradient.
+     * - **angle** - number, optional - The angle of the gradient in degrees.
+     * - **stops** - object - An object with numbers as keys (from 0 to 100) and style objects as values
      *
-
-     For example:
-
-     <pre><code>
-        gradients: [{
-            id: 'gradientId',
-            angle: 45,
-            stops: {
-                0: {
-                    color: '#555'
-                },
-                100: {
-                    color: '#ddd'
-                }
-            }
-        },  {
-            id: 'gradientId2',
-            angle: 0,
-            stops: {
-                0: {
-                    color: '#590'
-                },
-                20: {
-                    color: '#599'
-                },
-                100: {
-                    color: '#ddd'
-                }
-            }
-        }]
-     </code></pre>
-
-     Then the sprites can use `gradientId` and `gradientId2` by setting the fill attributes to those ids, for example:
-
-     <pre><code>
-        sprite.setAttributes({
-            fill: 'url(#gradientId)'
-        }, true);
-     </code></pre>
-
+     * For example:
+     *
+     *     gradients: [{
+     *         id: 'gradientId',
+     *         angle: 45,
+     *         stops: {
+     *             0: {
+     *                 color: '#555'
+     *             },
+     *             100: {
+     *                 color: '#ddd'
+     *             }
+     *         }
+     *     }, {
+     *         id: 'gradientId2',
+     *         angle: 0,
+     *         stops: {
+     *             0: {
+     *                 color: '#590'
+     *             },
+     *             20: {
+     *                 color: '#599'
+     *             },
+     *             100: {
+     *                 color: '#ddd'
+     *             }
+     *         }
+     *     }]
+     *
+     * Then the sprites can use `gradientId` and `gradientId2` by setting the fill attributes to those ids, for example:
+     *
+     *     sprite.setAttributes({
+     *         fill: 'url(#gradientId)'
+     *     }, true);
      */
 
+    /**
+     * @cfg {Ext.data.Store} store
+     * The store that supplies data to this chart.
+     */
+
+    /**
+     * @cfg {Ext.chart.series.Series[]} series
+     * Array of {@link Ext.chart.series.Series Series} instances or config objects.  For example:
+     * 
+     *     series: [{
+     *         type: 'column',
+     *         axis: 'left',
+     *         listeners: {
+     *             'afterrender': function() {
+     *                 console('afterrender');
+     *             }
+     *         },
+     *         xField: 'category',
+     *         yField: 'data1'
+     *     }]
+     */
+
+    /**
+     * @cfg {Ext.chart.axis.Axis[]} axes
+     * Array of {@link Ext.chart.axis.Axis Axis} instances or config objects.  For example:
+     * 
+     *     axes: [{
+     *         type: 'Numeric',
+     *         position: 'left',
+     *         fields: ['data1'],
+     *         title: 'Number of Hits',
+     *         minimum: 0,
+     *         //one minor tick between two major ticks
+     *         minorTickSteps: 1
+     *     }, {
+     *         type: 'Category',
+     *         position: 'bottom',
+     *         fields: ['name'],
+     *         title: 'Month of the Year'
+     *     }]
+     */
 
     constructor: function(config) {
         var me = this,
             defaultAnim;
+            
+        config = Ext.apply({}, config);
         me.initTheme(config.theme || me.theme);
         if (me.gradients) {
             Ext.apply(config, { gradients: me.gradients });
@@ -222,6 +359,10 @@ Ext.define('Ext.chart.Chart', {
         me.mixins.navigation.constructor.call(me, config);
         me.callParent([config]);
     },
+    
+    getChartStore: function(){
+        return this.substore || this.store;    
+    },
 
     initComponent: function() {
         var me = this,
@@ -239,17 +380,17 @@ Ext.define('Ext.chart.Chart', {
             'itemdrag',
             'itemdragend',
             /**
-                 * @event beforerefresh
-                 * Fires before a refresh to the chart data is called.  If the beforerefresh handler returns
-                 * <tt>false</tt> the {@link #refresh} action will be cancelled.
-                 * @param {Chart} this
-                 */
+             * @event beforerefresh
+             * Fires before a refresh to the chart data is called. If the beforerefresh handler returns false the
+             * {@link #refresh} action will be cancelled.
+             * @param {Ext.chart.Chart} this
+             */
             'beforerefresh',
             /**
-                 * @event refresh
-                 * Fires after the chart data has been refreshed.
-                 * @param {Chart} this
-                 */
+             * @event refresh
+             * Fires after the chart data has been refreshed.
+             * @param {Ext.chart.Chart} this
+             */
             'refresh'
         );
         Ext.applyIf(me, {
@@ -297,8 +438,8 @@ Ext.define('Ext.chart.Chart', {
     },
 
     /**
-     * Redraw the chart. If animations are set this will animate the chart too.
-     * @cfg {boolean} resize Optional flag which changes the default origin points of the chart for animations.
+     * Redraws the chart. If animations are set this will animate the chart too. 
+     * @param {Boolean} resize (optional) flag which changes the default origin points of the chart for animations.
      */
     redraw: function(resize) {
         var me = this,
@@ -510,7 +651,7 @@ Ext.define('Ext.chart.Chart', {
     // @private
     refresh: function() {
         var me = this;
-        if (me.rendered && me.curWidth != undefined && me.curHeight != undefined) {
+        if (me.rendered && me.curWidth !== undefined && me.curHeight !== undefined) {
             if (me.fireEvent('beforerefresh', me) !== false) {
                 me.redraw();
                 me.fireEvent('refresh', me);
@@ -520,13 +661,13 @@ Ext.define('Ext.chart.Chart', {
 
     /**
      * Changes the data store bound to this chart and refreshes it.
-     * @param {Store} store The store to bind to this chart
+     * @param {Ext.data.Store} store The store to bind to this chart
      */
     bindStore: function(store, initial) {
         var me = this;
         if (!initial && me.store) {
             if (store !== me.store && me.store.autoDestroy) {
-                me.store.destroy();
+                me.store.destroyStore();
             }
             else {
                 me.store.un('datachanged', me.refresh, me);
@@ -760,7 +901,7 @@ Ext.define('Ext.chart.Chart', {
 
     // @private remove gently.
     destroy: function() {
-        this.surface.destroy();
+        Ext.destroy(this.surface);
         this.bindStore(null);
         this.callParent(arguments);
     }

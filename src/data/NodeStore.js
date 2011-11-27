@@ -24,14 +24,16 @@ Ext.define('Ext.data.NodeStore', {
     requires: ['Ext.data.NodeInterface'],
     
     /**
-     * @cfg {Ext.data.Record} node The Record you want to bind this Store to. Note that
+     * @cfg {Ext.data.Model} node
+     * The Record you want to bind this Store to. Note that
      * this record will be decorated with the Ext.data.NodeInterface if this is not the
      * case yet.
      */
     node: null,
     
     /**
-     * @cfg {Boolean} recursive Set this to true if you want this NodeStore to represent
+     * @cfg {Boolean} recursive
+     * Set this to true if you want this NodeStore to represent
      * all the descendents of the node in its flat data collection. This is useful for
      * rendering a tree structure to a DataView and is being used internally by
      * the TreeView. Any records that are moved, removed, inserted or appended to the
@@ -41,7 +43,8 @@ Ext.define('Ext.data.NodeStore', {
     recursive: false,
     
     /** 
-     * @cfg {Boolean} rootVisible <tt>false</tt> to not include the root node in this Stores collection (defaults to <tt>true</tt>)
+     * @cfg {Boolean} rootVisible
+     * False to not include the root node in this Stores collection.
      */    
     rootVisible: false,
     

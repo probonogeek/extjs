@@ -61,8 +61,8 @@ Ext.define('Ext.data.SortTypes', {
     
     /**
      * Default sort that does nothing
-     * @param {Mixed} s The value being converted
-     * @return {Mixed} The comparison value
+     * @param {Object} s The value being converted
+     * @return {Object} The comparison value
      */
     none : function(s) {
         return s;
@@ -77,7 +77,7 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Strips all HTML tags to sort on text only
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asText : function(s) {
@@ -86,7 +86,7 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Strips all HTML tags to sort on text only - Case insensitive
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asUCText : function(s) {
@@ -95,7 +95,7 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Case insensitive string
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asUCString : function(s) {
@@ -104,7 +104,7 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Date sorting
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {Number} The comparison value
      */
     asDate : function(s) {
@@ -119,8 +119,8 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Float sorting
-     * @param {Mixed} s The value being converted
-     * @return {Float} The comparison value
+     * @param {Object} s The value being converted
+     * @return {Number} The comparison value
      */
     asFloat : function(s) {
         var val = parseFloat(String(s).replace(/,/g, ""));
@@ -129,7 +129,7 @@ Ext.define('Ext.data.SortTypes', {
 
     /**
      * Integer sorting
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {Number} The comparison value
      */
     asInt : function(s) {

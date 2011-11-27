@@ -22,6 +22,15 @@ Ext.require([
     'Ext.grid.PagingScroller'
 ]);
 
+Ext.define('Employee', {
+    extend: 'Ext.data.Model',
+    fields: [
+       {name: 'rating', type: 'int'},
+       {name: 'salary', type: 'float'},
+       {name: 'name'}
+    ]
+});
+
 Ext.onReady(function(){
     /**
      * Returns an array of fake data
@@ -53,17 +62,6 @@ Ext.onReady(function(){
         }
         return data;
     }
-
-    Ext.define('Employee', {
-        extend: 'Ext.data.Model',
-        fields: [
-           {name: 'rating', type: 'int'},
-           {name: 'salary', type: 'float'},
-           {name: 'name'}
-        ]
-    });
-
-
     // create the Data Store
     var store = Ext.create('Ext.data.Store', {
         id: 'store',
@@ -72,7 +70,7 @@ Ext.onReady(function(){
         buffered: true,
         // never purge any data, we prefetch all up front
         purgePageCount: 0,
-        model: 'ForumThread',
+        model: 'Employee',
         proxy: {
             type: 'memory'
         }
@@ -126,7 +124,7 @@ Ext.onReady(function(){
         records = [],
         i = 0;
     for (; i < ln; i++) {
-        records.push(Ext.ModelManager.create(data[i], 'Employee'));
+        records.push(Ext.create('Employee', data[i]));
     }
     store.cacheRecords(records);
 

@@ -52,20 +52,17 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * Here is an example showing how some of these config options could be used:
  *
- * {@img Ext.tip.QuickTipManager/Ext.tip.QuickTipManager.png Ext.tip.QuickTipManager component}
- *
- * ## Code
- *
+ *     @example
  *     // Init the singleton.  Any tag-based quick tips will start working.
  *     Ext.tip.QuickTipManager.init();
- *     
+ *
  *     // Apply a set of config properties to the singleton
  *     Ext.apply(Ext.tip.QuickTipManager.getQuickTip(), {
  *         maxWidth: 200,
  *         minWidth: 100,
  *         showDelay: 50      // Show 50ms after entering target
  *     });
- *     
+ *
  *     // Create a small panel to add a quick tip to
  *     Ext.create('Ext.container.Container', {
  *         id: 'quickTipContainer',
@@ -76,8 +73,8 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         },
  *         renderTo: Ext.getBody()
  *     });
- *     
- *     
+ *
+ *
  *     // Manually register a quick tip for a specific element
  *     Ext.tip.QuickTipManager.register({
  *         target: 'quickTipContainer',
@@ -98,7 +95,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *  - `qwidth`: The quick tip width (equivalent to the 'width' target element config).
  *
  * Here is an example of configuring an HTML element to display a tooltip from markup:
- *     
+ *
  *     // Add a quick tip to an HTML button
  *     <input type="button" value="OK" data-qtitle="OK Button" data-qwidth="100"
  *          data-qtip="This is a quick tip from markup!"></input>
@@ -116,9 +113,9 @@ Ext.define('Ext.tip.QuickTipManager', function() {
 
         /**
          * Initialize the global QuickTips instance and prepare any quick tips.
-         * @param {Boolean} autoRender True to render the QuickTips container immediately to
+         * @param {Boolean} autoRender (optional) True to render the QuickTips container immediately to
          * preload images. (Defaults to true)
-         * @param {Object} config An optional config object for the created QuickTip. By
+         * @param {Object} config (optional) config object for the created QuickTip. By
          * default, the {@link Ext.tip.QuickTip QuickTip} class is instantiated, but this can
          * be changed by supplying an xtype property or a className property in this object.
          * All other properties on this object are configuration for the created component.
@@ -235,7 +232,7 @@ Ext.define('Ext.tip.QuickTipManager', function() {
 
         /**
          * Removes any registered quick tip from the target element and destroys it.
-         * @param {String/HTMLElement/Element} el The element from which the quick tip is to be removed.
+         * @param {String/HTMLElement/Ext.Element} el The element from which the quick tip is to be removed or ID of the element.
          */
         unregister : function(){
             tip.unregister.apply(tip, arguments);

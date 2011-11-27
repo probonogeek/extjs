@@ -52,11 +52,11 @@ var p = Ext.create('Ext.Panel', {
 Ext.define('Ext.ux.layout.Center', {
     extend: 'Ext.layout.container.Fit',
     alias: 'layout.ux.center',
-	// private
-    setItemSize : function(item, width, height){
+    // private
+    setItemSize : function(item, width, height) {
         this.owner.addCls('ux-layout-center');
         item.addCls('ux-layout-center-item');
-        if(item && height > 0) {
+        if (height > 0) {
             if (width) {
                 width = item.width;
                 if (Ext.isNumber(item.widthRatio)) {
@@ -64,6 +64,7 @@ Ext.define('Ext.ux.layout.Center', {
                 }
             }
             item.setSize(width, height);
+            item.margins.left = Math.round((this.owner.el.getWidth() - width) * 0.5);
         }
 
     }

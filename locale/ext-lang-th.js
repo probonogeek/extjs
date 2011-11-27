@@ -185,9 +185,11 @@ if(Ext.form.field.Date){
 
 if(Ext.form.field.ComboBox){
   Ext.apply(Ext.form.field.ComboBox.prototype, {
-    loadingText       : "¡ÓÅÑ§âËÅŽ...",
     valueNotFoundText : undefined
   });
+    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+        loadingText       : "¡ÓÅÑ§âËÅŽ..."
+    });
 }
 
 if(Ext.form.field.VTypes){

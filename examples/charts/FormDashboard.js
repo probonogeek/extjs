@@ -76,8 +76,14 @@ Ext.onReady(function(){
                 // buffer so we don't refire while the user is still typing
                 buffer: 200,
                 change: function(field, newValue, oldValue, listener) {
-                    form.updateRecord(rec);
-                    updateRecord(rec);
+                    if (rec && form) {
+                        if (newValue > field.maxValue) {
+                            field.setValue(field.maxValue);
+                        } else {
+                            form.updateRecord(rec);
+                            updateRecord(rec);
+                        }
+                    }
                 }
             };
         };
@@ -253,8 +259,18 @@ Ext.onReady(function(){
                 var json, name, i, l, items, series, fields;
                 if (records[0]) {
                     rec = records[0];
-                    form = form || this.up('form').getForm();
-                    fields = form.getFields();
+                    if (!form) {
+                        form = this.up('form').getForm();
+                        fields = form.getFields();
+                        fields.each(function(field){
+                            if (field.name != 'company') {
+                                field.setDisabled(false);
+                            }
+                        });
+                    } else {
+                        fields = form.getFields();
+                    }
+                    
                     // prevent change events from firing
                     fields.each(function(field){
                         field.suspendEvents();
@@ -393,32 +409,53 @@ Ext.onReady(function(){
                     title:'Company details',
                     defaults: {
                         width: 240,
-                        labelWidth: 90
+                        labelWidth: 90,
+                        disabled: true
                     },
-                    defaultType: 'textfield',
+                    defaultType: 'numberfield',
                     items: [{
                         fieldLabel: 'Name',
                         name: 'company',
-                        disabled: true
+                        xtype: 'textfield'
                     },{
                         fieldLabel: 'Price',
                         name: 'price',
+                        maxValue: 100,
+                        minValue: 0,
+                        enforceMaxLength: true,
+                        maxLength: 5,
                         listeners: createListeners('price')
                     },{
                         fieldLabel: 'Revenue %',
                         name: 'revenue %',
+                        maxValue: 100,
+                        minValue: 0,
+                        enforceMaxLength: true,
+                        maxLength: 5,
                         listeners: createListeners('revenue %')
                     },{
                         fieldLabel: 'Growth %',
                         name: 'growth %',
+                        maxValue: 100,
+                        minValue: 0,
+                        enforceMaxLength: true,
+                        maxLength: 5,
                         listeners: createListeners('growth %')
                     },{
                         fieldLabel: 'Product %',
                         name: 'product %',
+                        maxValue: 100,
+                        minValue: 0,
+                        enforceMaxLength: true,
+                        maxLength: 5,
                         listeners: createListeners('product %')
                     },{
                         fieldLabel: 'Market %',
                         name: 'market %',
+                        maxValue: 100,
+                        minValue: 0,
+                        enforceMaxLength: true,
+                        maxLength: 5,
                         listeners: createListeners('market %')
                     }]
                 }, radarChart]

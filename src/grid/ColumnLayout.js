@@ -19,15 +19,11 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * <p>This class is used only by the grid's HeaderContainer docked child.</p>
  *
- * <p>This class adds the ability to shrink the vertical size of the inner container element back if a grouped
+ * <p>It adds the ability to shrink the vertical size of the inner container element back if a grouped
  * column header has all its child columns dragged out, and the whole HeaderContainer needs to shrink back down.</p>
  *
- * <p>It also enforces the grid's HeaderContainer's forceFit config by, after every calaculateChildBoxes call, converting
- * all pixel widths into flex values, so that propertions are maintained upon width change of the grid.</p>
- *
  * <p>Also, after every layout, after all headers have attained their 'stretchmax' height, it goes through and calls
- * <code>setPadding</code> on the columns so that they lay out correctly. TODO: implement a ColumnHeader component
- * layout which takes responsibility for this, and will run upon resize.</p>
+ * <code>setPadding</code> on the columns so that they lay out correctly.</p>
  */
 Ext.define('Ext.grid.ColumnLayout', {
     extend: 'Ext.layout.container.HBox',
@@ -36,8 +32,10 @@ Ext.define('Ext.grid.ColumnLayout', {
 
     reserveOffset: false,
 
+    shrinkToFit: false,
+
     // Height-stretched innerCt must be able to revert back to unstretched height
-    clearInnerCtOnLayout: false,
+    clearInnerCtOnLayout: true,
 
     beforeLayout: function() {
         var me = this,
@@ -59,19 +57,17 @@ Ext.define('Ext.grid.ColumnLayout', {
         me.innerCt.setHeight(23);
 
         // Unstretch child items before the layout which stretches them.
-        if (me.align == 'stretchmax') {
-            for (; i < len; i++) {
-                item = items[i];
-                item.el.setStyle({
-                    height: 'auto'
-                });
-                item.titleContainer.setStyle({
-                    height: 'auto',
-                    paddingTop: '0'
-                });
-                if (item.componentLayout && item.componentLayout.lastComponentSize) {
-                    item.componentLayout.lastComponentSize.height = item.el.dom.offsetHeight;
-                }
+        for (; i < len; i++) {
+            item = items[i];
+            item.el.setStyle({
+                height: 'auto'
+            });
+            item.titleContainer.setStyle({
+                height: 'auto',
+                paddingTop: '0'
+            });
+            if (item.componentLayout && item.componentLayout.lastComponentSize) {
+                item.componentLayout.lastComponentSize.height = item.el.dom.offsetHeight;
             }
         }
         return returnValue;
@@ -85,7 +81,7 @@ Ext.define('Ext.grid.ColumnLayout', {
             metaData = calculations.meta,
             len = boxes.length, i = 0, box, item;
 
-        if (targetSize.width && !me.isColumn) {
+        if (targetSize.width && !me.isHeader) {
             // If configured forceFit then all columns will be flexed
             if (me.owner.forceFit) {
 
@@ -114,16 +110,84 @@ Ext.define('Ext.grid.ColumnLayout', {
 
     afterLayout: function() {
         var me = this,
+            owner = me.owner,
+            topGrid,
+            bothHeaderCts,
+            otherHeaderCt,
+            thisHeight,
+            otherHeight,
+            modifiedGrid,
             i = 0,
-            items = me.getLayoutItems(),
-            len = items.length;
+            items,
+            len,
+            headerHeight;
 
         me.callParent(arguments);
 
         // Set up padding in items
-        if (!me.owner.hideHeaders && me.align == 'stretchmax') {
+        if (!me.owner.hideHeaders) {
+
+            // If this is one HeaderContainer of a pair in a side-by-side locking view, then find the height
+            // of the highest one, and sync the other one to that height.
+            if (owner.lockableInjected) {
+                topGrid = owner.up('tablepanel').up('tablepanel');
+                bothHeaderCts = topGrid.query('headercontainer:not([isHeader])');
+                otherHeaderCt = (bothHeaderCts[0] === owner) ? bothHeaderCts[1] : bothHeaderCts[0];
+
+                // Both sides must be rendered for this syncing operation to work.
+                if (!otherHeaderCt.rendered) {
+                    return;
+                }
+
+                // Get the height of the highest of both HeaderContainers
+                otherHeight = otherHeaderCt.layout.getRenderTarget().getViewSize().height;
+                if (!otherHeight) {
+                    return;
+                }
+                thisHeight = this.getRenderTarget().getViewSize().height;
+                if (!thisHeight) {
+                    return;
+                }
+
+                // Prevent recursion back into here when the "other" grid, after adjusting to the new hight of its headerCt, attempts to inform its ownerCt
+                // Block the upward notification by flagging the top grid's component layout as busy.
+                topGrid.componentLayout.layoutBusy = true;
+
+                // Assume that the correct header height is the height of this HeaderContainer
+                headerHeight = thisHeight;
+
+                // Synch the height of the smaller HeaderContainer to the height of the highest one.
+                if (thisHeight > otherHeight) {
+                    otherHeaderCt.layout.align = 'stretch';
+                    otherHeaderCt.setCalculatedSize(otherHeaderCt.getWidth(), owner.getHeight(), otherHeaderCt.ownerCt);
+                    delete otherHeaderCt.layout.align;
+                    modifiedGrid = otherHeaderCt.up('tablepanel');
+                } else if (otherHeight > thisHeight) {
+                    headerHeight = otherHeight;
+                    this.align = 'stretch';
+                    owner.setCalculatedSize(owner.getWidth(), otherHeaderCt.getHeight(), owner.ownerCt);
+                    delete this.align;
+                    modifiedGrid = owner.up('tablepanel');
+                }
+                topGrid.componentLayout.layoutBusy = false;
+
+                // Gather all Header items across both Grids.
+                items = bothHeaderCts[0].layout.getLayoutItems().concat(bothHeaderCts[1].layout.getLayoutItems());
+            } else {
+                headerHeight = this.getRenderTarget().getViewSize().height;
+                items = me.getLayoutItems();
+            }
+
+            len = items.length;
             for (; i < len; i++) {
-                items[i].setPadding();
+                items[i].setPadding(headerHeight);
+            }
+
+            // Size the View within the grid which has had its HeaderContainer entallened (That's a perfectly cromulent word BTW)
+            if (modifiedGrid) {
+                setTimeout(function() {
+                    modifiedGrid.doLayout();
+                }, 1);
             }
         }
     },
@@ -135,7 +199,7 @@ Ext.define('Ext.grid.ColumnLayout', {
             extra;
 
         // Columns must not account for scroll offset
-        if (!me.isColumn) {
+        if (!me.isHeader) {
             me.tooNarrow = calcs.meta.tooNarrow;
             extra = (me.reserveOffset ? me.availableSpaceOffset : 0);
 

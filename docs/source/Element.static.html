@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,10 +15,10 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
-Ext.applyIf(Ext.core.Element, {
+Ext.applyIf(Ext.Element, {
     unitRe: /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
     camelRe: /(-[a-z])/gi,
     opacityRe: /alpha\(opacity=(.*)\)/i,
@@ -30,13 +30,13 @@ Ext.applyIf(Ext.core.Element, {
     margins: {l: 'margin-left', r: 'margin-right', t: 'margin-top', b: 'margin-bottom'},
 
     // Reference the prototype's version of the method. Signatures are identical.
-    addUnits : Ext.core.Element.prototype.addUnits,
+    addUnits : Ext.Element.prototype.addUnits,
 
-<span id='Ext-core-Element-method-parseBox'>    /**
+<span id='Ext-Element-static-method-parseBox'>    /**
 </span>     * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
      * (e.g. 10, &quot;10&quot;, &quot;10 10&quot;, &quot;10 10 10&quot; and &quot;10 10 10 10&quot; are all valid options and would return the same result)
      * @static
-     * @param {Number|String} box The encoded margins
+     * @param {Number/String} box The encoded margins
      * @return {Object} An object with margin sizes for top, right, bottom and left
      */
     parseBox : function(box) {
@@ -75,11 +75,11 @@ Ext.applyIf(Ext.core.Element, {
         
     },
     
-<span id='Ext-core-Element-method-unitizeBox'>    /**
+<span id='Ext-Element-static-method-unitizeBox'>    /**
 </span>     * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
      * (e.g. 10, &quot;10&quot;, &quot;10 10&quot;, &quot;10 10 10&quot; and &quot;10 10 10 10&quot; are all valid options and would return the same result)
      * @static
-     * @param {Number|String} box The encoded margins
+     * @param {Number/String} box The encoded margins
      * @param {String} units The type of units to add
      * @return {String} An string with unitized (px if units is not specified) metrics for top, right, bottom and left
      */
@@ -99,7 +99,7 @@ Ext.applyIf(Ext.core.Element, {
         return a.charAt(1).toUpperCase();
     },
 
-<span id='Ext-core-Element-method-normalize'>    /**
+<span id='Ext-Element-static-method-normalize'>    /**
 </span>     * Normalizes CSS property keys from dash delimited to camel case JavaScript Syntax.
      * For example:
      * &lt;ul&gt;
@@ -117,7 +117,7 @@ Ext.applyIf(Ext.core.Element, {
         return this.propertyCache[prop] || (this.propertyCache[prop] = prop.replace(this.camelRe, this.camelReplaceFn));
     },
 
-<span id='Ext-core-Element-method-getDocumentHeight'>    /**
+<span id='Ext-Element-static-method-getDocumentHeight'>    /**
 </span>     * Retrieves the document height
      * @static
      * @return {Number} documentHeight
@@ -126,7 +126,7 @@ Ext.applyIf(Ext.core.Element, {
         return Math.max(!Ext.isStrict ? document.body.scrollHeight : document.documentElement.scrollHeight, this.getViewportHeight());
     },
 
-<span id='Ext-core-Element-method-getDocumentWidth'>    /**
+<span id='Ext-Element-static-method-getDocumentWidth'>    /**
 </span>     * Retrieves the document width
      * @static
      * @return {Number} documentWidth
@@ -135,7 +135,7 @@ Ext.applyIf(Ext.core.Element, {
         return Math.max(!Ext.isStrict ? document.body.scrollWidth : document.documentElement.scrollWidth, this.getViewportWidth());
     },
 
-<span id='Ext-core-Element-method-getViewportHeight'>    /**
+<span id='Ext-Element-static-method-getViewportHeight'>    /**
 </span>     * Retrieves the viewport height of the window.
      * @static
      * @return {Number} viewportHeight
@@ -144,7 +144,7 @@ Ext.applyIf(Ext.core.Element, {
         return window.innerHeight;
     },
 
-<span id='Ext-core-Element-method-getViewportWidth'>    /**
+<span id='Ext-Element-static-method-getViewportWidth'>    /**
 </span>     * Retrieves the viewport width of the window.
      * @static
      * @return {Number} viewportWidth
@@ -153,7 +153,7 @@ Ext.applyIf(Ext.core.Element, {
         return window.innerWidth;
     },
 
-<span id='Ext-core-Element-method-getViewSize'>    /**
+<span id='Ext-Element-static-method-getViewSize'>    /**
 </span>     * Retrieves the viewport size of the window.
      * @static
      * @return {Object} object containing width and height properties
@@ -165,7 +165,7 @@ Ext.applyIf(Ext.core.Element, {
         };
     },
 
-<span id='Ext-core-Element-method-getOrientation'>    /**
+<span id='Ext-Element-static-method-getOrientation'>    /**
 </span>     * Retrieves the current orientation of the window. This is calculated by
      * determing if the height is greater than the width.
      * @static
@@ -179,25 +179,25 @@ Ext.applyIf(Ext.core.Element, {
         return (window.innerHeight &gt; window.innerWidth) ? 'portrait' : 'landscape';
     },
 
-<span id='Ext-core-Element-method-fromPoint'>    /** 
+<span id='Ext-Element-static-method-fromPoint'>    /** 
 </span>     * Returns the top Element that is located at the passed coordinates
      * @static
      * @param {Number} x The x coordinate
-     * @param {Number} x The y coordinate
+     * @param {Number} y The y coordinate
      * @return {String} The found Element
      */
     fromPoint: function(x, y) {
         return Ext.get(document.elementFromPoint(x, y));
     },
     
-<span id='Ext-core-Element-method-parseStyles'>    /**
+<span id='Ext-Element-static-method-parseStyles'>    /**
 </span>     * Converts a CSS string into an object with a property for each style.
      * &lt;p&gt;
      * The sample code below would return an object with 2 properties, one
      * for background-color and one for color.&lt;/p&gt;
      * &lt;pre&gt;&lt;code&gt;
 var css = 'background-color: red;color: blue; ';
-console.log(Ext.core.Element.parseStyles(css));
+console.log(Ext.Element.parseStyles(css));
      * &lt;/code&gt;&lt;/pre&gt;
      * @static
      * @param {String} styles A CSS string

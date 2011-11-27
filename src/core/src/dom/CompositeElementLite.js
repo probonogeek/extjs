@@ -16,7 +16,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @class Ext.CompositeElementLite
  * <p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter
  * members, or to perform collective actions upon the whole set.</p>
- * <p>Although they are not listed, this class supports all of the methods of {@link Ext.core.Element} and
+ * <p>Although they are not listed, this class supports all of the methods of {@link Ext.Element} and
  * {@link Ext.fx.Anim}. The methods from these classes will be performed on all the elements in this collection.</p>
  * Example:<pre><code>
 var els = Ext.select("#some-el div.some-class");
@@ -54,12 +54,11 @@ Ext.override(Ext.CompositeElementLite, {
         return this.add(r);
     }
 });</pre></code>
-     * @type Array
-     * @property elements
+     * @property {HTMLElement} elements
      */
     this.elements = [];
     this.add(els, root);
-    this.el = new Ext.core.Element.Flyweight();
+    this.el = new Ext.Element.Flyweight();
 };
 
 Ext.CompositeElementLite.prototype = {
@@ -88,8 +87,8 @@ Ext.CompositeElementLite.prototype = {
     },
     /**
      * Adds elements to this Composite object.
-     * @param {Mixed} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
-     * @return {CompositeElement} This Composite object.
+     * @param {HTMLElement[]/Ext.CompositeElement} els Either an Array of DOM elements to add, or another Composite object who's elements should be added.
+     * @return {Ext.CompositeElement} This Composite object.
      */
     add : function(els, root){
         var me = this,
@@ -98,7 +97,7 @@ Ext.CompositeElementLite.prototype = {
             return this;
         }
         if(typeof els == "string"){
-            els = Ext.core.Element.selectorFunction(els, root);
+            els = Ext.Element.selectorFunction(els, root);
         }else if(els.isComposite){
             els = els.elements;
         }else if(!Ext.isIterable(els)){
@@ -121,7 +120,7 @@ Ext.CompositeElementLite.prototype = {
         for(i = 0; i < len; i++) {
             e = els[i];
             if(e){
-                Ext.core.Element.prototype[fn].apply(me.getElement(e), args);
+                Ext.Element.prototype[fn].apply(me.getElement(e), args);
             }
         }
         return me;
@@ -129,7 +128,7 @@ Ext.CompositeElementLite.prototype = {
     /**
      * Returns a flyweight Element of the dom element object at the specified index
      * @param {Number} index
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
     item : function(index){
         var me = this,
@@ -160,13 +159,13 @@ Ext.CompositeElementLite.prototype = {
      * <p>Calls the passed function for each element in this composite.</p>
      * @param {Function} fn The function to call. The function is passed the following parameters:<ul>
      * <li><b>el</b> : Element<div class="sub-desc">The current Element in the iteration.
-     * <b>This is the flyweight (shared) Ext.core.Element instance, so if you require a
+     * <b>This is the flyweight (shared) Ext.Element instance, so if you require a
      * a reference to the dom node, use el.dom.</b></div></li>
      * <li><b>c</b> : Composite<div class="sub-desc">This Composite object.</div></li>
      * <li><b>idx</b> : Number<div class="sub-desc">The zero-based index in the iteration.</div></li>
      * </ul>
-     * @param {Object} scope (optional) The scope (<i>this</i> reference) in which the function is executed. (defaults to the Element)
-     * @return {CompositeElement} this
+     * @param {Object} [scope] The scope (<i>this</i> reference) in which the function is executed. (defaults to the Element)
+     * @return {Ext.CompositeElement} this
      */
     each : function(fn, scope){
         var me = this,
@@ -188,8 +187,8 @@ Ext.CompositeElementLite.prototype = {
 
     /**
     * Clears this Composite and adds the elements passed.
-    * @param {Mixed} els Either an array of DOM elements, or another Composite from which to fill this Composite.
-    * @return {CompositeElement} this
+    * @param {HTMLElement[]/Ext.CompositeElement} els Either an array of DOM elements, or another Composite from which to fill this Composite.
+    * @return {Ext.CompositeElement} this
     */
     fill : function(els){
         var me = this;
@@ -202,10 +201,10 @@ Ext.CompositeElementLite.prototype = {
      * Filters this composite to only elements that match the passed selector.
      * @param {String/Function} selector A string CSS selector or a comparison function.
      * The comparison function will be called with the following arguments:<ul>
-     * <li><code>el</code> : Ext.core.Element<div class="sub-desc">The current DOM element.</div></li>
+     * <li><code>el</code> : Ext.Element<div class="sub-desc">The current DOM element.</div></li>
      * <li><code>index</code> : Number<div class="sub-desc">The current index within the collection.</div></li>
      * </ul>
-     * @return {CompositeElement} this
+     * @return {Ext.CompositeElement} this
      */
     filter : function(selector){
         var els = [],
@@ -220,15 +219,15 @@ Ext.CompositeElementLite.prototype = {
                 els[els.length] = me.transformElement(el);
             }
         });
-        
+
         me.elements = els;
         return me;
     },
 
     /**
      * Find the index of the passed element within the composite collection.
-     * @param el {Mixed} The id of an element, or an Ext.core.Element, or an HtmlElement to find within the composite collection.
-     * @return Number The index of the passed Ext.core.Element in the composite collection, or -1 if not found.
+     * @param el {Mixed} The id of an element, or an Ext.Element, or an HtmlElement to find within the composite collection.
+     * @return Number The index of the passed Ext.Element in the composite collection, or -1 if not found.
      */
     indexOf : function(el){
         return Ext.Array.indexOf(this.elements, this.transformElement(el));
@@ -236,11 +235,11 @@ Ext.CompositeElementLite.prototype = {
 
     /**
     * Replaces the specified element with the passed element.
-    * @param {Mixed} el The id of an element, the Element itself, the index of the element in this composite
+    * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, the Element itself, the index of the element in this composite
     * to replace.
-    * @param {Mixed} replacement The id of an element or the Element itself.
+    * @param {String/Ext.Element} replacement The id of an element or the Element itself.
     * @param {Boolean} domReplace (Optional) True to remove and replace the element in the document too.
-    * @return {CompositeElement} this
+    * @return {Ext.CompositeElement} this
     */
     replaceElement : function(el, replacement, domReplace){
         var index = !isNaN(el) ? el : this.indexOf(el),
@@ -269,13 +268,13 @@ Ext.CompositeElementLite.prototype.on = Ext.CompositeElementLite.prototype.addLi
 
 /**
  * @private
- * Copies all of the functions from Ext.core.Element's prototype onto CompositeElementLite's prototype.
- * This is called twice - once immediately below, and once again after additional Ext.core.Element
+ * Copies all of the functions from Ext.Element's prototype onto CompositeElementLite's prototype.
+ * This is called twice - once immediately below, and once again after additional Ext.Element
  * are added in Ext JS
  */
 Ext.CompositeElementLite.importElementMethods = function() {
     var fnName,
-        ElProto = Ext.core.Element.prototype,
+        ElProto = Ext.Element.prototype,
         CelProto = Ext.CompositeElementLite.prototype;
 
     for (fnName in ElProto) {
@@ -293,29 +292,29 @@ Ext.CompositeElementLite.importElementMethods = function() {
 Ext.CompositeElementLite.importElementMethods();
 
 if(Ext.DomQuery){
-    Ext.core.Element.selectorFunction = Ext.DomQuery.select;
+    Ext.Element.selectorFunction = Ext.DomQuery.select;
 }
 
 /**
- * Selects elements based on the passed CSS selector to enable {@link Ext.core.Element Element} methods
+ * Selects elements based on the passed CSS selector to enable {@link Ext.Element Element} methods
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
- * @param {String/Array} selector The CSS selector or an array of elements
+ * @param {String/HTMLElement[]} selector The CSS selector or an array of elements
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
- * @return {CompositeElementLite/CompositeElement}
- * @member Ext.core.Element
+ * @return {Ext.CompositeElementLite/Ext.CompositeElement}
+ * @member Ext.Element
  * @method select
  */
-Ext.core.Element.select = function(selector, root){
+Ext.Element.select = function(selector, root){
     var els;
     if(typeof selector == "string"){
-        els = Ext.core.Element.selectorFunction(selector, root);
+        els = Ext.Element.selectorFunction(selector, root);
     }else if(selector.length !== undefined){
         els = selector;
     }else{
         //<debug>
         Ext.Error.raise({
-            sourceClass: "Ext.core.Element",
+            sourceClass: "Ext.Element",
             sourceMethod: "select",
             selector: selector,
             root: root,
@@ -326,14 +325,14 @@ Ext.core.Element.select = function(selector, root){
     return new Ext.CompositeElementLite(els);
 };
 /**
- * Selects elements based on the passed CSS selector to enable {@link Ext.core.Element Element} methods
+ * Selects elements based on the passed CSS selector to enable {@link Ext.Element Element} methods
  * to be applied to many related elements in one statement through the returned {@link Ext.CompositeElement CompositeElement} or
  * {@link Ext.CompositeElementLite CompositeElementLite} object.
- * @param {String/Array} selector The CSS selector or an array of elements
+ * @param {String/HTMLElement[]} selector The CSS selector or an array of elements
  * @param {HTMLElement/String} root (optional) The root element of the query or id of the root
- * @return {CompositeElementLite/CompositeElement}
+ * @return {Ext.CompositeElementLite/Ext.CompositeElement}
  * @member Ext
  * @method select
  */
-Ext.select = Ext.core.Element.select;
+Ext.select = Ext.Element.select;
 

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -150,14 +150,14 @@ Ext.define('Ext.draw.Matrix', {
 
     toFilter: function() {
         var me = this;
-        return &quot;progid:DXImageTransform.Microsoft.Matrix(M11=&quot; + me.get(0, 0) +
+        return &quot;progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand',FilterType=bilinear,M11=&quot; + me.get(0, 0) +
             &quot;, M12=&quot; + me.get(0, 1) + &quot;, M21=&quot; + me.get(1, 0) + &quot;, M22=&quot; + me.get(1, 1) +
             &quot;, Dx=&quot; + me.get(0, 2) + &quot;, Dy=&quot; + me.get(1, 2) + &quot;)&quot;;
     },
 
     offset: function() {
         var matrix = this.matrix;
-        return [matrix[0][2].toFixed(4), matrix[1][2].toFixed(4)];
+        return [(matrix[0][2] || 0).toFixed(4), (matrix[1][2] || 0).toFixed(4)];
     },
 
     // Split matrix into Translate Scale, Shear, and Rotate
@@ -178,7 +178,7 @@ Ext.define('Ext.draw.Matrix', {
             row;
 
         // scale and shear
-        row = [[matrix[0][0], matrix[0][1]], [matrix[1][1], matrix[1][1]]];
+        row = [[matrix[0][0], matrix[0][1]], [matrix[1][0], matrix[1][1]]];
         out.scaleX = Math.sqrt(norm(row[0]));
         normalize(row[0]);
 
@@ -196,6 +196,7 @@ Ext.define('Ext.draw.Matrix', {
 
         return out;
     }
-});</pre>
+});
+</pre>
 </body>
 </html>

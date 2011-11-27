@@ -33,7 +33,7 @@ Ext.onReady(function(){
     Ext.define('ForumThread', {
         extend: 'Ext.data.Model',
         fields: [
-            'title', 'forumtitle', 'forumid', 'author',
+            'title', 'forumtitle', 'forumid', 'username',
             {name: 'replycount', type: 'int'},
             {name: 'lastpost', mapping: 'lastpost', type: 'date', dateFormat: 'timestamp'},
             'lastposter', 'excerpt', 'threadid'
@@ -76,7 +76,7 @@ Ext.onReady(function(){
     }
 
     function renderLast(value, p, r) {
-        return Ext.String.format('{0}<br/>by {1}', Ext.Date.dateFormat(value, 'M j, Y, g:i a'), r.data['lastposter']);
+        return Ext.String.format('{0}<br/>by {1}', Ext.Date.dateFormat(value, 'M j, Y, g:i a'), r.get('lastposter'));
     }
 
 
@@ -113,7 +113,7 @@ Ext.onReady(function(){
             sortable: false
         },{
             text: "Author",
-            dataIndex: 'author',
+            dataIndex: 'username',
             width: 100,
             hidden: true,
             sortable: true

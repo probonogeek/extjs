@@ -162,9 +162,11 @@ Ext.onReady(function(){
 
     if(Ext.form.field.ComboBox){
        Ext.apply(Ext.form.field.ComboBox.prototype, {
-          loadingText       : "加载中...",
           valueNotFoundText : undefined
        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "加载中..."
+        });
     }
 
     if(Ext.form.field.VTypes){

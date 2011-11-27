@@ -13,14 +13,10 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.grid.column.Boolean
- * @extends Ext.grid.column.Column
- * <p>A Column definition class which renders boolean data fields.  See the {@link Ext.grid.column.Column#xtype xtype}
- * config option of {@link Ext.grid.column.Column} for more details.</p>
+ * A Column definition class which renders boolean data fields.  See the {@link Ext.grid.column.Column#xtype xtype}
+ * config option of {@link Ext.grid.column.Column} for more details.
  *
- * {@img Ext.grid.column.Boolean/Ext.grid.column.Boolean.png Ext.grid.column.Boolean grid column}
- *
- * ## Code
+ *     @example
  *     Ext.create('Ext.data.Store', {
  *        storeId:'sampleStore',
  *        fields:[
@@ -28,10 +24,10 @@ If you are unsure which license is appropriate for your use, please contact the 
  *            {name: 'rocks', type: 'boolean'}
  *        ],
  *        data:{'items':[
- *            {"framework":"Ext JS 4", "rocks":true},
- *            {"framework":"Sencha Touch", "rocks":true},
- *            {"framework":"Ext GWT", "rocks":true},            
- *            {"framework":"Other Guys", "rocks":false}            
+ *            { 'framework': "Ext JS 4",     'rocks': true  },
+ *            { 'framework': "Sencha Touch", 'rocks': true  },
+ *            { 'framework': "Ext GWT",      'rocks': true  }, 
+ *            { 'framework': "Other Guys",   'rocks': false } 
  *        ]},
  *        proxy: {
  *            type: 'memory',
@@ -46,13 +42,14 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         title: 'Boolean Column Demo',
  *         store: Ext.data.StoreManager.lookup('sampleStore'),
  *         columns: [
- *             {text: 'Framework',  dataIndex: 'framework', flex: 1},
+ *             { text: 'Framework',  dataIndex: 'framework', flex: 1 },
  *             {
  *                 xtype: 'booleancolumn', 
  *                 text: 'Rocks',
  *                 trueText: 'Yes',
  *                 falseText: 'No', 
- *                 dataIndex: 'rocks'}
+ *                 dataIndex: 'rocks'
+ *             }
  *         ],
  *         height: 200,
  *         width: 400,
@@ -66,20 +63,19 @@ Ext.define('Ext.grid.column.Boolean', {
 
     /**
      * @cfg {String} trueText
-     * The string returned by the renderer when the column value is not falsey (defaults to <tt>'true'</tt>).
+     * The string returned by the renderer when the column value is not falsey.
      */
     trueText: 'true',
 
     /**
      * @cfg {String} falseText
-     * The string returned by the renderer when the column value is falsey (but not undefined) (defaults to
-     * <tt>'false'</tt>).
+     * The string returned by the renderer when the column value is falsey (but not undefined).
      */
     falseText: 'false',
 
     /**
      * @cfg {String} undefinedText
-     * The string returned by the renderer when the column value is undefined (defaults to <tt>'&#160;'</tt>).
+     * The string returned by the renderer when the column value is undefined.
      */
     undefinedText: '&#160;',
 

@@ -15,45 +15,47 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.form.Basic
  * @extends Ext.util.Observable
- * 
+ *
  * Provides input field management, validation, submission, and form loading services for the collection
  * of {@link Ext.form.field.Field Field} instances within a {@link Ext.container.Container}. It is recommended
  * that you use a {@link Ext.form.Panel} as the form container, as that has logic to automatically
  * hook up an instance of {@link Ext.form.Basic} (plus other conveniences related to field configuration.)
- * 
+ *
  * ## Form Actions
- * 
+ *
  * The Basic class delegates the handling of form loads and submits to instances of {@link Ext.form.action.Action}.
  * See the various Action implementations for specific details of each one's functionality, as well as the
  * documentation for {@link #doAction} which details the configuration options that can be specified in
  * each action call.
- * 
+ *
  * The default submit Action is {@link Ext.form.action.Submit}, which uses an Ajax request to submit the
  * form's values to a configured URL. To enable normal browser submission of an Ext form, use the
  * {@link #standardSubmit} config option.
- * 
- * Note: File uploads are not performed using normal 'Ajax' techniques; see the description for
- * {@link #hasUpload} for details.
- * 
+ *
+ * ## File uploads
+ *
+ * File uploads are not performed using normal 'Ajax' techniques; see the description for
+ * {@link #hasUpload} for details. If you're using file uploads you should read the method description.
+ *
  * ## Example usage:
- * 
+ *
  *     Ext.create('Ext.form.Panel', {
  *         title: 'Basic Form',
  *         renderTo: Ext.getBody(),
  *         bodyPadding: 5,
  *         width: 350,
- * 
+ *
  *         // Any configuration items here will be automatically passed along to
  *         // the Ext.form.Basic instance when it gets created.
- * 
+ *
  *         // The form will submit an AJAX request to this URL when submitted
  *         url: 'save-form.php',
- * 
+ *
  *         items: [{
  *             fieldLabel: 'Field',
  *             name: 'theField'
  *         }],
- * 
+ *
  *         buttons: [{
  *             text: 'Submit',
  *             handler: function() {
@@ -73,7 +75,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             }
  *         }]
  *     });
- * 
+ *
  * @docauthor Jason Johnston <jason@sencha.com>
  */
 Ext.define('Ext.form.Basic', {
@@ -168,12 +170,14 @@ Ext.define('Ext.form.Basic', {
      * @cfg {String} method
      * The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
      */
+
     /**
      * @cfg {Ext.data.reader.Reader} reader
      * An Ext.data.DataReader (e.g. {@link Ext.data.reader.Xml}) to be used to read
      * data when executing 'load' actions. This is optional as there is built-in
      * support for processing JSON responses.
      */
+
     /**
      * @cfg {Ext.data.reader.Reader} errorReader
      * <p>An Ext.data.DataReader (e.g. {@link Ext.data.reader.Xml}) to be used to
@@ -201,7 +205,7 @@ Ext.define('Ext.form.Basic', {
     /**
      * @cfg {Object} baseParams
      * <p>Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.</p>
-     * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode Ext.Object.toQueryString}.</p>
+     * <p>Parameters are encoded as standard HTTP parameters using {@link Ext.Object#toQueryString}.</p>
      */
 
     /**
@@ -227,7 +231,7 @@ api: {
      */
 
     /**
-     * @cfg {Array/String} paramOrder <p>A list of params to be executed server side.
+     * @cfg {String/String[]} paramOrder <p>A list of params to be executed server side.
      * Defaults to <tt>undefined</tt>. Only used for the <code>{@link #api}</code>
      * <code>load</code> configuration.</p>
      * <p>Specify the params in the order in which they must be executed on the
@@ -242,38 +246,38 @@ paramOrder: 'param1|param2|param'
      */
 
     /**
-     * @cfg {Boolean} paramsAsHash Only used for the <code>{@link #api}</code>
+     * @cfg {Boolean} paramsAsHash
+     * Only used for the <code>{@link #api}</code>
      * <code>load</code> configuration. If <tt>true</tt>, parameters will be sent as a
-     * single hash collection of named arguments (defaults to <tt>false</tt>). Providing a
+     * single hash collection of named arguments. Providing a
      * <tt>{@link #paramOrder}</tt> nullifies this configuration.
      */
     paramsAsHash: false,
 
     /**
      * @cfg {String} waitTitle
-     * The default title to show for the waiting message box (defaults to <tt>'Please Wait...'</tt>)
+     * The default title to show for the waiting message box
      */
     waitTitle: 'Please Wait...',
 
     /**
-     * @cfg {Boolean} trackResetOnLoad If set to <tt>true</tt>, {@link #reset}() resets to the last loaded
-     * or {@link #setValues}() data instead of when the form was first created.  Defaults to <tt>false</tt>.
+     * @cfg {Boolean} trackResetOnLoad
+     * If set to true, {@link #reset}() resets to the last loaded or {@link #setValues}() data instead of
+     * when the form was first created.
      */
     trackResetOnLoad: false,
 
     /**
      * @cfg {Boolean} standardSubmit
-     * <p>If set to <tt>true</tt>, a standard HTML form submit is used instead
-     * of a XHR (Ajax) style form submission. Defaults to <tt>false</tt>. All of
-     * the field values, plus any additional params configured via {@link #baseParams}
-     * and/or the <code>options</code> to {@link #submit}, will be included in the
-     * values submitted in the form.</p>
+     * If set to true, a standard HTML form submit is used instead of a XHR (Ajax) style form submission.
+     * All of the field values, plus any additional params configured via {@link #baseParams}
+     * and/or the `options` to {@link #submit}, will be included in the values submitted in the form.
      */
 
     /**
-     * @cfg {Mixed} waitMsgTarget
+     * @cfg {String/HTMLElement/Ext.Element} waitMsgTarget
      * By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific
-     * element by passing it or its id or mask the form itself by passing in true. Defaults to <tt>undefined</tt>.
+     * element by passing it or its id or mask the form itself by passing in true.
      */
 
 
@@ -314,10 +318,15 @@ paramOrder: 'param1|param2|param'
 
         if (child.isFormField) {
             handleField(child);
-        }
-        else if (isContainer) {
+        } else if (isContainer) {
             // Walk down
-            Ext.Array.forEach(child.query('[isFormField]'), handleField);
+            if (child.isDestroyed) {
+                // the container is destroyed, this means we may have child fields, so here
+                // we just invalidate all the fields to be sure.
+                delete me._fields;
+            } else {
+                Ext.Array.forEach(child.query('[isFormField]'), handleField);
+            }
         }
 
         // Flush the cached list of formBind components
@@ -343,12 +352,19 @@ paramOrder: 'param1|param2|param'
         return fields;
     },
 
+    /**
+     * @private
+     * Finds and returns the set of all items bound to fields inside this form
+     * @return {Ext.util.MixedCollection} The set of all bound form field items
+     */
     getBoundItems: function() {
         var boundItems = this._boundItems;
-        if (!boundItems) {
+        
+        if (!boundItems || boundItems.getCount() === 0) {
             boundItems = this._boundItems = Ext.create('Ext.util.MixedCollection');
             boundItems.addAll(this.owner.query('[formBind]'));
         }
+        
         return boundItems;
     },
 
@@ -541,7 +557,7 @@ paramOrder: 'param1|param2|param'
 
     /**
      * Shortcut to {@link #doAction do} a {@link Ext.form.action.Submit submit action}. This will use the
-     * {@link Ext.form.action.Submit AJAX submit action} by default. If the {@link #standardsubmit} config is
+     * {@link Ext.form.action.Submit AJAX submit action} by default. If the {@link #standardSubmit} config is
      * enabled it will use a standard form element to submit, or if the {@link #api} config is present it will
      * use the {@link Ext.form.action.DirectLoad Ext.direct.Direct submit action}.
      * @param {Object} options The options to pass to the action (see {@link #doAction} for details).<br>
@@ -598,7 +614,7 @@ myFormPanel.getForm().submit({
 
     /**
      * Persists the values in this form into the passed {@link Ext.data.Model} object in a beginEdit/endEdit block.
-     * @param {Ext.data.Record} record The record to edit
+     * @param {Ext.data.Model} record The record to edit
      * @return {Ext.form.Basic} this
      */
     updateRecord: function(record) {
@@ -623,7 +639,7 @@ myFormPanel.getForm().submit({
 
     /**
      * Loads an {@link Ext.data.Model} into this form by calling {@link #setValues} with the
-     * {@link Ext.data.Model#data record data}.
+     * {@link Ext.data.Model#raw record data}.
      * See also {@link #trackResetOnLoad}.
      * @param {Ext.data.Model} record The record to load
      * @return {Ext.form.Basic} this
@@ -632,7 +648,7 @@ myFormPanel.getForm().submit({
         this._record = record;
         return this.setValues(record.data);
     },
-    
+
     /**
      * Returns the last Ext.data.Model instance that was loaded via {@link #loadRecord}
      * @return {Ext.data.Model} The record
@@ -718,7 +734,8 @@ myFormPanel.getForm().submit({
 
     /**
      * Mark fields in this form invalid in bulk.
-     * @param {Array/Object} errors Either an array in the form <code>[{id:'fieldId', msg:'The message'}, ...]</code>,
+     * @param {Object/Object[]/Ext.data.Errors} errors
+     * Either an array in the form <code>[{id:'fieldId', msg:'The message'}, ...]</code>,
      * an object hash of <code>{id: msg, id2: msg2}</code>, or a {@link Ext.data.Errors} object.
      * @return {Ext.form.Basic} this
      */
@@ -750,7 +767,7 @@ myFormPanel.getForm().submit({
 
     /**
      * Set values for fields in this form in bulk.
-     * @param {Array/Object} values Either an array in the form:<pre><code>
+     * @param {Object/Object[]} values Either an array in the form:<pre><code>
 [{id:'clientName', value:'Fred. Olsen Lines'},
  {id:'portOfLoading', value:'FXT'},
  {id:'portOfDischarge', value:'OSL'} ]</code></pre>

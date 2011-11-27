@@ -28,6 +28,8 @@ Ext.define('MyDesktop.SystemStatus', {
 
     id: 'systemstatus',
 
+    refreshRate: 500,
+
     init : function() {
         // No launcher means we don't appear on the Start Menu...
 //        this.launcher = {
@@ -423,6 +425,7 @@ Ext.define('MyDesktop.SystemStatus', {
         var me = this;
         clearTimeout(me.updateTimer);
         me.updateTimer = setTimeout(function() {
+            var start = new Date().getTime();
             if (me.pass % 3 === 0) {
                 me.memoryStore.loadData(me.generateData(me.memoryArray));
             }
@@ -432,9 +435,15 @@ Ext.define('MyDesktop.SystemStatus', {
             }
 
             me.generateCpuLoad();
+
+            var end = new Date().getTime();
+
+            // no more than 25% average CPU load
+            me.refreshRate = Math.max(me.refreshRate, (end - start) * 4);
+
             me.updateCharts();
             me.pass++;
-        }, 500);
+        }, me.refreshRate);
     }
 });
 

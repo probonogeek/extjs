@@ -47,7 +47,7 @@ Ext.define('Ext.view.DropZone', {
     fireViewEvent: function() {
         var me = this,
             result;
-            
+
         me.lock();
         result = me.view.fireEvent.apply(me.view, arguments);
         me.unlock();
@@ -162,7 +162,7 @@ Ext.define('Ext.view.DropZone', {
     // The mouse is over a View node
     onNodeOver: function(node, dragZone, e, data) {
         var me = this;
-        
+
         if (!Ext.Array.contains(data.records, me.view.getRecord(node))) {
             me.positionIndicator(node, data, e);
         }
@@ -173,7 +173,7 @@ Ext.define('Ext.view.DropZone', {
     // Remove drop position indicator
     notifyOut: function(node, dragZone, e, data) {
         var me = this;
-        
+
         me.callParent(arguments);
         delete me.overRecord;
         delete me.currentPosition;
@@ -233,6 +233,12 @@ Ext.define('Ext.view.DropZone', {
             }
         }
         return performOperation;
+    },
+    
+    destroy: function(){
+        Ext.destroy(this.indicator);
+        delete this.indicator;
+        this.callParent();
     }
 });
 

@@ -13,18 +13,28 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.layout.container.Card
- * @extends Ext.layout.container.AbstractCard
- *
  * This layout manages multiple child Components, each fitted to the Container, where only a single child Component can be
  * visible at any given time.  This layout style is most commonly used for wizards, tab implementations, etc.
  * This class is intended to be extended or created via the layout:'card' {@link Ext.container.Container#layout} config,
  * and should generally not need to be created directly via the new keyword.
  *
  * The CardLayout's focal method is {@link #setActiveItem}.  Since only one panel is displayed at a time,
- * the only way to move from one Component to the next is by calling setActiveItem, passing the id or index of
- * the next panel to display.  The layout itself does not provide a user interface for handling this navigation,
+ * the only way to move from one Component to the next is by calling setActiveItem, passing the next panel to display
+ * (or its id or index).  The layout itself does not provide a user interface for handling this navigation,
  * so that functionality must be provided by the developer.
+ *
+ * To change the active card of a container, call the setActiveItem method of its layout:
+ *
+ *     Ext.create('Ext.panel.Panel', {
+ *         layout: 'card',
+ *         items: [
+ *             { html: 'Card 1' },
+ *             { html: 'Card 2' }
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     });
+ *
+ *     p.getLayout().setActiveItem(1);
  *
  * In the following example, a simplistic wizard setup is demonstrated.  A button bar is added
  * to the footer of the containing panel to provide navigation buttons.  The buttons will be handled by a
@@ -32,10 +42,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * completely different implementation.  For serious implementations, a better approach would be to extend
  * CardLayout to provide the custom functionality needed.
  *
- * {@img Ext.layout.container.Card/Ext.layout.container.Card.png Ext.layout.container.Card container layout}
- *
- * Example usage:
- * 
+ *     @example
  *     var navigate = function(panel, direction){
  *         // This routine could contain business logic required to manage the navigation steps.
  *         // It would call setActiveItem as needed, manage navigation button state, handle any
@@ -48,13 +55,12 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         Ext.getCmp('move-prev').setDisabled(!layout.getPrev());
  *         Ext.getCmp('move-next').setDisabled(!layout.getNext());
  *     };
- *  
+ *
  *     Ext.create('Ext.panel.Panel', {
  *         title: 'Example Wizard',
  *         width: 300,
  *         height: 200,
  *         layout: 'card',
- *         activeItem: 0, // make sure the active item is set on the container config!
  *         bodyStyle: 'padding:15px',
  *         defaults: {
  *             // applied to each contained panel
@@ -91,7 +97,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             html: '<h1>Congratulations!</h1><p>Step 3 of 3 - Complete</p>'
  *         }],
  *         renderTo: Ext.getBody()
- *     });  
+ *     });
  */
 Ext.define('Ext.layout.container.Card', {
 
@@ -106,7 +112,7 @@ Ext.define('Ext.layout.container.Card', {
 
     /**
      * Makes the given card active.
-     * 
+     *
      *     var card1 = Ext.create('Ext.panel.Panel', {itemId: 'card-1'});
      *     var card2 = Ext.create('Ext.panel.Panel', {itemId: 'card-2'});
      *     var panel = Ext.create('Ext.panel.Panel', {
@@ -118,7 +124,7 @@ Ext.define('Ext.layout.container.Card', {
      *     panel.getLayout().setActiveItem(card2);
      *     panel.getLayout().setActiveItem('card-2');
      *     panel.getLayout().setActiveItem(1);
-     * 
+     *
      * @param {Ext.Component/Number/String} newCard  The component, component {@link Ext.Component#id id},
      * {@link Ext.Component#itemId itemId}, or index of component.
      * @return {Ext.Component} the activated component or false when nothing activated.
@@ -191,7 +197,6 @@ Ext.define('Ext.layout.container.Card', {
     },
 
     configureItem: function(item) {
-
         // Card layout only controls dimensions which IT has controlled.
         // That calculation has to be determined at run time by examining the ownerCt's isFixedWidth()/isFixedHeight() methods
         item.layoutManagedHeight = 0;

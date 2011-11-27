@@ -13,12 +13,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
 (function(){
-    Ext.core.Element.boxMarkup = '<div class="{0}-tl"><div class="{0}-tr"><div class="{0}-tc"></div></div></div><div class="{0}-ml"><div class="{0}-mr"><div class="{0}-mc"></div></div></div><div class="{0}-bl"><div class="{0}-br"><div class="{0}-bc"></div></div></div>';
     // local style camelizing for speed
-    var supports = Ext.supports,
+    var ELEMENT = Ext.Element,
+        supports = Ext.supports,
         view = document.defaultView,
         opacityRe = /alpha\(opacity=(.*)\)/i,
         trimRe = /^\s+|\s+$/g,
@@ -45,10 +45,20 @@ If you are unsure which license is appropriate for your use, please contact the 
         borders = {l: BORDER + LEFT + WIDTH, r: BORDER + RIGHT + WIDTH, t: BORDER + TOP + WIDTH, b: BORDER + BOTTOM + WIDTH},
         paddings = {l: PADDING + LEFT, r: PADDING + RIGHT, t: PADDING + TOP, b: PADDING + BOTTOM},
         margins = {l: MARGIN + LEFT, r: MARGIN + RIGHT, t: MARGIN + TOP, b: MARGIN + BOTTOM},
-        data = Ext.core.Element.data;
+        data = ELEMENT.data;
 
-    Ext.override(Ext.core.Element, {
-        
+    ELEMENT.boxMarkup = '<div class="{0}-tl"><div class="{0}-tr"><div class="{0}-tc"></div></div></div><div class="{0}-ml"><div class="{0}-mr"><div class="{0}-mc"></div></div></div><div class="{0}-bl"><div class="{0}-br"><div class="{0}-bc"></div></div></div>';
+
+    // These property values are read from the parentNode if they cannot be read
+    // from the child:
+    ELEMENT.inheritedProps = {
+        fontSize: 1,
+        fontStyle: 1,
+        opacity: 1
+    };
+
+    Ext.override(ELEMENT, {
+
         /**
          * TODO: Look at this
          */
@@ -56,7 +66,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         adjustWidth : function(width) {
             var me = this,
                 isNum = (typeof width == 'number');
-                
+
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
@@ -67,7 +77,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         adjustHeight : function(height) {
             var me = this,
                 isNum = (typeof height == "number");
-                
+
             if(isNum && me.autoBoxAdjust && !me.isBorderBox()){
                height -= (me.getBorderWidth("tb") + me.getPadding("tb"));
             }
@@ -77,8 +87,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Adds one or more CSS classes to the element. Duplicate classes are automatically filtered out.
-         * @param {String/Array} className The CSS classes to add separated by space, or an array of classes
-         * @return {Ext.core.Element} this
+         * @param {String/String[]} className The CSS classes to add separated by space, or an array of classes
+         * @return {Ext.Element} this
          */
         addCls : function(className){
             var me = this,
@@ -117,8 +127,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Removes one or more CSS classes from the element.
-         * @param {String/Array} className The CSS classes to remove separated by space, or an array of classes
-         * @return {Ext.core.Element} this
+         * @param {String/String[]} className The CSS classes to remove separated by space, or an array of classes
+         * @return {Ext.Element} this
          */
         removeCls : function(className){
             var me = this,
@@ -148,8 +158,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Adds one or more CSS classes to this element and removes the same class(es) from all siblings.
-         * @param {String/Array} className The CSS class to add, or an array of classes
-         * @return {Ext.core.Element} this
+         * @param {String/String[]} className The CSS class to add, or an array of classes
+         * @return {Ext.Element} this
          */
         radioCls : function(className){
             var cn = this.dom.parentNode.childNodes,
@@ -167,7 +177,7 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).
          * @param {String} className The CSS class to toggle
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          * @method
          */
         toggleCls : Ext.supports.ClassList ?
@@ -208,7 +218,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Replaces a CSS class on the element with another.  If the old name does not exist, the new name will simply be added.
          * @param {String} oldClassName The CSS class to replace
          * @param {String} newClassName The replacement CSS class
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         replaceCls : function(oldClassName, newClassName){
             return this.removeCls(oldClassName).addCls(newClassName);
@@ -224,7 +234,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * @return {String} The current value of the style property for this element.
          * @method
          */
-        getStyle : function(){
+        getStyle : function() {
             return view && view.getComputedStyle ?
                 function(prop){
                     var el = this.dom,
@@ -233,49 +243,80 @@ If you are unsure which license is appropriate for your use, please contact the 
                     if(el == document){
                         return null;
                     }
-                    prop = Ext.core.Element.normalize(prop);
+                    prop = ELEMENT.normalize(prop);
                     out = (v = el.style[prop]) ? v :
                            (cs = view.getComputedStyle(el, "")) ? cs[prop] : null;
-                           
+
                     // Ignore cases when the margin is correctly reported as 0, the bug only shows
                     // numbers larger.
                     if(prop == 'marginRight' && out != '0px' && !supports.RightMargin){
-                        cleaner = Ext.core.Element.getRightMarginFixCleaner(el);
+                        cleaner = ELEMENT.getRightMarginFixCleaner(el);
                         display = this.getStyle('display');
                         el.style.display = 'inline-block';
                         out = view.getComputedStyle(el, '').marginRight;
                         el.style.display = display;
                         cleaner();
                     }
-                    
+
                     if(prop == 'backgroundColor' && out == 'rgba(0, 0, 0, 0)' && !supports.TransparentColor){
                         out = 'transparent';
                     }
                     return out;
                 } :
-                function(prop){
+                function (prop) {
                     var el = this.dom,
                         m, cs;
 
                     if (el == document) {
                         return null;
                     }
-                    
-                    if (prop == 'opacity') {
-                        if (el.style.filter.match) {
-                            m = el.style.filter.match(opacityRe);
-                            if(m){
-                                var fv = parseFloat(m[1]);
-                                if(!isNaN(fv)){
-                                    return fv ? fv / 100 : 0;
+                    prop = ELEMENT.normalize(prop);
+
+                    do {
+                        if (prop == 'opacity') {
+                            if (el.style.filter.match) {
+                                m = el.style.filter.match(opacityRe);
+                                if(m){
+                                    var fv = parseFloat(m[1]);
+                                    if(!isNaN(fv)){
+                                        return fv ? fv / 100 : 0;
+                                    }
                                 }
                             }
+                            return 1;
                         }
-                        return 1;
-                    }
-                    prop = Ext.core.Element.normalize(prop);
-                    return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
-                };
+
+                        // the try statement does have a cost, so we avoid it unless we are
+                        // on IE6
+                        if (!Ext.isIE6) {
+                            return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
+                        }
+
+                        try {
+                            return el.style[prop] || ((cs = el.currentStyle) ? cs[prop] : null);
+                        } catch (e) {
+                            // in some cases, IE6 will throw Invalid Argument for properties
+                            // like fontSize (see in /examples/tabs/tabs.html).
+                        }
+
+                        if (!ELEMENT.inheritedProps[prop]) {
+                            break;
+                        }
+
+                        el = el.parentNode;
+                        // this is _not_ perfect, but we can only hope that the style we
+                        // need is inherited from a parentNode. If not and since IE won't
+                        // give us the info we need, we are never going to be 100% right.
+                    } while (el);
+
+                    //<debug>
+                    Ext.log({
+                        level: 'warn',
+                        msg: 'Failed to get ' + this.dom.id + '.currentStyle.' + prop
+                    });
+                    //</debug>
+                    return null;
+                }
         }(),
 
         /**
@@ -310,7 +351,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Wrapper for setting style properties, also takes single object parameter of multiple styles.
          * @param {String/Object} property The style property to be set, or an object of multiple styles.
          * @param {String} value (optional) The value to apply to the given property, or null if an object was passed.
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setStyle : function(prop, value){
             var me = this,
@@ -331,7 +372,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                         me.setOpacity(value);
                     }
                     else {
-                        me.dom.style[Ext.core.Element.normalize(style)] = value;
+                        me.dom.style[ELEMENT.normalize(style)] = value;
                     }
                 }
             }
@@ -340,10 +381,10 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Set the opacity of the element
-         * @param {Float} opacity The new opacity. 0 = transparent, .5 = 50% visibile, 1 = fully visible, etc
+         * @param {Number} opacity The new opacity. 0 = transparent, .5 = 50% visibile, 1 = fully visible, etc
          * @param {Boolean/Object} animate (optional) a standard Element animation config object or <tt>true</tt> for
          * the default animation (<tt>{duration: .35, easing: 'easeIn'}</tt>)
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setOpacity: function(opacity, animate) {
             var me = this,
@@ -389,7 +430,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Clears any opacity settings from this element. Required in some cases for IE.
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         clearOpacity : function(){
             var style = this.dom.style;
@@ -402,11 +443,11 @@ If you are unsure which license is appropriate for your use, please contact the 
             }
             return this;
         },
-        
+
         /**
          * @private
          * Returns 1 if the browser returns the subpixel dimension rounded to the lowest pixel.
-         * @return {Number} 0 or 1 
+         * @return {Number} 0 or 1
          */
         adjustDirect2DDimension: function(dimension) {
             var me = this,
@@ -416,7 +457,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                 inlinePosition = dom.style['position'],
                 originIndex = dimension === 'width' ? 0 : 1,
                 floating;
-                
+
             if (display === 'inline') {
                 dom.style['display'] = 'inline-block';
             }
@@ -426,16 +467,16 @@ If you are unsure which license is appropriate for your use, please contact the 
             // floating will contain digits that appears after the decimal point
             // if height or width are set to auto we fallback to msTransformOrigin calculation
             floating = (parseFloat(me.getStyle(dimension)) || parseFloat(dom.currentStyle.msTransformOrigin.split(' ')[originIndex]) * 2) % 1;
-            
+
             dom.style['position'] = inlinePosition;
-            
+
             if (display === 'inline') {
                 dom.style['display'] = inlineDisplay;
             }
 
             return floating;
         },
-        
+
         /**
          * Returns the offset height of the element
          * @param {Boolean} contentHeight (optional) true to get the height minus borders and padding
@@ -483,7 +524,7 @@ If you are unsure which license is appropriate for your use, please contact the 
             }
             return height;
         },
-                
+
         /**
          * Returns the offset width of the element
          * @param {Boolean} contentWidth (optional) true to get the width minus borders and padding
@@ -502,8 +543,8 @@ If you are unsure which license is appropriate for your use, please contact the 
                 overflow = style.overflow;
                 me.setStyle({overflow: 'hidden'});
             }
-            
-            // Fix Opera 10.5x width calculation issues 
+
+            // Fix Opera 10.5x width calculation issues
             if (Ext.isOpera10_5) {
                 if (dom.parentNode.currentStyle.position === 'relative') {
                     parentPosition = dom.parentNode.style.position;
@@ -512,7 +553,7 @@ If you are unsure which license is appropriate for your use, please contact the 
                     dom.parentNode.style.position = parentPosition;
                 }
                 width = Math.max(width || 0, dom.offsetWidth);
-            
+
             // Gecko will in some cases report an offsetWidth that is actually less than the width of the
             // text contents, because it measures fonts with sub-pixel precision but rounds the calculated
             // value down. Using getBoundingClientRect instead of offsetWidth allows us to get the precise
@@ -538,11 +579,11 @@ If you are unsure which license is appropriate for your use, please contact the 
                     width++;
                 }
             }
-            
+
             if (contentWidth) {
                 width -= (me.getBorderWidth("lr") + me.getPadding("lr"));
             }
-            
+
             if (Ext.isIEQuirks) {
                 me.setStyle({ overflow: overflow});
             }
@@ -555,12 +596,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Set the width of this Element.
-         * @param {Mixed} width The new width. This may be one of:<div class="mdetail-params"><ul>
+         * @param {Number/String} width The new width. This may be one of:<div class="mdetail-params"><ul>
          * <li>A Number specifying the new width in this Element's {@link #defaultUnit}s (by default, pixels).</li>
          * <li>A String used to set the CSS width style. Animation may <b>not</b> be used.
          * </ul></div>
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setWidth : function(width, animate){
             var me = this;
@@ -594,12 +635,12 @@ Ext.fly('elId').setHeight(150, {
     callback: function(){ this.{@link #update}("finished"); }
 });
          * </code></pre>
-         * @param {Mixed} height The new height. This may be one of:<div class="mdetail-params"><ul>
+         * @param {Number/String} height The new height. This may be one of:<div class="mdetail-params"><ul>
          * <li>A Number specifying the new height in this Element's {@link #defaultUnit}s (by default, pixels.)</li>
          * <li>A String used to set the CSS height style. Animation may <b>not</b> be used.</li>
          * </ul></div>
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
          setHeight : function(height, animate){
             var me = this;
@@ -642,7 +683,7 @@ Ext.fly('elId').setHeight(150, {
 
         /**
          *  Store the current overflow setting and clip overflow on the element - use <tt>{@link #unclip}</tt> to remove
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         clip : function(){
             var me = this,
@@ -664,7 +705,7 @@ Ext.fly('elId').setHeight(150, {
 
         /**
          *  Return clipping (overflow) to original clipping before <tt>{@link #clip}</tt> was called
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         unclip : function(){
             var me = this,
@@ -674,14 +715,14 @@ Ext.fly('elId').setHeight(150, {
             if(data(dom, ISCLIPPED)){
                 data(dom, ISCLIPPED, false);
                 clip = data(dom, ORIGINALCLIP);
-                if(o.o){
-                    me.setStyle(OVERFLOW, o.o);
+                if(clip.o){
+                    me.setStyle(OVERFLOW, clip.o);
                 }
-                if(o.x){
-                    me.setStyle(OVERFLOWX, o.x);
+                if(clip.x){
+                    me.setStyle(OVERFLOWX, clip.x);
                 }
-                if(o.y){
-                    me.setStyle(OVERFLOWY, o.y);
+                if(clip.y){
+                    me.setStyle(OVERFLOWY, clip.y);
                 }
             }
             return me;
@@ -705,15 +746,15 @@ Ext.fly('elId').setHeight(150, {
         },
 
         margins : margins,
-        
+
         /**
          * More flexible version of {@link #setStyle} for setting style properties.
          * @param {String/Object/Function} styles A style specification string, e.g. "width:100px", or object in the form {width:"100px"}, or
          * a function which returns such a specification.
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         applyStyles : function(style){
-            Ext.core.DomHelper.applyStyles(this.dom, style);
+            Ext.DomHelper.applyStyles(this.dom, style);
             return this;
         },
 
@@ -730,7 +771,7 @@ Ext.fly('elId').setHeight(150, {
             var styles = {},
                 len = arguments.length,
                 i = 0, style;
-                
+
             for(; i < len; ++i) {
                 style = arguments[i];
                 styles[style] = this.getStyle(style);
@@ -745,7 +786,7 @@ Ext.fly('elId').setHeight(150, {
         * {@link Ext.panel.Panel} when <tt>{@link Ext.panel.Panel#frame frame=true}</tt>, {@link Ext.window.Window}).  The markup
         * is of this form:</p>
         * <pre><code>
-    Ext.core.Element.boxMarkup =
+    Ext.Element.boxMarkup =
     &#39;&lt;div class="{0}-tl">&lt;div class="{0}-tr">&lt;div class="{0}-tc">&lt;/div>&lt;/div>&lt;/div>
      &lt;div class="{0}-ml">&lt;div class="{0}-mr">&lt;div class="{0}-mc">&lt;/div>&lt;/div>&lt;/div>
      &lt;div class="{0}-bl">&lt;div class="{0}-br">&lt;div class="{0}-bc">&lt;/div>&lt;/div>&lt;/div>&#39;;
@@ -764,28 +805,28 @@ Ext.fly('elId').setHeight(150, {
         * (defaults to <tt>'x-box'</tt>). Note that there are a number of CSS rules that are dependent on
         * this name to make the overall effect work, so if you supply an alternate base class, make sure you
         * also supply all of the necessary rules.
-        * @return {Ext.core.Element} The outermost wrapping element of the created box structure.
+        * @return {Ext.Element} The outermost wrapping element of the created box structure.
         */
         boxWrap : function(cls){
             cls = cls || Ext.baseCSSPrefix + 'box';
-            var el = Ext.get(this.insertHtml("beforeBegin", "<div class='" + cls + "'>" + Ext.String.format(Ext.core.Element.boxMarkup, cls) + "</div>"));
+            var el = Ext.get(this.insertHtml("beforeBegin", "<div class='" + cls + "'>" + Ext.String.format(ELEMENT.boxMarkup, cls) + "</div>"));
             Ext.DomQuery.selectNode('.' + cls + '-mc', el.dom).appendChild(this.dom);
             return el;
         },
 
         /**
          * Set the size of this Element. If animation is true, both width and height will be animated concurrently.
-         * @param {Mixed} width The new width. This may be one of:<div class="mdetail-params"><ul>
+         * @param {Number/String} width The new width. This may be one of:<div class="mdetail-params"><ul>
          * <li>A Number specifying the new width in this Element's {@link #defaultUnit}s (by default, pixels).</li>
          * <li>A String used to set the CSS width style. Animation may <b>not</b> be used.
          * <li>A size object in the format <code>{width: widthValue, height: heightValue}</code>.</li>
          * </ul></div>
-         * @param {Mixed} height The new height. This may be one of:<div class="mdetail-params"><ul>
+         * @param {Number/String} height The new height. This may be one of:<div class="mdetail-params"><ul>
          * <li>A Number specifying the new height in this Element's {@link #defaultUnit}s (by default, pixels).</li>
          * <li>A String used to set the CSS height style. Animation may <b>not</b> be used.</li>
          * </ul></div>
          * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         setSize : function(width, height, animate){
             var me = this;
@@ -797,6 +838,11 @@ Ext.fly('elId').setHeight(150, {
             width = me.adjustWidth(width);
             height = me.adjustHeight(height);
             if(!animate || !me.anim){
+                // Must touch some property before setting style.width/height on non-quirk IE6,7, or the
+                // properties will not reflect the changes on the style immediately
+                if (!Ext.isIEQuirks && (Ext.isIE6 || Ext.isIE7)) {
+                    me.dom.offsetTop;
+                }
                 me.dom.style.width = me.addUnits(width);
                 me.dom.style.height = me.addUnits(height);
             }
@@ -841,7 +887,7 @@ Ext.fly('elId').setHeight(150, {
         getComputedWidth : function(){
             var me = this,
                 w = Math.max(me.dom.offsetWidth, me.dom.clientWidth);
-                
+
             if(!w){
                 w = parseFloat(me.getStyle('width')) || 0;
                 if(!me.isBorderBox()){
@@ -864,7 +910,7 @@ Ext.fly('elId').setHeight(150, {
         /**
          * Sets up event handlers to add and remove a css class when the mouse is over this element
          * @param {String} className
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         addClsOnOver : function(className){
             var dom = this.dom;
@@ -882,7 +928,7 @@ Ext.fly('elId').setHeight(150, {
         /**
          * Sets up event handlers to add and remove a css class when this element has the focus
          * @param {String} className
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         addClsOnFocus : function(className){
             var me = this,
@@ -899,7 +945,7 @@ Ext.fly('elId').setHeight(150, {
         /**
          * Sets up event handlers to add and remove a css class when the mouse is down and then up on this element (a click effect)
          * @param {String} className
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         addClsOnClick : function(className){
             var dom = this.dom;
@@ -944,8 +990,8 @@ Ext.fly('elId').setHeight(150, {
             // If the body, use static methods
             if (isDoc) {
                 ret = {
-                    width : Ext.core.Element.getViewWidth(),
-                    height : Ext.core.Element.getViewHeight()
+                    width : ELEMENT.getViewWidth(),
+                    height : ELEMENT.getViewHeight()
                 };
 
             // Else use clientHeight/clientWidth
@@ -989,8 +1035,8 @@ Ext.fly('elId').setHeight(150, {
             // If the body, use static methods
             if (isDoc) {
                 return {
-                    width : Ext.core.Element.getViewWidth(),
-                    height : Ext.core.Element.getViewHeight()
+                    width : ELEMENT.getViewWidth(),
+                    height : ELEMENT.getViewHeight()
                 };
             }
             // Use Styles if they are set
@@ -1022,7 +1068,7 @@ Ext.fly('elId').setHeight(150, {
 
         /**
          * Forces the browser to repaint this element
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         repaint : function(){
             var dom = this.dom;
@@ -1034,17 +1080,34 @@ Ext.fly('elId').setHeight(150, {
         },
 
         /**
+         * Enable text selection for this element (normalized across browsers)
+         * @return {Ext.Element} this
+         */
+        selectable : function() {
+            var me = this;
+            me.dom.unselectable = "off";
+            // Prevent it from bubles up and enables it to be selectable
+            me.on('selectstart', function (e) {
+                e.stopPropagation();
+                return true;
+            });
+            me.applyStyles("-moz-user-select: text; -khtml-user-select: text;");
+            me.removeCls(Ext.baseCSSPrefix + 'unselectable');
+            return me;
+        },
+
+        /**
          * Disables text selection for this element (normalized across browsers)
-         * @return {Ext.core.Element} this
+         * @return {Ext.Element} this
          */
         unselectable : function(){
             var me = this;
             me.dom.unselectable = "on";
 
             me.swallowEvent("selectstart", true);
-            me.applyStyles("-moz-user-select:none;-khtml-user-select:none;");
+            me.applyStyles("-moz-user-select:-moz-none;-khtml-user-select:none;");
             me.addCls(Ext.baseCSSPrefix + 'unselectable');
-            
+
             return me;
         },
 

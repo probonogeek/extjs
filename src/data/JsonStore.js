@@ -27,7 +27,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 var store = new Ext.data.JsonStore({
     // store configs
     autoDestroy: true,
-    storeId: 'myStore'
+    storeId: 'myStore',
 
     proxy: {
         type: 'ajax',

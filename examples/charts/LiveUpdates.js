@@ -81,6 +81,8 @@ Ext.onReady(function () {
     Ext.create('Ext.Window', {
         width: 800,
         height: 600,
+        minHeight: 400,
+        minWidth: 550,
         maximizable: true,
         title: 'Live Updated Chart',
         layout: 'fit',
@@ -119,7 +121,7 @@ Ext.onReady(function () {
             }],
             series: [{
                 type: 'line',
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 xField: 'date',
                 yField: 'visits',
                 label: {
@@ -134,7 +136,7 @@ Ext.onReady(function () {
                 }
             },{
                 type: 'line',
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 xField: 'date',
                 yField: 'views',
                 label: {
@@ -149,7 +151,7 @@ Ext.onReady(function () {
                 }
             },{
                 type: 'line',
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 xField: 'date',
                 yField: 'veins',
                 label: {

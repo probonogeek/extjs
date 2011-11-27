@@ -27,10 +27,26 @@ Ext.define('Ext.panel.Header', {
     indicateDrag   : false,
     weight         : -1,
 
-    renderTpl: ['<div class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl><tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl></tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>></div>'],
+    renderTpl: [
+        '<div id="{id}-body" class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl>',
+        '<tpl if="uiCls">',
+            '<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl>',
+        '</tpl>"',
+        '<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>></div>'],
+
+    /**
+     * @cfg {String} title
+     * The title text to display
+     */
+
+    /**
+     * @cfg {String} iconCls
+     * CSS class for icon in header. Used for displaying an icon to the left of a title.
+     */
 
     initComponent: function() {
         var me = this,
+            ruleStyle,
             rule,
             style,
             titleTextEl,
@@ -48,9 +64,7 @@ Ext.define('Ext.panel.Header', {
         me.addClsWithUI(me.orientation);
         me.addClsWithUI(me.dock);
 
-        Ext.applyIf(me.renderSelectors, {
-            body: '.' + me.baseCls + '-body'
-        });
+        me.addChildEls('body');
 
         // Add Icon
         if (!Ext.isEmpty(me.iconCls)) {
@@ -85,7 +99,11 @@ Ext.define('Ext.panel.Header', {
             if (Ext.isArray(ui)) {
                 ui = ui[0];
             }
-            rule = Ext.util.CSS.getRule('.' + me.baseCls + '-text-' + ui);
+            ruleStyle = '.' + me.baseCls + '-text-' + ui;
+            if (Ext.scopeResetCSS) {
+                ruleStyle = '.' + Ext.baseCSSPrefix + 'reset ' + ruleStyle;
+            }
+            rule = Ext.util.CSS.getRule(ruleStyle);
             if (rule) {
                 style = rule.style;
             }
@@ -105,6 +123,8 @@ Ext.define('Ext.panel.Header', {
                 autoSize: true,
                 margins: '5 0 0 0',
                 items: [ me.textConfig ],
+                // this is a bit of a cheat: we are not selecting an element of titleCmp
+                // but rather of titleCmp.items[0] (so we cannot use childEls)
                 renderSelectors: {
                     textEl: '.' + me.baseCls + '-text'
                 }
@@ -121,15 +141,16 @@ Ext.define('Ext.panel.Header', {
                 ariaRole  : 'heading',
                 focusable: false,
                 flex : 1,
-                renderTpl : ['<span class="{cls}-text {cls}-text-{ui}">{title}</span>'],
+                cls: me.baseCls + '-text-container',
+                renderTpl : [
+                    '<span id="{id}-textEl" class="{cls}-text {cls}-text-{ui}">{title}</span>'
+                ],
                 renderData: {
                     title: me.title,
                     cls  : me.baseCls,
                     ui   : me.ui
                 },
-                renderSelectors: {
-                    textEl: '.' + me.baseCls + '-text'
-                }
+                childEls: ['textEl']
             });
         }
         me.items.push(me.titleCmp);
@@ -142,16 +163,16 @@ Ext.define('Ext.panel.Header', {
     initIconCmp: function() {
         this.iconCmp = Ext.create('Ext.Component', {
             focusable: false,
-            renderTpl : ['<img alt="" src="{blank}" class="{cls}-icon {iconCls}"/>'],
+            renderTpl : [
+                '<img id="{id}-iconEl" alt="" src="{blank}" class="{cls}-icon {iconCls}"/>'
+            ],
             renderData: {
                 blank  : Ext.BLANK_IMAGE_URL,
                 cls    : this.baseCls,
                 iconCls: this.iconCls,
                 orientation: this.orientation
             },
-            renderSelectors: {
-                iconEl: '.' + this.baseCls + '-icon'
-            },
+            childEls: ['iconEl'],
             iconCls: this.iconCls
         });
     },
@@ -208,7 +229,7 @@ Ext.define('Ext.panel.Header', {
                 me.bodyCls = classes.join(' ');
             }
         }
- 
+
         return result;
     },
 
@@ -359,24 +380,25 @@ Ext.define('Ext.panel.Header', {
     },
 
     /**
-     * Sets the CSS class that provides the icon image for this panel.  This method will replace any existing
-     * icon class if one has already been set and fire the {@link #iconchange} event after completion.
+     * Sets the CSS class that provides the icon image for this header.  This method will replace any existing
+     * icon class if one has already been set.
      * @param {String} cls The new CSS class name
      */
     setIconCls: function(cls) {
-        this.iconCls = cls;
-        if (!this.iconCmp) {
-            this.initIconCmp();
-            this.insert(0, this.iconCmp);
-        }
-        else {
-            if (!cls || !cls.length) {
-                this.iconCmp.destroy();
-            }
-            else {
-                var iconCmp = this.iconCmp,
-                    el      = iconCmp.iconEl;
-
+        var me = this,
+            isEmpty = !cls || !cls.length,
+            iconCmp = me.iconCmp,
+            el;
+        
+        me.iconCls = cls;
+        if (!me.iconCmp && !isEmpty) {
+            me.initIconCmp();
+            me.insert(0, me.iconCmp);
+        } else if (iconCmp) {
+            if (isEmpty) {
+                me.iconCmp.destroy();
+            } else {
+                el = iconCmp.iconEl;
                 el.removeCls(iconCmp.iconCls);
                 el.addCls(cls);
                 iconCmp.iconCls = cls;

@@ -27,7 +27,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * <li><code>setIconCls(string)</code></li>
  * <li><code>setDisabled(boolean)</code></li>
  * <li><code>setVisible(boolean)</code></li>
- * <li><code>setHandler(function)</code></li></ul>.</p>
+ * <li><code>setHandler(function)</code></li></ul></p>
  * <p>This allows the Action to control its associated Components.</p>
  * Example usage:<br>
  * <pre><code>
@@ -78,12 +78,13 @@ Ext.define('Ext.Action', {
     /* End Definitions */
 
     /**
-     * @cfg {String} text The text to set for all components configured by this Action (defaults to '').
+     * @cfg {String} [text='']
+     * The text to set for all components configured by this Action.
      */
     /**
-     * @cfg {String} iconCls
+     * @cfg {String} [iconCls='']
      * The CSS class selector that specifies a background image to be used as the header icon for
-     * all components configured by this Action (defaults to '').
+     * all components configured by this Action.
      * <p>An example of specifying a custom icon class would be something like:
      * </p><pre><code>
 // specify the property in the config for the class:
@@ -95,22 +96,26 @@ Ext.define('Ext.Action', {
 </code></pre>
      */
     /**
-     * @cfg {Boolean} disabled True to disable all components configured by this Action, false to enable them (defaults to false).
+     * @cfg {Boolean} [disabled=false]
+     * True to disable all components configured by this Action, false to enable them.
      */
     /**
-     * @cfg {Boolean} hidden True to hide all components configured by this Action, false to show them (defaults to false).
+     * @cfg {Boolean} [hidden=false]
+     * True to hide all components configured by this Action, false to show them.
      */
     /**
-     * @cfg {Function} handler The function that will be invoked by each component tied to this Action
-     * when the component's primary event is triggered (defaults to undefined).
+     * @cfg {Function} handler
+     * The function that will be invoked by each component tied to this Action
+     * when the component's primary event is triggered.
      */
     /**
      * @cfg {String} itemId
      * See {@link Ext.Component}.{@link Ext.Component#itemId itemId}.
      */
     /**
-     * @cfg {Object} scope The scope (<code><b>this</b></code> reference) in which the
-     * <code>{@link #handler}</code> is executed. Defaults to the browser window.
+     * @cfg {Object} scope
+     * The scope (this reference) in which the {@link #handler} is executed.
+     * Defaults to the browser window.
      */
 
     /**
@@ -184,7 +189,7 @@ Ext.define('Ext.Action', {
     },
 
     /**
-     * Returns true if the components using this Action are currently disabled, else returns false.  
+     * Returns true if the components using this Action are currently disabled, else returns false.
      */
     isDisabled : function(){
         return this.initialConfig.disabled;
@@ -248,7 +253,7 @@ Ext.define('Ext.Action', {
         var items = this.items,
             i = 0,
             len = items.length;
-            
+
         for(; i < len; i++){
             items[i][fnName].apply(items[i], args);
         }
@@ -269,9 +274,7 @@ Ext.define('Ext.Action', {
      * Executes this Action manually using the handler function specified in the original config object
      * or the handler function set with <code>{@link #setHandler}</code>.  Any arguments passed to this
      * function will be passed on to the handler function.
-     * @param {Mixed} arg1 (optional) Variable number of arguments passed to the handler function
-     * @param {Mixed} arg2 (optional)
-     * @param {Mixed} etc... (optional)
+     * @param {Object...} args (optional) Variable number of arguments passed to the handler function
      */
     execute : function(){
         this.initialConfig.handler.apply(this.initialConfig.scope || Ext.global, arguments);

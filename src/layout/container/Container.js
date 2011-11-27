@@ -15,8 +15,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
 * @class Ext.layout.container.Container
 * @extends Ext.layout.container.AbstractContainer
-* <p>This class is intended to be extended or created via the <tt><b>{@link Ext.container.Container#layout layout}</b></tt>
-* configuration property.  See <tt><b>{@link Ext.container.Container#layout}</b></tt> for additional details.</p>
+* <p>This class is intended to be extended or created via the {@link Ext.container.Container#layout layout}
+* configuration property.  See {@link Ext.container.Container#layout} for additional details.</p>
 */
 Ext.define('Ext.layout.container.Container', {
 
@@ -24,14 +24,14 @@ Ext.define('Ext.layout.container.Container', {
 
     extend: 'Ext.layout.container.AbstractContainer',
     alternateClassName: 'Ext.layout.ContainerLayout',
-    
+
     /* End Definitions */
 
     layoutItem: function(item, box) {
-        box = box || {};
-        if (item.componentLayout.initialized !== true) {
-            this.setItemSize(item, box.width || item.width || undefined, box.height || item.height || undefined);
-            // item.doComponentLayout(box.width || item.width || undefined, box.height || item.height || undefined);
+        if (box) {
+            item.doComponentLayout(box.width, box.height);
+        } else {
+            item.doComponentLayout();
         }
     },
 

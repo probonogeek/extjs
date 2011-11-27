@@ -46,6 +46,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * 
  * ## Example Usage
  *
+ *     @example
  *     Ext.define('TestResult', {
  *         extend: 'Ext.data.Model',
  *         fields: ['student', {

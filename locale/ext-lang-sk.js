@@ -152,9 +152,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
        Ext.apply(Ext.form.field.ComboBox.prototype, {
-          loadingText       : "Nahrávam...",
           valueNotFoundText : undefined
        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Nahrávam..."
+        });
     }
 
     if(Ext.form.field.VTypes){

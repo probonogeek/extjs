@@ -31,23 +31,27 @@ Ext.onReady(function(){
             xtype: 'textfield',
             fieldLabel: 'First Name',
             name: 'firstName',
-            value: 'Evan'
+            value: 'Evan',
+            allowBlank: false
         }, {
             xtype: 'textfield',
             fieldLabel: 'Last Name',
             name: 'lastName',
-            value: 'Trimboli'
+            value: 'Trimboli',
+            allowBlank: false
         }, {
             xtype: 'numberfield',
             fieldLabel: 'Age',
             name: 'age',
-            value: 25
+            value: 25,
+            allowBlank: false
         }],
         dockedItems: [{
             dock: 'bottom',
             ui: 'footer',
             xtype: 'toolbar',
             items: ['->', {
+                formBind: true,
                 text: 'Send',
                 handler: function(){
                     var values = form.getForm().getValues();

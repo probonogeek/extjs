@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -58,7 +58,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      * object hash which represents the restorable state of the object.&lt;/p&gt;
      * &lt;p&gt;The value yielded by getState is passed to {@link Ext.state.Manager#set}
      * which uses the configured {@link Ext.state.Provider} to save the object
-     * keyed by the &lt;code&gt;{@link #stateId}&lt;/code&gt;&lt;/p&gt;.
+     * keyed by the &lt;code&gt;{@link #stateId}&lt;/code&gt;.&lt;/p&gt;
      * &lt;p&gt;During construction, a stateful object attempts to &lt;i&gt;restore&lt;/i&gt;
      * its state by calling {@link Ext.state.Manager#get} passing the
      * &lt;code&gt;{@link #stateId}&lt;/code&gt;&lt;/p&gt;
@@ -79,18 +79,18 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      */
 
 <span id='Ext-state-Stateful-cfg-stateEvents'>    /**
-</span>     * @cfg {Array} stateEvents
+</span>     * @cfg {String[]} stateEvents
      * &lt;p&gt;An array of events that, when fired, should trigger this object to
-     * save its state (defaults to none). &lt;code&gt;stateEvents&lt;/code&gt; may be any type
+     * save its state. Defaults to none. &lt;code&gt;stateEvents&lt;/code&gt; may be any type
      * of event supported by this object, including browser or custom events
      * (e.g., &lt;tt&gt;['click', 'customerchange']&lt;/tt&gt;).&lt;/p&gt;
      * &lt;p&gt;See &lt;code&gt;{@link #stateful}&lt;/code&gt; for an explanation of saving and
      * restoring object state.&lt;/p&gt;
      */
 
-<span id='Ext-state-Stateful-cfg-saveBuffer'>    /**
-</span>     * @cfg {Number} saveBuffer A buffer to be applied if many state events are fired within
-     * a short period. Defaults to 100.
+<span id='Ext-state-Stateful-cfg-saveDelay'>    /**
+</span>     * @cfg {Number} saveDelay
+     * A buffer to be applied if many state events are fired within a short period.
      */
     saveDelay: 100,
 
@@ -175,7 +175,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
 
 <span id='Ext-state-Stateful-method-addStateEvents'>    /**
 </span>     * Add events that will trigger the state to be saved.
-     * @param {String/Array} events The event name or an array of event names.
+     * @param {String/String[]} events The event name or an array of event names.
      */
     addStateEvents: function(events){
         if (!Ext.isArray(events)) {
@@ -286,6 +286,41 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
                 }
             }
         }
+    },
+
+<span id='Ext-state-Stateful-method-savePropToState'>    /**
+</span>     * Conditionally saves a single property from this object to the given state object.
+     * The idea is to only save state which has changed from the initial state so that
+     * current software settings do not override future software settings. Only those
+     * values that are user-changed state should be saved.
+     *
+     * @param {String} propName The name of the property to save.
+     * @param {Object} state The state object in to which to save the property.
+     * @param {String} stateName (optional) The name to use for the property in state.
+     * @return {Boolean} True if the property was saved, false if not.
+     */
+    savePropToState: function (propName, state, stateName) {
+        var me = this,
+            value = me[propName],
+            config = me.initialConfig;
+
+        if (me.hasOwnProperty(propName)) {
+            if (!config || config[propName] !== value) {
+                if (state) {
+                    state[stateName || propName] = value;
+                }
+                return true;
+            }
+        }
+        return false;
+    },
+
+    savePropsToState: function (propNames, state) {
+        var me = this;
+        Ext.each(propNames, function (propName) {
+            me.savePropToState(propName, state);
+        });
+        return state;
     },
 
 <span id='Ext-state-Stateful-method-destroy'>    /**

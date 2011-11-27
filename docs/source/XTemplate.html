@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,283 +16,235 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-XTemplate'>/**
-</span> * @class Ext.XTemplate
- * @extends Ext.Template
- * &lt;p&gt;A template class that supports advanced functionality like:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
- * &lt;li&gt;Autofilling arrays using templates and sub-templates&lt;/li&gt;
- * &lt;li&gt;Conditional processing with basic comparison operators&lt;/li&gt;
- * &lt;li&gt;Basic math function support&lt;/li&gt;
- * &lt;li&gt;Execute arbitrary inline code with special built-in template variables&lt;/li&gt;
- * &lt;li&gt;Custom member functions&lt;/li&gt;
- * &lt;li&gt;Many special tags and built-in operators that aren't defined as part of
- * the API, but are supported in the templates that can be created&lt;/li&gt;
- * &lt;/ul&gt;&lt;/div&gt;&lt;/p&gt;
- * &lt;p&gt;XTemplate provides the templating mechanism built into:&lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
- * &lt;li&gt;{@link Ext.view.View}&lt;/li&gt;
- * &lt;/ul&gt;&lt;/div&gt;&lt;/p&gt;
+</span> * A template class that supports advanced functionality like:
  *
- * The {@link Ext.Template} describes
- * the acceptable parameters to pass to the constructor. The following
- * examples demonstrate all of the supported features.&lt;/p&gt;
+ * - Autofilling arrays using templates and sub-templates
+ * - Conditional processing with basic comparison operators
+ * - Basic math function support
+ * - Execute arbitrary inline code with special built-in template variables
+ * - Custom member functions
+ * - Many special tags and built-in operators that aren't defined as part of the API, but are supported in the templates that can be created
  *
- * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
+ * XTemplate provides the templating mechanism built into:
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Sample Data&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;This is the data object used for reference in each code example:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var data = {
-name: 'Tommy Maintz',
-title: 'Lead Developer',
-company: 'Sencha Inc.',
-email: 'tommy@sencha.com',
-address: '5 Cups Drive',
-city: 'Palo Alto',
-state: 'CA',
-zip: '44102',
-drinks: ['Coffee', 'Soda', 'Water'],
-kids: [{
-        name: 'Joshua',
-        age:3
-    },{
-        name: 'Matthew',
-        age:2
-    },{
-        name: 'Solomon',
-        age:0
-}]
-};
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
+ * - {@link Ext.view.View}
  *
+ * The {@link Ext.Template} describes the acceptable parameters to pass to the constructor. The following examples
+ * demonstrate all of the supported features.
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Auto filling of arrays&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;The &lt;b&gt;&lt;tt&gt;tpl&lt;/tt&gt;&lt;/b&gt; tag and the &lt;b&gt;&lt;tt&gt;for&lt;/tt&gt;&lt;/b&gt; operator are used
- * to process the provided data object:
- * &lt;ul&gt;
- * &lt;li&gt;If the value specified in &lt;tt&gt;for&lt;/tt&gt; is an array, it will auto-fill,
- * repeating the template block inside the &lt;tt&gt;tpl&lt;/tt&gt; tag for each item in the
- * array.&lt;/li&gt;
- * &lt;li&gt;If &lt;tt&gt;for=&quot;.&quot;&lt;/tt&gt; is specified, the data object provided is examined.&lt;/li&gt;
- * &lt;li&gt;While processing an array, the special variable &lt;tt&gt;{#}&lt;/tt&gt;
- * will provide the current array index + 1 (starts at 1, not 0).&lt;/li&gt;
- * &lt;/ul&gt;
- * &lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-&amp;lt;tpl &lt;b&gt;for&lt;/b&gt;=&quot;.&quot;&gt;...&amp;lt;/tpl&gt;       // loop through array at root node
-&amp;lt;tpl &lt;b&gt;for&lt;/b&gt;=&quot;foo&quot;&gt;...&amp;lt;/tpl&gt;     // loop through array at foo node
-&amp;lt;tpl &lt;b&gt;for&lt;/b&gt;=&quot;foo.bar&quot;&gt;...&amp;lt;/tpl&gt; // loop through array at foo.bar node
- &lt;/code&gt;&lt;/pre&gt;
+ * # Sample Data
+ *
+ * This is the data object used for reference in each code example:
+ *
+ *     var data = {
+ *         name: 'Tommy Maintz',
+ *         title: 'Lead Developer',
+ *         company: 'Sencha Inc.',
+ *         email: 'tommy@sencha.com',
+ *         address: '5 Cups Drive',
+ *         city: 'Palo Alto',
+ *         state: 'CA',
+ *         zip: '44102',
+ *         drinks: ['Coffee', 'Soda', 'Water'],
+ *         kids: [
+ *             {
+ *                 name: 'Joshua',
+ *                 age:3
+ *             },
+ *             {
+ *                 name: 'Matthew',
+ *                 age:2
+ *             },
+ *             {
+ *                 name: 'Solomon',
+ *                 age:0
+ *             }
+ *         ]
+ *     };
+ *
+ * # Auto filling of arrays
+ *
+ * The **tpl** tag and the **for** operator are used to process the provided data object:
+ *
+ * - If the value specified in for is an array, it will auto-fill, repeating the template block inside the tpl
+ *   tag for each item in the array.
+ * - If for=&quot;.&quot; is specified, the data object provided is examined.
+ * - While processing an array, the special variable {#} will provide the current array index + 1 (starts at 1, not 0).
+ *
+ * Examples:
+ *
+ *     &lt;tpl for=&quot;.&quot;&gt;...&lt;/tpl&gt;       // loop through array at root node
+ *     &lt;tpl for=&quot;foo&quot;&gt;...&lt;/tpl&gt;     // loop through array at foo node
+ *     &lt;tpl for=&quot;foo.bar&quot;&gt;...&lt;/tpl&gt; // loop through array at foo.bar node
+ *
  * Using the sample data above:
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl &lt;b&gt;for&lt;/b&gt;=&quot;.&quot;&gt;',       // process the data.kids node
-        '&amp;lt;p&gt;{#}. {name}&amp;lt;/p&gt;',  // use current array index to autonumber
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
-);
-tpl.overwrite(panel.body, data.kids); // pass the kids property of the data object
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;p&gt;An example illustrating how the &lt;b&gt;&lt;tt&gt;for&lt;/tt&gt;&lt;/b&gt; property can be leveraged
- * to access specified members of the provided data object to populate the template:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Title: {title}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Company: {company}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl &lt;b&gt;for=&quot;kids&quot;&lt;/b&gt;&gt;',     // interrogate the kids property within the data
-        '&amp;lt;p&gt;{name}&amp;lt;/p&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
-);
-tpl.overwrite(panel.body, data);  // pass the root node of the data object
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;p&gt;Flat arrays that contain values (and not objects) can be auto-rendered
- * using the special &lt;b&gt;&lt;tt&gt;{.}&lt;/tt&gt;&lt;/b&gt; variable inside a loop.  This variable
- * will represent the value of the array at the current index:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;{name}\&amp;#39;s favorite beverages:&amp;lt;/p&gt;',
-    '&amp;lt;tpl for=&quot;drinks&quot;&gt;',
-        '&amp;lt;div&gt; - {.}&amp;lt;/div&gt;',
-    '&amp;lt;/tpl&gt;'
-);
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;p&gt;When processing a sub-template, for example while looping through a child array,
- * you can access the parent object's members via the &lt;b&gt;&lt;tt&gt;parent&lt;/tt&gt;&lt;/b&gt; object:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl for=&quot;kids&quot;&gt;',
-        '&amp;lt;tpl if=&quot;age &amp;amp;gt; 1&quot;&gt;',
-            '&amp;lt;p&gt;{name}&amp;lt;/p&gt;',
-            '&amp;lt;p&gt;Dad: {&lt;b&gt;parent&lt;/b&gt;.name}&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
-);
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
  *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;.&quot;&gt;',       // process the data.kids node
+ *             '&lt;p&gt;{#}. {name}&lt;/p&gt;',  // use current array index to autonumber
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data.kids); // pass the kids property of the data object
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Conditional processing with basic comparison operators&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;The &lt;b&gt;&lt;tt&gt;tpl&lt;/tt&gt;&lt;/b&gt; tag and the &lt;b&gt;&lt;tt&gt;if&lt;/tt&gt;&lt;/b&gt; operator are used
- * to provide conditional checks for deciding whether or not to render specific
- * parts of the template. Notes:&lt;div class=&quot;sub-desc&quot;&gt;&lt;ul&gt;
- * &lt;li&gt;Double quotes must be encoded if used within the conditional&lt;/li&gt;
- * &lt;li&gt;There is no &lt;tt&gt;else&lt;/tt&gt; operator &amp;mdash; if needed, two opposite
- * &lt;tt&gt;if&lt;/tt&gt; statements should be used.&lt;/li&gt;
- * &lt;/ul&gt;&lt;/div&gt;
- * &lt;pre&gt;&lt;code&gt;
-&amp;lt;tpl if=&quot;age &amp;gt; 1 &amp;amp;&amp;amp; age &amp;lt; 10&quot;&gt;Child&amp;lt;/tpl&gt;
-&amp;lt;tpl if=&quot;age &gt;= 10 &amp;&amp; age &lt; 18&quot;&gt;Teenager&amp;lt;/tpl&gt;
-&amp;lt;tpl &lt;b&gt;if&lt;/b&gt;=&quot;this.isGirl(name)&quot;&gt;...&amp;lt;/tpl&gt;
-&amp;lt;tpl &lt;b&gt;if&lt;/b&gt;=&quot;id==\'download\'&quot;&gt;...&amp;lt;/tpl&gt;
-&amp;lt;tpl &lt;b&gt;if&lt;/b&gt;=&quot;needsIcon&quot;&gt;&amp;lt;img src=&quot;{icon}&quot; class=&quot;{iconCls}&quot;/&gt;&amp;lt;/tpl&gt;
-// no good:
-&amp;lt;tpl if=&quot;name == &quot;Tommy&quot;&quot;&gt;Hello&amp;lt;/tpl&gt;
-// encode &amp;#34; if it is part of the condition, e.g.
-&amp;lt;tpl if=&quot;name == &amp;#38;quot;Tommy&amp;#38;quot;&quot;&gt;Hello&amp;lt;/tpl&gt;
- * &lt;/code&gt;&lt;/pre&gt;
+ * An example illustrating how the **for** property can be leveraged to access specified members of the provided data
+ * object to populate the template:
+ *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Title: {title}&lt;/p&gt;',
+ *         '&lt;p&gt;Company: {company}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',     // interrogate the kids property within the data
+ *             '&lt;p&gt;{name}&lt;/p&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data);  // pass the root node of the data object
+ *
+ * Flat arrays that contain values (and not objects) can be auto-rendered using the special **`{.}`** variable inside a
+ * loop. This variable will represent the value of the array at the current index:
+ *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;{name}\'s favorite beverages:&lt;/p&gt;',
+ *         '&lt;tpl for=&quot;drinks&quot;&gt;',
+ *             '&lt;div&gt; - {.}&lt;/div&gt;',
+ *         '&lt;/tpl&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data);
+ *
+ * When processing a sub-template, for example while looping through a child array, you can access the parent object's
+ * members via the **parent** object:
+ *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',
+ *             '&lt;tpl if=&quot;age &amp;gt; 1&quot;&gt;',
+ *                 '&lt;p&gt;{name}&lt;/p&gt;',
+ *                 '&lt;p&gt;Dad: {parent.name}&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data);
+ *
+ * # Conditional processing with basic comparison operators
+ *
+ * The **tpl** tag and the **if** operator are used to provide conditional checks for deciding whether or not to render
+ * specific parts of the template. Notes:
+ *
+ * - Double quotes must be encoded if used within the conditional
+ * - There is no else operator -- if needed, two opposite if statements should be used.
+ *
+ * Examples:
+ *
+ *     &lt;tpl if=&quot;age &gt; 1 &amp;&amp; age &lt; 10&quot;&gt;Child&lt;/tpl&gt;
+ *     &lt;tpl if=&quot;age &gt;= 10 &amp;&amp; age &lt; 18&quot;&gt;Teenager&lt;/tpl&gt;
+ *     &lt;tpl if=&quot;this.isGirl(name)&quot;&gt;...&lt;/tpl&gt;
+ *     &lt;tpl if=&quot;id==\'download\'&quot;&gt;...&lt;/tpl&gt;
+ *     &lt;tpl if=&quot;needsIcon&quot;&gt;&lt;img src=&quot;{icon}&quot; class=&quot;{iconCls}&quot;/&gt;&lt;/tpl&gt;
+ *     // no good:
+ *     &lt;tpl if=&quot;name == &quot;Tommy&quot;&quot;&gt;Hello&lt;/tpl&gt;
+ *     // encode &quot; if it is part of the condition, e.g.
+ *     &lt;tpl if=&quot;name == &amp;quot;Tommy&amp;quot;&quot;&gt;Hello&lt;/tpl&gt;
+ *
  * Using the sample data above:
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl for=&quot;kids&quot;&gt;',
-        '&amp;lt;tpl if=&quot;age &amp;amp;gt; 1&quot;&gt;',
-            '&amp;lt;p&gt;{name}&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
-);
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
  *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',
+ *             '&lt;tpl if=&quot;age &amp;gt; 1&quot;&gt;',
+ *                 '&lt;p&gt;{name}&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data);
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Basic math support&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;The following basic math operators may be applied directly on numeric
- * data values:&lt;/p&gt;&lt;pre&gt;
- * + - * /
- * &lt;/pre&gt;
+ * # Basic math support
+ *
+ * The following basic math operators may be applied directly on numeric data values:
+ *
+ *     + - * /
+ *
  * For example:
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl for=&quot;kids&quot;&gt;',
-        '&amp;lt;tpl if=&quot;age &amp;amp;gt; 1&quot;&gt;',  // &lt;-- Note that the &amp;gt; is encoded
-            '&amp;lt;p&gt;{#}: {name}&amp;lt;/p&gt;',  // &lt;-- Auto-number each item
-            '&amp;lt;p&gt;In 5 Years: {age+5}&amp;lt;/p&gt;',  // &lt;-- Basic math
-            '&amp;lt;p&gt;Dad: {parent.name}&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
-);
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
  *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',
+ *             '&lt;tpl if=&quot;age &amp;gt; 1&quot;&gt;',  // &lt;-- Note that the &gt; is encoded
+ *                 '&lt;p&gt;{#}: {name}&lt;/p&gt;',  // &lt;-- Auto-number each item
+ *                 '&lt;p&gt;In 5 Years: {age+5}&lt;/p&gt;',  // &lt;-- Basic math
+ *                 '&lt;p&gt;Dad: {parent.name}&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *     );
+ *     tpl.overwrite(panel.body, data);
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Execute arbitrary inline code with special built-in template variables&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;Anything between &lt;code&gt;{[ ... ]}&lt;/code&gt; is considered code to be executed
- * in the scope of the template. There are some special variables available in that code:
- * &lt;ul&gt;
- * &lt;li&gt;&lt;b&gt;&lt;tt&gt;values&lt;/tt&gt;&lt;/b&gt;: The values in the current scope. If you are using
- * scope changing sub-templates, you can change what &lt;tt&gt;values&lt;/tt&gt; is.&lt;/li&gt;
- * &lt;li&gt;&lt;b&gt;&lt;tt&gt;parent&lt;/tt&gt;&lt;/b&gt;: The scope (values) of the ancestor template.&lt;/li&gt;
- * &lt;li&gt;&lt;b&gt;&lt;tt&gt;xindex&lt;/tt&gt;&lt;/b&gt;: If you are in a looping template, the index of the
- * loop you are in (1-based).&lt;/li&gt;
- * &lt;li&gt;&lt;b&gt;&lt;tt&gt;xcount&lt;/tt&gt;&lt;/b&gt;: If you are in a looping template, the total length
- * of the array you are looping.&lt;/li&gt;
- * &lt;/ul&gt;
- * This example demonstrates basic row striping using an inline code block and the
- * &lt;tt&gt;xindex&lt;/tt&gt; variable:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Company: {[values.company.toUpperCase() + &quot;, &quot; + values.title]}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl for=&quot;kids&quot;&gt;',
-        '&amp;lt;div class=&quot;{[xindex % 2 === 0 ? &quot;even&quot; : &quot;odd&quot;]}&quot;&gt;',
-        '{name}',
-        '&amp;lt;/div&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;'
- );
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
+ * # Execute arbitrary inline code with special built-in template variables
  *
- * &lt;li&gt;&lt;b&gt;&lt;u&gt;Template member functions&lt;/u&gt;&lt;/b&gt;
- * &lt;div class=&quot;sub-desc&quot;&gt;
- * &lt;p&gt;One or more member functions can be specified in a configuration
- * object passed into the XTemplate constructor for more complex processing:&lt;/p&gt;
- * &lt;pre&gt;&lt;code&gt;
-var tpl = new Ext.XTemplate(
-    '&amp;lt;p&gt;Name: {name}&amp;lt;/p&gt;',
-    '&amp;lt;p&gt;Kids: ',
-    '&amp;lt;tpl for=&quot;kids&quot;&gt;',
-        '&amp;lt;tpl if=&quot;this.isGirl(name)&quot;&gt;',
-            '&amp;lt;p&gt;Girl: {name} - {age}&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-         // use opposite if statement to simulate 'else' processing:
-        '&amp;lt;tpl if=&quot;this.isGirl(name) == false&quot;&gt;',
-            '&amp;lt;p&gt;Boy: {name} - {age}&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-        '&amp;lt;tpl if=&quot;this.isBaby(age)&quot;&gt;',
-            '&amp;lt;p&gt;{name} is a baby!&amp;lt;/p&gt;',
-        '&amp;lt;/tpl&gt;',
-    '&amp;lt;/tpl&gt;&amp;lt;/p&gt;',
-    {
-        // XTemplate configuration:
-        compiled: true,
-        // member functions:
-        isGirl: function(name){
-           return name == 'Sara Grace';
-        },
-        isBaby: function(age){
-           return age &lt; 1;
-        }
-    }
-);
-tpl.overwrite(panel.body, data);
- &lt;/code&gt;&lt;/pre&gt;
- * &lt;/div&gt;
- * &lt;/li&gt;
+ * Anything between `{[ ... ]}` is considered code to be executed in the scope of the template. There are some special
+ * variables available in that code:
  *
- * &lt;/ul&gt;&lt;/div&gt;
+ * - **values**: The values in the current scope. If you are using scope changing sub-templates,
+ *   you can change what values is.
+ * - **parent**: The scope (values) of the ancestor template.
+ * - **xindex**: If you are in a looping template, the index of the loop you are in (1-based).
+ * - **xcount**: If you are in a looping template, the total length of the array you are looping.
  *
- * @param {Mixed} config
+ * This example demonstrates basic row striping using an inline code block and the xindex variable:
+ *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Company: {[values.company.toUpperCase() + &quot;, &quot; + values.title]}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',
+ *             '&lt;div class=&quot;{[xindex % 2 === 0 ? &quot;even&quot; : &quot;odd&quot;]}&quot;&gt;',
+ *             '{name}',
+ *             '&lt;/div&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;'
+ *      );
+ *     tpl.overwrite(panel.body, data);
+ *
+ * # Template member functions
+ *
+ * One or more member functions can be specified in a configuration object passed into the XTemplate constructor for
+ * more complex processing:
+ *
+ *     var tpl = new Ext.XTemplate(
+ *         '&lt;p&gt;Name: {name}&lt;/p&gt;',
+ *         '&lt;p&gt;Kids: ',
+ *         '&lt;tpl for=&quot;kids&quot;&gt;',
+ *             '&lt;tpl if=&quot;this.isGirl(name)&quot;&gt;',
+ *                 '&lt;p&gt;Girl: {name} - {age}&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *              // use opposite if statement to simulate 'else' processing:
+ *             '&lt;tpl if=&quot;this.isGirl(name) == false&quot;&gt;',
+ *                 '&lt;p&gt;Boy: {name} - {age}&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *             '&lt;tpl if=&quot;this.isBaby(age)&quot;&gt;',
+ *                 '&lt;p&gt;{name} is a baby!&lt;/p&gt;',
+ *             '&lt;/tpl&gt;',
+ *         '&lt;/tpl&gt;&lt;/p&gt;',
+ *         {
+ *             // XTemplate configuration:
+ *             disableFormats: true,
+ *             // member functions:
+ *             isGirl: function(name){
+ *                return name == 'Sara Grace';
+ *             },
+ *             isBaby: function(age){
+ *                return age &lt; 1;
+ *             }
+ *         }
+ *     );
+ *     tpl.overwrite(panel.body, data);
  */
-
 Ext.define('Ext.XTemplate', {
 
     /* Begin Definitions */
 
     extend: 'Ext.Template',
-
-    statics: {
-<span id='Ext-XTemplate-method-from'>        /**
-</span>         * Creates a template from the passed element's value (&lt;i&gt;display:none&lt;/i&gt; textarea, preferred) or innerHTML.
-         * @param {String/HTMLElement} el A DOM element or its id
-         * @return {Ext.Template} The created template
-         * @static
-         */
-        from: function(el, config) {
-            el = Ext.getDom(el);
-            return new this(el.value || el.innerHTML, config || {});
-        }
-    },
 
     /* End Definitions */
 
@@ -373,10 +325,17 @@ Ext.define('Ext.XTemplate', {
         var me = this, t = me.tpls[id];
         return t.compiled.call(me, values, parent, xindex, xcount);
     },
+
 <span id='Ext-XTemplate-cfg-codeRe'>    /**
-</span>     * @cfg {RegExp} codeRe The regular expression used to match code variables (default: matches &lt;tt&gt;{[expression]}&lt;/tt&gt;).
+</span>     * @cfg {RegExp} codeRe
+     * The regular expression used to match code variables. Default: matches {[expression]}.
      */
     codeRe: /\{\[((?:\\\]|.|\n)*?)\]\}/g,
+
+<span id='Ext-XTemplate-cfg-compiled'>    /**
+</span>     * @cfg {Boolean} compiled
+     * Only applies to {@link Ext.Template}, XTemplates are compiled automatically.
+     */
 
     re: /\{([\w-\.\#]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?(\s?[\+\-\*\/]\s?[\d\.\+\-\*\/\(\)]+)?\}/g,
 
@@ -485,31 +444,20 @@ Ext.define('Ext.XTemplate', {
         return this;
     },
 
-<span id='Ext-XTemplate-method-applyTemplate'>    /**
-</span>     * Returns an HTML fragment of this template with the specified values applied.
-     * @param {Object} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
-     * @return {String} The HTML fragment
-     */
+    // inherit docs from Ext.Template
     applyTemplate: function(values) {
         return this.master.compiled.call(this, values, {}, 1, 1);
     },
 
 <span id='Ext-XTemplate-method-compile'>    /**
-</span>     * Compile the template to a function for optimized performance.  Recommended if the template will be used frequently.
-     * @return {Function} The compiled function
+</span>     * Does nothing. XTemplates are compiled automatically, so this function simply returns this.
+     * @return {Ext.XTemplate} this
      */
     compile: function() {
         return this;
     }
 }, function() {
-<span id='Ext-XTemplate-method-apply'>    /**
-</span>     * Alias for {@link #applyTemplate}
-     * Returns an HTML fragment of this template with the specified values applied.
-     * @param {Object/Array} values The template values. Can be an array if your params are numeric (i.e. {0}) or an object (i.e. {foo: 'bar'})
-     * @return {String} The HTML fragment
-     * @member Ext.XTemplate
-     * @method apply
-     */
+    // re-create the alias, inheriting it from Ext.Template doesn't work as intended.
     this.createAlias('apply', 'applyTemplate');
 });
 </pre>

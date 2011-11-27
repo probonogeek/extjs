@@ -13,7 +13,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.ux.PortalColumn
+ * @class Ext.app.PortalColumn
  * @extends Ext.container.Container
  * A layout column class used internally be {@link Ext.app.PortalPanel}.
  */

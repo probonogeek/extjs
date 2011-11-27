@@ -29,7 +29,7 @@ Ext.define('Ext.grid.property.Store', {
 
     /**
      * Creates new property store.
-     * @param {Ext.grid.Grid} grid The grid this store will be bound to
+     * @param {Ext.grid.Panel} grid The grid this store will be bound to
      * @param {Object} source The source data config object
      */
     constructor : function(grid, source){

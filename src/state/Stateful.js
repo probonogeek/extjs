@@ -55,7 +55,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      * object hash which represents the restorable state of the object.</p>
      * <p>The value yielded by getState is passed to {@link Ext.state.Manager#set}
      * which uses the configured {@link Ext.state.Provider} to save the object
-     * keyed by the <code>{@link #stateId}</code></p>.
+     * keyed by the <code>{@link #stateId}</code>.</p>
      * <p>During construction, a stateful object attempts to <i>restore</i>
      * its state by calling {@link Ext.state.Manager#get} passing the
      * <code>{@link #stateId}</code></p>
@@ -76,9 +76,9 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      */
 
     /**
-     * @cfg {Array} stateEvents
+     * @cfg {String[]} stateEvents
      * <p>An array of events that, when fired, should trigger this object to
-     * save its state (defaults to none). <code>stateEvents</code> may be any type
+     * save its state. Defaults to none. <code>stateEvents</code> may be any type
      * of event supported by this object, including browser or custom events
      * (e.g., <tt>['click', 'customerchange']</tt>).</p>
      * <p>See <code>{@link #stateful}</code> for an explanation of saving and
@@ -86,8 +86,8 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
      */
 
     /**
-     * @cfg {Number} saveBuffer A buffer to be applied if many state events are fired within
-     * a short period. Defaults to 100.
+     * @cfg {Number} saveDelay
+     * A buffer to be applied if many state events are fired within a short period.
      */
     saveDelay: 100,
 
@@ -172,7 +172,7 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
 
     /**
      * Add events that will trigger the state to be saved.
-     * @param {String/Array} events The event name or an array of event names.
+     * @param {String/String[]} events The event name or an array of event names.
      */
     addStateEvents: function(events){
         if (!Ext.isArray(events)) {
@@ -283,6 +283,41 @@ Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
                 }
             }
         }
+    },
+
+    /**
+     * Conditionally saves a single property from this object to the given state object.
+     * The idea is to only save state which has changed from the initial state so that
+     * current software settings do not override future software settings. Only those
+     * values that are user-changed state should be saved.
+     *
+     * @param {String} propName The name of the property to save.
+     * @param {Object} state The state object in to which to save the property.
+     * @param {String} stateName (optional) The name to use for the property in state.
+     * @return {Boolean} True if the property was saved, false if not.
+     */
+    savePropToState: function (propName, state, stateName) {
+        var me = this,
+            value = me[propName],
+            config = me.initialConfig;
+
+        if (me.hasOwnProperty(propName)) {
+            if (!config || config[propName] !== value) {
+                if (state) {
+                    state[stateName || propName] = value;
+                }
+                return true;
+            }
+        }
+        return false;
+    },
+
+    savePropsToState: function (propNames, state) {
+        var me = this;
+        Ext.each(propNames, function (propName) {
+            me.savePropToState(propName, state);
+        });
+        return state;
     },
 
     /**

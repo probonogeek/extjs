@@ -202,9 +202,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
       Ext.apply(Ext.form.field.ComboBox.prototype, {
-        loadingText       : "Yükleniyor ...",
         valueNotFoundText : undefined
       });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Yükleniyor ..."
+        });
     }
 
     if(Ext.form.field.VTypes){

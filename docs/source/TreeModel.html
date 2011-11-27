@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -81,16 +81,15 @@ Ext.define('Ext.selection.TreeModel', {
     },
     
     onKeyPress: function(e, t) {
-        var selected, checked;
+        var key = e.getKey(),
+            selected, 
+            checked;
         
-        if (e.getKey() === e.SPACE || e.getKey() === e.ENTER) {
+        if (key === e.SPACE || key === e.ENTER) {
             e.stopEvent();
             selected = this.getLastSelected();
-            if (selected &amp;&amp; selected.isLeaf()) {
-                checked = selected.get('checked');
-                if (Ext.isBoolean(checked)) {
-                    selected.set('checked', !checked);
-                }
+            if (selected) {
+                this.view.onCheckChange(selected);
             }
         } else {
             this.callParent(arguments);

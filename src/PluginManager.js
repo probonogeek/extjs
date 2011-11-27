@@ -13,16 +13,27 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.PluginManager
- * @extends Ext.AbstractManager
- * <p>Provides a registry of available Plugin <i>classes</i> indexed by a mnemonic code known as the Plugin's ptype.
- * The <code>{@link Ext.Component#xtype xtype}</code> provides a way to avoid instantiating child Components
- * when creating a full, nested config object for a complete Ext page.</p>
- * <p>A child Component may be specified simply as a <i>config object</i>
- * as long as the correct <code>{@link Ext.Component#xtype xtype}</code> is specified so that if and when the Component
- * needs rendering, the correct type can be looked up for lazy instantiation.</p>
- * <p>For a list of all available <code>{@link Ext.Component#xtype xtypes}</code>, see {@link Ext.Component}.</p>
  * @singleton
+ *
+ * Provides a registry of available Plugin classes indexed by a mnemonic code known as the Plugin's ptype.
+ *
+ * A plugin may be specified simply as a *config object* as long as the correct `ptype` is specified:
+ *
+ *     {
+ *         ptype: 'gridviewdragdrop',
+ *         dragText: 'Drag and drop to reorganize'
+ *     }
+ *
+ * Or just use the ptype on its own:
+ *
+ *     'gridviewdragdrop'
+ *
+ * Alternatively you can instantiate the plugin with Ext.create:
+ *
+ *     Ext.create('Ext.view.plugin.AutoComplete', {
+ *         ptype: 'gridviewdragdrop',
+ *         dragText: 'Drag and drop to reorganize'
+ *     })
  */
 Ext.define('Ext.PluginManager', {
     extend: 'Ext.AbstractManager',
@@ -31,11 +42,11 @@ Ext.define('Ext.PluginManager', {
     typeName: 'ptype',
 
     /**
-     * Creates a new Plugin from the specified config object using the
-     * config object's ptype to determine the class to instantiate.
+     * Creates a new Plugin from the specified config object using the config object's ptype to determine the class to
+     * instantiate.
      * @param {Object} config A configuration object for the Plugin you wish to create.
-     * @param {Constructor} defaultType The constructor to provide the default Plugin type if
-     * the config object does not contain a <code>ptype</code>. (Optional if the config contains a <code>ptype</code>).
+     * @param {Function} defaultType (optional) The constructor to provide the default Plugin type if the config object does not
+     * contain a `ptype`. (Optional if the config contains a `ptype`).
      * @return {Ext.Component} The newly instantiated Plugin.
      */
     //create: function(plugin, defaultType) {
@@ -62,7 +73,7 @@ Ext.define('Ext.PluginManager', {
         } else {
             return Ext.createByAlias('plugin.' + (config.ptype || defaultType), config);
         }
-        
+
         // Prior system supported Singleton plugins.
         //var PluginCls = this.types[config.ptype || defaultType];
         //if (PluginCls.init) {
@@ -75,8 +86,9 @@ Ext.define('Ext.PluginManager', {
     /**
      * Returns all plugins registered with the given type. Here, 'type' refers to the type of plugin, not its ptype.
      * @param {String} type The type to search for
-     * @param {Boolean} defaultsOnly True to only return plugins of this type where the plugin's isDefault property is truthy
-     * @return {Array} All matching plugins
+     * @param {Boolean} defaultsOnly True to only return plugins of this type where the plugin's isDefault property is
+     * truthy
+     * @return {Ext.AbstractPlugin[]} All matching plugins
      */
     findByType: function(type, defaultsOnly) {
         var matches = [],
@@ -95,12 +107,12 @@ Ext.define('Ext.PluginManager', {
 
         return matches;
     }
-}, function() {    
+}, function() {
     /**
      * Shorthand for {@link Ext.PluginManager#registerType}
      * @param {String} ptype The ptype mnemonic string by which the Plugin class
      * may be looked up.
-     * @param {Constructor} cls The new Plugin class.
+     * @param {Function} cls The new Plugin class.
      * @member Ext
      * @method preg
      */

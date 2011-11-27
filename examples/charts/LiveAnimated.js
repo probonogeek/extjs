@@ -77,6 +77,8 @@ Ext.onReady(function () {
     Ext.create('Ext.Window', {
         width: 800,
         height: 600,
+        minHeight: 400,
+        minWidth: 550,
         hidden: false,
         maximizable: true,
         title: 'Live Animated Chart',
@@ -121,7 +123,7 @@ Ext.onReady(function () {
             series: [{
                 type: 'line',
                 smooth: false,
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 xField: 'date',
                 yField: 'visits',
                 label: {
@@ -136,7 +138,7 @@ Ext.onReady(function () {
                 }
             },{
                 type: 'line',
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 smooth: false,
                 xField: 'date',
                 yField: 'views',
@@ -152,7 +154,7 @@ Ext.onReady(function () {
                 }
             },{
                 type: 'line',
-                axis: 'left',
+                axis: ['left', 'bottom'],
                 smooth: false,
                 xField: 'date',
                 yField: 'users',

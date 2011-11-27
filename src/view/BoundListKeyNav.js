@@ -24,9 +24,8 @@ Ext.define('Ext.view.BoundListKeyNav', {
     requires: 'Ext.view.BoundList',
 
     /**
-     * @cfg {Ext.view.BoundList} boundList
-     * @required
-     * The {@link Ext.view.BoundList} instance for which key navigation will be managed. This is required.
+     * @cfg {Ext.view.BoundList} boundList (required)
+     * The {@link Ext.view.BoundList} instance for which key navigation will be managed.
      */
 
     constructor: function(el, config) {

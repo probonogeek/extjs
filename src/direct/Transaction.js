@@ -13,9 +13,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.direct.Transaction
- * @extends Object
- * <p>Supporting Class for Ext.Direct (not intended to be used directly).</p>
+ * Supporting Class for Ext.Direct (not intended to be used directly).
  */
 Ext.define('Ext.direct.Transaction', {
     
@@ -32,7 +30,7 @@ Ext.define('Ext.direct.Transaction', {
 
     /**
      * Creates new Transaction.
-     * @param {Object} config  (optional) Config object.
+     * @param {Object} [config] Config object.
      */
     constructor: function(config){
         var me = this;

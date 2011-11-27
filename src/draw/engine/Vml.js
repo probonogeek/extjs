@@ -24,7 +24,7 @@ Ext.define('Ext.draw.engine.Vml', {
 
     extend: 'Ext.draw.Surface',
 
-    requires: ['Ext.draw.Draw', 'Ext.draw.Color', 'Ext.draw.Sprite', 'Ext.draw.Matrix', 'Ext.core.Element'],
+    requires: ['Ext.draw.Draw', 'Ext.draw.Color', 'Ext.draw.Sprite', 'Ext.draw.Matrix', 'Ext.Element'],
 
     /* End Definitions */
 
@@ -45,6 +45,9 @@ Ext.define('Ext.draw.engine.Vml', {
     zoom: 21600,
     coordsize: 1000,
     coordorigin: '0 0',
+
+    // VML uses CSS z-index and therefore doesn't need sprites to be kept in zIndex order
+    orderSpritesByZIndex: false,
 
     // @private
     // Convert an SVG standard path into a VML path
@@ -199,7 +202,7 @@ Ext.define('Ext.draw.engine.Vml', {
             zoom = me.zoom,
             vml = sprite.vml || (sprite.vml = {}),
             round = Math.round,
-            el = (type === 'image') ? me.createNode('image') : me.createNode('shape'),
+            el = me.createNode('shape'),
             path, skew, textPath;
 
         el.coordsize = zoom + ' ' + zoom;
@@ -279,21 +282,6 @@ Ext.define('Ext.draw.engine.Vml', {
         // Apply minimum default attributes
         Ext.applyIf(scrubbedAttrs, me.minDefaults[sprite.type]);
 
-        if (sprite.type == 'image') {
-            Ext.apply(sprite.attr, {
-                x: scrubbedAttrs.x,
-                y: scrubbedAttrs.y,
-                width: scrubbedAttrs.width,
-                height: scrubbedAttrs.height
-            });
-            bbox = sprite.getBBox();
-            el.setStyle({
-                width: bbox.width + 'px',
-                height: bbox.height + 'px'
-            });
-            dom.src = scrubbedAttrs.src;
-        }
-
         if (dom.href) {
             dom.href = scrubbedAttrs.href;
         }
@@ -328,7 +316,7 @@ Ext.define('Ext.draw.engine.Vml', {
                             Math.round(cx * me.zoom));
                 sprite.dirtyPath = false;
             }
-            else if (sprite.type !== "text" && sprite.type !== 'image') {
+            else if (sprite.type !== "text") {
                 sprite.attr.path = scrubbedAttrs.path = me.setPaths(sprite, scrubbedAttrs) || scrubbedAttrs.path;
                 dom.path = me.path2vml(scrubbedAttrs.path);
                 sprite.dirtyPath = false;
@@ -346,7 +334,7 @@ Ext.define('Ext.draw.engine.Vml', {
         }
 
         // Handle fill and opacity
-        if (scrubbedAttrs.opacity  || scrubbedAttrs['stroke-opacity'] || scrubbedAttrs.fill) {
+        if (sprite.type == 'image' || scrubbedAttrs.opacity  || scrubbedAttrs['fill-opacity'] || scrubbedAttrs.fill) {
             me.setFill(sprite, scrubbedAttrs);
         }
 
@@ -388,7 +376,7 @@ Ext.define('Ext.draw.engine.Vml', {
             spriteAttr.ry = params.ry;
             return Ext.draw.Draw.ellipsePath(sprite);
         }
-        else if (sprite.type == 'rect') {
+        else if (sprite.type == 'rect' || sprite.type == 'image') {
             spriteAttr.rx = spriteAttr.ry = params.r;
             return Ext.draw.Draw.rectPath(sprite);
         }
@@ -400,23 +388,27 @@ Ext.define('Ext.draw.engine.Vml', {
 
     setFill: function(sprite, params) {
         var me = this,
-            el = sprite.el.dom,
-            fillEl = el.fill,
-            newfill = false,
+            el = sprite.el,
+            dom = el.dom,
+            fillEl = dom.getElementsByTagName('fill')[0],
             opacity, gradient, fillUrl, rotation, angle;
 
-        if (!fillEl) {
-            // NOT an expando (but it sure looks like one)...
-            fillEl = el.fill = me.createNode("fill");
-            newfill = true;
+        if (fillEl) {
+            dom.removeChild(fillEl);
+        } else {
+            fillEl = me.createNode('fill');
         }
         if (Ext.isArray(params.fill)) {
             params.fill = params.fill[0];
         }
-        if (params.fill == "none") {
+        if (sprite.type == 'image') {
+            fillEl.on = true;
+            fillEl.src = params.src;
+            fillEl.type = "tile";
+            fillEl.rotate = true;
+        } else if (params.fill == "none") {
             fillEl.on = false;
-        }
-        else {
+        } else {
             if (typeof params.opacity == "number") {
                 fillEl.opacity = params.opacity;
             }
@@ -443,24 +435,23 @@ Ext.define('Ext.draw.engine.Vml', {
                         fillEl.angle = angle;
                         fillEl.type = "gradient";
                         fillEl.method = "sigma";
-                        fillEl.colors.value = gradient.colors;
+                        fillEl.colors = gradient.colors;
                     }
                     // Otherwise treat it as an image
                     else {
                         fillEl.src = fillUrl;
                         fillEl.type = "tile";
+                        fillEl.rotate = true;
                     }
                 }
                 else {
-                    fillEl.color = Ext.draw.Color.toHex(params.fill);
+                    fillEl.color = Ext.draw.Color.toHex(params.fill) || params.fill;
                     fillEl.src = "";
                     fillEl.type = "solid";
                 }
             }
         }
-        if (newfill) {
-            el.appendChild(fillEl);
-        }
+        dom.appendChild(fillEl);
     },
 
     setStroke: function(sprite, params) {
@@ -695,24 +686,26 @@ Ext.define('Ext.draw.engine.Vml', {
         this.callParent(arguments);
     },
 
+    // VML Node factory method (createNode)
+    createNode : (function () {
+        try {
+            var doc = Ext.getDoc().dom;
+            if (!doc.namespaces.rvml) {
+                doc.namespaces.add("rvml", "urn:schemas-microsoft-com:vml");
+            }
+            return function (tagName) {
+                return doc.createElement("<rvml:" + tagName + ' class="rvml">');
+            };
+        } catch (e) {
+            return function (tagName) {
+                return doc.createElement("<" + tagName + ' xmlns="urn:schemas-microsoft.com:vml" class="rvml">');
+            };
+        }
+    })(),
+
     render: function (container) {
         var me = this,
             doc = Ext.getDoc().dom;
-        // VML Node factory method (createNode)
-        if (!me.createNode) {
-            try {
-                if (!doc.namespaces.rvml) {
-                    doc.namespaces.add("rvml", "urn:schemas-microsoft-com:vml");
-                }
-                me.createNode = function (tagName) {
-                    return doc.createElement("<rvml:" + tagName + ' class="rvml">');
-                };
-            } catch (e) {
-                me.createNode = function (tagName) {
-                    return doc.createElement("<" + tagName + ' xmlns="urn:schemas-microsoft.com:vml" class="rvml">');
-                };
-            }
-        }
 
         if (!me.el) {
             var el = doc.createElement("div");
@@ -777,92 +770,130 @@ Ext.define('Ext.draw.engine.Vml', {
         };
     },
 
-    transform: function(sprite) {
+    extractTransform: function (sprite) {
         var me = this,
-            matrix = Ext.create('Ext.draw.Matrix'),
-            transforms = sprite.transformations,
-            transformsLength = transforms.length,
-            i = 0,
-            deltaDegrees = 0,
-            deltaScaleX = 1,
-            deltaScaleY = 1,
+            matrix = Ext.create('Ext.draw.Matrix'), scale,
+            transformstions, tranformationsLength,
+            transform, i = 0,
+            shift = me.viewBoxShift;
+
+        for(transformstions = sprite.transformations, tranformationsLength = transformstions.length;
+            i < tranformationsLength; i ++) {
+            transform = transformstions[i];
+            switch (transform.type) {
+                case 'translate' :
+                    matrix.translate(transform.x, transform.y);
+                    break;
+                case 'rotate':
+                    matrix.rotate(transform.degrees, transform.x, transform.y);
+                    break;
+                case 'scale':
+                    matrix.scale(transform.x || transform.scale, transform.y || transform.scale, transform.centerX, transform.centerY);
+                    break;
+            }
+        }
+
+        if (shift) {
+            matrix.add(1, 0, 0, 1, shift.dx, shift.dy);
+            matrix.prepend(shift.scale, 0, 0, shift.scale, 0, 0);
+        }
+        
+        return sprite.matrix = matrix;
+    },
+
+    setSimpleCoords: function(sprite, sx, sy, dx, dy, rotate) {
+        var me = this,
+            matrix = sprite.matrix,
+            dom = sprite.el.dom,
+            style = dom.style,
+            yFlipper = 1,
             flip = "",
+            fill = dom.getElementsByTagName('fill')[0],
+            kx = me.zoom / sx,
+            ky = me.zoom / sy,
+            rotationCompensation;
+        if (!sx || !sy) {
+            return;
+        }
+        dom.coordsize = Math.abs(kx) + ' ' + Math.abs(ky);
+        style.rotation = rotate * (sx * sy < 0 ? -1 : 1);
+        if (rotate) {
+            rotationCompensation = me.rotationCompensation(rotate, dx, dy);
+            dx = rotationCompensation.x;
+            dy = rotationCompensation.y;
+        }
+        if (sx < 0) {
+            flip += "x"
+        }
+        if (sy < 0) {
+            flip += " y";
+            yFlipper = -1;
+        }
+        style.flip = flip;
+        dom.coordorigin = (dx * -kx) + ' ' + (dy * -ky);
+        if (fill) {
+            dom.removeChild(fill);
+            rotationCompensation = me.rotationCompensation(rotate, matrix.x(sprite.x, sprite.y), matrix.y(sprite.x, sprite.y));
+            fill.position = rotationCompensation.x * yFlipper + ' ' + rotationCompensation.y * yFlipper;
+            fill.size = sprite.width * Math.abs(sx) + ' ' + sprite.height * Math.abs(sy);
+            dom.appendChild(fill);
+        }
+    },
+
+    transform : function (sprite) {
+        var me = this,
             el = sprite.el,
+            skew = sprite.skew,
             dom = el.dom,
             domStyle = dom.style,
-            zoom = me.zoom,
-            skew = sprite.skew,
-            deltaX, deltaY, transform, type, compensate, y, fill, newAngle,zoomScaleX, zoomScaleY, newOrigin;
-
-        for (; i < transformsLength; i++) {
-            transform = transforms[i];
-            type = transform.type;
-            if (type == "translate") {
-                matrix.translate(transform.x, transform.y);
-            }
-            else if (type == "rotate") {
-                matrix.rotate(transform.degrees, transform.x, transform.y);
-                deltaDegrees += transform.degrees;
-            }
-            else if (type == "scale") {
-                matrix.scale(transform.x, transform.y, transform.centerX, transform.centerY);
-                deltaScaleX *= transform.x;
-                deltaScaleY *= transform.y;
-            }
-        }
-
-        if (me.viewBoxShift) {
-            matrix.scale(me.viewBoxShift.scale, me.viewBoxShift.scale, -1, -1);
-            matrix.add(1, 0, 0, 1, me.viewBoxShift.dx, me.viewBoxShift.dy);
-        }
-
-        sprite.matrix = matrix;
+            matrix = me.extractTransform(sprite).clone(),
+            split, zoom = me.zoom,
+            fill = dom.getElementsByTagName('fill')[0],
+            isPatt = !String(sprite.fill).indexOf("url("),
+            offset, c;
 
 
         // Hide element while we transform
 
-        if (sprite.type != "image" && skew) {
+        if (sprite.type != "image" && skew && !isPatt) {
             // matrix transform via VML skew
             skew.matrix = matrix.toString();
-            skew.offset = matrix.offset();
-        }
-        else {
-            deltaX = matrix.matrix[0][2];
-            deltaY = matrix.matrix[1][2];
-            // Scale via coordsize property
-            zoomScaleX = zoom / deltaScaleX;
-            zoomScaleY = zoom / deltaScaleY;
-
-            dom.coordsize = Math.abs(zoomScaleX) + " " + Math.abs(zoomScaleY);
-
-            // Rotate via rotation property
-            newAngle = deltaDegrees * (deltaScaleX * ((deltaScaleY < 0) ? -1 : 1));
-            if (newAngle != domStyle.rotation && !(newAngle === 0 && !domStyle.rotation)) {
-                domStyle.rotation = newAngle;
+            // skew.offset = '32767,1' OK
+            // skew.offset = '32768,1' Crash
+            // M$, R U kidding??
+            offset = matrix.offset();
+            if (offset[0] > 32767) {
+                offset[0] = 32767;
+            } else if (offset[0] < -32768) {
+                offset[0] = -32768
             }
-            if (deltaDegrees) {
-                // Compensate x/y position due to rotation
-                compensate = me.rotationCompensation(deltaDegrees, deltaX, deltaY);
-                deltaX = compensate.x;
-                deltaY = compensate.y;
+            if (offset[1] > 32767) {
+                offset[1] = 32767;
+            } else if (offset[1] < -32768) {
+                offset[1] = -32768
             }
-
-            // Handle negative scaling via flipping
-            if (deltaScaleX < 0) {
-                flip += "x";
+            skew.offset = offset;
+        } else {
+            if (skew) {
+                skew.matrix = "1 0 0 1";
+                skew.offset = "0 0";
             }
-            if (deltaScaleY < 0) {
-                flip += " y";
-                y = -1;
-            }
-            if (flip != "" && !dom.style.flip) {
-                domStyle.flip = flip;
-            }
-
-            // Translate via coordorigin property
-            newOrigin = (deltaX * -zoomScaleX) + " " + (deltaY * -zoomScaleY);
-            if (newOrigin != dom.coordorigin) {
-                dom.coordorigin = (deltaX * -zoomScaleX) + " " + (deltaY * -zoomScaleY);
+            split = matrix.split();
+            if (split.isSimple) {
+                domStyle.filter = '';
+                me.setSimpleCoords(sprite, split.scaleX, split.scaleY, split.translateX, split.translateY, split.rotate / Math.PI * 180);
+            } else {
+                domStyle.filter = matrix.toFilter();
+                var bb = me.getBBox(sprite),
+                    dx = bb.x - sprite.x,
+                    dy = bb.y - sprite.y;
+                dom.coordorigin = (dx * -zoom) + ' ' + (dy * -zoom);
+                if (fill) {
+                    dom.removeChild(fill);
+                    fill.position = dx + ' ' + dy;
+                    fill.size = sprite.width * sprite.scale.x + ' ' + sprite.height * 1.1;
+                    dom.appendChild(fill);
+                }
             }
         }
     },

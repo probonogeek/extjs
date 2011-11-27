@@ -14,20 +14,20 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @class Ext.env.OS
- * Provide useful information about the current operating system environment. Access the global instance stored in Ext.os. Example:
- * <pre><code>
- * if (Ext.os.is.Windows) {
- *      // Windows specific code here
- * }
+ * Provides useful information about the current operating system environment.
+ * Access the global instance stored in {@link Ext#os}. Example:
  *
- * if (Ext.os.is.iOS) {
- *      // iPad, iPod, iPhone, etc.
- * }
+ *     if (Ext.os.is.Windows) {
+ *          // Windows specific code here
+ *     }
  *
- * console.log("Version " + Ext.os.version);
- * </code></pre>
+ *     if (Ext.os.is.iOS) {
+ *          // iPad, iPod, iPhone, etc.
+ *     }
  *
- * For a full list of supported values, refer to: {@link Ext.env.OS#is Ext.env.OS.is}
+ *     console.log("Version " + Ext.os.version);
+ *
+ * For a full list of supported values, refer to: {@link Ext.env.OS#is}
  */
 Ext.define('Ext.env.OS', {
 
@@ -52,21 +52,18 @@ Ext.define('Ext.env.OS', {
 
     /**
      * A "hybrid" property, can be either accessed as a method call, i.e:
-     * <pre><code>
-     * if (Ext.os.is('Android')) { ... }
-     * </code></pre>
+     *
+     *     if (Ext.os.is('Android')) { ... }
      *
      * or as an object with boolean properties, i.e:
-     * <pre><code>
-     * if (Ext.os.is.Android) { ... }
-     * </code></pre>
+     *
+     *     if (Ext.os.is.Android) { ... }
      *
      * Versions can be conveniently checked as well. For example:
-     * <pre><code>
-     * if (Ext.os.is.Android2) { ... } // Equivalent to (Ext.os.is.Android && Ext.os.version.equals(2))
      *
-     * if (Ext.os.is.iOS32) { ... } // Equivalent to (Ext.os.is.iOS && Ext.os.version.equals(3.2))
-     * </code></pre>
+     *     if (Ext.os.is.Android2) { ... } // Equivalent to (Ext.os.is.Android && Ext.os.version.equals(2))
+     * 
+     *     if (Ext.os.is.iOS32) { ... } // Equivalent to (Ext.os.is.iOS && Ext.os.version.equals(3.2))
      *
      * Note that only {@link Ext.Version#getMajor major component}  and {@link Ext.Version#getShortVersion shortVersion}
      * value of the version are available via direct property checking.
@@ -80,15 +77,15 @@ Ext.define('Ext.env.OS', {
     is: Ext.emptyFn,
 
     /**
+     * @property {String} name
      * Read-only - the full name of the current operating system
      * Possible values are: iOS, Android, WebOS, BlackBerry, MacOSX, Windows, Linux and Other
-     * @type String
      */
     name: null,
 
     /**
+     * @property {Ext.Version} version
      * Read-only, refer to {@link Ext.Version}
-     * @type Ext.Version
      */
     version: null,
 
@@ -142,7 +139,12 @@ Ext.define('Ext.env.OS', {
     }
 }, function() {
 
-Ext.os = new Ext.env.OS();
+    /**
+     * @property {Ext.env.OS} os
+     * @member Ext
+     * Global convenient instance of {@link Ext.env.OS}.
+     */
+    Ext.os = new Ext.env.OS();
 
 });
 

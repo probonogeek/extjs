@@ -101,7 +101,8 @@ Ext.onReady(function(){
                     xtype: 'datefield',
                     fieldLabel: 'Date of Birth',
                     name: 'dob',
-                    allowBlank: false
+                    allowBlank: false,
+                    maxValue: new Date()
                 }
             ]
         }],

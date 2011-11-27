@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,18 +15,13 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">
-<span id='Ext-grid-plugin-Editing'>/**
-</span> * @class Ext.grid.plugin.Editing
-
-This class provides an abstract grid editing plugin on selected {@link Ext.grid.column.Column columns}.
-The editable columns are specified by providing an {@link Ext.grid.column.Column#editor editor}
-in the {@link Ext.grid.column.Column column configuration}.
-
-*Note:* This class should not be used directly. See {@link Ext.grid.plugin.CellEditing} and
-{@link Ext.grid.plugin.RowEditing}.
-
- * @markdown
+  <pre class="prettyprint lang-js"><span id='Ext-grid-plugin-Editing'>/**
+</span> * This class provides an abstract grid editing plugin on selected {@link Ext.grid.column.Column columns}.
+ * The editable columns are specified by providing an {@link Ext.grid.column.Column#editor editor}
+ * in the {@link Ext.grid.column.Column column configuration}.
+ *
+ * **Note:** This class should not be used directly. See {@link Ext.grid.plugin.CellEditing} and
+ * {@link Ext.grid.plugin.RowEditing}.
  */
 Ext.define('Ext.grid.plugin.Editing', {
     alias: 'editing.editing',
@@ -42,7 +37,7 @@ Ext.define('Ext.grid.plugin.Editing', {
 
 <span id='Ext-grid-plugin-Editing-cfg-clicksToEdit'>    /**
 </span>     * @cfg {Number} clicksToEdit
-     * The number of clicks on a grid required to display the editor (defaults to 2).
+     * The number of clicks on a grid required to display the editor.
      */
     clicksToEdit: 2,
 
@@ -87,7 +82,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         grid.isEditable = true;
         grid.editingPlugin = grid.view.editingPlugin = me;
     },
-    
+
 <span id='Ext-grid-plugin-Editing-method-onReconfigure'>    /**
 </span>     * Fires after the grid is reconfigured
      * @private
@@ -261,16 +256,17 @@ Ext.define('Ext.grid.plugin.Editing', {
 
 <span id='Ext-grid-plugin-Editing-property-beforeEdit'>    /**
 </span>     * @private
-     * @abstract. Template method called before editing begins.
+     * @template
+     * Template method called before editing begins.
      * @param {Object} context The current editing context
      * @return {Boolean} Return false to cancel the editing process
      */
     beforeEdit: Ext.emptyFn,
 
 <span id='Ext-grid-plugin-Editing-method-startEdit'>    /**
-</span>     * Start editing the specified record, using the specified Column definition to define which field is being edited.
-     * @param {Model} record The Store data record which backs the row to be edited.
-     * @param {Model} columnHeader The Column object defining the column to be edited.
+</span>     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+     * @param {Ext.data.Model/Number} record The Store data record which backs the row to be edited, or index of the record in Store.
+     * @param {Ext.grid.column.Column/Number} columnHeader The Column object defining the column to be edited, or index of the column.
      */
     startEdit: function(record, columnHeader) {
         var me = this,
@@ -285,7 +281,8 @@ Ext.define('Ext.grid.plugin.Editing', {
     },
 
 <span id='Ext-grid-plugin-Editing-method-getEditingContext'>    /**
-</span>     * @private Collects all information necessary for any subclasses to perform their editing functions.
+</span>     * @private
+     * Collects all information necessary for any subclasses to perform their editing functions.
      * @param record
      * @param columnHeader
      * @returns {Object} The editing context based upon the passed record and column
@@ -327,14 +324,14 @@ Ext.define('Ext.grid.plugin.Editing', {
     },
 
 <span id='Ext-grid-plugin-Editing-method-cancelEdit'>    /**
-</span>     * Cancel any active edit that is in progress.
+</span>     * Cancels any active edit that is in progress.
      */
     cancelEdit: function() {
         this.editing = false;
     },
 
 <span id='Ext-grid-plugin-Editing-method-completeEdit'>    /**
-</span>     * Complete the edit if there is an active edit in progress.
+</span>     * Completes the edit if there is an active edit in progress.
      */
     completeEdit: function() {
         var me = this;
@@ -354,6 +351,7 @@ Ext.define('Ext.grid.plugin.Editing', {
 
         return me.fireEvent('validateedit', me, context) !== false &amp;&amp; !context.cancel;
     }
-});</pre>
+});
+</pre>
 </body>
 </html>

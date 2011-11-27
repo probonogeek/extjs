@@ -186,9 +186,11 @@ if(Ext.form.field.Date){
 
 if(Ext.form.field.ComboBox){
   Ext.apply(Ext.form.field.ComboBox.prototype, {
-    loadingText       : "Lastar...",
     valueNotFoundText : undefined
   });
+    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+        loadingText       : "Lastar..."
+    });
 }
 
 if(Ext.form.field.VTypes){

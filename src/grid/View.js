@@ -15,50 +15,49 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.grid.View
  * @extends Ext.view.Table
-
-The grid View class provides extra {@link Ext.grid.Panel} specific functionality to the
-{@link Ext.view.Table}. In general, this class is not instanced directly, instead a viewConfig
-option is passed to the grid:
-
-    Ext.create('Ext.grid.Panel', {
-        // other options
-        viewConfig: {
-            stripeRows: false
-        }
-    });
-    
-__Drag Drop__
-Drag and drop functionality can be achieved in the grid by attaching a {@link Ext.grid.plugin.DragDrop} plugin
-when creating the view.
-
-    Ext.create('Ext.grid.Panel', {
-        // other options
-        viewConfig: {
-            plugins: {
-                ddGroup: 'people-group',
-                ptype: 'gridviewdragdrop',
-                enableDrop: false
-            }
-        }
-    });
-
- * @markdown
+ *
+ * The grid View class provides extra {@link Ext.grid.Panel} specific functionality to the
+ * {@link Ext.view.Table}. In general, this class is not instanced directly, instead a viewConfig
+ * option is passed to the grid:
+ *
+ *     Ext.create('Ext.grid.Panel', {
+ *         // other options
+ *         viewConfig: {
+ *             stripeRows: false
+ *         }
+ *     });
+ *
+ * ## Drag Drop
+ *
+ * Drag and drop functionality can be achieved in the grid by attaching a {@link Ext.grid.plugin.DragDrop} plugin
+ * when creating the view.
+ *
+ *     Ext.create('Ext.grid.Panel', {
+ *         // other options
+ *         viewConfig: {
+ *             plugins: {
+ *                 ddGroup: 'people-group',
+ *                 ptype: 'gridviewdragdrop',
+ *                 enableDrop: false
+ *             }
+ *         }
+ *     });
  */
 Ext.define('Ext.grid.View', {
     extend: 'Ext.view.Table',
     alias: 'widget.gridview',
 
     /**
-     * @cfg {Boolean} stripeRows <tt>true</tt> to stripe the rows. Default is <tt>false</tt>.
+     * @cfg {Boolean} stripeRows <tt>true</tt> to stripe the rows. Default is <tt>true</tt>.
      * <p>This causes the CSS class <tt><b>x-grid-row-alt</b></tt> to be added to alternate rows of
      * the grid. A default CSS rule is provided which sets a background color, but you can override this
      * with a rule which either overrides the <b>background-color</b> style using the '!important'
      * modifier, or which uses a CSS selector of higher specificity.</p>
      */
     stripeRows: true,
-    
+
     invalidateScrollerOnRefresh: true,
-    
+
     /**
      * Scroll the GridView to the top by scrolling the scroller.
      * @private
@@ -67,7 +66,7 @@ Ext.define('Ext.grid.View', {
         if (this.rendered) {
             var section = this.ownerCt,
                 verticalScroller = section.verticalScroller;
-                
+
             if (verticalScroller) {
                 verticalScroller.scrollToTop();
             }
@@ -79,23 +78,23 @@ Ext.define('Ext.grid.View', {
         this.callParent(arguments);
         this.doStripeRows(index);
     },
-    
+
     // after removing a row stripe rows from then on
     onRemove: function(ds, records, index) {
         this.callParent(arguments);
         this.doStripeRows(index);
     },
-    
+
     onUpdate: function(ds, record, operation) {
         var index = ds.indexOf(record);
         this.callParent(arguments);
         this.doStripeRows(index, index);
     },
-    
+
     /**
      * Stripe rows from a particular row index
      * @param {Number} startRow
-     * @param {Number} endRow Optional argument specifying the last row to process. By default process up to the last row.
+     * @param {Number} endRow (Optional) argument specifying the last row to process. By default process up to the last row.
      * @private
      */
     doStripeRows: function(startRow, endRow) {
@@ -105,7 +104,7 @@ Ext.define('Ext.grid.View', {
                 rowsLn = rows.length,
                 i      = 0,
                 row;
-                
+
             for (; i < rowsLn; i++) {
                 row = rows[i];
                 // Remove prior applied row classes.
@@ -118,7 +117,7 @@ Ext.define('Ext.grid.View', {
             }
         }
     },
-    
+
     refresh: function(firstPass) {
         this.callParent(arguments);
         this.doStripeRows(0);

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,57 +16,57 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-form-field-Spinner'>/**
-</span> * @class Ext.form.field.Spinner
- * @extends Ext.form.field.Trigger
- * &lt;p&gt;A field with a pair of up/down spinner buttons. This class is not normally instantiated directly,
+</span> * A field with a pair of up/down spinner buttons. This class is not normally instantiated directly,
  * instead it is subclassed and the {@link #onSpinUp} and {@link #onSpinDown} methods are implemented
- * to handle when the buttons are clicked. A good example of this is the {@link Ext.form.field.Number} field
- * which uses the spinner to increment and decrement the field's value by its {@link Ext.form.field.Number#step step}
- * config value.&lt;/p&gt;
- * {@img Ext.form.field.Spinner/Ext.form.field.Spinner.png Ext.form.field.Spinner field}
- * For example:
-     Ext.define('Ext.ux.CustomSpinner', {
-        extend: 'Ext.form.field.Spinner',
-        alias: 'widget.customspinner',
-        
-        // override onSpinUp (using step isn't neccessary)
-        onSpinUp: function() {
-            var me = this;
-            if (!me.readOnly) {
-                var val = me.step; // set the default value to the step value
-                if(me.getValue() !== '') {
-                    val = parseInt(me.getValue().slice(0, -5)); // gets rid of &quot; Pack&quot;
-                }                          
-                me.setValue((val + me.step) + ' Pack');
-            }
-        },
-        
-        // override onSpinDown
-        onSpinDown: function() {
-            var me = this;
-            if (!me.readOnly) {
-                if(me.getValue() !== '') {
-                    val = parseInt(me.getValue().slice(0, -5)); // gets rid of &quot; Pack&quot;
-                }            
-                me.setValue((val - me.step) + ' Pack');
-            }
-        }
-    });
-    
-    Ext.create('Ext.form.FormPanel', {
-        title: 'Form with SpinnerField',
-        bodyPadding: 5,
-        width: 350,
-        renderTo: Ext.getBody(),
-        items:[{
-            xtype: 'customspinner',
-            fieldLabel: 'How Much Beer?',
-            step: 6
-        }]
-    });
- * &lt;p&gt;By default, pressing the up and down arrow keys will also trigger the onSpinUp and onSpinDown methods;
- * to prevent this, set &lt;tt&gt;{@link #keyNavEnabled} = false&lt;/tt&gt;.&lt;/p&gt;
+ * to handle when the buttons are clicked. A good example of this is the {@link Ext.form.field.Number}
+ * field which uses the spinner to increment and decrement the field's value by its
+ * {@link Ext.form.field.Number#step step} config value.
  *
+ * For example:
+ *
+ *     @example
+ *     Ext.define('Ext.ux.CustomSpinner', {
+ *         extend: 'Ext.form.field.Spinner',
+ *         alias: 'widget.customspinner',
+ *
+ *         // override onSpinUp (using step isn't neccessary)
+ *         onSpinUp: function() {
+ *             var me = this;
+ *             if (!me.readOnly) {
+ *                 var val = me.step; // set the default value to the step value
+ *                 if(me.getValue() !== '') {
+ *                     val = parseInt(me.getValue().slice(0, -5)); // gets rid of &quot; Pack&quot;
+ *                 }
+ *                 me.setValue((val + me.step) + ' Pack');
+ *             }
+ *         },
+ *
+ *         // override onSpinDown
+ *         onSpinDown: function() {
+ *             var val, me = this;
+ *             if (!me.readOnly) {
+ *                 if(me.getValue() !== '') {
+ *                     val = parseInt(me.getValue().slice(0, -5)); // gets rid of &quot; Pack&quot;
+ *                 }
+ *                 me.setValue((val - me.step) + ' Pack');
+ *             }
+ *         }
+ *     });
+ *
+ *     Ext.create('Ext.form.FormPanel', {
+ *         title: 'Form with SpinnerField',
+ *         bodyPadding: 5,
+ *         width: 350,
+ *         renderTo: Ext.getBody(),
+ *         items:[{
+ *             xtype: 'customspinner',
+ *             fieldLabel: 'How Much Beer?',
+ *             step: 6
+ *         }]
+ *     });
+ *
+ * By default, pressing the up and down arrow keys will also trigger the onSpinUp and onSpinDown methods;
+ * to prevent this, set `{@link #keyNavEnabled} = false`.
  */
 Ext.define('Ext.form.field.Spinner', {
     extend: 'Ext.form.field.Trigger',
@@ -79,47 +79,51 @@ Ext.define('Ext.form.field.Spinner', {
 
 <span id='Ext-form-field-Spinner-cfg-spinUpEnabled'>    /**
 </span>     * @cfg {Boolean} spinUpEnabled
-     * Specifies whether the up spinner button is enabled. Defaults to &lt;tt&gt;true&lt;/tt&gt;. To change this
-     * after the component is created, use the {@link #setSpinUpEnabled} method.
+     * Specifies whether the up spinner button is enabled. Defaults to true. To change this after the component is
+     * created, use the {@link #setSpinUpEnabled} method.
      */
     spinUpEnabled: true,
 
 <span id='Ext-form-field-Spinner-cfg-spinDownEnabled'>    /**
 </span>     * @cfg {Boolean} spinDownEnabled
-     * Specifies whether the down spinner button is enabled. Defaults to &lt;tt&gt;true&lt;/tt&gt;. To change this
-     * after the component is created, use the {@link #setSpinDownEnabled} method.
+     * Specifies whether the down spinner button is enabled. Defaults to true. To change this after the component is
+     * created, use the {@link #setSpinDownEnabled} method.
      */
     spinDownEnabled: true,
 
 <span id='Ext-form-field-Spinner-cfg-keyNavEnabled'>    /**
 </span>     * @cfg {Boolean} keyNavEnabled
-     * Specifies whether the up and down arrow keys should trigger spinning up and down.
-     * Defaults to &lt;tt&gt;true&lt;/tt&gt;.
+     * Specifies whether the up and down arrow keys should trigger spinning up and down. Defaults to true.
      */
     keyNavEnabled: true,
 
 <span id='Ext-form-field-Spinner-cfg-mouseWheelEnabled'>    /**
 </span>     * @cfg {Boolean} mouseWheelEnabled
-     * Specifies whether the mouse wheel should trigger spinning up and down while the field has
-     * focus. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
+     * Specifies whether the mouse wheel should trigger spinning up and down while the field has focus.
+     * Defaults to true.
      */
     mouseWheelEnabled: true,
 
 <span id='Ext-form-field-Spinner-cfg-repeatTriggerClick'>    /**
-</span>     * @cfg {Boolean} repeatTriggerClick Whether a {@link Ext.util.ClickRepeater click repeater} should be
-     * attached to the spinner buttons. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
+</span>     * @cfg {Boolean} repeatTriggerClick
+     * Whether a {@link Ext.util.ClickRepeater click repeater} should be attached to the spinner buttons.
+     * Defaults to true.
      */
     repeatTriggerClick: true,
 
-<span id='Ext-form-field-Spinner-property-onSpinUp'>    /**
-</span>     * This method is called when the spinner up button is clicked, or when the up arrow key is pressed
-     * if {@link #keyNavEnabled} is &lt;tt&gt;true&lt;/tt&gt;. Must be implemented by subclasses.
+<span id='Ext-form-field-Spinner-method-onSpinUp'>    /**
+</span>     * @method
+     * @protected
+     * This method is called when the spinner up button is clicked, or when the up arrow key is pressed if
+     * {@link #keyNavEnabled} is true. Must be implemented by subclasses.
      */
     onSpinUp: Ext.emptyFn,
 
-<span id='Ext-form-field-Spinner-property-onSpinDown'>    /**
-</span>     * This method is called when the spinner down button is clicked, or when the down arrow key is pressed
-     * if {@link #keyNavEnabled} is &lt;tt&gt;true&lt;/tt&gt;. Must be implemented by subclasses.
+<span id='Ext-form-field-Spinner-method-onSpinDown'>    /**
+</span>     * @method
+     * @protected
+     * This method is called when the spinner down button is clicked, or when the down arrow key is pressed if
+     * {@link #keyNavEnabled} is true. Must be implemented by subclasses.
      */
     onSpinDown: Ext.emptyFn,
 
@@ -152,7 +156,8 @@ Ext.define('Ext.form.field.Spinner', {
     },
 
 <span id='Ext-form-field-Spinner-method-onRender'>    /**
-</span>     * @private override
+</span>     * @private
+     * Override.
      */
     onRender: function() {
         var me = this,
@@ -162,14 +167,12 @@ Ext.define('Ext.form.field.Spinner', {
         triggers = me.triggerEl;
 
 <span id='Ext-form-field-Spinner-property-spinUpEl'>        /**
-</span>         * @property spinUpEl
-         * @type Ext.core.Element
+</span>         * @property {Ext.Element} spinUpEl
          * The spinner up button element
          */
         me.spinUpEl = triggers.item(0);
 <span id='Ext-form-field-Spinner-property-spinDownEl'>        /**
-</span>         * @property spinDownEl
-         * @type Ext.core.Element
+</span>         * @property {Ext.Element} spinDownEl
          * The spinner down button element
          */
         me.spinDownEl = triggers.item(1);
@@ -194,22 +197,24 @@ Ext.define('Ext.form.field.Spinner', {
     },
 
 <span id='Ext-form-field-Spinner-method-getTriggerWidth'>    /**
-</span>     * @private override
-     * Since the triggers are stacked, only measure the width of one of them.
+</span>     * @private
+     * Override. Since the triggers are stacked, only measure the width of one of them.
      */
     getTriggerWidth: function() {
         return this.hideTrigger || this.readOnly ? 0 : this.spinUpEl.getWidth() + this.triggerWrap.getFrameWidth('lr');
     },
 
 <span id='Ext-form-field-Spinner-method-onTrigger1Click'>    /**
-</span>     * @private Handles the spinner up button clicks.
+</span>     * @private
+     * Handles the spinner up button clicks.
      */
     onTrigger1Click: function() {
         this.spinUp();
     },
 
 <span id='Ext-form-field-Spinner-method-onTrigger2Click'>    /**
-</span>     * @private Handles the spinner down button clicks.
+</span>     * @private
+     * Handles the spinner down button clicks.
      */
     onTrigger2Click: function() {
         this.spinDown();

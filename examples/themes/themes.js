@@ -29,6 +29,8 @@ Ext.require([
 ]);
 
 Ext.onReady(function() {
+    Ext.panel.Panel.prototype.defaultDockWeights = { top: 1, bottom: 3, left: 5, right: 7 };
+
     var items = [];
 
     /**
@@ -37,16 +39,31 @@ Ext.onReady(function() {
     items.push({
         xtype: 'panel',
 
-        x: 50, y: 100,
+        x: 50, y: 80,
 
         width : 150,
-        height: 150,
+        height: 90,
 
         title: 'Basic Panel',
         animCollapse: true,
         bodyPadding: 5,
+        html       : 'Some content'
+    });
+
+    items.push({
+        xtype: 'panel',
+
+        x: 50, y: 180,
+
+        width : 150,
+        height: 70,
+
+        title: 'Collapsed Panel',
+        animCollapse: true,
+        bodyPadding: 5,
         html       : 'Some content',
-        collapsible: true
+        collapsible: true,
+        collapsed: true
     });
 
     /**
@@ -55,10 +72,10 @@ Ext.onReady(function() {
     items.push({
         xtype: 'panel',
 
-        x: 210, y: 100,
+        x: 210, y: 80,
 
-        width : 150,
-        height: 150,
+        width : 130,
+        height: 170,
 
         title: 'Masked Panel',
 
@@ -81,10 +98,10 @@ Ext.onReady(function() {
     items.push({
         xtype: 'panel',
 
-        x: 370, y: 100,
+        x: 350, y: 80,
 
-        width : 150,
-        height: 150,
+        width : 170,
+        height: 100,
 
         title: 'Framed Panel',
         animCollapse: true,
@@ -110,19 +127,38 @@ Ext.onReady(function() {
         }],
         
         html       : 'Some content',
+        frame      : true
+    });
+
+    items.push({
+        xtype: 'panel',
+
+        x: 350, y: 190,
+
+        width : 170,
+        height: 60,
+
+        title: 'Collapsed Framed Panel',
+        animCollapse: true,
+        bodyPadding: 5,
+        bodyBorder: true,
+        html       : 'Some content',
         frame      : true,
-        collapsible: true
+        collapsible: true,
+        collapsed: true
     });
 
     /**
      * Basic Window
      */
     Ext.createWidget('window', {
-        x: 530, y: 100,
+        x: 530, y: 80,
 
         width   : 150,
-        height  : 150,
+        height  : 170,
         minWidth: 150,
+        minHeight: 150,
+        maxHeight: 170,
 
         title: 'Window',
 
@@ -132,7 +168,7 @@ Ext.onReady(function() {
         collapsible: true,
         closable   : false,
         draggable  : false,
-        resizable: false,
+        resizable: { handles: 's' },
         animCollapse: true,
 
         tbar: [
@@ -176,14 +212,37 @@ Ext.onReady(function() {
     items.push({
         xtype: 'panel',
 
-        x: 690, y: 100,
+        x: 690, y: 80,
 
         width : 450,
-        height: 150,
+        height: 170,
 
         title: 'Basic Panel With Toolbars',
+        collapsible: true,
 
         tbar: [
+            {
+                xtype: 'buttongroup',
+                title: 'Button Group',
+                columns: 2,
+                defaults: {
+                    scale: 'small'
+                },
+                items: [{
+                    xtype:'splitbutton',
+                    text: 'Menu Button',
+                    iconCls: 'add16',
+                    menu: [{text: 'Menu Button 1'}]
+                },{
+                    xtype:'splitbutton',
+                    text: 'Cut',
+                    iconCls: 'add16',
+                    menu: [{text: 'Cut Menu Item'}]
+                }]
+            }
+        ],
+        bbar: [
+            
             'Toolbar &amp; Menus',
             ' ',
             '-',
@@ -210,8 +269,11 @@ Ext.onReady(function() {
                 text        : 'Toggle Button'
             }
         ],
-        bbar: [
-            {text: 'Bottom Bar'}
+        lbar:[
+            { text: 'Left' }
+        ],
+        rbar: [
+            { text: 'Right' }
         ]
     });
 
@@ -229,6 +291,7 @@ Ext.onReady(function() {
         width : 630,
         height: 700,
         frame: true,
+        collapsible: true,
                 
         tools: [
             {type:'toggle'},
@@ -241,7 +304,6 @@ Ext.onReady(function() {
             {type:'unpin'},
             {type:'right'},
             {type:'left'},
-            {type:'up'},
             {type:'down'},
             {type:'refresh'},
             {type:'minus'},
@@ -304,7 +366,10 @@ Ext.onReady(function() {
                 fieldLabel: 'Checkboxes',
                 xtype: 'checkboxgroup',
                 columns: [100,100],
-                items: [{boxLabel: 'Foo', checked: true},{boxLabel: 'Bar'}]
+                items: [
+                    {boxLabel: 'Foo', checked: true,id:'fooChk',inputId:'fooChkInput'},
+                    {boxLabel: 'Bar'}
+                ]
             },
             {
                 fieldLabel: 'Radios',
@@ -323,17 +388,36 @@ Ext.onReady(function() {
             },
             {
                 xtype : 'fieldset',
-                title : 'Plain Fieldset'
+                title : 'Plain Fieldset',
+                items: [
+                    {
+                        hideLabel: true,
+                        xtype: 'radiogroup',
+                        columns: [100,100],
+                        items: [
+                            {boxLabel: 'Radio A', checked: true, name: 'radiogrp2'},
+                            {boxLabel: 'Radio B', name: 'radiogrp2'}
+                        ]
+                    }
+                ]
             },
             {
                 xtype      : 'fieldset',
                 title      : 'Collapsible Fieldset',
-                collapsible: true
+                collapsible: true,
+                items: [
+                    { xtype: 'checkbox', boxLabel: 'Checkbox 1' },
+                    { xtype: 'checkbox', boxLabel: 'Checkbox 2' }
+                ]
             },
             {
                 xtype         : 'fieldset',
                 title         : 'Checkbox Fieldset',
-                checkboxToggle: true
+                checkboxToggle: true,
+                items: [
+                    { xtype: 'radio', boxLabel: 'Radio 1', name: 'radiongrp1' },
+                    { xtype: 'radio', boxLabel: 'Radio 2', name: 'radiongrp1' }
+                ]
             }
         ],
 
@@ -374,6 +458,7 @@ Ext.onReady(function() {
 
         title : 'BorderLayout Panel',
         layout: 'border',
+        collapsible: true,
 
         defaults: {
             collapsible: true,
@@ -468,6 +553,7 @@ Ext.onReady(function() {
         x: 690, y: 620,
 
         title: 'GridPanel',
+        collapsible: true,
 
         store: store,
 
@@ -522,6 +608,7 @@ Ext.onReady(function() {
 
     var accConfig = {
         title : 'Accordion and TreePanel',
+        collapsible: true,
         layout: 'accordion',
 
         x: 690, y: 830,
@@ -585,26 +672,31 @@ Ext.onReady(function() {
         items: [
             {
                 title: 'Tab 1',
-                html : 'Tab panel for display in a border layout'
+                html : 'Tab panel 1 content'
             },
             {
                 title   : 'Tab 2',
+                html : 'Tab panel 2 content',
                 closable: true
             },
             {
                 title   : 'Tab 3',
+                html : 'Tab panel 3 content',
                 closable: true
             },
             {
                 title   : 'Tab 4',
+                html : 'Tab panel 4 content',
                 closable: true
             },
             {
                 title   : 'Tab 5',
+                html : 'Tab panel 5 content',
                 closable: true
             },
             {
                 title   : 'Tab 6',
+                html : 'Tab panel 6 content',
                 closable: true
             }
         ]
@@ -691,9 +783,9 @@ Ext.onReady(function() {
         width:250,
         height:182,
         x: 430, y: 1130,
-        collapsible: false,
         xtype: 'gridpanel',
         title: 'Framed Grid',
+        collapsible: true,
         store: store,
         multiSelect: true,
         emptyText: 'No images to display',
@@ -705,6 +797,104 @@ Ext.onReady(function() {
             {header: "Change",       width: 75,  sortable: true, dataIndex: 'change'}
         ]
     });
+    
+    /**
+     * Basic Window
+     */
+    Ext.createWidget('window', {
+        x: 690, y: 1290,
+
+        width   : 450,
+        // height  : 360,
+        minWidth: 450,
+
+        title: 'Window',
+        
+        bodyPadding: '5 5 0 5',
+        
+        collapsible: true,
+        closable   : false,
+        draggable  : false,
+        resizable: { handles: 's' },
+        animCollapse: true,
+        
+        items: [
+            {
+                xtype : 'fieldset',
+                title : 'Plain Fieldset',
+                items: [
+                    {
+                        fieldLabel: 'TextField',
+                        xtype     : 'textfield',
+                        name      : 'someField',
+                        emptyText : 'Enter a value',
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'ComboBox',
+                        xtype     : 'combo',
+                        store     : ['Foo', 'Bar'],
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'DateField',
+                        xtype     : 'datefield',
+                        name      : 'date',
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'TimeField',
+                        name      : 'time',
+                        xtype     : 'timefield',
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'NumberField',
+                        xtype     : 'numberfield',
+                        name      : 'number',
+                        emptyText : '(This field is optional)',
+                        allowBlank: true,
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'TextArea',
+                        xtype     : 'textareafield',
+                        name      : 'message',
+                        cls       : 'x-form-valid',
+                        value     : 'This field is hard-coded to have the "valid" style (it will require some code changes to add/remove this style dynamically)',
+                        anchor    : '100%'
+                    },
+                    {
+                        fieldLabel: 'Checkboxes',
+                        xtype: 'checkboxgroup',
+                        columns: [100,100],
+                        items: [
+                            {boxLabel: 'Foo', checked: true,id:'fooChk1',inputId:'fooChkInput1'},
+                            {boxLabel: 'Bar'}
+                        ]
+                    },
+                    {
+                        xtype: 'radiogroup',
+                        columns: [100,100],
+                        fieldLabel: 'Radio Group',
+                        items: [
+                            {boxLabel: 'Radio A', checked: true, name: 'radiogrp2'},
+                            {boxLabel: 'Radio B', name: 'radiogrp2'}
+                        ]
+                    }
+                ]
+            }
+        ],
+        
+        buttons: [
+            {
+                text   : 'Submit',
+                handler: function() {
+                    Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?');
+                }
+            }
+        ]
+    }).show();
 
     for (var i = 0; i < items.length; i++) {
         items[i].style = {
@@ -712,7 +902,7 @@ Ext.onReady(function() {
         };
         var item = Ext.ComponentManager.create(items[i], 'panel');
         item.render(document.body);
-    };
+    }
 
     setTimeout(function() {
         Ext.QuickTips.init();

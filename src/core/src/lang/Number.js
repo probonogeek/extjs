@@ -94,7 +94,7 @@ Ext.Number = {
 Ext.Number.from('1.23', 1); // returns 1.23
 Ext.Number.from('abc', 1); // returns 1
 
-     * @param {Mixed} value
+     * @param {Object} value
      * @param {Number} defaultValue The value to return if the original value is non-numeric
      * @return {Number} value, if numeric, defaultValue otherwise
      */
@@ -110,11 +110,10 @@ Ext.Number.from('abc', 1); // returns 1
 })();
 
 /**
- * This method is deprecated, please use {@link Ext.Number#from Ext.Number.from} instead
- *
- * @deprecated 4.0.0 Replaced by Ext.Number.from
+ * @deprecated 4.0.0 Please use {@link Ext.Number#from} instead.
  * @member Ext
  * @method num
+ * @alias Ext.Number#from
  */
 Ext.num = function() {
     return Ext.Number.from.apply(this, arguments);

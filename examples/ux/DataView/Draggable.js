@@ -141,7 +141,7 @@ Ext.define('Ext.ux.DataView.Draggable', {
     },
 
     getTreeNode: function() {
-        console.log('test');
+        // console.log('test');
     },
 
     afterRepair: function() {

@@ -61,14 +61,14 @@ If you are unsure which license is appropriate for your use, please contact the 
  */
 Ext.define('Ext.dd.DragDrop', {
     requires: ['Ext.dd.DragDropManager'],
-    
+
     /**
      * Creates new DragDrop.
      * @param {String} id of the element that is linked to this instance
      * @param {String} sGroup the group of related DragDrop objects
-     * @param {object} config an object containing configurable attributes.
+     * @param {Object} config an object containing configurable attributes.
      * Valid properties for DragDrop:
-     * 
+     *
      * - padding
      * - isTarget
      * - maintainOffset
@@ -79,7 +79,7 @@ Ext.define('Ext.dd.DragDrop', {
             this.init(id, sGroup, config);
         }
     },
-    
+
     /**
      * Set to false to enable a DragDrop object to fire drag events while dragging
      * over its own Element. Defaults to true - DragDrop objects do not by default
@@ -101,7 +101,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * Configuration attributes passed into the constructor
      * @property config
-     * @type object
+     * @type Object
      */
     config: null,
 
@@ -128,7 +128,7 @@ Ext.define('Ext.dd.DragDrop', {
 
     /**
      * An object who's property names identify HTML tags to be considered invalid as drag handles.
-     * A non-null property value identifies the tag as invalid. Defaults to the 
+     * A non-null property value identifies the tag as invalid. Defaults to the
      * following value which prevents drag operations from being initiated by &lt;a> elements:<pre><code>
 {
     A: "A"
@@ -152,8 +152,7 @@ Ext.define('Ext.dd.DragDrop', {
 
     /**
      * An Array of CSS class names for elements to be considered in valid as drag handles.
-     * @property invalidHandleClasses
-     * @type Array
+     * @property {String[]} invalidHandleClasses
      */
     invalidHandleClasses: null,
 
@@ -161,7 +160,7 @@ Ext.define('Ext.dd.DragDrop', {
      * The linked element's absolute X position at the time the drag was
      * started
      * @property startPageX
-     * @type int
+     * @type Number
      * @private
      */
     startPageX: 0,
@@ -170,7 +169,7 @@ Ext.define('Ext.dd.DragDrop', {
      * The linked element's absolute X position at the time the drag was
      * started
      * @property startPageY
-     * @type int
+     * @type Number
      * @private
      */
     startPageY: 0,
@@ -181,7 +180,7 @@ Ext.define('Ext.dd.DragDrop', {
      * DragDrop object in the same group.  This lets us define multiple
      * groups using a single DragDrop subclass if we want.
      * @property groups
-     * @type object An object in the format {'group1':true, 'group2':true}
+     * @type Object An object in the format {'group1':true, 'group2':true}
      */
     groups: null,
 
@@ -189,7 +188,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Individual drag/drop instances can be locked.  This will prevent
      * onmousedown start drag.
      * @property locked
-     * @type boolean
+     * @type Boolean
      * @private
      */
     locked: false,
@@ -205,7 +204,7 @@ Ext.define('Ext.dd.DragDrop', {
      * When set to true, other DD objects in cooperating DDGroups do not receive
      * notification events when this DD object is dragged over them. Defaults to false.
      * @property moveOnly
-     * @type boolean
+     * @type Boolean
      */
     moveOnly: false,
 
@@ -220,7 +219,7 @@ Ext.define('Ext.dd.DragDrop', {
      * By default, all instances can be a drop target.  This can be disabled by
      * setting isTarget to false.
      * @property isTarget
-     * @type boolean
+     * @type Boolean
      */
     isTarget: true,
 
@@ -228,7 +227,7 @@ Ext.define('Ext.dd.DragDrop', {
      * The padding configured for this drag and drop object for calculating
      * the drop zone intersection with this object.
      * An array containing the 4 padding values: [top, right, bottom, left]
-     * @property {[int]} padding
+     * @property {Number[]} padding
      */
     padding: null,
 
@@ -249,7 +248,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * Set to true when horizontal contraints are applied
      * @property constrainX
-     * @type boolean
+     * @type Boolean
      * @private
      */
     constrainX: false,
@@ -257,7 +256,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * Set to true when vertical contraints are applied
      * @property constrainY
-     * @type boolean
+     * @type Boolean
      * @private
      */
     constrainY: false,
@@ -265,7 +264,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The left constraint
      * @property minX
-     * @type int
+     * @type Number
      * @private
      */
     minX: 0,
@@ -273,7 +272,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The right constraint
      * @property maxX
-     * @type int
+     * @type Number
      * @private
      */
     maxX: 0,
@@ -281,7 +280,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The up constraint
      * @property minY
-     * @type int
+     * @type Number
      * @private
      */
     minY: 0,
@@ -289,7 +288,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * The down constraint
      * @property maxY
-     * @type int
+     * @type Number
      * @private
      */
     maxY: 0,
@@ -300,7 +299,7 @@ Ext.define('Ext.dd.DragDrop', {
      * when the page changes
      *
      * @property maintainOffset
-     * @type boolean
+     * @type Boolean
      */
     maintainOffset: false,
 
@@ -308,7 +307,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * horizontal graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property {[int]} xTicks
+     * @property {Number[]} xTicks
      */
     xTicks: null,
 
@@ -316,7 +315,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Array of pixel locations the element will snap to if we specified a
      * vertical graduation/interval.  This array is generated automatically
      * when you define a tick interval.
-     * @property {[int]} yTicks
+     * @property {Number[]} yTicks
      */
     yTicks: null,
 
@@ -326,14 +325,14 @@ Ext.define('Ext.dd.DragDrop', {
      * allow drag and drop to start with any mouse click that is propogated
      * by the browser
      * @property primaryButtonOnly
-     * @type boolean
+     * @type Boolean
      */
     primaryButtonOnly: true,
 
     /**
      * The available property is false until the linked dom element is accessible.
      * @property available
-     * @type boolean
+     * @type Boolean
      */
     available: false,
 
@@ -345,7 +344,7 @@ Ext.define('Ext.dd.DragDrop', {
      * if outer handles are defined. Defaults to false.
      *
      * @property hasOuterHandles
-     * @type boolean
+     * @type Boolean
      */
     hasOuterHandles: false,
 
@@ -358,8 +357,8 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * Abstract method called after a drag/drop object is clicked
      * and the drag or mousedown time thresholds have beeen met.
-     * @param {int} X click location
-     * @param {int} Y click location
+     * @param {Number} X click location
+     * @param {Number} Y click location
      */
     startDrag: function(x, y) { /* override this */ },
 
@@ -380,7 +379,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Abstract method called when this element fist begins hovering over
      * another DragDrop obj
      * @param {Event} e the mousemove event
-     * @param {String/[DragDrop]} id In POINT mode, the element
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
      * id this is hovering over.  In INTERSECT mode, an array of one or more
      * dragdrop items being hovered over.
      */
@@ -396,7 +395,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Abstract method called when this element is hovering over another
      * DragDrop obj
      * @param {Event} e the mousemove event
-     * @param {String|DragDrop[]} id In POINT mode, the element
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
      * id this is hovering over.  In INTERSECT mode, an array of dd items
      * being hovered over.
      */
@@ -411,7 +410,7 @@ Ext.define('Ext.dd.DragDrop', {
     /**
      * Abstract method called when we are no longer hovering over an element
      * @param {Event} e the mousemove event
-     * @param {String/[DragDrop]} id In POINT mode, the element
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
      * id this was hovering over.  In INTERSECT mode, an array of dd items
      * that the mouse is no longer over.
      */
@@ -427,7 +426,7 @@ Ext.define('Ext.dd.DragDrop', {
      * Abstract method called when this item is dropped on another DragDrop
      * obj
      * @param {Event} e the mouseup event
-     * @param {String/[DragDrop]} id In POINT mode, the element
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
      * id this was dropped on.  In INTERSECT mode, an array of dd items this
      * was dropped on.
      */
@@ -479,8 +478,8 @@ Ext.define('Ext.dd.DragDrop', {
     },
 
     /**
-     * Provides default constraint padding to "constrainTo" elements (defaults to `{left:0, right:0, top:0, bottom:0}`).
-     * @type Object
+     * @property {Object} defaultPadding
+     * Provides default constraint padding to "constrainTo" elements.
      */
     defaultPadding: {
         left: 0,
@@ -500,7 +499,7 @@ Ext.define('Ext.dd.DragDrop', {
      *         this.constrainTo("parent-id");
      *     };
      *
-     * Or you can initalize it using the {@link Ext.core.Element} object:
+     * Or you can initalize it using the {@link Ext.Element} object:
      *
      *     Ext.get("dragDiv1").initDDProxy("proxytest", {dragElId: "existingProxyDiv"}, {
      *         startDrag : function(){
@@ -508,7 +507,7 @@ Ext.define('Ext.dd.DragDrop', {
      *         }
      *     });
      *
-     * @param {Mixed} constrainTo The element to constrain to.
+     * @param {String/HTMLElement/Ext.Element} constrainTo The element or element ID to constrain to.
      * @param {Object/Number} pad (optional) Pad provides a way to specify "padding" of the constraints,
      * and can be either a number for symmetrical padding (4 would be equal to `{left:4, right:4, top:4, bottom:4}`) or
      * an object containing the sides to pad. For example: `{right:10, bottom:10}`
@@ -522,10 +521,10 @@ Ext.define('Ext.dd.DragDrop', {
         var b = Ext.get(this.getEl()).getBox(),
             ce = Ext.get(constrainTo),
             s = ce.getScroll(),
-            c, 
+            c,
             cd = ce.dom;
         if(cd == document.body){
-            c = { x: s.left, y: s.top, width: Ext.core.Element.getViewWidth(), height: Ext.core.Element.getViewHeight()};
+            c = { x: s.left, y: s.top, width: Ext.Element.getViewWidth(), height: Ext.Element.getViewHeight()};
         }else{
             var xy = ce.getXY();
             c = {x : xy[0], y: xy[1], width: cd.clientWidth, height: cd.clientHeight};
@@ -660,10 +659,10 @@ Ext.define('Ext.dd.DragDrop', {
      * Supports css-style shorthand; if only one parameter is passed, all sides
      * will have that padding, and if only two are passed, the top and bottom
      * will have the first param, the left and right the second.
-     * @param {int} iTop    Top pad
-     * @param {int} iRight  Right pad
-     * @param {int} iBot    Bot pad
-     * @param {int} iLeft   Left pad
+     * @param {Number} iTop    Top pad
+     * @param {Number} iRight  Right pad
+     * @param {Number} iBot    Bot pad
+     * @param {Number} iLeft   Left pad
      */
     setPadding: function(iTop, iRight, iBot, iLeft) {
         // this.padding = [iLeft, iRight, iTop, iBot];
@@ -678,8 +677,8 @@ Ext.define('Ext.dd.DragDrop', {
 
     /**
      * Stores the initial placement of the linked element.
-     * @param {int} diffX   the X offset, default 0
-     * @param {int} diffY   the Y offset, default 0
+     * @param {Number} diffX   the X offset, default 0
+     * @param {Number} diffY   the Y offset, default 0
      */
     setInitPosition: function(diffX, diffY) {
         var el = this.getEl();
@@ -691,7 +690,7 @@ Ext.define('Ext.dd.DragDrop', {
         var dx = diffX || 0;
         var dy = diffY || 0;
 
-        var p = Ext.core.Element.getXY( el );
+        var p = Ext.Element.getXY( el );
 
         this.initPageX = p[0] - dx;
         this.initPageY = p[1] - dy;
@@ -709,7 +708,7 @@ Ext.define('Ext.dd.DragDrop', {
      * @private
      */
     setStartPosition: function(pos) {
-        var p = pos || Ext.core.Element.getXY( this.getEl() );
+        var p = pos || Ext.Element.getXY( this.getEl() );
         this.deltaSetXY = null;
 
         this.startPageX = p[0];
@@ -1001,10 +1000,10 @@ Ext.define('Ext.dd.DragDrop', {
      * By default, the element can be dragged any place on the screen.  Use
      * this method to limit the horizontal travel of the element.  Pass in
      * 0,0 for the parameters if you want to lock the drag to the y axis.
-     * @param {int} iLeft the number of pixels the element can move to the left
-     * @param {int} iRight the number of pixels the element can move to the
+     * @param {Number} iLeft the number of pixels the element can move to the left
+     * @param {Number} iRight the number of pixels the element can move to the
      * right
-     * @param {int} iTickSize optional parameter for specifying that the
+     * @param {Number} iTickSize (optional) parameter for specifying that the
      * element should move iTickSize pixels at a time.
      */
     setXConstraint: function(iLeft, iRight, iTickSize) {
@@ -1042,9 +1041,9 @@ Ext.define('Ext.dd.DragDrop', {
      * By default, the element can be dragged any place on the screen.  Set
      * this to limit the vertical travel of the element.  Pass in 0,0 for the
      * parameters if you want to lock the drag to the x axis.
-     * @param {int} iUp the number of pixels the element can move up
-     * @param {int} iDown the number of pixels the element can move down
-     * @param {int} iTickSize optional parameter for specifying that the
+     * @param {Number} iUp the number of pixels the element can move up
+     * @param {Number} iDown the number of pixels the element can move down
+     * @param {Number} iTickSize (optional) parameter for specifying that the
      * element should move iTickSize pixels at a time.
      */
     setYConstraint: function(iUp, iDown, iTickSize) {
@@ -1061,7 +1060,7 @@ Ext.define('Ext.dd.DragDrop', {
 
     /**
      * Must be called if you manually reposition a dd element.
-     * @param {boolean} maintainOffset
+     * @param {Boolean} maintainOffset
      */
     resetConstraints: function() {
         // Maintain offsets if necessary
@@ -1094,9 +1093,9 @@ Ext.define('Ext.dd.DragDrop', {
      * Normally the drag element is moved pixel by pixel, but we can specify
      * that it move a number of pixels at a time.  This method resolves the
      * location when we have it set up like this.
-     * @param {int} val where we want to place the object
-     * @param {int[]} tickArray sorted array of valid points
-     * @return {int} the closest tick
+     * @param {Number} val where we want to place the object
+     * @param {Number[]} tickArray sorted array of valid points
+     * @return {Number} the closest tick
      * @private
      */
     getTick: function(val, tickArray) {
@@ -1126,7 +1125,7 @@ Ext.define('Ext.dd.DragDrop', {
 
     /**
      * toString method
-     * @return {string} string representation of the dd obj
+     * @return {String} string representation of the dd obj
      */
     toString: function() {
         return ("DragDrop " + this.id);

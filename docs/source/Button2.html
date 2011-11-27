@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -67,7 +67,7 @@ Ext.define('Ext.layout.component.Button', {
             // In IE7 strict mode button elements with width:auto get strange extra side margins within
             // the wrapping table cell, but they go away if the width is explicitly set. So we measure
             // the size of the text and set the width to match.
-            if (owner.text &amp;&amp; Ext.isIE7 &amp;&amp; Ext.isStrict &amp;&amp; btnEl &amp;&amp; btnEl.getWidth() &gt; 20) {
+            if (owner.text &amp;&amp; (Ext.isIE6 || Ext.isIE7) &amp;&amp; Ext.isStrict &amp;&amp; btnEl &amp;&amp; btnEl.getWidth() &gt; 20) {
                 btnFrameWidth = me.btnFrameWidth;
                 metrics = Ext.util.TextMetrics.measure(btnInnerEl, owner.text);
                 ownerEl.setWidth(metrics.width + btnFrameWidth + me.adjWidth);
@@ -115,7 +115,7 @@ Ext.define('Ext.layout.component.Button', {
         me.callParent(arguments);
         me.setElementSize(owner.btnEl, btnWidth, btnHeight);
         me.setElementSize(btnInnerEl, btnWidth, btnHeight);
-        if (isNum(btnHeight)) {
+        if (btnHeight &gt;= 0) {
             btnInnerEl.setStyle('line-height', btnHeight - btnFrameHeight + 'px');
         }
 

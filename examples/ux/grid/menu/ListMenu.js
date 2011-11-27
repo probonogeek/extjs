@@ -86,7 +86,7 @@ Ext.define('Ext.ux.grid.menu.ListMenu', {
 
     destroy : function () {
         if (this.store) {
-            this.store.destroy();
+            this.store.destroyStore();
         }
         this.callParent();
     },

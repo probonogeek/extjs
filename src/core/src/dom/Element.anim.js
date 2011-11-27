@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.applyIf(Ext.core.Element.prototype, {
+Ext.applyIf(Ext.Element.prototype, {
     // @private override base Ext.util.Animate mixin for animate for backwards compatibility
     animate: function(config) {
         var me = this;
@@ -93,28 +93,27 @@ Ext.applyIf(Ext.core.Element.prototype, {
     },
 
     /**
-     * Slides the element into view.  An anchor point can be optionally passed to set the point of
-     * origin for the slide effect.  This function automatically handles wrapping the element with
-     * a fixed-size container if needed.  See the Fx class overview for valid anchor point options.
-     * Usage:
-     *<pre><code>
-// default: slide the element in from the top
-el.slideIn();
-
-// custom: slide the element in from the right with a 2-second duration
-el.slideIn('r', { duration: 2 });
-
-// common config options shown with default values
-el.slideIn('t', {
-    easing: 'easeOut',
-    duration: 500
-});
-</code></pre>
-     * @param {String} anchor (optional) One of the valid Fx anchor positions (defaults to top: 't')
-     * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
+     * Slides the element into view. An anchor point can be optionally passed to set the point of origin for the slide
+     * effect. This function automatically handles wrapping the element with a fixed-size container if needed. See the
+     * Fx class overview for valid anchor point options. Usage:
+     *
+     *     // default: slide the element in from the top
+     *     el.slideIn();
+     *
+     *     // custom: slide the element in from the right with a 2-second duration
+     *     el.slideIn('r', { duration: 2000 });
+     *
+     *     // common config options shown with default values
+     *     el.slideIn('t', {
+     *         easing: 'easeOut',
+     *         duration: 500
+     *     });
+     *
+     * @param {String} [anchor='t'] One of the valid Fx anchor positions
+     * @param {Object} [options] Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
      */
-    slideIn: function(anchor, obj, slideOut) { 
+    slideIn: function(anchor, obj, slideOut) {
         var me = this,
             elStyle = me.dom.style,
             beforeAnim, wrapAnim;
@@ -132,13 +131,13 @@ el.slideIn('t', {
             }
 
             box = me.getBox();
-            if ((anchor == 't' || anchor == 'b') && box.height == 0) {
+            if ((anchor == 't' || anchor == 'b') && box.height === 0) {
                 box.height = me.dom.scrollHeight;
             }
-            else if ((anchor == 'l' || anchor == 'r') && box.width == 0) {
+            else if ((anchor == 'l' || anchor == 'r') && box.width === 0) {
                 box.width = me.dom.scrollWidth;
             }
-            
+
             position = me.getPositioning();
             me.setSize(box.width, box.height);
 
@@ -302,7 +301,7 @@ el.slideIn('t', {
                     if (obj.useDisplay) {
                         me.setDisplayed(false);
                     } else {
-                        me.hide();   
+                        me.hide();
                     }
                 }
                 else {
@@ -310,7 +309,7 @@ el.slideIn('t', {
                     me.setPositioning(position);
                 }
                 if (wrap.dom) {
-                    wrap.dom.parentNode.insertBefore(me.dom, wrap.dom); 
+                    wrap.dom.parentNode.insertBefore(me.dom, wrap.dom);
                     wrap.remove();
                 }
                 me.setSize(box.width, box.height);
@@ -340,56 +339,53 @@ el.slideIn('t', {
         return me;
     },
 
-    
+
     /**
-     * Slides the element out of view.  An anchor point can be optionally passed to set the end point
-     * for the slide effect.  When the effect is completed, the element will be hidden (visibility = 
-     * 'hidden') but block elements will still take up space in the document.  The element must be removed
-     * from the DOM using the 'remove' config option if desired.  This function automatically handles 
-     * wrapping the element with a fixed-size container if needed.  See the Fx class overview for valid anchor point options.
-     * Usage:
-     *<pre><code>
-// default: slide the element out to the top
-el.slideOut();
-
-// custom: slide the element out to the right with a 2-second duration
-el.slideOut('r', { duration: 2 });
-
-// common config options shown with default values
-el.slideOut('t', {
-    easing: 'easeOut',
-    duration: 500,
-    remove: false,
-    useDisplay: false
-});
-</code></pre>
-     * @param {String} anchor (optional) One of the valid Fx anchor positions (defaults to top: 't')
-     * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
+     * Slides the element out of view. An anchor point can be optionally passed to set the end point for the slide
+     * effect. When the effect is completed, the element will be hidden (visibility = 'hidden') but block elements will
+     * still take up space in the document. The element must be removed from the DOM using the 'remove' config option if
+     * desired. This function automatically handles wrapping the element with a fixed-size container if needed. See the
+     * Fx class overview for valid anchor point options. Usage:
+     *
+     *     // default: slide the element out to the top
+     *     el.slideOut();
+     *
+     *     // custom: slide the element out to the right with a 2-second duration
+     *     el.slideOut('r', { duration: 2000 });
+     *
+     *     // common config options shown with default values
+     *     el.slideOut('t', {
+     *         easing: 'easeOut',
+     *         duration: 500,
+     *         remove: false,
+     *         useDisplay: false
+     *     });
+     *
+     * @param {String} [anchor='t'] One of the valid Fx anchor positions
+     * @param {Object} [options] Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
      */
     slideOut: function(anchor, o) {
         return this.slideIn(anchor, o, true);
     },
 
     /**
-     * Fades the element out while slowly expanding it in all directions.  When the effect is completed, the 
-     * element will be hidden (visibility = 'hidden') but block elements will still take up space in the document.
-     * Usage:
-     *<pre><code>
-// default
-el.puff();
-
-// common config options shown with default values
-el.puff({
-    easing: 'easeOut',
-    duration: 500,
-    useDisplay: false
-});
-</code></pre>
+     * Fades the element out while slowly expanding it in all directions. When the effect is completed, the element will
+     * be hidden (visibility = 'hidden') but block elements will still take up space in the document. Usage:
+     *
+     *     // default
+     *     el.puff();
+     *
+     *     // common config options shown with default values
+     *     el.puff({
+     *         easing: 'easeOut',
+     *         duration: 500,
+     *         useDisplay: false
+     *     });
+     *
      * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
      */
-
     puff: function(obj) {
         var me = this,
             beforeAnim;
@@ -421,7 +417,7 @@ el.puff({
                     } else {
                         me.hide();
                     }
-                    me.clearOpacity();  
+                    me.clearOpacity();
                     me.setPositioning(position);
                     me.setStyle({fontSize: fontSize});
                 }
@@ -442,28 +438,28 @@ el.puff({
 
     /**
      * Blinks the element as if it was clicked and then collapses on its center (similar to switching off a television).
-     * When the effect is completed, the element will be hidden (visibility = 'hidden') but block elements will still 
-     * take up space in the document. The element must be removed from the DOM using the 'remove' config option if desired.
-     * Usage:
-     *<pre><code>
-// default
-el.switchOff();
-
-// all config options shown with default values
-el.switchOff({
-    easing: 'easeIn',
-    duration: .3,
-    remove: false,
-    useDisplay: false
-});
-</code></pre>
+     * When the effect is completed, the element will be hidden (visibility = 'hidden') but block elements will still
+     * take up space in the document. The element must be removed from the DOM using the 'remove' config option if
+     * desired. Usage:
+     *
+     *     // default
+     *     el.switchOff();
+     *
+     *     // all config options shown with default values
+     *     el.switchOff({
+     *         easing: 'easeIn',
+     *         duration: .3,
+     *         remove: false,
+     *         useDisplay: false
+     *     });
+     *
      * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
      */
     switchOff: function(obj) {
         var me = this,
             beforeAnim;
-        
+
         obj = Ext.applyIf(obj || {}, {
             easing: 'ease-in',
             duration: 500,
@@ -503,7 +499,7 @@ el.switchOff({
                     me.setDisplayed(false);
                 } else {
                     me.hide();
-                }  
+                }
                 me.clearOpacity();
                 me.setPositioning(position);
                 me.setSize(size);
@@ -521,27 +517,27 @@ el.switchOff({
         return me;
     },
 
-   /**
-    * Shows a ripple of exploding, attenuating borders to draw attention to an Element.
-    * Usage:
-<pre><code>
-// default: a single light blue ripple
-el.frame();
-
-// custom: 3 red ripples lasting 3 seconds total
-el.frame("#ff0000", 3, { duration: 3 });
-
-// common config options shown with default values
-el.frame("#C3DAF9", 1, {
-    duration: 1 //duration of each individual ripple.
-    // Note: Easing is not configurable and will be ignored if included
-});
-</code></pre>
-    * @param {String} color (optional) The color of the border.  Should be a 6 char hex color without the leading # (defaults to light blue: 'C3DAF9').
-    * @param {Number} count (optional) The number of ripples to display (defaults to 1)
-    * @param {Object} options (optional) Object literal with any of the Fx config options
-    * @return {Ext.core.Element} The Element
-    */
+    /**
+     * Shows a ripple of exploding, attenuating borders to draw attention to an Element. Usage:
+     *
+     *     // default: a single light blue ripple
+     *     el.frame();
+     *
+     *     // custom: 3 red ripples lasting 3 seconds total
+     *     el.frame("#ff0000", 3, { duration: 3 });
+     *
+     *     // common config options shown with default values
+     *     el.frame("#C3DAF9", 1, {
+     *         duration: 1 //duration of each individual ripple.
+     *         // Note: Easing is not configurable and will be ignored if included
+     *     });
+     *
+     * @param {String} [color='C3DAF9'] The color of the border. Should be a 6 char hex color without the leading #
+     * (defaults to light blue).
+     * @param {Number} [count=1] The number of ripples to display
+     * @param {Object} [options] Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     frame : function(color, count, obj){
         var me = this,
             beforeAnim;
@@ -602,25 +598,24 @@ el.frame("#C3DAF9", 1, {
     },
 
     /**
-     * Slides the element while fading it out of view.  An anchor point can be optionally passed to set the 
-     * ending point of the effect.
-     * Usage:
-     *<pre><code>
-// default: slide the element downward while fading out
-el.ghost();
-
-// custom: slide the element out to the right with a 2-second duration
-el.ghost('r', { duration: 2 });
-
-// common config options shown with default values
-el.ghost('b', {
-    easing: 'easeOut',
-    duration: 500
-});
-</code></pre>
-     * @param {String} anchor (optional) One of the valid Fx anchor positions (defaults to bottom: 'b')
-     * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
+     * Slides the element while fading it out of view. An anchor point can be optionally passed to set the ending point
+     * of the effect. Usage:
+     *
+     *     // default: slide the element downward while fading out
+     *     el.ghost();
+     *
+     *     // custom: slide the element out to the right with a 2-second duration
+     *     el.ghost('r', { duration: 2000 });
+     *
+     *     // common config options shown with default values
+     *     el.ghost('b', {
+     *         easing: 'easeOut',
+     *         duration: 500
+     *     });
+     *
+     * @param {String} [anchor='b'] One of the valid Fx anchor positions
+     * @param {Object} [options] Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
      */
     ghost: function(anchor, obj) {
         var me = this,
@@ -688,29 +683,28 @@ el.ghost('b', {
     },
 
     /**
-     * Highlights the Element by setting a color (applies to the background-color by default, but can be
-     * changed using the "attr" config option) and then fading back to the original color. If no original
-     * color is available, you should provide the "endColor" config option which will be cleared after the animation.
-     * Usage:
-<pre><code>
-// default: highlight background to yellow
-el.highlight();
-
-// custom: highlight foreground text to blue for 2 seconds
-el.highlight("0000ff", { attr: 'color', duration: 2 });
-
-// common config options shown with default values
-el.highlight("ffff9c", {
-    attr: "backgroundColor", //can be any valid CSS property (attribute) that supports a color value
-    endColor: (current color) or "ffffff",
-    easing: 'easeIn',
-    duration: 1000
-});
-</code></pre>
-     * @param {String} color (optional) The highlight color. Should be a 6 char hex color without the leading # (defaults to yellow: 'ffff9c')
-     * @param {Object} options (optional) Object literal with any of the Fx config options
-     * @return {Ext.core.Element} The Element
-     */ 
+     * Highlights the Element by setting a color (applies to the background-color by default, but can be changed using
+     * the "attr" config option) and then fading back to the original color. If no original color is available, you
+     * should provide the "endColor" config option which will be cleared after the animation. Usage:
+     *
+     *     // default: highlight background to yellow
+     *     el.highlight();
+     *
+     *     // custom: highlight foreground text to blue for 2 seconds
+     *     el.highlight("0000ff", { attr: 'color', duration: 2000 });
+     *
+     *     // common config options shown with default values
+     *     el.highlight("ffff9c", {
+     *         attr: "backgroundColor", //can be any valid CSS property (attribute) that supports a color value
+     *         endColor: (current color) or "ffffff",
+     *         easing: 'easeIn',
+     *         duration: 1000
+     *     });
+     *
+     * @param {String} [color='ffff9c'] The highlight color. Should be a 6 char hex color without the leading #
+     * @param {Object} [options] Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     highlight: function(color, o) {
         var me = this,
             dom = me.dom,
@@ -721,7 +715,7 @@ el.highlight("ffff9c", {
         lns = o.listeners || {};
         attr = o.attr || 'backgroundColor';
         from[attr] = color || 'ffff9c';
-        
+
         if (!o.to) {
             to = {};
             to[attr] = o.endColor || me.getColor(attr, 'ffffff', '');
@@ -729,14 +723,14 @@ el.highlight("ffff9c", {
         else {
             to = o.to;
         }
-        
+
         // Don't apply directly on lns, since we reference it in our own callbacks below
         o.listeners = Ext.apply(Ext.apply({}, lns), {
             beforeanimate: function() {
                 restore = dom.style[attr];
                 me.clearOpacity();
                 me.show();
-                
+
                 event = lns.beforeanimate;
                 if (event) {
                     fn = event.fn || event;
@@ -747,7 +741,7 @@ el.highlight("ffff9c", {
                 if (dom) {
                     dom.style[attr] = restore;
                 }
-                
+
                 event = lns.afteranimate;
                 if (event) {
                     fn = event.fn || event;
@@ -767,12 +761,11 @@ el.highlight("ffff9c", {
 
    /**
     * @deprecated 4.0
-    * Creates a pause before any subsequent queued effects begin.  If there are
-    * no effects queued after the pause it will have no effect.
-    * Usage:
-<pre><code>
-el.pause(1);
-</code></pre>
+    * Creates a pause before any subsequent queued effects begin. If there are no effects queued after the pause it will
+    * have no effect. Usage:
+    *
+    *     el.pause(1);
+    *
     * @param {Number} seconds The length of time to pause (in seconds)
     * @return {Ext.Element} The Element
     */
@@ -784,27 +777,26 @@ el.pause(1);
         return me;
     },
 
-   /**
-    * Fade an element in (from transparent to opaque).  The ending opacity can be specified
-    * using the <tt>{@link #endOpacity}</tt> config option.
-    * Usage:
-<pre><code>
-// default: fade in from opacity 0 to 100%
-el.fadeIn();
-
-// custom: fade in from opacity 0 to 75% over 2 seconds
-el.fadeIn({ endOpacity: .75, duration: 2});
-
-// common config options shown with default values
-el.fadeIn({
-    endOpacity: 1, //can be any value between 0 and 1 (e.g. .5)
-    easing: 'easeOut',
-    duration: 500
-});
-</code></pre>
-    * @param {Object} options (optional) Object literal with any of the Fx config options
-    * @return {Ext.Element} The Element
-    */
+    /**
+     * Fade an element in (from transparent to opaque). The ending opacity can be specified using the `opacity`
+     * config option. Usage:
+     *
+     *     // default: fade in from opacity 0 to 100%
+     *     el.fadeIn();
+     *
+     *     // custom: fade in from opacity 0 to 75% over 2 seconds
+     *     el.fadeIn({ opacity: .75, duration: 2000});
+     *
+     *     // common config options shown with default values
+     *     el.fadeIn({
+     *         opacity: 1, //can be any value between 0 and 1 (e.g. .5)
+     *         easing: 'easeOut',
+     *         duration: 500
+     *     });
+     *
+     * @param {Object} options (optional) Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     fadeIn: function(o) {
         this.animate(Ext.apply({}, o, {
             opacity: 1
@@ -812,30 +804,29 @@ el.fadeIn({
         return this;
     },
 
-   /**
-    * Fade an element out (from opaque to transparent).  The ending opacity can be specified
-    * using the <tt>{@link #endOpacity}</tt> config option.  Note that IE may require
-    * <tt>{@link #useDisplay}:true</tt> in order to redisplay correctly.
-    * Usage:
-<pre><code>
-// default: fade out from the element's current opacity to 0
-el.fadeOut();
-
-// custom: fade out from the element's current opacity to 25% over 2 seconds
-el.fadeOut({ endOpacity: .25, duration: 2});
-
-// common config options shown with default values
-el.fadeOut({
-    endOpacity: 0, //can be any value between 0 and 1 (e.g. .5)
-    easing: 'easeOut',
-    duration: 500,
-    remove: false,
-    useDisplay: false
-});
-</code></pre>
-    * @param {Object} options (optional) Object literal with any of the Fx config options
-    * @return {Ext.Element} The Element
-    */
+    /**
+     * Fade an element out (from opaque to transparent). The ending opacity can be specified using the `opacity`
+     * config option. Note that IE may require `useDisplay:true` in order to redisplay correctly.
+     * Usage:
+     *
+     *     // default: fade out from the element's current opacity to 0
+     *     el.fadeOut();
+     *
+     *     // custom: fade out from the element's current opacity to 25% over 2 seconds
+     *     el.fadeOut({ opacity: .25, duration: 2000});
+     *
+     *     // common config options shown with default values
+     *     el.fadeOut({
+     *         opacity: 0, //can be any value between 0 and 1 (e.g. .5)
+     *         easing: 'easeOut',
+     *         duration: 500,
+     *         remove: false,
+     *         useDisplay: false
+     *     });
+     *
+     * @param {Object} options (optional) Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     fadeOut: function(o) {
         this.animate(Ext.apply({}, o, {
             opacity: 0
@@ -843,30 +834,29 @@ el.fadeOut({
         return this;
     },
 
-   /**
-    * @deprecated 4.0
-    * Animates the transition of an element's dimensions from a starting height/width
-    * to an ending height/width.  This method is a convenience implementation of {@link #shift}.
-    * Usage:
-<pre><code>
-// change height and width to 100x100 pixels
-el.scale(100, 100);
-
-// common config options shown with default values.  The height and width will default to
-// the element&#39;s existing values if passed as null.
-el.scale(
-    [element&#39;s width],
-    [element&#39;s height], {
-        easing: 'easeOut',
-        duration: .35
-    }
-);
-</code></pre>
-    * @param {Number} width  The new width (pass undefined to keep the original width)
-    * @param {Number} height  The new height (pass undefined to keep the original height)
-    * @param {Object} options (optional) Object literal with any of the Fx config options
-    * @return {Ext.Element} The Element
-    */
+    /**
+     * @deprecated 4.0
+     * Animates the transition of an element's dimensions from a starting height/width to an ending height/width. This
+     * method is a convenience implementation of {@link #shift}. Usage:
+     *
+     *     // change height and width to 100x100 pixels
+     *     el.scale(100, 100);
+     *
+     *     // common config options shown with default values.  The height and width will default to
+     *     // the element's existing values if passed as null.
+     *     el.scale(
+     *         [element's width],
+     *         [element's height], {
+     *             easing: 'easeOut',
+     *             duration: .35
+     *         }
+     *     );
+     *
+     * @param {Number} width The new width (pass undefined to keep the original width)
+     * @param {Number} height The new height (pass undefined to keep the original height)
+     * @param {Object} options (optional) Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     scale: function(w, h, o) {
         this.animate(Ext.apply({}, o, {
             width: w,
@@ -875,31 +865,30 @@ el.scale(
         return this;
     },
 
-   /**
-    * @deprecated 4.0
-    * Animates the transition of any combination of an element's dimensions, xy position and/or opacity.
-    * Any of these properties not specified in the config object will not be changed.  This effect 
-    * requires that at least one new dimension, position or opacity setting must be passed in on
-    * the config object in order for the function to have any effect.
-    * Usage:
-<pre><code>
-// slide the element horizontally to x position 200 while changing the height and opacity
-el.shift({ x: 200, height: 50, opacity: .8 });
-
-// common config options shown with default values.
-el.shift({
-    width: [element&#39;s width],
-    height: [element&#39;s height],
-    x: [element&#39;s x position],
-    y: [element&#39;s y position],
-    opacity: [element&#39;s opacity],
-    easing: 'easeOut',
-    duration: .35
-});
-</code></pre>
-    * @param {Object} options  Object literal with any of the Fx config options
-    * @return {Ext.Element} The Element
-    */
+    /**
+     * @deprecated 4.0
+     * Animates the transition of any combination of an element's dimensions, xy position and/or opacity. Any of these
+     * properties not specified in the config object will not be changed. This effect requires that at least one new
+     * dimension, position or opacity setting must be passed in on the config object in order for the function to have
+     * any effect. Usage:
+     *
+     *     // slide the element horizontally to x position 200 while changing the height and opacity
+     *     el.shift({ x: 200, height: 50, opacity: .8 });
+     *
+     *     // common config options shown with default values.
+     *     el.shift({
+     *         width: [element's width],
+     *         height: [element's height],
+     *         x: [element's x position],
+     *         y: [element's y position],
+     *         opacity: [element's opacity],
+     *         easing: 'easeOut',
+     *         duration: .35
+     *     });
+     *
+     * @param {Object} options Object literal with any of the Fx config options
+     * @return {Ext.Element} The Element
+     */
     shift: function(config) {
         this.animate(config);
         return this;

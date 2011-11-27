@@ -13,45 +13,40 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.resizer.Resizer
- * <p>Applies drag handles to an element or component to make it resizable. The
- * drag handles are inserted into the element (or component's element) and
- * positioned absolute.</p>
+ * Applies drag handles to an element or component to make it resizable. The drag handles are inserted into the element
+ * (or component's element) and positioned absolute.
  *
- * <p>Textarea and img elements will be wrapped with an additional div because
- * these elements do not support child nodes. The original element can be accessed
- * through the originalTarget property.</p>
+ * Textarea and img elements will be wrapped with an additional div because these elements do not support child nodes.
+ * The original element can be accessed through the originalTarget property.
  *
- * <p>Here is the list of valid resize handles:</p>
- * <pre>
-Value   Description
-------  -------------------
- 'n'     north
- 's'     south
- 'e'     east
- 'w'     west
- 'nw'    northwest
- 'sw'    southwest
- 'se'    southeast
- 'ne'    northeast
- 'all'   all
-</pre>
+ * Here is the list of valid resize handles:
+ *
+ *     Value   Description
+ *     ------  -------------------
+ *      'n'     north
+ *      's'     south
+ *      'e'     east
+ *      'w'     west
+ *      'nw'    northwest
+ *      'sw'    southwest
+ *      'se'    southeast
+ *      'ne'    northeast
+ *      'all'   all
+ *
  * {@img Ext.resizer.Resizer/Ext.resizer.Resizer.png Ext.resizer.Resizer component}
- * <p>Here's an example showing the creation of a typical Resizer:</p>
- * <pre><code>
-    <div id="elToResize" style="width:200px; height:100px; background-color:#000000;"></div>
-
-    Ext.create('Ext.resizer.Resizer', {
-        el: 'elToResize',
-        handles: 'all',
-        minWidth: 200,
-        minHeight: 100,
-        maxWidth: 500,
-        maxHeight: 400,
-        pinned: true
-    });
-</code></pre>
-*/
+ *
+ * Here's an example showing the creation of a typical Resizer:
+ *
+ *     Ext.create('Ext.resizer.Resizer', {
+ *         el: 'elToResize',
+ *         handles: 'all',
+ *         minWidth: 200,
+ *         minHeight: 100,
+ *         maxWidth: 500,
+ *         maxHeight: 400,
+ *         pinned: true
+ *     });
+ */
 Ext.define('Ext.resizer.Resizer', {
     mixins: {
         observable: 'Ext.util.Observable'
@@ -63,88 +58,96 @@ Ext.define('Ext.resizer.Resizer', {
     handleCls: Ext.baseCSSPrefix + 'resizable-handle',
     pinnedCls: Ext.baseCSSPrefix + 'resizable-pinned',
     overCls:   Ext.baseCSSPrefix + 'resizable-over',
-    proxyCls:  Ext.baseCSSPrefix + 'resizable-proxy',
     wrapCls:   Ext.baseCSSPrefix + 'resizable-wrap',
 
     /**
      * @cfg {Boolean} dynamic
-     * <p>Specify as true to update the {@link #target} (Element or {@link Ext.Component Component}) dynamically during dragging.
-     * This is <code>true</code> by default, but the {@link Ext.Component Component} class passes <code>false</code> when it
-     * is configured as {@link Ext.Component#resizable}.</p>
-     * <p>If specified as <code>false</code>, a proxy element is displayed during the resize operation, and the {@link #target}
-     * is updated on mouseup.</p>
+     * Specify as true to update the {@link #target} (Element or {@link Ext.Component Component}) dynamically during
+     * dragging. This is `true` by default, but the {@link Ext.Component Component} class passes `false` when it is
+     * configured as {@link Ext.Component#resizable}.
+     *
+     * If specified as `false`, a proxy element is displayed during the resize operation, and the {@link #target} is
+     * updated on mouseup.
      */
     dynamic: true,
 
     /**
-     * @cfg {String} handles String consisting of the resize handles to display. Defaults to 's e se' for
-     * Elements and fixed position Components. Defaults to 8 point resizing for floating Components (such as Windows).
-     * Specify either <code>'all'</code> or any of <code>'n s e w ne nw se sw'</code>.
+     * @cfg {String} handles
+     * String consisting of the resize handles to display. Defaults to 's e se' for Elements and fixed position
+     * Components. Defaults to 8 point resizing for floating Components (such as Windows). Specify either `'all'` or any
+     * of `'n s e w ne nw se sw'`.
      */
     handles: 's e se',
 
     /**
-     * @cfg {Number} height Optional. The height to set target to in pixels (defaults to null)
+     * @cfg {Number} height
+     * Optional. The height to set target to in pixels
      */
     height : null,
 
     /**
-     * @cfg {Number} width Optional. The width to set the target to in pixels (defaults to null)
+     * @cfg {Number} width
+     * Optional. The width to set the target to in pixels
      */
     width : null,
 
     /**
-     * @cfg {Number} heightIncrement The increment to snap the height resize in pixels.
-     * Defaults to <code>0</code>.
+     * @cfg {Number} heightIncrement
+     * The increment to snap the height resize in pixels.
      */
     heightIncrement : 0,
 
     /**
-     * @cfg {Number} widthIncrement The increment to snap the width resize in pixels
-     * Defaults to <code>0</code>.
+     * @cfg {Number} widthIncrement
+     * The increment to snap the width resize in pixels.
      */
     widthIncrement : 0,
 
     /**
-     * @cfg {Number} minHeight The minimum height for the element (defaults to 20)
+     * @cfg {Number} minHeight
+     * The minimum height for the element
      */
     minHeight : 20,
 
     /**
-     * @cfg {Number} minWidth The minimum width for the element (defaults to 20)
+     * @cfg {Number} minWidth
+     * The minimum width for the element
      */
     minWidth : 20,
 
     /**
-     * @cfg {Number} maxHeight The maximum height for the element (defaults to 10000)
+     * @cfg {Number} maxHeight
+     * The maximum height for the element
      */
     maxHeight : 10000,
 
     /**
-     * @cfg {Number} maxWidth The maximum width for the element (defaults to 10000)
+     * @cfg {Number} maxWidth
+     * The maximum width for the element
      */
     maxWidth : 10000,
 
     /**
-     * @cfg {Boolean} pinned True to ensure that the resize handles are always
-     * visible, false indicates resizing by cursor changes only (defaults to false)
+     * @cfg {Boolean} pinned
+     * True to ensure that the resize handles are always visible, false indicates resizing by cursor changes only
      */
     pinned: false,
 
     /**
-     * @cfg {Boolean} preserveRatio True to preserve the original ratio between height
-     * and width during resize (defaults to false)
+     * @cfg {Boolean} preserveRatio
+     * True to preserve the original ratio between height and width during resize
      */
     preserveRatio: false,
 
     /**
-     * @cfg {Boolean} transparent True for transparent handles. This is only applied at config time. (defaults to false)
+     * @cfg {Boolean} transparent
+     * True for transparent handles. This is only applied at config time.
      */
     transparent: false,
 
     /**
-     * @cfg {Mixed} constrainTo Optional. An element, or a {@link Ext.util.Region} into which the resize operation
-     * must be constrained.
+     * @cfg {Ext.Element/Ext.util.Region} constrainTo
+     * An element, or a {@link Ext.util.Region Region} into which the resize operation must be constrained.
      */
 
     possiblePositions: {
@@ -159,13 +162,13 @@ Ext.define('Ext.resizer.Resizer', {
     },
 
     /**
-     * @cfg {Mixed} target The Element or Component to resize.
+     * @cfg {Ext.Element/Ext.Component} target
+     * The Element or Component to resize.
      */
 
     /**
+     * @property {Ext.Element} el
      * Outer element for resizing behavior.
-     * @type Ext.core.Element
-     * @property el
      */
 
     constructor: function(config) {
@@ -255,10 +258,9 @@ Ext.define('Ext.resizer.Resizer', {
         tag = me.el.dom.tagName;
         if (tag == 'TEXTAREA' || tag == 'IMG') {
             /**
-             * Reference to the original resize target if the element of the original
-             * resize target was an IMG or a TEXTAREA which must be wrapped in a DIV.
-             * @type Mixed
-             * @property originalTarget
+             * @property {Ext.Element/Ext.Component} originalTarget
+             * Reference to the original resize target if the element of the original resize target was an IMG or a
+             * TEXTAREA which must be wrapped in a DIV.
              */
             me.originalTarget = me.target;
             me.target = me.el = me.el.wrap({
@@ -281,8 +283,7 @@ Ext.define('Ext.resizer.Resizer', {
         }
 
         /**
-         * @type Ext.resizer.ResizeTracker
-         * @property resizeTracker
+         * @property {Ext.resizer.ResizeTracker} resizeTracker
          */
         me.resizeTracker = Ext.create('Ext.resizer.ResizeTracker', {
             disabled: me.disabled,
@@ -408,24 +409,23 @@ Ext.define('Ext.resizer.Resizer', {
     },
 
     /**
-     * <p>Returns the element that was configured with the el or target config property.
-     * If a component was configured with the target property then this will return the
-     * element of this component.<p>
-     * <p>Textarea and img elements will be wrapped with an additional div because
-      * these elements do not support child nodes. The original element can be accessed
-     * through the originalTarget property.</p>
-     * @return {Element} element
+     * Returns the element that was configured with the el or target config property. If a component was configured with
+     * the target property then this will return the element of this component.
+     *
+     * Textarea and img elements will be wrapped with an additional div because these elements do not support child
+     * nodes. The original element can be accessed through the originalTarget property.
+     * @return {Ext.Element} element
      */
     getEl : function() {
         return this.el;
     },
 
     /**
-     * <p>Returns the element or component that was configured with the target config property.<p>
-     * <p>Textarea and img elements will be wrapped with an additional div because
-      * these elements do not support child nodes. The original element can be accessed
-     * through the originalTarget property.</p>
-     * @return {Element/Component}
+     * Returns the element or component that was configured with the target config property.
+     *
+     * Textarea and img elements will be wrapped with an additional div because these elements do not support child
+     * nodes. The original element can be accessed through the originalTarget property.
+     * @return {Ext.Element/Ext.Component}
      */
     getTarget: function() {
         return this.target;

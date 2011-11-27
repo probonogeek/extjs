@@ -104,7 +104,7 @@ Ext.define('Ext.fx.target.Component', {
                     o = meth.setPagePosition;
                     o.target.setPagePosition(o.x, o.y);
                 }
-                if (meth.setSize.target) {
+                if (meth.setSize.target && meth.setSize.target.el) {
                     o = meth.setSize;
                     // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
                     w = (o.width === undefined) ? o.target.getWidth() : parseInt(o.width, 10);

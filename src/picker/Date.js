@@ -13,32 +13,31 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.picker.Date
- * @extends Ext.Component
- * <p>A date picker. This class is used by the {@link Ext.form.field.Date} field to allow browsing and
- * selection of valid dates in a popup next to the field, but may also be used with other components.</p>
- * <p>Typically you will need to implement a handler function to be notified when the user chooses a color from the
- * picker; you can register the handler using the {@link #select} event, or by implementing the {@link #handler}
- * method.</p>
- * <p>By default the user will be allowed to pick any date; this can be changed by using the {@link #minDate},
- * {@link #maxDate}, {@link #disabledDays}, {@link #disabledDatesRE}, and/or {@link #disabledDates} configs.</p>
- * <p>All the string values documented below may be overridden by including an Ext locale file in your page.</p>
- * <p>Example usage:</p>
- * <pre><code>new Ext.panel.Panel({
-    title: 'Choose a future date:',
-    width: 200,
-    bodyPadding: 10,
-    renderTo: Ext.getBody(),
-    items: [{
-        xtype: 'datepicker',
-        minDate: new Date(),
-        handler: function(picker, date) {
-            // do something with the selected date
-        }
-    }]
-});</code></pre>
- * {@img Ext.picker.Date/Ext.picker.Date.png Ext.picker.Date component}
+ * A date picker. This class is used by the Ext.form.field.Date field to allow browsing and selection of valid
+ * dates in a popup next to the field, but may also be used with other components.
  *
+ * Typically you will need to implement a handler function to be notified when the user chooses a date from the picker;
+ * you can register the handler using the {@link #select} event, or by implementing the {@link #handler} method.
+ *
+ * By default the user will be allowed to pick any date; this can be changed by using the {@link #minDate},
+ * {@link #maxDate}, {@link #disabledDays}, {@link #disabledDatesRE}, and/or {@link #disabledDates} configs.
+ *
+ * All the string values documented below may be overridden by including an Ext locale file in your page.
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Choose a future date:',
+ *         width: 200,
+ *         bodyPadding: 10,
+ *         renderTo: Ext.getBody(),
+ *         items: [{
+ *             xtype: 'datepicker',
+ *             minDate: new Date(),
+ *             handler: function(picker, date) {
+ *                 // do something with the selected date
+ *             }
+ *         }]
+ *     });
  */
 Ext.define('Ext.picker.Date', {
     extend: 'Ext.Component',
@@ -58,11 +57,11 @@ Ext.define('Ext.picker.Date', {
     renderTpl: [
         '<div class="{cls}" id="{id}" role="grid" title="{ariaTitle} {value:this.longDay}">',
             '<div role="presentation" class="{baseCls}-header">',
-                '<div class="{baseCls}-prev"><a href="#" role="button" title="{prevText}"></a></div>',
-                '<div class="{baseCls}-month"></div>',
-                '<div class="{baseCls}-next"><a href="#" role="button" title="{nextText}"></a></div>',
+                '<div class="{baseCls}-prev"><a id="{id}-prevEl" href="#" role="button" title="{prevText}"></a></div>',
+                '<div class="{baseCls}-month" id="{id}-middleBtnEl"></div>',
+                '<div class="{baseCls}-next"><a id="{id}-nextEl" href="#" role="button" title="{nextText}"></a></div>',
             '</div>',
-            '<table class="{baseCls}-inner" cellspacing="0" role="presentation">',
+            '<table id="{id}-eventEl" class="{baseCls}-inner" cellspacing="0" role="presentation">',
                 '<thead role="presentation"><tr role="presentation">',
                     '<tpl for="dayNames">',
                         '<th role="columnheader" title="{.}"><span>{.:this.firstInitial}</span></th>',
@@ -80,7 +79,7 @@ Ext.define('Ext.picker.Date', {
                 '</tr></tbody>',
             '</table>',
             '<tpl if="showToday">',
-                '<div role="presentation" class="{baseCls}-footer"></div>',
+                '<div id="{id}-footerEl" role="presentation" class="{baseCls}-footer"></div>',
             '</tpl>',
         '</div>',
         {
@@ -101,160 +100,187 @@ Ext.define('Ext.picker.Date', {
     ],
 
     ariaTitle: 'Date Picker',
+
     /**
      * @cfg {String} todayText
-     * The text to display on the button that selects the current date (defaults to <code>'Today'</code>)
+     * The text to display on the button that selects the current date
      */
     todayText : 'Today',
+
     /**
      * @cfg {Function} handler
-     * Optional. A function that will handle the select event of this picker.
-     * The handler is passed the following parameters:<div class="mdetail-params"><ul>
-     * <li><code>picker</code> : Ext.picker.Date <div class="sub-desc">This Date picker.</div></li>
-     * <li><code>date</code> : Date <div class="sub-desc">The selected date.</div></li>
-     * </ul></div>
+     * Optional. A function that will handle the select event of this picker. The handler is passed the following
+     * parameters:
+     *
+     *   - `picker` : Ext.picker.Date
+     *
+     * This Date picker.
+     *
+     *   - `date` : Date
+     *
+     * The selected date.
      */
+
     /**
      * @cfg {Object} scope
-     * The scope (<code><b>this</b></code> reference) in which the <code>{@link #handler}</code>
-     * function will be called.  Defaults to this DatePicker instance.
+     * The scope (`this` reference) in which the `{@link #handler}` function will be called. Defaults to this
+     * DatePicker instance.
      */
+
     /**
      * @cfg {String} todayTip
-     * A string used to format the message for displaying in a tooltip over the button that
-     * selects the current date. Defaults to <code>'{0} (Spacebar)'</code> where
-     * the <code>{0}</code> token is replaced by today's date.
+     * A string used to format the message for displaying in a tooltip over the button that selects the current date.
+     * The `{0}` token in string is replaced by today's date.
      */
     todayTip : '{0} (Spacebar)',
+
     /**
      * @cfg {String} minText
-     * The error text to display if the minDate validation fails (defaults to <code>'This date is before the minimum date'</code>)
+     * The error text to display if the minDate validation fails.
      */
     minText : 'This date is before the minimum date',
+
     /**
      * @cfg {String} maxText
-     * The error text to display if the maxDate validation fails (defaults to <code>'This date is after the maximum date'</code>)
+     * The error text to display if the maxDate validation fails.
      */
     maxText : 'This date is after the maximum date',
+
     /**
      * @cfg {String} format
-     * The default date format string which can be overriden for localization support.  The format must be
-     * valid according to {@link Ext.Date#parse} (defaults to {@link Ext.Date#defaultFormat}).
+     * The default date format string which can be overriden for localization support. The format must be valid
+     * according to {@link Ext.Date#parse} (defaults to {@link Ext.Date#defaultFormat}).
      */
+
     /**
      * @cfg {String} disabledDaysText
-     * The tooltip to display when the date falls on a disabled day (defaults to <code>'Disabled'</code>)
+     * The tooltip to display when the date falls on a disabled day.
      */
     disabledDaysText : 'Disabled',
+
     /**
      * @cfg {String} disabledDatesText
-     * The tooltip text to display when the date falls on a disabled date (defaults to <code>'Disabled'</code>)
+     * The tooltip text to display when the date falls on a disabled date.
      */
     disabledDatesText : 'Disabled',
+
     /**
-     * @cfg {Array} monthNames
+     * @cfg {String[]} monthNames
      * An array of textual month names which can be overriden for localization support (defaults to Ext.Date.monthNames)
      */
+
     /**
-     * @cfg {Array} dayNames
+     * @cfg {String[]} dayNames
      * An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
      */
+
     /**
      * @cfg {String} nextText
-     * The next month navigation button tooltip (defaults to <code>'Next Month (Control+Right)'</code>)
+     * The next month navigation button tooltip
      */
     nextText : 'Next Month (Control+Right)',
+
     /**
      * @cfg {String} prevText
-     * The previous month navigation button tooltip (defaults to <code>'Previous Month (Control+Left)'</code>)
+     * The previous month navigation button tooltip
      */
     prevText : 'Previous Month (Control+Left)',
+
     /**
      * @cfg {String} monthYearText
-     * The header month selector tooltip (defaults to <code>'Choose a month (Control+Up/Down to move years)'</code>)
+     * The header month selector tooltip
      */
     monthYearText : 'Choose a month (Control+Up/Down to move years)',
+
     /**
      * @cfg {Number} startDay
-     * Day index at which the week should begin, 0-based (defaults to 0, which is Sunday)
+     * Day index at which the week should begin, 0-based (defaults to Sunday)
      */
     startDay : 0,
+
     /**
      * @cfg {Boolean} showToday
-     * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar
-     * that selects the current date (defaults to <code>true</code>).
+     * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar that
+     * selects the current date.
      */
     showToday : true,
+
     /**
-     * @cfg {Date} minDate
-     * Minimum allowable date (JavaScript date object, defaults to null)
+     * @cfg {Date} [minDate=null]
+     * Minimum allowable date (JavaScript date object)
      */
+
     /**
-     * @cfg {Date} maxDate
-     * Maximum allowable date (JavaScript date object, defaults to null)
+     * @cfg {Date} [maxDate=null]
+     * Maximum allowable date (JavaScript date object)
      */
+
     /**
-     * @cfg {Array} disabledDays
-     * An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday (defaults to null).
+     * @cfg {Number[]} [disabledDays=null]
+     * An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday.
      */
+
     /**
-     * @cfg {RegExp} disabledDatesRE
-     * JavaScript regular expression used to disable a pattern of dates (defaults to null).  The {@link #disabledDates}
+     * @cfg {RegExp} [disabledDatesRE=null]
+     * JavaScript regular expression used to disable a pattern of dates. The {@link #disabledDates}
      * config will generate this regex internally, but if you specify disabledDatesRE it will take precedence over the
      * disabledDates value.
      */
+
     /**
-     * @cfg {Array} disabledDates
-     * An array of 'dates' to disable, as strings. These strings will be used to build a dynamic regular
-     * expression so they are very powerful. Some examples:
-     * <ul>
-     * <li>['03/08/2003', '09/16/2003'] would disable those exact dates</li>
-     * <li>['03/08', '09/16'] would disable those days for every year</li>
-     * <li>['^03/08'] would only match the beginning (useful if you are using short years)</li>
-     * <li>['03/../2006'] would disable every day in March 2006</li>
-     * <li>['^03'] would disable every day in every March</li>
-     * </ul>
-     * Note that the format of the dates included in the array should exactly match the {@link #format} config.
-     * In order to support regular expressions, if you are using a date format that has '.' in it, you will have to
-     * escape the dot when restricting dates. For example: ['03\\.08\\.03'].
+     * @cfg {String[]} disabledDates
+     * An array of 'dates' to disable, as strings. These strings will be used to build a dynamic regular expression so
+     * they are very powerful. Some examples:
+     *
+     *   - ['03/08/2003', '09/16/2003'] would disable those exact dates
+     *   - ['03/08', '09/16'] would disable those days for every year
+     *   - ['^03/08'] would only match the beginning (useful if you are using short years)
+     *   - ['03/../2006'] would disable every day in March 2006
+     *   - ['^03'] would disable every day in every March
+     *
+     * Note that the format of the dates included in the array should exactly match the {@link #format} config. In order
+     * to support regular expressions, if you are using a date format that has '.' in it, you will have to escape the
+     * dot when restricting dates. For example: ['03\\.08\\.03'].
      */
 
     /**
-     * @cfg {Boolean} disableAnim True to disable animations when showing the month picker. Defaults to <tt>false</tt>.
+     * @cfg {Boolean} disableAnim
+     * True to disable animations when showing the month picker.
      */
-    disableAnim: true,
+    disableAnim: false,
 
     /**
-     * @cfg {String} baseCls
-     * The base CSS class to apply to this components element (defaults to <tt>'x-datepicker'</tt>).
+     * @cfg {String} [baseCls='x-datepicker']
+     * The base CSS class to apply to this components element.
      */
     baseCls: Ext.baseCSSPrefix + 'datepicker',
 
     /**
-     * @cfg {String} selectedCls
-     * The class to apply to the selected cell. Defaults to <tt>'x-datepicker-selected'</tt>
+     * @cfg {String} [selectedCls='x-datepicker-selected']
+     * The class to apply to the selected cell.
      */
 
     /**
-     * @cfg {String} disabledCellCls
-     * The class to apply to disabled cells. Defaults to <tt>'x-datepicker-disabled'</tt>
+     * @cfg {String} [disabledCellCls='x-datepicker-disabled']
+     * The class to apply to disabled cells.
      */
 
     /**
      * @cfg {String} longDayFormat
-     * The format for displaying a date in a longer format. Defaults to <tt>'F d, Y'</tt>
+     * The format for displaying a date in a longer format.
      */
     longDayFormat: 'F d, Y',
 
     /**
-     * @cfg {Object} keyNavConfig Specifies optional custom key event handlers for the {@link Ext.util.KeyNav}
-     * attached to this date picker. Must conform to the config format recognized by the {@link Ext.util.KeyNav}
-     * constructor. Handlers specified in this object will replace default handlers of the same name.
+     * @cfg {Object} keyNavConfig
+     * Specifies optional custom key event handlers for the {@link Ext.util.KeyNav} attached to this date picker. Must
+     * conform to the config format recognized by the {@link Ext.util.KeyNav} constructor. Handlers specified in this
+     * object will replace default handlers of the same name.
      */
 
     /**
      * @cfg {Boolean} focusOnShow
-     * True to automatically focus the picker on show. Defaults to <tt>false</tt>.
+     * True to automatically focus the picker on show.
      */
     focusOnShow: false,
 
@@ -291,7 +317,7 @@ Ext.define('Ext.picker.Date', {
             /**
              * @event select
              * Fires when a date is selected
-             * @param {DatePicker} this DatePicker
+             * @param {Ext.picker.Date} this DatePicker
              * @param {Date} date The selected date
              */
             'select'
@@ -313,8 +339,7 @@ Ext.define('Ext.picker.Date', {
             today = Ext.Date.format(new Date(), me.format);
 
         Ext.applyIf(me, {
-            renderData: {},
-            renderSelectors: {}
+            renderData: {}
         });
 
         Ext.apply(me.renderData, {
@@ -328,13 +353,7 @@ Ext.define('Ext.picker.Date', {
         });
         me.getTpl('renderTpl').longDayFormat = me.longDayFormat;
 
-        Ext.apply(me.renderSelectors, {
-            eventEl: 'table.' + me.baseCls + '-inner',
-            prevEl: '.' + me.baseCls + '-prev a',
-            nextEl: '.' + me.baseCls + '-next a',
-            middleBtnEl: '.' + me.baseCls + '-month',
-            footerEl: '.' + me.baseCls + '-footer'
-        });
+        me.addChildEls('eventEl', 'prevEl', 'nextEl', 'middleBtnEl', 'footerEl');
 
         this.callParent(arguments);
         me.el.unselectable();
@@ -457,8 +476,8 @@ Ext.define('Ext.picker.Date', {
 
     /**
      * Replaces any existing disabled dates with new values and refreshes the DatePicker.
-     * @param {Array/RegExp} disabledDates An array of date strings (see the {@link #disabledDates} config
-     * for details on supported values), or a JavaScript regular expression used to disable a pattern of dates.
+     * @param {String[]/RegExp} disabledDates An array of date strings (see the {@link #disabledDates} config for
+     * details on supported values), or a JavaScript regular expression used to disable a pattern of dates.
      * @return {Ext.picker.Date} this
      */
     setDisabledDates : function(dd){
@@ -477,8 +496,8 @@ Ext.define('Ext.picker.Date', {
 
     /**
      * Replaces any existing disabled days (by index, 0-6) with new values and refreshes the DatePicker.
-     * @param {Array} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config
-     * for details on supported values.
+     * @param {Number[]} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config for details
+     * on supported values.
      * @return {Ext.picker.Date} this
      */
     setDisabledDays : function(dd){
@@ -566,7 +585,7 @@ Ext.define('Ext.picker.Date', {
      * @return {Date} The active date
      */
     getActive: function(){
-        return this.activeDate || me.value;
+        return this.activeDate || this.value;
     },
 
     /**
@@ -575,33 +594,41 @@ Ext.define('Ext.picker.Date', {
      * @param {Boolean} isHide True if it's a hide operation
      */
     runAnimation: function(isHide){
-        var options = {
-                target: this.monthPicker,
-                duration: 200
+        var picker = this.monthPicker,
+            options = {
+                duration: 200,
+                callback: function(){
+                    if (isHide) {
+                        picker.hide();
+                    } else {
+                        picker.show();
+                    }
+                }
             };
 
-        Ext.fx.Manager.run();
         if (isHide) {
-            //TODO: slideout
+            picker.el.slideOut('t', options);
         } else {
-            //TODO: slidein
+            picker.el.slideIn('t', options);
         }
-        Ext.create('Ext.fx.Anim', options);
     },
 
     /**
      * Hides the month picker, if it's visible.
+     * @param {Boolean} [animate] Indicates whether to animate this action. If the animate
+     * parameter is not specified, the behavior will use {@link #disableAnim} to determine
+     * whether to animate or not.
      * @return {Ext.picker.Date} this
      */
-    hideMonthPicker : function(){
+    hideMonthPicker : function(animate){
         var me = this,
             picker = me.monthPicker;
 
         if (picker) {
-            if (me.disableAnim) {
-                picker.hide();
+            if (me.shouldAnimate(animate)) {
+                me.runAnimation(true);
             } else {
-                this.runAnimation(true);
+                picker.hide();
             }
         }
         return me;
@@ -609,31 +636,37 @@ Ext.define('Ext.picker.Date', {
 
     /**
      * Show the month picker
+     * @param {Boolean} [animate] Indicates whether to animate this action. If the animate
+     * parameter is not specified, the behavior will use {@link #disableAnim} to determine
+     * whether to animate or not.
      * @return {Ext.picker.Date} this
      */
-    showMonthPicker : function(){
-
+    showMonthPicker : function(animate){
         var me = this,
-            picker,
-            size,
-            top,
-            left;
-
-
+            picker;
+        
         if (me.rendered && !me.disabled) {
-            size = me.getSize();
             picker = me.createMonthPicker();
-            picker.show();
-            picker.setSize(size);
             picker.setValue(me.getActive());
-
-            if (me.disableAnim) {
-                picker.setPosition(-1, -1);
-            } else {
+            picker.setSize(me.getSize());
+            picker.setPosition(-1, -1);
+            if (me.shouldAnimate(animate)) {
                 me.runAnimation(false);
+            } else {
+                picker.show();
             }
         }
         return me;
+    },
+    
+    /**
+     * Checks whether a hide/show action should animate
+     * @private
+     * @param {Boolean} [animate] A possible animation value
+     * @return {Boolean} Whether to animate the action
+     */
+    shouldAnimate: function(animate){
+        return Ext.isDefined(animate) ? animate : !this.disableAnim;
     },
 
     /**
@@ -659,8 +692,11 @@ Ext.define('Ext.picker.Date', {
                     monthdblclick: me.onOkClick
                 }
             });
-
-            me.on('beforehide', me.hideMonthPicker, me);
+            if (!me.disableAnim) {
+                // hide the element if we're animating to prevent an initial flicker
+                picker.el.setStyle('display', 'none');
+            }
+            me.on('beforehide', Ext.Function.bind(me.hideMonthPicker, me, [false]));
         }
         return picker;
     },
@@ -693,6 +729,7 @@ Ext.define('Ext.picker.Date', {
 
     /**
      * Show the previous month.
+     * @param {Object} e
      * @return {Ext.picker.Date} this
      */
     showPrevMonth : function(e){
@@ -701,6 +738,7 @@ Ext.define('Ext.picker.Date', {
 
     /**
      * Show the next month.
+     * @param {Object} e
      * @return {Ext.picker.Date} this
      */
     showNextMonth : function(e){
@@ -981,6 +1019,7 @@ Ext.define('Ext.picker.Date', {
             delete me.textNodes;
             delete me.cells.elements;
         }
+        me.callParent();
     },
 
     // private, inherit docs

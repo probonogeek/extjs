@@ -23,26 +23,26 @@ Ext.define('Ext.tree.ViewDropZone', {
     /**
      * @cfg {Boolean} allowParentInsert
      * Allow inserting a dragged node between an expanded parent node and its first child that will become a
-     * sibling of the parent when dropped (defaults to false)
+     * sibling of the parent when dropped.
      */
     allowParentInserts: false,
  
     /**
      * @cfg {String} allowContainerDrop
-     * True if drops on the tree container (outside of a specific tree node) are allowed (defaults to false)
+     * True if drops on the tree container (outside of a specific tree node) are allowed.
      */
     allowContainerDrops: false,
 
     /**
      * @cfg {String} appendOnly
-     * True if the tree should only allow append drops (use for trees which are sorted, defaults to false)
+     * True if the tree should only allow append drops (use for trees which are sorted).
      */
     appendOnly: false,
 
     /**
      * @cfg {String} expandDelay
      * The delay in milliseconds to wait before expanding a target tree node while dragging a droppable node
-     * over the target (defaults to 500)
+     * over the target.
      */
     expandDelay : 500,
 

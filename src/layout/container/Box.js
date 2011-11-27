@@ -25,7 +25,7 @@ Ext.define('Ext.layout.container.Box', {
     alias: ['layout.box'],
     extend: 'Ext.layout.container.Container',
     alternateClassName: 'Ext.layout.BoxLayout',
-    
+
     requires: [
         'Ext.layout.container.boxOverflow.None',
         'Ext.layout.container.boxOverflow.Menu',
@@ -37,7 +37,7 @@ Ext.define('Ext.layout.container.Box', {
     /* End Definitions */
 
     /**
-     * @cfg {Mixed} animate
+     * @cfg {Boolean/Number/Object} animate
      * <p>If truthy, child Component are <i>animated</i> into position whenever the Container
      * is layed out. If this option is numeric, it is used as the animation duration in milliseconds.</p>
      * <p>May be set as a property at any time.</p>
@@ -68,9 +68,6 @@ Ext.define('Ext.layout.container.Box', {
      * <li>If there are four values, they apply to the top, right, bottom, and
      * left, respectively.</li>
      * </ul></div>
-     * <p>Defaults to:</p><pre><code>
-     * {top:0, right:0, bottom:0, left:0}
-     * </code></pre>
      */
     defaultMargins: {
         top: 0,
@@ -94,7 +91,6 @@ Ext.define('Ext.layout.container.Box', {
      * <li>If there are four values, they apply to the top, right, bottom, and
      * left, respectively.</li>
      * </ul></div>
-     * <p>Defaults to: <code>"0"</code></p>
      */
     padding: '0',
     // documented in subclasses
@@ -133,10 +129,18 @@ Ext.define('Ext.layout.container.Box', {
     // availableSpaceOffset is used to adjust the availableWidth, typically used
     // to reserve space for a scrollbar
     availableSpaceOffset: 0,
-    
+
     // whether or not to reserve the availableSpaceOffset in layout calculations
     reserveOffset: true,
-    
+
+    /**
+     * @cfg {Boolean} shrinkToFit
+     * True (the default) to allow fixed size components to shrink (limited to their
+     * minimum size) to avoid overflow. False to preserve fixed sizes even if they cause
+     * overflow.
+     */
+    shrinkToFit: true,
+
     /**
      * @cfg {Boolean} clearInnerCtOnLayout
      */
@@ -173,7 +177,7 @@ Ext.define('Ext.layout.container.Box', {
     /**
      * @private
      * Returns the current size and positioning of the passed child item.
-     * @param {Component} child The child Component to calculate the box for
+     * @param {Ext.Component} child The child Component to calculate the box for
      * @return {Object} Object containing box measurements for the child. Properties are left,top,width,height.
      */
     getChildBox: function(child) {
@@ -190,7 +194,7 @@ Ext.define('Ext.layout.container.Box', {
     /**
      * @private
      * Calculates the size and positioning of the passed child item.
-     * @param {Component} child The child Component to calculate the box for
+     * @param {Ext.Component} child The child Component to calculate the box for
      * @return {Object} Object containing box measurements for the child. Properties are left,top,width,height.
      */
     calculateChildBox: function(child) {
@@ -241,7 +245,7 @@ Ext.define('Ext.layout.container.Box', {
             availPerpendicularSize = mmax(0, perpendicularSize - paddingPerpendicular),
 
             innerCtBorderWidth = me.innerCt.getBorderWidth(me.perpendicularLT + me.perpendicularRB),
-            
+
             isStart = me.pack == 'start',
             isCenter = me.pack == 'center',
             isEnd = me.pack == 'end',
@@ -257,16 +261,21 @@ Ext.define('Ext.layout.container.Box', {
             minSizes = [],
             calculatedWidth,
 
-            i, child, childParallel, childPerpendicular, childMargins, childSize, minParallel, tmpObj, shortfall, 
-            tooNarrow, availableSpace, minSize, item, length, itemIndex, box, oldSize, newSize, reduction, diff, 
-            flexedBoxes, remainingSpace, remainingFlex, flexedSize, parallelMargins, calcs, offset, 
+            i, child, childParallel, childPerpendicular, childMargins, childSize, minParallel, tmpObj, shortfall,
+            tooNarrow, availableSpace, minSize, item, length, itemIndex, box, oldSize, newSize, reduction, diff,
+            flexedBoxes, remainingSpace, remainingFlex, flexedSize, parallelMargins, calcs, offset,
             perpendicularMargins, stretchSize;
 
         //gather the total flex of all flexed items and the width taken up by fixed width items
         for (i = 0; i < visibleCount; i++) {
             child = visibleItems[i];
             childPerpendicular = child[perpendicularPrefix];
-            me.layoutItem(child);
+            if (!child.flex || !(me.align == 'stretch' || me.align == 'stretchmax')) {
+                if (child.componentLayout.initialized !== true) {
+                    me.layoutItem(child);
+                }
+            }
+
             childMargins = child.margins;
             parallelMargins = childMargins[me.parallelBefore] + childMargins[me.parallelAfter];
 
@@ -302,14 +311,20 @@ Ext.define('Ext.layout.container.Box', {
             }
 
             // Track the maximum perpendicular size for use by the stretch and stretchmax align config values.
-            maxSize = mmax(maxSize, childPerpendicular + childMargins[me.perpendicularLeftTop] + childMargins[me.perpendicularRightBottom]);
+            // Ensure that the tracked maximum perpendicular size takes into account child min[Width|Height] settings!
+            maxSize = mmax(maxSize, mmax(childPerpendicular, child[perpendicularMinString]||0) + childMargins[me.perpendicularLeftTop] + childMargins[me.perpendicularRightBottom]);
 
             tmpObj[parallelPrefix] = childParallel || undefinedValue;
+            tmpObj.dirtySize = child.componentLayout.lastComponentSize ? (tmpObj[parallelPrefix] !== child.componentLayout.lastComponentSize[parallelPrefix]) : false;
             tmpObj[perpendicularPrefix] = childPerpendicular || undefinedValue;
             boxes.push(tmpObj);
         }
-        shortfall = desiredSize - parallelSize;
-        tooNarrow = minimumSize > parallelSize;
+
+        // Only calculate parallel overflow indicators if we are not auto sizing
+        if (!me.autoSize) {
+            shortfall = desiredSize - parallelSize;
+            tooNarrow = minimumSize > parallelSize;
+        }
 
         //the space available to the flexed items
         availableSpace = mmax(0, parallelSize - nonFlexSize - paddingParallel - (me.reserveOffset ? me.availableSpaceOffset : 0));
@@ -341,8 +356,7 @@ Ext.define('Ext.layout.container.Box', {
                         box = boxes[i];
                         box.dirtySize = box.dirtySize || box[parallelPrefix] != minSize;
                         box[parallelPrefix] = minSize;
-                    }
-                    else {
+                    } else if (me.shrinkToFit) {
                         minSizes.push({
                             minSize: minSize,
                             available: boxes[i][parallelPrefix] - minSize,
@@ -378,6 +392,7 @@ Ext.define('Ext.layout.container.Box', {
                     box[parallelPrefix] = newSize;
                     shortfall -= reduction;
                 }
+                tooNarrow = (shortfall > 0);
             }
             else {
                 remainingSpace = availableSpace;
@@ -490,7 +505,7 @@ Ext.define('Ext.layout.container.Box', {
             }
         };
     },
-    
+
     onRemove: function(comp){
         this.callParent(arguments);
         if (this.overflowHandler) {
@@ -591,10 +606,12 @@ Ext.define('Ext.layout.container.Box', {
         me.updateChildBoxes(boxes);
         me.handleTargetOverflow(targetSize);
     },
+    
+    animCallback: Ext.emptyFn,
 
     /**
      * Resizes and repositions each child component
-     * @param {Array} boxes The box measurements
+     * @param {Object[]} boxes The box measurements
      */
     updateChildBoxes: function(boxes) {
         var me = this,
@@ -682,6 +699,7 @@ Ext.define('Ext.layout.container.Box', {
                 // When we've animated all changed boxes into position, clear our busy flag and call the callback.
                 length -= 1;
                 if (!length) {
+                    me.animCallback(anim);
                     me.layoutBusy = false;
                     if (Ext.isFunction(animCallback)) {
                         animCallback();
@@ -724,7 +742,7 @@ Ext.define('Ext.layout.container.Box', {
      * again immediately afterwards, giving a performance hit.
      * Subclasses should provide an implementation.
      * @param {Object} currentSize The current height and width of the innerCt
-     * @param {Array} calculations The new box calculations of all items to be laid out
+     * @param {Object} calculations The new box calculations of all items to be laid out
      */
     updateInnerCtSize: function(tSize, calcs) {
         var me = this,
@@ -778,7 +796,7 @@ Ext.define('Ext.layout.container.Box', {
      * target. Having a Box layout inside such a target is therefore not recommended.
      * @param {Object} previousTargetSize The size and height of the layout target before we just laid out
      * @param {Ext.container.Container} container The container
-     * @param {Ext.core.Element} target The target element
+     * @param {Ext.Element} target The target element
      * @return True if the layout overflowed, and was reflowed in a secondary onLayout call.
      */
     handleTargetOverflow: function(previousTargetSize) {
@@ -844,6 +862,8 @@ Ext.define('Ext.layout.container.Box', {
         margins.right  += itemEl.getMargin('r');
         margins.bottom += itemEl.getMargin('b');
         margins.left   += itemEl.getMargin('l');
+        margins.height  = margins.top  + margins.bottom;
+        margins.width   = margins.left + margins.right;
         style.marginTop = style.marginRight = style.marginBottom = style.marginLeft = '0';
 
         // Item must reference calculated margins.
@@ -854,7 +874,7 @@ Ext.define('Ext.layout.container.Box', {
      * @private
      */
     destroy: function() {
-        Ext.destroy(this.overflowHandler);
+        Ext.destroy(this.innerCt, this.overflowHandler);
         this.callParent(arguments);
     }
 });

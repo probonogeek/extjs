@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -20,7 +20,7 @@
  * This animation class is a mixin.
  * 
  * Ext.util.Animate provides an API for the creation of animated transitions of properties and styles.  
- * This class is used as a mixin and currently applied to {@link Ext.core.Element}, {@link Ext.CompositeElement}, 
+ * This class is used as a mixin and currently applied to {@link Ext.Element}, {@link Ext.CompositeElement}, 
  * {@link Ext.draw.Sprite}, {@link Ext.draw.CompositeSprite}, and {@link Ext.Component}.  Note that Components 
  * have a limited subset of what attributes can be animated such as top, left, x, y, height, width, and 
  * opacity (color, paddings, and margins can not be animated).
@@ -138,7 +138,7 @@
  * 
  * ## Animation Keyframes
  *
- * You can also set up complex animations with {@link Ext.fx.Anim#keyframe keyframe} which follows the 
+ * You can also set up complex animations with {@link Ext.fx.Anim#keyframes keyframes} which follow the 
  * CSS3 Animation configuration pattern. Note rotation, translation, and scaling can only be done for sprites. 
  * The previous example can be written with the following syntax:
  * 
@@ -162,7 +162,7 @@
  * 
  * ## Animation Events
  * 
- * Each animation you create has events for {@link Ext.fx.Anim#beforeanimation beforeanimation}, 
+ * Each animation you create has events for {@link Ext.fx.Anim#beforeanimate beforeanimate}, 
  * {@link Ext.fx.Anim#afteranimate afteranimate}, and {@link Ext.fx.Anim#lastframe lastframe}.  
  * Keyframed animations adds an additional {@link Ext.fx.Animator#keyframe keyframe} event which 
  * fires for each keyframe in your animation.
@@ -223,7 +223,7 @@ Ext.define('Ext.util.Animate', {
 
 <span id='Ext-util-Animate-method-animate'>    /**
 </span>     * &lt;p&gt;Perform custom animation on this object.&lt;p&gt;
-     * &lt;p&gt;This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.core.Element Element} class.
+     * &lt;p&gt;This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.Element Element} class.
      * It performs animated transitions of certain properties of this object over a specified timeline.&lt;/p&gt;
      * &lt;p&gt;The sole parameter is an object which specifies start property values, end property values, and properties which
      * describe the timeline. Of the properties listed below, only &lt;b&gt;&lt;code&gt;to&lt;/code&gt;&lt;/b&gt; is mandatory.&lt;/p&gt;
@@ -250,7 +250,7 @@ Ext.define('Ext.util.Animate', {
      * &lt;li&gt;&lt;code&gt;listeners&lt;/code&gt; &lt;div class=&quot;sub-desc&quot;&gt;This is a standard {@link Ext.util.Observable#listeners listeners} configuration object which may be used
      * to inject behaviour at either the &lt;code&gt;beforeanimate&lt;/code&gt; event or the &lt;code&gt;afteranimate&lt;/code&gt; event.&lt;/div&gt;&lt;/li&gt;
      * &lt;/ul&gt;&lt;/p&gt;
-     * &lt;h3&gt;Animating an {@link Ext.core.Element Element}&lt;/h3&gt;
+     * &lt;h3&gt;Animating an {@link Ext.Element Element}&lt;/h3&gt;
      * When animating an Element, the following properties may be specified in &lt;code&gt;from&lt;/code&gt;, &lt;code&gt;to&lt;/code&gt;, and &lt;code&gt;keyframe&lt;/code&gt; objects:&lt;ul&gt;
      * &lt;li&gt;&lt;code&gt;x&lt;/code&gt; &lt;div class=&quot;sub-desc&quot;&gt;The page X position in pixels.&lt;/div&gt;&lt;/li&gt;
      * &lt;li&gt;&lt;code&gt;y&lt;/code&gt; &lt;div class=&quot;sub-desc&quot;&gt;The page Y position in pixels&lt;/div&gt;&lt;/li&gt;
@@ -344,7 +344,7 @@ myWindow.header.el.on('click', function() {
 </span>     * @deprecated 4.0 Replaced by {@link #stopAnimation}
      * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
      * @method
      */
     stopFx: Ext.Function.alias(Ext.util.Animate, 'stopAnimation'),
@@ -352,7 +352,7 @@ myWindow.header.el.on('click', function() {
 <span id='Ext-util-Animate-method-stopAnimation'>    /**
 </span>     * Stops any running effects and clears this object's internal effects queue if it contains
      * any additional effects that haven't started yet.
-     * @return {Ext.core.Element} The Element
+     * @return {Ext.Element} The Element
      */
     stopAnimation: function() {
         Ext.fx.Manager.stopAnimation(this.id);
@@ -385,22 +385,21 @@ myWindow.header.el.on('click', function() {
 
 <span id='Ext-util-Animate-method-hasActiveFx'>    /**
 </span>     * @deprecated 4.0 Replaced by {@link #getActiveAnimation}
-     * Returns thq current animation if this object has any effects actively running or queued, else returns false.
-     * @return {Mixed} anim if element has active effects, else false
+     * @alias Ext.util.Animate#getActiveAnimation
      * @method
      */
     hasActiveFx: Ext.Function.alias(Ext.util.Animate, 'getActiveAnimation'),
 
 <span id='Ext-util-Animate-method-getActiveAnimation'>    /**
-</span>     * Returns thq current animation if this object has any effects actively running or queued, else returns false.
-     * @return {Mixed} anim if element has active effects, else false
+</span>     * Returns the current animation if this object has any effects actively running or queued, else returns false.
+     * @return {Ext.fx.Anim/Boolean} Anim if element has active effects, else false
      */
     getActiveAnimation: function() {
         return Ext.fx.Manager.getActiveAnimation(this.id);
     }
 }, function(){
     // Apply Animate mixin manually until Element is defined in the proper 4.x way
-    Ext.applyIf(Ext.core.Element.prototype, this.prototype);
+    Ext.applyIf(Ext.Element.prototype, this.prototype);
     // We need to call this again so the animation methods get copied over to CE
     Ext.CompositeElementLite.importElementMethods();
 });</pre>

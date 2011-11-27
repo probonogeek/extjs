@@ -12,18 +12,13 @@ This file may be used under the terms of the GNU General Public License version 
 If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
 
 */
-
 /**
- * @class Ext.grid.plugin.Editing
-
-This class provides an abstract grid editing plugin on selected {@link Ext.grid.column.Column columns}.
-The editable columns are specified by providing an {@link Ext.grid.column.Column#editor editor}
-in the {@link Ext.grid.column.Column column configuration}.
-
-*Note:* This class should not be used directly. See {@link Ext.grid.plugin.CellEditing} and
-{@link Ext.grid.plugin.RowEditing}.
-
- * @markdown
+ * This class provides an abstract grid editing plugin on selected {@link Ext.grid.column.Column columns}.
+ * The editable columns are specified by providing an {@link Ext.grid.column.Column#editor editor}
+ * in the {@link Ext.grid.column.Column column configuration}.
+ *
+ * **Note:** This class should not be used directly. See {@link Ext.grid.plugin.CellEditing} and
+ * {@link Ext.grid.plugin.RowEditing}.
  */
 Ext.define('Ext.grid.plugin.Editing', {
     alias: 'editing.editing',
@@ -39,7 +34,7 @@ Ext.define('Ext.grid.plugin.Editing', {
 
     /**
      * @cfg {Number} clicksToEdit
-     * The number of clicks on a grid required to display the editor (defaults to 2).
+     * The number of clicks on a grid required to display the editor.
      */
     clicksToEdit: 2,
 
@@ -84,7 +79,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         grid.isEditable = true;
         grid.editingPlugin = grid.view.editingPlugin = me;
     },
-    
+
     /**
      * Fires after the grid is reconfigured
      * @private
@@ -258,16 +253,17 @@ Ext.define('Ext.grid.plugin.Editing', {
 
     /**
      * @private
-     * @abstract. Template method called before editing begins.
+     * @template
+     * Template method called before editing begins.
      * @param {Object} context The current editing context
      * @return {Boolean} Return false to cancel the editing process
      */
     beforeEdit: Ext.emptyFn,
 
     /**
-     * Start editing the specified record, using the specified Column definition to define which field is being edited.
-     * @param {Model} record The Store data record which backs the row to be edited.
-     * @param {Model} columnHeader The Column object defining the column to be edited.
+     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+     * @param {Ext.data.Model/Number} record The Store data record which backs the row to be edited, or index of the record in Store.
+     * @param {Ext.grid.column.Column/Number} columnHeader The Column object defining the column to be edited, or index of the column.
      */
     startEdit: function(record, columnHeader) {
         var me = this,
@@ -282,7 +278,8 @@ Ext.define('Ext.grid.plugin.Editing', {
     },
 
     /**
-     * @private Collects all information necessary for any subclasses to perform their editing functions.
+     * @private
+     * Collects all information necessary for any subclasses to perform their editing functions.
      * @param record
      * @param columnHeader
      * @returns {Object} The editing context based upon the passed record and column
@@ -324,14 +321,14 @@ Ext.define('Ext.grid.plugin.Editing', {
     },
 
     /**
-     * Cancel any active edit that is in progress.
+     * Cancels any active edit that is in progress.
      */
     cancelEdit: function() {
         this.editing = false;
     },
 
     /**
-     * Complete the edit if there is an active edit in progress.
+     * Completes the edit if there is an active edit in progress.
      */
     completeEdit: function() {
         var me = this;
@@ -352,3 +349,4 @@ Ext.define('Ext.grid.plugin.Editing', {
         return me.fireEvent('validateedit', me, context) !== false && !context.cancel;
     }
 });
+

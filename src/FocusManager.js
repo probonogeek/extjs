@@ -21,8 +21,8 @@ The FocusManager is responsible for globally:
 2. Providing basic keyboard navigation
 3. (optional) Provide a visual cue for focused components, in the form of a focus ring/frame.
 
-To activate the FocusManager, simply call {@link #enable `Ext.FocusManager.enable();`}. In turn, you may
-deactivate the FocusManager by subsequently calling {@link #disable `Ext.FocusManager.disable();`}.  The
+To activate the FocusManager, simply call `Ext.FocusManager.enable();`. In turn, you may
+deactivate the FocusManager by subsequently calling `Ext.FocusManager.disable();.  The
 FocusManager is disabled by default.
 
 To enable the optional focus frame, pass `true` or `{focusFrame: true}` to {@link #enable}.
@@ -33,7 +33,6 @@ call {@link #subscribe Ext.FocusManager.subscribe} to take advantage of this fea
 {@link #unsubscribe Ext.FocusManager.unsubscribe} to turn the navigation off.
 
  * @singleton
- * @markdown
  * @author Jarred Nicholls <jarred@sencha.com>
  * @docauthor Jarred Nicholls <jarred@sencha.com>
  */
@@ -61,7 +60,6 @@ Ext.define('Ext.FocusManager', {
     /**
      * @property {Ext.Component} focusedCmp
      * The currently focused component. Defaults to `undefined`.
-     * @markdown
      */
 
     focusElementCls: Ext.baseCSSPrefix + 'focus-element',
@@ -69,7 +67,7 @@ Ext.define('Ext.FocusManager', {
     focusFrameCls: Ext.baseCSSPrefix + 'focus-frame',
 
     /**
-     * @property {Array} whitelist
+     * @property {String[]} whitelist
      * A list of xtypes that should ignore certain navigation input keys and
      * allow for the default browser event/behavior. These input keys include:
      *
@@ -83,9 +81,6 @@ Ext.define('Ext.FocusManager', {
      * The FocusManager will not attempt to navigate when a component is an xtype (or descendents thereof)
      * that belongs to this whitelist. E.g., an {@link Ext.form.field.Text} should allow
      * the user to move the input cursor left and right, and to delete characters, etc.
-     *
-     * This whitelist currently defaults to `['textfield']`.
-     * @markdown
      */
     whitelist: [
         'textfield'
@@ -117,7 +112,6 @@ Ext.define('Ext.FocusManager', {
              * @param {Ext.Component} cmp The component that is being focused
              * @param {Ext.Component} previousCmp The component that was previously focused,
              * or `undefined` if there was no previously focused component.
-             * @markdown
              */
             'beforecomponentfocus',
 
@@ -128,7 +122,6 @@ Ext.define('Ext.FocusManager', {
              * @param {Ext.Component} cmp The component that has been focused
              * @param {Ext.Component} previousCmp The component that was previously focused,
              * or `undefined` if there was no previously focused component.
-             * @markdown
              */
             'componentfocus',
 
@@ -242,7 +235,7 @@ Ext.define('Ext.FocusManager', {
 
     /**
      * Adds the specified xtype to the {@link #whitelist}.
-     * @param {String/Array} xtype Adds the xtype(s) to the {@link #whitelist}.
+     * @param {String/String[]} xtype Adds the xtype(s) to the {@link #whitelist}.
      */
     addXTypeToWhitelist: function(xtype) {
         var me = this;
@@ -387,8 +380,8 @@ Ext.define('Ext.FocusManager', {
                 ],
                 style: 'top: -100px; left: -100px;'
             });
-            me.focusFrame.setVisibilityMode(Ext.core.Element.DISPLAY);
-            me.focusFrameWidth = me.focusFrame.child('.' + cls + '-top').getHeight();
+            me.focusFrame.setVisibilityMode(Ext.Element.DISPLAY);
+            me.focusFrameWidth = 2;
             me.focusFrame.hide().setLeftTop(0, 0);
         }
     },
@@ -560,10 +553,10 @@ Ext.define('Ext.FocusManager', {
                 fl = ff.child(cls + 'left'),
                 fr = ff.child(cls + 'right');
 
-            ft.setWidth(bw - 2).setLeftTop(bl + 1, bt);
-            fb.setWidth(bw - 2).setLeftTop(bl + 1, bt + bh - fw);
-            fl.setHeight(bh - 2).setLeftTop(bl, bt + 1);
-            fr.setHeight(bh - 2).setLeftTop(bl + bw - fw, bt + 1);
+            ft.setWidth(bw).setLeftTop(bl, bt);
+            fb.setWidth(bw).setLeftTop(bl, bt + bh - fw);
+            fl.setHeight(bh - fw - fw).setLeftTop(bl, bt + fw);
+            fr.setHeight(bh - fw - fw).setLeftTop(bl + bw - fw, bt + fw);
 
             ff.show();
         }
@@ -617,7 +610,7 @@ Ext.define('Ext.FocusManager', {
 
     /**
      * Removes the specified xtype from the {@link #whitelist}.
-     * @param {String/Array} xtype Removes the xtype(s) from the {@link #whitelist}.
+     * @param {String/String[]} xtype Removes the xtype(s) from the {@link #whitelist}.
      */
     removeXTypeFromWhitelist: function(xtype) {
         var me = this;
@@ -767,26 +760,25 @@ Ext.define('Ext.FocusManager', {
     /**
      * Subscribes an {@link Ext.container.Container} to provide basic keyboard focus navigation between its child {@link Ext.Component}'s.
      * @param {Ext.container.Container} container A reference to the {@link Ext.container.Container} on which to enable keyboard functionality and focus management.
-     * @param {Boolean/Object} options An object of the following options:
-        - keys : Array/Object
-            An array containing the string names of navigation keys to be supported. The allowed values are:
-
-            - 'left'
-            - 'right'
-            - 'up'
-            - 'down'
-
-            Or, an object containing those key names as keys with `true` or a callback function as their value. A scope may also be passed. E.g.:
-
-                {
-                    left: this.onLeftKey,
-                    right: this.onRightKey,
-                    scope: this
-                }
-
-        - focusFrame : Boolean (optional)
-            `true` to show the focus frame around a component when it is focused. Defaults to `false`.
-     * @markdown
+     * @param {Boolean/Object} options An object of the following options
+     * @param {Array/Object} options.keys
+     * An array containing the string names of navigation keys to be supported. The allowed values are:
+     *
+     *   - 'left'
+     *   - 'right'
+     *   - 'up'
+     *   - 'down'
+     *
+     * Or, an object containing those key names as keys with `true` or a callback function as their value. A scope may also be passed. E.g.:
+     *
+     *     {
+     *         left: this.onLeftKey,
+     *         right: this.onRightKey,
+     *         scope: this
+     *     }
+     *
+     * @param {Boolean} options.focusFrame
+     * `true` to show the focus frame around a component when it is focused. Defaults to `false`.
      */
     subscribe: function(container, options) {
         var me = this,
@@ -842,7 +834,6 @@ Ext.define('Ext.FocusManager', {
     /**
      * Unsubscribes an {@link Ext.container.Container} from keyboard focus management.
      * @param {Ext.container.Container} container A reference to the {@link Ext.container.Container} to unsubscribe from the FocusManager.
-     * @markdown
      */
     unsubscribe: function(container) {
         var me = this,

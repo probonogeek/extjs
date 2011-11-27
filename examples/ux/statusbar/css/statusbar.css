@@ -109,6 +109,7 @@
 }
 .x-status-error-list {
     border-color: #C33;
+    background: white;
 }
 .x-status-error-list li a {
     color: #15428B;

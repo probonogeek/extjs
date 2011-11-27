@@ -76,10 +76,6 @@
                     "name": "ZIndexManager.js"
                 },
                 {
-                    "path": "../../../platform/src/draw/",
-                    "name": "Color.js"
-                },
-                {
                     "path": "../../../platform/src/fx/target/",
                     "name": "Sprite.js"
                 },
@@ -96,10 +92,6 @@
                     "name": "ComponentQuery.js"
                 },
                 {
-                    "path": "../../../platform/src/layout/component/",
-                    "name": "Auto.js"
-                },
-                {
                     "path": "../../src/panel/",
                     "name": "Proxy.js"
                 },
@@ -108,12 +100,8 @@
                     "name": "AbstractDock.js"
                 },
                 {
-                    "path": "../../../platform/src/chart/",
-                    "name": "Mask.js"
-                },
-                {
-                    "path": "../../../platform/src/chart/",
-                    "name": "Navigation.js"
+                    "path": "../../../platform/src/draw/",
+                    "name": "Color.js"
                 },
                 {
                     "path": "../../../platform/src/util/",
@@ -122,10 +110,6 @@
                 {
                     "path": "../../../platform/src/",
                     "name": "AbstractManager.js"
-                },
-                {
-                    "path": "../../../platform/src/",
-                    "name": "ElementLoader.js"
                 },
                 {
                     "path": "../../src/dd/",
@@ -145,15 +129,15 @@
                 },
                 {
                     "path": "../../../platform/src/data/",
+                    "name": "IdGenerator.js"
+                },
+                {
+                    "path": "../../../platform/src/data/",
                     "name": "validations.js"
                 },
                 {
                     "path": "../../../platform/src/util/",
                     "name": "Sorter.js"
-                },
-                {
-                    "path": "../../../platform/src/layout/component/",
-                    "name": "Draw.js"
                 },
                 {
                     "path": "../../../platform/src/state/",
@@ -168,8 +152,20 @@
                     "name": "SortTypes.js"
                 },
                 {
+                    "path": "../../../platform/src/chart/",
+                    "name": "Mask.js"
+                },
+                {
+                    "path": "../../../platform/src/chart/",
+                    "name": "Navigation.js"
+                },
+                {
                     "path": "../../../platform/src/data/",
                     "name": "Connection.js"
+                },
+                {
+                    "path": "../../../platform/src/layout/component/",
+                    "name": "Auto.js"
                 },
                 {
                     "path": "../../../platform/src/data/writer/",
@@ -201,23 +197,15 @@
                 },
                 {
                     "path": "../../src/layout/container/",
+                    "name": "Absolute.js"
+                },
+                {
+                    "path": "../../src/layout/container/",
                     "name": "CheckboxGroup.js"
                 },
                 {
                     "path": "../../src/layout/container/",
                     "name": "Column.js"
-                },
-                {
-                    "path": "../../src/layout/container/",
-                    "name": "Fit.js"
-                },
-                {
-                    "path": "../../../platform/src/layout/container/",
-                    "name": "AbstractCard.js"
-                },
-                {
-                    "path": "../../src/layout/container/",
-                    "name": "Card.js"
                 },
                 {
                     "path": "../../src/layout/container/",
@@ -256,16 +244,8 @@
                     "name": "Body.js"
                 },
                 {
-                    "path": "../../../platform/src/draw/",
-                    "name": "Draw.js"
-                },
-                {
                     "path": "../../../platform/src/fx/",
                     "name": "Easing.js"
-                },
-                {
-                    "path": "../../../platform/src/fx/",
-                    "name": "PropertyHandler.js"
                 },
                 {
                     "path": "../../src/layout/component/",
@@ -292,6 +272,14 @@
                     "name": "Label.js"
                 },
                 {
+                    "path": "../../../platform/src/draw/",
+                    "name": "Draw.js"
+                },
+                {
+                    "path": "../../../platform/src/fx/",
+                    "name": "PropertyHandler.js"
+                },
+                {
                     "path": "../../../platform/src/fx/",
                     "name": "Queue.js"
                 },
@@ -301,15 +289,7 @@
                 },
                 {
                     "path": "../../../platform/src/",
-                    "name": "PluginManager.js"
-                },
-                {
-                    "path": "../../../platform/src/",
                     "name": "ComponentManager.js"
-                },
-                {
-                    "path": "../../../platform/src/",
-                    "name": "ComponentLoader.js"
                 },
                 {
                     "path": "../../src/dd/",
@@ -376,10 +356,6 @@
                     "name": "StoreManager.js"
                 },
                 {
-                    "path": "../../../platform/src/",
-                    "name": "LoadMask.js"
-                },
-                {
                     "path": "../../../platform/src/state/",
                     "name": "Manager.js"
                 },
@@ -438,6 +414,18 @@
                 {
                     "path": "../../src/layout/container/",
                     "name": "Box.js"
+                },
+                {
+                    "path": "../../src/layout/container/",
+                    "name": "Fit.js"
+                },
+                {
+                    "path": "../../../platform/src/layout/container/",
+                    "name": "AbstractCard.js"
+                },
+                {
+                    "path": "../../src/layout/container/",
+                    "name": "Card.js"
                 },
                 {
                     "path": "../../src/layout/container/",
@@ -536,6 +524,14 @@
                     "name": "ToolTip.js"
                 },
                 {
+                    "path": "../../../platform/src/layout/component/",
+                    "name": "Draw.js"
+                },
+                {
+                    "path": "../../src/",
+                    "name": "LoadMask.js"
+                },
+                {
                     "path": "../../../platform/src/draw/",
                     "name": "CompositeSprite.js"
                 },
@@ -582,10 +578,6 @@
                 {
                     "path": "../../../platform/src/chart/axis/",
                     "name": "Axis.js"
-                },
-                {
-                    "path": "../../src/layout/container/",
-                    "name": "Absolute.js"
                 },
                 {
                     "path": "../../../platform/src/chart/series/",
@@ -680,6 +672,10 @@
                     "name": "ArrayStore.js"
                 },
                 {
+                    "path": "../../../platform/src/",
+                    "name": "PluginManager.js"
+                },
+                {
                     "path": "../../src/resizer/",
                     "name": "Resizer.js"
                 },
@@ -732,6 +728,10 @@
                     "name": "Separator.js"
                 },
                 {
+                    "path": "../../../platform/src/",
+                    "name": "ElementLoader.js"
+                },
+                {
                     "path": "../../src/grid/",
                     "name": "LockingView.js"
                 },
@@ -750,6 +750,10 @@
                 {
                     "path": "../../src/tip/",
                     "name": "QuickTipManager.js"
+                },
+                {
+                    "path": "../../../platform/src/",
+                    "name": "ComponentLoader.js"
                 },
                 {
                     "path": "../../src/panel/",

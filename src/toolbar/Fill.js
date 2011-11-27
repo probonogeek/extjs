@@ -13,28 +13,21 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.toolbar.Fill
- * @extends Ext.Component
- *
  * A non-rendering placeholder item which instructs the Toolbar's Layout to begin using
  * the right-justified button container.
  *
- * {@img Ext.toolbar.Fill/Ext.toolbar.Fill.png Toolbar Fill}
- *
- * ## Example
- *
+ *     @example
  *     Ext.create('Ext.panel.Panel', {
  *          title: 'Toolbar Fill Example',
  *          width: 300,
  *          height: 200,
  *          tbar : [
  *              'Item 1',
- *              {xtype: 'tbfill'}, // or '->'
+ *              { xtype: 'tbfill' },
  *              'Item 2'
  *          ],
  *          renderTo: Ext.getBody()
  *      });
- *
  */
 Ext.define('Ext.toolbar.Fill', {
     extend: 'Ext.Component',

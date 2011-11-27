@@ -196,8 +196,10 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
         Ext.apply(Ext.form.field.ComboBox.prototype, {
-            loadingText: 'Bezig met laden...',
             valueNotFoundText: undefined
+        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText: 'Bezig met laden...'
         });
     }
 

@@ -13,14 +13,18 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.AbstractComponent
- * <p>An abstract base class which provides shared methods for Components across the Sencha product line.</p>
- * <p>Please refer to sub class's documentation</p>
+ * An abstract base class which provides shared methods for Components across the Sencha product line.
+ *
+ * Please refer to sub class's documentation
+ * @private
  */
-
 Ext.define('Ext.AbstractComponent', {
 
     /* Begin Definitions */
+    requires: [
+        'Ext.ComponentQuery',
+        'Ext.ComponentManager'
+    ],
 
     mixins: {
         observable: 'Ext.util.Observable',
@@ -28,23 +32,20 @@ Ext.define('Ext.AbstractComponent', {
         state: 'Ext.state.Stateful'
     },
 
-    requires: [
+    // The "uses" property specifies class which are used in an instantiated AbstractComponent.
+    // They do *not* have to be loaded before this class may be defined - that is what "requires" is for.
+    uses: [
         'Ext.PluginManager',
         'Ext.ComponentManager',
-        'Ext.core.Element',
-        'Ext.core.DomHelper',
+        'Ext.Element',
+        'Ext.DomHelper',
         'Ext.XTemplate',
         'Ext.ComponentQuery',
-        'Ext.LoadMask',
         'Ext.ComponentLoader',
         'Ext.EventManager',
         'Ext.layout.Layout',
-        'Ext.layout.component.Auto'
-    ],
-
-    // Please remember to add dependencies whenever you use it
-    // I had to fix these many times already
-    uses: [
+        'Ext.layout.component.Auto',
+        'Ext.LoadMask',
         'Ext.ZIndexManager'
     ],
 
@@ -63,270 +64,386 @@ Ext.define('Ext.AbstractComponent', {
 
     /**
      * @cfg {String} id
-     * <p>The <b><u>unique id of this component instance</u></b> (defaults to an {@link #getId auto-assigned id}).</p>
-     * <p>It should not be necessary to use this configuration except for singleton objects in your application.
-     * Components created with an id may be accessed globally using {@link Ext#getCmp Ext.getCmp}.</p>
-     * <p>Instead of using assigned ids, use the {@link #itemId} config, and {@link Ext.ComponentQuery ComponentQuery} which
-     * provides selector-based searching for Sencha Components analogous to DOM querying. The {@link Ext.container.Container Container}
-     * class contains {@link Ext.container.Container#down shortcut methods} to query its descendant Components by selector.</p>
-     * <p>Note that this id will also be used as the element id for the containing HTML element
-     * that is rendered to the page for this component. This allows you to write id-based CSS
-     * rules to style the specific instance of this component uniquely, and also to select
-     * sub-elements using this component's id as the parent.</p>
-     * <p><b>Note</b>: to avoid complications imposed by a unique <tt>id</tt> also see <code>{@link #itemId}</code>.</p>
-     * <p><b>Note</b>: to access the container of a Component see <code>{@link #ownerCt}</code>.</p>
+     * The **unique id of this component instance.**
+     *
+     * It should not be necessary to use this configuration except for singleton objects in your application. Components
+     * created with an id may be accessed globally using {@link Ext#getCmp Ext.getCmp}.
+     *
+     * Instead of using assigned ids, use the {@link #itemId} config, and {@link Ext.ComponentQuery ComponentQuery}
+     * which provides selector-based searching for Sencha Components analogous to DOM querying. The {@link
+     * Ext.container.Container Container} class contains {@link Ext.container.Container#down shortcut methods} to query
+     * its descendant Components by selector.
+     *
+     * Note that this id will also be used as the element id for the containing HTML element that is rendered to the
+     * page for this component. This allows you to write id-based CSS rules to style the specific instance of this
+     * component uniquely, and also to select sub-elements using this component's id as the parent.
+     *
+     * **Note**: to avoid complications imposed by a unique id also see `{@link #itemId}`.
+     *
+     * **Note**: to access the container of a Component see `{@link #ownerCt}`.
+     *
+     * Defaults to an {@link #getId auto-assigned id}.
      */
 
     /**
      * @cfg {String} itemId
-     * <p>An <tt>itemId</tt> can be used as an alternative way to get a reference to a component
-     * when no object reference is available.  Instead of using an <code>{@link #id}</code> with
-     * {@link Ext}.{@link Ext#getCmp getCmp}, use <code>itemId</code> with
+     * An itemId can be used as an alternative way to get a reference to a component when no object reference is
+     * available. Instead of using an `{@link #id}` with {@link Ext}.{@link Ext#getCmp getCmp}, use `itemId` with
      * {@link Ext.container.Container}.{@link Ext.container.Container#getComponent getComponent} which will retrieve
-     * <code>itemId</code>'s or <tt>{@link #id}</tt>'s. Since <code>itemId</code>'s are an index to the
-     * container's internal MixedCollection, the <code>itemId</code> is scoped locally to the container --
-     * avoiding potential conflicts with {@link Ext.ComponentManager} which requires a <b>unique</b>
-     * <code>{@link #id}</code>.</p>
-     * <pre><code>
-var c = new Ext.panel.Panel({ //
-    {@link Ext.Component#height height}: 300,
-    {@link #renderTo}: document.body,
-    {@link Ext.container.Container#layout layout}: 'auto',
-    {@link Ext.container.Container#items items}: [
-        {
-            itemId: 'p1',
-            {@link Ext.panel.Panel#title title}: 'Panel 1',
-            {@link Ext.Component#height height}: 150
-        },
-        {
-            itemId: 'p2',
-            {@link Ext.panel.Panel#title title}: 'Panel 2',
-            {@link Ext.Component#height height}: 150
-        }
-    ]
-})
-p1 = c.{@link Ext.container.Container#getComponent getComponent}('p1'); // not the same as {@link Ext#getCmp Ext.getCmp()}
-p2 = p1.{@link #ownerCt}.{@link Ext.container.Container#getComponent getComponent}('p2'); // reference via a sibling
-     * </code></pre>
-     * <p>Also see <tt>{@link #id}</tt>, <code>{@link Ext.container.Container#query}</code>,
-     * <code>{@link Ext.container.Container#down}</code> and <code>{@link Ext.container.Container#child}</code>.</p>
-     * <p><b>Note</b>: to access the container of an item see <tt>{@link #ownerCt}</tt>.</p>
+     * `itemId`'s or {@link #id}'s. Since `itemId`'s are an index to the container's internal MixedCollection, the
+     * `itemId` is scoped locally to the container -- avoiding potential conflicts with {@link Ext.ComponentManager}
+     * which requires a **unique** `{@link #id}`.
+     *
+     *     var c = new Ext.panel.Panel({ //
+     *         {@link Ext.Component#height height}: 300,
+     *         {@link #renderTo}: document.body,
+     *         {@link Ext.container.Container#layout layout}: 'auto',
+     *         {@link Ext.container.Container#items items}: [
+     *             {
+     *                 itemId: 'p1',
+     *                 {@link Ext.panel.Panel#title title}: 'Panel 1',
+     *                 {@link Ext.Component#height height}: 150
+     *             },
+     *             {
+     *                 itemId: 'p2',
+     *                 {@link Ext.panel.Panel#title title}: 'Panel 2',
+     *                 {@link Ext.Component#height height}: 150
+     *             }
+     *         ]
+     *     })
+     *     p1 = c.{@link Ext.container.Container#getComponent getComponent}('p1'); // not the same as {@link Ext#getCmp Ext.getCmp()}
+     *     p2 = p1.{@link #ownerCt}.{@link Ext.container.Container#getComponent getComponent}('p2'); // reference via a sibling
+     *
+     * Also see {@link #id}, `{@link Ext.container.Container#query}`, `{@link Ext.container.Container#down}` and
+     * `{@link Ext.container.Container#child}`.
+     *
+     * **Note**: to access the container of an item see {@link #ownerCt}.
      */
 
     /**
-     * This Component's owner {@link Ext.container.Container Container} (defaults to undefined, and is set automatically when
-     * this Component is added to a Container).  Read-only.
-     * <p><b>Note</b>: to access items within the Container see <tt>{@link #itemId}</tt>.</p>
-     * @type Ext.Container
-     * @property ownerCt
-     */
-
-     /**
-      * @private
-      * Flag set by the container layout to which this Component is added.
-      * If the layout manages this Component's width, it sets the value to 1.
-      * If it does NOT manage the width, it sets it to 2.
-      * If the layout MAY affect the width, but only if the owning Container has a fixed width, this is set to 0.
-      * @type boolean
-      * @property layoutManagedWidth
-      */
-
-     /**
-      * @private
-      * Flag set by the container layout to which this Component is added.
-      * If the layout manages this Component's height, it sets the value to 1.
-      * If it does NOT manage the height, it sets it to 2.
-      * If the layout MAY affect the height, but only if the owning Container has a fixed height, this is set to 0.
-      * @type boolean
-      * @property layoutManagedHeight
-      */
-
-    /**
-     * @cfg {Mixed} autoEl
-     * <p>A tag name or {@link Ext.core.DomHelper DomHelper} spec used to create the {@link #getEl Element} which will
-     * encapsulate this Component.</p>
-     * <p>You do not normally need to specify this. For the base classes {@link Ext.Component} and {@link Ext.container.Container},
-     * this defaults to <b><tt>'div'</tt></b>. The more complex Sencha classes use a more complex
-     * DOM structure specified by their own {@link #renderTpl}s.</p>
-     * <p>This is intended to allow the developer to create application-specific utility Components encapsulated by
-     * different DOM elements. Example usage:</p><pre><code>
-{
-    xtype: 'component',
-    autoEl: {
-        tag: 'img',
-        src: 'http://www.example.com/example.jpg'
-    }
-}, {
-    xtype: 'component',
-    autoEl: {
-        tag: 'blockquote',
-        html: 'autoEl is cool!'
-    }
-}, {
-    xtype: 'container',
-    autoEl: 'ul',
-    cls: 'ux-unordered-list',
-    items: {
-        xtype: 'component',
-        autoEl: 'li',
-        html: 'First list item'
-    }
-}
-</code></pre>
+     * @property {Ext.Container} ownerCt
+     * This Component's owner {@link Ext.container.Container Container} (is set automatically
+     * when this Component is added to a Container). Read-only.
+     *
+     * **Note**: to access items within the Container see {@link #itemId}.
      */
 
     /**
-     * @cfg {Mixed} renderTpl
-     * <p>An {@link Ext.XTemplate XTemplate} used to create the internal structure inside this Component's
-     * encapsulating {@link #getEl Element}.</p>
-     * <p>You do not normally need to specify this. For the base classes {@link Ext.Component}
-     * and {@link Ext.container.Container}, this defaults to <b><code>null</code></b> which means that they will be initially rendered
-     * with no internal structure; they render their {@link #getEl Element} empty. The more specialized ExtJS and Touch classes
-     * which use a more complex DOM structure, provide their own template definitions.</p>
-     * <p>This is intended to allow the developer to create application-specific utility Components with customized
-     * internal structure.</p>
-     * <p>Upon rendering, any created child elements may be automatically imported into object properties using the
-     * {@link #renderSelectors} option.</p>
+     * @property {Boolean} layoutManagedWidth
+     * @private
+     * Flag set by the container layout to which this Component is added.
+     * If the layout manages this Component's width, it sets the value to 1.
+     * If it does NOT manage the width, it sets it to 2.
+     * If the layout MAY affect the width, but only if the owning Container has a fixed width, this is set to 0.
+     */
+
+    /**
+     * @property {Boolean} layoutManagedHeight
+     * @private
+     * Flag set by the container layout to which this Component is added.
+     * If the layout manages this Component's height, it sets the value to 1.
+     * If it does NOT manage the height, it sets it to 2.
+     * If the layout MAY affect the height, but only if the owning Container has a fixed height, this is set to 0.
+     */
+
+    /**
+     * @cfg {String/Object} autoEl
+     * A tag name or {@link Ext.DomHelper DomHelper} spec used to create the {@link #getEl Element} which will
+     * encapsulate this Component.
+     *
+     * You do not normally need to specify this. For the base classes {@link Ext.Component} and
+     * {@link Ext.container.Container}, this defaults to **'div'**. The more complex Sencha classes use a more
+     * complex DOM structure specified by their own {@link #renderTpl}s.
+     *
+     * This is intended to allow the developer to create application-specific utility Components encapsulated by
+     * different DOM elements. Example usage:
+     *
+     *     {
+     *         xtype: 'component',
+     *         autoEl: {
+     *             tag: 'img',
+     *             src: 'http://www.example.com/example.jpg'
+     *         }
+     *     }, {
+     *         xtype: 'component',
+     *         autoEl: {
+     *             tag: 'blockquote',
+     *             html: 'autoEl is cool!'
+     *         }
+     *     }, {
+     *         xtype: 'container',
+     *         autoEl: 'ul',
+     *         cls: 'ux-unordered-list',
+     *         items: {
+     *             xtype: 'component',
+     *             autoEl: 'li',
+     *             html: 'First list item'
+     *         }
+     *     }
+     */
+
+    /**
+     * @cfg {Ext.XTemplate/String/String[]} renderTpl
+     * An {@link Ext.XTemplate XTemplate} used to create the internal structure inside this Component's encapsulating
+     * {@link #getEl Element}.
+     *
+     * You do not normally need to specify this. For the base classes {@link Ext.Component} and
+     * {@link Ext.container.Container}, this defaults to **`null`** which means that they will be initially rendered
+     * with no internal structure; they render their {@link #getEl Element} empty. The more specialized ExtJS and Touch
+     * classes which use a more complex DOM structure, provide their own template definitions.
+     *
+     * This is intended to allow the developer to create application-specific utility Components with customized
+     * internal structure.
+     *
+     * Upon rendering, any created child elements may be automatically imported into object properties using the
+     * {@link #renderSelectors} and {@link #childEls} options.
      */
     renderTpl: null,
 
     /**
-     * @cfg {Object} renderSelectors
-
-An object containing properties specifying {@link Ext.DomQuery DomQuery} selectors which identify child elements
-created by the render process.
-
-After the Component's internal structure is rendered according to the {@link #renderTpl}, this object is iterated through,
-and the found Elements are added as properties to the Component using the `renderSelector` property name.
-
-For example, a Component which rendered an image, and description into its element might use the following properties
-coded into its prototype:
-
-    renderTpl: '&lt;img src="{imageUrl}" class="x-image-component-img">&lt;div class="x-image-component-desc">{description}&gt;/div&lt;',
-
-    renderSelectors: {
-        image: 'img.x-image-component-img',
-        descEl: 'div.x-image-component-desc'
-    }
-
-After rendering, the Component would have a property <code>image</code> referencing its child `img` Element,
-and a property `descEl` referencing the `div` Element which contains the description.
-
-     * @markdown
+     * @cfg {Object} renderData
+     *
+     * The data used by {@link #renderTpl} in addition to the following property values of the component:
+     *
+     * - id
+     * - ui
+     * - uiCls
+     * - baseCls
+     * - componentCls
+     * - frame
+     *
+     * See {@link #renderSelectors} and {@link #childEls} for usage examples.
      */
 
     /**
-     * @cfg {Mixed} renderTo
-     * <p>Specify the id of the element, a DOM element or an existing Element that this component
-     * will be rendered into.</p><div><ul>
-     * <li><b>Notes</b> : <ul>
-     * <div class="sub-desc">Do <u>not</u> use this option if the Component is to be a child item of
-     * a {@link Ext.container.Container Container}. It is the responsibility of the
-     * {@link Ext.container.Container Container}'s {@link Ext.container.Container#layout layout manager}
-     * to render and manage its child items.</div>
-     * <div class="sub-desc">When using this config, a call to render() is not required.</div>
-     * </ul></li>
-     * </ul></div>
-     * <p>See <code>{@link #render}</code> also.</p>
+     * @cfg {Object} renderSelectors
+     * An object containing properties specifying {@link Ext.DomQuery DomQuery} selectors which identify child elements
+     * created by the render process.
+     *
+     * After the Component's internal structure is rendered according to the {@link #renderTpl}, this object is iterated through,
+     * and the found Elements are added as properties to the Component using the `renderSelector` property name.
+     *
+     * For example, a Component which renderes a title and description into its element:
+     *
+     *     Ext.create('Ext.Component', {
+     *         renderTo: Ext.getBody(),
+     *         renderTpl: [
+     *             '<h1 class="title">{title}</h1>',
+     *             '<p>{desc}</p>'
+     *         ],
+     *         renderData: {
+     *             title: "Error",
+     *             desc: "Something went wrong"
+     *         },
+     *         renderSelectors: {
+     *             titleEl: 'h1.title',
+     *             descEl: 'p'
+     *         },
+     *         listeners: {
+     *             afterrender: function(cmp){
+     *                 // After rendering the component will have a titleEl and descEl properties
+     *                 cmp.titleEl.setStyle({color: "red"});
+     *             }
+     *         }
+     *     });
+     *
+     * For a faster, but less flexible, alternative that achieves the same end result (properties for child elements on the
+     * Component after render), see {@link #childEls} and {@link #addChildEls}.
+     */
+
+    /**
+     * @cfg {Object[]} childEls
+     * An array describing the child elements of the Component. Each member of the array
+     * is an object with these properties:
+     *
+     * - `name` - The property name on the Component for the child element.
+     * - `itemId` - The id to combine with the Component's id that is the id of the child element.
+     * - `id` - The id of the child element.
+     *
+     * If the array member is a string, it is equivalent to `{ name: m, itemId: m }`.
+     *
+     * For example, a Component which renders a title and body text:
+     *
+     *     Ext.create('Ext.Component', {
+     *         renderTo: Ext.getBody(),
+     *         renderTpl: [
+     *             '<h1 id="{id}-title">{title}</h1>',
+     *             '<p>{msg}</p>',
+     *         ],
+     *         renderData: {
+     *             title: "Error",
+     *             msg: "Something went wrong"
+     *         },
+     *         childEls: ["title"],
+     *         listeners: {
+     *             afterrender: function(cmp){
+     *                 // After rendering the component will have a title property
+     *                 cmp.title.setStyle({color: "red"});
+     *             }
+     *         }
+     *     });
+     *
+     * A more flexible, but somewhat slower, approach is {@link #renderSelectors}.
+     */
+
+    /**
+     * @cfg {String/HTMLElement/Ext.Element} renderTo
+     * Specify the id of the element, a DOM element or an existing Element that this component will be rendered into.
+     *
+     * **Notes:**
+     *
+     * Do *not* use this option if the Component is to be a child item of a {@link Ext.container.Container Container}.
+     * It is the responsibility of the {@link Ext.container.Container Container}'s
+     * {@link Ext.container.Container#layout layout manager} to render and manage its child items.
+     *
+     * When using this config, a call to render() is not required.
+     *
+     * See `{@link #render}` also.
      */
 
     /**
      * @cfg {Boolean} frame
-     * <p>Specify as <code>true</code> to have the Component inject framing elements within the Component at render time to
-     * provide a graphical rounded frame around the Component content.</p>
-     * <p>This is only necessary when running on outdated, or non standard-compliant browsers such as Microsoft's Internet Explorer
-     * prior to version 9 which do not support rounded corners natively.</p>
-     * <p>The extra space taken up by this framing is available from the read only property {@link #frameSize}.</p>
+     * Specify as `true` to have the Component inject framing elements within the Component at render time to provide a
+     * graphical rounded frame around the Component content.
+     *
+     * This is only necessary when running on outdated, or non standard-compliant browsers such as Microsoft's Internet
+     * Explorer prior to version 9 which do not support rounded corners natively.
+     *
+     * The extra space taken up by this framing is available from the read only property {@link #frameSize}.
      */
 
     /**
-     * <p>Read-only property indicating the width of any framing elements which were added within the encapsulating element
-     * to provide graphical, rounded borders. See the {@link #frame} config.</p>
-     * <p> This is an object containing the frame width in pixels for all four sides of the Component containing
-     * the following properties:</p><div class="mdetail-params"><ul>
-     * <li><code>top</code> The width of the top framing element in pixels.</li>
-     * <li><code>right</code> The width of the right framing element in pixels.</li>
-     * <li><code>bottom</code> The width of the bottom framing element in pixels.</li>
-     * <li><code>left</code> The width of the left framing element in pixels.</li>
-     * </ul></div>
-     * @property frameSize
-     * @type {Object}
+     * @property {Object} frameSize
+     * Read-only property indicating the width of any framing elements which were added within the encapsulating element
+     * to provide graphical, rounded borders. See the {@link #frame} config.
+     *
+     * This is an object containing the frame width in pixels for all four sides of the Component containing the
+     * following properties:
+     *
+     * @property {Number} frameSize.top The width of the top framing element in pixels.
+     * @property {Number} frameSize.right The width of the right framing element in pixels.
+     * @property {Number} frameSize.bottom The width of the bottom framing element in pixels.
+     * @property {Number} frameSize.left The width of the left framing element in pixels.
      */
 
     /**
      * @cfg {String/Object} componentLayout
-     * <p>The sizing and positioning of a Component's internal Elements is the responsibility of
-     * the Component's layout manager which sizes a Component's internal structure in response to the Component being sized.</p>
-     * <p>Generally, developers will not use this configuration as all provided Components which need their internal
-     * elements sizing (Such as {@link Ext.form.field.Base input fields}) come with their own componentLayout managers.</p>
-     * <p>The {@link Ext.layout.container.Auto default layout manager} will be used on instances of the base Ext.Component class
-     * which simply sizes the Component's encapsulating element to the height and width specified in the {@link #setSize} method.</p>
+     * The sizing and positioning of a Component's internal Elements is the responsibility of the Component's layout
+     * manager which sizes a Component's internal structure in response to the Component being sized.
+     *
+     * Generally, developers will not use this configuration as all provided Components which need their internal
+     * elements sizing (Such as {@link Ext.form.field.Base input fields}) come with their own componentLayout managers.
+     *
+     * The {@link Ext.layout.container.Auto default layout manager} will be used on instances of the base Ext.Component
+     * class which simply sizes the Component's encapsulating element to the height and width specified in the
+     * {@link #setSize} method.
      */
 
     /**
-     * @cfg {Mixed} tpl
-     * An <bold>{@link Ext.Template}</bold>, <bold>{@link Ext.XTemplate}</bold>
-     * or an array of strings to form an Ext.XTemplate.
-     * Used in conjunction with the <code>{@link #data}</code> and
-     * <code>{@link #tplWriteMode}</code> configurations.
+     * @cfg {Ext.XTemplate/Ext.Template/String/String[]} tpl
+     * An {@link Ext.Template}, {@link Ext.XTemplate} or an array of strings to form an Ext.XTemplate. Used in
+     * conjunction with the `{@link #data}` and `{@link #tplWriteMode}` configurations.
      */
 
     /**
-     * @cfg {Mixed} data
-     * The initial set of data to apply to the <code>{@link #tpl}</code> to
-     * update the content area of the Component.
+     * @cfg {Object} data
+     * The initial set of data to apply to the `{@link #tpl}` to update the content area of the Component.
      */
 
     /**
-     * @cfg {String} tplWriteMode The Ext.(X)Template method to use when
-     * updating the content area of the Component. Defaults to <code>'overwrite'</code>
-     * (see <code>{@link Ext.XTemplate#overwrite}</code>).
+     * @cfg {String} xtype
+     * The `xtype` configuration option can be used to optimize Component creation and rendering. It serves as a
+     * shortcut to the full componet name. For example, the component `Ext.button.Button` has an xtype of `button`.
+     *
+     * You can define your own xtype on a custom {@link Ext.Component component} by specifying the
+     * {@link Ext.Class#alias alias} config option with a prefix of `widget`. For example:
+     *
+     *     Ext.define('PressMeButton', {
+     *         extend: 'Ext.button.Button',
+     *         alias: 'widget.pressmebutton',
+     *         text: 'Press Me'
+     *     })
+     *
+     * Any Component can be created implicitly as an object config with an xtype specified, allowing it to be
+     * declared and passed into the rendering pipeline without actually being instantiated as an object. Not only is
+     * rendering deferred, but the actual creation of the object itself is also deferred, saving memory and resources
+     * until they are actually needed. In complex, nested layouts containing many Components, this can make a
+     * noticeable improvement in performance.
+     *
+     *     // Explicit creation of contained Components:
+     *     var panel = new Ext.Panel({
+     *        ...
+     *        items: [
+     *           Ext.create('Ext.button.Button', {
+     *              text: 'OK'
+     *           })
+     *        ]
+     *     };
+     *
+     *     // Implicit creation using xtype:
+     *     var panel = new Ext.Panel({
+     *        ...
+     *        items: [{
+     *           xtype: 'button',
+     *           text: 'OK'
+     *        }]
+     *     };
+     *
+     * In the first example, the button will always be created immediately during the panel's initialization. With
+     * many added Components, this approach could potentially slow the rendering of the page. In the second example,
+     * the button will not be created or rendered until the panel is actually displayed in the browser. If the panel
+     * is never displayed (for example, if it is a tab that remains hidden) then the button will never be created and
+     * will never consume any resources whatsoever.
+     */
+
+    /**
+     * @cfg {String} tplWriteMode
+     * The Ext.(X)Template method to use when updating the content area of the Component.
+     * See `{@link Ext.XTemplate#overwrite}` for information on default mode.
      */
     tplWriteMode: 'overwrite',
 
     /**
-     * @cfg {String} baseCls
-     * The base CSS class to apply to this components's element. This will also be prepended to
-     * elements within this component like Panel's body will get a class x-panel-body. This means
-     * that if you create a subclass of Panel, and you want it to get all the Panels styling for the
-     * element and the body, you leave the baseCls x-panel and use componentCls to add specific styling for this
-     * component.
+     * @cfg {String} [baseCls='x-component']
+     * The base CSS class to apply to this components's element. This will also be prepended to elements within this
+     * component like Panel's body will get a class x-panel-body. This means that if you create a subclass of Panel, and
+     * you want it to get all the Panels styling for the element and the body, you leave the baseCls x-panel and use
+     * componentCls to add specific styling for this component.
      */
     baseCls: Ext.baseCSSPrefix + 'component',
 
     /**
      * @cfg {String} componentCls
-     * CSS Class to be added to a components root level element to give distinction to it
-     * via styling.
+     * CSS Class to be added to a components root level element to give distinction to it via styling.
      */
 
     /**
-     * @cfg {String} cls
-     * An optional extra CSS class that will be added to this component's Element (defaults to '').  This can be
-     * useful for adding customized styles to the component or any of its children using standard CSS rules.
+     * @cfg {String} [cls='']
+     * An optional extra CSS class that will be added to this component's Element. This can be useful
+     * for adding customized styles to the component or any of its children using standard CSS rules.
      */
 
     /**
-     * @cfg {String} overCls
-     * An optional extra CSS class that will be added to this component's Element when the mouse moves
-     * over the Element, and removed when the mouse moves out. (defaults to '').  This can be
-     * useful for adding customized 'active' or 'hover' styles to the component or any of its children using standard CSS rules.
+     * @cfg {String} [overCls='']
+     * An optional extra CSS class that will be added to this component's Element when the mouse moves over the Element,
+     * and removed when the mouse moves out. This can be useful for adding customized 'active' or 'hover' styles to the
+     * component or any of its children using standard CSS rules.
      */
 
     /**
-     * @cfg {String} disabledCls
+     * @cfg {String} [disabledCls='x-item-disabled']
      * CSS class to add when the Component is disabled. Defaults to 'x-item-disabled'.
      */
     disabledCls: Ext.baseCSSPrefix + 'item-disabled',
 
     /**
-     * @cfg {String/Array} ui
+     * @cfg {String/String[]} ui
      * A set style for a component. Can be a string or an Array of multiple strings (UIs)
      */
     ui: 'default',
 
     /**
-     * @cfg {Array} uiCls
+     * @cfg {String[]} uiCls
      * An array of of classNames which are currently applied to this component
      * @private
      */
@@ -334,31 +451,30 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
     /**
      * @cfg {String} style
-     * A custom style specification to be applied to this component's Element.  Should be a valid argument to
-     * {@link Ext.core.Element#applyStyles}.
-     * <pre><code>
-        new Ext.panel.Panel({
-            title: 'Some Title',
-            renderTo: Ext.getBody(),
-            width: 400, height: 300,
-            layout: 'form',
-            items: [{
-                xtype: 'textarea',
-                style: {
-                    width: '95%',
-                    marginBottom: '10px'
-                }
-            },
-            new Ext.button.Button({
-                text: 'Send',
-                minWidth: '100',
-                style: {
-                    marginBottom: '10px'
-                }
-            })
-            ]
-        });
-     </code></pre>
+     * A custom style specification to be applied to this component's Element. Should be a valid argument to
+     * {@link Ext.Element#applyStyles}.
+     *
+     *     new Ext.panel.Panel({
+     *         title: 'Some Title',
+     *         renderTo: Ext.getBody(),
+     *         width: 400, height: 300,
+     *         layout: 'form',
+     *         items: [{
+     *             xtype: 'textarea',
+     *             style: {
+     *                 width: '95%',
+     *                 marginBottom: '10px'
+     *             }
+     *         },
+     *         new Ext.button.Button({
+     *             text: 'Send',
+     *             minWidth: '100',
+     *             style: {
+     *                 marginBottom: '10px'
+     *             }
+     *         })
+     *         ]
+     *     });
      */
 
     /**
@@ -373,171 +489,190 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
     /**
      * @cfg {Number/String} border
-     * Specifies the border for this component. The border can be a single numeric value to apply to all sides or
-     * it can be a CSS style specification for each style, for example: '10 5 3 10'.
+     * Specifies the border for this component. The border can be a single numeric value to apply to all sides or it can
+     * be a CSS style specification for each style, for example: '10 5 3 10'.
      */
 
     /**
      * @cfg {Number/String} padding
-     * Specifies the padding for this component. The padding can be a single numeric value to apply to all sides or
-     * it can be a CSS style specification for each style, for example: '10 5 3 10'.
+     * Specifies the padding for this component. The padding can be a single numeric value to apply to all sides or it
+     * can be a CSS style specification for each style, for example: '10 5 3 10'.
      */
 
     /**
      * @cfg {Number/String} margin
-     * Specifies the margin for this component. The margin can be a single numeric value to apply to all sides or
-     * it can be a CSS style specification for each style, for example: '10 5 3 10'.
+     * Specifies the margin for this component. The margin can be a single numeric value to apply to all sides or it can
+     * be a CSS style specification for each style, for example: '10 5 3 10'.
      */
 
     /**
      * @cfg {Boolean} hidden
-     * Defaults to false.
+     * True to hide the component.
      */
     hidden: false,
 
     /**
      * @cfg {Boolean} disabled
-     * Defaults to false.
+     * True to disable the component.
      */
     disabled: false,
 
     /**
-     * @cfg {Boolean} draggable
+     * @cfg {Boolean} [draggable=false]
      * Allows the component to be dragged.
      */
 
     /**
+     * @property {Boolean} draggable
      * Read-only property indicating whether or not the component can be dragged
-     * @property draggable
-     * @type {Boolean}
      */
     draggable: false,
 
     /**
      * @cfg {Boolean} floating
      * Create the Component as a floating and use absolute positioning.
-     * Defaults to false.
+     *
+     * The z-index of floating Components is handled by a ZIndexManager. If you simply render a floating Component into the DOM, it will be managed
+     * by the global {@link Ext.WindowManager WindowManager}.
+     *
+     * If you include a floating Component as a child item of a Container, then upon render, ExtJS will seek an ancestor floating Component to house a new
+     * ZIndexManager instance to manage its descendant floaters. If no floating ancestor can be found, the global WindowManager will be used.
+     *
+     * When a floating Component which has a ZindexManager managing descendant floaters is destroyed, those descendant floaters will also be destroyed.
      */
     floating: false,
 
     /**
      * @cfg {String} hideMode
-     * A String which specifies how this Component's encapsulating DOM element will be hidden.
-     * Values may be<div class="mdetail-params"><ul>
-     * <li><code>'display'</code> : The Component will be hidden using the <code>display: none</code> style.</li>
-     * <li><code>'visibility'</code> : The Component will be hidden using the <code>visibility: hidden</code> style.</li>
-     * <li><code>'offsets'</code> : The Component will be hidden by absolutely positioning it out of the visible area of the document. This
-     * is useful when a hidden Component must maintain measurable dimensions. Hiding using <code>display</code> results
-     * in a Component having zero dimensions.</li></ul></div>
-     * Defaults to <code>'display'</code>.
+     * A String which specifies how this Component's encapsulating DOM element will be hidden. Values may be:
+     *
+     *   - `'display'` : The Component will be hidden using the `display: none` style.
+     *   - `'visibility'` : The Component will be hidden using the `visibility: hidden` style.
+     *   - `'offsets'` : The Component will be hidden by absolutely positioning it out of the visible area of the document.
+     *     This is useful when a hidden Component must maintain measurable dimensions. Hiding using `display` results in a
+     *     Component having zero dimensions.
      */
     hideMode: 'display',
 
     /**
      * @cfg {String} contentEl
-     * <p>Optional. Specify an existing HTML element, or the <code>id</code> of an existing HTML element to use as the content
-     * for this component.</p>
-     * <ul>
-     * <li><b>Description</b> :
-     * <div class="sub-desc">This config option is used to take an existing HTML element and place it in the layout element
-     * of a new component (it simply moves the specified DOM element <i>after the Component is rendered</i> to use as the content.</div></li>
-     * <li><b>Notes</b> :
-     * <div class="sub-desc">The specified HTML element is appended to the layout element of the component <i>after any configured
-     * {@link #html HTML} has been inserted</i>, and so the document will not contain this element at the time the {@link #render} event is fired.</div>
-     * <div class="sub-desc">The specified HTML element used will not participate in any <code><b>{@link Ext.container.Container#layout layout}</b></code>
-     * scheme that the Component may use. It is just HTML. Layouts operate on child <code><b>{@link Ext.container.Container#items items}</b></code>.</div>
-     * <div class="sub-desc">Add either the <code>x-hidden</code> or the <code>x-hide-display</code> CSS class to
-     * prevent a brief flicker of the content before it is rendered to the panel.</div></li>
-     * </ul>
+     * Specify an existing HTML element, or the `id` of an existing HTML element to use as the content for this component.
+     *
+     * This config option is used to take an existing HTML element and place it in the layout element of a new component
+     * (it simply moves the specified DOM element _after the Component is rendered_ to use as the content.
+     *
+     * **Notes:**
+     *
+     * The specified HTML element is appended to the layout element of the component _after any configured
+     * {@link #html HTML} has been inserted_, and so the document will not contain this element at the time
+     * the {@link #render} event is fired.
+     *
+     * The specified HTML element used will not participate in any **`{@link Ext.container.Container#layout layout}`**
+     * scheme that the Component may use. It is just HTML. Layouts operate on child
+     * **`{@link Ext.container.Container#items items}`**.
+     *
+     * Add either the `x-hidden` or the `x-hide-display` CSS class to prevent a brief flicker of the content before it
+     * is rendered to the panel.
      */
 
     /**
-     * @cfg {String/Object} html
-     * An HTML fragment, or a {@link Ext.core.DomHelper DomHelper} specification to use as the layout element
-     * content (defaults to ''). The HTML content is added after the component is rendered,
-     * so the document will not contain this HTML at the time the {@link #render} event is fired.
-     * This content is inserted into the body <i>before</i> any configured {@link #contentEl} is appended.
+     * @cfg {String/Object} [html='']
+     * An HTML fragment, or a {@link Ext.DomHelper DomHelper} specification to use as the layout element content.
+     * The HTML content is added after the component is rendered, so the document will not contain this HTML at the time
+     * the {@link #render} event is fired. This content is inserted into the body _before_ any configured {@link #contentEl}
+     * is appended.
      */
 
     /**
      * @cfg {Boolean} styleHtmlContent
      * True to automatically style the html inside the content target of this component (body for panels).
-     * Defaults to false.
      */
     styleHtmlContent: false,
 
     /**
-     * @cfg {String} styleHtmlCls
+     * @cfg {String} [styleHtmlCls='x-html']
      * The class that is added to the content target when you set styleHtmlContent to true.
-     * Defaults to 'x-html'
      */
     styleHtmlCls: Ext.baseCSSPrefix + 'html',
 
     /**
      * @cfg {Number} minHeight
-     * <p>The minimum value in pixels which this Component will set its height to.</p>
-     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     * The minimum value in pixels which this Component will set its height to.
+     *
+     * **Warning:** This will override any size management applied by layout managers.
      */
     /**
      * @cfg {Number} minWidth
-     * <p>The minimum value in pixels which this Component will set its width to.</p>
-     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     * The minimum value in pixels which this Component will set its width to.
+     *
+     * **Warning:** This will override any size management applied by layout managers.
      */
     /**
      * @cfg {Number} maxHeight
-     * <p>The maximum value in pixels which this Component will set its height to.</p>
-     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     * The maximum value in pixels which this Component will set its height to.
+     *
+     * **Warning:** This will override any size management applied by layout managers.
      */
     /**
      * @cfg {Number} maxWidth
-     * <p>The maximum value in pixels which this Component will set its width to.</p>
-     * <p><b>Warning:</b> This will override any size management applied by layout managers.</p>
+     * The maximum value in pixels which this Component will set its width to.
+     *
+     * **Warning:** This will override any size management applied by layout managers.
      */
 
     /**
      * @cfg {Ext.ComponentLoader/Object} loader
-     * A configuration object or an instance of a {@link Ext.ComponentLoader} to load remote
-     * content for this Component.
-     */
-
-     // @private
-     allowDomMove: true,
-
-     /**
-      * @cfg {Boolean} autoShow True to automatically show the component upon creation.
-      * This config option may only be used for {@link #floating} components or components
-      * that use {@link #autoRender}. Defaults to <tt>false</tt>.
-      */
-     autoShow: false,
-
-    /**
-     * @cfg {Mixed} autoRender
-     * <p>This config is intended mainly for {@link #floating} Components which may or may not be shown. Instead
-     * of using {@link #renderTo} in the configuration, and rendering upon construction, this allows a Component
-     * to render itself upon first <i>{@link #show}</i>.</p>
-     * <p>Specify as <code>true</code> to have this Component render to the document body upon first show.</p>
-     * <p>Specify as an element, or the ID of an element to have this Component render to a specific element upon first show.</p>
-     * <p><b>This defaults to <code>true</code> for the {@link Ext.window.Window Window} class.</b></p>
-     */
-     autoRender: false,
-
-     needsLayout: false,
-
-    /**
-     * @cfg {Object/Array} plugins
-     * An object or array of objects that will provide custom functionality for this component.  The only
-     * requirement for a valid plugin is that it contain an init method that accepts a reference of type Ext.Component.
-     * When a component is created, if any plugins are available, the component will call the init method on each
-     * plugin, passing a reference to itself.  Each plugin can then call methods or respond to events on the
-     * component as needed to provide its functionality.
+     * A configuration object or an instance of a {@link Ext.ComponentLoader} to load remote content for this Component.
      */
 
     /**
+     * @cfg {Boolean} autoShow
+     * True to automatically show the component upon creation. This config option may only be used for
+     * {@link #floating} components or components that use {@link #autoRender}. Defaults to false.
+     */
+    autoShow: false,
+
+    /**
+     * @cfg {Boolean/String/HTMLElement/Ext.Element} autoRender
+     * This config is intended mainly for non-{@link #floating} Components which may or may not be shown. Instead of using
+     * {@link #renderTo} in the configuration, and rendering upon construction, this allows a Component to render itself
+     * upon first _{@link #show}_. If {@link #floating} is true, the value of this config is omited as if it is `true`.
+     *
+     * Specify as `true` to have this Component render to the document body upon first show.
+     *
+     * Specify as an element, or the ID of an element to have this Component render to a specific element upon first
+     * show.
+     *
+     * **This defaults to `true` for the {@link Ext.window.Window Window} class.**
+     */
+    autoRender: false,
+
+    needsLayout: false,
+
+    // @private
+    allowDomMove: true,
+
+    /**
+     * @cfg {Object/Object[]} plugins
+     * An object or array of objects that will provide custom functionality for this component. The only requirement for
+     * a valid plugin is that it contain an init method that accepts a reference of type Ext.Component. When a component
+     * is created, if any plugins are available, the component will call the init method on each plugin, passing a
+     * reference to itself. Each plugin can then call methods or respond to events on the component as needed to provide
+     * its functionality.
+     */
+
+    /**
+     * @property {Boolean} rendered
      * Read-only property indicating whether or not the component has been rendered.
-     * @property rendered
-     * @type {Boolean}
      */
     rendered: false,
+
+    /**
+     * @property {Number} componentLayoutCounter
+     * @private
+     * The number of component layout calls made on this object.
+     */
+    componentLayoutCounter: 0,
 
     weight: 0,
 
@@ -546,12 +681,10 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
 
     /**
-     * This is an internal flag that you use when creating custom components.
-     * By default this is set to true which means that every component gets a mask when its disabled.
-     * Components like FieldContainer, FieldSet, Field, Button, Tab override this property to false
-     * since they want to implement custom disable logic.
-     * @property maskOnDisable
-     * @type {Boolean}
+     * @property {Boolean} maskOnDisable
+     * This is an internal flag that you use when creating custom components. By default this is set to true which means
+     * that every component gets a mask when its disabled. Components like FieldContainer, FieldSet, Field, Button, Tab
+     * override this property to false since they want to implement custom disable logic.
      */
     maskOnDisable: true,
 
@@ -570,32 +703,30 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         me.addEvents(
             /**
              * @event beforeactivate
-             * Fires before a Component has been visually activated.
-             * Returning false from an event listener can prevent the activate
-             * from occurring.
+             * Fires before a Component has been visually activated. Returning false from an event listener can prevent
+             * the activate from occurring.
              * @param {Ext.Component} this
              */
-             'beforeactivate',
+            'beforeactivate',
             /**
              * @event activate
              * Fires after a Component has been visually activated.
              * @param {Ext.Component} this
              */
-             'activate',
+            'activate',
             /**
              * @event beforedeactivate
-             * Fires before a Component has been visually deactivated.
-             * Returning false from an event listener can prevent the deactivate
-             * from occurring.
+             * Fires before a Component has been visually deactivated. Returning false from an event listener can
+             * prevent the deactivate from occurring.
              * @param {Ext.Component} this
              */
-             'beforedeactivate',
+            'beforedeactivate',
             /**
              * @event deactivate
              * Fires after a Component has been visually deactivated.
              * @param {Ext.Component} this
              */
-             'deactivate',
+            'deactivate',
             /**
              * @event added
              * Fires after a Component had been added to a Container.
@@ -603,86 +734,88 @@ and a property `descEl` referencing the `div` Element which contains the descrip
              * @param {Ext.container.Container} container Parent Container
              * @param {Number} pos position of Component
              */
-             'added',
+            'added',
             /**
              * @event disable
              * Fires after the component is disabled.
              * @param {Ext.Component} this
              */
-             'disable',
+            'disable',
             /**
              * @event enable
              * Fires after the component is enabled.
              * @param {Ext.Component} this
              */
-             'enable',
+            'enable',
             /**
              * @event beforeshow
-             * Fires before the component is shown when calling the {@link #show} method.
-             * Return false from an event handler to stop the show.
+             * Fires before the component is shown when calling the {@link #show} method. Return false from an event
+             * handler to stop the show.
              * @param {Ext.Component} this
              */
-             'beforeshow',
+            'beforeshow',
             /**
              * @event show
              * Fires after the component is shown when calling the {@link #show} method.
              * @param {Ext.Component} this
              */
-             'show',
+            'show',
             /**
              * @event beforehide
-             * Fires before the component is hidden when calling the {@link #hide} method.
-             * Return false from an event handler to stop the hide.
+             * Fires before the component is hidden when calling the {@link #hide} method. Return false from an event
+             * handler to stop the hide.
              * @param {Ext.Component} this
              */
-             'beforehide',
+            'beforehide',
             /**
              * @event hide
-             * Fires after the component is hidden.
-             * Fires after the component is hidden when calling the {@link #hide} method.
+             * Fires after the component is hidden. Fires after the component is hidden when calling the {@link #hide}
+             * method.
              * @param {Ext.Component} this
              */
-             'hide',
+            'hide',
             /**
              * @event removed
              * Fires when a component is removed from an Ext.container.Container
              * @param {Ext.Component} this
              * @param {Ext.container.Container} ownerCt Container which holds the component
              */
-             'removed',
+            'removed',
             /**
              * @event beforerender
-             * Fires before the component is {@link #rendered}. Return false from an
-             * event handler to stop the {@link #render}.
+             * Fires before the component is {@link #rendered}. Return false from an event handler to stop the
+             * {@link #render}.
              * @param {Ext.Component} this
              */
-             'beforerender',
+            'beforerender',
             /**
              * @event render
              * Fires after the component markup is {@link #rendered}.
              * @param {Ext.Component} this
              */
-             'render',
+            'render',
             /**
              * @event afterrender
-             * <p>Fires after the component rendering is finished.</p>
-             * <p>The afterrender event is fired after this Component has been {@link #rendered}, been postprocesed
-             * by any afterRender method defined for the Component.</p>
+             * Fires after the component rendering is finished.
+             *
+             * The afterrender event is fired after this Component has been {@link #rendered}, been postprocesed by any
+             * afterRender method defined for the Component.
              * @param {Ext.Component} this
              */
-             'afterrender',
+            'afterrender',
             /**
              * @event beforedestroy
-             * Fires before the component is {@link #destroy}ed. Return false from an event handler to stop the {@link #destroy}.
+             * Fires before the component is {@link #destroy}ed. Return false from an event handler to stop the
+             * {@link #destroy}.
              * @param {Ext.Component} this
              */
-             'beforedestroy',
+            'beforedestroy',
             /**
              * @event destroy
              * Fires after the component is {@link #destroy}ed.
              * @param {Ext.Component} this
              */
-             'destroy',
+            'destroy',
             /**
              * @event resize
              * Fires after the component is resized.
@@ -690,7 +823,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
              * @param {Number} adjWidth The box-adjusted width that was set
              * @param {Number} adjHeight The box-adjusted height that was set
              */
-             'resize',
+            'resize',
             /**
              * @event move
              * Fires after the component is moved.
@@ -698,7 +831,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
              * @param {Number} x The new x position
              * @param {Number} y The new y position
              */
-             'move'
+            'move'
         );
 
         me.getId();
@@ -710,9 +843,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         if (me.plugins) {
             me.plugins = [].concat(me.plugins);
-            for (i = 0, len = me.plugins.length; i < len; i++) {
-                me.plugins[i] = me.constructPlugin(me.plugins[i]);
-            }
+            me.constructPlugins();
         }
 
         me.initComponent();
@@ -759,16 +890,25 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         //</debug>
     },
 
-    initComponent: Ext.emptyFn,
+    initComponent: function () {
+        // This is called again here to allow derived classes to add plugin configs to the
+        // plugins array before calling down to this, the base initComponent.
+        this.constructPlugins();
+    },
 
     /**
-     * </p>The supplied default state gathering method for the AbstractComponent class.</p>
-     * This method returns dimension setings such as <code>flex</code>, <code>anchor</code>, <code>width</code>
-     * and <code>height</code> along with <code>collapsed</code> state.</p>
-     * <p>Subclasses which implement more complex state should call the superclass's implementation, and apply their state
-     * to the result if this basic state is to be saved.</p>
-     * <p>Note that Component state will only be saved if the Component has a {@link #stateId} and there as a StateProvider
-     * configured for the document.</p>
+     * The supplied default state gathering method for the AbstractComponent class.
+     *
+     * This method returns dimension settings such as `flex`, `anchor`, `width` and `height` along with `collapsed`
+     * state.
+     *
+     * Subclasses which implement more complex state should call the superclass's implementation, and apply their state
+     * to the result if this basic state is to be saved.
+     *
+     * Note that Component state will only be saved if the Component has a {@link #stateId} and there as a StateProvider
+     * configured for the document.
+     *
+     * @return {Object}
      */
     getState: function() {
         var me = this,
@@ -795,7 +935,15 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         // If we have flex, only store the perpendicular dimension.
         if (layout && me.flex) {
             state.flex = me.flex;
-            state[layout.perpendicularPrefix] = me['get' + layout.perpendicularPrefixCap]();
+            if (layout.perpendicularPrefix) {
+                state[layout.perpendicularPrefix] = me['get' + layout.perpendicularPrefixCap]();
+            } else {
+                //<debug>
+                if (Ext.isDefined(Ext.global.console)) {
+                    Ext.global.console.warn('Ext.Component: Specified a flex value on a component not inside a Box layout');
+                }
+                //</debug>
+            }
         }
         // If we have anchor, only store dimensions which are *not* being anchored
         else if (layout && me.anchor) {
@@ -888,11 +1036,13 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * <p>This method finds the topmost active layout who's processing will eventually determine the size and position of this
-     * Component.<p>
-     * <p>This method is useful when dynamically adding Components into Containers, and some processing must take place after the
-     * final sizing and positioning of the Component has been performed.</p>
-     * @returns
+     * This method finds the topmost active layout who's processing will eventually determine the size and position of
+     * this Component.
+     *
+     * This method is useful when dynamically adding Components into Containers, and some processing must take place
+     * after the final sizing and positioning of the Component has been performed.
+     *
+     * @return {Ext.Component}
      */
     findLayoutController: function() {
         return this.findParentBy(function(c) {
@@ -924,6 +1074,23 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         return plugin;
     },
 
+    /**
+     * Ensures that the plugins array contains fully constructed plugin instances. This converts any configs into their
+     * appropriate instances.
+     */
+    constructPlugins: function() {
+        var me = this,
+            plugins = me.plugins,
+            i, len;
+
+        if (plugins) {
+            for (i = 0, len = plugins.length; i < len; i++) {
+                // this just returns already-constructed plugin instances...
+                plugins[i] = me.constructPlugin(plugins[i]);
+            }
+        }
+    },
+
     // @private
     initPlugin : function(plugin) {
         plugin.init(this);
@@ -932,9 +1099,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Handles autoRender.
-     * Floating Components may have an ownerCt. If they are asking to be constrained, constrain them within that
-     * ownerCt, and have their z-index managed locally. Floating Components are always rendered to document.body
+     * Handles autoRender. Floating Components may have an ownerCt. If they are asking to be constrained, constrain them
+     * within that ownerCt, and have their z-index managed locally. Floating Components are always rendered to
+     * document.body
      */
     doAutoRender: function() {
         var me = this;
@@ -950,6 +1117,11 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         var me = this;
 
         if (!me.rendered && me.fireEvent('beforerender', me) !== false) {
+
+            // Flag set during the render process.
+            // It can be used to inhibit event-driven layout calls during the render phase
+            me.rendering = true;
+
             // If this.el is defined, we want to make sure we are dealing with
             // an Ext Element.
             if (me.el) {
@@ -967,7 +1139,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
             // Tell the encapsulating element to hide itself in the way the Component is configured to hide
             // This means DISPLAY, VISIBILITY or OFFSETS.
-            me.el.setVisibilityMode(Ext.core.Element[me.hideMode.toUpperCase()]);
+            me.el.setVisibilityMode(Ext.Element[me.hideMode.toUpperCase()]);
 
             if (me.overCls) {
                 me.el.hover(me.addOverCls, me.removeOverCls, me);
@@ -993,6 +1165,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
                 // pass silent so the event doesn't fire the first time.
                 me.disable(true);
             }
+
+            // Delete the flag once the rendering is done.
+            delete me.rendering;
         }
         return me;
     },
@@ -1008,10 +1183,10 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         if (!el) {
             if (position) {
-                el = Ext.core.DomHelper.insertBefore(position, me.getElConfig(), true);
+                el = Ext.DomHelper.insertBefore(position, me.getElConfig(), true);
             }
             else {
-                el = Ext.core.DomHelper.append(container, me.getElConfig(), true);
+                el = Ext.DomHelper.append(container, me.getElConfig(), true);
             }
         }
         else if (me.allowDomMove !== false) {
@@ -1074,9 +1249,17 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
         me.getComponentLayout();
 
-        // Set the size if a size is configured, or if this is the outermost Container
-        if (!me.ownerCt || (me.height || me.width)) {
+        // Set the size if a size is configured, or if this is the outermost Container.
+        // Also, if this is a collapsed Panel, it needs an initial component layout
+        // to lay out its header so that it can have a height determined.
+        if (me.collapsed || (!me.ownerCt || (me.height || me.width))) {
             me.setSize(me.width, me.height);
+        } else {
+            // It is expected that child items be rendered before this method returns and
+            // the afterrender event fires. Since we aren't going to do the layout now, we
+            // must render the child items. This is handled implicitly above in the layout
+            // caused by setSize.
+            me.renderChildren();
         }
 
         // For floaters, calculate x and y if they aren't defined by aligning
@@ -1102,7 +1285,35 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         }
     },
 
+    /**
+     * @private
+     * Called by Component#doAutoRender
+     *
+     * Register a Container configured `floating: true` with this Component's {@link Ext.ZIndexManager ZIndexManager}.
+     *
+     * Components added in ths way will not participate in any layout, but will be rendered
+     * upon first show in the way that {@link Ext.window.Window Window}s are.
+     */
+    registerFloatingItem: function(cmp) {
+        var me = this;
+        if (!me.floatingItems) {
+            me.floatingItems = Ext.create('Ext.ZIndexManager', me);
+        }
+        me.floatingItems.register(cmp);
+    },
+
+    renderChildren: function () {
+        var me = this,
+            layout = me.getComponentLayout();
+
+        me.suspendLayout = true;
+        layout.renderChildren();
+        delete me.suspendLayout;
+    },
+
     frameCls: Ext.baseCSSPrefix + 'frame',
+
+    frameIdRegex: /[-]frame\d+[TMB][LCR]$/,
 
     frameElementCls: {
         tl: [],
@@ -1118,21 +1329,21 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
     frameTpl: [
         '<tpl if="top">',
-            '<tpl if="left"><div class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl></tpl>" style="background-position: {tl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-                '<tpl if="right"><div class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl></tpl>" style="background-position: {tr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                    '<div class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl></tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></div>',
+            '<tpl if="left"><div id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl></tpl>" style="background-position: {tl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+                '<tpl if="right"><div id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl></tpl>" style="background-position: {tr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                    '<div id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl></tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></div>',
                 '<tpl if="right"></div></tpl>',
             '<tpl if="left"></div></tpl>',
         '</tpl>',
-        '<tpl if="left"><div class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl></tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-            '<tpl if="right"><div class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl></tpl>" style="background-position: {mr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                '<div class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl></tpl>" role="presentation"></div>',
+        '<tpl if="left"><div id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl></tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+            '<tpl if="right"><div id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl></tpl>" style="background-position: {mr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                '<div id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl></tpl>" role="presentation"></div>',
             '<tpl if="right"></div></tpl>',
         '<tpl if="left"></div></tpl>',
         '<tpl if="bottom">',
-            '<tpl if="left"><div class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl></tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-                '<tpl if="right"><div class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl></tpl>" style="background-position: {br}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                    '<div class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl></tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></div>',
+            '<tpl if="left"><div id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl></tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+                '<tpl if="right"><div id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl></tpl>" style="background-position: {br}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                    '<div id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl></tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></div>',
                 '<tpl if="right"></div></tpl>',
             '<tpl if="left"></div></tpl>',
         '</tpl>'
@@ -1142,21 +1353,21 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         '<table><tbody>',
             '<tpl if="top">',
                 '<tr>',
-                    '<tpl if="left"><td class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl></tpl>" style="background-position: {tl}; padding-left:{frameWidth}px" role="presentation"></td></tpl>',
-                    '<td class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl></tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></td>',
-                    '<tpl if="right"><td class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl></tpl>" style="background-position: {tr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<tpl if="left"><td id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl></tpl>" style="background-position: {tl}; padding-left:{frameWidth}px" role="presentation"></td></tpl>',
+                    '<td id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl></tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></td>',
+                    '<tpl if="right"><td id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl></tpl>" style="background-position: {tr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
                 '</tr>',
             '</tpl>',
             '<tr>',
-                '<tpl if="left"><td class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl></tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
-                '<td class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl></tpl>" style="background-position: 0 0;" role="presentation"></td>',
-                '<tpl if="right"><td class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl></tpl>" style="background-position: {mr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                '<tpl if="left"><td id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl></tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                '<td id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl></tpl>" style="background-position: 0 0;" role="presentation"></td>',
+                '<tpl if="right"><td id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl></tpl>" style="background-position: {mr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
             '</tr>',
             '<tpl if="bottom">',
                 '<tr>',
-                    '<tpl if="left"><td class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl></tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
-                    '<td class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl></tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></td>',
-                    '<tpl if="right"><td class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl></tpl>" style="background-position: {br}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<tpl if="left"><td id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl></tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<td id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl></tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></td>',
+                    '<tpl if="right"><td id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl if="uiCls"><tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl></tpl>" style="background-position: {br}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
                 '</tr>',
             '</tpl>',
         '</tbody></table>'
@@ -1173,11 +1384,18 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         var me = this,
             frameInfo = me.getFrameInfo(),
             frameWidth = frameInfo.width,
-            frameTpl = me.getFrameTpl(frameInfo.table);
+            frameTpl = me.getFrameTpl(frameInfo.table),
+            frameGenId;
 
         if (me.frame) {
+            // since we render id's into the markup and id's NEED to be unique, we have a
+            // simple strategy for numbering their generations.
+            me.frameGenId = frameGenId = (me.frameGenId || 0) + 1;
+            frameGenId = me.id + '-frame' + frameGenId;
+
             // Here we render the frameTpl to this component. This inserts the 9point div or the table framing.
             frameTpl.insertFirst(me.el, Ext.apply({}, {
+                fgid:       frameGenId,
                 ui:         me.ui,
                 uiCls:      me.uiCls,
                 frameCls:   me.frameCls,
@@ -1192,17 +1410,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             // The frameBody is returned in getTargetEl, so that layouts render items to the correct target.=
             me.frameBody = me.el.down('.' + me.frameCls + '-mc');
 
-            // Add the render selectors for each of the frame elements
-            Ext.apply(me.renderSelectors, {
-                frameTL: '.' + me.baseCls + '-tl',
-                frameTC: '.' + me.baseCls + '-tc',
-                frameTR: '.' + me.baseCls + '-tr',
-                frameML: '.' + me.baseCls + '-ml',
-                frameMC: '.' + me.baseCls + '-mc',
-                frameMR: '.' + me.baseCls + '-mr',
-                frameBL: '.' + me.baseCls + '-bl',
-                frameBC: '.' + me.baseCls + '-bc',
-                frameBR: '.' + me.baseCls + '-br'
+            // Clean out the childEls for the old frame elements (the majority of the els)
+            me.removeChildEls(function (c) {
+                return c.id && me.frameIdRegex.test(c.id);
+            });
+
+            // Add the childEls for each of the new frame elements
+            Ext.each(['TL','TC','TR','ML','MC','MR','BL','BC','BR'], function (suffix) {
+                me.childEls.push({ name: 'frame' + suffix, id: frameGenId + suffix });
             });
         }
     },
@@ -1394,9 +1609,11 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * <p>Creates an array of class names from the configurations to add to this Component's <code>el</code> on render.</p>
-     * <p>Private, but (possibly) used by ComponentQuery for selection by class name if Component is not rendered.</p>
-     * @return {Array} An array of class names with which the Component's element will be rendered.
+     * Creates an array of class names from the configurations to add to this Component's `el` on render.
+     *
+     * Private, but (possibly) used by ComponentQuery for selection by class name if Component is not rendered.
+     *
+     * @return {String[]} An array of class names with which the Component's element will be rendered.
      * @private
      */
     initCls: function() {
@@ -1429,8 +1646,8 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Sets the UI for the component. This will remove any existing UIs on the component. It will also
-     * loop through any uiCls set on the component and rename them so they include the new UI
+     * Sets the UI for the component. This will remove any existing UIs on the component. It will also loop through any
+     * uiCls set on the component and rename them so they include the new UI
      * @param {String} ui The new UI for the component
      */
     setUI: function(ui) {
@@ -1475,10 +1692,10 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Adds a cls to the uiCls array, which will also call {@link #addUIClsToElement} and adds
-     * to all elements of this component.
-     * @param {String/Array} cls A string or an array of strings to add to the uiCls
-     * @param (Boolean) skip True to skip adding it to the class and do it later (via the return)
+     * Adds a cls to the uiCls array, which will also call {@link #addUIClsToElement} and adds to all elements of this
+     * component.
+     * @param {String/String[]} cls A string or an array of strings to add to the uiCls
+     * @param {Object} skip (Boolean) skip True to skip adding it to the class and do it later (via the return)
      */
     addClsWithUI: function(cls, skip) {
         var me = this,
@@ -1506,9 +1723,9 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Removes a cls to the uiCls array, which will also call {@link #removeUIClsFromElement} and removes
-     * it from all elements of this component.
-     * @param {String/Array} cls A string or an array of strings to remove to the uiCls
+     * Removes a cls to the uiCls array, which will also call {@link #removeUIClsFromElement} and removes it from all
+     * elements of this component.
+     * @param {String/String[]} cls A string or an array of strings to remove to the uiCls
      */
     removeClsWithUI: function(cls, skip) {
         var me = this,
@@ -1546,19 +1763,19 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Method which adds a specified UI + uiCls to the components element.
-     * Can be overridden to remove the UI from more than just the components element.
+     * Method which adds a specified UI + uiCls to the components element. Can be overridden to remove the UI from more
+     * than just the components element.
      * @param {String} ui The UI to remove from the element
      */
     addUIClsToElement: function(cls, force) {
         var me = this,
             result = [],
             frameElementCls = me.frameElementCls;
-        
+
         result.push(Ext.baseCSSPrefix + cls);
         result.push(me.baseCls + '-' + cls);
         result.push(me.baseCls + '-' + me.ui + '-' + cls);
-        
+
         if (!force && me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
@@ -1586,19 +1803,19 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Method which removes a specified UI + uiCls from the components element.
-     * The cls which is added to the element will be: `this.baseCls + '-' + ui`
+     * Method which removes a specified UI + uiCls from the components element. The cls which is added to the element
+     * will be: `this.baseCls + '-' + ui`
      * @param {String} ui The UI to add to the element
      */
     removeUIClsFromElement: function(cls, force) {
         var me = this,
             result = [],
             frameElementCls = me.frameElementCls;
-        
+
         result.push(Ext.baseCSSPrefix + cls);
         result.push(me.baseCls + '-' + cls);
         result.push(me.baseCls + '-' + me.ui + '-' + cls);
-        
+
         if (!force && me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
@@ -1627,14 +1844,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     addUIToElement: function(force) {
         var me = this,
             frameElementCls = me.frameElementCls;
-        
+
         me.addCls(me.baseCls + '-' + me.ui);
-        
+
         if (me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
                 i, el, cls;
-            
+
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
@@ -1657,14 +1874,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     removeUIFromElement: function() {
         var me = this,
             frameElementCls = me.frameElementCls;
-        
+
         me.removeCls(me.baseCls + '-' + me.ui);
-        
+
         if (me.frame && !Ext.supports.CSS3BorderRadius) {
             // define each element of the frame
             var els = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'],
                 i, j, el, cls;
-                
+
             // loop through each of them, and if they are defined add the ui
             for (i = 0; i < els.length; i++) {
                 el = me['frame' + els[i].toUpperCase()];
@@ -1680,16 +1897,22 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     getElConfig : function() {
+        if (Ext.isString(this.autoEl)) {
+            this.autoEl = {
+                tag: this.autoEl
+            };
+        }
+
         var result = this.autoEl || {tag: 'div'};
         result.id = this.id;
         return result;
     },
 
     /**
-     * This function takes the position argument passed to onRender and returns a
-     * DOM element that you can use in the insertBefore.
-     * @param {String/Number/Element/HTMLElement} position Index, element id or element you want
-     * to put this component before.
+     * This function takes the position argument passed to onRender and returns a DOM element that you can use in the
+     * insertBefore.
+     * @param {String/Number/Ext.Element/HTMLElement} position Index, element id or element you want to put this
+     * component before.
      * @return {HTMLElement} DOM element that you can use in the insertBefore
      */
     getInsertPosition: function(position) {
@@ -1708,7 +1931,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
 
     /**
      * Adds ctCls to container.
-     * @return {Ext.core.Element} The initialized container
+     * @return {Ext.Element} The initialized container
      * @private
      */
     initContainer: function(container) {
@@ -1740,6 +1963,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
         var me = this;
 
         return Ext.applyIf(me.renderData, {
+            id: me.id,
             ui: me.ui,
             uiCls: me.uiCls,
             baseCls: me.baseCls,
@@ -1795,14 +2019,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Function description
+     * Converts style definitions to String.
      * @return {String} A CSS style string with style, padding, margin and border.
      * @private
      */
     initStyles: function() {
         var style = {},
             me = this,
-            Element = Ext.core.Element;
+            Element = Ext.Element;
 
         if (Ext.isString(me.style)) {
             style = Element.parseStyles(me.style);
@@ -1825,8 +2049,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Initializes this components contents. It checks for the properties
-     * html, contentEl and tpl/data.
+     * Initializes this components contents. It checks for the properties html, contentEl and tpl/data.
      * @private
      */
     initContent: function() {
@@ -1836,7 +2059,7 @@ and a property `descEl` referencing the `div` Element which contains the descrip
             pre;
 
         if (me.html) {
-            target.update(Ext.core.DomHelper.markup(me.html));
+            target.update(Ext.DomHelper.markup(me.html));
             delete me.html;
         }
 
@@ -1882,17 +2105,73 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * Sets references to elements inside the component. E.g body -> x-panel-body
+     * Adds each argument passed to this method to the {@link #childEls} array.
+     */
+    addChildEls: function () {
+        var me = this,
+            childEls = me.childEls || (me.childEls = []);
+
+        childEls.push.apply(childEls, arguments);
+    },
+
+    /**
+     * Removes items in the childEls array based on the return value of a supplied test function. The function is called
+     * with a entry in childEls and if the test function return true, that entry is removed. If false, that entry is
+     * kept.
+     * @param {Function} testFn The test function.
+     */
+    removeChildEls: function (testFn) {
+        var me = this,
+            old = me.childEls,
+            keepers = (me.childEls = []),
+            n, i, cel;
+
+        for (i = 0, n = old.length; i < n; ++i) {
+            cel = old[i];
+            if (!testFn(cel)) {
+                keepers.push(cel);
+            }
+        }
+    },
+
+    /**
+     * Sets references to elements inside the component. This applies {@link #renderSelectors}
+     * as well as {@link #childEls}.
      * @private
      */
     applyRenderSelectors: function() {
-        var selectors = this.renderSelectors || {},
-            el = this.el.dom,
-            selector;
+        var me = this,
+            childEls = me.childEls,
+            selectors = me.renderSelectors,
+            el = me.el,
+            dom = el.dom,
+            baseId, childName, childId, i, selector;
 
-        for (selector in selectors) {
-            if (selectors.hasOwnProperty(selector) && selectors[selector]) {
-                this[selector] = Ext.get(Ext.DomQuery.selectNode(selectors[selector], el));
+        if (childEls) {
+            baseId = me.id + '-';
+            for (i = childEls.length; i--; ) {
+                childName = childId = childEls[i];
+                if (typeof(childName) != 'string') {
+                    childId = childName.id || (baseId + childName.itemId);
+                    childName = childName.name;
+                } else {
+                    childId = baseId + childId;
+                }
+
+                // We don't use Ext.get because that is 3x (or more) slower on IE6-8. Since
+                // we know the el's are children of our el we use getById instead:
+                me[childName] = el.getById(childId);
+            }
+        }
+
+        // We still support renderSelectors. There are a few places in the framework that
+        // need them and they are a documented part of the API. In fact, we support mixing
+        // childEls and renderSelectors (no reason not to).
+        if (selectors) {
+            for (selector in selectors) {
+                if (selectors.hasOwnProperty(selector) && selectors[selector]) {
+                    me[selector] = Ext.get(Ext.DomQuery.selectNode(selectors[selector], dom));
+                }
             }
         }
     },
@@ -1907,13 +2186,14 @@ and a property `descEl` referencing the `div` Element which contains the descrip
     },
 
     /**
-     * <p>Walks up the <code>ownerCt</code> axis looking for an ancestor Container which matches
-     * the passed simple selector.</p>
-     * <p>Example:<pre><code>
-var owningTabPanel = grid.up('tabpanel');
-</code></pre>
-     * @param {String} selector Optional. The simple selector to test.
-     * @return {Container} The matching ancestor Container (or <code>undefined</code> if no match was found).
+     * Walks up the `ownerCt` axis looking for an ancestor Container which matches the passed simple selector.
+     *
+     * Example:
+     *
+     *     var owningTabPanel = grid.up('tabpanel');
+     *
+     * @param {String} [selector] The simple selector to test.
+     * @return {Ext.container.Container} The matching ancestor Container (or `undefined` if no match was found).
      */
     up: function(selector) {
         var result = this.ownerCt;
@@ -1928,12 +2208,17 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * <p>Returns the next sibling of this Component.</p>
-     * <p>Optionally selects the next sibling which matches the passed {@link Ext.ComponentQuery ComponentQuery} selector.</p>
-     * <p>May also be refered to as <code><b>next()</b></code></p>
-     * <p>Note that this is limited to siblings, and if no siblings of the item match, <code>null</code> is returned. Contrast with {@link #nextNode}</p>
-     * @param {String} selector Optional A {@link Ext.ComponentQuery ComponentQuery} selector to filter the following items.
-     * @returns The next sibling (or the next sibling which matches the selector). Returns null if there is no matching sibling.
+     * Returns the next sibling of this Component.
+     *
+     * Optionally selects the next sibling which matches the passed {@link Ext.ComponentQuery ComponentQuery} selector.
+     *
+     * May also be refered to as **`next()`**
+     *
+     * Note that this is limited to siblings, and if no siblings of the item match, `null` is returned. Contrast with
+     * {@link #nextNode}
+     * @param {String} [selector] A {@link Ext.ComponentQuery ComponentQuery} selector to filter the following items.
+     * @return {Ext.Component} The next sibling (or the next sibling which matches the selector).
+     * Returns null if there is no matching sibling.
      */
     nextSibling: function(selector) {
         var o = this.ownerCt, it, last, idx, c;
@@ -1958,12 +2243,18 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * <p>Returns the previous sibling of this Component.</p>
-     * <p>Optionally selects the previous sibling which matches the passed {@link Ext.ComponentQuery ComponentQuery} selector.</p>
-     * <p>May also be refered to as <code><b>prev()</b></code></p>
-     * <p>Note that this is limited to siblings, and if no siblings of the item match, <code>null</code> is returned. Contrast with {@link #previousNode}</p>
-     * @param {String} selector Optional. A {@link Ext.ComponentQuery ComponentQuery} selector to filter the preceding items.
-     * @returns The previous sibling (or the previous sibling which matches the selector). Returns null if there is no matching sibling.
+     * Returns the previous sibling of this Component.
+     *
+     * Optionally selects the previous sibling which matches the passed {@link Ext.ComponentQuery ComponentQuery}
+     * selector.
+     *
+     * May also be refered to as **`prev()`**
+     *
+     * Note that this is limited to siblings, and if no siblings of the item match, `null` is returned. Contrast with
+     * {@link #previousNode}
+     * @param {String} [selector] A {@link Ext.ComponentQuery ComponentQuery} selector to filter the preceding items.
+     * @return {Ext.Component} The previous sibling (or the previous sibling which matches the selector).
+     * Returns null if there is no matching sibling.
      */
     previousSibling: function(selector) {
         var o = this.ownerCt, it, idx, c;
@@ -1988,11 +2279,13 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * <p>Returns the previous node in the Component tree in tree traversal order.</p>
-     * <p>Note that this is not limited to siblings, and if invoked upon a node with no matching siblings, will
-     * walk the tree in reverse order to attempt to find a match. Contrast with {@link #previousSibling}.</p>
-     * @param {String} selector Optional. A {@link Ext.ComponentQuery ComponentQuery} selector to filter the preceding nodes.
-     * @returns The previous node (or the previous node which matches the selector). Returns null if there is no matching node.
+     * Returns the previous node in the Component tree in tree traversal order.
+     *
+     * Note that this is not limited to siblings, and if invoked upon a node with no matching siblings, will walk the
+     * tree in reverse order to attempt to find a match. Contrast with {@link #previousSibling}.
+     * @param {String} [selector] A {@link Ext.ComponentQuery ComponentQuery} selector to filter the preceding nodes.
+     * @return {Ext.Component} The previous node (or the previous node which matches the selector).
+     * Returns null if there is no matching node.
      */
     previousNode: function(selector, includeSelf) {
         var node = this,
@@ -2024,11 +2317,13 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * <p>Returns the next node in the Component tree in tree traversal order.</p>
-     * <p>Note that this is not limited to siblings, and if invoked upon a node with no matching siblings, will
-     * walk the tree to attempt to find a match. Contrast with {@link #nextSibling}.</p>
-     * @param {String} selector Optional A {@link Ext.ComponentQuery ComponentQuery} selector to filter the following nodes.
-     * @returns The next node (or the next node which matches the selector). Returns null if there is no matching node.
+     * Returns the next node in the Component tree in tree traversal order.
+     *
+     * Note that this is not limited to siblings, and if invoked upon a node with no matching siblings, will walk the
+     * tree to attempt to find a match. Contrast with {@link #nextSibling}.
+     * @param {String} [selector] A {@link Ext.ComponentQuery ComponentQuery} selector to filter the following nodes.
+     * @return {Ext.Component} The next node (or the next node which matches the selector).
+     * Returns null if there is no matching node.
      */
     nextNode: function(selector, includeSelf) {
         var node = this,
@@ -2059,8 +2354,8 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * Retrieves the id of this component.
-     * Will autogenerate an id if one has not already been set.
+     * Retrieves the id of this component. Will autogenerate an id if one has not already been set.
+     * @return {String}
      */
     getId : function() {
         return this.id || (this.id = 'ext-comp-' + (this.getAutoId()));
@@ -2072,6 +2367,7 @@ var owningTabPanel = grid.up('tabpanel');
 
     /**
      * Retrieves the top level element representing this component.
+     * @return {Ext.core.Element}
      */
     getEl : function() {
         return this.el;
@@ -2086,21 +2382,24 @@ var owningTabPanel = grid.up('tabpanel');
     },
 
     /**
-     * <p>Tests whether or not this Component is of a specific xtype. This can test whether this Component is descended
-     * from the xtype (default) or whether it is directly of the xtype specified (shallow = true).</p>
-     * <p><b>If using your own subclasses, be aware that a Component must register its own xtype
-     * to participate in determination of inherited xtypes.</b></p>
-     * <p>For a list of all available xtypes, see the {@link Ext.Component} header.</p>
-     * <p>Example usage:</p>
-     * <pre><code>
-var t = new Ext.form.field.Text();
-var isText = t.isXType('textfield');        // true
-var isBoxSubclass = t.isXType('field');       // true, descended from Ext.form.field.Base
-var isBoxInstance = t.isXType('field', true); // false, not a direct Ext.form.field.Base instance
-</code></pre>
+     * Tests whether or not this Component is of a specific xtype. This can test whether this Component is descended
+     * from the xtype (default) or whether it is directly of the xtype specified (shallow = true).
+     *
+     * **If using your own subclasses, be aware that a Component must register its own xtype to participate in
+     * determination of inherited xtypes.**
+     *
+     * For a list of all available xtypes, see the {@link Ext.Component} header.
+     *
+     * Example usage:
+     *
+     *     var t = new Ext.form.field.Text();
+     *     var isText = t.isXType('textfield');        // true
+     *     var isBoxSubclass = t.isXType('field');       // true, descended from Ext.form.field.Base
+     *     var isBoxInstance = t.isXType('field', true); // false, not a direct Ext.form.field.Base instance
+     *
      * @param {String} xtype The xtype to check for this Component
-     * @param {Boolean} shallow (optional) False to check whether this Component is descended from the xtype (this is
-     * the default), or true to check whether this Component is directly of the specified xtype.
+     * @param {Boolean} [shallow=false] True to check whether this Component is directly of the specified xtype, false to
+     * check whether this Component is descended from the xtype.
      * @return {Boolean} True if this component descends from the specified xtype, false otherwise.
      */
     isXType: function(xtype, shallow) {
@@ -2117,29 +2416,32 @@ var isBoxInstance = t.isXType('field', true); // false, not a direct Ext.form.fi
     },
 
     /**
-     * <p>Returns this Component's xtype hierarchy as a slash-delimited string. For a list of all
-     * available xtypes, see the {@link Ext.Component} header.</p>
-     * <p><b>If using your own subclasses, be aware that a Component must register its own xtype
-     * to participate in determination of inherited xtypes.</b></p>
-     * <p>Example usage:</p>
-     * <pre><code>
-var t = new Ext.form.field.Text();
-alert(t.getXTypes());  // alerts 'component/field/textfield'
-</code></pre>
+     * Returns this Component's xtype hierarchy as a slash-delimited string. For a list of all available xtypes, see the
+     * {@link Ext.Component} header.
+     *
+     * **If using your own subclasses, be aware that a Component must register its own xtype to participate in
+     * determination of inherited xtypes.**
+     *
+     * Example usage:
+     *
+     *     var t = new Ext.form.field.Text();
+     *     alert(t.getXTypes());  // alerts 'component/field/textfield'
+     *
      * @return {String} The xtype hierarchy string
      */
     getXTypes: function() {
         var self = this.self,
-            xtypes      = [],
-            parentPrototype  = this,
-            xtype;
+            xtypes, parentPrototype, parentXtypes;
 
         if (!self.xtypes) {
-            while (parentPrototype && Ext.getClass(parentPrototype)) {
-                xtype = Ext.getClass(parentPrototype).xtype;
+            xtypes = [];
+            parentPrototype = this;
 
-                if (xtype !== undefined) {
-                    xtypes.unshift(xtype);
+            while (parentPrototype) {
+                parentXtypes = parentPrototype.xtypes;
+
+                if (parentXtypes !== undefined) {
+                    xtypes.unshift.apply(xtypes, parentXtypes);
                 }
 
                 parentPrototype = parentPrototype.superclass;
@@ -2154,15 +2456,12 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Update the content area of a component.
-     * @param {Mixed} htmlOrData
-     * If this component has been configured with a template via the tpl config
-     * then it will use this argument as data to populate the template.
-     * If this component was not configured with a template, the components
-     * content area will be updated via Ext.core.Element update
-     * @param {Boolean} loadScripts
-     * (optional) Only legitimate when using the html configuration. Defaults to false
-     * @param {Function} callback
-     * (optional) Only legitimate when using the html configuration. Callback to execute when scripts have finished loading
+     * @param {String/Object} htmlOrData If this component has been configured with a template via the tpl config then
+     * it will use this argument as data to populate the template. If this component was not configured with a template,
+     * the components content area will be updated via Ext.Element update
+     * @param {Boolean} [loadScripts=false] Only legitimate when using the html configuration.
+     * @param {Function} [callback] Only legitimate when using the html configuration. Callback to execute when
+     * scripts have finished loading
      */
     update : function(htmlOrData, loadScripts, cb) {
         var me = this;
@@ -2173,7 +2472,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                 me.tpl[me.tplWriteMode](me.getTargetEl(), htmlOrData || {});
             }
         } else {
-            me.html = Ext.isObject(htmlOrData) ? Ext.core.DomHelper.markup(htmlOrData) : htmlOrData;
+            me.html = Ext.isObject(htmlOrData) ? Ext.DomHelper.markup(htmlOrData) : htmlOrData;
             if (me.rendered) {
                 me.getTargetEl().update(me.html, loadScripts, cb);
             }
@@ -2195,10 +2494,13 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Returns true if this component is visible.
-     * @param {Boolean} deep. <p>Optional. Pass <code>true</code> to interrogate the visibility status of all
-     * parent Containers to determine whether this Component is truly visible to the user.</p>
-     * <p>Generally, to determine whether a Component is hidden, the no argument form is needed. For example
-     * when creating dynamically laid out UIs in a hidden Container before showing them.</p>
+     *
+     * @param {Boolean} [deep=false] Pass `true` to interrogate the visibility status of all parent Containers to
+     * determine whether this Component is truly visible to the user.
+     *
+     * Generally, to determine whether a Component is hidden, the no argument form is needed. For example when creating
+     * dynamically laid out UIs in a hidden Container before showing them.
+     *
      * @return {Boolean} True if this component is visible, false otherwise.
      */
     isVisible: function(deep) {
@@ -2235,8 +2537,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Enable the component
-     * @param {Boolean} silent
-     * Passing false will supress the 'enable' event from being fired.
+     * @param {Boolean} [silent=false] Passing true will supress the 'enable' event from being fired.
      */
     enable: function(silent) {
         var me = this;
@@ -2258,8 +2559,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Disable the component.
-     * @param {Boolean} silent
-     * Passing true, will supress the 'disable' event from being fired.
+     * @param {Boolean} [silent=false] Passing true will supress the 'disable' event from being fired.
      */
     disable: function(silent) {
         var me = this;
@@ -2303,7 +2603,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Enable or disable the component.
-     * @param {Boolean} disabled
+     * @param {Boolean} disabled True to disable.
      */
     setDisabled : function(disabled) {
         return this[disabled ? 'disable': 'enable']();
@@ -2340,7 +2640,6 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * @deprecated 4.0 Replaced by {@link #addCls}
      * Adds a CSS class to the top level element representing this component.
      * @param {String} cls The CSS class name to add
      * @return {Ext.Component} Returns the Component to allow method chaining.
@@ -2351,7 +2650,8 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Removes a CSS class from the top level element representing this component.
-     * @returns {Ext.Component} Returns the Component to allow method chaining.
+     * @param {Object} className
+     * @return {Ext.Component} Returns the Component to allow method chaining.
      */
     removeCls : function(className) {
         var me = this;
@@ -2492,7 +2792,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
      * respective Container, firing an added event.
      * References are established at add time rather than at render time.
      * @param {Ext.container.Container} container Container which holds the component
-     * @param {number} pos Position at which the component was added
+     * @param {Number} pos Position at which the component was added
      */
     onAdded : function(container, pos) {
         this.ownerCt = container;
@@ -2520,19 +2820,22 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * Sets the width and height of this Component. This method fires the {@link #resize} event. This method can accept
-     * either width and height as separate arguments, or you can pass a size object like <code>{width:10, height:20}</code>.
-     * @param {Mixed} width The new width to set. This may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.core.Element#defaultUnit}s (by default, pixels).</li>
-     * <li>A String used to set the CSS width style.</li>
-     * <li>A size object in the format <code>{width: widthValue, height: heightValue}</code>.</li>
-     * <li><code>undefined</code> to leave the width unchanged.</li>
-     * </ul></div>
-     * @param {Mixed} height The new height to set (not required if a size object is passed as the first arg).
-     * This may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.core.Element#defaultUnit}s (by default, pixels).</li>
-     * <li>A String used to set the CSS height style. Animation may <b>not</b> be used.</li>
-     * <li><code>undefined</code> to leave the height unchanged.</li>
-     * </ul></div>
+     * either width and height as separate arguments, or you can pass a size object like `{width:10, height:20}`.
+     *
+     * @param {Number/String/Object} width The new width to set. This may be one of:
+     *
+     *   - A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).
+     *   - A String used to set the CSS width style.
+     *   - A size object in the format `{width: widthValue, height: heightValue}`.
+     *   - `undefined` to leave the width unchanged.
+     *
+     * @param {Number/String} height The new height to set (not required if a size object is passed as the first arg).
+     * This may be one of:
+     *
+     *   - A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).
+     *   - A String used to set the CSS height style. Animation may **not** be used.
+     *   - `undefined` to leave the height unchanged.
+     *
      * @return {Ext.Component} this
      */
     setSize : function(width, height) {
@@ -2644,6 +2947,10 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     /**
      * This method needs to be called whenever you change something on this component that requires the Component's
      * layout to be recalculated.
+     * @param {Object} width
+     * @param {Object} height
+     * @param {Object} isSetSize
+     * @param {Object} callingContainer
      * @return {Ext.container.Container} this
      */
     doComponentLayout : function(width, height, isSetSize, callingContainer) {
@@ -2658,15 +2965,12 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         // Only Panels have a collapse method, and that just sets the width/height such that only
         // a single docked Header parallel to the collapseTo side are visible, and the Panel body is hidden.
         if (me.rendered && componentLayout) {
-
-
             // If no width passed, then only insert a value if the Component is NOT ALLOWED to autowidth itself.
             if (!Ext.isDefined(width)) {
                 if (me.isFixedWidth()) {
                     width = Ext.isDefined(me.width) ? me.width : lastComponentSize.width;
                 }
             }
-
             // If no height passed, then only insert a value if the Component is NOT ALLOWED to autoheight itself.
             if (!Ext.isDefined(height)) {
                 if (me.isFixedHeight()) {
@@ -2681,6 +2985,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
             componentLayout.layout(width, height, isSetSize, callingContainer);
         }
+
         return me;
     },
 
@@ -2711,31 +3016,39 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
+     * Occurs after componentLayout is run.
      * @param {Number} adjWidth The box-adjusted width that was set
      * @param {Number} adjHeight The box-adjusted height that was set
      * @param {Boolean} isSetSize Whether or not the height/width are stored on the component permanently
      * @param {Ext.Component} callingContainer Container requesting the layout. Only used when isSetSize is false.
      */
     afterComponentLayout: function(width, height, isSetSize, callingContainer) {
-        this.fireEvent('resize', this, width, height);
+        var me = this,
+            layout = me.componentLayout,
+            oldSize = me.preLayoutSize;
+
+        ++me.componentLayoutCounter;
+        if (!oldSize || ((width !== oldSize.width) || (height !== oldSize.height))) {
+            me.fireEvent('resize', me, width, height);
+        }
     },
 
     /**
-     * Occurs before componentLayout is run. Returning false from this method will prevent the componentLayout
-     * from being executed.
+     * Occurs before componentLayout is run. Returning false from this method will prevent the componentLayout from
+     * being executed.
      * @param {Number} adjWidth The box-adjusted width that was set
      * @param {Number} adjHeight The box-adjusted height that was set
      * @param {Boolean} isSetSize Whether or not the height/width are stored on the component permanently
      * @param {Ext.Component} callingContainer Container requesting sent the layout. Only used when isSetSize is false.
      */
     beforeComponentLayout: function(width, height, isSetSize, callingContainer) {
+        this.preLayoutSize = this.componentLayout.lastComponentSize;
         return true;
     },
 
     /**
-     * Sets the left and top of the component.  To set the page XY position instead, use
-     * {@link Ext.Component#setPagePosition setPagePosition}.
-     * This method fires the {@link #move} event.
+     * Sets the left and top of the component. To set the page XY position instead, use
+     * {@link Ext.Component#setPagePosition setPagePosition}. This method fires the {@link #move} event.
      * @param {Number} left The new left
      * @param {Number} top The new top
      * @return {Ext.Component} this
@@ -2760,7 +3073,8 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         return me;
     },
 
-    /* @private
+    /**
+     * @private
      * Called after the component is moved, this method is empty by default but can be implemented by any
      * subclass that needs to perform custom logic after a move occurs.
      * @param {Number} x The new x position
@@ -2769,11 +3083,13 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     onPosition: Ext.emptyFn,
 
     /**
-     * Sets the width of the component.  This method fires the {@link #resize} event.
-     * @param {Number} width The new width to setThis may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.core.Element#defaultUnit}s (by default, pixels).</li>
-     * <li>A String used to set the CSS width style.</li>
-     * </ul></div>
+     * Sets the width of the component. This method fires the {@link #resize} event.
+     *
+     * @param {Number} width The new width to setThis may be one of:
+     *
+     *   - A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).
+     *   - A String used to set the CSS width style.
+     *
      * @return {Ext.Component} this
      */
     setWidth : function(width) {
@@ -2781,12 +3097,14 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * Sets the height of the component.  This method fires the {@link #resize} event.
-     * @param {Number} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
-     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.core.Element#defaultUnit}s (by default, pixels).</li>
-     * <li>A String used to set the CSS height style.</li>
-     * <li><i>undefined</i> to leave the height unchanged.</li>
-     * </ul></div>
+     * Sets the height of the component. This method fires the {@link #resize} event.
+     *
+     * @param {Number} height The new height to set. This may be one of:
+     *
+     *   - A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).
+     *   - A String used to set the CSS height style.
+     *   - _undefined_ to leave the height unchanged.
+     *
      * @return {Ext.Component} this
      */
     setHeight : function(height) {
@@ -2843,11 +3161,11 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
 
     /**
      * This method allows you to show or hide a LoadMask on top of this component.
-     * @param {Boolean/Object/String} load True to show the default LoadMask, a config object
-     * that will be passed to the LoadMask constructor, or a message String to show. False to
-     * hide the current LoadMask.
-     * @param {Boolean} targetEl True to mask the targetEl of this Component instead of the this.el.
-     * For example, setting this to true on a Panel will cause only the body to be masked. (defaults to false)
+     *
+     * @param {Boolean/Object/String} load True to show the default LoadMask, a config object that will be passed to the
+     * LoadMask constructor, or a message String to show. False to hide the current LoadMask.
+     * @param {Boolean} [targetEl=false] True to mask the targetEl of this Component instead of the `this.el`. For example,
+     * setting this to true on a Panel will cause only the body to be masked.
      * @return {Ext.LoadMask} The LoadMask instance that has just been shown.
      */
     setLoading : function(load, targetEl) {
@@ -2877,11 +3195,11 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * Sets the dock position of this component in its parent panel. Note that
-     * this only has effect if this item is part of the dockedItems collection
-     * of a parent that has a DockLayout (note that any Panel has a DockLayout
-     * by default)
-     * @return {Component} this
+     * Sets the dock position of this component in its parent panel. Note that this only has effect if this item is part
+     * of the dockedItems collection of a parent that has a DockLayout (note that any Panel has a DockLayout by default)
+     * @param {Object} dock The dock position.
+     * @param {Boolean} [layoutParent=false] True to re-layout parent.
+     * @return {Ext.Component} this
      */
     setDocked : function(dock, layoutParent) {
         var me = this;
@@ -2899,7 +3217,49 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
         if (me.monitorResize && Ext.EventManager.resizeEvent) {
             Ext.EventManager.resizeEvent.removeListener(me.setSize, me);
         }
-        Ext.destroy(me.componentLayout, me.loadMask);
+        // Destroying the floatingItems ZIndexManager will also destroy descendant floating Components
+        Ext.destroy(
+            me.componentLayout,
+            me.loadMask,
+            me.floatingItems
+        );
+    },
+
+    /**
+     * Remove any references to elements added via renderSelectors/childEls
+     * @private
+     */
+    cleanElementRefs: function(){
+        var me = this,
+            i = 0,
+            childEls = me.childEls,
+            selectors = me.renderSelectors,
+            selector,
+            name,
+            len;
+
+        if (me.rendered) {
+            if (childEls) {
+                for (len = childEls.length; i < len; ++i) {
+                    name = childEls[i];
+                    if (typeof(name) != 'string') {
+                        name = name.name;
+                    }
+                    delete me[name];
+                }
+            }
+
+            if (selectors) {
+                for (selector in selectors) {
+                    if (selectors.hasOwnProperty(selector)) {
+                        delete me[selector];
+                    }
+                }
+            }
+        }
+        delete me.rendered;
+        delete me.el;
+        delete me.frameBody;
     },
 
     /**
@@ -2933,12 +3293,14 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
                     me.el.remove();
                 }
 
-                Ext.ComponentManager.unregister(me);
                 me.fireEvent('destroy', me);
+                Ext.ComponentManager.unregister(me);
 
                 me.mixins.state.destroy.call(me);
 
                 me.clearListeners();
+                // make sure we clean up the element references after removing all events
+                me.cleanElementRefs();
                 me.destroying = false;
                 me.isDestroyed = true;
             }
@@ -2946,9 +3308,9 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     },
 
     /**
-     * Retrieves a plugin by its pluginId which has been bound to this
-     * component.
-     * @returns {Ext.AbstractPlugin} pluginInstance
+     * Retrieves a plugin by its pluginId which has been bound to this component.
+     * @param {Object} pluginId
+     * @return {Ext.AbstractPlugin} plugin instance.
      */
     getPlugin: function(pluginId) {
         var i = 0,
@@ -2964,7 +3326,7 @@ alert(t.getXTypes());  // alerts 'component/field/textfield'
     /**
      * Determines whether this component is the descendant of a particular container.
      * @param {Ext.Container} container
-     * @returns {Boolean} isDescendant
+     * @return {Boolean} True if it is.
      */
     isDescendantOf: function(container) {
         return !!this.findParentBy(function(p){

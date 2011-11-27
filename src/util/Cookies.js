@@ -31,7 +31,7 @@ Ext.define('Ext.util.Cookies', {
      * for the cookie may be optionally specified (for example: expiration,
      * access restriction, SSL).
      * @param {String} name The name of the cookie to set. 
-     * @param {Mixed} value The value to set for the cookie.
+     * @param {Object} value The value to set for the cookie.
      * @param {Object} expires (Optional) Specify an expiration date the
      * cookie is to persist until.  Note that the specified Date object will
      * be converted to Greenwich Mean Time (GMT). 
@@ -68,7 +68,7 @@ Ext.define('Ext.util.Cookies', {
      * var validStatus = Ext.util.Cookies.get("valid");
      * </code></pre>
      * @param {String} name The name of the cookie to get
-     * @return {Mixed} Returns the cookie value for the specified name;
+     * @return {Object} Returns the cookie value for the specified name;
      * null if the cookie name does not exist.
      */
     get : function(name){

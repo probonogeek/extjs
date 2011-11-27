@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -50,6 +50,7 @@
  * 
  */
 Ext.define('Ext.chart.Mask', {
+    require: ['Ext.chart.MaskLayer'],
 <span id='Ext-chart-Mask-method-constructor'>    /**
 </span>     * Creates new Mask.
      * @param {Object} config (optional) Config object.
@@ -196,12 +197,7 @@ Ext.define('Ext.chart.Mask', {
                 width: abs(width),
                 height: abs(height)
             };
-            me.mask.updateBox({
-                x: posX - abs(width),
-                y: posY - abs(height),
-                width: abs(width),
-                height: abs(height)
-            });
+            me.mask.updateBox(me.maskSelection);
             me.mask.show();
             me.maskSprite.setAttributes({
                 hidden: true    

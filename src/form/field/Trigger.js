@@ -13,59 +13,53 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.form.field.Trigger
- * @extends Ext.form.field.Text
- * <p>Provides a convenient wrapper for TextFields that adds a clickable trigger button (looks like a combobox by default).
- * The trigger has no default action, so you must assign a function to implement the trigger click handler by
- * overriding {@link #onTriggerClick}. You can create a Trigger field directly, as it renders exactly like a combobox
- * for which you can provide a custom implementation. 
- * {@img Ext.form.field.Trigger/Ext.form.field.Trigger.png Ext.form.field.Trigger component}
- * For example:</p>
- * <pre><code>
-Ext.define('Ext.ux.CustomTrigger', {
-    extend: 'Ext.form.field.Trigger',
-    alias: 'widget.customtrigger',
-    
-    // override onTriggerClick
-    onTriggerClick: function() {
-        Ext.Msg.alert('Status', 'You clicked my trigger!');
-    }
-});
-
-Ext.create('Ext.form.FormPanel', {
-    title: 'Form with TriggerField',
-    bodyPadding: 5,
-    width: 350,
-    renderTo: Ext.getBody(),
-    items:[{
-        xtype: 'customtrigger',
-        fieldLabel: 'Sample Trigger',
-        emptyText: 'click the trigger',
-    }]
-});
-</code></pre>
+ * Provides a convenient wrapper for TextFields that adds a clickable trigger button (looks like a combobox by default).
+ * The trigger has no default action, so you must assign a function to implement the trigger click handler by overriding
+ * {@link #onTriggerClick}. You can create a Trigger field directly, as it renders exactly like a combobox for which you
+ * can provide a custom implementation.
  *
- * <p>However, in general you will most likely want to use Trigger as the base class for a reusable component.
- * {@link Ext.form.field.Date} and {@link Ext.form.field.ComboBox} are perfect examples of this.</p>
+ * For example:
  *
- * @constructor
- * Create a new Trigger field.
- * @param {Object} config Configuration options (valid {@Ext.form.field.Text} config options will also be applied
- * to the base Text field)
+ *     @example
+ *     Ext.define('Ext.ux.CustomTrigger', {
+ *         extend: 'Ext.form.field.Trigger',
+ *         alias: 'widget.customtrigger',
+ *
+ *         // override onTriggerClick
+ *         onTriggerClick: function() {
+ *             Ext.Msg.alert('Status', 'You clicked my trigger!');
+ *         }
+ *     });
+ *
+ *     Ext.create('Ext.form.FormPanel', {
+ *         title: 'Form with TriggerField',
+ *         bodyPadding: 5,
+ *         width: 350,
+ *         renderTo: Ext.getBody(),
+ *         items:[{
+ *             xtype: 'customtrigger',
+ *             fieldLabel: 'Sample Trigger',
+ *             emptyText: 'click the trigger',
+ *         }]
+ *     });
+ *
+ * However, in general you will most likely want to use Trigger as the base class for a reusable component.
+ * {@link Ext.form.field.Date} and {@link Ext.form.field.ComboBox} are perfect examples of this.
  */
 Ext.define('Ext.form.field.Trigger', {
     extend:'Ext.form.field.Text',
     alias: ['widget.triggerfield', 'widget.trigger'],
-    requires: ['Ext.core.DomHelper', 'Ext.util.ClickRepeater', 'Ext.layout.component.field.Trigger'],
+    requires: ['Ext.DomHelper', 'Ext.util.ClickRepeater', 'Ext.layout.component.field.Trigger'],
     alternateClassName: ['Ext.form.TriggerField', 'Ext.form.TwinTriggerField', 'Ext.form.Trigger'],
 
+    // note: {id} here is really {inputId}, but {cmpId} is available
     fieldSubTpl: [
         '<input id="{id}" type="{type}" ',
             '<tpl if="name">name="{name}" </tpl>',
             '<tpl if="size">size="{size}" </tpl>',
             '<tpl if="tabIdx">tabIndex="{tabIdx}" </tpl>',
             'class="{fieldCls} {typeCls}" autocomplete="off" />',
-        '<div class="{triggerWrapCls}" role="presentation">',
+        '<div id="{cmpId}-triggerWrap" class="{triggerWrapCls}" role="presentation">',
             '{triggerEl}',
             '<div class="{clearCls}" role="presentation"></div>',
         '</div>',
@@ -77,51 +71,52 @@ Ext.define('Ext.form.field.Trigger', {
 
     /**
      * @cfg {String} triggerCls
-     * An additional CSS class used to style the trigger button.  The trigger will always get the
-     * {@link #triggerBaseCls} by default and <tt>triggerCls</tt> will be <b>appended</b> if specified.
-     * Defaults to undefined.
+     * An additional CSS class used to style the trigger button. The trigger will always get the {@link #triggerBaseCls}
+     * by default and triggerCls will be **appended** if specified.
      */
 
     /**
-     * @cfg {String} triggerBaseCls
-     * The base CSS class that is always added to the trigger button. The {@link #triggerCls} will be
-     * appended in addition to this class.
+     * @cfg {String} [triggerBaseCls='x-form-trigger']
+     * The base CSS class that is always added to the trigger button. The {@link #triggerCls} will be appended in
+     * addition to this class.
      */
     triggerBaseCls: Ext.baseCSSPrefix + 'form-trigger',
 
     /**
-     * @cfg {String} triggerWrapCls
+     * @cfg {String} [triggerWrapCls='x-form-trigger-wrap']
      * The CSS class that is added to the div wrapping the trigger button(s).
      */
     triggerWrapCls: Ext.baseCSSPrefix + 'form-trigger-wrap',
 
     /**
-     * @cfg {Boolean} hideTrigger <tt>true</tt> to hide the trigger element and display only the base
-     * text field (defaults to <tt>false</tt>)
+     * @cfg {Boolean} hideTrigger
+     * true to hide the trigger element and display only the base text field
      */
     hideTrigger: false,
 
     /**
-     * @cfg {Boolean} editable <tt>false</tt> to prevent the user from typing text directly into the field;
-     * the field can only have its value set via an action invoked by the trigger. (defaults to <tt>true</tt>).
+     * @cfg {Boolean} editable
+     * false to prevent the user from typing text directly into the field; the field can only have its value set via an
+     * action invoked by the trigger.
      */
     editable: true,
 
     /**
-     * @cfg {Boolean} readOnly <tt>true</tt> to prevent the user from changing the field, and
-     * hides the trigger.  Supercedes the editable and hideTrigger options if the value is true.
-     * (defaults to <tt>false</tt>)
+     * @cfg {Boolean} readOnly
+     * true to prevent the user from changing the field, and hides the trigger. Supercedes the editable and hideTrigger
+     * options if the value is true.
      */
     readOnly: false,
 
     /**
-     * @cfg {Boolean} selectOnFocus <tt>true</tt> to select any existing text in the field immediately on focus.
-     * Only applies when <tt>{@link #editable editable} = true</tt> (defaults to <tt>false</tt>).
+     * @cfg {Boolean} [selectOnFocus=false]
+     * true to select any existing text in the field immediately on focus. Only applies when
+     * {@link #editable editable} = true
      */
 
     /**
-     * @cfg {Boolean} repeatTriggerClick <tt>true</tt> to attach a {@link Ext.util.ClickRepeater click repeater}
-     * to the trigger. Defaults to <tt>false</tt>.
+     * @cfg {Boolean} repeatTriggerClick
+     * true to attach a {@link Ext.util.ClickRepeater click repeater} to the trigger.
      */
     repeatTriggerClick: false,
 
@@ -171,30 +166,27 @@ Ext.define('Ext.form.field.Trigger', {
         }
         triggerConfigs[i - 1].cls += ' ' + triggerBaseCls + '-last';
 
-        Ext.applyIf(me.renderSelectors, {
-            /**
-             * @property triggerWrap
-             * @type Ext.core.Element
-             * A reference to the div element wrapping the trigger button(s). Only set after the field has been rendered.
-             */
-            triggerWrap: '.' + triggerWrapCls
-        });
+        /**
+         * @property {Ext.Element} triggerWrap
+         * A reference to the div element wrapping the trigger button(s). Only set after the field has been rendered.
+         */
+        me.addChildEls('triggerWrap');
+
         Ext.applyIf(me.subTplData, {
             triggerWrapCls: triggerWrapCls,
-            triggerEl: Ext.core.DomHelper.markup(triggerConfigs),
+            triggerEl: Ext.DomHelper.markup(triggerConfigs),
             clearCls: me.clearCls
         });
 
         me.callParent(arguments);
 
         /**
-         * @property triggerEl
-         * @type Ext.CompositeElement
+         * @property {Ext.CompositeElement} triggerEl
          * A composite of all the trigger button elements. Only set after the field has been rendered.
          */
         me.triggerEl = Ext.select('.' + triggerBaseCls, true, me.triggerWrap.dom);
 
-        me.doc = Ext.isIE ? Ext.getBody() : Ext.getDoc();
+        me.doc = Ext.getDoc();
         me.initTrigger();
     },
 
@@ -211,6 +203,7 @@ Ext.define('Ext.form.field.Trigger', {
     afterRender: function() {
         this.callParent();
         this.updateEditState();
+        this.triggerEl.unselectable();
     },
 
     updateEditState: function() {
@@ -268,11 +261,11 @@ Ext.define('Ext.form.field.Trigger', {
     },
 
     /**
-     * @param {Boolean} editable True to allow the user to directly edit the field text
-     * Allow or prevent the user from directly editing the field text.  If false is passed,
-     * the user will only be able to modify the field using the trigger.  Will also add
-     * a click event to the text field which will call the trigger. This method
-     * is the runtime equivalent of setting the 'editable' config option at config time.
+     * Sets the editable state of this field. This method is the runtime equivalent of setting the 'editable' config
+     * option at config time.
+     * @param {Boolean} editable True to allow the user to directly edit the field text. If false is passed, the user
+     * will only be able to modify the field using the trigger. Will also add a click event to the text field which
+     * will call the trigger. 
      */
     setEditable: function(editable) {
         if (editable != this.editable) {
@@ -282,11 +275,11 @@ Ext.define('Ext.form.field.Trigger', {
     },
 
     /**
-     * @param {Boolean} readOnly True to prevent the user changing the field and explicitly
-     * hide the trigger.
-     * Setting this to true will superceed settings editable and hideTrigger.
-     * Setting this to false will defer back to editable and hideTrigger. This method
-     * is the runtime equivalent of setting the 'readOnly' config option at config time.
+     * Sets the read-only state of this field. This method is the runtime equivalent of setting the 'readOnly' config
+     * option at config time.
+     * @param {Boolean} readOnly True to prevent the user changing the field and explicitly hide the trigger. Setting
+     * this to true will superceed settings editable and hideTrigger. Setting this to false will defer back to editable
+     * and hideTrigger.
      */
     setReadOnly: function(readOnly) {
         if (readOnly != this.readOnly) {
@@ -333,7 +326,7 @@ Ext.define('Ext.form.field.Trigger', {
     // private
     onFocus: function() {
         var me = this;
-        this.callParent();
+        me.callParent();
         if (!me.mimicing) {
             me.bodyEl.addCls(me.wrapFocusCls);
             me.mimicing = true;
@@ -405,10 +398,10 @@ Ext.define('Ext.form.field.Trigger', {
     },
 
     /**
-     * The function that should handle the trigger's click event.  This method does nothing by default
-     * until overridden by an implementing function.  See Ext.form.field.ComboBox and Ext.form.field.Date for
-     * sample implementations.
-     * @method
+     * @method onTriggerClick
+     * @protected
+     * The function that should handle the trigger's click event. This method does nothing by default until overridden
+     * by an implementing function. See Ext.form.field.ComboBox and Ext.form.field.Date for sample implementations.
      * @param {Ext.EventObject} e
      */
     onTriggerClick: Ext.emptyFn

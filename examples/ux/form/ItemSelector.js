@@ -99,7 +99,8 @@ Ext.define('Ext.ux.form.ItemSelector', {
                 dragGroup: ddGroup,
                 dropGroup: ddGroup,
                 flex: 1,
-                hideLabel: true
+                hideLabel: true,
+                disabled: me.disabled
             },
             fromConfig = Ext.apply({
                 listTitle: 'Available',
@@ -364,6 +365,28 @@ Ext.define('Ext.ux.form.ItemSelector', {
             Ext.Array.forEach(me.innerCt.query('button'), function(button) {
                 button.setDisabled(readOnly);
             });
+        }
+    },
+    
+    onDisable: function(){
+        this.callParent();
+        var fromField = this.fromField;
+        
+        // if we have one, we have both, they get created at the same time    
+        if (fromField) {
+            fromField.disable();
+            this.toField.disable();
+        }
+    },
+    
+    onEnable: function(){
+        this.callParent();
+        var fromField = this.fromField;
+        
+        // if we have one, we have both, they get created at the same time    
+        if (fromField) {
+            fromField.enable();
+            this.toField.enable();
         }
     },
 

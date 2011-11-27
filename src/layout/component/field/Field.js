@@ -114,6 +114,10 @@ Ext.define('Ext.layout.component.field.Field', {
 
         me.activeError = owner.getActiveError();
     },
+    
+    onFocus: function(){
+        this.getErrorStrategy().onFocus(this.owner);    
+    },
 
 
     /**
@@ -268,6 +272,18 @@ Ext.define('Ext.layout.component.field.Field', {
                 el.setStyle(name, value);
             }
         }
+        
+        function showTip(owner) {
+            var tip = Ext.layout.component.field.Field.tip,
+                target;
+                
+            if (tip && tip.isVisible()) {
+                target = tip.activeTarget;
+                if (target && target.el === owner.getActionEl().dom) {
+                    tip.toFront(true);
+                }
+            }
+        }
 
         var applyIf = Ext.applyIf,
             emptyFn = Ext.emptyFn,
@@ -278,7 +294,8 @@ Ext.define('Ext.layout.component.field.Field', {
                 adjustHorizInsets: emptyFn,
                 adjustVertInsets: emptyFn,
                 layoutHoriz: emptyFn,
-                layoutVert: emptyFn
+                layoutVert: emptyFn,
+                onFocus: emptyFn
             };
 
         return {
@@ -309,7 +326,8 @@ Ext.define('Ext.layout.component.field.Field', {
                     if (owner.hasActiveError()) {
                         setStyle(owner.errorEl, 'top', info.insets.top + 'px');
                     }
-                }
+                },
+                onFocus: showTip
             }, base),
 
             /**
@@ -346,7 +364,8 @@ Ext.define('Ext.layout.component.field.Field', {
                     setDisplayed(owner.errorEl, false);
                     Ext.layout.component.field.Field.initTip();
                     owner.getActionEl().dom.setAttribute('data-errorqtip', owner.getActiveError() || '');
-                }
+                },
+                onFocus: showTip
             }, base),
 
             /**

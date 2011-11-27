@@ -36,8 +36,8 @@ Ext.onReady(function() {
          * Custom method which toggles a Ext.Button for the current panel on/off depending on the only argument
          */
         toggle: function(on) {
-            var btns = this.dockedItems.items[1],
-                btn = btns.items.items[1];
+            var btns = this.dockedItems.last(),
+                btn = btns.items.first();
 
             if (btn) {
                 btn.setDisabled(!on);

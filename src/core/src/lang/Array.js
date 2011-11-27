@@ -13,14 +13,12 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
+ * @class Ext.Array
+ * @singleton
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
- * @class Ext.Array
  *
  * A set of useful static methods to deal with arrays; provide missing methods for older browsers.
-
- * @singleton
- * @markdown
  */
 (function() {
 
@@ -230,15 +228,14 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * {@link Ext#each Ext.each} is alias for {@link Ext.Array#each Ext.Array.each}
          *
-         * @param {Array/NodeList/Mixed} iterable The value to be iterated. If this
+         * @param {Array/NodeList/Object} iterable The value to be iterated. If this
          * argument is not iterable, the callback function is called once.
          * @param {Function} fn The callback function. If it returns false, the iteration stops and this method returns
-         * the current `index`. Arguments passed to this callback function are:
-         *
-         * - `item` : Mixed - The item at the current `index` in the passed `array`
-         * - `index` : Number - The current `index` within the `array`
-         * - `allItems` : Array/NodeList/Mixed - The `array` passed as the first argument to `Ext.Array.each`
-         *
+         * the current `index`.
+         * @param {Object} fn.item The item at the current `index` in the passed `array`
+         * @param {Number} fn.index The current `index` within the `array`
+         * @param {Array} fn.allItems The `array` itself which was passed as the first argument
+         * @param {Boolean} fn.return Return false to stop iteration.
          * @param {Object} scope (Optional) The scope (`this` reference) in which the specified function is executed.
          * @param {Boolean} reverse (Optional) Reverse the iteration order (loop from the end to the beginning)
          * Defaults false
@@ -270,18 +267,15 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Iterates an array and invoke the given callback function for each item. Note that this will simply
-         * delegate to the native Array.prototype.forEach method if supported.
-         * It doesn't support stopping the iteration by returning false in the callback function like
-         * {@link Ext.Array#each}. However, performance could be much better in modern browsers comparing with
-         * {@link Ext.Array#each}
+         * delegate to the native Array.prototype.forEach method if supported. It doesn't support stopping the
+         * iteration by returning false in the callback function like {@link Ext.Array#each}. However, performance
+         * could be much better in modern browsers comparing with {@link Ext.Array#each}
          *
          * @param {Array} array The array to iterate
-         * @param {Function} fn The function callback, to be invoked these arguments:
-         *
-         * - `item` : Mixed - The item at the current `index` in the passed `array`
-         * - `index` : Number - The current `index` within the `array`
-         * - `allItems` : Array - The `array` itself which was passed as the first argument
-         *
+         * @param {Function} fn The callback function.
+         * @param {Object} fn.item The item at the current `index` in the passed `array`
+         * @param {Number} fn.index The current `index` within the `array`
+         * @param {Array}  fn.allItems The `array` itself which was passed as the first argument
          * @param {Object} scope (Optional) The execution scope (`this`) in which the specified function is executed.
          */
         forEach: function(array, fn, scope) {
@@ -302,7 +296,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * missing arrayPrototype.indexOf in Internet Explorer.
          *
          * @param {Array} array The array to check
-         * @param {Mixed} item The item to look for
+         * @param {Object} item The item to look for
          * @param {Number} from (Optional) The index at which to begin the search
          * @return {Number} The index of item in the array (or -1 if it is not found)
          */
@@ -326,7 +320,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Checks whether or not the given `array` contains the specified `item`
          *
          * @param {Array} array The array to check
-         * @param {Mixed} item The item to look for
+         * @param {Object} item The item to look for
          * @return {Boolean} True if the array contains the item, false otherwise
          */
         contains: function(array, item) {
@@ -365,7 +359,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          * {@link Ext#toArray Ext.toArray} is alias for {@link Ext.Array#toArray Ext.Array.toArray}
          *
-         * @param {Mixed} iterable the iterable object to be turned into a true Array.
+         * @param {Object} iterable the iterable object to be turned into a true Array.
          * @param {Number} start (Optional) a zero-based index that specifies the start of extraction. Defaults to 0
          * @param {Number} end (Optional) a zero-based index that specifies the end of extraction. Defaults to the last
          * index of the iterable value
@@ -402,7 +396,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          *
          *     Ext.Array.pluck(Ext.query("p"), "className"); // [el1.className, el2.className, ..., elN.className]
          *
-         * @param {Array|NodeList} array The Array of items to pluck the value from.
+         * @param {Array/NodeList} array The Array of items to pluck the value from.
          * @param {String} propertyName The property name to pluck from each element.
          * @return {Array} The value from each item in the Array.
          */
@@ -589,8 +583,8 @@ If you are unsure which license is appropriate for your use, please contact the 
          * - An array copy if given value is {@link Ext#isIterable iterable} (arguments, NodeList and alike)
          * - An array with one item which is the given value, otherwise
          *
-         * @param {Array/Mixed} value The value to convert to an array if it's not already is an array
-         * @param {Boolean} (Optional) newReference True to clone the given array and return a new reference if necessary,
+         * @param {Object} value The value to convert to an array if it's not already is an array
+         * @param {Boolean} newReference (Optional) True to clone the given array and return a new reference if necessary,
          * defaults to false
          * @return {Array} array
          */
@@ -614,7 +608,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Removes the specified item from the array if it exists
          *
          * @param {Array} array The array
-         * @param {Mixed} item The item to remove
+         * @param {Object} item The item to remove
          * @return {Array} The passed array itself
          */
         remove: function(array, item) {
@@ -631,7 +625,7 @@ If you are unsure which license is appropriate for your use, please contact the 
          * Push an item into the array only if the array doesn't contain it yet
          *
          * @param {Array} array The array
-         * @param {Mixed} item The item to include
+         * @param {Object} item The item to include
          */
         include: function(array, item) {
             if (!ExtArray.contains(array, item)) {
@@ -763,9 +757,24 @@ If you are unsure which license is appropriate for your use, please contact the 
          * all items up to the end of the array are copied.
          * @return {Array} The copied piece of the array.
          */
-        slice: function(array, begin, end) {
-            return slice.call(array, begin, end);
-        },
+        // Note: IE6 will return [] on slice.call(x, undefined).
+        slice: ([1,2].slice(1, undefined).length ?
+            function (array, begin, end) {
+                return slice.call(array, begin, end);
+            } :
+            // at least IE6 uses arguments.length for variadic signature
+            function (array, begin, end) {
+                // After tested for IE 6, the one below is of the best performance
+                // see http://jsperf.com/slice-fix
+                if (typeof begin === 'undefined') {
+                    return slice.call(array);
+                }
+                if (typeof end === 'undefined') {
+                    return slice.call(array, begin);
+                }
+                return slice.call(array, begin, end);
+            }
+        ),
 
         /**
          * Sorts the elements of an Array.
@@ -814,6 +823,8 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Recursively flattens into 1-d Array. Injects Arrays inline.
          *
+         * @param {Array} array The array to flatten
+         * @return {Array} The 1-d array.
          */
         flatten: function(array) {
             var worker = [];
@@ -840,10 +851,10 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Returns the minimum value in the Array.
          *
-         * @param {Array|NodeList} array The Array from which to select the minimum value.
+         * @param {Array/NodeList} array The Array from which to select the minimum value.
          * @param {Function} comparisonFn (optional) a function to perform the comparision which determines minimization.
          * If omitted the "<" operator will be used. Note: gt = 1; eq = 0; lt = -1
-         * @return {Mixed} minValue The minimum value
+         * @return {Object} minValue The minimum value
          */
         min: function(array, comparisonFn) {
             var min = array[0],
@@ -870,10 +881,10 @@ If you are unsure which license is appropriate for your use, please contact the 
         /**
          * Returns the maximum value in the Array.
          *
-         * @param {Array|NodeList} array The Array from which to select the maximum value.
+         * @param {Array/NodeList} array The Array from which to select the maximum value.
          * @param {Function} comparisonFn (optional) a function to perform the comparision which determines maximization.
          * If omitted the ">" operator will be used. Note: gt = 1; eq = 0; lt = -1
-         * @return {Mixed} maxValue The maximum value
+         * @return {Object} maxValue The maximum value
          */
         max: function(array, comparisonFn) {
             var max = array[0],
@@ -946,7 +957,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
         /**
          * Inserts items in to an array.
-         * 
+         *
          * @param {Array} array The Array on which to replace.
          * @param {Number} index The index in the array at which to operate.
          * @param {Array} items The array of items to insert at index.
@@ -961,11 +972,11 @@ If you are unsure which license is appropriate for your use, please contact the 
          * of Array, but works around bugs in IE8's splice method and is often more convenient
          * to call because it accepts an array of items to insert rather than use a variadic
          * argument list.
-         * 
+         *
          * @param {Array} array The Array on which to replace.
          * @param {Number} index The index in the array at which to operate.
          * @param {Number} removeCount The number of items to remove at index (can be 0).
-         * @param {Array} insert An optional array of items to insert at index.
+         * @param {Array} insert (optional) An array of items to insert at index.
          * @return {Array} The array passed.
          * @method
          */

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,14 +16,12 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-ShadowPool'>/**
-</span> * @class Ext.ShadowPool
- * @extends Object
- * Private utility class that manages the internal Shadow cache
+</span> * Private utility class that manages the internal Shadow cache
  * @private
  */
 Ext.define('Ext.ShadowPool', {
     singleton: true,
-    requires: ['Ext.core.DomHelper'],
+    requires: ['Ext.DomHelper'],
 
     markup: function() {
         if (Ext.supports.CSS3BoxShadow) {
@@ -56,7 +54,7 @@ Ext.define('Ext.ShadowPool', {
     pull: function() {
         var sh = this.shadows.shift();
         if (!sh) {
-            sh = Ext.get(Ext.core.DomHelper.insertHtml(&quot;beforeBegin&quot;, document.body.firstChild, this.markup));
+            sh = Ext.get(Ext.DomHelper.insertHtml(&quot;beforeBegin&quot;, document.body.firstChild, this.markup));
             sh.autoBoxAdjust = false;
         }
         return sh;

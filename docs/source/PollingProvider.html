@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -62,14 +62,13 @@ Ext.define('Ext.direct.PollingProvider', {
     
 <span id='Ext-direct-PollingProvider-cfg-interval'>    /**
 </span>     * @cfg {Number} interval
-     * How often to poll the server-side in milliseconds (defaults to &lt;tt&gt;3000&lt;/tt&gt; - every
-     * 3 seconds).
+     * How often to poll the server-side in milliseconds. Defaults to every 3 seconds.
      */
     interval: 3000,
 
 <span id='Ext-direct-PollingProvider-cfg-baseParams'>    /**
-</span>     * @cfg {Object} baseParams An object containing properties which are to be sent as parameters
-     * on every polling request
+</span>     * @cfg {Object} baseParams
+     * An object containing properties which are to be sent as parameters on every polling request
      */
     
 <span id='Ext-direct-PollingProvider-cfg-url'>    /**
@@ -86,13 +85,13 @@ Ext.define('Ext.direct.PollingProvider', {
 </span>             * @event beforepoll
              * Fired immediately before a poll takes place, an event handler can return false
              * in order to cancel the poll.
-             * @param {Ext.direct.PollingProvider}
+             * @param {Ext.direct.PollingProvider} this
              */
             'beforepoll',            
 <span id='Ext-direct-PollingProvider-event-poll'>            /**
 </span>             * @event poll
              * This event has not yet been implemented.
-             * @param {Ext.direct.PollingProvider}
+             * @param {Ext.direct.PollingProvider} this
              */
             'poll'
         );

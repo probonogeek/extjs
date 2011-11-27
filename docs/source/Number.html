@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,340 +15,313 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-form-field-Number'>/**
-</span> * @class Ext.form.field.Number
- * @extends Ext.form.field.Spinner
-
-A numeric text field that provides automatic keystroke filtering to disallow non-numeric characters,
-and numeric validation to limit the value to a range of valid numbers. The range of acceptable number
-values can be controlled by setting the {@link #minValue} and {@link #maxValue} configs, and fractional
-decimals can be disallowed by setting {@link #allowDecimals} to `false`.
-
-By default, the number field is also rendered with a set of up/down spinner buttons and has
-up/down arrow key and mouse wheel event listeners attached for incrementing/decrementing the value by the
-{@link #step} value. To hide the spinner buttons set `{@link #hideTrigger hideTrigger}:true`; to disable the arrow key
-and mouse wheel handlers set `{@link #keyNavEnabled keyNavEnabled}:false` and
-`{@link #mouseWheelEnabled mouseWheelEnabled}:false`. See the example below.
-
-#Example usage:#
-{@img Ext.form.Number/Ext.form.Number1.png Ext.form.Number component}
-    Ext.create('Ext.form.Panel', {
-        title: 'On The Wall',
-        width: 300,
-        bodyPadding: 10,
-        renderTo: Ext.getBody(),
-        items: [{
-            xtype: 'numberfield',
-            anchor: '100%',
-            name: 'bottles',
-            fieldLabel: 'Bottles of Beer',
-            value: 99,
-            maxValue: 99,
-            minValue: 0
-        }],
-        buttons: [{
-            text: 'Take one down, pass it around',
-            handler: function() {
-                this.up('form').down('[name=bottles]').spinDown();
-            }
-        }]
-    });
-
-#Removing UI Enhancements#
-{@img Ext.form.Number/Ext.form.Number2.png Ext.form.Number component}
-    Ext.create('Ext.form.Panel', {
-        title: 'Personal Info',
-        width: 300,
-        bodyPadding: 10,
-        renderTo: Ext.getBody(),        
-        items: [{
-            xtype: 'numberfield',
-            anchor: '100%',
-            name: 'age',
-            fieldLabel: 'Age',
-            minValue: 0, //prevents negative numbers
-    
-            // Remove spinner buttons, and arrow key and mouse wheel listeners
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false
-        }]
-    });
-
-#Using Step#
-    Ext.create('Ext.form.Panel', {
-        renderTo: Ext.getBody(),
-        title: 'Step',
-        width: 300,
-        bodyPadding: 10,
-        items: [{
-            xtype: 'numberfield',
-            anchor: '100%',
-            name: 'evens',
-            fieldLabel: 'Even Numbers',
-
-            // Set step so it skips every other number
-            step: 2,
-            value: 0,
-
-            // Add change handler to force user-entered numbers to evens
-            listeners: {
-                change: function(field, value) {
-                    value = parseInt(value, 10);
-                    field.setValue(value + value % 2);
-                }
-            }
-        }]
-    });
-
-
+  <pre class="prettyprint lang-js"><span id='Number'>/**
+</span> * @class Number
  *
- * @markdown
- * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
+ * Creates a wrapper object to allow you to work with numerical values.
+ *
+ * The primary uses for the `Number` object are:
+ *
+ * If the argument cannot be converted into a number, it returns `NaN`.
+ *
+ * In a non-constructor context (i.e., without the `new` operator), `Number` can
+ * be used to perform a type conversion.
+ *
+ * # Using the `Number` object to assign values to numeric variables
+ *
+ * The following example uses the `Number` object's properties to assign values to
+ * several numeric variables:
+ *
+ *     biggestNum = Number.MAX_VALUE;
+ *     smallestNum = Number.MIN_VALUE;
+ *     infiniteNum = Number.POSITIVE_INFINITY;
+ *     negInfiniteNum = Number.NEGATIVE_INFINITY;
+ *     notANum = Number.NaN;
+ *
+ * # Using `Number` to convert a `Date` object
+ *
+ * The following example converts the `Date` object to a numerical value using
+ * `Number` as a function:
+ *
+ *     var d = new Date(&quot;December 17, 1995 03:24:00&quot;);
+ *     print(Number(d));
+ *
+ * This displays &quot;819199440000&quot;.
+ *
+ * The following example converts the Date object to a numerical value using
+ * `Number` as a function:
+ *
+ * &lt;div class=&quot;notice&quot;&gt;
+ * Documentation for this class comes from &lt;a href=&quot;https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number&quot;&gt;MDN&lt;/a&gt;
+ * and is available under &lt;a href=&quot;http://creativecommons.org/licenses/by-sa/2.0/&quot;&gt;Creative Commons: Attribution-Sharealike license&lt;/a&gt;.
+ * &lt;/div&gt;
  */
-Ext.define('Ext.form.field.Number', {
-    extend:'Ext.form.field.Spinner',
-    alias: 'widget.numberfield',
-    alternateClassName: ['Ext.form.NumberField', 'Ext.form.Number'],
 
-<span id='Ext-form-field-Number-cfg-stripCharsRe'>    /**
-</span>     * @cfg {RegExp} stripCharsRe @hide
-     */
-<span id='Ext-form-field-Number-cfg-maskRe'>    /**
-</span>     * @cfg {RegExp} maskRe @hide
-     */
+<span id='Number-method-constructor'>/**
+</span> * @method constructor
+ * Creates new Number object.
+ * @param value
+ * The numeric value of the object being created.
+ */
 
-<span id='Ext-form-field-Number-cfg-allowDecimals'>    /**
-</span>     * @cfg {Boolean} allowDecimals False to disallow decimal values (defaults to true)
-     */
-    allowDecimals : true,
+//Properties
 
-<span id='Ext-form-field-Number-cfg-decimalSeparator'>    /**
-</span>     * @cfg {String} decimalSeparator Character(s) to allow as the decimal separator (defaults to '.')
-     */
-    decimalSeparator : '.',
+<span id='Number-static-property-MAX_VALUE'>/**
+</span> * @property {Number} MAX_VALUE
+ * @static
+ * The largest positive representable number. The largest negative representable
+ * number is `-MAX_VALUE`.
+ *
+ * The `MAX_VALUE` property has a value of approximately 1.79E+308. Values larger than `MAX_VALUE` are
+ * represented as `&quot;Infinity&quot;`.
+ *
+ * Because `MAX_VALUE` is a static property of `Number`, you always use it as `Number.MAX_VALUE`,
+ * rather than as a property of a `Number` object you created.
+ *
+ * The following code multiplies two numeric values. If the result is less than or equal to
+ * `MAX_VALUE`, the `func1` function is called; otherwise, the `func2` function is called.
+ *
+ *     if (num1 * num2 &lt;= Number.MAX_VALUE)
+ *         func1();
+ *     else
+ *         func2();
+ */
 
-<span id='Ext-form-field-Number-cfg-decimalPrecision'>    /**
-</span>     * @cfg {Number} decimalPrecision The maximum precision to display after the decimal separator (defaults to 2)
-     */
-    decimalPrecision : 2,
+<span id='Number-static-property-MIN_VALUE'>/**
+</span> * @property {Number} MIN_VALUE
+ * @static
+ * The smallest positive representable number -- that is, the positive number
+ * closest to zero (without actually being zero). The smallest negative
+ * representable number is `-MIN_VALUE`.
+ *
+ * The `MIN_VALUE` property is the number closest to 0, not the most negative number, that JavaScript
+ * can represent.
+ *
+ * `MIN_VALUE` has a value of approximately 5e-324. Values smaller than `MIN_VALUE` (&quot;underflow
+ * values&quot;) are converted to 0.
+ *
+ * Because `MIN_VALUE` is a static property of `Number`, you always use it as `Number.MIN_VALUE`,
+ * rather than as a property of a `Number` object you created.
+ *
+ * The following code divides two numeric values. If the result is greater than or equal to
+ * `MIN_VALUE`, the `func1` function is called; otherwise, the `func2` function is called.
+ *
+ *     if (num1 / num2 &gt;= Number.MIN_VALUE)
+ *         func1()
+ *     else
+ *         func2()
+ */
 
-<span id='Ext-form-field-Number-cfg-minValue'>    /**
-</span>     * @cfg {Number} minValue The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by
-     * the field's validation logic, and for
-     * {@link Ext.form.field.Spinner#setSpinUpEnabled enabling/disabling the down spinner button}.
-     */
-    minValue: Number.NEGATIVE_INFINITY,
+<span id='Number-static-property-NaN'>/**
+</span> * @property {Number} NaN
+ * @static
+ * Special &quot;not a number&quot; value.
+ */
 
-<span id='Ext-form-field-Number-cfg-maxValue'>    /**
-</span>     * @cfg {Number} maxValue The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by
-     * the field's validation logic, and for
-     * {@link Ext.form.field.Spinner#setSpinUpEnabled enabling/disabling the up spinner button}.
-     */
-    maxValue: Number.MAX_VALUE,
+<span id='Number-property-NEGATIVE_INFINITY'>/**
+</span> * @property {Number} NEGATIVE_INFINITY
+ * Special value representing negative infinity; returned on overflow.
+ *
+ * The value of `Number.NEGATIVE_INFINITY` is the same as the negative value of the global object's
+ * Infinity property.
+ *
+ * This value behaves slightly differently than mathematical infinity:
+ *
+ * *   Any positive value, including POSITIVE_INFINITY, multiplied by NEGATIVE_INFINITY is NEGATIVE_INFINITY.
+ * *   Any negative value, including NEGATIVE_INFINITY, multiplied by NEGATIVE_INFINITY is
+ * POSITIVE_INFINITY.
+ * *   Zero multiplied by NEGATIVE_INFINITY is NaN.
+ * *   NaN multiplied by NEGATIVE_INFINITY is NaN.
+ * *   NEGATIVE_INFINITY, divided by any negative value except NEGATIVE_INFINITY, is
+ * POSITIVE_INFINITY.
+ * *   NEGATIVE_INFINITY, divided by any positive value except POSITIVE_INFINITY, is
+ * NEGATIVE_INFINITY.
+ * *   NEGATIVE_INFINITY, divided by either NEGATIVE_INFINITY or POSITIVE_INFINITY, is NaN.
+ * *   Any number divided by NEGATIVE_INFINITY is Zero.
+ *
+ * Several JavaScript methods (such as the `Number` constructor, `parseFloat`, and `parseInt`) return
+ * `NaN` if the value specified in the parameter is significantly lower than `Number.MIN_VALUE`.
+ *
+ * You might use the `Number.NEGATIVE_INFINITY` property to indicate an error condition that returns a
+ * finite number in case of success. Note, however, that `isFinite` would be more appropriate in such
+ * a case.
+ *
+ * In the following example, the variable smallNumber is assigned a value that is smaller than the
+ * minimum value. When the `if` statement executes, `smallNumber` has the value `&quot;-Infinity&quot;`, so
+ * `smallNumber` is set to a more manageable value before continuing.
+ *
+ *     var smallNumber = (-Number.MAX_VALUE) * 2
+ *     if (smallNumber == Number.NEGATIVE_INFINITY) {
+ *         smallNumber = returnFinite();
+ *     }
+ */
 
-<span id='Ext-form-field-Number-cfg-step'>    /**
-</span>     * @cfg {Number} step Specifies a numeric interval by which the field's value will be incremented or
-     * decremented when the user invokes the spinner. Defaults to &lt;tt&gt;1&lt;/tt&gt;.
-     */
-    step: 1,
+<span id='Number-property-POSITIVE_INFINITY'>/**
+</span> * @property {Number} POSITIVE_INFINITY
+ * Special value representing infinity; returned on overflow.
+ *
+ * The value of `Number.POSITIVE_INFINITY` is the same as the value of the global object's Infinity
+ * property.
+ *
+ * This value behaves slightly differently than mathematical infinity:
+ *
+ * *   Any positive value, including POSITIVE_INFINITY, multiplied by POSITIVE_INFINITY is
+ * POSITIVE_INFINITY.
+ * *   Any negative value, including NEGATIVE_INFINITY, multiplied by POSITIVE_INFINITY is
+ * NEGATIVE_INFINITY.
+ * *   Zero multiplied by POSITIVE_INFINITY is NaN.
+ * *   NaN multiplied by POSITIVE_INFINITY is NaN.
+ * *   POSITIVE_INFINITY, divided by any negative value except NEGATIVE_INFINITY, is
+ * NEGATIVE_INFINITY.
+ * *   POSITIVE_INFINITY, divided by any positive value except POSITIVE_INFINITY, is
+ * POSITIVE_INFINITY.
+ * *   POSITIVE_INFINITY, divided by either NEGATIVE_INFINITY or POSITIVE_INFINITY, is NaN.
+ * *   Any number divided by POSITIVE_INFINITY is Zero.
+ *
+ * Several JavaScript methods (such as the `Number` constructor, `parseFloat`, and `parseInt`) return
+ * `NaN` if the value specified in the parameter is significantly higher than `Number.MAX_VALUE`.
+ *
+ * You might use the `Number.POSITIVE_INFINITY` property to indicate an error condition that returns a
+ * finite number in case of success. Note, however, that `isFinite` would be more appropriate in such
+ * a case.
+ *
+ * In the following example, the variable `bigNumber` is assigned a value that is larger than the
+ * maximum value. When the if statement executes, `bigNumber` has the value &quot;Infinity&quot;, so `bigNumber`
+ * is set to a more manageable value before continuing.
+ *
+ *     var bigNumber = Number.MAX_VALUE * 2
+ *     if (bigNumber == Number.POSITIVE_INFINITY) {
+ *         bigNumber = returnFinite();
+ *     }
+ */
 
-<span id='Ext-form-field-Number-cfg-minText'>    /**
-</span>     * @cfg {String} minText Error text to display if the minimum value validation fails (defaults to 'The minimum
-     * value for this field is {minValue}')
-     */
-    minText : 'The minimum value for this field is {0}',
+//Methods
 
-<span id='Ext-form-field-Number-cfg-maxText'>    /**
-</span>     * @cfg {String} maxText Error text to display if the maximum value validation fails (defaults to 'The maximum
-     * value for this field is {maxValue}')
-     */
-    maxText : 'The maximum value for this field is {0}',
+<span id='Number-method-toExponential'>/**
+</span> * @method toExponential
+ * Returns a string representing the number in exponential notation.
+ *
+ * A string representing a `Number` object in exponential notation with one digit before the decimal
+ * point, rounded to `fractionDigits` digits after the decimal point. If the `fractionDigits` argument
+ * is omitted, the number of digits after the decimal point defaults to the number of digits necessary
+ * to represent the value uniquely.
+ *
+ * If you use the `toExponential` method for a numeric literal and the numeric literal has no exponent
+ * and no decimal point, leave a space before the dot that precedes the method call to prevent the dot
+ * from being interpreted as a decimal point.
+ *
+ * If a number has more digits that requested by the `fractionDigits` parameter, the number is rounded
+ * to the nearest number represented by `fractionDigits` digits. See the discussion of rounding in the
+ * description of the `toFixed` method, which also applies to `toExponential`.
+ *
+ *     var num=77.1234;
+ *
+ *     alert(&quot;num.toExponential() is &quot; + num.toExponential()); //displays 7.71234e+1
+ *
+ *     alert(&quot;num.toExponential(4) is &quot; + num.toExponential(4)); //displays 7.7123e+1
+ *
+ *     alert(&quot;num.toExponential(2) is &quot; + num.toExponential(2)); //displays 7.71e+1
+ *
+ *     alert(&quot;77.1234.toExponential() is &quot; + 77.1234.toExponential()); //displays 7.71234e+1
+ *
+ *     alert(&quot;77 .toExponential() is &quot; + 77 .toExponential()); //displays 7.7e+1
+ *
+ * @param {Number} fractionDigits An integer specifying the number of digits after the decimal
+ * point. Defaults to as many digits as necessary to specify the number.
+ * @return {String} Exponential notation of number.
+ */
 
-<span id='Ext-form-field-Number-cfg-nanText'>    /**
-</span>     * @cfg {String} nanText Error text to display if the value is not a valid number.  For example, this can happen
-     * if a valid character like '.' or '-' is left in the field with no number (defaults to '{value} is not a valid number')
-     */
-    nanText : '{0} is not a valid number',
+<span id='Number-method-toFixed'>/**
+</span> * @method toFixed
+ * Returns a string representing the number in fixed-point notation.
+ *
+ * @return {String} A string representation of `number` that does not use
+ * exponential notation and has exactly `digits` digits after the decimal place.
+ * The number is rounded if necessary, and the fractional part is padded with
+ * zeros if necessary so that it has the specified length. If `number` is greater
+ * than 1e+21, this method simply calls `Number.toString()` and returns a string
+ * in exponential notation.
+ *
+ * @param {Number} digits The number of digits to appear after the decimal point; this may be a
+ * value between 0 and 20, inclusive, and implementations may optionally support a larger range of
+ * values. If this argument is omitted, it is treated as 0.
+ */
 
-<span id='Ext-form-field-Number-cfg-negativeText'>    /**
-</span>     * @cfg {String} negativeText Error text to display if the value is negative and {@link #minValue} is set to
-     * &lt;tt&gt;0&lt;/tt&gt;. This is used instead of the {@link #minText} in that circumstance only.
-     */
-    negativeText : 'The value cannot be negative',
+<span id='Number-method-toLocaleString'>/**
+</span> * @method toLocaleString
+ * Returns a human readable string representing the number using the locale of the
+ * environment. Overrides the `Object.prototype.toLocaleString` method.
+ *
+ * This method available to numbers will convert the number into a string which is suitable for
+ * presentation in the given locale.
+ *
+ *     var number = 3500
+ *     console.log(number.toLocaleString()); // Displays &quot;3,500&quot; in English locale
+ *
+ * @return {String} String representing the number.
+ */
 
-<span id='Ext-form-field-Number-cfg-baseChars'>    /**
-</span>     * @cfg {String} baseChars The base set of characters to evaluate as valid numbers (defaults to '0123456789').
-     */
-    baseChars : '0123456789',
+<span id='Number-method-toPrecision'>/**
+</span> * @method toPrecision
+ * Returns a string representing the number to a specified precision in fixed-
+ * point or exponential notation.
+ *
+ * A string representing a `Number` object in fixed-point or
+ * exponential notation rounded to precision significant digits. See the
+ * discussion of rounding in the description of the `toFixed` method, which also
+ * applies to `toPrecision`.
+ *
+ * If the precision argument is omitted, behaves as Number.toString. If it is a
+ * non-integer value, it is rounded to the nearest integer. After rounding, if
+ * that value is not between 1 and 100 (inclusive), a RangeError is thrown.
+ *
+ * @param {Number} precision An integer specifying the number of significant digits.
+ * @return {String} String that represents `Number` object.
+ */
 
-<span id='Ext-form-field-Number-cfg-autoStripChars'>    /**
-</span>     * @cfg {Boolean} autoStripChars True to automatically strip not allowed characters from the field. Defaults to &lt;tt&gt;false&lt;/tt&gt;
-     */
-    autoStripChars: false,
+<span id='Number-method-toString'>/**
+</span> * @method toString
+ * Returns a string representing the specified object. Overrides the
+ * `Object.prototype.toString` method.
+ *
+ * The `Number` object overrides the `toString` method of the `Object` object; it does not inherit
+ * `Object.toString`. For `Number` objects, the toString method returns a string representation of the
+ * object in the specified radix.
+ *
+ * The `toString` method parses its first argument, and attempts to return a string representation in
+ * the specified radix (base). For radixes above 10, the letters of the alphabet indicate numerals
+ * greater than 9. For example, for hexadecimal numbers (base 16), A through F are used.
+ *
+ * If `toString` is given a radix not between 2 and 36, an exception is thrown.
+ *
+ * If the radix is not specified, JavaScript assumes the preferred radix is 10.
+ *
+ *     var count = 10;
+ *     print(count.toString());   // displays &quot;10&quot;
+ *     print((17).toString());    // displays &quot;17&quot;
+ *
+ *     var x = 7;
+ *     print(x.toString(2));      // displays &quot;111&quot;
+ *
+ * @param {Number} radix An integer between 2 and 36 specifying the base to use for representing
+ * numeric values.
+ * @return {String} The number represented as a string.
+ */
 
-    initComponent: function() {
-        var me = this,
-            allowed;
-
-        me.callParent();
-
-        me.setMinValue(me.minValue);
-        me.setMaxValue(me.maxValue);
-
-        // Build regexes for masking and stripping based on the configured options
-        if (me.disableKeyFilter !== true) {
-            allowed = me.baseChars + '';
-            if (me.allowDecimals) {
-                allowed += me.decimalSeparator;
-            }
-            if (me.minValue &lt; 0) {
-                allowed += '-';
-            }
-            allowed = Ext.String.escapeRegex(allowed);
-            me.maskRe = new RegExp('[' + allowed + ']');
-            if (me.autoStripChars) {
-                me.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
-            }
-        }
-    },
-
-<span id='Ext-form-field-Number-method-getErrors'>    /**
-</span>     * Runs all of Number's validations and returns an array of any errors. Note that this first
-     * runs Text's validations, so the returned array is an amalgamation of all field errors.
-     * The additional validations run test that the value is a number, and that it is within the
-     * configured min and max values.
-     * @param {Mixed} value The value to get errors for (defaults to the current field value)
-     * @return {Array} All validation errors for this field
-     */
-    getErrors: function(value) {
-        var me = this,
-            errors = me.callParent(arguments),
-            format = Ext.String.format,
-            num;
-
-        value = Ext.isDefined(value) ? value : this.processRawValue(this.getRawValue());
-
-        if (value.length &lt; 1) { // if it's blank and textfield didn't flag it then it's valid
-             return errors;
-        }
-
-        value = String(value).replace(me.decimalSeparator, '.');
-
-        if(isNaN(value)){
-            errors.push(format(me.nanText, value));
-        }
-
-        num = me.parseValue(value);
-
-        if (me.minValue === 0 &amp;&amp; num &lt; 0) {
-            errors.push(this.negativeText);
-        }
-        else if (num &lt; me.minValue) {
-            errors.push(format(me.minText, me.minValue));
-        }
-
-        if (num &gt; me.maxValue) {
-            errors.push(format(me.maxText, me.maxValue));
-        }
-
-
-        return errors;
-    },
-
-    rawToValue: function(rawValue) {
-        var value = this.fixPrecision(this.parseValue(rawValue));
-        if (value === null) {
-            value = rawValue || null;
-        }
-        return  value;
-    },
-
-    valueToRaw: function(value) {
-        var me = this,
-            decimalSeparator = me.decimalSeparator;
-        value = me.parseValue(value);
-        value = me.fixPrecision(value);
-        value = Ext.isNumber(value) ? value : parseFloat(String(value).replace(decimalSeparator, '.'));
-        value = isNaN(value) ? '' : String(value).replace('.', decimalSeparator);
-        return value;
-    },
-
-    onChange: function() {
-        var me = this,
-            value = me.getValue(),
-            valueIsNull = value === null;
-
-        me.callParent(arguments);
-
-        // Update the spinner buttons
-        me.setSpinUpEnabled(valueIsNull || value &lt; me.maxValue);
-        me.setSpinDownEnabled(valueIsNull || value &gt; me.minValue);
-    },
-
-<span id='Ext-form-field-Number-method-setMinValue'>    /**
-</span>     * Replaces any existing {@link #minValue} with the new value.
-     * @param {Number} value The minimum value
-     */
-    setMinValue : function(value) {
-        this.minValue = Ext.Number.from(value, Number.NEGATIVE_INFINITY);
-    },
-
-<span id='Ext-form-field-Number-method-setMaxValue'>    /**
-</span>     * Replaces any existing {@link #maxValue} with the new value.
-     * @param {Number} value The maximum value
-     */
-    setMaxValue: function(value) {
-        this.maxValue = Ext.Number.from(value, Number.MAX_VALUE);
-    },
-
-    // private
-    parseValue : function(value) {
-        value = parseFloat(String(value).replace(this.decimalSeparator, '.'));
-        return isNaN(value) ? null : value;
-    },
-
-<span id='Ext-form-field-Number-method-fixPrecision'>    /**
-</span>     * @private
-     *
-     */
-    fixPrecision : function(value) {
-        var me = this,
-            nan = isNaN(value),
-            precision = me.decimalPrecision;
-
-        if (nan || !value) {
-            return nan ? '' : value;
-        } else if (!me.allowDecimals || precision &lt;= 0) {
-            precision = 0;
-        }
-
-        return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
-    },
-
-    beforeBlur : function() {
-        var me = this,
-            v = me.parseValue(me.getRawValue());
-
-        if (!Ext.isEmpty(v)) {
-            me.setValue(v);
-        }
-    },
-
-    onSpinUp: function() {
-        var me = this;
-        if (!me.readOnly) {
-            me.setValue(Ext.Number.constrain(me.getValue() + me.step, me.minValue, me.maxValue));
-        }
-    },
-
-    onSpinDown: function() {
-        var me = this;
-        if (!me.readOnly) {
-            me.setValue(Ext.Number.constrain(me.getValue() - me.step, me.minValue, me.maxValue));
-        }
-    }
-});
-</pre>
+<span id='Number-method-valueOf'>/**
+</span> * @method valueOf
+ * Returns the primitive value of the specified object. Overrides the
+ * `Object.prototype.valueOf` method.
+ *
+ * The `valueOf` method of `Number` returns the primitive value of a `Number` object as a number data
+ * type.
+ *
+ * This method is usually called internally by JavaScript and not explicitly in code.
+ *
+ *     var x = new Number();
+ *     print(x.valueOf());     // prints &quot;0&quot;
+ *
+ * @return {Number} The primitive value of the number.
+ */</pre>
 </body>
 </html>

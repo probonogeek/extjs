@@ -21,10 +21,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * axis so that the values are bound to that. If no values are set, then the
  * scale will auto-adjust to the values.
  *
- * {@img Ext.chart.axis.Numeric/Ext.chart.axis.Numeric.png Ext.chart.axis.Numeric chart axis}
- *
- * For example:
- *
+ *     @example
  *     var store = Ext.create('Ext.data.JsonStore', {
  *          fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
  *          data: [
@@ -32,10 +29,10 @@ If you are unsure which license is appropriate for your use, please contact the 
  *              {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
  *              {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
  *              {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
- *              {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *              {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
  *          ]
  *     });
- *  
+ *
  *     Ext.create('Ext.chart.Chart', {
  *         renderTo: Ext.getBody(),
  *         width: 500,
@@ -83,12 +80,11 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * In this example we create an axis of Numeric type. We set a minimum value so that
  * even if all series have values greater than zero, the grid starts at zero. We bind
- * the axis onto the left part of the surface by setting <em>position</em> to <em>left</em>.
- * We bind three different store fields to this axis by setting <em>fields</em> to an array.
- * We set the title of the axis to <em>Number of Hits</em> by using the <em>title</em> property.
- * We use a <em>grid</em> configuration to set odd background rows to a certain style and even rows
+ * the axis onto the left part of the surface by setting `position` to `left`.
+ * We bind three different store fields to this axis by setting `fields` to an array.
+ * We set the title of the axis to _Number of Hits_ by using the `title` property.
+ * We use a `grid` configuration to set odd background rows to a certain style and even rows
  * to be transparent/ignored.
- *
  */
 Ext.define('Ext.chart.axis.Numeric', {
 
@@ -108,7 +104,7 @@ Ext.define('Ext.chart.axis.Numeric', {
         var me = this,
             hasLabel = !!(config.label && config.label.renderer),
             label;
-        
+
         me.callParent([config]);
         label = me.label;
         if (me.roundToDecimal === false) {
@@ -118,20 +114,19 @@ Ext.define('Ext.chart.axis.Numeric', {
             label.renderer = function(v) {
                 return me.roundToDecimal(v, me.decimals);
             };
-        } 
+        }
     },
-    
+
     roundToDecimal: function(v, dec) {
         var val = Math.pow(10, dec || 0);
-        return ((v * val) >> 0) / val;
+        return Math.floor(v * val) / val;
     },
-    
+
     /**
      * The minimum value drawn by the axis. If not set explicitly, the axis
      * minimum will be calculated automatically.
      *
-     * @property minimum
-     * @type Number
+     * @property {Number} minimum
      */
     minimum: NaN,
 
@@ -139,34 +134,30 @@ Ext.define('Ext.chart.axis.Numeric', {
      * The maximum value drawn by the axis. If not set explicitly, the axis
      * maximum will be calculated automatically.
      *
-     * @property maximum
-     * @type Number
+     * @property {Number} maximum
      */
     maximum: NaN,
 
     /**
      * The number of decimals to round the value to.
-     * Default's 2.
      *
-     * @property decimals
-     * @type Number
+     * @property {Number} decimals
      */
     decimals: 2,
 
     /**
      * The scaling algorithm to use on this axis. May be "linear" or
-     * "logarithmic".
+     * "logarithmic".  Currently only linear scale is implemented.
      *
-     * @property scale
-     * @type String
+     * @property {String} scale
+     * @private
      */
     scale: "linear",
 
     /**
      * Indicates the position of the axis relative to the chart
      *
-     * @property position
-     * @type String
+     * @property {String} position
      */
     position: 'left',
 
@@ -174,8 +165,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      * Indicates whether to extend maximum beyond data's maximum to the nearest
      * majorUnit.
      *
-     * @property adjustMaximumByMajorUnit
-     * @type Boolean
+     * @property {Boolean} adjustMaximumByMajorUnit
      */
     adjustMaximumByMajorUnit: false,
 
@@ -183,8 +173,7 @@ Ext.define('Ext.chart.axis.Numeric', {
      * Indicates whether to extend the minimum beyond data's minimum to the
      * nearest majorUnit.
      *
-     * @property adjustMinimumByMajorUnit
-     * @type Boolean
+     * @property {Boolean} adjustMinimumByMajorUnit
      */
     adjustMinimumByMajorUnit: false,
 

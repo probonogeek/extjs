@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -27,14 +27,16 @@ Ext.define('Ext.data.NodeStore', {
     requires: ['Ext.data.NodeInterface'],
     
 <span id='Ext-data-NodeStore-cfg-node'>    /**
-</span>     * @cfg {Ext.data.Record} node The Record you want to bind this Store to. Note that
+</span>     * @cfg {Ext.data.Model} node
+     * The Record you want to bind this Store to. Note that
      * this record will be decorated with the Ext.data.NodeInterface if this is not the
      * case yet.
      */
     node: null,
     
 <span id='Ext-data-NodeStore-cfg-recursive'>    /**
-</span>     * @cfg {Boolean} recursive Set this to true if you want this NodeStore to represent
+</span>     * @cfg {Boolean} recursive
+     * Set this to true if you want this NodeStore to represent
      * all the descendents of the node in its flat data collection. This is useful for
      * rendering a tree structure to a DataView and is being used internally by
      * the TreeView. Any records that are moved, removed, inserted or appended to the
@@ -44,7 +46,8 @@ Ext.define('Ext.data.NodeStore', {
     recursive: false,
     
 <span id='Ext-data-NodeStore-cfg-rootVisible'>    /** 
-</span>     * @cfg {Boolean} rootVisible &lt;tt&gt;false&lt;/tt&gt; to not include the root node in this Stores collection (defaults to &lt;tt&gt;true&lt;/tt&gt;)
+</span>     * @cfg {Boolean} rootVisible
+     * False to not include the root node in this Stores collection.
      */    
     rootVisible: false,
     

@@ -185,9 +185,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
       Ext.apply(Ext.form.field.ComboBox.prototype, {
-        loadingText       : "A Carregar...",
         valueNotFoundText : undefined
       });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "A Carregar..."
+        });
     }
 
     if(Ext.form.field.VTypes){

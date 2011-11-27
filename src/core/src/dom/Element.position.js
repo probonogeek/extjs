@@ -13,11 +13,11 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
 (function(){
 
-var ELEMENT = Ext.core.Element,
+var ELEMENT = Ext.Element,
     LEFT = "left",
     RIGHT = "right",
     TOP = "top",
@@ -28,7 +28,7 @@ var ELEMENT = Ext.core.Element,
     AUTO = "auto",
     ZINDEX = "z-index";
 
-Ext.override(Ext.core.Element, {
+Ext.override(Ext.Element, {
     /**
       * Gets the current X position of the element based on page coordinates.  Element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
       * @return {Number} The X position of the element
@@ -47,7 +47,7 @@ Ext.override(Ext.core.Element, {
 
     /**
       * Gets the current position of the element based on page coordinates.  Element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
-      * @return {Array} The XY position of the element
+      * @return {Number[]} The XY position of the element
       */
     getXY : function(){
         return ELEMENT.getXY(this.dom);
@@ -55,8 +55,8 @@ Ext.override(Ext.core.Element, {
 
     /**
       * Returns the offsets of this element from the passed element. Both element must be part of the DOM tree and not have display:none to have page coordinates.
-      * @param {Mixed} element The element to get the offsets from.
-      * @return {Array} The XY page offsets (e.g. [100, -200])
+      * @param {String/HTMLElement/Ext.Element} element The element to get the offsets from.
+      * @return {Number[]} The XY page offsets (e.g. [100, -200])
       */
     getOffsetsTo : function(el){
         var o = this.getXY(),
@@ -68,7 +68,7 @@ Ext.override(Ext.core.Element, {
      * Sets the X position of the element based on page coordinates.  Element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
      * @param {Number} The X position of the element
      * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setX : function(x, animate){
         return this.setXY([x, this.getY()], animate);
@@ -78,7 +78,7 @@ Ext.override(Ext.core.Element, {
      * Sets the Y position of the element based on page coordinates.  Element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
      * @param {Number} The Y position of the element
      * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setY : function(y, animate){
         return this.setXY([this.getX(), y], animate);
@@ -87,7 +87,7 @@ Ext.override(Ext.core.Element, {
     /**
      * Sets the element's left position directly using CSS style (instead of {@link #setX}).
      * @param {String} left The left CSS property value
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setLeft : function(left){
         this.setStyle(LEFT, this.addUnits(left));
@@ -97,7 +97,7 @@ Ext.override(Ext.core.Element, {
     /**
      * Sets the element's top position directly using CSS style (instead of {@link #setY}).
      * @param {String} top The top CSS property value
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setTop : function(top){
         this.setStyle(TOP, this.addUnits(top));
@@ -107,7 +107,7 @@ Ext.override(Ext.core.Element, {
     /**
      * Sets the element's CSS right style.
      * @param {String} right The right CSS property value
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setRight : function(right){
         this.setStyle(RIGHT, this.addUnits(right));
@@ -117,7 +117,7 @@ Ext.override(Ext.core.Element, {
     /**
      * Sets the element's CSS bottom style.
      * @param {String} bottom The bottom CSS property value
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setBottom : function(bottom){
         this.setStyle(BOTTOM, this.addUnits(bottom));
@@ -127,9 +127,9 @@ Ext.override(Ext.core.Element, {
     /**
      * Sets the position of the element in page coordinates, regardless of how the element is positioned.
      * The element must be part of the DOM tree to have page coordinates (display:none or elements not appended return false).
-     * @param {Array} pos Contains X & Y [x, y] values for new position (coordinates are page-based)
+     * @param {Number[]} pos Contains X & Y [x, y] values for new position (coordinates are page-based)
      * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setXY: function(pos, animate) {
         var me = this;
@@ -151,7 +151,7 @@ Ext.override(Ext.core.Element, {
      * @param {Number} x X value for new position (coordinates are page-based)
      * @param {Number} y Y value for new position (coordinates are page-based)
      * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setLocation : function(x, y, animate){
         return this.setXY([x, y], animate);
@@ -163,7 +163,7 @@ Ext.override(Ext.core.Element, {
      * @param {Number} x X value for new position (coordinates are page-based)
      * @param {Number} y Y value for new position (coordinates are page-based)
      * @param {Boolean/Object} animate (optional) True for the default animation, or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     moveTo : function(x, y, animate){
         return this.setXY([x, y], animate);
@@ -234,7 +234,7 @@ Ext.override(Ext.core.Element, {
     /**
     * Clear positioning back to the default when the document was loaded
     * @param {String} value (optional) The value to use for the left,right,top,bottom, defaults to '' (empty string). You could use 'auto'.
-    * @return {Ext.core.Element} this
+    * @return {Ext.Element} this
      */
     clearPositioning : function(value){
         value = value || '';
@@ -270,7 +270,7 @@ Ext.override(Ext.core.Element, {
     /**
     * Set positioning with an object returned by getPositioning().
     * @param {Object} posCfg
-    * @return {Ext.core.Element} this
+    * @return {Ext.Element} this
      */
     setPositioning : function(pc){
         var me = this,
@@ -290,7 +290,7 @@ Ext.override(Ext.core.Element, {
 
     /**
      * Translates the passed page coordinates into left/top css values for this element
-     * @param {Number/Array} x The page x or an array containing [x, y]
+     * @param {Number/Number[]} x The page x or an array containing [x, y]
      * @param {Number} y (optional) The page y, required if x is not an array
      * @return {Object} An object with left and top properties. e.g. {left: (value), top: (value)}
      */
@@ -324,7 +324,7 @@ Ext.override(Ext.core.Element, {
      * @param {Object} box The box to fill {x, y, width, height}
      * @param {Boolean} adjust (optional) Whether to adjust for box-model issues automatically
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setBox: function(box, adjust, animate) {
         var me = this,
@@ -406,7 +406,6 @@ Ext.override(Ext.core.Element, {
      * @param {String} direction Possible values are: "l" (or "left"), "r" (or "right"), "t" (or "top", or "up"), "b" (or "bottom", or "down").
      * @param {Number} distance How far to move the element in pixels
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Ext.core.Element} this
      */
     move: function(direction, distance, animate) {
         var me = this,
@@ -438,7 +437,7 @@ Ext.override(Ext.core.Element, {
      * Quick set left and top adding default units
      * @param {String} left The left CSS property value
      * @param {String} top The top CSS property value
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setLeftTop: function(left, top) {
         var me = this,
@@ -451,7 +450,7 @@ Ext.override(Ext.core.Element, {
     /**
      * Returns the region of this element.
      * The element must be part of the DOM tree to have a region (display:none or elements not appended return false).
-     * @return {Region} A Ext.util.Region containing "top, left, bottom, right" member data.
+     * @return {Ext.util.Region} A Region containing "top, left, bottom, right" member data.
      */
     getRegion: function() {
         return this.getPageBox(true);
@@ -459,20 +458,20 @@ Ext.override(Ext.core.Element, {
 
     /**
      * Returns the <b>content</b> region of this element. That is the region within the borders and padding.
-     * @return {Region} A Ext.util.Region containing "top, left, bottom, right" member data.
+     * @return {Ext.util.Region} A Region containing "top, left, bottom, right" member data.
      */
     getViewRegion: function() {
         var me = this,
             isBody = me.dom === document.body,
             scroll, pos, top, left, width, height;
-            
+
         // For the body we want to do some special logic
         if (isBody) {
             scroll = me.getScroll();
             left = scroll.left;
             top = scroll.top;
-            width = Ext.core.Element.getViewportWidth();
-            height = Ext.core.Element.getViewportHeight();
+            width = Ext.Element.getViewportWidth();
+            height = Ext.Element.getViewportHeight();
         }
         else {
             pos = me.getXY();
@@ -506,8 +505,8 @@ Ext.override(Ext.core.Element, {
         var me = this,
             el = me.dom,
             isDoc = el === document.body,
-            w = isDoc ? Ext.core.Element.getViewWidth()  : el.offsetWidth,
-            h = isDoc ? Ext.core.Element.getViewHeight() : el.offsetHeight,
+            w = isDoc ? Ext.Element.getViewWidth()  : el.offsetWidth,
+            h = isDoc ? Ext.Element.getViewHeight() : el.offsetHeight,
             xy = me.getXY(),
             t = xy[1],
             r = xy[0] + w,
@@ -533,16 +532,16 @@ Ext.override(Ext.core.Element, {
      * Sets the element's position and size in one shot. If animation is true then width, height, x and y will be animated concurrently.
      * @param {Number} x X value for new position (coordinates are page-based)
      * @param {Number} y Y value for new position (coordinates are page-based)
-     * @param {Mixed} width The new width. This may be one of:<div class="mdetail-params"><ul>
+     * @param {Number/String} width The new width. This may be one of:<div class="mdetail-params"><ul>
      * <li>A Number specifying the new width in this Element's {@link #defaultUnit}s (by default, pixels)</li>
      * <li>A String used to set the CSS width style. Animation may <b>not</b> be used.
      * </ul></div>
-     * @param {Mixed} height The new height. This may be one of:<div class="mdetail-params"><ul>
+     * @param {Number/String} height The new height. This may be one of:<div class="mdetail-params"><ul>
      * <li>A Number specifying the new height in this Element's {@link #defaultUnit}s (by default, pixels)</li>
      * <li>A String used to set the CSS height style. Animation may <b>not</b> be used.</li>
      * </ul></div>
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setBounds: function(x, y, width, height, animate) {
         var me = this;
@@ -569,7 +568,7 @@ Ext.override(Ext.core.Element, {
      * Sets the element's position and size the specified region. If animation is true then width, height, x and y will be animated concurrently.
      * @param {Ext.util.Region} region The region to fill
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     setRegion: function(region, animate) {
         return this.setBounds(region.left, region.top, region.right - region.left, region.bottom - region.top, animate);

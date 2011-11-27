@@ -17,30 +17,31 @@ If you are unsure which license is appropriate for your use, please contact the 
  * @extends Ext.Base
  * @private
  * Represents a single thumb element on a Slider. This would not usually be created manually and would instead
- * be created internally by an {@link Ext.slider.Multi Ext.Slider}.
+ * be created internally by an {@link Ext.slider.Multi Multi slider}.
  */
 Ext.define('Ext.slider.Thumb', {
     requires: ['Ext.dd.DragTracker', 'Ext.util.Format'],
     /**
      * @private
-     * @property topThumbZIndex
-     * @type Number
+     * @property {Number} topThumbZIndex
      * The number used internally to set the z index of the top thumb (see promoteThumb for details)
      */
     topZIndex: 10000,
+
     /**
-     * @cfg {Ext.slider.MultiSlider} slider The Slider to render to (required)
+     * @cfg {Ext.slider.MultiSlider} slider (required)
+     * The Slider to render to.
      */
+
     /**
      * Creates new slider thumb.
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
         var me = this;
-        
+
         /**
-         * @property slider
-         * @type Ext.slider.MultiSlider
+         * @property {Ext.slider.MultiSlider} slider
          * The slider this thumb is contained within
          */
         Ext.apply(me, config || {}, {
@@ -63,14 +64,14 @@ Ext.define('Ext.slider.Thumb', {
      */
     render: function() {
         var me = this;
-        
+
         me.el = me.slider.innerEl.insertFirst({cls: me.cls});
         if (me.disabled) {
             me.disable();
         }
         me.initEvents();
     },
-    
+
     /**
      * @private
      * move the thumb
@@ -96,7 +97,7 @@ Ext.define('Ext.slider.Thumb', {
     bringToFront: function() {
         this.el.setStyle('zIndex', this.topZIndex);
     },
-    
+
     /**
      * @private
      * Send thumb dom element to back.
@@ -104,13 +105,13 @@ Ext.define('Ext.slider.Thumb', {
     sendToBack: function() {
         this.el.setStyle('zIndex', '');
     },
-    
+
     /**
      * Enables the thumb if it is currently disabled
      */
     enable: function() {
         var me = this;
-        
+
         me.disabled = false;
         if (me.el) {
             me.el.removeCls(me.slider.disabledCls);
@@ -122,7 +123,7 @@ Ext.define('Ext.slider.Thumb', {
      */
     disable: function() {
         var me = this;
-        
+
         me.disabled = true;
         if (me.el) {
             me.el.addCls(me.slider.disabledCls);
@@ -171,7 +172,7 @@ Ext.define('Ext.slider.Thumb', {
      */
     onDragStart: function(e){
         var me = this;
-        
+
         me.el.addCls(Ext.baseCSSPrefix + 'slider-thumb-drag');
         me.dragging = true;
         me.dragStartValue = me.value;
@@ -199,7 +200,7 @@ Ext.define('Ext.slider.Thumb', {
             if (below !== undefined && newValue <= below.value) {
                 newValue = below.value;
             }
-            
+
             if (above !== undefined && newValue >= above.value) {
                 newValue = above.value;
             }

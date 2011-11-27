@@ -21,7 +21,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
             return this;
         }
         if(typeof els == "string"){
-            els = Ext.core.Element.selectorFunction(els, root);
+            els = Ext.Element.selectorFunction(els, root);
         }
         var yels = this.elements;
         Ext.each(els, function(e) {
@@ -32,7 +32,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
 
     /**
      * Returns the first Element
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
     first : function(){
         return this.item(0);
@@ -40,7 +40,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
 
     /**
      * Returns the last Element
-     * @return {Ext.core.Element}
+     * @return {Ext.Element}
      */
     last : function(){
         return this.item(this.getCount()-1);
@@ -48,7 +48,7 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
 
     /**
      * Returns true if this composite contains the passed element
-     * @param el {Mixed} The id of an element, or an Ext.core.Element, or an HtmlElement to find within the composite collection.
+     * @param el {String/HTMLElement/Ext.Element/Number} The id of an element, or an Ext.Element, or an HtmlElement to find within the composite collection.
      * @return Boolean
      */
     contains : function(el){
@@ -57,10 +57,10 @@ Ext.apply(Ext.CompositeElementLite.prototype, {
 
     /**
     * Removes the specified element(s).
-    * @param {Mixed} el The id of an element, the Element itself, the index of the element in this composite
+    * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, the Element itself, the index of the element in this composite
     * or an array of any of those.
     * @param {Boolean} removeDom (optional) True to also remove the element from the document
-    * @return {CompositeElement} this
+    * @return {Ext.CompositeElement} this
     */
     removeElement : function(keys, removeDom){
         var me = this,

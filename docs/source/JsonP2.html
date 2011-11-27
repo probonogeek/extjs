@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -17,154 +17,130 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-data-proxy-JsonP'>/**
 </span> * @author Ed Spencer
- * @class Ext.data.proxy.JsonP
- * @extends Ext.data.proxy.Server
  *
- * &lt;p&gt;JsonPProxy is useful when you need to load data from a domain other than the one your application is running
- * on. If your application is running on http://domainA.com it cannot use {@link Ext.data.proxy.Ajax Ajax} to load its
- * data from http://domainB.com because cross-domain ajax requests are prohibited by the browser.&lt;/p&gt;
+ * The JsonP proxy is useful when you need to load data from a domain other than the one your application is running on. If
+ * your application is running on http://domainA.com it cannot use {@link Ext.data.proxy.Ajax Ajax} to load its data
+ * from http://domainB.com because cross-domain ajax requests are prohibited by the browser.
  *
- * &lt;p&gt;We can get around this using a JsonPProxy. JsonPProxy injects a &amp;lt;script&amp;gt; tag into the DOM whenever
- * an AJAX request would usually be made. Let's say we want to load data from http://domainB.com/users - the script tag
- * that would be injected might look like this:&lt;/p&gt;
+ * We can get around this using a JsonP proxy. JsonP proxy injects a `&lt;script&gt;` tag into the DOM whenever an AJAX request
+ * would usually be made. Let's say we want to load data from http://domainB.com/users - the script tag that would be
+ * injected might look like this:
  *
-&lt;pre&gt;&lt;code&gt;
-&amp;lt;script src=&quot;http://domainB.com/users?callback=someCallback&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+ *     &lt;script src=&quot;http://domainB.com/users?callback=someCallback&quot;&gt;&lt;/script&gt;
  *
- * &lt;p&gt;When we inject the tag above, the browser makes a request to that url and includes the response as if it was any
- * other type of JavaScript include. By passing a callback in the url above, we're telling domainB's server that we
- * want to be notified when the result comes in and that it should call our callback function with the data it sends
- * back. So long as the server formats the response to look like this, everything will work:&lt;/p&gt;
+ * When we inject the tag above, the browser makes a request to that url and includes the response as if it was any
+ * other type of JavaScript include. By passing a callback in the url above, we're telling domainB's server that we want
+ * to be notified when the result comes in and that it should call our callback function with the data it sends back. So
+ * long as the server formats the response to look like this, everything will work:
  *
-&lt;pre&gt;&lt;code&gt;
-someCallback({
-    users: [
-        {
-            id: 1,
-            name: &quot;Ed Spencer&quot;,
-            email: &quot;ed@sencha.com&quot;
-        }
-    ]
-});
-&lt;/code&gt;&lt;/pre&gt;
+ *     someCallback({
+ *         users: [
+ *             {
+ *                 id: 1,
+ *                 name: &quot;Ed Spencer&quot;,
+ *                 email: &quot;ed@sencha.com&quot;
+ *             }
+ *         ]
+ *     });
  *
- * &lt;p&gt;As soon as the script finishes loading, the 'someCallback' function that we passed in the url is called with the
- * JSON object that the server returned.&lt;/p&gt;
+ * As soon as the script finishes loading, the 'someCallback' function that we passed in the url is called with the JSON
+ * object that the server returned.
  *
- * &lt;p&gt;JsonPProxy takes care of all of this automatically. It formats the url you pass, adding the callback
- * parameter automatically. It even creates a temporary callback function, waits for it to be called and then puts
- * the data into the Proxy making it look just like you loaded it through a normal {@link Ext.data.proxy.Ajax AjaxProxy}.
- * Here's how we might set that up:&lt;/p&gt;
+ * JsonP proxy takes care of all of this automatically. It formats the url you pass, adding the callback parameter
+ * automatically. It even creates a temporary callback function, waits for it to be called and then puts the data into
+ * the Proxy making it look just like you loaded it through a normal {@link Ext.data.proxy.Ajax AjaxProxy}. Here's how
+ * we might set that up:
  *
-&lt;pre&gt;&lt;code&gt;
-Ext.define('User', {
-    extend: 'Ext.data.Model',
-    fields: ['id', 'name', 'email']
-});
-
-var store = new Ext.data.Store({
-    model: 'User',
-    proxy: {
-        type: 'jsonp',
-        url : 'http://domainB.com/users'
-    }
-});
-
-store.load();
-&lt;/code&gt;&lt;/pre&gt;
+ *     Ext.define('User', {
+ *         extend: 'Ext.data.Model',
+ *         fields: ['id', 'name', 'email']
+ *     });
  *
- * &lt;p&gt;That's all we need to do - JsonPProxy takes care of the rest. In this case the Proxy will have injected a
- * script tag like this:
+ *     var store = Ext.create('Ext.data.Store', {
+ *         model: 'User',
+ *         proxy: {
+ *             type: 'jsonp',
+ *             url : 'http://domainB.com/users'
+ *         }
+ *     });
  *
-&lt;pre&gt;&lt;code&gt;
-&amp;lt;script src=&quot;http://domainB.com/users?callback=stcCallback001&quot; id=&quot;stcScript001&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+ *     store.load();
  *
- * &lt;p&gt;&lt;u&gt;Customization&lt;/u&gt;&lt;/p&gt;
+ * That's all we need to do - JsonP proxy takes care of the rest. In this case the Proxy will have injected a script tag
+ * like this:
  *
- * &lt;p&gt;Most parts of this script tag can be customized using the {@link #callbackParam}, {@link #callbackPrefix} and
- * {@link #scriptIdPrefix} configurations. For example:
+ *     &lt;script src=&quot;http://domainB.com/users?callback=callback1&quot;&gt;&lt;/script&gt;
  *
-&lt;pre&gt;&lt;code&gt;
-var store = new Ext.data.Store({
-    model: 'User',
-    proxy: {
-        type: 'jsonp',
-        url : 'http://domainB.com/users',
-        callbackParam: 'theCallbackFunction',
-        callbackPrefix: 'ABC',
-        scriptIdPrefix: 'injectedScript'
-    }
-});
-
-store.load();
-&lt;/code&gt;&lt;/pre&gt;
+ * # Customization
  *
- * &lt;p&gt;Would inject a script tag like this:&lt;/p&gt;
+ * This script tag can be customized using the {@link #callbackKey} configuration. For example:
  *
-&lt;pre&gt;&lt;code&gt;
-&amp;lt;script src=&quot;http://domainB.com/users?theCallbackFunction=ABC001&quot; id=&quot;injectedScript001&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+ *     var store = Ext.create('Ext.data.Store', {
+ *         model: 'User',
+ *         proxy: {
+ *             type: 'jsonp',
+ *             url : 'http://domainB.com/users',
+ *             callbackKey: 'theCallbackFunction'
+ *         }
+ *     });
  *
- * &lt;p&gt;&lt;u&gt;Implementing on the server side&lt;/u&gt;&lt;/p&gt;
+ *     store.load();
  *
- * &lt;p&gt;The remote server side needs to be configured to return data in this format. Here are suggestions for how you
- * might achieve this using Java, PHP and ASP.net:&lt;/p&gt;
+ * Would inject a script tag like this:
  *
- * &lt;p&gt;Java:&lt;/p&gt;
+ *     &lt;script src=&quot;http://domainB.com/users?theCallbackFunction=callback1&quot;&gt;&lt;/script&gt;
  *
-&lt;pre&gt;&lt;code&gt;
-boolean jsonP = false;
-String cb = request.getParameter(&quot;callback&quot;);
-if (cb != null) {
-    jsonP = true;
-    response.setContentType(&quot;text/javascript&quot;);
-} else {
-    response.setContentType(&quot;application/x-json&quot;);
-}
-Writer out = response.getWriter();
-if (jsonP) {
-    out.write(cb + &quot;(&quot;);
-}
-out.print(dataBlock.toJsonString());
-if (jsonP) {
-    out.write(&quot;);&quot;);
-}
-&lt;/code&gt;&lt;/pre&gt;
+ * # Implementing on the server side
  *
- * &lt;p&gt;PHP:&lt;/p&gt;
+ * The remote server side needs to be configured to return data in this format. Here are suggestions for how you might
+ * achieve this using Java, PHP and ASP.net:
  *
-&lt;pre&gt;&lt;code&gt;
-$callback = $_REQUEST['callback'];
-
-// Create the output object.
-$output = array('a' =&gt; 'Apple', 'b' =&gt; 'Banana');
-
-//start output
-if ($callback) {
-    header('Content-Type: text/javascript');
-    echo $callback . '(' . json_encode($output) . ');';
-} else {
-    header('Content-Type: application/x-json');
-    echo json_encode($output);
-}
-&lt;/code&gt;&lt;/pre&gt;
+ * Java:
  *
- * &lt;p&gt;ASP.net:&lt;/p&gt;
+ *     boolean jsonP = false;
+ *     String cb = request.getParameter(&quot;callback&quot;);
+ *     if (cb != null) {
+ *         jsonP = true;
+ *         response.setContentType(&quot;text/javascript&quot;);
+ *     } else {
+ *         response.setContentType(&quot;application/x-json&quot;);
+ *     }
+ *     Writer out = response.getWriter();
+ *     if (jsonP) {
+ *         out.write(cb + &quot;(&quot;);
+ *     }
+ *     out.print(dataBlock.toJsonString());
+ *     if (jsonP) {
+ *         out.write(&quot;);&quot;);
+ *     }
  *
-&lt;pre&gt;&lt;code&gt;
-String jsonString = &quot;{success: true}&quot;;
-String cb = Request.Params.Get(&quot;callback&quot;);
-String responseString = &quot;&quot;;
-if (!String.IsNullOrEmpty(cb)) {
-    responseString = cb + &quot;(&quot; + jsonString + &quot;)&quot;;
-} else {
-    responseString = jsonString;
-}
-Response.Write(responseString);
-&lt;/code&gt;&lt;/pre&gt;
+ * PHP:
  *
+ *     $callback = $_REQUEST['callback'];
+ *
+ *     // Create the output object.
+ *     $output = array('a' =&gt; 'Apple', 'b' =&gt; 'Banana');
+ *
+ *     //start output
+ *     if ($callback) {
+ *         header('Content-Type: text/javascript');
+ *         echo $callback . '(' . json_encode($output) . ');';
+ *     } else {
+ *         header('Content-Type: application/x-json');
+ *         echo json_encode($output);
+ *     }
+ *
+ * ASP.net:
+ *
+ *     String jsonString = &quot;{success: true}&quot;;
+ *     String cb = Request.Params.Get(&quot;callback&quot;);
+ *     String responseString = &quot;&quot;;
+ *     if (!String.IsNullOrEmpty(cb)) {
+ *         responseString = cb + &quot;(&quot; + jsonString + &quot;)&quot;;
+ *     } else {
+ *         responseString = jsonString;
+ *     }
+ *     Response.Write(responseString);
  */
 Ext.define('Ext.data.proxy.JsonP', {
     extend: 'Ext.data.proxy.Server',
@@ -175,26 +151,28 @@ Ext.define('Ext.data.proxy.JsonP', {
     defaultWriterType: 'base',
 
 <span id='Ext-data-proxy-JsonP-cfg-callbackKey'>    /**
-</span>     * @cfg {String} callbackKey (Optional) See {@link Ext.data.JsonP#callbackKey}.
+</span>     * @cfg {String} callbackKey
+     * See {@link Ext.data.JsonP#callbackKey}.
      */
     callbackKey : 'callback',
 
 <span id='Ext-data-proxy-JsonP-cfg-recordParam'>    /**
 </span>     * @cfg {String} recordParam
-     * The param name to use when passing records to the server (e.g. 'records=someEncodedRecordString').
-     * Defaults to 'records'
+     * The param name to use when passing records to the server (e.g. 'records=someEncodedRecordString'). Defaults to
+     * 'records'
      */
     recordParam: 'records',
 
 <span id='Ext-data-proxy-JsonP-cfg-autoAppendParams'>    /**
-</span>     * @cfg {Boolean} autoAppendParams True to automatically append the request's params to the generated url. Defaults to true
+</span>     * @cfg {Boolean} autoAppendParams
+     * True to automatically append the request's params to the generated url. Defaults to true
      */
     autoAppendParams: true,
 
     constructor: function(){
         this.addEvents(
 <span id='Ext-data-proxy-JsonP-event-exception'>            /**
-</span>             * @event exception
+</span>             * @event
              * Fires when the server returns an exception
              * @param {Ext.data.proxy.Proxy} this
              * @param {Ext.data.Request} request The request that was sent
@@ -207,7 +185,7 @@ Ext.define('Ext.data.proxy.JsonP', {
 
 <span id='Ext-data-proxy-JsonP-method-doRequest'>    /**
 </span>     * @private
-     * Performs the read request to the remote domain. JsonPProxy does not actually create an Ajax request,
+     * Performs the read request to the remote domain. JsonP proxy does not actually create an Ajax request,
      * instead we write out a &lt;script&gt; tag based on the configuration of the internal Ext.data.Request object
      * @param {Ext.data.Operation} operation The {@link Ext.data.Operation Operation} object to execute
      * @param {Function} callback A callback function to execute when the Operation has been completed
@@ -224,7 +202,7 @@ Ext.define('Ext.data.proxy.JsonP', {
             request = writer.write(request);
         }
 
-        //apply JsonPProxy-specific attributes to the Request
+        // apply JsonP proxy-specific attributes to the Request
         Ext.apply(request, {
             callbackKey: me.callbackKey,
             timeout: me.timeout,
@@ -232,12 +210,12 @@ Ext.define('Ext.data.proxy.JsonP', {
             disableCaching: false, // handled by the proxy
             callback: me.createRequestCallback(request, operation, callback, scope)
         });
-        
+
         // prevent doubling up
         if (me.autoAppendParams) {
             request.params = {};
         }
-        
+
         request.jsonp = Ext.data.JsonP.request(request);
         // restore on the request
         request.params = params;
@@ -270,7 +248,7 @@ Ext.define('Ext.data.proxy.JsonP', {
             me.processResponse(success, operation, request, response, callback, scope);
         };
     },
-    
+
     // inherit docs
     setException: function(operation, response) {
         operation.setException(operation.request.jsonp.errorType);
@@ -291,7 +269,7 @@ Ext.define('Ext.data.proxy.JsonP', {
             filter, i;
 
         delete params.filters;
- 
+
         if (me.autoAppendParams) {
             url = Ext.urlAppend(url, Ext.Object.toQueryString(params));
         }
@@ -333,9 +311,9 @@ Ext.define('Ext.data.proxy.JsonP', {
     },
 
 <span id='Ext-data-proxy-JsonP-method-encodeRecords'>    /**
-</span>     * Encodes an array of records into a string suitable to be appended to the script src url. This is broken
-     * out into its own function so that it can be easily overridden.
-     * @param {Array} records The records array
+</span>     * Encodes an array of records into a string suitable to be appended to the script src url. This is broken out into
+     * its own function so that it can be easily overridden.
+     * @param {Ext.data.Model[]} records The records array
      * @return {String} The encoded records string
      */
     encodeRecords: function(records) {

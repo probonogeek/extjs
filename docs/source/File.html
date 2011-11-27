@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,57 +16,57 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-form-field-File'>/**
-</span> * @class Ext.form.field.File
- * @extends Ext.form.field.Text
-
-A file upload field which has custom styling and allows control over the button text and other
-features of {@link Ext.form.field.Text text fields} like {@link Ext.form.field.Text#emptyText empty text}.
-It uses a hidden file input element behind the scenes to allow user selection of a file and to
-perform the actual upload during {@link Ext.form.Basic#submit form submit}.
-
-Because there is no secure cross-browser way to programmatically set the value of a file input,
-the standard Field `setValue` method is not implemented. The `{@link #getValue}` method will return
-a value that is browser-dependent; some have just the file name, some have a full path, some use
-a fake path.
-{@img Ext.form.File/Ext.form.File.png Ext.form.File component}
-#Example Usage:#
-
-    Ext.create('Ext.form.Panel', {
-        title: 'Upload a Photo',
-        width: 400,
-        bodyPadding: 10,
-        frame: true,
-        renderTo: Ext.getBody(),    
-        items: [{
-            xtype: 'filefield',
-            name: 'photo',
-            fieldLabel: 'Photo',
-            labelWidth: 50,
-            msgTarget: 'side',
-            allowBlank: false,
-            anchor: '100%',
-            buttonText: 'Select Photo...'
-        }],
-    
-        buttons: [{
-            text: 'Upload',
-            handler: function() {
-                var form = this.up('form').getForm();
-                if(form.isValid()){
-                    form.submit({
-                        url: 'photo-upload.php',
-                        waitMsg: 'Uploading your photo...',
-                        success: function(fp, o) {
-                            Ext.Msg.alert('Success', 'Your photo &quot;' + o.result.file + '&quot; has been uploaded.');
-                        }
-                    });
-                }
-            }
-        }]
-    });
-
- * @markdown
- * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
+</span> * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
+ *
+ * A file upload field which has custom styling and allows control over the button text and other
+ * features of {@link Ext.form.field.Text text fields} like {@link Ext.form.field.Text#emptyText empty text}.
+ * It uses a hidden file input element behind the scenes to allow user selection of a file and to
+ * perform the actual upload during {@link Ext.form.Basic#submit form submit}.
+ *
+ * Because there is no secure cross-browser way to programmatically set the value of a file input,
+ * the standard Field `setValue` method is not implemented. The `{@link #getValue}` method will return
+ * a value that is browser-dependent; some have just the file name, some have a full path, some use
+ * a fake path.
+ *
+ * **IMPORTANT:** File uploads are not performed using normal 'Ajax' techniques; see the description for
+ * {@link Ext.form.Basic#hasUpload} for details.
+ *
+ * # Example Usage
+ *
+ *     @example
+ *     Ext.create('Ext.form.Panel', {
+ *         title: 'Upload a Photo',
+ *         width: 400,
+ *         bodyPadding: 10,
+ *         frame: true,
+ *         renderTo: Ext.getBody(),
+ *         items: [{
+ *             xtype: 'filefield',
+ *             name: 'photo',
+ *             fieldLabel: 'Photo',
+ *             labelWidth: 50,
+ *             msgTarget: 'side',
+ *             allowBlank: false,
+ *             anchor: '100%',
+ *             buttonText: 'Select Photo...'
+ *         }],
+ *
+ *         buttons: [{
+ *             text: 'Upload',
+ *             handler: function() {
+ *                 var form = this.up('form').getForm();
+ *                 if(form.isValid()){
+ *                     form.submit({
+ *                         url: 'photo-upload.php',
+ *                         waitMsg: 'Uploading your photo...',
+ *                         success: function(fp, o) {
+ *                             Ext.Msg.alert('Success', 'Your photo &quot;' + o.result.file + '&quot; has been uploaded.');
+ *                         }
+ *                     });
+ *                 }
+ *             }
+ *         }]
+ *     });
  */
 Ext.define(&quot;Ext.form.field.File&quot;, {
     extend: 'Ext.form.field.Text',
@@ -75,60 +75,64 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
     uses: ['Ext.button.Button', 'Ext.layout.component.field.File'],
 
 <span id='Ext-form-field-File-cfg-buttonText'>    /**
-</span>     * @cfg {String} buttonText The button text to display on the upload button (defaults to
-     * 'Browse...').  Note that if you supply a value for {@link #buttonConfig}, the buttonConfig.text
-     * value will be used instead if available.
+</span>     * @cfg {String} buttonText
+     * The button text to display on the upload button. Note that if you supply a value for
+     * {@link #buttonConfig}, the buttonConfig.text value will be used instead if available.
      */
     buttonText: 'Browse...',
 
 <span id='Ext-form-field-File-cfg-buttonOnly'>    /**
-</span>     * @cfg {Boolean} buttonOnly True to display the file upload field as a button with no visible
-     * text field (defaults to false).  If true, all inherited Text members will still be available.
+</span>     * @cfg {Boolean} buttonOnly
+     * True to display the file upload field as a button with no visible text field. If true, all
+     * inherited Text members will still be available.
      */
     buttonOnly: false,
 
 <span id='Ext-form-field-File-cfg-buttonMargin'>    /**
-</span>     * @cfg {Number} buttonMargin The number of pixels of space reserved between the button and the text field
-     * (defaults to 3).  Note that this only applies if {@link #buttonOnly} = false.
+</span>     * @cfg {Number} buttonMargin
+     * The number of pixels of space reserved between the button and the text field. Note that this only
+     * applies if {@link #buttonOnly} = false.
      */
     buttonMargin: 3,
 
 <span id='Ext-form-field-File-cfg-buttonConfig'>    /**
-</span>     * @cfg {Object} buttonConfig A standard {@link Ext.button.Button} config object.
+</span>     * @cfg {Object} buttonConfig
+     * A standard {@link Ext.button.Button} config object.
      */
 
 <span id='Ext-form-field-File-event-change'>    /**
 </span>     * @event change
-     * Fires when the underlying file input field's value has changed from the user
-     * selecting a new file from the system file selection dialog.
+     * Fires when the underlying file input field's value has changed from the user selecting a new file from the system
+     * file selection dialog.
      * @param {Ext.ux.form.FileUploadField} this
      * @param {String} value The file value returned by the underlying file input field
      */
 
 <span id='Ext-form-field-File-property-fileInputEl'>    /**
-</span>     * @property fileInputEl
-     * @type {Ext.core.Element}
-     * A reference to the invisible file input element created for this upload field. Only
-     * populated after this component is rendered.
+</span>     * @property {Ext.Element} fileInputEl
+     * A reference to the invisible file input element created for this upload field. Only populated after this
+     * component is rendered.
      */
 
 <span id='Ext-form-field-File-property-button'>    /**
-</span>     * @property button
-     * @type {Ext.button.Button}
-     * A reference to the trigger Button component created for this upload field. Only
-     * populated after this component is rendered.
+</span>     * @property {Ext.button.Button} button
+     * A reference to the trigger Button component created for this upload field. Only populated after this component is
+     * rendered.
      */
 
 <span id='Ext-form-field-File-cfg-fieldBodyCls'>    /**
-</span>     * @cfg {String} fieldBodyCls
+</span>     * @cfg {String} [fieldBodyCls='x-form-file-wrap']
      * An extra CSS class to be applied to the body content element in addition to {@link #fieldBodyCls}.
-     * Defaults to 'x-form-file-wrap' for file upload field.
      */
     fieldBodyCls: Ext.baseCSSPrefix + 'form-file-wrap',
 
+<span id='Ext-form-field-File-cfg-readOnly'>    /**
+</span>     * @cfg {Boolean} readOnly
+     * Unlike with other form fields, the readOnly config defaults to true in File field.
+     */
+    readOnly: true,
 
     // private
-    readOnly: true,
     componentLayout: 'filefield',
 
     // private
@@ -161,6 +165,7 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
     createButton: function() {
         var me = this;
         me.button = Ext.widget('button', Ext.apply({
+            ui: me.ui,
             renderTo: me.bodyEl,
             text: me.buttonText,
             cls: Ext.baseCSSPrefix + 'form-file-btn',
@@ -201,9 +206,13 @@ Ext.define(&quot;Ext.form.field.File&quot;, {
     setValue: Ext.emptyFn,
 
     reset : function(){
-        this.fileInputEl.remove();
-        this.createFileInput();
-        this.callParent();
+        var me = this;
+        if (me.rendered) {
+            me.fileInputEl.remove();
+            me.createFileInput();
+            me.inputEl.dom.value = '';
+        }
+        me.callParent();
     },
 
     onDisable: function(){

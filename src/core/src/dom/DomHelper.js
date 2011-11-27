@@ -13,7 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.DomHelper
+ * @class Ext.DomHelper
+ * @alternateClassName Ext.core.DomHelper
+ *
  * <p>The DomHelper class provides a layer of abstraction from DOM and transparently supports creating
  * elements via DOM or using HTML fragments. It also has the ability to create HTML fragment templates
  * from your DOM building code.</p>
@@ -40,19 +42,19 @@ If you are unsure which license is appropriate for your use, please contact the 
  * <p><b><u>Insertion methods</u></b></p>
  * <p>Commonly used insertion methods:
  * <div class="mdetail-params"><ul>
- * <li><b><tt>{@link #append}</tt></b> : <div class="sub-desc"></div></li>
- * <li><b><tt>{@link #insertBefore}</tt></b> : <div class="sub-desc"></div></li>
- * <li><b><tt>{@link #insertAfter}</tt></b> : <div class="sub-desc"></div></li>
- * <li><b><tt>{@link #overwrite}</tt></b> : <div class="sub-desc"></div></li>
- * <li><b><tt>{@link #createTemplate}</tt></b> : <div class="sub-desc"></div></li>
- * <li><b><tt>{@link #insertHtml}</tt></b> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #append}</tt> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #insertBefore}</tt> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #insertAfter}</tt> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #overwrite}</tt> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #createTemplate}</tt> : <div class="sub-desc"></div></li>
+ * <li><tt>{@link #insertHtml}</tt> : <div class="sub-desc"></div></li>
  * </ul></div></p>
  *
  * <p><b><u>Example</u></b></p>
  * <p>This is an example, where an unordered list with 3 children items is appended to an existing
  * element with id <tt>'my-div'</tt>:<br>
  <pre><code>
-var dh = Ext.core.DomHelper; // create shorthand alias
+var dh = Ext.DomHelper; // create shorthand alias
 // specification object
 var spec = {
     id: 'my-ul',
@@ -96,7 +98,7 @@ for(var i = 0; i < 5, i++){
  * <p>An example using a template:<pre><code>
 var html = '<a id="{0}" href="{1}" class="nav">{2}</a>';
 
-var tpl = new Ext.core.DomHelper.createTemplate(html);
+var tpl = new Ext.DomHelper.createTemplate(html);
 tpl.append('blog-roll', ['link1', 'http://www.edspencer.net/', "Ed&#39;s Site"]);
 tpl.append('blog-roll', ['link2', 'http://www.dustindiaz.com/', "Dustin&#39;s Site"]);
  * </code></pre></p>
@@ -104,7 +106,7 @@ tpl.append('blog-roll', ['link2', 'http://www.dustindiaz.com/', "Dustin&#39;s Si
  * <p>The same example using named parameters:<pre><code>
 var html = '<a id="{id}" href="{url}" class="nav">{text}</a>';
 
-var tpl = new Ext.core.DomHelper.createTemplate(html);
+var tpl = new Ext.DomHelper.createTemplate(html);
 tpl.append('blog-roll', {
     id: 'link1',
     url: 'http://www.edspencer.net/',
@@ -128,7 +130,7 @@ tpl.append('blog-roll', {
  * <pre><code>
 var html = '<a id="{id}" href="{url}" class="nav">{text}</a>';
 
-var tpl = new Ext.core.DomHelper.createTemplate(html);
+var tpl = new Ext.DomHelper.createTemplate(html);
 tpl.compile();
 
 //... use template like normal
@@ -141,12 +143,12 @@ tpl.compile();
  * then the string is used as innerHTML. If {@link #useDom} is <tt>true</tt>, a string specification
  * results in the creation of a text node. Usage:</p>
  * <pre><code>
-Ext.core.DomHelper.useDom = true; // force it to use DOM; reduces performance
+Ext.DomHelper.useDom = true; // force it to use DOM; reduces performance
  * </code></pre>
  * @singleton
  */
 Ext.ns('Ext.core');
-Ext.core.DomHelper = function(){
+Ext.core.DomHelper = Ext.DomHelper = function(){
     var tempTableEl = null,
         emptyTags = /^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i,
         tableRe = /^table|tbody|tr|td$/i,
@@ -178,11 +180,11 @@ Ext.core.DomHelper = function(){
                 (sibling == 'firstChild' ? el : el.parentNode).insertBefore(newNode, el[sibling] || el);
             }
         } else {
-            newNode = Ext.core.DomHelper.insertHtml(pos, el, Ext.core.DomHelper.createHtml(o));
+            newNode = Ext.DomHelper.insertHtml(pos, el, Ext.DomHelper.createHtml(o));
         }
         return returnElement ? Ext.get(newNode, true) : newNode;
     }
-    
+
     function createDom(o, parentNode){
         var el,
             doc = document,
@@ -215,7 +217,7 @@ Ext.core.DomHelper = function(){
                     }
                 }
             }
-            Ext.core.DomHelper.applyStyles(el, o.style);
+            Ext.DomHelper.applyStyles(el, o.style);
 
             if ((cn = o.children || o.cn)) {
                 createDom(cn, el);
@@ -333,17 +335,17 @@ Ext.core.DomHelper = function(){
         el.insertBefore(node, before);
         return node;
     }
-    
+
     /**
      * @ignore
      * Fix for IE9 createContextualFragment missing method
-     */   
+     */
     function createContextualFragment(html){
         var div = document.createElement("div"),
             fragment = document.createDocumentFragment(),
             i = 0,
             length, childNodes;
-        
+
         div.innerHTML = html;
         childNodes = div.childNodes;
         length = childNodes.length;
@@ -354,7 +356,7 @@ Ext.core.DomHelper = function(){
 
         return fragment;
     }
-    
+
     pub = {
         /**
          * Returns the markup for the passed Element(s) config.
@@ -378,7 +380,7 @@ Ext.core.DomHelper = function(){
                     styles = styles.call();
                 }
                 if (typeof styles == "string") {
-                    styles = Ext.core.Element.parseStyles(styles);
+                    styles = Ext.Element.parseStyles(styles);
                 }
                 if (typeof styles == "object") {
                     el.setStyle(styles);
@@ -389,6 +391,16 @@ Ext.core.DomHelper = function(){
         /**
          * Inserts an HTML fragment into the DOM.
          * @param {String} where Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.
+         *
+         * For example take the following HTML: `<div>Contents</div>`
+         *
+         * Using different `where` values inserts element to the following places:
+         *
+         * - beforeBegin: `<HERE><div>Contents</div>`
+         * - afterBegin: `<div><HERE>Contents</div>`
+         * - beforeEnd: `<div>Contents<HERE></div>`
+         * - afterEnd: `<div>Contents</div><HERE>`
+         *
          * @param {HTMLElement/TextNode} el The context element
          * @param {String} html The HTML fragment
          * @return {HTMLElement} The new node
@@ -406,13 +418,13 @@ Ext.core.DomHelper = function(){
             // add these here because they are used in both branches of the condition.
             hash[beforebegin] = ['BeforeBegin', 'previousSibling'];
             hash[afterend] = ['AfterEnd', 'nextSibling'];
-            
+
             // if IE and context element is an HTMLElement
             if (el.insertAdjacentHTML) {
                 if(tableRe.test(el.tagName) && (rs = insertIntoTable(el.tagName.toLowerCase(), where, el, html))){
                     return rs;
                 }
-                
+
                 // add these two to the hash.
                 hash[afterbegin] = ['AfterBegin', 'firstChild'];
                 hash[beforeend] = ['BeforeEnd', 'lastChild'];
@@ -424,7 +436,7 @@ Ext.core.DomHelper = function(){
             } else {
                 // we cannot insert anything inside a textnode so...
                 if (Ext.isTextNode(el)) {
-                    where = where === 'afterbegin' ? 'beforebegin' : where; 
+                    where = where === 'afterbegin' ? 'beforebegin' : where;
                     where = where === 'beforeend' ? 'afterend' : where;
                 }
                 range = Ext.supports.CreateContextualFragment ? el.ownerDocument.createRange() : undefined;
@@ -447,7 +459,7 @@ Ext.core.DomHelper = function(){
                         } else {
                             frag = createContextualFragment(html);
                         }
-                        
+
                         if(where == afterbegin){
                             el.insertBefore(frag, el.firstChild);
                         }else{
@@ -461,7 +473,7 @@ Ext.core.DomHelper = function(){
             }
             //<debug>
             Ext.Error.raise({
-                sourceClass: 'Ext.core.DomHelper',
+                sourceClass: 'Ext.DomHelper',
                 sourceMethod: 'insertHtml',
                 htmlToInsert: html,
                 targetElement: el,
@@ -472,10 +484,10 @@ Ext.core.DomHelper = function(){
 
         /**
          * Creates new DOM element(s) and inserts them before el.
-         * @param {Mixed} el The context element
+         * @param {String/HTMLElement/Ext.Element} el The context element
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-         * @param {Boolean} returnElement (optional) true to return a Ext.core.Element
-         * @return {HTMLElement/Ext.core.Element} The new node
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          */
         insertBefore : function(el, o, returnElement){
             return doInsert(el, o, returnElement, beforebegin);
@@ -483,10 +495,10 @@ Ext.core.DomHelper = function(){
 
         /**
          * Creates new DOM element(s) and inserts them after el.
-         * @param {Mixed} el The context element
+         * @param {String/HTMLElement/Ext.Element} el The context element
          * @param {Object} o The DOM object spec (and children)
-         * @param {Boolean} returnElement (optional) true to return a Ext.core.Element
-         * @return {HTMLElement/Ext.core.Element} The new node
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          */
         insertAfter : function(el, o, returnElement){
             return doInsert(el, o, returnElement, afterend, 'nextSibling');
@@ -494,10 +506,10 @@ Ext.core.DomHelper = function(){
 
         /**
          * Creates new DOM element(s) and inserts them as the first child of el.
-         * @param {Mixed} el The context element
+         * @param {String/HTMLElement/Ext.Element} el The context element
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-         * @param {Boolean} returnElement (optional) true to return a Ext.core.Element
-         * @return {HTMLElement/Ext.core.Element} The new node
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          */
         insertFirst : function(el, o, returnElement){
             return doInsert(el, o, returnElement, afterbegin, 'firstChild');
@@ -505,10 +517,10 @@ Ext.core.DomHelper = function(){
 
         /**
          * Creates new DOM element(s) and appends them to el.
-         * @param {Mixed} el The context element
+         * @param {String/HTMLElement/Ext.Element} el The context element
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-         * @param {Boolean} returnElement (optional) true to return a Ext.core.Element
-         * @return {HTMLElement/Ext.core.Element} The new node
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          */
         append : function(el, o, returnElement){
             return doInsert(el, o, returnElement, beforeend, '', true);
@@ -516,10 +528,10 @@ Ext.core.DomHelper = function(){
 
         /**
          * Creates new DOM element(s) and overwrites the contents of el with them.
-         * @param {Mixed} el The context element
+         * @param {String/HTMLElement/Ext.Element} el The context element
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
-         * @param {Boolean} returnElement (optional) true to return a Ext.core.Element
-         * @return {HTMLElement/Ext.core.Element} The new node
+         * @param {Boolean} returnElement (optional) true to return a Ext.Element
+         * @return {HTMLElement/Ext.Element} The new node
          */
         overwrite : function(el, o, returnElement){
             el = Ext.getDom(el);
@@ -528,7 +540,7 @@ Ext.core.DomHelper = function(){
         },
 
         createHtml : createHtml,
-        
+
         /**
          * Creates new DOM element(s) without inserting them to the document.
          * @param {Object/String} o The DOM object spec (and children) or raw HTML blob
@@ -536,17 +548,17 @@ Ext.core.DomHelper = function(){
          * @method
          */
         createDom: createDom,
-        
+
         /** True to force the use of DOM instead of html fragments @type Boolean */
         useDom : false,
-        
+
         /**
          * Creates a new Ext.Template from the DOM object spec.
          * @param {Object} o The DOM object spec (and children)
          * @return {Ext.Template} The new template
          */
         createTemplate : function(o){
-            var html = Ext.core.DomHelper.createHtml(o);
+            var html = Ext.DomHelper.createHtml(o);
             return Ext.create('Ext.Template', html);
         }
     };

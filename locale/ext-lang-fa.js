@@ -172,9 +172,11 @@ if(Ext.form.field.Date){
 
 if(Ext.form.field.ComboBox){
    Ext.apply(Ext.form.field.ComboBox.prototype, {
-      loadingText       : "در حال بارگذاری ...",
       valueNotFoundText : undefined
    });
+    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+        loadingText       : "در حال بارگذاری ..."
+    });
 }
 
 if(Ext.form.field.VTypes){

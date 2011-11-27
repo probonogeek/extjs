@@ -1,6 +1,6 @@
 {
     "projectName": "Ext JS 4 SDK",
-     "licenseText": "\nThis file is part of Ext JS 4\n\nCopyright (c) 2011 Sencha Inc\n\nContact:  http://www.sencha.com/contact\n\nGNU General Public License Usage\nThis file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.\n\nIf you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.\n",
+    "licenseText": "\nThis file is part of Ext JS 4\n\nCopyright (c) 2011 Sencha Inc\n\nContact:  http://www.sencha.com/contact\n\nGNU General Public License Usage\nThis file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.\n\nIf you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.\n",
     "packages": [
         {
             "name": "Foundation",
@@ -205,36 +205,12 @@
                     "name": "Provider.js"
                 },
                 {
-                    "path": "../../platform/src/util/",
-                    "name": "HashMap.js"
-                },
-                {
-                    "path": "../../platform/src/",
-                    "name": "Template.js"
-                },
-                {
                     "path": "../../platform/src/",
                     "name": "ComponentQuery.js"
                 },
                 {
                     "path": "../../platform/src/util/",
-                    "name": "Filter.js"
-                },
-                {
-                    "path": "../../platform/src/util/",
-                    "name": "Sorter.js"
-                },
-                {
-                    "path": "../../platform/src/",
-                    "name": "ElementLoader.js"
-                },
-                {
-                    "path": "../../platform/src/layout/",
-                    "name": "Layout.js"
-                },
-                {
-                    "path": "../../platform/src/layout/component/",
-                    "name": "Component.js"
+                    "name": "HashMap.js"
                 },
                 {
                     "path": "../../platform/src/state/",
@@ -250,43 +226,7 @@
                 },
                 {
                     "path": "../../platform/src/",
-                    "name": "PluginManager.js"
-                },
-                {
-                    "path": "../../platform/src/",
                     "name": "ComponentManager.js"
-                },
-                {
-                    "path": "../../platform/src/",
-                    "name": "XTemplate.js"
-                },
-                {
-                    "path": "../../platform/src/util/",
-                    "name": "AbstractMixedCollection.js"
-                },
-                {
-                    "path": "../../platform/src/util/",
-                    "name": "Sortable.js"
-                },
-                {
-                    "path": "../../platform/src/util/",
-                    "name": "MixedCollection.js"
-                },
-                {
-                    "path": "../../platform/src/data/",
-                    "name": "StoreManager.js"
-                },
-                {
-                    "path": "../../platform/src/",
-                    "name": "LoadMask.js"
-                },
-                {
-                    "path": "../../platform/src/",
-                    "name": "ComponentLoader.js"
-                },
-                {
-                    "path": "../../platform/src/layout/component/",
-                    "name": "Auto.js"
                 },
                 {
                     "path": "../../platform/src/",
@@ -305,6 +245,14 @@
                     "name": "Ajax.js"
                 },
                 {
+                    "path": "../../platform/src/",
+                    "name": "ElementLoader.js"
+                },
+                {
+                    "path": "../../platform/src/",
+                    "name": "ComponentLoader.js"
+                },
+                {
                     "path": "../../platform/src/data/",
                     "name": "Association.js"
                 },
@@ -313,16 +261,36 @@
                     "name": "ModelManager.js"
                 },
                 {
+                    "path": "../../platform/src/",
+                    "name": "PluginManager.js"
+                },
+                {
+                    "path": "../../platform/src/",
+                    "name": "Template.js"
+                },
+                {
+                    "path": "../../platform/src/",
+                    "name": "XTemplate.js"
+                },
+                {
                     "path": "../../platform/src/app/",
                     "name": "Controller.js"
+                },
+                {
+                    "path": "../../platform/src/data/",
+                    "name": "IdGenerator.js"
                 },
                 {
                     "path": "../../platform/src/data/",
                     "name": "SortTypes.js"
                 },
                 {
-                    "path": "../../platform/src/data/",
-                    "name": "Errors.js"
+                    "path": "../../platform/src/util/",
+                    "name": "Filter.js"
+                },
+                {
+                    "path": "../../platform/src/util/",
+                    "name": "Sorter.js"
                 },
                 {
                     "path": "../../platform/src/data/",
@@ -345,8 +313,8 @@
                     "name": "Floating.js"
                 },
                 {
-                    "path": "../../platform/src/layout/container/",
-                    "name": "AbstractContainer.js"
+                    "path": "../../platform/src/layout/",
+                    "name": "Layout.js"
                 },
                 {
                     "path": "../src/",
@@ -365,8 +333,8 @@
                     "name": "ClickRepeater.js"
                 },
                 {
-                    "path": "../src/layout/component/",
-                    "name": "Button.js"
+                    "path": "../../platform/src/layout/component/",
+                    "name": "Component.js"
                 },
                 {
                     "path": "../src/util/",
@@ -441,6 +409,22 @@
                     "name": "Field.js"
                 },
                 {
+                    "path": "../../platform/src/util/",
+                    "name": "AbstractMixedCollection.js"
+                },
+                {
+                    "path": "../../platform/src/util/",
+                    "name": "Sortable.js"
+                },
+                {
+                    "path": "../../platform/src/util/",
+                    "name": "MixedCollection.js"
+                },
+                {
+                    "path": "../../platform/src/data/",
+                    "name": "Errors.js"
+                },
+                {
                     "path": "../../platform/src/data/reader/",
                     "name": "Reader.js"
                 },
@@ -469,8 +453,16 @@
                     "name": "Model.js"
                 },
                 {
+                    "path": "../../platform/src/data/",
+                    "name": "StoreManager.js"
+                },
+                {
                     "path": "../src/",
                     "name": "Component.js"
+                },
+                {
+                    "path": "../../platform/src/layout/container/",
+                    "name": "AbstractContainer.js"
                 },
                 {
                     "path": "../src/layout/container/",
@@ -503,6 +495,10 @@
                 {
                     "path": "../src/menu/",
                     "name": "Manager.js"
+                },
+                {
+                    "path": "../src/layout/component/",
+                    "name": "Button.js"
                 },
                 {
                     "path": "../src/button/",
@@ -642,7 +638,7 @@
                 },
                 {
                     "path": "../../platform/src/layout/component/",
-                    "name": "Draw.js"
+                    "name": "Auto.js"
                 },
                 {
                     "path": "../../platform/src/chart/theme/",
@@ -663,6 +659,10 @@
                 {
                     "path": "../../platform/src/draw/",
                     "name": "Surface.js"
+                },
+                {
+                    "path": "../../platform/src/layout/component/",
+                    "name": "Draw.js"
                 },
                 {
                     "path": "../../platform/src/draw/",
@@ -846,11 +846,19 @@
                 },
                 {
                     "path": "../../platform/src/data/",
+                    "name": "SequentialIdGenerator.js"
+                },
+                {
+                    "path": "../../platform/src/data/",
                     "name": "Tree.js"
                 },
                 {
                     "path": "../../platform/src/data/",
                     "name": "TreeStore.js"
+                },
+                {
+                    "path": "../../platform/src/data/",
+                    "name": "UuidGenerator.js"
                 },
                 {
                     "path": "../../platform/src/data/",
@@ -991,6 +999,10 @@
                 {
                     "path": "../../platform/src/util/",
                     "name": "Point.js"
+                },
+                {
+                    "path": "../src/",
+                    "name": "LoadMask.js"
                 },
                 {
                     "path": "../../platform/src/view/",
@@ -1882,10 +1894,6 @@
         {
             "src": "../test/",
             "dest": "test"
-        },
-        {
-            "src": "../overview/",
-            "dest": "overview"
         },
         {
             "src": "../index.html",

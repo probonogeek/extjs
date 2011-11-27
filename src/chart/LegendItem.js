@@ -222,3 +222,4 @@ Ext.define('Ext.chart.LegendItem', {
         }
     }
 });
+

@@ -108,6 +108,13 @@ Ext.onReady(function() {
             yes    : "Ja",
             no     : "Nein"
         };
+        
+        // As of 4.0.4, setting the buttonText above does not take effect properly. This should be removable in 4.1.0
+        // (see issue EXTJSIV-3909)
+        Ext.MessageBox.msgButtons['ok'].text = Ext.MessageBox.buttonText.ok;
+        Ext.MessageBox.msgButtons['cancel'].text = Ext.MessageBox.buttonText.cancel;
+        Ext.MessageBox.msgButtons['yes'].text = Ext.MessageBox.buttonText.yes;
+        Ext.MessageBox.msgButtons['no'].text = Ext.MessageBox.buttonText.no;
     }
 
     if(Ext.util.Format){
@@ -196,8 +203,10 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
         Ext.apply(Ext.form.field.ComboBox.prototype, {
-            loadingText       : "Lade Daten ...",
             valueNotFoundText : undefined
+        });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Lade Daten ..."
         });
     }
 

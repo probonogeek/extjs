@@ -60,7 +60,7 @@ Ext.define('Ext.form.action.Action', {
 
     /**
      * @cfg {Object} headers <p>Extra headers to be sent in the AJAX request for submit and load actions. See
-     * {@link Ext.data.Connection#headers}.</p>
+     * {@link Ext.data.proxy.Ajax#headers}.</p>
      */
 
     /**
@@ -109,7 +109,7 @@ Ext.define('Ext.form.action.Action', {
      * @cfg {Boolean} submitEmptyText If set to <tt>true</tt>, the emptyText value will be sent with the form
      * when it is submitted. Defaults to <tt>true</tt>.
      */
-
+    submitEmptyText : true,
     /**
      * @property type
      * The type of action this Action instance performs.

@@ -927,7 +927,7 @@ describe("Ext", function() {
            expect(Ext.isElement(Ext.getBody().dom)).toBe(true);
         });
 
-        it("should return false with Ext.core.Element", function() {
+        it("should return false with Ext.Element", function() {
            expect(Ext.isElement(Ext.getBody())).toBe(false);
         });
         
@@ -1494,7 +1494,7 @@ describe("Ext", function() {
            expect(Ext.isTextNode(Ext.getBody().dom)).toBe(false);
         });
 
-        it("should return false with Ext.core.Element", function() {
+        it("should return false with Ext.Element", function() {
            expect(Ext.isTextNode(Ext.getBody())).toBe(false);
         });
         

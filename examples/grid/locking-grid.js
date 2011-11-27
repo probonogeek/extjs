@@ -98,7 +98,7 @@ Ext.onReady(function() {
         store: store,
         columnLines: true,
         columns: [{
-            text     : 'Company',
+            text     : 'Company Name',
             locked   : true,
             width    : 200,
             sortable : false,

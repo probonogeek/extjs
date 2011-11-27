@@ -18,7 +18,8 @@ Ext.onReady(function() {
         height: 400,
         cls: 'cursor-dragme',
         draggable: {
-            constrain: true
+            constrain: true,
+            constrainTo: Ext.getBody()
         },
         floating: true,
         renderTo: Ext.getBody(),

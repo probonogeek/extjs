@@ -56,8 +56,10 @@ Ext.define('Ext.grid.feature.Grouping', {
     eventSelector: '.' + Ext.baseCSSPrefix + 'grid-group-hd',
 
     constructor: function() {
-        this.collapsedState = {};
-        this.callParent(arguments);
+        var me = this;
+        
+        me.collapsedState = {};
+        me.callParent(arguments);
     },
     
     /**
@@ -117,33 +119,31 @@ Ext.define('Ext.grid.feature.Grouping', {
     hdCollapsedCls: Ext.baseCSSPrefix + 'grid-group-hd-collapsed',
 
     /**
-     * @cfg {String} groupByText Text displayed in the grid header menu for grouping by header
-     * (defaults to 'Group By This Field').
+     * @cfg {String} groupByText Text displayed in the grid header menu for grouping by header.
      */
     groupByText : 'Group By This Field',
     /**
-     * @cfg {String} showGroupsText Text displayed in the grid header for enabling/disabling grouping
-     * (defaults to 'Show in Groups').
+     * @cfg {String} showGroupsText Text displayed in the grid header for enabling/disabling grouping.
      */
     showGroupsText : 'Show in Groups',
 
     /**
-     * @cfg {Boolean} hideGroupedHeader<tt>true</tt> to hide the header that is currently grouped (defaults to <tt>false</tt>)
+     * @cfg {Boolean} hideGroupedHeader<tt>true</tt> to hide the header that is currently grouped.
      */
     hideGroupedHeader : false,
 
     /**
-     * @cfg {Boolean} startCollapsed <tt>true</tt> to start all groups collapsed (defaults to <tt>false</tt>)
+     * @cfg {Boolean} startCollapsed <tt>true</tt> to start all groups collapsed
      */
     startCollapsed : false,
 
     /**
-     * @cfg {Boolean} enableGroupingMenu <tt>true</tt> to enable the grouping control in the header menu (defaults to <tt>true</tt>)
+     * @cfg {Boolean} enableGroupingMenu <tt>true</tt> to enable the grouping control in the header menu
      */
     enableGroupingMenu : true,
 
     /**
-     * @cfg {Boolean} enableNoGroups <tt>true</tt> to allow the user to turn off grouping (defaults to <tt>true</tt>)
+     * @cfg {Boolean} enableNoGroups <tt>true</tt> to allow the user to turn off grouping
      */
     enableNoGroups : true,
     
@@ -153,33 +153,46 @@ Ext.define('Ext.grid.feature.Grouping', {
             store = view.store,
             groupToggleMenuItem;
             
+        me.lastGroupField = me.getGroupField();
+
         if (me.lastGroupIndex) {
             store.group(me.lastGroupIndex);
         }
         me.callParent();
         groupToggleMenuItem = me.view.headerCt.getMenu().down('#groupToggleMenuItem');
         groupToggleMenuItem.setChecked(true, true);
-        view.refresh();
+        me.refreshIf();
     },
 
     disable: function() {
         var me    = this,
             view  = me.view,
             store = view.store,
+            remote = store.remoteGroup,
             groupToggleMenuItem,
             lastGroup;
             
         lastGroup = store.groupers.first();
         if (lastGroup) {
             me.lastGroupIndex = lastGroup.property;
-            store.groupers.clear();
+            me.block();
+            store.clearGrouping();
+            me.unblock();
         }
         
         me.callParent();
         groupToggleMenuItem = me.view.headerCt.getMenu().down('#groupToggleMenuItem');
         groupToggleMenuItem.setChecked(true, true);
         groupToggleMenuItem.setChecked(false, true);
-        view.refresh();
+        if (!remote) {
+            view.refresh();
+        }
+    },
+    
+    refreshIf: function() {
+        if (this.blockRefresh !== true) {
+            this.view.refresh();
+        }    
     },
 
     getFeatureTpl: function(values, parent, x, xcount) {
@@ -219,8 +232,7 @@ Ext.define('Ext.grid.feature.Grouping', {
     // perhaps rename to afterViewRender
     attachEvents: function() {
         var me = this,
-            view = me.view,
-            header, headerId, menu, menuItem;
+            view = me.view;
 
         view.on({
             scope: me,
@@ -234,16 +246,10 @@ Ext.define('Ext.grid.feature.Grouping', {
         if (me.enableGroupingMenu) {
             me.injectGroupingMenu();
         }
-
-        if (me.hideGroupedHeader) {
-            header = view.headerCt.down('gridcolumn[dataIndex=' + me.getGroupField() + ']');
-            headerId = header.id;
-            menu = view.headerCt.getMenu();
-            menuItem = menu.down('menuitem[headerId='+ headerId +']');
-            if (menuItem) {
-                menuItem.setChecked(false);
-            }
-        }
+        me.lastGroupField = me.getGroupField();
+        me.block();
+        me.onGroupChange();
+        me.unblock();
     },
     
     injectGroupingMenu: function() {
@@ -276,6 +282,7 @@ Ext.define('Ext.grid.feature.Grouping', {
         return function() {
             var o = Ext.grid.header.Container.prototype.getMenuItems.call(this);
             o.push('-', {
+                iconCls: Ext.baseCSSPrefix + 'group-by-icon',
                 itemId: 'groupMenuItem',
                 text: groupByText,
                 handler: groupMenuItemClick
@@ -298,15 +305,30 @@ Ext.define('Ext.grid.feature.Grouping', {
      * @private
      */
     onGroupMenuItemClick: function(menuItem, e) {
-        var menu = menuItem.parentMenu,
+        var me = this,
+            menu = menuItem.parentMenu,
             hdr  = menu.activeHeader,
-            view = this.view;
+            view = me.view,
+            store = view.store,
+            remote = store.remoteGroup;
 
-        delete this.lastGroupIndex;
-        this.enable();
-        view.store.group(hdr.dataIndex);
-        this.pruneGroupedHeader();
-        
+        delete me.lastGroupIndex;
+        me.block();
+        me.enable();
+        store.group(hdr.dataIndex);
+        me.pruneGroupedHeader();
+        me.unblock();
+        if (!remote) {
+            view.refresh();
+        }  
+    },
+    
+    block: function(){
+        this.blockRefresh = this.view.blockRefresh = true;
+    },
+    
+    unblock: function(){
+        this.blockRefresh = this.view.blockRefresh = false;
     },
 
     /**
@@ -363,7 +385,7 @@ Ext.define('Ext.grid.feature.Grouping', {
 
     /**
      * Expand a group by the groupBody
-     * @param {Ext.core.Element} groupBd
+     * @param {Ext.Element} groupBd
      * @private
      */
     expand: function(groupBd) {
@@ -384,7 +406,7 @@ Ext.define('Ext.grid.feature.Grouping', {
 
     /**
      * Collapse a group by the groupBody
-     * @param {Ext.core.Element} groupBd
+     * @param {Ext.Element} groupBd
      * @private
      */
     collapse: function(groupBd) {
@@ -404,7 +426,41 @@ Ext.define('Ext.grid.feature.Grouping', {
     },
     
     onGroupChange: function(){
-        this.view.refresh();
+        var me = this,
+            field = me.getGroupField(),
+            menuItem;
+            
+        if (me.hideGroupedHeader) {
+            if (me.lastGroupField) {
+                menuItem = me.getMenuItem(me.lastGroupField);
+                if (menuItem) {
+                    menuItem.setChecked(true);
+                }
+            }
+            if (field) {
+                menuItem = me.getMenuItem(field);
+                if (menuItem) {
+                    menuItem.setChecked(false);
+                }
+            }
+        }
+        if (me.blockRefresh !== true) {
+            me.view.refresh();
+        }
+        me.lastGroupField = field;
+    },
+    
+    /**
+     * Gets the related menu item for a dataIndex
+     * @private
+     * @return {Ext.grid.header.Container} The header
+     */
+    getMenuItem: function(dataIndex){
+        var view = this.view,
+            header = view.headerCt.down('gridcolumn[dataIndex=' + dataIndex + ']'),
+            menu = view.headerCt.getMenu();
+            
+        return menu.down('menuitem[headerId='+ header.id +']');
     },
 
     /**

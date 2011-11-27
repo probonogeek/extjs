@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -16,8 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-form-field-ComboBox'>/**
-</span> * @class Ext.form.field.ComboBox
- * @extends Ext.form.field.Picker
+</span> * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
  *
  * A combobox control with support for autocomplete, remote loading, and many other features.
  *
@@ -33,10 +32,9 @@
  * If your store is not remote, i.e. it depends only on local data and is loaded up front, you should be
  * sure to set the {@link #queryMode} to `'local'`, as this will improve responsiveness for the user.
  *
- * {@img Ext.form.ComboBox/Ext.form.ComboBox.png Ext.form.ComboBox component}
+ * # Example usage:
  *
- * ## Example usage:
- *
+ *     @example
  *     // The data store containing the list of states
  *     var states = Ext.create('Ext.data.Store', {
  *         fields: ['abbr', 'name'],
@@ -58,7 +56,7 @@
  *         renderTo: Ext.getBody()
  *     });
  *
- * ## Events
+ * # Events
  *
  * To do something when something in ComboBox is selected, configure the select event:
  *
@@ -74,12 +72,10 @@
  *     var cb = new Ext.form.field.ComboBox(yourOptions);
  *     cb.on('select', yourFunction, yourScope);
  *
- * ## Multiple Selection
+ * # Multiple Selection
  *
  * ComboBox also allows selection of multiple items from the list; to enable multi-selection set the
  * {@link #multiSelect} config to `true`.
- *
- * @docauthor Jason Johnston &lt;jason@sencha.com&gt;
  */
 Ext.define('Ext.form.field.ComboBox', {
     extend:'Ext.form.field.Picker',
@@ -88,213 +84,267 @@ Ext.define('Ext.form.field.ComboBox', {
     alias: ['widget.combobox', 'widget.combo'],
 
 <span id='Ext-form-field-ComboBox-cfg-triggerCls'>    /**
-</span>     * @cfg {String} triggerCls
-     * An additional CSS class used to style the trigger button. The trigger will always get the
-     * {@link #triggerBaseCls} by default and &lt;code&gt;triggerCls&lt;/code&gt; will be &lt;b&gt;appended&lt;/b&gt; if specified.
-     * Defaults to 'x-form-arrow-trigger' for ComboBox.
+</span>     * @cfg {String} [triggerCls='x-form-arrow-trigger']
+     * An additional CSS class used to style the trigger button. The trigger will always get the {@link #triggerBaseCls}
+     * by default and `triggerCls` will be **appended** if specified.
      */
     triggerCls: Ext.baseCSSPrefix + 'form-arrow-trigger',
 
+<span id='Ext-form-field-ComboBox-cfg-hiddenDataCls'>    /**
+</span>     * @private
+     * @cfg {String}
+     * CSS class used to find the {@link #hiddenDataEl}
+     */
+    hiddenDataCls: Ext.baseCSSPrefix + 'hide-display ' + Ext.baseCSSPrefix + 'form-data-hidden',
+
+<span id='Ext-form-field-ComboBox-property-fieldSubTpl'>    /**
+</span>     * @override
+     */
+    fieldSubTpl: [
+        '&lt;div class=&quot;{hiddenDataCls}&quot; role=&quot;presentation&quot;&gt;&lt;/div&gt;',
+        '&lt;input id=&quot;{id}&quot; type=&quot;{type}&quot; ',
+            '&lt;tpl if=&quot;size&quot;&gt;size=&quot;{size}&quot; &lt;/tpl&gt;',
+            '&lt;tpl if=&quot;tabIdx&quot;&gt;tabIndex=&quot;{tabIdx}&quot; &lt;/tpl&gt;',
+            'class=&quot;{fieldCls} {typeCls}&quot; autocomplete=&quot;off&quot; /&gt;',
+        '&lt;div id=&quot;{cmpId}-triggerWrap&quot; class=&quot;{triggerWrapCls}&quot; role=&quot;presentation&quot;&gt;',
+            '{triggerEl}',
+            '&lt;div class=&quot;{clearCls}&quot; role=&quot;presentation&quot;&gt;&lt;/div&gt;',
+        '&lt;/div&gt;',
+        {
+            compiled: true,
+            disableFormats: true
+        }
+    ],
+
+    getSubTplData: function(){
+        var me = this;
+        Ext.applyIf(me.subTplData, {
+            hiddenDataCls: me.hiddenDataCls
+        });
+        return me.callParent(arguments);
+    },
+
+    afterRender: function(){
+        var me = this;
+        me.callParent(arguments);
+        me.setHiddenValue(me.value);
+    },
+
 <span id='Ext-form-field-ComboBox-cfg-store'>    /**
-</span>     * @cfg {Ext.data.Store/Array} store The data source to which this combo is bound (defaults to &lt;code&gt;undefined&lt;/code&gt;).
-     * Acceptable values for this property are:
-     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;any {@link Ext.data.Store Store} subclass&lt;/b&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;an Array&lt;/b&gt; : Arrays will be converted to a {@link Ext.data.Store} internally,
-     * automatically generating {@link Ext.data.Field#name field names} to work with all data components.
-     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;1-dimensional array&lt;/b&gt; : (e.g., &lt;code&gt;['Foo','Bar']&lt;/code&gt;)&lt;div class=&quot;sub-desc&quot;&gt;
-     * A 1-dimensional array will automatically be expanded (each array item will be used for both the combo
-     * {@link #valueField} and {@link #displayField})&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;2-dimensional array&lt;/b&gt; : (e.g., &lt;code&gt;[['f','Foo'],['b','Bar']]&lt;/code&gt;)&lt;div class=&quot;sub-desc&quot;&gt;
-     * For a multi-dimensional array, the value in index 0 of each item will be assumed to be the combo
-     * {@link #valueField}, while the value at index 1 is assumed to be the combo {@link #displayField}.
-     * &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-     * &lt;p&gt;See also &lt;code&gt;{@link #queryMode}&lt;/code&gt;.&lt;/p&gt;
+</span>     * @cfg {Ext.data.Store/Array} store
+     * The data source to which this combo is bound. Acceptable values for this property are:
+     *
+     *   - **any {@link Ext.data.Store Store} subclass**
+     *   - **an Array** : Arrays will be converted to a {@link Ext.data.Store} internally, automatically generating
+     *     {@link Ext.data.Field#name field names} to work with all data components.
+     *
+     *     - **1-dimensional array** : (e.g., `['Foo','Bar']`)
+     *
+     *       A 1-dimensional array will automatically be expanded (each array item will be used for both the combo
+     *       {@link #valueField} and {@link #displayField})
+     *
+     *     - **2-dimensional array** : (e.g., `[['f','Foo'],['b','Bar']]`)
+     *
+     *       For a multi-dimensional array, the value in index 0 of each item will be assumed to be the combo
+     *       {@link #valueField}, while the value at index 1 is assumed to be the combo {@link #displayField}.
+     *
+     * See also {@link #queryMode}.
      */
 
 <span id='Ext-form-field-ComboBox-cfg-multiSelect'>    /**
 </span>     * @cfg {Boolean} multiSelect
-     * If set to &lt;code&gt;true&lt;/code&gt;, allows the combo field to hold more than one value at a time, and allows selecting
-     * multiple items from the dropdown list. The combo's text field will show all selected values separated by
-     * the {@link #delimiter}. (Defaults to &lt;code&gt;false&lt;/code&gt;.)
+     * If set to `true`, allows the combo field to hold more than one value at a time, and allows selecting multiple
+     * items from the dropdown list. The combo's text field will show all selected values separated by the
+     * {@link #delimiter}.
      */
     multiSelect: false,
 
 <span id='Ext-form-field-ComboBox-cfg-delimiter'>    /**
 </span>     * @cfg {String} delimiter
-     * The character(s) used to separate the {@link #displayField display values} of multiple selected items
-     * when &lt;code&gt;{@link #multiSelect} = true&lt;/code&gt;. Defaults to &lt;code&gt;', '&lt;/code&gt;.
+     * The character(s) used to separate the {@link #displayField display values} of multiple selected items when
+     * `{@link #multiSelect} = true`.
      */
     delimiter: ', ',
 
 <span id='Ext-form-field-ComboBox-cfg-displayField'>    /**
-</span>     * @cfg {String} displayField The underlying {@link Ext.data.Field#name data field name} to bind to this
-     * ComboBox (defaults to 'text').
-     * &lt;p&gt;See also &lt;code&gt;{@link #valueField}&lt;/code&gt;.&lt;/p&gt;
+</span>     * @cfg {String} displayField
+     * The underlying {@link Ext.data.Field#name data field name} to bind to this ComboBox.
+     *
+     * See also `{@link #valueField}`.
      */
     displayField: 'text',
 
 <span id='Ext-form-field-ComboBox-cfg-valueField'>    /**
-</span>     * @cfg {String} valueField
-     * @required
+</span>     * @cfg {String} valueField (required)
      * The underlying {@link Ext.data.Field#name data value name} to bind to this ComboBox (defaults to match
      * the value of the {@link #displayField} config).
-     * &lt;p&gt;&lt;b&gt;Note&lt;/b&gt;: use of a &lt;code&gt;valueField&lt;/code&gt; requires the user to make a selection in order for a value to be
-     * mapped. See also &lt;code&gt;{@link #displayField}&lt;/code&gt;.&lt;/p&gt;
+     *
+     * **Note**: use of a `valueField` requires the user to make a selection in order for a value to be mapped. See also
+     * `{@link #displayField}`.
      */
 
 <span id='Ext-form-field-ComboBox-cfg-triggerAction'>    /**
-</span>     * @cfg {String} triggerAction The action to execute when the trigger is clicked.
-     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'all'&lt;/code&gt;&lt;/b&gt; : &lt;b&gt;Default&lt;/b&gt;
-     * &lt;p class=&quot;sub-desc&quot;&gt;{@link #doQuery run the query} specified by the &lt;code&gt;{@link #allQuery}&lt;/code&gt; config option&lt;/p&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'query'&lt;/code&gt;&lt;/b&gt; :
-     * &lt;p class=&quot;sub-desc&quot;&gt;{@link #doQuery run the query} using the {@link Ext.form.field.Base#getRawValue raw value}.&lt;/p&gt;&lt;/li&gt;
-     * &lt;/ul&gt;&lt;/div&gt;
-     * &lt;p&gt;See also &lt;code&gt;{@link #queryParam}&lt;/code&gt;.&lt;/p&gt;
+</span>     * @cfg {String} triggerAction
+     * The action to execute when the trigger is clicked.
+     *
+     *   - **`'all'`** :
+     *
+     *     {@link #doQuery run the query} specified by the `{@link #allQuery}` config option
+     *
+     *   - **`'query'`** :
+     *
+     *     {@link #doQuery run the query} using the {@link Ext.form.field.Base#getRawValue raw value}.
+     *
+     * See also `{@link #queryParam}`.
      */
     triggerAction: 'all',
 
 <span id='Ext-form-field-ComboBox-cfg-allQuery'>    /**
-</span>     * @cfg {String} allQuery The text query to send to the server to return all records for the list
-     * with no filtering (defaults to '')
+</span>     * @cfg {String} allQuery
+     * The text query to send to the server to return all records for the list with no filtering
      */
     allQuery: '',
 
 <span id='Ext-form-field-ComboBox-cfg-queryParam'>    /**
-</span>     * @cfg {String} queryParam Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with
-     * &lt;code&gt;{@link #queryMode}: 'remote'&lt;/code&gt; (defaults to &lt;code&gt;'query'&lt;/code&gt;). If explicitly set to a falsy value it will
-     * not be sent.
+</span>     * @cfg {String} queryParam
+     * Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with
+     * `{@link #queryMode}: 'remote'`. If explicitly set to a falsy value it will not be sent.
      */
     queryParam: 'query',
 
 <span id='Ext-form-field-ComboBox-cfg-queryMode'>    /**
 </span>     * @cfg {String} queryMode
      * The mode in which the ComboBox uses the configured Store. Acceptable values are:
-     * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'remote'&lt;/code&gt;&lt;/b&gt; : &lt;b&gt;Default&lt;/b&gt;
-     * &lt;p&gt;In &lt;code&gt;queryMode: 'remote'&lt;/code&gt;, the ComboBox loads its Store dynamically based upon user interaction.&lt;/p&gt;
-     * &lt;p&gt;This is typically used for &quot;autocomplete&quot; type inputs, and after the user finishes typing, the Store is {@link Ext.data.Store#load load}ed.&lt;/p&gt;
-     * &lt;p&gt;A parameter containing the typed string is sent in the load request. The default parameter name for the input string is &lt;code&gt;query&lt;/code&gt;, but this
-     * can be configured using the {@link #queryParam} config.&lt;/p&gt;
-     * &lt;p&gt;In &lt;code&gt;queryMode: 'remote'&lt;/code&gt;, the Store may be configured with &lt;code&gt;{@link Ext.data.Store#remoteFilter remoteFilter}: true&lt;/code&gt;,
-     * and further filters may be &lt;i&gt;programatically&lt;/i&gt; added to the Store which are then passed with every load request which allows the server
-     * to further refine the returned dataset.&lt;/p&gt;
-     * &lt;p&gt;Typically, in an autocomplete situation, {@link #hideTrigger} is configured &lt;code&gt;true&lt;/code&gt; because it has no meaning for autocomplete.&lt;/p&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;&lt;code&gt;'local'&lt;/code&gt;&lt;/b&gt; :
-     * &lt;p class=&quot;sub-desc&quot;&gt;ComboBox loads local data&lt;/p&gt;
-     * &lt;pre&gt;&lt;code&gt;
-var combo = new Ext.form.field.ComboBox({
-    renderTo: document.body,
-    queryMode: 'local',
-    store: new Ext.data.ArrayStore({
-        id: 0,
-        fields: [
-            'myId',  // numeric value is the key
-            'displayText'
-        ],
-        data: [[1, 'item1'], [2, 'item2']]  // data is local
-    }),
-    valueField: 'myId',
-    displayField: 'displayText',
-    triggerAction: 'all'
-});
-     * &lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-     * &lt;/ul&gt;&lt;/div&gt;
+     *
+     *   - **`'remote'`** :
+     *
+     *     In `queryMode: 'remote'`, the ComboBox loads its Store dynamically based upon user interaction.
+     *
+     *     This is typically used for &quot;autocomplete&quot; type inputs, and after the user finishes typing, the Store is {@link
+     *     Ext.data.Store#load load}ed.
+     *
+     *     A parameter containing the typed string is sent in the load request. The default parameter name for the input
+     *     string is `query`, but this can be configured using the {@link #queryParam} config.
+     *
+     *     In `queryMode: 'remote'`, the Store may be configured with `{@link Ext.data.Store#remoteFilter remoteFilter}:
+     *     true`, and further filters may be _programatically_ added to the Store which are then passed with every load
+     *     request which allows the server to further refine the returned dataset.
+     *
+     *     Typically, in an autocomplete situation, {@link #hideTrigger} is configured `true` because it has no meaning for
+     *     autocomplete.
+     *
+     *   - **`'local'`** :
+     *
+     *     ComboBox loads local data
+     *
+     *         var combo = new Ext.form.field.ComboBox({
+     *             renderTo: document.body,
+     *             queryMode: 'local',
+     *             store: new Ext.data.ArrayStore({
+     *                 id: 0,
+     *                 fields: [
+     *                     'myId',  // numeric value is the key
+     *                     'displayText'
+     *                 ],
+     *                 data: [[1, 'item1'], [2, 'item2']]  // data is local
+     *             }),
+     *             valueField: 'myId',
+     *             displayField: 'displayText',
+     *             triggerAction: 'all'
+     *         });
      */
     queryMode: 'remote',
 
     queryCaching: true,
 
 <span id='Ext-form-field-ComboBox-cfg-pageSize'>    /**
-</span>     * @cfg {Number} pageSize If greater than &lt;code&gt;0&lt;/code&gt;, a {@link Ext.toolbar.Paging} is displayed in the
-     * footer of the dropdown list and the {@link #doQuery filter queries} will execute with page start and
-     * {@link Ext.toolbar.Paging#pageSize limit} parameters. Only applies when &lt;code&gt;{@link #queryMode} = 'remote'&lt;/code&gt;
-     * (defaults to &lt;code&gt;0&lt;/code&gt;).
+</span>     * @cfg {Number} pageSize
+     * If greater than `0`, a {@link Ext.toolbar.Paging} is displayed in the footer of the dropdown list and the
+     * {@link #doQuery filter queries} will execute with page start and {@link Ext.view.BoundList#pageSize limit}
+     * parameters. Only applies when `{@link #queryMode} = 'remote'`.
      */
     pageSize: 0,
 
 <span id='Ext-form-field-ComboBox-cfg-queryDelay'>    /**
-</span>     * @cfg {Number} queryDelay The length of time in milliseconds to delay between the start of typing and
-     * sending the query to filter the dropdown list (defaults to &lt;code&gt;500&lt;/code&gt; if &lt;code&gt;{@link #queryMode} = 'remote'&lt;/code&gt;
-     * or &lt;code&gt;10&lt;/code&gt; if &lt;code&gt;{@link #queryMode} = 'local'&lt;/code&gt;)
+</span>     * @cfg {Number} queryDelay
+     * The length of time in milliseconds to delay between the start of typing and sending the query to filter the
+     * dropdown list (defaults to `500` if `{@link #queryMode} = 'remote'` or `10` if `{@link #queryMode} = 'local'`)
      */
 
 <span id='Ext-form-field-ComboBox-cfg-minChars'>    /**
-</span>     * @cfg {Number} minChars The minimum number of characters the user must type before autocomplete and
-     * {@link #typeAhead} activate (defaults to &lt;code&gt;4&lt;/code&gt; if &lt;code&gt;{@link #queryMode} = 'remote'&lt;/code&gt; or &lt;code&gt;0&lt;/code&gt; if
-     * &lt;code&gt;{@link #queryMode} = 'local'&lt;/code&gt;, does not apply if &lt;code&gt;{@link Ext.form.field.Trigger#editable editable} = false&lt;/code&gt;).
+</span>     * @cfg {Number} minChars
+     * The minimum number of characters the user must type before autocomplete and {@link #typeAhead} activate (defaults
+     * to `4` if `{@link #queryMode} = 'remote'` or `0` if `{@link #queryMode} = 'local'`, does not apply if
+     * `{@link Ext.form.field.Trigger#editable editable} = false`).
      */
 
 <span id='Ext-form-field-ComboBox-cfg-autoSelect'>    /**
-</span>     * @cfg {Boolean} autoSelect &lt;code&gt;true&lt;/code&gt; to automatically highlight the first result gathered by the data store
-     * in the dropdown list when it is opened. (Defaults to &lt;code&gt;true&lt;/code&gt;). A false value would cause nothing in the
-     * list to be highlighted automatically, so the user would have to manually highlight an item before pressing
-     * the enter or {@link #selectOnTab tab} key to select it (unless the value of ({@link #typeAhead}) were true),
-     * or use the mouse to select a value.
+</span>     * @cfg {Boolean} autoSelect
+     * `true` to automatically highlight the first result gathered by the data store in the dropdown list when it is
+     * opened. A false value would cause nothing in the list to be highlighted automatically, so
+     * the user would have to manually highlight an item before pressing the enter or {@link #selectOnTab tab} key to
+     * select it (unless the value of ({@link #typeAhead}) were true), or use the mouse to select a value.
      */
     autoSelect: true,
 
 <span id='Ext-form-field-ComboBox-cfg-typeAhead'>    /**
-</span>     * @cfg {Boolean} typeAhead &lt;code&gt;true&lt;/code&gt; to populate and autoselect the remainder of the text being
-     * typed after a configurable delay ({@link #typeAheadDelay}) if it matches a known value (defaults
-     * to &lt;code&gt;false&lt;/code&gt;)
+</span>     * @cfg {Boolean} typeAhead
+     * `true` to populate and autoselect the remainder of the text being typed after a configurable delay
+     * ({@link #typeAheadDelay}) if it matches a known value.
      */
     typeAhead: false,
 
 <span id='Ext-form-field-ComboBox-cfg-typeAheadDelay'>    /**
-</span>     * @cfg {Number} typeAheadDelay The length of time in milliseconds to wait until the typeahead text is displayed
-     * if &lt;code&gt;{@link #typeAhead} = true&lt;/code&gt; (defaults to &lt;code&gt;250&lt;/code&gt;)
+</span>     * @cfg {Number} typeAheadDelay
+     * The length of time in milliseconds to wait until the typeahead text is displayed if `{@link #typeAhead} = true`
      */
     typeAheadDelay: 250,
 
 <span id='Ext-form-field-ComboBox-cfg-selectOnTab'>    /**
 </span>     * @cfg {Boolean} selectOnTab
-     * Whether the Tab key should select the currently highlighted item. Defaults to &lt;code&gt;true&lt;/code&gt;.
+     * Whether the Tab key should select the currently highlighted item.
      */
     selectOnTab: true,
 
 <span id='Ext-form-field-ComboBox-cfg-forceSelection'>    /**
-</span>     * @cfg {Boolean} forceSelection &lt;code&gt;true&lt;/code&gt; to restrict the selected value to one of the values in the list,
-     * &lt;code&gt;false&lt;/code&gt; to allow the user to set arbitrary text into the field (defaults to &lt;code&gt;false&lt;/code&gt;)
+</span>     * @cfg {Boolean} forceSelection
+     * `true` to restrict the selected value to one of the values in the list, `false` to allow the user to set
+     * arbitrary text into the field.
      */
     forceSelection: false,
 
 <span id='Ext-form-field-ComboBox-cfg-valueNotFoundText'>    /**
-</span>     * @cfg {String} valueNotFoundText When using a name/value combo, if the value passed to setValue is not found in
-     * the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this
-     * default text is used, it means there is no value set and no validation will occur on this field.
+</span>     * @cfg {String} valueNotFoundText
+     * When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will
+     * be displayed as the field text if defined. If this default text is used, it means there
+     * is no value set and no validation will occur on this field.
      */
 
 <span id='Ext-form-field-ComboBox-property-lastQuery'>    /**
-</span>     * The value of the match string used to filter the store. Delete this property to force a requery.
-     * Example use:
-     * &lt;pre&gt;&lt;code&gt;
-var combo = new Ext.form.field.ComboBox({
-    ...
-    queryMode: 'remote',
-    listeners: {
-        // delete the previous query in the beforequery event or set
-        // combo.lastQuery = null (this will reload the store the next time it expands)
-        beforequery: function(qe){
-            delete qe.combo.lastQuery;
-        }
-    }
-});
-     * &lt;/code&gt;&lt;/pre&gt;
-     * To make sure the filter in the store is not cleared the first time the ComboBox trigger is used
-     * configure the combo with &lt;code&gt;lastQuery=''&lt;/code&gt;. Example use:
-     * &lt;pre&gt;&lt;code&gt;
-var combo = new Ext.form.field.ComboBox({
-    ...
-    queryMode: 'local',
-    triggerAction: 'all',
-    lastQuery: ''
-});
-     * &lt;/code&gt;&lt;/pre&gt;
-     * @property lastQuery
-     * @type String
+</span>     * @property {String} lastQuery
+     * The value of the match string used to filter the store. Delete this property to force a requery. Example use:
+     *
+     *     var combo = new Ext.form.field.ComboBox({
+     *         ...
+     *         queryMode: 'remote',
+     *         listeners: {
+     *             // delete the previous query in the beforequery event or set
+     *             // combo.lastQuery = null (this will reload the store the next time it expands)
+     *             beforequery: function(qe){
+     *                 delete qe.combo.lastQuery;
+     *             }
+     *         }
+     *     });
+     *
+     * To make sure the filter in the store is not cleared the first time the ComboBox trigger is used configure the
+     * combo with `lastQuery=''`. Example use:
+     *
+     *     var combo = new Ext.form.field.ComboBox({
+     *         ...
+     *         queryMode: 'local',
+     *         triggerAction: 'all',
+     *         lastQuery: ''
+     *     });
      */
 
 <span id='Ext-form-field-ComboBox-cfg-defaultListConfig'>    /**
@@ -311,31 +361,28 @@ var combo = new Ext.form.field.ComboBox({
     },
 
 <span id='Ext-form-field-ComboBox-cfg-transform'>    /**
-</span>     * @cfg {Mixed} transform
-     * The id, DOM node or {@link Ext.core.Element} of an existing HTML &lt;code&gt;&amp;lt;select&amp;gt;&lt;/code&gt; element to
-     * convert into a ComboBox. The target select's options will be used to build the options in the ComboBox
-     * dropdown; a configured {@link #store} will take precedence over this.
+</span>     * @cfg {String/HTMLElement/Ext.Element} transform
+     * The id, DOM node or {@link Ext.Element} of an existing HTML `&lt;select&gt;` element to convert into a ComboBox. The
+     * target select's options will be used to build the options in the ComboBox dropdown; a configured {@link #store}
+     * will take precedence over this.
      */
 
 <span id='Ext-form-field-ComboBox-cfg-listConfig'>    /**
 </span>     * @cfg {Object} listConfig
-     * &lt;p&gt;An optional set of configuration properties that will be passed to the {@link Ext.view.BoundList}'s
-     * constructor. Any configuration that is valid for BoundList can be included. Some of the more useful
-     * ones are:&lt;/p&gt;
-     * &lt;ul&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#cls} - defaults to empty&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#emptyText} - defaults to empty string&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#getInnerTpl} - defaults to the template defined in BoundList&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#itemSelector} - defaults to the value defined in BoundList&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#loadingText} - defaults to &lt;code&gt;'Loading...'&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#minWidth} - defaults to &lt;code&gt;70&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#maxWidth} - defaults to &lt;code&gt;undefined&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#maxHeight} - defaults to &lt;code&gt;300&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#resizable} - defaults to &lt;code&gt;false&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#shadow} - defaults to &lt;code&gt;'sides'&lt;/code&gt;&lt;/li&gt;
-     *     &lt;li&gt;{@link Ext.view.BoundList#width} - defaults to &lt;code&gt;undefined&lt;/code&gt; (automatically set to the width
-     *         of the ComboBox field if {@link #matchFieldWidth} is true)&lt;/li&gt;
-     * &lt;/ul&gt;
+     * An optional set of configuration properties that will be passed to the {@link Ext.view.BoundList}'s constructor.
+     * Any configuration that is valid for BoundList can be included. Some of the more useful ones are:
+     *
+     *   - {@link Ext.view.BoundList#cls} - defaults to empty
+     *   - {@link Ext.view.BoundList#emptyText} - defaults to empty string
+     *   - {@link Ext.view.BoundList#itemSelector} - defaults to the value defined in BoundList
+     *   - {@link Ext.view.BoundList#loadingText} - defaults to `'Loading...'`
+     *   - {@link Ext.view.BoundList#minWidth} - defaults to `70`
+     *   - {@link Ext.view.BoundList#maxWidth} - defaults to `undefined`
+     *   - {@link Ext.view.BoundList#maxHeight} - defaults to `300`
+     *   - {@link Ext.view.BoundList#resizable} - defaults to `false`
+     *   - {@link Ext.view.BoundList#shadow} - defaults to `'sides'`
+     *   - {@link Ext.view.BoundList#width} - defaults to `undefined` (automatically set to the width of the ComboBox
+     *     field if {@link #matchFieldWidth} is true)
      */
 
     //private
@@ -348,10 +395,11 @@ var combo = new Ext.form.field.ComboBox({
             transform = me.transform,
             transformSelect, isLocalMode;
 
+        Ext.applyIf(me.renderSelectors, {
+            hiddenDataEl: '.' + me.hiddenDataCls.split(' ').join('.')
+        });
+        
         //&lt;debug&gt;
-        if (!store &amp;&amp; !transform) {
-            Ext.Error.raise('Either a valid store, or a HTML select to transform, must be configured on the combo.');
-        }
         if (me.typeAhead &amp;&amp; me.multiSelect) {
             Ext.Error.raise('typeAhead and multiSelect are mutually exclusive options -- please remove one of them.');
         }
@@ -364,32 +412,60 @@ var combo = new Ext.form.field.ComboBox({
         //&lt;/debug&gt;
 
         this.addEvents(
-            // TODO need beforeselect?
-
 <span id='Ext-form-field-ComboBox-event-beforequery'>            /**
 </span>             * @event beforequery
-             * Fires before all queries are processed. Return false to cancel the query or set the queryEvent's
-             * cancel property to true.
-             * @param {Object} queryEvent An object that has these properties:&lt;ul&gt;
-             * &lt;li&gt;&lt;code&gt;combo&lt;/code&gt; : Ext.form.field.ComboBox &lt;div class=&quot;sub-desc&quot;&gt;This combo box&lt;/div&gt;&lt;/li&gt;
-             * &lt;li&gt;&lt;code&gt;query&lt;/code&gt; : String &lt;div class=&quot;sub-desc&quot;&gt;The query string&lt;/div&gt;&lt;/li&gt;
-             * &lt;li&gt;&lt;code&gt;forceAll&lt;/code&gt; : Boolean &lt;div class=&quot;sub-desc&quot;&gt;True to force &quot;all&quot; query&lt;/div&gt;&lt;/li&gt;
-             * &lt;li&gt;&lt;code&gt;cancel&lt;/code&gt; : Boolean &lt;div class=&quot;sub-desc&quot;&gt;Set to true to cancel the query&lt;/div&gt;&lt;/li&gt;
-             * &lt;/ul&gt;
+             * Fires before all queries are processed. Return false to cancel the query or set the queryEvent's cancel
+             * property to true.
+             *
+             * @param {Object} queryEvent An object that has these properties:
+             *
+             *   - `combo` : Ext.form.field.ComboBox
+             *
+             *     This combo box
+             *
+             *   - `query` : String
+             *
+             *     The query string
+             *
+             *   - `forceAll` : Boolean
+             *
+             *     True to force &quot;all&quot; query
+             *
+             *   - `cancel` : Boolean
+             *
+             *     Set to true to cancel the query
              */
             'beforequery',
 
-            /*
-             * @event select
+<span id='Ext-form-field-ComboBox-event-select'>            /**
+</span>             * @event select
              * Fires when at least one list item is selected.
              * @param {Ext.form.field.ComboBox} combo This combo box
              * @param {Array} records The selected records
              */
-            'select'
+            'select',
+
+<span id='Ext-form-field-ComboBox-event-beforeselect'>            /**
+</span>             * @event beforeselect
+             * Fires before the selected item is added to the collection
+             * @param {Ext.form.field.ComboBox} combo This combo box
+             * @param {Ext.data.Record} record The selected record
+             * @param {Number} index The index of the selected record
+             */
+            'beforeselect',
+
+<span id='Ext-form-field-ComboBox-event-beforedeselect'>            /**
+</span>             * @event beforedeselect
+             * Fires before the deselected item is removed from the collection
+             * @param {Ext.form.field.ComboBox} combo This combo box
+             * @param {Ext.data.Record} record The deselected record
+             * @param {Number} index The index of the deselected record
+             */
+            'beforedeselect'
         );
 
         // Build store from 'transform' HTML select element's options
-        if (!store &amp;&amp; transform) {
+        if (transform) {
             transformSelect = Ext.getDom(transform);
             if (transformSelect) {
                 store = Ext.Array.map(Ext.Array.from(transformSelect.options), function(option) {
@@ -404,7 +480,7 @@ var combo = new Ext.form.field.ComboBox({
             }
         }
 
-        me.bindStore(store, true);
+        me.bindStore(store || 'ext-empty-store', true);
         store = me.store;
         if (store.autoCreated) {
             me.queryMode = 'local';
@@ -430,7 +506,7 @@ var combo = new Ext.form.field.ComboBox({
         if (!me.displayTpl) {
             me.displayTpl = Ext.create('Ext.XTemplate',
                 '&lt;tpl for=&quot;.&quot;&gt;' +
-                    '{[typeof values === &quot;string&quot; ? values : values.' + me.displayField + ']}' +
+                    '{[typeof values === &quot;string&quot; ? values : values[&quot;' + me.displayField + '&quot;]]}' +
                     '&lt;tpl if=&quot;xindex &lt; xcount&quot;&gt;' + me.delimiter + '&lt;/tpl&gt;' +
                 '&lt;/tpl&gt;'
             );
@@ -455,14 +531,17 @@ var combo = new Ext.form.field.ComboBox({
         }
     },
 
+<span id='Ext-form-field-ComboBox-method-getStore'>    /**
+</span>     * Returns the store associated with this ComboBox.
+     * @return {Ext.data.Store} The store
+     */
+    getStore : function(){
+        return this.store;
+    },
+
     beforeBlur: function() {
-        var me = this;
-        me.doQueryTask.cancel();
-        if (me.forceSelection) {
-            me.assertValue();
-        } else {
-            me.collapse();
-        }
+        this.doQueryTask.cancel();
+        this.assertValue();
     },
 
     // private
@@ -471,20 +550,22 @@ var combo = new Ext.form.field.ComboBox({
             value = me.getRawValue(),
             rec;
 
-        if (me.multiSelect) {
-            // For multiselect, check that the current displayed value matches the current
-            // selection, if it does not then revert to the most recent selection.
-            if (value !== me.getDisplayValue()) {
-                me.setValue(me.lastSelection);
-            }
-        } else {
-            // For single-select, match the displayed value to a record and select it,
-            // if it does not match a record then revert to the most recent selection.
-            rec = me.findRecordByDisplay(value);
-            if (rec) {
-                me.select(rec);
+        if (me.forceSelection) {
+            if (me.multiSelect) {
+                // For multiselect, check that the current displayed value matches the current
+                // selection, if it does not then revert to the most recent selection.
+                if (value !== me.getDisplayValue()) {
+                    me.setValue(me.lastSelection);
+                }
             } else {
-                me.setValue(me.lastSelection);
+                // For single-select, match the displayed value to a record and select it,
+                // if it does not match a record then revert to the most recent selection.
+                rec = me.findRecordByDisplay(value);
+                if (rec) {
+                    me.select(rec);
+                } else {
+                    me.setValue(me.lastSelection);
+                }
             }
         }
         me.collapse();
@@ -525,7 +606,7 @@ var combo = new Ext.form.field.ComboBox({
         // would create it when we may be preping to destroy it
         if (oldStore &amp;&amp; !initial) {
             if (oldStore !== store &amp;&amp; oldStore.autoDestroy) {
-                oldStore.destroy();
+                oldStore.destroyStore();
             } else {
                 oldStore.un({
                     scope: me,
@@ -562,9 +643,28 @@ var combo = new Ext.form.field.ComboBox({
         var me = this,
             value = me.value;
 
-        me.syncSelection();
-        if (me.picker &amp;&amp; !me.picker.getSelectionModel().hasSelection()) {
-            me.doAutoSelect();
+        // If performing a remote query upon the raw value...
+        if (me.rawQuery) {
+            me.rawQuery = false;
+            me.syncSelection();
+            if (me.picker &amp;&amp; !me.picker.getSelectionModel().hasSelection()) {
+                me.doAutoSelect();
+            }
+        }
+        // If store initial load or triggerAction: 'all' trigger click.
+        else {
+            // Set the value on load
+            if (me.value) {
+                me.setValue(me.value);
+            } else {
+                // There's no value.
+                // Highlight the first item in the list if autoSelect: true
+                if (me.store.getCount()) {
+                    me.doAutoSelect();
+                } else {
+                    me.setValue('');
+                }
+            }
         }
     },
 
@@ -573,19 +673,23 @@ var combo = new Ext.form.field.ComboBox({
      * Execute the query with the raw contents within the textfield.
      */
     doRawQuery: function() {
-        this.doQuery(this.getRawValue());
+        this.doQuery(this.getRawValue(), false, true);
     },
 
 <span id='Ext-form-field-ComboBox-method-doQuery'>    /**
-</span>     * Executes a query to filter the dropdown list. Fires the {@link #beforequery} event prior to performing the
-     * query allowing the query action to be canceled if needed.
+</span>     * Executes a query to filter the dropdown list. Fires the {@link #beforequery} event prior to performing the query
+     * allowing the query action to be canceled if needed.
+     *
      * @param {String} queryString The SQL query to execute
-     * @param {Boolean} forceAll &lt;code&gt;true&lt;/code&gt; to force the query to execute even if there are currently fewer
-     * characters in the field than the minimum specified by the &lt;code&gt;{@link #minChars}&lt;/code&gt; config option.  It
-     * also clears any filter previously saved in the current store (defaults to &lt;code&gt;false&lt;/code&gt;)
-     * @return {Boolean} true if the query was permitted to run, false if it was cancelled by a {@link #beforequery} handler.
+     * @param {Boolean} [forceAll=false] `true` to force the query to execute even if there are currently fewer characters in
+     * the field than the minimum specified by the `{@link #minChars}` config option. It also clears any filter
+     * previously saved in the current store.
+     * @param {Boolean} [rawQuery=false] Pass as true if the raw typed value is being used as the query string. This causes the
+     * resulting store load to leave the raw value undisturbed.
+     * @return {Boolean} true if the query was permitted to run, false if it was cancelled by a {@link #beforequery}
+     * handler.
      */
-    doQuery: function(queryString, forceAll) {
+    doQuery: function(queryString, forceAll, rawQuery) {
         queryString = queryString || '';
 
         // store in object and pass by reference in 'beforequery'
@@ -627,11 +731,19 @@ var combo = new Ext.form.field.ComboBox({
                         store.filter(me.displayField, queryString);
                     }
                 } else {
+                    // Set flag for onLoad handling to know how the Store was loaded
+                    me.rawQuery = rawQuery;
+
                     // In queryMode: 'remote', we assume Store filters are added by the developer as remote filters,
                     // and these are automatically passed as params with every load call, so we do *not* call clearFilter.
-                    store.load({
-                        params: me.getParams(queryString)
-                    });
+                    if (me.pageSize) {
+                        // if we're paging, we've changed the query so start at page 1.
+                        me.loadPage(1);
+                    } else {
+                        store.load({
+                            params: me.getParams(queryString)
+                        });
+                    }
                 }
             }
 
@@ -652,21 +764,31 @@ var combo = new Ext.form.field.ComboBox({
         return true;
     },
 
+    loadPage: function(pageNum){
+        this.store.loadPage(pageNum, {
+            params: this.getParams(this.lastQuery)
+        });
+    },
+
+    onPageChange: function(toolbar, newPage){
+        /*
+         * Return false here so we can call load ourselves and inject the query param.
+         * We don't want to do this for every store load since the developer may load
+         * the store through some other means so we won't add the query param.
+         */
+        this.loadPage(newPage);
+        return false;
+    },
+
     // private
     getParams: function(queryString) {
-        var p = {},
-            pageSize = this.pageSize,
+        var params = {},
             param = this.queryParam;
 
         if (param) {
-            p[param] = queryString;
+            params[param] = queryString;
         }
-
-        if (pageSize) {
-            p.start = 0;
-            p.limit = pageSize;
-        }
-        return p;
+        return params;
     },
 
 <span id='Ext-form-field-ComboBox-method-doAutoSelect'>    /**
@@ -707,7 +829,7 @@ var combo = new Ext.form.field.ComboBox({
                 if (me.triggerAction === 'all') {
                     me.doQuery(me.allQuery, true);
                 } else {
-                    me.doQuery(me.getRawValue());
+                    me.doQuery(me.getRawValue(), false, true);
                 }
             }
             me.inputEl.focus();
@@ -748,12 +870,18 @@ var combo = new Ext.form.field.ComboBox({
             me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
         }
     },
+    
+    onDestroy: function(){
+        this.bindStore(null);
+        this.callParent();    
+    },
 
     createPicker: function() {
         var me = this,
             picker,
             menuCls = Ext.baseCSSPrefix + 'menu',
             opts = Ext.apply({
+                pickerField: me,
                 selModel: {
                     mode: me.multiSelect ? 'SIMPLE' : 'SINGLE'
                 },
@@ -769,6 +897,9 @@ var combo = new Ext.form.field.ComboBox({
             }, me.listConfig, me.defaultListConfig);
 
         picker = me.picker = Ext.create('Ext.view.BoundList', opts);
+        if (me.pageSize) {
+            picker.pagingToolbar.on('beforechange', me.onPageChange, me);
+        }
 
         me.mon(picker, {
             itemclick: me.onItemClick,
@@ -776,9 +907,28 @@ var combo = new Ext.form.field.ComboBox({
             scope: me
         });
 
-        me.mon(picker.getSelectionModel(), 'selectionchange', me.onListSelectionChange, me);
+        me.mon(picker.getSelectionModel(), {
+            'beforeselect': me.onBeforeSelect,
+            'beforedeselect': me.onBeforeDeselect,
+            'selectionchange': me.onListSelectionChange,
+            scope: me
+        });
 
         return picker;
+    },
+
+    alignPicker: function(){
+        var me = this,
+            picker = me.picker,
+            heightAbove = me.getPosition()[1] - Ext.getBody().getScroll().top,
+            heightBelow = Ext.Element.getViewHeight() - heightAbove - me.getHeight(),
+            space = Math.max(heightAbove, heightBelow);
+
+        me.callParent();
+        if (picker.getHeight() &gt; space) {
+            picker.setHeight(space - 5); // have some leeway so we aren't flush against
+            me.doAlign();
+        }
     },
 
     onListRefresh: function() {
@@ -799,9 +949,20 @@ var combo = new Ext.form.field.ComboBox({
         if (!me.multiSelect &amp;&amp; lastSelection) {
             selected = lastSelection[0];
             if (selected &amp;&amp; (record.get(valueField) === selected.get(valueField))) {
+                // Make sure we also update the display value if it's only partial
+                me.displayTplData = [record.data];
+                me.setRawValue(me.getDisplayValue());
                 me.collapse();
             }
         }
+    },
+
+    onBeforeSelect: function(list, record) {
+        return this.fireEvent('beforeselect', this, record, record.index);
+    },
+
+    onBeforeDeselect: function(list, record) {
+        return this.fireEvent('beforedeselect', this, record, record.index);
     },
 
     onListSelectionChange: function(list, selectedRecords) {
@@ -881,25 +1042,38 @@ var combo = new Ext.form.field.ComboBox({
 
 <span id='Ext-form-field-ComboBox-method-select'>    /**
 </span>     * Selects an item by a {@link Ext.data.Model Model}, or by a key value.
-     * @param r
+     * @param {Object} r
      */
     select: function(r) {
         this.setValue(r, true);
     },
 
 <span id='Ext-form-field-ComboBox-method-findRecord'>    /**
-</span>     * Find the record by searching for a specific field/value combination
-     * Returns an Ext.data.Record or false
-     * @private
+</span>     * Finds the record by searching for a specific field/value combination.
+     * @param {String} field The name of the field to test.
+     * @param {Object} value The value to match the field against.
+     * @return {Ext.data.Model} The matched record or false.
      */
     findRecord: function(field, value) {
         var ds = this.store,
             idx = ds.findExact(field, value);
         return idx !== -1 ? ds.getAt(idx) : false;
     },
+
+<span id='Ext-form-field-ComboBox-method-findRecordByValue'>    /**
+</span>     * Finds the record by searching values in the {@link #valueField}.
+     * @param {Object} value The value to match the field against.
+     * @return {Ext.data.Model} The matched record or false.
+     */
     findRecordByValue: function(value) {
         return this.findRecord(this.valueField, value);
     },
+
+<span id='Ext-form-field-ComboBox-method-findRecordByDisplay'>    /**
+</span>     * Finds the record by searching values in the {@link #displayField}.
+     * @param {Object} value The value to match the field against.
+     * @return {Ext.data.Model} The matched record or false.
+     */
     findRecordByDisplay: function(value) {
         return this.findRecord(this.displayField, value);
     },
@@ -907,9 +1081,9 @@ var combo = new Ext.form.field.ComboBox({
 <span id='Ext-form-field-ComboBox-method-setValue'>    /**
 </span>     * Sets the specified value(s) into the field. For each value, if a record is found in the {@link #store} that
      * matches based on the {@link #valueField}, then that record's {@link #displayField} will be displayed in the
-     * field.  If no match is found, and the {@link #valueNotFoundText} config option is defined, then that will be
+     * field. If no match is found, and the {@link #valueNotFoundText} config option is defined, then that will be
      * displayed as the default field text. Otherwise a blank value will be shown, although the value will still be set.
-     * @param {String|Array} value The value(s) to be set. Can be either a single String or {@link Ext.data.Model},
+     * @param {String/String[]} value The value(s) to be set. Can be either a single String or {@link Ext.data.Model},
      * or an Array of Strings or Models.
      * @return {Ext.form.field.Field} this
      */
@@ -925,6 +1099,7 @@ var combo = new Ext.form.field.ComboBox({
         if (me.store.loading) {
             // Called while the Store is loading. Ensure it is processed by the onLoad method.
             me.value = value;
+            me.setHiddenValue(me.value);
             return me;
         }
 
@@ -946,15 +1121,20 @@ var combo = new Ext.form.field.ComboBox({
             // record was not found, this could happen because
             // store is not loaded or they set a value not in the store
             else {
-                // if valueNotFoundText is defined, display it, otherwise display nothing for this value
-                if (Ext.isDefined(valueNotFoundText)) {
+                // If we are allowing insertion of values not represented in the Store, then set the value, and the display value
+                if (!me.forceSelection) {
+                    displayTplData.push(value[i]);
+                    processedValue.push(value[i]);
+                }
+                // Else, if valueNotFoundText is defined, display it, otherwise display nothing for this value
+                else if (Ext.isDefined(valueNotFoundText)) {
                     displayTplData.push(valueNotFoundText);
                 }
-                processedValue.push(value[i]);
             }
         }
 
         // Set the value of this field. If we are multiselecting, then that is an array.
+        me.setHiddenValue(processedValue);
         me.value = me.multiSelect ? processedValue : processedValue[0];
         if (!Ext.isDefined(me.value)) {
             me.value = null;
@@ -978,8 +1158,43 @@ var combo = new Ext.form.field.ComboBox({
         return me;
     },
 
+<span id='Ext-form-field-ComboBox-method-setHiddenValue'>    /**
+</span>     * @private
+     * Set the value of {@link #hiddenDataEl}
+     * Dynamically adds and removes input[type=hidden] elements
+     */
+    setHiddenValue: function(values){
+        var me = this, i;
+        if (!me.hiddenDataEl) {
+            return;
+        }
+        values = Ext.Array.from(values);
+        var dom = me.hiddenDataEl.dom,
+            childNodes = dom.childNodes,
+            input = childNodes[0],
+            valueCount = values.length,
+            childrenCount = childNodes.length;
+        
+        if (!input &amp;&amp; valueCount &gt; 0) {
+            me.hiddenDataEl.update(Ext.DomHelper.markup({tag:'input', type:'hidden', name:me.name}));
+            childrenCount = 1;
+            input = dom.firstChild;
+        }
+        while (childrenCount &gt; valueCount) {
+            dom.removeChild(childNodes[0]);
+            -- childrenCount;
+        }
+        while (childrenCount &lt; valueCount) {
+            dom.appendChild(input.cloneNode(true));
+            ++ childrenCount;
+        }
+        for (i = 0; i &lt; valueCount; i++) {
+            childNodes[i].value = values[i];
+        }
+    },
+
 <span id='Ext-form-field-ComboBox-method-getDisplayValue'>    /**
-</span>     * @private Generate the string value to be displayed in the text field for the currently stored value
+</span>     * @private Generates the string value to be displayed in the text field for the currently stored value
      */
     getDisplayValue: function() {
         return this.displayTpl.apply(this.displayTplData);

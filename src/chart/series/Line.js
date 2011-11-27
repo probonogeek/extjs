@@ -15,91 +15,96 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.chart.series.Line
  * @extends Ext.chart.series.Cartesian
- * 
- * Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different 
+ *
+ * Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different
  * categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
- * As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart 
+ * As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart
  * documentation for more information. A typical configuration object for the line series could be:
  *
- * {@img Ext.chart.series.Line/Ext.chart.series.Line.png Ext.chart.series.Line chart series}
- *
+ *     @example
  *     var store = Ext.create('Ext.data.JsonStore', {
  *         fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
  *         data: [
- *             {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
- *             {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
- *             {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
- *             {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
- *             {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}                                                
+ *             { 'name': 'metric one',   'data1': 10, 'data2': 12, 'data3': 14, 'data4': 8,  'data5': 13 },
+ *             { 'name': 'metric two',   'data1': 7,  'data2': 8,  'data3': 16, 'data4': 10, 'data5': 3  },
+ *             { 'name': 'metric three', 'data1': 5,  'data2': 2,  'data3': 14, 'data4': 12, 'data5': 7  },
+ *             { 'name': 'metric four',  'data1': 2,  'data2': 14, 'data3': 6,  'data4': 1,  'data5': 23 },
+ *             { 'name': 'metric five',  'data1': 4,  'data2': 4,  'data3': 36, 'data4': 13, 'data5': 33 }
  *         ]
  *     });
- *     
+ *
  *     Ext.create('Ext.chart.Chart', {
  *         renderTo: Ext.getBody(),
  *         width: 500,
  *         height: 300,
  *         animate: true,
  *         store: store,
- *         axes: [{
- *             type: 'Numeric',
- *             position: 'bottom',
- *             fields: ['data1'],
- *             label: {
- *                 renderer: Ext.util.Format.numberRenderer('0,0')
+ *         axes: [
+ *             {
+ *                 type: 'Numeric',
+ *                 position: 'left',
+ *                 fields: ['data1', 'data2'],
+ *                 label: {
+ *                     renderer: Ext.util.Format.numberRenderer('0,0')
+ *                 },
+ *                 title: 'Sample Values',
+ *                 grid: true,
+ *                 minimum: 0
  *             },
- *             title: 'Sample Values',
- *             grid: true,
- *             minimum: 0
- *         }, {
- *             type: 'Category',
- *             position: 'left',
- *             fields: ['name'],
- *             title: 'Sample Metrics'
- *         }],
- *         series: [{
- *             type: 'line',
- *             highlight: {
- *                 size: 7,
- *                 radius: 7
- *             },
- *             axis: 'left',
- *             xField: 'name',
- *             yField: 'data1',
- *             markerCfg: {
- *                 type: 'cross',
- *                 size: 4,
- *                 radius: 4,
- *                 'stroke-width': 0
+ *             {
+ *                 type: 'Category',
+ *                 position: 'bottom',
+ *                 fields: ['name'],
+ *                 title: 'Sample Metrics'
  *             }
- *         }, {
- *             type: 'line',
- *             highlight: {
- *                 size: 7,
- *                 radius: 7
+ *         ],
+ *         series: [
+ *             {
+ *                 type: 'line',
+ *                 highlight: {
+ *                     size: 7,
+ *                     radius: 7
+ *                 },
+ *                 axis: 'left',
+ *                 xField: 'name',
+ *                 yField: 'data1',
+ *                 markerConfig: {
+ *                     type: 'cross',
+ *                     size: 4,
+ *                     radius: 4,
+ *                     'stroke-width': 0
+ *                 }
  *             },
- *             axis: 'left',
- *             fill: true,
- *             xField: 'name',
- *             yField: 'data3',
- *             markerCfg: {
- *                 type: 'circle',
- *                 size: 4,
- *                 radius: 4,
- *                 'stroke-width': 0
+ *             {
+ *                 type: 'line',
+ *                 highlight: {
+ *                     size: 7,
+ *                     radius: 7
+ *                 },
+ *                 axis: 'left',
+ *                 fill: true,
+ *                 xField: 'name',
+ *                 yField: 'data2',
+ *                 markerConfig: {
+ *                     type: 'circle',
+ *                     size: 4,
+ *                     radius: 4,
+ *                     'stroke-width': 0
+ *                 }
  *             }
- *         }]
+ *         ]
  *     });
- *  
- * In this configuration we're adding two series (or lines), one bound to the `data1` 
- * property of the store and the other to `data3`. The type for both configurations is 
- * `line`. The `xField` for both series is the same, the name propert of the store. 
- * Both line series share the same axis, the left axis. You can set particular marker 
- * configuration by adding properties onto the markerConfig object. Both series have 
- * an object as highlight so that markers animate smoothly to the properties in highlight 
- * when hovered. The second series has `fill=true` which means that the line will also 
+ *
+ * In this configuration we're adding two series (or lines), one bound to the `data1`
+ * property of the store and the other to `data3`. The type for both configurations is
+ * `line`. The `xField` for both series is the same, the name propert of the store.
+ * Both line series share the same axis, the left axis. You can set particular marker
+ * configuration by adding properties onto the markerConfig object. Both series have
+ * an object as highlight so that markers animate smoothly to the properties in highlight
+ * when hovered. The second series has `fill=true` which means that the line will also
  * have an area below it of the same color.
  *
- * **Note:** In the series definition remember to explicitly set the axis to bind the 
+ * **Note:** In the series definition remember to explicitly set the axis to bind the
  * values of the line series to. This can be done by using the `axis` configuration property.
  */
 Ext.define('Ext.chart.series.Line', {
@@ -115,9 +120,9 @@ Ext.define('Ext.chart.series.Line', {
     /* End Definitions */
 
     type: 'line',
-    
+
     alias: 'series.line',
-    
+
     /**
      * @cfg {String} axis
      * The position of the axis to bind the values to. Possible values are 'left', 'bottom', 'top' and 'right'.
@@ -130,7 +135,7 @@ Ext.define('Ext.chart.series.Line', {
      * The offset distance from the cursor position to the line series to trigger events (then used for highlighting series, etc).
      */
     selectionTolerance: 20,
-    
+
     /**
      * @cfg {Boolean} showMarkers
      * Whether markers should be displayed at the data points along the line. If true,
@@ -152,17 +157,31 @@ Ext.define('Ext.chart.series.Line', {
             'fill': '#f00'
         }
      </code></pre>
-     
+
      */
     markerConfig: {},
 
     /**
      * @cfg {Object} style
-     * An object containing styles for the visualization lines. These styles will override the theme styles. 
-     * Some options contained within the style object will are described next.
+     * An object containing style properties for the visualization lines and fill.
+     * These styles will override the theme styles.  The following are valid style properties:
+     *
+     * - `stroke` - an rgb or hex color string for the background color of the line
+     * - `stroke-width` - the width of the stroke (integer)
+     * - `fill` - the background fill color string (hex or rgb), only works if {@link #fill} is `true`
+     * - `opacity` - the opacity of the line and the fill color (decimal)
+     *
+     * Example usage:
+     *
+     *     style: {
+     *         stroke: '#00ff00',
+     *         'stroke-width': 10,
+     *         fill: '#80A080',
+     *         opacity: 0.2
+     *     }
      */
     style: {},
-    
+
     /**
      * @cfg {Boolean/Number} smooth
      * If set to `true` or a non-zero number, the line will be smoothed/rounded around its points; otherwise
@@ -182,8 +201,8 @@ Ext.define('Ext.chart.series.Line', {
 
     /**
      * @cfg {Boolean} fill
-     * If true, the area below the line will be filled in using the {@link #style.eefill} and
-     * {@link #style.opacity} config properties. Defaults to false.
+     * If true, the area below the line will be filled in using the {@link #style eefill} and
+     * {@link #style opacity} config properties. Defaults to false.
      */
     fill: false,
 
@@ -228,12 +247,12 @@ Ext.define('Ext.chart.series.Line', {
             me.markerGroup = surface.getGroup(me.seriesId + '-markers');
         }
         if (shadow) {
-            for (i = 0, l = this.shadowAttributes.length; i < l; i++) {
+            for (i = 0, l = me.shadowAttributes.length; i < l; i++) {
                 me.shadowGroups.push(surface.getGroup(me.seriesId + '-shadows' + i));
             }
         }
     },
-    
+
     // @private makes an average of points when there are more data points than pixels to be rendered.
     shrink: function(xValues, yValues, size) {
         // Start at the 2nd point...
@@ -244,7 +263,7 @@ Ext.define('Ext.chart.series.Line', {
             ySum = 0,
             xRes = [xValues[0]],
             yRes = [yValues[0]];
-        
+
         for (; i < len; ++i) {
             xSum += xValues[i] || 0;
             ySum += yValues[i] || 0;
@@ -267,13 +286,12 @@ Ext.define('Ext.chart.series.Line', {
     drawSeries: function() {
         var me = this,
             chart = me.chart,
-            store = chart.substore || chart.store,
-            surface = chart.surface,
-            chartBBox = chart.chartBBox,
+            chartAxes = chart.axes,
+            store = chart.getChartStore(),
+            storeCount = store.getCount(),
+            surface = me.chart.surface,
             bbox = {},
             group = me.group,
-            gutterX = chart.maxGutter[0],
-            gutterY = chart.maxGutter[1],
             showMarkers = me.showMarkers,
             markerGroup = me.markerGroup,
             enableShadows = chart.shadow,
@@ -283,43 +301,53 @@ Ext.define('Ext.chart.series.Line', {
             lnsh = shadowGroups.length,
             dummyPath = ["M"],
             path = ["M"],
+            renderPath = ["M"],
+            smoothPath = ["M"],
             markerIndex = chart.markerIndex,
             axes = [].concat(me.axis),
-            shadowGroup,
             shadowBarAttr,
             xValues = [],
+            xValueMap = {},
             yValues = [],
-            storeIndices = [],
-            numericAxis = true,
-            axisCount = 0,
+            yValueMap = {},
             onbreak = false,
+            storeIndices = [],
             markerStyle = me.markerStyle,
-            seriesStyle = me.seriesStyle,
-            seriesLabelStyle = me.seriesLabelStyle,
+            seriesStyle = me.style,
             colorArrayStyle = me.colorArrayStyle,
             colorArrayLength = colorArrayStyle && colorArrayStyle.length || 0,
-            posHash = {
-                'left': 'right',
-                'right': 'left',
-                'top': 'bottom',
-                'bottom': 'top'
-            },
             isNumber = Ext.isNumber,
-            seriesIdx = me.seriesIdx, shadows, shadow, shindex, fromPath, fill, fillPath, rendererAttributes,
-            x, y, prevX, prevY, firstY, markerCount, i, j, ln, axis, ends, marker, markerAux, item, xValue,
+            seriesIdx = me.seriesIdx, 
+            boundAxes = me.getAxesForXAndYFields(),
+            boundXAxis = boundAxes.xAxis,
+            boundYAxis = boundAxes.yAxis,
+            shadows, shadow, shindex, fromPath, fill, fillPath, rendererAttributes,
+            x, y, prevX, prevY, firstX, firstY, markerCount, i, j, ln, axis, ends, marker, markerAux, item, xValue,
             yValue, coords, xScale, yScale, minX, maxX, minY, maxY, line, animation, endMarkerStyle,
-            endLineStyle, type, props, firstMarker, count, smoothPath, renderPath;
-        
-        //if store is empty then there's nothing to draw.
-        if (!store || !store.getCount()) {
+            endLineStyle, type, count, items;
+
+        if (me.fireEvent('beforedraw', me) === false) {
             return;
         }
-        
+
+        //if store is empty or the series is excluded in the legend then there's nothing to draw.
+        if (!storeCount || me.seriesIsHidden) {
+            items = this.items;
+            if (items) {
+                for (i = 0, ln = items.length; i < ln; ++i) {
+                    if (items[i].sprite) {
+                        items[i].sprite.hide(true);
+                    }
+                }
+            }
+            return;
+        }
+
         //prepare style objects for line and markers
-        endMarkerStyle = Ext.apply(markerStyle, me.markerConfig);
+        endMarkerStyle = Ext.apply(markerStyle || {}, me.markerConfig);
         type = endMarkerStyle.type;
         delete endMarkerStyle.type;
-        endLineStyle = Ext.apply(seriesStyle, me.style);
+        endLineStyle = seriesStyle;
         //if no stroke with is specified force it to 0.5 because this is
         //about making *lines*
         if (!endLineStyle['stroke-width']) {
@@ -343,113 +371,82 @@ Ext.define('Ext.chart.series.Line', {
                 }, true);
             }
         }
-        
+
         me.unHighlightItem();
         me.cleanHighlights();
 
         me.setBBox();
         bbox = me.bbox;
-
         me.clipRect = [bbox.x, bbox.y, bbox.width, bbox.height];
-
-        chart.axes.each(function(axis) {
-            //only apply position calculations to axes that affect this series
-            //this means the axis in the position referred by this series and also
-            //the axis in the other coordinate for this series. For example: (left, top|bottom),
-            //or (top, left|right), etc.
-            if (axis.position == me.axis || axis.position != posHash[me.axis]) {
-                axisCount++;
-                if (axis.type != 'Numeric') {
-                    numericAxis = false;
-                    return;
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = chartAxes.get(axes[i]);
+            if (axis) {
+                ends = axis.calcEnds();
+                if (axis.position == 'top' || axis.position == 'bottom') {
+                    minX = ends.from;
+                    maxX = ends.to;
                 }
-                numericAxis = (numericAxis && axis.type == 'Numeric');
-                if (axis) {
-                    ends = axis.calcEnds();
-                    if (axis.position == 'top' || axis.position == 'bottom') {
-                        minX = ends.from;
-                        maxX = ends.to;
-                    }
-                    else {
-                        minY = ends.from;
-                        maxY = ends.to;
-                    }
+                else {
+                    minY = ends.from;
+                    maxY = ends.to;
                 }
             }
-        });
-        
-        //If there's only one axis specified for a series, then we set the default type of the other
-        //axis to a category axis. So in this case numericAxis, which would be true if both axes affecting
-        //the series are numeric should be false.
-        if (numericAxis && axisCount == 1) {
-            numericAxis = false;
         }
-        
         // If a field was specified without a corresponding axis, create one to get bounds
         //only do this for the axis where real values are bound (that's why we check for
         //me.axis)
-        if (me.xField && !isNumber(minX)) {
-            if (me.axis == 'bottom' || me.axis == 'top') {
-                axis = Ext.create('Ext.chart.axis.Axis', {
-                    chart: chart,
-                    fields: [].concat(me.xField)
-                }).calcEnds();
-                minX = axis.from;
-                maxX = axis.to;
-            } else if (numericAxis) {
-                axis = Ext.create('Ext.chart.axis.Axis', {
-                    chart: chart,
-                    fields: [].concat(me.xField),
-                    forceMinMax: true
-                }).calcEnds();
-                minX = axis.from;
-                maxX = axis.to;
-            }
+        if (me.xField && !isNumber(minX) &&
+            (boundXAxis == 'bottom' || boundXAxis == 'top') && 
+            !chartAxes.get(boundXAxis)) {
+            axis = Ext.create('Ext.chart.axis.Axis', {
+                chart: chart,
+                fields: [].concat(me.xField)
+            }).calcEnds();
+            minX = axis.from;
+            maxX = axis.to;
         }
-        
-        if (me.yField && !isNumber(minY)) {
-            if (me.axis == 'right' || me.axis == 'left') {
-                axis = Ext.create('Ext.chart.axis.Axis', {
-                    chart: chart,
-                    fields: [].concat(me.yField)
-                }).calcEnds();
-                minY = axis.from;
-                maxY = axis.to;
-            } else if (numericAxis) {
-                axis = Ext.create('Ext.chart.axis.Axis', {
-                    chart: chart,
-                    fields: [].concat(me.yField),
-                    forceMinMax: true
-                }).calcEnds();
-                minY = axis.from;
-                maxY = axis.to;
-            }
+        if (me.yField && !isNumber(minY) &&
+            (boundYAxis == 'right' || boundYAxis == 'left') &&
+            !chartAxes.get(boundYAxis)) {
+            axis = Ext.create('Ext.chart.axis.Axis', {
+                chart: chart,
+                fields: [].concat(me.yField)
+            }).calcEnds();
+            minY = axis.from;
+            maxY = axis.to;
         }
-        
         if (isNaN(minX)) {
             minX = 0;
-            xScale = bbox.width / (store.getCount() - 1);
+            xScale = bbox.width / ((storeCount - 1) || 1);
         }
         else {
-            //In case some person decides to set an axis' minimum and maximum
-            //configuration properties to the same value, then fallback the
-            //denominator to a > 0 value.
-            xScale = bbox.width / ((maxX - minX) || (store.getCount() - 1));
+            xScale = bbox.width / ((maxX - minX) || (storeCount -1) || 1);
         }
 
         if (isNaN(minY)) {
             minY = 0;
-            yScale = bbox.height / (store.getCount() - 1);
-        } 
-        else {
-            //In case some person decides to set an axis' minimum and maximum
-            //configuration properties to the same value, then fallback the
-            //denominator to a > 0 value.
-            yScale = bbox.height / ((maxY - minY) || (store.getCount() - 1));
+            yScale = bbox.height / ((storeCount - 1) || 1);
         }
-        
-        store.each(function(record, i) {
+        else {
+            yScale = bbox.height / ((maxY - minY) || (storeCount - 1) || 1);
+        }
+
+        // Extract all x and y values from the store
+        me.eachRecord(function(record, i) {
             xValue = record.get(me.xField);
+
+            // Ensure a value
+            if (typeof xValue == 'string' || typeof xValue == 'object' && !Ext.isDate(xValue)
+                //set as uniform distribution if the axis is a category axis.
+                || boundXAxis && chartAxes.get(boundXAxis) && chartAxes.get(boundXAxis).type == 'Category') {
+                    if (xValue in xValueMap) {
+                        xValue = xValueMap[xValue];
+                    } else {
+                        xValue = xValueMap[xValue] = i;
+                    }
+            }
+
+            // Filter out values that don't fit within the pan/zoom buffer area
             yValue = record.get(me.yField);
             //skip undefined values
             if (typeof yValue == 'undefined' || (typeof yValue == 'string' && !yValue)) {
@@ -461,20 +458,15 @@ Ext.define('Ext.chart.series.Line', {
                 return;
             }
             // Ensure a value
-            if (typeof xValue == 'string' || typeof xValue == 'object'
+            if (typeof yValue == 'string' || typeof yValue == 'object' && !Ext.isDate(yValue)
                 //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'top' && me.axis != 'bottom' && !numericAxis)) {
-                xValue = i;
-            }
-            if (typeof yValue == 'string' || typeof yValue == 'object'
-                //set as uniform distribution if the axis is a category axis.
-                || (me.axis != 'left' && me.axis != 'right' && !numericAxis)) {
+                || boundYAxis && chartAxes.get(boundYAxis) && chartAxes.get(boundYAxis).type == 'Category') {
                 yValue = i;
             }
             storeIndices.push(i);
             xValues.push(xValue);
             yValues.push(yValue);
-        }, me);
+        });
 
         ln = xValues.length;
         if (ln > bbox.width) {
@@ -503,11 +495,12 @@ Ext.define('Ext.chart.series.Line', {
                 if (onbreak) {
                     onbreak = false;
                     path.push('M');
-                } 
+                }
                 path = path.concat([x, y]);
             }
             if ((typeof firstY == 'undefined') && (typeof y != 'undefined')) {
                 firstY = y;
+                firstX = x;
             }
             // If this is the first line, create a dummypath to animate in from.
             if (!me.line || chart.resizing) {
@@ -542,15 +535,16 @@ Ext.define('Ext.chart.series.Line', {
                         group: [group, markerGroup],
                         x: 0, y: 0,
                         translate: {
-                            x: prevX || x, 
+                            x: +(prevX || x),
                             y: prevY || (bbox.y + bbox.height / 2)
                         },
-                        value: '"' + xValue + ', ' + yValue + '"'
+                        value: '"' + xValue + ', ' + yValue + '"',
+                        zIndex: 4000
                     }, endMarkerStyle));
                     marker._to = {
                         translate: {
-                            x: x,
-                            y: y
+                            x: +x,
+                            y: +y
                         }
                     };
                 } else {
@@ -561,12 +555,12 @@ Ext.define('Ext.chart.series.Line', {
                     }, true);
                     marker._to = {
                         translate: {
-                            x: x, y: y
+                            x: +x, 
+                            y: +y
                         }
                     };
                 }
             }
-
             me.items.push({
                 series: me,
                 value: [xValue, yValue],
@@ -577,16 +571,16 @@ Ext.define('Ext.chart.series.Line', {
             prevX = x;
             prevY = y;
         }
-        
+
         if (path.length <= 1) {
             //nothing to be rendered
-            return;    
+            return;
         }
-    
-        if (smooth) {
+
+        if (me.smooth) {
             smoothPath = Ext.draw.Draw.smooth(path, isNumber(smooth) ? smooth : me.defaultSmoothness);
         }
-        
+
         renderPath = smooth ? smoothPath : path;
 
         //Correct path if we're animating timeAxis intervals
@@ -598,7 +592,7 @@ Ext.define('Ext.chart.series.Line', {
         } else {
             fromPath = path;
         }
-        
+
         // Only create a line if one doesn't exist.
         if (!me.line) {
             me.line = surface.add(Ext.apply({
@@ -607,9 +601,15 @@ Ext.define('Ext.chart.series.Line', {
                 path: dummyPath,
                 stroke: endLineStyle.stroke || endLineStyle.fill
             }, endLineStyle || {}));
+
+            if (enableShadows) {
+                me.line.setAttributes(Ext.apply({}, me.shadowOptions), true);
+            }
+
             //unset fill here (there's always a default fill withing the themes).
             me.line.setAttributes({
-                fill: 'none'
+                fill: 'none',
+                zIndex: 3000
             });
             if (!endLineStyle.stroke && colorArrayLength) {
                 me.line.setAttributes({
@@ -618,11 +618,11 @@ Ext.define('Ext.chart.series.Line', {
             }
             if (enableShadows) {
                 //create shadows
-                shadows = me.line.shadows = [];                
+                shadows = me.line.shadows = [];
                 for (shindex = 0; shindex < lnsh; shindex++) {
                     shadowBarAttr = shadowAttributes[shindex];
                     shadowBarAttr = Ext.apply({}, shadowBarAttr, { path: dummyPath });
-                    shadow = chart.surface.add(Ext.apply({}, {
+                    shadow = surface.add(Ext.apply({}, {
                         type: 'path',
                         group: shadowGroups[shindex]
                     }, shadowBarAttr));
@@ -633,8 +633,8 @@ Ext.define('Ext.chart.series.Line', {
         if (me.fill) {
             fillPath = renderPath.concat([
                 ["L", x, bbox.y + bbox.height],
-                ["L", bbox.x, bbox.y + bbox.height],
-                ["L", bbox.x, firstY]
+                ["L", firstX, bbox.y + bbox.height],
+                ["L", firstX, firstY]
             ]);
             if (!me.fillPath) {
                 me.fillPath = surface.add({
@@ -657,6 +657,7 @@ Ext.define('Ext.chart.series.Line', {
             });
             //fill should not be used here but when drawing the special fill path object
             delete rendererAttributes.fill;
+            line.show(true);
             if (chart.markerIndex && me.previousPath) {
                 me.animation = animation = me.onAnimate(line, {
                     to: rendererAttributes,
@@ -673,6 +674,7 @@ Ext.define('Ext.chart.series.Line', {
             if (enableShadows) {
                 shadows = line.shadows;
                 for(j = 0; j < lnsh; j++) {
+                    shadows[j].show(true);
                     if (chart.markerIndex && me.previousPath) {
                         me.onAnimate(shadows[j], {
                             to: { path: renderPath },
@@ -687,10 +689,12 @@ Ext.define('Ext.chart.series.Line', {
             }
             //animate fill path
             if (fill) {
+                me.fillPath.show(true);
                 me.onAnimate(me.fillPath, {
                     to: Ext.apply({}, {
                         path: fillPath,
-                        fill: endLineStyle.fill || colorArrayStyle[seriesIdx % colorArrayLength]
+                        fill: endLineStyle.fill || colorArrayStyle[seriesIdx % colorArrayLength],
+                        'stroke-width': 0
                     }, endLineStyle || {})
                 });
             }
@@ -705,13 +709,18 @@ Ext.define('Ext.chart.series.Line', {
                             me.onAnimate(item, {
                                 to: Ext.apply(rendererAttributes, endMarkerStyle || {})
                             });
+                            item.show(true);
                         }
-                    } 
+                    }
                 }
                 for(; count < markerCount; count++) {
                     item = markerGroup.getAt(count);
                     item.hide(true);
                 }
+//                for(i = 0; i < (chart.markerIndex || 0)-1; i++) {
+//                    item = markerGroup.getAt(i);
+//                    item.hide(true);
+//                }
             }
         } else {
             rendererAttributes = me.renderer(me.line, false, { path: renderPath, hidden: false }, i, store);
@@ -726,13 +735,15 @@ Ext.define('Ext.chart.series.Line', {
                 shadows = me.line.shadows;
                 for(j = 0; j < lnsh; j++) {
                     shadows[j].setAttributes({
-                        path: renderPath
+                        path: renderPath,
+                        hidden: false
                     }, true);
                 }
             }
             if (me.fill) {
                 me.fillPath.setAttributes({
-                    path: fillPath
+                    path: fillPath,
+                    hidden: false
                 }, true);
             }
             if (showMarkers) {
@@ -743,8 +754,9 @@ Ext.define('Ext.chart.series.Line', {
                         if (item) {
                             rendererAttributes = me.renderer(item, store.getAt(i), item._to, i, store);
                             item.setAttributes(Ext.apply(endMarkerStyle || {}, rendererAttributes || {}), true);
+                            item.show(true);
                         }
-                    } 
+                    }
                 }
                 for(; count < markerCount; count++) {
                     item = markerGroup.getAt(count);
@@ -763,8 +775,10 @@ Ext.define('Ext.chart.series.Line', {
         }
         me.renderLabels();
         me.renderCallouts();
+
+        me.fireEvent('draw', me);
     },
-    
+
     // @private called when a label is to be created.
     onCreateLabel: function(storeItem, item, i, display) {
         var me = this,
@@ -781,7 +795,7 @@ Ext.define('Ext.chart.series.Line', {
             'y': bbox.y + bbox.height / 2
         }, endLabelStyle || {}));
     },
-    
+
     // @private called when a label is to be created.
     onPlaceLabel: function(label, storeItem, item, i, display, animate) {
         var me = this,
@@ -795,12 +809,12 @@ Ext.define('Ext.chart.series.Line', {
             y = item.point[1],
             radius = item.sprite.attr.radius,
             bb, width, height;
-        
+
         label.setAttributes({
             text: format(storeItem.get(field)),
             hidden: true
         }, true);
-        
+
         if (display == 'rotate') {
             label.setAttributes({
                 'text-anchor': 'start',
@@ -817,7 +831,7 @@ Ext.define('Ext.chart.series.Line', {
             x = x < bbox.x? bbox.x : x;
             x = (x + width > bbox.x + bbox.width)? (x - (x + width - bbox.x - bbox.width)) : x;
             y = (y - height < bbox.y)? bbox.y + height : y;
-        
+
         } else if (display == 'under' || display == 'over') {
             //TODO(nicolas): find out why width/height values in circle bounding boxes are undefined.
             bb = item.sprite.getBBox();
@@ -833,7 +847,7 @@ Ext.define('Ext.chart.series.Line', {
             y = y - height < bbox.y? bbox.y + height : y;
             y = (y + height > bbox.y + bbox.height) ? (y - (y + height - bbox.y - bbox.height)) : y;
         }
-        
+
         if (me.chart.animate && !me.chart.resizing) {
             label.show(true);
             me.onAnimate(label, {
@@ -847,7 +861,7 @@ Ext.define('Ext.chart.series.Line', {
                 x: x,
                 y: y
             }, true);
-            if (resizing) {
+            if (resizing && me.animation) {
                 me.animation.on('afteranimate', function() {
                     label.show(true);
                 });
@@ -861,20 +875,20 @@ Ext.define('Ext.chart.series.Line', {
     highlightItem: function() {
         var me = this;
         me.callParent(arguments);
-        if (this.line && !this.highlighted) {
-            if (!('__strokeWidth' in this.line)) {
-                this.line.__strokeWidth = this.line.attr['stroke-width'] || 0;
+        if (me.line && !me.highlighted) {
+            if (!('__strokeWidth' in me.line)) {
+                me.line.__strokeWidth = me.line.attr['stroke-width'] || 0;
             }
-            if (this.line.__anim) {
-                this.line.__anim.paused = true;
+            if (me.line.__anim) {
+                me.line.__anim.paused = true;
             }
-            this.line.__anim = Ext.create('Ext.fx.Anim', {
-                target: this.line,
+            me.line.__anim = Ext.create('Ext.fx.Anim', {
+                target: me.line,
                 to: {
-                    'stroke-width': this.line.__strokeWidth + 3
+                    'stroke-width': me.line.__strokeWidth + 3
                 }
             });
-            this.highlighted = true;
+            me.highlighted = true;
         }
     },
 
@@ -882,14 +896,14 @@ Ext.define('Ext.chart.series.Line', {
     unHighlightItem: function() {
         var me = this;
         me.callParent(arguments);
-        if (this.line && this.highlighted) {
-            this.line.__anim = Ext.create('Ext.fx.Anim', {
-                target: this.line,
+        if (me.line && me.highlighted) {
+            me.line.__anim = Ext.create('Ext.fx.Anim', {
+                target: me.line,
                 to: {
-                    'stroke-width': this.line.__strokeWidth
+                    'stroke-width': me.line.__strokeWidth
                 }
             });
-            this.highlighted = false;
+            me.highlighted = false;
         }
     },
 
@@ -898,7 +912,7 @@ Ext.define('Ext.chart.series.Line', {
         if (!display) {
             return;
         }
-        
+
         var me = this,
             chart = me.chart,
             surface = chart.surface,
@@ -930,11 +944,11 @@ Ext.define('Ext.chart.series.Line', {
         a = (next[1] - prev[1]) / (next[0] - prev[0]);
         aprev = (cur[1] - prev[1]) / (cur[0] - prev[0]);
         anext = (next[1] - cur[1]) / (next[0] - cur[0]);
-        
+
         norm = Math.sqrt(1 + a * a);
         dir = [1 / norm, a / norm];
         normal = [-dir[1], dir[0]];
-        
+
         //keep the label always on the outer part of the "elbow"
         if (aprev > 0 && anext < 0 && normal[1] < 0
             || aprev < 0 && anext > 0 && normal[1] > 0) {
@@ -954,7 +968,7 @@ Ext.define('Ext.chart.series.Line', {
         boxy = y - bbox.height /2 - offsetBox;
         boxw = bbox.width + 2 * offsetBox;
         boxh = bbox.height + 2 * offsetBox;
-        
+
         //now check if we're out of bounds and invert the normal vector correspondingly
         //this may add new overlaps between labels (but labels won't be out of bounds).
         if (boxx < clipRect[0] || (boxx + boxw) > (clipRect[0] + clipRect[2])) {
@@ -967,13 +981,13 @@ Ext.define('Ext.chart.series.Line', {
         //update positions
         x = cur[0] + normal[0] * offsetFromViz;
         y = cur[1] + normal[1] * offsetFromViz;
-        
+
         //update box position and dimensions
         boxx = x + (normal[0] > 0? 0 : -(bbox.width + 2 * offsetBox));
         boxy = y - bbox.height /2 - offsetBox;
         boxw = bbox.width + 2 * offsetBox;
         boxh = bbox.height + 2 * offsetBox;
-        
+
         if (chart.animate) {
             //set the line from the middle of the pie to the box.
             me.onAnimate(callout.lines, {
@@ -1000,7 +1014,7 @@ Ext.define('Ext.chart.series.Line', {
             callout[p].show(true);
         }
     },
-    
+
     isItemInPoint: function(x, y, item, i) {
         var me = this,
             items = me.items,
@@ -1019,10 +1033,10 @@ Ext.define('Ext.chart.series.Line', {
             yIntersect,
             dist1, dist2, dist, midx, midy,
             sqrt = Math.sqrt, abs = Math.abs;
-        
+
         nextItem = items[i];
         prevItem = i && items[i - 1];
-        
+
         if (i >= ln) {
             prevItem = items[ln - 1];
         }
@@ -1035,22 +1049,22 @@ Ext.define('Ext.chart.series.Line', {
         dist1 = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
         dist2 = sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
         dist = Math.min(dist1, dist2);
-        
+
         if (dist <= tolerance) {
             return dist == dist1? prevItem : nextItem;
         }
         return false;
     },
-    
+
     // @private toggle visibility of all series elements (markers, sprites).
     toggleAll: function(show) {
         var me = this,
             i, ln, shadow, shadows;
         if (!show) {
-            Ext.chart.series.Line.superclass.hideAll.call(me);
+            Ext.chart.series.Cartesian.prototype.hideAll.call(me);
         }
         else {
-            Ext.chart.series.Line.superclass.showAll.call(me);
+            Ext.chart.series.Cartesian.prototype.showAll.call(me);
         }
         if (me.line) {
             me.line.setAttributes({
@@ -1072,14 +1086,15 @@ Ext.define('Ext.chart.series.Line', {
             }, true);
         }
     },
-    
+
     // @private hide all series elements (markers, sprites).
     hideAll: function() {
         this.toggleAll(false);
     },
-    
+
     // @private hide all series elements (markers, sprites).
     showAll: function() {
         this.toggleAll(true);
     }
 });
+

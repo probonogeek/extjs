@@ -83,7 +83,7 @@ Ext.define('Ext.form.FieldAncestor', {
 
         me.addEvents(
             /**
-             * @event fielderrorchange
+             * @event fieldvaliditychange
              * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
              * container changes.
              * @param {Ext.form.FieldAncestor} this

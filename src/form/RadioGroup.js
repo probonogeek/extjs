@@ -34,29 +34,28 @@ If you are unsure which license is appropriate for your use, please contact the 
  * types; for instance you may wish to use a custom arrangement of hbox and vbox containers. In that case
  * the Radio components at any depth will still be managed by the RadioGroup's validation.
  *
- * {@img Ext.form.RadioGroup/Ext.form.RadioGroup.png Ext.form.RadioGroup component}
- *
  * # Example usage
  *
+ *     @example
  *     Ext.create('Ext.form.Panel', {
  *         title: 'RadioGroup Example',
  *         width: 300,
  *         height: 125,
  *         bodyPadding: 10,
- *         renderTo: Ext.getBody(),        
- *         items:[{            
+ *         renderTo: Ext.getBody(),
+ *         items:[{
  *             xtype: 'radiogroup',
  *             fieldLabel: 'Two Columns',
  *             // Arrange radio buttons into two columns, distributed vertically
  *             columns: 2,
  *             vertical: true,
  *             items: [
- *                 {boxLabel: 'Item 1', name: 'rb', inputValue: '1'},
- *                 {boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
- *                 {boxLabel: 'Item 3', name: 'rb', inputValue: '3'},
- *                 {boxLabel: 'Item 4', name: 'rb', inputValue: '4'},
- *                 {boxLabel: 'Item 5', name: 'rb', inputValue: '5'},
- *                 {boxLabel: 'Item 6', name: 'rb', inputValue: '6'}
+ *                 { boxLabel: 'Item 1', name: 'rb', inputValue: '1' },
+ *                 { boxLabel: 'Item 2', name: 'rb', inputValue: '2', checked: true},
+ *                 { boxLabel: 'Item 3', name: 'rb', inputValue: '3' },
+ *                 { boxLabel: 'Item 4', name: 'rb', inputValue: '4' },
+ *                 { boxLabel: 'Item 5', name: 'rb', inputValue: '5' },
+ *                 { boxLabel: 'Item 6', name: 'rb', inputValue: '6' }
  *             ]
  *         }]
  *     });
@@ -67,30 +66,49 @@ Ext.define('Ext.form.RadioGroup', {
     alias: 'widget.radiogroup',
 
     /**
-     * @cfg {Array} items An Array of {@link Ext.form.field.Radio Radio}s or Radio config objects
-     * to arrange in the group.
+     * @cfg {Ext.form.field.Radio[]/Object[]} items
+     * An Array of {@link Ext.form.field.Radio Radio}s or Radio config objects to arrange in the group.
      */
     /**
-     * @cfg {Boolean} allowBlank True to allow every item in the group to be blank (defaults to true).
+     * @cfg {Boolean} allowBlank True to allow every item in the group to be blank.
      * If allowBlank = false and no items are selected at validation time, {@link #blankText} will
      * be used as the error text.
      */
     allowBlank : true,
     /**
      * @cfg {String} blankText Error text to display if the {@link #allowBlank} validation fails
-     * (defaults to 'You must select one item in this group')
      */
     blankText : 'You must select one item in this group',
-    
+
     // private
     defaultType : 'radiofield',
-    
+
     // private
     groupCls : Ext.baseCSSPrefix + 'form-radio-group',
 
     getBoxes: function() {
         return this.query('[isRadio]');
-    }
+    },
 
+    /**
+     * Sets the value of the radio group. The radio with corresponding name and value will be set.
+     * This method is simpler than {@link Ext.form.CheckboxGroup#setValue} because only 1 value is allowed
+     * for each name.
+     * 
+     * @param {Object} value The map from names to values to be set.
+     * @return {Ext.form.CheckboxGroup} this
+     */
+    setValue: function(value) {
+        var me = this;
+        if (Ext.isObject(value)) {
+            Ext.Object.each(value, function(name, cbValue) {
+                var radios = Ext.form.RadioManager.getWithValue(name, cbValue);
+                radios.each(function(cb) {
+                    cb.setValue(true);
+                });
+            });
+        }
+        return me;
+    }
 });
 

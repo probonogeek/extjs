@@ -13,29 +13,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * This layout manages multiple child Components, each is fit to the Container, where only a single child Component
- * can be visible at any given time.  This layout style is most commonly used for wizards, tab implementations, etc.
- * This class is intended to be extended or created via the layout:'card' {@link Ext.container.Container#layout} config,
- * and should generally not need to be created directly via the new keyword.
- *
- * The CardLayout's focal method is {@link #setActiveItem}.  Since only one panel is displayed at a time,
- * the only way to move from one Component to the next is by calling setActiveItem, passing the id or index of
- * the next panel to display.  The layout itself does not provide a user interface for handling this navigation,
- * so that functionality must be provided by the developer.
- *
- * Containers that are configured with a card layout will have a method setActiveItem dynamically added to it.
- *
- *     var p = new Ext.panel.Panel({
- *         fullscreen: true,
- *         layout: 'card',
- *         items: [{
- *             html: 'Card 1'
- *         },{
- *             html: 'Card 2'
- *         }]
- *     });
- *     p.setActiveItem(1);
- *
+ * Abstract base class for {@link Ext.layout.container.Card Card layout}.
+ * @private
  */
 Ext.define('Ext.layout.container.AbstractCard', {
 
@@ -54,7 +33,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
     /**
      * @cfg {Boolean} deferredRender
      * True to render each contained item at the time it becomes active, false to render all contained items
-     * as soon as the layout is rendered (defaults to false).  If there is a significant amount of content or
+     * as soon as the layout is rendered.  If there is a significant amount of content or
      * a lot of heavy controls being rendered into panels that are not displayed by default, setting this to
      * true might improve performance.
      */
@@ -62,13 +41,20 @@ Ext.define('Ext.layout.container.AbstractCard', {
 
     beforeLayout: function() {
         var me = this;
-        me.activeItem = me.getActiveItem();
+        me.getActiveItem();
         if (me.activeItem && me.deferredRender) {
             me.renderItems([me.activeItem], me.getRenderTarget());
             return true;
         }
         else {
             return this.callParent(arguments);
+        }
+    },
+
+    renderChildren: function () {
+        if (!this.deferredRender) {
+            this.getActiveItem();
+            this.callParent();
         }
     },
 
@@ -164,7 +150,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
      * @returns {Ext.Component} The next component or false.
      */
     getNext: function() {
-        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
+        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This
         //should come back in 4.1
         var wrap = arguments[0];
         var items = this.getLayoutItems(),
@@ -177,7 +163,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
      * @return {Ext.Component} the activated component or false when nothing activated.
      */
     next: function() {
-        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
+        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This
         //should come back in 4.1
         var anim = arguments[0], wrap = arguments[1];
         return this.setActiveItem(this.getNext(wrap), anim);
@@ -188,7 +174,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
      * @returns {Ext.Component} The previous component or false.
      */
     getPrev: function() {
-        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
+        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This
         //should come back in 4.1
         var wrap = arguments[0];
         var items = this.getLayoutItems(),
@@ -201,7 +187,7 @@ Ext.define('Ext.layout.container.AbstractCard', {
      * @return {Ext.Component} the activated component or false when nothing activated.
      */
     prev: function() {
-        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This 
+        //NOTE: Removed the JSDoc for this function's arguments because it is not actually supported in 4.0. This
         //should come back in 4.1
         var anim = arguments[0], wrap = arguments[1];
         return this.setActiveItem(this.getPrev(wrap), anim);

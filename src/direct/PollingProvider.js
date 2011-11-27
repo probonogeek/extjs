@@ -59,14 +59,13 @@ Ext.define('Ext.direct.PollingProvider', {
     
     /**
      * @cfg {Number} interval
-     * How often to poll the server-side in milliseconds (defaults to <tt>3000</tt> - every
-     * 3 seconds).
+     * How often to poll the server-side in milliseconds. Defaults to every 3 seconds.
      */
     interval: 3000,
 
     /**
-     * @cfg {Object} baseParams An object containing properties which are to be sent as parameters
-     * on every polling request
+     * @cfg {Object} baseParams
+     * An object containing properties which are to be sent as parameters on every polling request
      */
     
     /**
@@ -83,13 +82,13 @@ Ext.define('Ext.direct.PollingProvider', {
              * @event beforepoll
              * Fired immediately before a poll takes place, an event handler can return false
              * in order to cancel the poll.
-             * @param {Ext.direct.PollingProvider}
+             * @param {Ext.direct.PollingProvider} this
              */
             'beforepoll',            
             /**
              * @event poll
              * This event has not yet been implemented.
-             * @param {Ext.direct.PollingProvider}
+             * @param {Ext.direct.PollingProvider} this
              */
             'poll'
         );

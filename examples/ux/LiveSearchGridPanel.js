@@ -168,20 +168,8 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                 return null;
             }
         }
-        
-        var length = value.length,
-            resultArray = [me.tagsProtect + '*'],
-            i = 0,
-            c;
-            
-        for(; i < length; i++) {
-            c = value.charAt(i);
-            resultArray.push(c);
-            if (c !== '\\') {
-                resultArray.push(me.tagsProtect + '*');
-            } 
-        }
-        return resultArray.join('');
+
+        return value;
     },
     
     /**

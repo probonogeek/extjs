@@ -164,7 +164,7 @@ Ext.onReady(function(){
     });
 
     // add some buttons to bottom toolbar just for demonstration purposes
-    grid.child('[dock=bottom]').add([
+    grid.child('pagingtoolbar').add([
         '->',
         {
             text: 'Encode: ' + (encode ? 'On' : 'Off'),

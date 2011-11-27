@@ -15,23 +15,24 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.grid.property.Grid
  * @extends Ext.grid.Panel
+ *
  * A specialized grid implementation intended to mimic the traditional property grid as typically seen in
  * development IDEs.  Each row in the grid represents a property of some object, and the data is stored
  * as a set of name/value pairs in {@link Ext.grid.property.Property Properties}.  Example usage:
- * <pre><code>
-var grid = new Ext.grid.property.Grid({
-    title: 'Properties Grid',
-    width: 300,
-    renderTo: 'grid-ct',
-    source: {
-        "(name)": "My Object",
-        "Created": Ext.Date.parse('10/15/2006', 'm/d/Y'),
-        "Available": false,
-        "Version": .01,
-        "Description": "A test object"
-    }
-});
-</code></pre>
+ *
+ *     @example
+ *     Ext.create('Ext.grid.property.Grid', {
+ *         title: 'Properties Grid',
+ *         width: 300,
+ *         renderTo: Ext.getBody(),
+ *         source: {
+ *             "(name)": "My Object",
+ *             "Created": Ext.Date.parse('10/15/2006', 'm/d/Y'),
+ *             "Available": false,
+ *             "Version": .01,
+ *             "Description": "A test object"
+ *         }
+ *     });
  */
 Ext.define('Ext.grid.property.Grid', {
 
@@ -189,8 +190,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'beforepropertychange',
             /**
@@ -199,8 +200,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'propertychange'
         );
@@ -340,7 +341,7 @@ grid.setSource({
     /**
      * Sets the value of a property.
      * @param {String} prop The name of the property to set
-     * @param {Mixed} value The value to test
+     * @param {Object} value The value to test
      * @param {Boolean} create (Optional) True to create the property if it doesn't already exist. Defaults to <tt>false</tt>.
      */
     setProperty: function(prop, value, create) {

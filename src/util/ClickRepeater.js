@@ -28,7 +28,7 @@ Ext.define('Ext.util.ClickRepeater', {
 
     /**
      * Creates new ClickRepeater.
-     * @param {Mixed} el The element to listen on
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to listen on
      * @param {Object} config (optional) Config object.
      */
     constructor : function(el, config){
@@ -75,7 +75,7 @@ Ext.define('Ext.util.ClickRepeater', {
     },
 
     /**
-     * @cfg {Mixed} el The element to act as a button.
+     * @cfg {String/HTMLElement/Ext.Element} el The element to act as a button.
      */
 
     /**

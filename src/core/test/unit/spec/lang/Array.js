@@ -456,13 +456,13 @@ describe("Ext.Array", function() {
 
         it("should add items if the filter function returns true", function(){
             expect(filter([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(val){
-                return val % 2 == 0;
+                return val % 2 === 0;
             })).toEqual([2, 4, 6, 8, 10]);
         });
 
         it("should add items if the filter function returns a truthy value", function(){
             expect(filter([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(val){
-                if (val % 2 == 0) {
+                if (val % 2 === 0) {
                     return 1;
                 }
             })).toEqual([2, 4, 6, 8, 10]);
@@ -640,7 +640,7 @@ describe("Ext.Array", function() {
             it("should iterate arguments", function(){
                 var test, values = [], fn = function(){
                     test = each(arguments, function(val){
-                        values.push(val)
+                        values.push(val);
                     });
                 };
                 fn(1, 2, 3);
@@ -939,7 +939,7 @@ describe("Ext.Array", function() {
             });
 
             it("with comparisonFn", function() {
-                expect(Ext.Array.min([1,2,3,4,5,6], function(a, b) { return a < b ? 1 : -1 })).toEqual(6);
+                expect(Ext.Array.min([1,2,3,4,5,6], function(a, b) { return a < b ? 1 : -1; })).toEqual(6);
             });
         });
     });
@@ -951,7 +951,7 @@ describe("Ext.Array", function() {
             });
 
             it("with comparisonFn", function() {
-                expect(Ext.Array.max([1,2,3,4,5,6], function(a, b) { return a < b ? 1 : -1 })).toEqual(1);
+                expect(Ext.Array.max([1,2,3,4,5,6], function(a, b) { return a < b ? 1 : -1; })).toEqual(1);
             });
         });
     });
@@ -1091,6 +1091,68 @@ describe("Ext.Array", function() {
             var ret = Ext.Array._spliceSim([1,2,3,4], 1, 0);
             expect(Ext.encode(ret)).toEqual('[]');
         });
+    });
+
+    describe('slice', function(){
+        
+        var array;
+        
+        describe('with Array', function(){
+            beforeEach(function(){
+                array = [{0:0}, {1:1}, {2:2}, {3:3}];
+            });
+            tests();
+        });
+        
+        describe('with arguments', function(){
+            beforeEach(function(){
+                array = (function(){ return arguments; })({0:0}, {1:1}, {2:2}, {3:3});
+            });
+            tests();
+        });
+        
+        function tests(){
+            it('should shallow clone', function(){
+                var newArray = Ext.Array.slice(array, 0);
+                expect(newArray === array).toBe(false);
+                expect(newArray[0] === array[0]).toBe(true);
+            });
+            it('should not require a begin or end', function(){
+                var newArray = Ext.Array.slice(array);
+                expect(newArray === array).toBe(false);
+                expect(newArray[0]).toBe(array[0]);
+            });
+            it('should slice off the first item', function(){
+                var newArray = Ext.Array.slice(array, 1);
+                expect(newArray.length).toBe(3);
+                expect(newArray[0]).toBe(array[1]);
+                expect(newArray[2]).toBe(array[3]);
+            });
+            it('should ignore `end` if undefined', function(){
+                var newArray = Ext.Array.slice(array, 1, undefined);
+                expect(newArray.length).toBe(3);
+                expect(newArray[0]).toBe(array[1]);
+                expect(newArray[2]).toBe(array[3]);
+            });
+            it('should ignore `begin` if undefined', function(){
+                var newArray = Ext.Array.slice(array, undefined);
+                expect(newArray.length).toBe(4);
+                expect(newArray[0]).toBe(array[0]);
+                expect(newArray[3]).toBe(array[3]);
+            });
+            it('should ignore `begin` and `end` if undefined', function(){
+                var newArray = Ext.Array.slice(array, undefined, undefined);
+                expect(newArray.length).toBe(4);
+                expect(newArray[0]).toBe(array[0]);
+                expect(newArray[3]).toBe(array[3]);
+            });
+            it('should slice out the middle', function(){
+                var newArray = Ext.Array.slice(array, 1, -1);
+                expect(newArray.length).toBe(2);
+                expect(newArray[0]).toBe(array[1]);
+                expect(newArray[1]).toBe(array[2]);
+            });
+        }
     });
 });
 

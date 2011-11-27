@@ -49,7 +49,7 @@ Ext.define('User', {
  * 
 <pre><code>
 //first, we load up a User with id of 1
-var user = Ext.ModelManager.create({id: 1, name: 'Ed'}, 'User');
+var user = Ext.create('User', {id: 1, name: 'Ed'});
 
 //the user.products function was created automatically by the association and returns a {@link Ext.data.Store Store}
 //the created store is automatically scoped to the set of Products for the User with id of 1
@@ -105,7 +105,7 @@ var store = new Search({query: 'Sencha Touch'}).tweets();
  * equivalent to this:</p>
  * 
 <pre><code>
-var store = new Ext.data.Store({
+var store = Ext.create('Ext.data.Store', {
     model: 'Tweet',
     filters: [
         {

@@ -16,11 +16,13 @@ Ext.require('Ext.chart.*');
 Ext.require(['Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 
 Ext.onReady(function () {
-    store1.loadData(generateData(5));
+    store1.loadData(generateData(5, 20));
 
     var win = Ext.create('Ext.Window', {
         width: 800,
         height: 600,
+        minHeight: 400,
+        minWidth: 550,
         hidden: false,
         maximizable: true,
         title: 'Pie Renderer Chart',

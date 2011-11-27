@@ -168,7 +168,7 @@ Ext.onReady(function() {
 
     if(Ext.form.field.Number){
       Ext.apply(Ext.form.field.Number.prototype, {
-        decimalSeparator : ".",
+        decimalSeparator : ",",
         decimalPrecision : 2,
         minText : "El valor m&#237;nimo para este campo es de {0}",
         maxText : "El valor m&#225;ximo para este campo es de {0}",
@@ -190,9 +190,11 @@ Ext.onReady(function() {
 
     if(Ext.form.field.ComboBox){
       Ext.apply(Ext.form.field.ComboBox.prototype, {
-        loadingText       : "Cargando...",
         valueNotFoundText : undefined
       });
+        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+            loadingText       : "Cargando..."
+        });
     }
 
     if(Ext.form.field.VTypes){

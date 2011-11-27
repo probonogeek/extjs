@@ -121,8 +121,8 @@ Ext.define('Ext.ux.Spotlight', {
             box = me.el.getBox();
 
         //get the current view width and height
-        var viewWidth = Ext.core.Element.getViewWidth(true);
-        var viewHeight = Ext.core.Element.getViewHeight(true);
+        var viewWidth = Ext.Element.getViewWidth(true);
+        var viewHeight = Ext.Element.getViewHeight(true);
 
         var i = 0,
             config = false,

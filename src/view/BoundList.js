@@ -13,9 +13,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.view.BoundList
- * @extends Ext.view.View
- * An internal used DataView for ComboBox, MultiSelect and ItemSelector.
+ * An internally used DataView for {@link Ext.form.field.ComboBox ComboBox}.
  */
 Ext.define('Ext.view.BoundList', {
     extend: 'Ext.view.View',
@@ -24,15 +22,15 @@ Ext.define('Ext.view.BoundList', {
     requires: ['Ext.layout.component.BoundList', 'Ext.toolbar.Paging'],
 
     /**
-     * @cfg {Number} pageSize If greater than <tt>0</tt>, a {@link Ext.toolbar.Paging} is displayed at the
-     * bottom of the list and store queries will execute with page start and
-     * {@link Ext.toolbar.Paging#pageSize limit} parameters.
+     * @cfg {Number} pageSize
+     * If greater than `0`, a {@link Ext.toolbar.Paging} is displayed at the bottom of the list and store
+     * queries will execute with page {@link Ext.data.Operation#start start} and
+     * {@link Ext.data.Operation#limit limit} parameters. Defaults to `0`.
      */
     pageSize: 0,
 
     /**
-     * @property pagingToolbar
-     * @type {Ext.toolbar.Paging}
+     * @property {Ext.toolbar.Paging} pagingToolbar
      * A reference to the PagingToolbar instance in this view. Only populated if {@link #pageSize} is greater
      * than zero and the BoundList has been rendered.
      */
@@ -40,6 +38,7 @@ Ext.define('Ext.view.BoundList', {
     // private overrides
     autoScroll: true,
     baseCls: Ext.baseCSSPrefix + 'boundlist',
+    itemCls: Ext.baseCSSPrefix + 'boundlist-item',
     listItemCls: '',
     shadow: false,
     trackOver: true,
@@ -49,13 +48,13 @@ Ext.define('Ext.view.BoundList', {
 
     componentLayout: 'boundlist',
 
-    renderTpl: ['<div class="list-ct"></div>'],
+    renderTpl: ['<div id="{id}-listEl" class="list-ct"></div>'],
 
     initComponent: function() {
         var me = this,
             baseCls = me.baseCls,
-            itemCls = baseCls + '-item';
-        me.itemCls = itemCls;
+            itemCls = me.itemCls;
+            
         me.selectedItemCls = baseCls + '-selected';
         me.overItemCls = baseCls + '-item-over';
         me.itemSelector = "." + itemCls;
@@ -82,9 +81,7 @@ Ext.define('Ext.view.BoundList', {
 
         me.callParent();
 
-        Ext.applyIf(me.renderSelectors, {
-            listEl: '.list-ct'
-        });
+        me.addChildEls('listEl');
     },
 
     createPagingToolbar: function() {

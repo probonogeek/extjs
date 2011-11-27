@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -18,8 +18,8 @@
   <pre class="prettyprint lang-js"><span id='Ext-panel-AbstractPanel'>/**
 </span> * @class Ext.panel.AbstractPanel
  * @extends Ext.container.Container
- * &lt;p&gt;A base class which provides methods common to Panel classes across the Sencha product range.&lt;/p&gt;
- * &lt;p&gt;Please refer to sub class's documentation&lt;/p&gt;
+ * A base class which provides methods common to Panel classes across the Sencha product range.
+ * @private
  */
 Ext.define('Ext.panel.AbstractPanel', {
 
@@ -27,13 +27,13 @@ Ext.define('Ext.panel.AbstractPanel', {
 
     extend: 'Ext.container.Container',
 
-    requires: ['Ext.util.MixedCollection', 'Ext.core.Element', 'Ext.toolbar.Toolbar'],
+    requires: ['Ext.util.MixedCollection', 'Ext.Element', 'Ext.toolbar.Toolbar'],
 
     /* End Definitions */
 
 <span id='Ext-panel-AbstractPanel-cfg-baseCls'>    /**
-</span>     * @cfg {String} baseCls
-     * The base CSS class to apply to this panel's element (defaults to &lt;code&gt;'x-panel'&lt;/code&gt;).
+</span>     * @cfg {String} [baseCls='x-panel']
+     * The base CSS class to apply to this panel's element.
      */
     baseCls : Ext.baseCSSPrefix + 'panel',
 
@@ -41,13 +41,12 @@ Ext.define('Ext.panel.AbstractPanel', {
 </span>     * @cfg {Number/String} bodyPadding
      * A shortcut for setting a padding style on the body element. The value can either be
      * a number to be applied to all sides, or a normal css string describing padding.
-     * Defaults to &lt;code&gt;undefined&lt;/code&gt;.
      */
 
 <span id='Ext-panel-AbstractPanel-cfg-bodyBorder'>    /**
 </span>     * @cfg {Boolean} bodyBorder
-     * A shortcut to add or remove the border on the body of a panel. This only applies to a panel which has the {@link #frame} configuration set to `true`.
-     * Defaults to &lt;code&gt;undefined&lt;/code&gt;.
+     * A shortcut to add or remove the border on the body of a panel. This only applies to a panel
+     * which has the {@link #frame} configuration set to `true`.
      */
 
 <span id='Ext-panel-AbstractPanel-cfg-bodyStyle'>    /**
@@ -65,7 +64,7 @@ bodyStyle: {
      */
 
 <span id='Ext-panel-AbstractPanel-cfg-bodyCls'>    /**
-</span>     * @cfg {String/Array} bodyCls
+</span>     * @cfg {String/String[]} bodyCls
      * A CSS class, space-delimited string of classes, or array of classes to be applied to the panel's body element.
      * The following examples are all valid:&lt;pre&gt;&lt;code&gt;
 bodyCls: 'foo'
@@ -83,7 +82,7 @@ bodyCls: ['foo', 'bar']
      * This object holds the default weights applied to dockedItems that have no weight. These start with a
      * weight of 1, to allow negative weights to insert before top items and are odd numbers
      * so that even weights can be used to get between different dock orders.
-     * 
+     *
      * To make default docking order match border layout, do this:
      * &lt;pre&gt;&lt;code&gt;
 Ext.panel.AbstractPanel.prototype.defaultDockWeights = { top: 1, bottom: 3, left: 5, right: 7 };&lt;/code&gt;&lt;/pre&gt;
@@ -108,11 +107,17 @@ initComponent: function () {
      */
     defaultDockWeights: { top: 1, left: 3, right: 5, bottom: 7 },
 
-    renderTpl: ['&lt;div class=&quot;{baseCls}-body&lt;tpl if=&quot;bodyCls&quot;&gt; {bodyCls}&lt;/tpl&gt; {baseCls}-body-{ui}&lt;tpl if=&quot;uiCls&quot;&gt;&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;&lt;/tpl&gt;&quot;&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;&lt;/div&gt;'],
+    renderTpl: [
+        '&lt;div id=&quot;{id}-body&quot; class=&quot;{baseCls}-body&lt;tpl if=&quot;bodyCls&quot;&gt; {bodyCls}&lt;/tpl&gt;',
+            ' {baseCls}-body-{ui}&lt;tpl if=&quot;uiCls&quot;&gt;',
+                '&lt;tpl for=&quot;uiCls&quot;&gt; {parent.baseCls}-body-{parent.ui}-{.}&lt;/tpl&gt;',
+            '&lt;/tpl&gt;&quot;&lt;tpl if=&quot;bodyStyle&quot;&gt; style=&quot;{bodyStyle}&quot;&lt;/tpl&gt;&gt;',
+        '&lt;/div&gt;'
+    ],
 
     // TODO: Move code examples into product-specific files. The code snippet below is Touch only.
 <span id='Ext-panel-AbstractPanel-cfg-dockedItems'>    /**
-</span>     * @cfg {Object/Array} dockedItems
+</span>     * @cfg {Object/Object[]} dockedItems
      * A component or series of components to be added as docked items to this panel.
      * The docked items can be docked to either the top, right, left or bottom of a panel.
      * This is typically used for things like toolbars or tab bars:
@@ -149,9 +154,7 @@ var panel = new Ext.panel.Panel({
             // 'deactivate'
         );
 
-        Ext.applyIf(me.renderSelectors, {
-            body: '.' + me.baseCls + '-body'
-        });
+        me.addChildEls('body');
 
         //!frame
         //!border
@@ -192,7 +195,7 @@ var panel = new Ext.panel.Panel({
 
 <span id='Ext-panel-AbstractPanel-method-getComponent'>    /**
 </span>     * Attempts a default component lookup (see {@link Ext.container.Container#getComponent}). If the component is not found in the normal
-     * items, the dockedItems are searched and the matched component (if any) returned (see {@loink #getDockedComponent}). Note that docked
+     * items, the dockedItems are searched and the matched component (if any) returned (see {@link #getDockedComponent}). Note that docked
      * items will only be matched by component id or itemId -- if you pass a numeric index only non-docked child components will be searched.
      * @param {String/Number} comp The component id, itemId or position to find
      * @return {Ext.Component} The component (if found)
@@ -216,7 +219,7 @@ var panel = new Ext.panel.Panel({
         var me = this,
             bodyStyle = me.bodyStyle,
             styles = [],
-            Element = Ext.core.Element,
+            Element = Ext.Element,
             prop;
 
         if (Ext.isFunction(bodyStyle)) {
@@ -279,7 +282,7 @@ var panel = new Ext.panel.Panel({
 
 <span id='Ext-panel-AbstractPanel-method-addDocked'>    /**
 </span>     * Adds docked item(s) to the panel.
-     * @param {Object/Array} component The Component or array of components to add. The components
+     * @param {Object/Object[]} component The Component or array of components to add. The components
      * must include a 'dock' parameter on each component to indicate where it should be docked ('top', 'right',
      * 'bottom', 'left').
      * @param {Number} pos (optional) The index at which the Component will be added
@@ -326,7 +329,7 @@ var panel = new Ext.panel.Panel({
 <span id='Ext-panel-AbstractPanel-method-insertDocked'>    /**
 </span>     * Inserts docked item(s) to the panel at the indicated position.
      * @param {Number} pos The index at which the Component will be inserted
-     * @param {Object/Array} component. The Component or array of components to add. The components
+     * @param {Object/Object[]} component. The Component or array of components to add. The components
      * must include a 'dock' paramater on each component to indicate where it should be docked ('top', 'right',
      * 'bottom', 'left').
      */
@@ -361,10 +364,9 @@ var panel = new Ext.panel.Panel({
 
         if (autoDestroy === true || (autoDestroy !== false &amp;&amp; me.autoDestroy)) {
             item.destroy();
-        }
-
-        if (hasLayout &amp;&amp; !autoDestroy) {
-            layout.afterRemove(item);
+        } else if (hasLayout) {
+            // not destroying, make any layout related removals
+            layout.afterRemove(item);    
         }
 
 
@@ -380,7 +382,7 @@ var panel = new Ext.panel.Panel({
 <span id='Ext-panel-AbstractPanel-method-getDockedItems'>    /**
 </span>     * Retrieve an array of all currently docked Components.
      * @param {String} cqSelector A {@link Ext.ComponentQuery ComponentQuery} selector string to filter the returned items.
-     * @return {Array} An array of components.
+     * @return {Ext.Component[]} An array of components.
      */
     getDockedItems : function(cqSelector) {
         var me = this,

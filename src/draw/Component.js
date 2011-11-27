@@ -20,9 +20,10 @@ If you are unsure which license is appropriate for your use, please contact the 
  * manages and holds a `Surface` instance: an interface that has
  * an SVG or VML implementation depending on the browser capabilities and where
  * Sprites can be appended.
- * {@img Ext.draw.Component/Ext.draw.Component.png Ext.draw.Component component}
+ *
  * One way to create a draw component is:
- * 
+ *
+ *     @example
  *     var drawComponent = Ext.create('Ext.draw.Component', {
  *         viewBox: false,
  *         items: [{
@@ -33,21 +34,21 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             y: 100
  *         }]
  *     });
- *   
+ *
  *     Ext.create('Ext.Window', {
  *         width: 215,
  *         height: 235,
  *         layout: 'fit',
  *         items: [drawComponent]
  *     }).show();
- * 
+ *
  * In this case we created a draw component and added a sprite to it.
  * The *type* of the sprite is *circle* so if you run this code you'll see a yellow-ish
  * circle in a Window. When setting `viewBox` to `false` we are responsible for setting the object's position and
- * dimensions accordingly. 
- * 
+ * dimensions accordingly.
+ *
  * You can also add sprites by using the surface's add method:
- *    
+ *
  *     drawComponent.surface.add({
  *         type: 'circle',
  *         fill: '#79BB3F',
@@ -55,7 +56,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         x: 100,
  *         y: 100
  *     });
- *  
+ *
  * For more information on Sprites, the core elements added to a draw component's surface,
  * refer to the Ext.draw.Sprite documentation.
  */
@@ -75,7 +76,7 @@ Ext.define('Ext.draw.Component', {
     /* End Definitions */
 
     /**
-     * @cfg {Array} enginePriority
+     * @cfg {String[]} enginePriority
      * Defines the priority order for which Surface implementation to use. The first
      * one supported by the current environment will be used.
      */
@@ -97,60 +98,50 @@ Ext.define('Ext.draw.Component', {
      * Turn on autoSize support which will set the bounding div's size to the natural size of the contents. Defaults to false.
      */
     autoSize: false,
-    
+
     /**
-     * @cfg {Array} gradients (optional) Define a set of gradients that can be used as `fill` property in sprites.
+     * @cfg {Object[]} gradients (optional) Define a set of gradients that can be used as `fill` property in sprites.
      * The gradients array is an array of objects with the following properties:
      *
-     * <ul>
-     * <li><strong>id</strong> - string - The unique name of the gradient.</li>
-     * <li><strong>angle</strong> - number, optional - The angle of the gradient in degrees.</li>
-     * <li><strong>stops</strong> - object - An object with numbers as keys (from 0 to 100) and style objects
-     * as values</li>
-     * </ul>
-     * 
-     
-     For example:
-     
-     <pre><code>
-        gradients: [{
-            id: 'gradientId',
-            angle: 45,
-            stops: {
-                0: {
-                    color: '#555'
-                },
-                100: {
-                    color: '#ddd'
-                }
-            }
-        },  {
-            id: 'gradientId2',
-            angle: 0,
-            stops: {
-                0: {
-                    color: '#590'
-                },
-                20: {
-                    color: '#599'
-                },
-                100: {
-                    color: '#ddd'
-                }
-            }
-        }]
-     </code></pre>
-     
-     Then the sprites can use `gradientId` and `gradientId2` by setting the fill attributes to those ids, for example:
-     
-     <pre><code>
-        sprite.setAttributes({
-            fill: 'url(#gradientId)'
-        }, true);
-     </code></pre>
-     
+     *  - `id` - string - The unique name of the gradient.
+     *  - `angle` - number, optional - The angle of the gradient in degrees.
+     *  - `stops` - object - An object with numbers as keys (from 0 to 100) and style objects as values
+     *
+     * ## Example
+     *
+     *     gradients: [{
+     *         id: 'gradientId',
+     *         angle: 45,
+     *         stops: {
+     *             0: {
+     *                 color: '#555'
+     *             },
+     *             100: {
+     *                 color: '#ddd'
+     *             }
+     *         }
+     *     }, {
+     *         id: 'gradientId2',
+     *         angle: 0,
+     *         stops: {
+     *             0: {
+     *                 color: '#590'
+     *             },
+     *             20: {
+     *                 color: '#599'
+     *             },
+     *             100: {
+     *                 color: '#ddd'
+     *             }
+     *         }
+     *     }]
+     *
+     * Then the sprites can use `gradientId` and `gradientId2` by setting the fill attributes to those ids, for example:
+     *
+     *     sprite.setAttributes({
+     *         fill: 'url(#gradientId)'
+     *     }, true);
      */
-
     initComponent: function() {
         this.callParent(arguments);
 
@@ -176,22 +167,22 @@ Ext.define('Ext.draw.Component', {
             bbox, items, width, height, x, y;
         me.callParent(arguments);
 
-        me.createSurface();
+        if (me.createSurface() !== false) {
+            items = me.surface.items;
 
-        items = me.surface.items;
-
-        if (viewBox || autoSize) {
-            bbox = items.getBBox();
-            width = bbox.width;
-            height = bbox.height;
-            x = bbox.x;
-            y = bbox.y;
-            if (me.viewBox) {
-                me.surface.setViewBox(x, y, width, height);
-            }
-            else {
-                // AutoSized
-                me.autoSizeSurface();
+            if (viewBox || autoSize) {
+                bbox = items.getBBox();
+                width = bbox.width;
+                height = bbox.height;
+                x = bbox.x;
+                y = bbox.y;
+                if (me.viewBox) {
+                    me.surface.setViewBox(x, y, width, height);
+                }
+                else {
+                    // AutoSized
+                    me.autoSizeSurface();
+                }
             }
         }
     },
@@ -225,9 +216,7 @@ Ext.define('Ext.draw.Component', {
      * instantiate based on the 'enginePriority' config. Once the Surface instance is
      * created you can use the handle to that instance to add sprites. For example:
      *
-     <pre><code>
-        drawComponent.surface.add(sprite);
-     </code></pre>
+     *     drawComponent.surface.add(sprite);
      */
     createSurface: function() {
         var surface = Ext.draw.Surface.create(Ext.apply({}, {
@@ -235,7 +224,12 @@ Ext.define('Ext.draw.Component', {
                 height: this.height,
                 renderTo: this.el
             }, this.initialConfig));
+        if (!surface) {
+            // In case we cannot create a surface, return false so we can stop
+            return false;
+        }
         this.surface = surface;
+
 
         function refire(eventName) {
             return function(e) {
@@ -257,7 +251,7 @@ Ext.define('Ext.draw.Component', {
 
     /**
      * @private
-     * 
+     *
      * Clean up the Surface instance on component destruction
      */
     onDestroy: function() {

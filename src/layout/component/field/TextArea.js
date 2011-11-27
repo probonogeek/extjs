@@ -31,7 +31,7 @@ Ext.define('Ext.layout.component.field.TextArea', {
      * textfield layout's implementation to handle height rather than width.
      * @param {Number} width The bodyEl width
      * @param {Number} height The bodyEl height
-     * @return {Array} [inputElWidth, inputElHeight]
+     * @return {Number[]} [inputElWidth, inputElHeight]
      */
     adjustForGrow: function(width, height) {
         var me = this,

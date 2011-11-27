@@ -13,9 +13,9 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.core.Element
+ * @class Ext.Element
  */
-Ext.core.Element.addMethods(
+Ext.Element.addMethods(
     function() {
         var VISIBILITY      = "visibility",
             DISPLAY         = "display",
@@ -23,12 +23,12 @@ Ext.core.Element.addMethods(
             NONE            = "none",
             XMASKED         = Ext.baseCSSPrefix + "masked",
             XMASKEDRELATIVE = Ext.baseCSSPrefix + "masked-relative",
-            data            = Ext.core.Element.data;
+            data            = Ext.Element.data;
 
         return {
             /**
              * Checks whether the element is currently visible using both visibility and display properties.
-             * @param {Boolean} deep (optional) True to walk the dom and see if parent elements are hidden (defaults to false)
+             * @param {Boolean} [deep=false] True to walk the dom and see if parent elements are hidden
              * @return {Boolean} True if the element is currently visible, else false
              */
             isVisible : function(deep) {
@@ -59,10 +59,10 @@ Ext.core.Element.addMethods(
             /**
              * Convenience method for setVisibilityMode(Element.DISPLAY)
              * @param {String} display (optional) What to set display to when visible
-             * @return {Ext.core.Element} this
+             * @return {Ext.Element} this
              */
             enableDisplayMode : function(display) {
-                this.setVisibilityMode(Ext.core.Element.DISPLAY);
+                this.setVisibilityMode(Ext.Element.DISPLAY);
 
                 if (!Ext.isEmpty(display)) {
                     data(this.dom, 'originalDisplay', display);
@@ -76,13 +76,13 @@ Ext.core.Element.addMethods(
              * This method can only be applied to elements which accept child nodes.
              * @param {String} msg (optional) A message to display in the mask
              * @param {String} msgCls (optional) A css class to apply to the msg element
-             * @return {Element} The mask element
+             * @return {Ext.Element} The mask element
              */
             mask : function(msg, msgCls) {
                 var me  = this,
                     dom = me.dom,
                     setExpression = dom.style.setExpression,
-                    dh  = Ext.core.DomHelper,
+                    dh  = Ext.DomHelper,
                     EXTELMASKMSG = Ext.baseCSSPrefix + "mask-msg",
                     el,
                     mask;
@@ -180,7 +180,7 @@ Ext.core.Element.addMethods(
             /**
              * Creates an iframe shim for this element to keep selects and other windowed objects from
              * showing through.
-             * @return {Ext.core.Element} The new shim element
+             * @return {Ext.Element} The new shim element
              */
             createShim : function() {
                 var el = document.createElement('iframe'),

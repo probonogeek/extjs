@@ -19,7 +19,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * If you bind a callback function to a KeyMap, anytime the KeyMap handles an expected key
  * combination it will call the function with this signature (if the match is a multi-key
  * combination the callback will still be called only once): (String key, Ext.EventObject e)
- * A KeyMap can also handle a string representation of keys.<br />
+ * A KeyMap can also handle a string representation of keys. By default KeyMap starts enabled.<br />
  * Usage:
  <pre><code>
 // map one key by key code
@@ -52,20 +52,19 @@ var map = new Ext.util.KeyMap("my-element", [
     }
 ]);
 </code></pre>
- * <b>Note: A KeyMap starts enabled</b>
  */
 Ext.define('Ext.util.KeyMap', {
     alternateClassName: 'Ext.KeyMap',
 
     /**
      * Creates new KeyMap.
-     * @param {Mixed} el The element to bind to
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
      * @param {Object} binding The binding (see {@link #addBinding})
-     * @param {String} eventName (optional) The event to bind to (defaults to "keydown")
+     * @param {String} [eventName="keydown"] The event to bind to
      */
     constructor: function(el, binding, eventName){
         var me = this;
-        
+
         Ext.apply(me, {
             el: Ext.get(el),
             eventName: eventName || me.eventName,
@@ -76,7 +75,7 @@ Ext.define('Ext.util.KeyMap', {
         }
         me.enable();
     },
-    
+
     eventName: 'keydown',
 
     /**
@@ -91,7 +90,7 @@ alt                 Boolean          True to handle key only when alt is pressed
 handler             Function         The function to call when KeyMap finds the expected key combination
 fn                  Function         Alias of handler (for backwards-compatibility)
 scope               Object           The scope of the callback function
-defaultEventAction  String           A default action to apply to the event. Possible values are: stopEvent, stopPropagation, preventDefault. If no value is set no action is performed. 
+defaultEventAction  String           A default action to apply to the event. Possible values are: stopEvent, stopPropagation, preventDefault. If no value is set no action is performed.
 </pre>
      *
      * Usage:
@@ -111,14 +110,14 @@ map.addBinding({
     scope: this
 });
 </code></pre>
-     * @param {Object/Array} binding A single KeyMap config or an array of configs
+     * @param {Object/Object[]} binding A single KeyMap config or an array of configs
      */
     addBinding : function(binding){
         if (Ext.isArray(binding)) {
             Ext.each(binding, this.addBinding, this);
             return;
         }
-        
+
         var keyCode = binding.key,
             processed = false,
             key,
@@ -129,33 +128,33 @@ map.addBinding({
 
         if (Ext.isString(keyCode)) {
             keys = [];
-            keyString = keyCode.toLowerCase();
-            
+            keyString = keyCode.toUpperCase();
+
             for (i = 0, len = keyString.length; i < len; ++i){
                 keys.push(keyString.charCodeAt(i));
             }
             keyCode = keys;
             processed = true;
         }
-        
+
         if (!Ext.isArray(keyCode)) {
             keyCode = [keyCode];
         }
-        
+
         if (!processed) {
             for (i = 0, len = keyCode.length; i < len; ++i) {
                 key = keyCode[i];
                 if (Ext.isString(key)) {
-                    keyCode[i] = key.toLowerCase().charCodeAt(0);
+                    keyCode[i] = key.toUpperCase().charCodeAt(0);
                 }
             }
         }
-        
+
         this.bindings.push(Ext.apply({
             keyCode: keyCode
         }, binding));
     },
-    
+
     /**
      * Process any keydown events on the element
      * @private
@@ -166,20 +165,20 @@ map.addBinding({
             var bindings = this.bindings,
                 i = 0,
                 len = bindings.length;
-                
+
             event = this.processEvent(event);
             for(; i < len; ++i){
                 this.processBinding(bindings[i], event);
             }
         }
     },
-    
+
     /**
      * Ugly hack to allow this class to be tested. Currently WebKit gives
      * no way to raise a key event properly with both
      * a) A keycode
      * b) The alt/ctrl/shift modifiers
-     * So we have to simulate them here. Yuk! 
+     * So we have to simulate them here. Yuk!
      * This is a stub method intended to be overridden by tests.
      * More info: https://bugs.webkit.org/show_bug.cgi?id=16735
      * @private
@@ -187,7 +186,7 @@ map.addBinding({
     processEvent: function(event){
         return event;
     },
-    
+
     /**
      * Process a particular binding and fire the handler if necessary.
      * @private
@@ -204,8 +203,8 @@ map.addBinding({
                 i,
                 len,
                 keydownEvent = new Ext.EventObjectImpl(event);
-                
-            
+
+
             for (i = 0, len = keyCode.length; i < len; ++i) {
                 if (key === keyCode[i]) {
                     if (handler.call(scope, key, event) !== true && defaultEventAction) {
@@ -216,7 +215,7 @@ map.addBinding({
             }
         }
     },
-    
+
     /**
      * Check if the modifiers on the event match those on the binding
      * @private
@@ -229,7 +228,7 @@ map.addBinding({
             i = 0,
             len = keys.length,
             val, key;
-            
+
         for (; i < len; ++i){
             key = keys[i];
             val = binding[key];
@@ -242,7 +241,7 @@ map.addBinding({
 
     /**
      * Shorthand for adding a single key listener
-     * @param {Number/Array/Object} key Either the numeric key code, array of key codes or an object with the
+     * @param {Number/Number[]/Object} key Either the numeric key code, array of key codes or an object with the
      * following options:
      * {key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}
      * @param {Function} fn The function to call
@@ -280,9 +279,11 @@ map.addBinding({
      * Enables this KeyMap
      */
     enable: function(){
-        if(!this.enabled){
-            this.el.on(this.eventName, this.handleKeyDown, this);
-            this.enabled = true;
+        var me = this;
+        
+        if (!me.enabled) {
+            me.el.on(me.eventName, me.handleKeyDown, me);
+            me.enabled = true;
         }
     },
 
@@ -290,9 +291,11 @@ map.addBinding({
      * Disable this KeyMap
      */
     disable: function(){
-        if(this.enabled){
-            this.el.removeListener(this.eventName, this.handleKeyDown, this);
-            this.enabled = false;
+        var me = this;
+        
+        if (me.enabled) {
+            me.el.removeListener(me.eventName, me.handleKeyDown, me);
+            me.enabled = false;
         }
     },
 
@@ -307,14 +310,14 @@ map.addBinding({
             this.enable();
         }
     },
-    
+
     /**
      * Destroys the KeyMap instance and removes all handlers.
      * @param {Boolean} removeEl True to also remove the attached element
      */
     destroy: function(removeEl){
         var me = this;
-        
+
         me.bindings = [];
         me.disable();
         if (removeEl === true) {

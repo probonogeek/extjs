@@ -13,19 +13,13 @@ If you are unsure which license is appropriate for your use, please contact the 
 
 */
 /**
- * @class Ext.grid.column.Column
- * @extends Ext.grid.header.Container
- *
  * This class specifies the definition for a column inside a {@link Ext.grid.Panel}. It encompasses
  * both the grid header configuration as well as displaying data within the grid itself. If the
  * {@link #columns} configuration is specified, this column will become a column group and can
- * container other columns inside. In general, this class will not be created directly, rather
+ * contain other columns inside. In general, this class will not be created directly, rather
  * an array of column configurations will be passed to the grid:
  *
- * {@img Ext.grid.column.Column/Ext.grid.column.Column.png Ext.grid.column.Column grid column}
- *
- * ## Code
- *
+ *     @example
  *     Ext.create('Ext.data.Store', {
  *         storeId:'employeeStore',
  *         fields:['firstname', 'lastname', 'senority', 'dep', 'hired'],
@@ -45,13 +39,14 @@ If you are unsure which license is appropriate for your use, please contact the 
  *             {text: 'First Name',  dataIndex:'firstname'},
  *             {text: 'Last Name',  dataIndex:'lastname'},
  *             {text: 'Hired Month',  dataIndex:'hired', xtype:'datecolumn', format:'M'},
- *             {text: 'Deparment (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({senority})'}
+ *             {text: 'Department (Yrs)', xtype:'templatecolumn', tpl:'{dep} ({senority})'}
  *         ],
  *         width: 400,
  *         renderTo: Ext.getBody()
  *     });
  *
- * ## Convenience Subclasses
+ * # Convenience Subclasses
+ *
  * There are several column subclasses that provide default rendering for various data types
  *
  *  - {@link Ext.grid.column.Action}: Renders icons that can respond to click events inline
@@ -60,13 +55,15 @@ If you are unsure which license is appropriate for your use, please contact the 
  *  - {@link Ext.grid.column.Number}: Renders for numeric values
  *  - {@link Ext.grid.column.Template}: Renders a value using an {@link Ext.XTemplate} using the record data
  *
- * ## Setting Sizes
+ * # Setting Sizes
+ *
  * The columns are laid out by a {@link Ext.layout.container.HBox} layout, so a column can either
  * be given an explicit width value or a flex configuration. If no width is specified the grid will
  * automatically the size the column to 100px. For column groups, the size is calculated by measuring
  * the width of the child columns, so a width option should not be specified in that case.
  *
- * ## Header Options
+ * # Header Options
+ *
  *  - {@link #text}: Sets the header text for the column
  *  - {@link #sortable}: Specifies whether the column can be sorted by clicking the header or using the column menu
  *  - {@link #hideable}: Specifies whether the column can be hidden using the column menu
@@ -74,7 +71,8 @@ If you are unsure which license is appropriate for your use, please contact the 
  *  - {@link #draggable}: Specifies whether the column header can be reordered by dragging
  *  - {@link #groupable}: Specifies whether the grid can be grouped by the column dataIndex. See also {@link Ext.grid.feature.Grouping}
  *
- * ## Data Options
+ * # Data Options
+ *
  *  - {@link #dataIndex}: The dataIndex is the field in the underlying {@link Ext.data.Store} to use as the value for the column.
  *  - {@link #renderer}: Allows the underlying store value to be transformed before being displayed in the grid
  */
@@ -96,102 +94,110 @@ Ext.define('Ext.grid.column.Column', {
     possibleSortStates: ['ASC', 'DESC'],
 
     renderTpl:
-        '<div class="' + Ext.baseCSSPrefix + 'column-header-inner">' +
-            '<span class="' + Ext.baseCSSPrefix + 'column-header-text">' +
+        '<div id="{id}-titleContainer" class="' + Ext.baseCSSPrefix + 'column-header-inner">' +
+            '<span id="{id}-textEl" class="' + Ext.baseCSSPrefix + 'column-header-text">' +
                 '{text}' +
             '</span>' +
-            '<tpl if="!values.menuDisabled"><div class="' + Ext.baseCSSPrefix + 'column-header-trigger"></div></tpl>' +
+            '<tpl if="!values.menuDisabled">'+
+                '<div id="{id}-triggerEl" class="' + Ext.baseCSSPrefix + 'column-header-trigger"></div>'+
+            '</tpl>' +
         '</div>',
 
     /**
-     * @cfg {Array} columns
-     * <p>An optional array of sub-column definitions. This column becomes a group, and houses the columns defined in the <code>columns</code> config.</p>
-     * <p>Group columns may not be sortable. But they may be hideable and moveable. And you may move headers into and out of a group. Note that
-     * if all sub columns are dragged out of a group, the group is destroyed.
+     * @cfg {Object[]} columns
+     * An optional array of sub-column definitions. This column becomes a group, and houses the columns defined in the
+     * `columns` config.
+     *
+     * Group columns may not be sortable. But they may be hideable and moveable. And you may move headers into and out
+     * of a group. Note that if all sub columns are dragged out of a group, the group is destroyed.
      */
 
     /**
-     * @cfg {String} dataIndex <p><b>Required</b>. The name of the field in the
-     * grid's {@link Ext.data.Store}'s {@link Ext.data.Model} definition from
-     * which to draw the column's value.</p>
+     * @cfg {String} dataIndex
+     * The name of the field in the grid's {@link Ext.data.Store}'s {@link Ext.data.Model} definition from
+     * which to draw the column's value. **Required.**
      */
     dataIndex: null,
 
     /**
-     * @cfg {String} text Optional. The header text to be used as innerHTML
-     * (html tags are accepted) to display in the Grid.  <b>Note</b>: to
-     * have a clickable header with no text displayed you can use the
-     * default of <tt>'&#160;'</tt>.
+     * @cfg {String} text
+     * The header text to be used as innerHTML (html tags are accepted) to display in the Grid.
+     * **Note**: to have a clickable header with no text displayed you can use the default of `&#160;` aka `&nbsp;`.
      */
-    text: '&#160',
+    text: '&#160;',
 
     /**
-     * @cfg {Boolean} sortable Optional. <tt>true</tt> if sorting is to be allowed on this column.
-     * Whether local/remote sorting is used is specified in <code>{@link Ext.data.Store#remoteSort}</code>.
+     * @cfg {Boolean} sortable
+     * False to disable sorting of this column. Whether local/remote sorting is used is specified in
+     * `{@link Ext.data.Store#remoteSort}`. Defaults to true.
      */
     sortable: true,
 
     /**
-     * @cfg {Boolean} groupable Optional. If the grid uses a {@link Ext.grid.feature.Grouping}, this option
-     * may be used to disable the header menu item to group by the column selected. By default,
-     * the header menu group option is enabled. Set to false to disable (but still show) the
-     * group option in the header menu for the column.
+     * @cfg {Boolean} groupable
+     * If the grid uses a {@link Ext.grid.feature.Grouping}, this option may be used to disable the header menu
+     * item to group by the column selected. By default, the header menu group option is enabled. Set to false to
+     * disable (but still show) the group option in the header menu for the column.
      */
 
     /**
-     * @cfg {Boolean} fixed Prevents the column from being resizable
-     */
-     
-    /**
-     * @cfg {Boolean} resizable This config has no effect on a grid column, please see {@link #fixed} instead.
+     * @cfg {Boolean} fixed
+     * @deprecated.
+     * True to prevent the column from being resizable.
      */
 
     /**
-     * @cfg {Boolean} hideable Optional. Specify as <tt>false</tt> to prevent the user from hiding this column
-     * (defaults to true).
+     * @cfg {Boolean} resizable
+     * Set to <code>false</code> to prevent the column from being resizable. Defaults to <code>true</code>
+     */
+
+    /**
+     * @cfg {Boolean} hideable
+     * False to prevent the user from hiding this column. Defaults to true.
      */
     hideable: true,
 
     /**
      * @cfg {Boolean} menuDisabled
-     * True to disabled the column header menu containing sort/hide options. Defaults to false.
+     * True to disable the column header menu containing sort/hide options. Defaults to false.
      */
     menuDisabled: false,
 
     /**
-     * @method
-     * <p>A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it
-     * is rendered. Example:</p>
-     * <pre><code>{
-    renderer: function(value){
-        if (value === 1) {
-            return '1 person';
-        }
-        return value + ' people';
-    }
-}
-     * </code></pre>
-     * @param {Mixed} value The data value for the current cell
-     * @param {Object} metaData A collection of metadata about the current cell; can be used or modified by
-     * the renderer. Recognized properties are: <tt>tdCls</tt>, <tt>tdAttr</tt>, and <tt>style</tt>.
-     * @param {Ext.data.Model} record The record for the current row
-     * @param {Number} rowIndex The index of the current row
-     * @param {Number} colIndex The index of the current column
-     * @param {Ext.data.Store} store The data store
-     * @param {Ext.view.View} view The current view
-     * @return {String} The HTML to be rendered
+     * @cfg {Function} renderer
+     * A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.)
+     * before it is rendered. Example:
+     *
+     *     {
+     *         renderer: function(value){
+     *             if (value === 1) {
+     *                 return '1 person';
+     *             }
+     *             return value + ' people';
+     *         }
+     *     }
+     *
+     * @cfg {Object} renderer.value The data value for the current cell
+     * @cfg {Object} renderer.metaData A collection of metadata about the current cell; can be used or modified
+     * by the renderer. Recognized properties are: tdCls, tdAttr, and style.
+     * @cfg {Ext.data.Model} renderer.record The record for the current row
+     * @cfg {Number} renderer.rowIndex The index of the current row
+     * @cfg {Number} renderer.colIndex The index of the current column
+     * @cfg {Ext.data.Store} renderer.store The data store
+     * @cfg {Ext.view.View} renderer.view The current view
+     * @cfg {String} renderer.return The HTML string to be rendered.
      */
     renderer: false,
 
     /**
-     * @cfg {String} align Sets the alignment of the header and rendered columns.
-     * Defaults to 'left'.
+     * @cfg {String} align
+     * Sets the alignment of the header and rendered columns. Defaults to 'left'.
      */
     align: 'left',
 
     /**
-     * @cfg {Boolean} draggable Indicates whether or not the header can be drag and drop re-ordered.
-     * Defaults to true.
+     * @cfg {Boolean} draggable
+     * False to disable drag-drop reordering of this column. Defaults to true.
      */
     draggable: true,
 
@@ -200,15 +206,30 @@ Ext.define('Ext.grid.column.Column', {
     initDraggable: Ext.emptyFn,
 
     /**
-     * @cfg {String} tdCls <p>Optional. A CSS class names to apply to the table cells for this column.</p>
+     * @cfg {String} tdCls
+     * A CSS class names to apply to the table cells for this column.
      */
 
     /**
-     * @property {Ext.core.Element} triggerEl
+     * @cfg {Object/String} editor
+     * An optional xtype or config object for a {@link Ext.form.field.Field Field} to use for editing.
+     * Only applicable if the grid is using an {@link Ext.grid.plugin.Editing Editing} plugin.
      */
 
     /**
-     * @property {Ext.core.Element} textEl
+     * @cfg {Object/String} field
+     * Alias for {@link #editor}.
+     * @deprecated 4.0.5 Use {@link #editor} instead.
+     */
+
+    /**
+     * @property {Ext.Element} triggerEl
+     * Element that acts as button for column header dropdown menu.
+     */
+
+    /**
+     * @property {Ext.Element} textEl
+     * Element that contains the text in column header.
      */
 
     /**
@@ -221,7 +242,8 @@ Ext.define('Ext.grid.column.Column', {
     initComponent: function() {
         var me = this,
             i,
-            len;
+            len,
+            item;
 
         if (Ext.isDefined(me.header)) {
             me.text = me.header;
@@ -265,9 +287,12 @@ Ext.define('Ext.grid.column.Column', {
 
             // Acquire initial width from sub headers
             for (i = 0, len = me.items.length; i < len; i++) {
-                me.width += me.items[i].width || Ext.grid.header.Container.prototype.defaultWidth;
+                item = me.items[i];
+                if (!item.hidden) {
+                    me.width += item.width || Ext.grid.header.Container.prototype.defaultWidth;
+                }
                 //<debug>
-                if (me.items[i].flex) {
+                if (item.flex) {
                     Ext.Error.raise('Ext.grid.column.Column: items of a grouped header do not support flexed values. Each item must explicitly define its width.');
                 }
                 //</debug>
@@ -276,15 +301,11 @@ Ext.define('Ext.grid.column.Column', {
 
             me.cls = (me.cls||'') + ' ' + Ext.baseCSSPrefix + 'group-header';
             me.sortable = false;
-            me.fixed = true;
+            me.resizable = false;
             me.align = 'center';
         }
 
-        Ext.applyIf(me.renderSelectors, {
-            titleContainer: '.' + Ext.baseCSSPrefix + 'column-header-inner',
-            triggerEl: '.' + Ext.baseCSSPrefix + 'column-header-trigger',
-            textEl: '.' + Ext.baseCSSPrefix + 'column-header-text'
-        });
+        me.addChildEls('titleContainer', 'triggerEl', 'textEl');
 
         // Initialize as a HeaderContainer
         me.callParent(arguments);
@@ -293,11 +314,13 @@ Ext.define('Ext.grid.column.Column', {
     onAdd: function(childHeader) {
         childHeader.isSubHeader = true;
         childHeader.addCls(Ext.baseCSSPrefix + 'group-sub-header');
+        this.callParent(arguments);
     },
 
     onRemove: function(childHeader) {
         childHeader.isSubHeader = false;
         childHeader.removeCls(Ext.baseCSSPrefix + 'group-sub-header');
+        this.callParent(arguments);
     },
 
     initRenderData: function() {
@@ -310,9 +333,63 @@ Ext.define('Ext.grid.column.Column', {
         return me.callParent(arguments);
     },
 
+    applyColumnState: function (state) {
+        var me = this,
+            defined = Ext.isDefined;
+            
+        // apply any columns
+        me.applyColumnsState(state.columns);
+
+        // Only state properties which were saved should be restored.
+        // (Only user-changed properties were saved by getState)
+        if (defined(state.hidden)) {
+            me.hidden = state.hidden;
+        }
+        if (defined(state.locked)) {
+            me.locked = state.locked;
+        }
+        if (defined(state.sortable)) {
+            me.sortable = state.sortable;
+        }
+        if (defined(state.width)) {
+            delete me.flex;
+            me.width = state.width;
+        } else if (defined(state.flex)) {
+            delete me.width;
+            me.flex = state.flex;
+        }
+    },
+
+    getColumnState: function () {
+        var me = this,
+            columns = [],
+            state = {
+                id: me.headerId
+            };
+
+        me.savePropsToState(['hidden', 'sortable', 'locked', 'flex', 'width'], state);
+        
+        if (me.isGroupHeader) {
+            me.items.each(function(column){
+                columns.push(column.getColumnState());
+            });
+            if (columns.length) {
+                state.columns = columns;
+            }
+        } else if (me.isSubHeader && me.ownerCt.hidden) {
+            // don't set hidden on the children so they can auto height
+            delete me.hidden;
+        }
+
+        if ('width' in state) {
+            delete state.flex; // width wins
+        }
+        return state;
+    },
+
     /**
      * Sets the header text for this Column.
-     * @param text The header to display on this Column.
+     * @param {String} text The header to display on this Column.
      */
     setText: function(text) {
         this.text = text;
@@ -328,11 +405,24 @@ Ext.define('Ext.grid.column.Column', {
     },
 
     /**
-     * Returns the true grid column index assiciated with this Column only if this column is a base level Column.
-     * If it is a group column, it returns <code>false</code>
+     * Returns the true grid column index associated with this column only if this column is a base level Column. If it
+     * is a group column, it returns `false`.
+     * @return {Number}
      */
     getIndex: function() {
         return this.isGroupColumn ? false : this.getOwnerHeaderCt().getHeaderIndex(this);
+    },
+
+    onRender: function() {
+        var me = this,
+            grid = me.up('tablepanel');
+
+        // Disable the menu if there's nothing to show in the menu, ie:
+        // Column cannot be sorted, grouped or locked, and there are no grid columns which may be hidden
+        if (grid && (!me.sortable || grid.sortableColumns === false) && !me.groupable && !me.lockable && (grid.enableColumnHide === false || !me.getOwnerHeaderCt().getHideableColumns().length)) {
+            me.menuDisabled = true;
+        }
+        me.callParent(arguments);
     },
 
     afterRender: function() {
@@ -372,50 +462,42 @@ Ext.define('Ext.grid.column.Column', {
         });
     },
 
-    setSize: function(width, height) {
+    /**
+     * Sets the width of this Column.
+     * @param {Number} width New width.
+     */
+    setWidth: function(width, /* private - used internally */ doLayout) {
         var me = this,
             headerCt = me.ownerCt,
-            ownerHeaderCt = me.getOwnerHeaderCt(),
             siblings,
             len, i,
             oldWidth = me.getWidth(),
-            newWidth = 0,
-            readyForSizing = true,
-            hidden,
+            groupWidth = 0,
             sibling;
 
         if (width !== oldWidth) {
+            me.oldWidth = oldWidth;
+
+            // Non-flexed Headers may never be squeezed in the event of a shortfall so
+            // always set the minWidth to their current width.
+            me.minWidth = me.width = width;
 
             // Bubble size changes upwards to group headers
             if (headerCt.isGroupHeader) {
                 siblings = headerCt.items.items;
                 len = siblings.length;
 
-                /*
-                 * setSize will be called for each column as it's rendered
-                 * so we want to wait until all sub columns have been rendered
-                 * before we try and calculate the size of the outer container.
-                 * We also take into account hidden columns, because they won't
-                 * be rendered, but we'll still need to make the calculation.
-                 */
                 for (i = 0; i < len; i++) {
                     sibling = siblings[i];
-                    hidden = sibling.hidden;
-                    if (!sibling.rendered && !hidden) {
-                        readyForSizing = false;
-                        break;
-                    }
-                    if (!hidden) {
-                        newWidth += (sibling === me) ? width : sibling.getWidth();
+                    if (!sibling.hidden) {
+                        groupWidth += (sibling === me) ? width : sibling.getWidth();
                     }
                 }
-
-                if (readyForSizing) {
-                    headerCt.minWidth = newWidth;
-                    headerCt.setWidth(newWidth);
-                }
+                headerCt.setWidth(groupWidth, doLayout);
+            } else if (doLayout !== false) {
+                // Allow the owning Container to perform the sizing
+                headerCt.doLayout();
             }
-            me.callParent(arguments);
         }
     },
 
@@ -431,18 +513,21 @@ Ext.define('Ext.grid.column.Column', {
         if (width && !me.isGroupHeader && ownerHeaderCt) {
             ownerHeaderCt.onHeaderResize(me, width, true);
         }
+        if (me.oldWidth && (width !== me.oldWidth)) {
+            ownerHeaderCt.fireEvent('columnresize', ownerHeaderCt, this, width);
+        }
+        delete me.oldWidth;
     },
 
     // private
     // After the container has laid out and stretched, it calls this to correctly pad the inner to center the text vertically
-    setPadding: function() {
+    // Total available header height must be passed to enable padding for inner elements to be calculated.
+    setPadding: function(headerHeight) {
         var me = this,
-            headerHeight,
-            lineHeight = parseInt(me.textEl.getStyle('line-height'), 10);
+            lineHeight = Ext.util.TextMetrics.measure(me.textEl.dom, me.text).height;
 
         // Top title containing element must stretch to match height of sibling group headers
         if (!me.isGroupHeader) {
-            headerHeight = me.el.getViewSize().height;
             if (me.titleContainer.getHeight() < headerHeight) {
                 me.titleContainer.dom.style.height = headerHeight + 'px';
             }
@@ -464,7 +549,8 @@ Ext.define('Ext.grid.column.Column', {
 
     onDestroy: function() {
         var me = this;
-        Ext.destroy(me.keyNav);
+        // force destroy on the textEl, IE reports a leak
+        Ext.destroy(me.textEl, me.keyNav);
         delete me.keyNav;
         me.callParent(arguments);
     },
@@ -524,11 +610,11 @@ Ext.define('Ext.grid.column.Column', {
      * @private
      * Process UI events from the view. The owning TablePanel calls this method, relaying events from the TableView
      * @param {String} type Event type, eg 'click'
-     * @param {TableView} view TableView Component
-     * @param {HtmlElement} cell Cell HtmlElement the event took place within
+     * @param {Ext.view.Table} view TableView Component
+     * @param {HTMLElement} cell Cell HtmlElement the event took place within
      * @param {Number} recordIndex Index of the associated Store Model (-1 if none)
      * @param {Number} cellIndex Cell index within the row
-     * @param {EventObject} e Original event
+     * @param {Ext.EventObject} e Original event
      */
     processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
         return this.fireEvent.apply(this, arguments);
@@ -556,8 +642,9 @@ Ext.define('Ext.grid.column.Column', {
     },
 
     /**
-     * Returns the parameter to sort upon when sorting this header. By default
-     * this returns the dataIndex and will not need to be overriden in most cases.
+     * Returns the parameter to sort upon when sorting this header. By default this returns the dataIndex and will not
+     * need to be overriden in most cases.
+     * @return {String}
      */
     getSortParam: function() {
         return this.dataIndex;
@@ -650,22 +737,30 @@ Ext.define('Ext.grid.column.Column', {
 
     show: function() {
         var me = this,
-            ownerCt = me.getOwnerHeaderCt(),
-            lb,
+            ownerCt = me.ownerCt,
+            ownerCtCompLayout = ownerCt.componentLayout,
+            ownerCtCompLayoutBusy = ownerCtCompLayout.layoutBusy,
+            ownerCtLayout = ownerCt.layout,
+            ownerCtLayoutBusy = ownerCtLayout.layoutBusy,
             items,
             len, i,
+            item,
             newWidth = 0;
 
         // TODO: Work with Jamie to produce a scheme where we can show/hide/resize without triggering a layout cascade
-        lb = me.ownerCt.componentLayout.layoutBusy;
-        me.ownerCt.componentLayout.layoutBusy = true;
+
+        // Suspend our owner's layouts (both component and container):
+        ownerCtCompLayout.layoutBusy = ownerCtLayout.layoutBusy = true;
+
         me.callParent(arguments);
-        me.ownerCt.componentLayout.layoutBusy = lb;
+
+        ownerCtCompLayout.layoutBusy = ownerCtCompLayoutBusy;
+        ownerCtLayout.layoutBusy = ownerCtLayoutBusy;
 
         // If a sub header, ensure that the group header is visible
         if (me.isSubHeader) {
-            if (!me.ownerCt.isVisible()) {
-                me.ownerCt.show();
+            if (!ownerCt.isVisible()) {
+                ownerCt.show();
             }
         }
 
@@ -673,23 +768,29 @@ Ext.define('Ext.grid.column.Column', {
         if (me.isGroupHeader && !me.query(':not([hidden])').length) {
             items = me.query('>*');
             for (i = 0, len = items.length; i < len; i++) {
-                items[i].show();
+                item = items[i];
+                item.preventLayout = true;
+                item.show();
+                newWidth += item.getWidth();
+                delete item.preventLayout;
             }
+            me.setWidth(newWidth);
         }
 
         // Resize the owning group to accommodate
-        if (me.ownerCt.isGroupHeader) {
-            items = me.ownerCt.query('>:not([hidden])');
+        if (ownerCt.isGroupHeader && me.preventLayout !== true) {
+            items = ownerCt.query('>:not([hidden])');
             for (i = 0, len = items.length; i < len; i++) {
                 newWidth += items[i].getWidth();
             }
-            me.ownerCt.minWidth = newWidth;
-            me.ownerCt.setWidth(newWidth);
+            ownerCt.minWidth = newWidth;
+            ownerCt.setWidth(newWidth);
         }
 
         // Notify owning HeaderContainer
+        ownerCt = me.getOwnerHeaderCt();
         if (ownerCt) {
-            ownerCt.onHeaderShow(me);
+            ownerCt.onHeaderShow(me, me.preventLayout);
         }
     },
 
@@ -732,24 +833,24 @@ Ext.define('Ext.grid.column.Column', {
         return (this.el.getRight() - e.getXY()[0] <= this.handleWidth);
     }
 
-    /**
-     * Retrieves the editing field for editing associated with this header. Returns false if there
-     * is no field associated with the Header the method will return false. If the
-     * field has not been instantiated it will be created. Note: These methods only has an implementation
-     * if a Editing plugin has been enabled on the grid.
-     * @param record The {@link Ext.data.Model Model} instance being edited.
-     * @param {Mixed} defaultField An object representing a default field to be created
-     * @returns {Ext.form.field.Field} field
-     * @method getEditor
-     */
     // intentionally omit getEditor and setEditor definitions bc we applyIf into columns
     // when the editing plugin is injected
 
-
     /**
-     * Sets the form field to be used for editing. Note: This method only has an implementation
-     * if an Editing plugin has been enabled on the grid.
-     * @param {Mixed} field An object representing a field to be created. If no xtype is specified a 'textfield' is assumed.
+     * @method getEditor
+     * Retrieves the editing field for editing associated with this header. Returns false if there is no field
+     * associated with the Header the method will return false. If the field has not been instantiated it will be
+     * created. Note: These methods only has an implementation if a Editing plugin has been enabled on the grid.
+     * @param {Object} record The {@link Ext.data.Model Model} instance being edited.
+     * @param {Object} defaultField An object representing a default field to be created
+     * @return {Ext.form.field.Field} field
+     */
+    /**
      * @method setEditor
+     * Sets the form field to be used for editing. Note: This method only has an implementation if an Editing plugin has
+     * been enabled on the grid.
+     * @param {Object} field An object representing a field to be created. If no xtype is specified a 'textfield' is
+     * assumed.
      */
 });
+

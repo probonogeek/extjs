@@ -24,7 +24,7 @@ Ext.define('Ext.dd.DropTarget', {
 
     /**
      * Creates new DropTarget.
-     * @param {Mixed} el The container element
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
      * @param {Object} config
      */
     constructor : function(el, config){
@@ -43,20 +43,20 @@ Ext.define('Ext.dd.DropTarget', {
     /**
      * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
-     * interact with other drag drop objects in the same group (defaults to undefined).
+     * interact with other drag drop objects in the same group.
      */
     /**
-     * @cfg {String} overClass
-     * The CSS class applied to the drop target element while the drag source is over it (defaults to "").
+     * @cfg {String} [overClass=""]
+     * The CSS class applied to the drop target element while the drag source is over it.
      */
     /**
-     * @cfg {String} dropAllowed
-     * The CSS class returned to the drag source when drop is allowed (defaults to "x-dd-drop-ok").
+     * @cfg {String} [dropAllowed="x-dd-drop-ok"]
+     * The CSS class returned to the drag source when drop is allowed.
      */
     dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
     /**
-     * @cfg {String} dropNotAllowed
-     * The CSS class returned to the drag source when drop is not allowed (defaults to "x-dd-drop-nodrop").
+     * @cfg {String} [dropNotAllowed="x-dd-drop-nodrop"]
+     * The CSS class returned to the drag source when drop is not allowed.
      */
     dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 

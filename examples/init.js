@@ -30,7 +30,7 @@ Ext.ns('Ext.samples');
                 '<tpl for=".">',
                 '<div><a name="{id}"></a><h2><div>{title}</div></h2>',
                 '<dl>',
-                    '<tpl for="samples">',
+                    '<tpl for="items">',
                         '<dd ext:url="{url}"><img src="shared/screens/{icon}"/>',
                             '<div><h4>{text}',
                                 '<tpl if="this.isNew(values.status)">',
@@ -61,20 +61,20 @@ Ext.ns('Ext.samples');
 
         onContainerClick: function(e) {
             var group = e.getTarget('h2', 3, true);
-            
+
             if (group) {
                 group.up('div').toggleCls('collapsed');
             }
         },
-        
+
         onItemClick : function(record, item, index, e){
             var t = e.getTarget('dd', 5, true);
-            
+
             if (t && !e.getTarget('a', 2)) {
                 var url = t.getAttributeNS('ext', 'url');
                 window.open(url);
             }
-            
+
             return this.callParent(arguments);
         }
     });
@@ -94,7 +94,7 @@ Ext.onReady(function() {
 
         var store = Ext.create('Ext.data.JsonStore', {
             idProperty : 'id',
-            fields     : ['id', 'title', 'samples'],
+            fields     : ['id', 'title', 'items'],
             data       : catalog
         });
 
@@ -173,4 +173,5 @@ Ext.onReady(function() {
 
     },500));
 });
+
 

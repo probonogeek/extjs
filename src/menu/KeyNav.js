@@ -48,10 +48,14 @@ Ext.define('Ext.menu.KeyNav', {
     },
 
     enter: function(e) {
-        var menu = this.menu;
-
+        var menu = this.menu,
+            focused = menu.focusedItem;
+ 
         if (menu.activeItem) {
             menu.onClick(e);
+        } else if (focused && focused.isFormField) {
+            // prevent stopEvent being called
+            return true;
         }
     },
 

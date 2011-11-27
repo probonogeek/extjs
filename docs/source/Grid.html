@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -18,23 +18,24 @@
   <pre class="prettyprint lang-js"><span id='Ext-grid-property-Grid'>/**
 </span> * @class Ext.grid.property.Grid
  * @extends Ext.grid.Panel
+ *
  * A specialized grid implementation intended to mimic the traditional property grid as typically seen in
  * development IDEs.  Each row in the grid represents a property of some object, and the data is stored
  * as a set of name/value pairs in {@link Ext.grid.property.Property Properties}.  Example usage:
- * &lt;pre&gt;&lt;code&gt;
-var grid = new Ext.grid.property.Grid({
-    title: 'Properties Grid',
-    width: 300,
-    renderTo: 'grid-ct',
-    source: {
-        &quot;(name)&quot;: &quot;My Object&quot;,
-        &quot;Created&quot;: Ext.Date.parse('10/15/2006', 'm/d/Y'),
-        &quot;Available&quot;: false,
-        &quot;Version&quot;: .01,
-        &quot;Description&quot;: &quot;A test object&quot;
-    }
-});
-&lt;/code&gt;&lt;/pre&gt;
+ *
+ *     @example
+ *     Ext.create('Ext.grid.property.Grid', {
+ *         title: 'Properties Grid',
+ *         width: 300,
+ *         renderTo: Ext.getBody(),
+ *         source: {
+ *             &quot;(name)&quot;: &quot;My Object&quot;,
+ *             &quot;Created&quot;: Ext.Date.parse('10/15/2006', 'm/d/Y'),
+ *             &quot;Available&quot;: false,
+ *             &quot;Version&quot;: .01,
+ *             &quot;Description&quot;: &quot;A test object&quot;
+ *         }
+ *     });
  */
 Ext.define('Ext.grid.property.Grid', {
 
@@ -192,8 +193,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'beforepropertychange',
 <span id='Ext-grid-property-Grid-event-propertychange'>            /**
@@ -202,8 +203,8 @@ var grid = Ext.create('Ext.grid.property.Grid', {
              * @param {Object} source The source data object for the grid (corresponds to the same object passed in
              * as the {@link #source} config property).
              * @param {String} recordId The record's id in the data store
-             * @param {Mixed} value The current edited property value
-             * @param {Mixed} oldValue The original property value prior to editing
+             * @param {Object} value The current edited property value
+             * @param {Object} oldValue The original property value prior to editing
              */
             'propertychange'
         );
@@ -343,7 +344,7 @@ grid.setSource({
 <span id='Ext-grid-property-Grid-method-setProperty'>    /**
 </span>     * Sets the value of a property.
      * @param {String} prop The name of the property to set
-     * @param {Mixed} value The value to test
+     * @param {Object} value The value to test
      * @param {Boolean} create (Optional) True to create the property if it doesn't already exist. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     setProperty: function(prop, value, create) {

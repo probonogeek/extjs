@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -39,16 +39,15 @@ map.each(function(key, value, length){
  * &lt;/p&gt;
  */
 Ext.define('Ext.util.HashMap', {
+    mixins: {
+        observable: 'Ext.util.Observable'
+    },
 
 <span id='Ext-util-HashMap-cfg-keyFn'>    /**
 </span>     * @cfg {Function} keyFn A function that is used to retrieve a default key for a passed object.
      * A default is provided that returns the &lt;b&gt;id&lt;/b&gt; property on the object. This function is only used
      * if the add method is called with a single argument.
      */
-
-    mixins: {
-        observable: 'Ext.util.Observable'
-    },
 
 <span id='Ext-util-HashMap-method-constructor'>    /**
 </span>     * Creates new HashMap.
@@ -157,7 +156,7 @@ Ext.define('Ext.util.HashMap', {
         }
 
         if (me.containsKey(key)) {
-            me.replace(key, value);
+            return me.replace(key, value);
         }
 
         data = me.getData(key, value);

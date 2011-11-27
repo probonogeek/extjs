@@ -95,19 +95,23 @@ Ext.onReady(function() {
             {
                 xtype:'splitbutton',
                 text: 'Cut',
+                textAlign: 'left',
                 iconCls: 'add16',
                 menu: [{text: 'Cut Menu Item'}]
             },{
                 text: 'Copy',
+                textAlign: 'left',
                 iconCls: 'add16'
             },{
                 text: 'Paste',
+                textAlign: 'left',
                 iconCls: 'add16',
                 menu: [{text: 'Paste Menu Item'}]
             },
             //'-',
             {
                 text: 'Format',
+                textAlign: 'left',
                 iconCls: 'add16'
             }
         ]
@@ -119,21 +123,26 @@ Ext.onReady(function() {
                 xtype:'splitbutton',
                 text: 'Menu Button',
                 iconCls: 'add16',
+                textAlign: 'left',
                 menu: [{text: 'Menu Button 1'}]
             },'-',{
                 xtype:'splitbutton',
                 text: 'Cut Selection',
                 iconCls: 'add16',
+                textAlign: 'left',
                 menu: [{text: 'Cut Menu Item'}]
             },{
                 text: 'Copy Selection',
+                textAlign: 'left',
                 iconCls: 'add16'
             },{
                 text: 'Paste',
                 iconCls: 'add16',
+                textAlign: 'left',
                 menu: [{text: 'Paste Menu Item'}]
             },'-',{
                 text: 'Format',
+                textAlign: 'left',
                 iconCls: 'add16'
             }
         ]

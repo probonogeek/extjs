@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,13 +15,13 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
-Ext.core.Element.addMethods({
-<span id='Ext-core-Element-method-addKeyListener'>    /**
+Ext.Element.addMethods({
+<span id='Ext-Element-method-addKeyListener'>    /**
 </span>     * Convenience method for constructing a KeyMap
-     * @param {Number/Array/Object/String} key Either a string with the keys to listen for, the numeric key code, array of key codes or an object with the following options:
+     * @param {String/Number/Number[]/Object} key Either a string with the keys to listen for, the numeric key code, array of key codes or an object with the following options:
      * &lt;code&gt;{key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}&lt;/code&gt;
      * @param {Function} fn The function to call
      * @param {Object} scope (optional) The scope (&lt;code&gt;this&lt;/code&gt; reference) in which the specified function is executed. Defaults to this Element.
@@ -48,7 +48,7 @@ Ext.core.Element.addMethods({
         return Ext.create('Ext.util.KeyMap', this, config);
     },
 
-<span id='Ext-core-Element-method-addKeyMap'>    /**
+<span id='Ext-Element-method-addKeyMap'>    /**
 </span>     * Creates a KeyMap for this element
      * @param {Object} config The KeyMap config. See {@link Ext.util.KeyMap} for more details
      * @return {Ext.util.KeyMap} The KeyMap created
@@ -58,8 +58,8 @@ Ext.core.Element.addMethods({
     }
 });
 
-//Import the newly-added Ext.core.Element functions into CompositeElementLite. We call this here because
-//Element.keys.js is the last extra Ext.core.Element include in the ext-all.js build
+//Import the newly-added Ext.Element functions into CompositeElementLite. We call this here because
+//Element.keys.js is the last extra Ext.Element include in the ext-all.js build
 Ext.CompositeElementLite.importElementMethods();
 </pre>
 </body>

@@ -164,7 +164,7 @@ Ext.define('Ext.ux.statusbar.ValidationStatus', {
     // private
     getMsgEl : function(){
         if(!this.msgEl){
-            this.msgEl = Ext.core.DomHelper.append(Ext.getBody(), {
+            this.msgEl = Ext.DomHelper.append(Ext.getBody(), {
                 cls: this.errorListCls
             }, true);
             this.msgEl.hide();

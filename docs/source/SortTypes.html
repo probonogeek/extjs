@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -64,8 +64,8 @@ Ext.define('Ext.data.SortTypes', {
     
 <span id='Ext-data-SortTypes-method-none'>    /**
 </span>     * Default sort that does nothing
-     * @param {Mixed} s The value being converted
-     * @return {Mixed} The comparison value
+     * @param {Object} s The value being converted
+     * @return {Object} The comparison value
      */
     none : function(s) {
         return s;
@@ -80,7 +80,7 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asText'>    /**
 </span>     * Strips all HTML tags to sort on text only
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asText : function(s) {
@@ -89,7 +89,7 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asUCText'>    /**
 </span>     * Strips all HTML tags to sort on text only - Case insensitive
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asUCText : function(s) {
@@ -98,7 +98,7 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asUCString'>    /**
 </span>     * Case insensitive string
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {String} The comparison value
      */
     asUCString : function(s) {
@@ -107,7 +107,7 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asDate'>    /**
 </span>     * Date sorting
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {Number} The comparison value
      */
     asDate : function(s) {
@@ -122,8 +122,8 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asFloat'>    /**
 </span>     * Float sorting
-     * @param {Mixed} s The value being converted
-     * @return {Float} The comparison value
+     * @param {Object} s The value being converted
+     * @return {Number} The comparison value
      */
     asFloat : function(s) {
         var val = parseFloat(String(s).replace(/,/g, &quot;&quot;));
@@ -132,7 +132,7 @@ Ext.define('Ext.data.SortTypes', {
 
 <span id='Ext-data-SortTypes-method-asInt'>    /**
 </span>     * Integer sorting
-     * @param {Mixed} s The value being converted
+     * @param {Object} s The value being converted
      * @return {Number} The comparison value
      */
     asInt : function(s) {

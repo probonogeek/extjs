@@ -15,7 +15,7 @@ If you are unsure which license is appropriate for your use, please contact the 
 /**
  * @class Ext.EventObject
 
-Just as {@link Ext.core.Element} wraps around a native DOM node, Ext.EventObject
+Just as {@link Ext.Element} wraps around a native DOM node, Ext.EventObject
 wraps the browser's native event-object normalizing cross-browser differences,
 such as which mouse button is clicked, keys pressed, mechanisms to stop
 event-propagation along with a method to prevent default actions from taking place.
@@ -28,7 +28,7 @@ For example:
         ...
     }
 
-    var myDiv = {@link Ext#get Ext.get}("myDiv");  // get reference to an {@link Ext.core.Element}
+    var myDiv = {@link Ext#get Ext.get}("myDiv");  // get reference to an {@link Ext.Element}
     myDiv.on(         // 'on' is shorthand for addListener
         "click",      // perform an action on click of myDiv
         handleClick   // reference to the action handler
@@ -221,11 +221,11 @@ Ext.define('Ext.EventObjectImpl', {
     /**
      * The mouse wheel delta scaling factor. This value depends on browser version and OS and
      * attempts to produce a similar scrolling experience across all platforms and browsers.
-     * 
+     *
      * To change this value:
-     * 
+     *
      *      Ext.EventObjectImpl.prototype.WHEEL_SCALE = 72;
-     * 
+     *
      * @type Number
      * @markdown
      */
@@ -422,15 +422,15 @@ Ext.define('Ext.EventObjectImpl', {
     getPageY: function(){
         return this.getY();
     },
-    
+
     /**
      * Gets the x coordinate of the event.
      * @return {Number}
      */
     getX: function() {
         return this.getXY()[0];
-    },    
-    
+    },
+
     /**
      * Gets the y coordinate of the event.
      * @return {Number}
@@ -438,10 +438,10 @@ Ext.define('Ext.EventObjectImpl', {
     getY: function() {
         return this.getXY()[1];
     },
-        
+
     /**
      * Gets the page coordinates of the event.
-     * @return {Array} The xy values like [x, y]
+     * @return {Number[]} The xy values like [x, y]
      */
     getXY: function() {
         if (!this.xy) {
@@ -454,9 +454,9 @@ Ext.define('Ext.EventObjectImpl', {
     /**
      * Gets the target for the event.
      * @param {String} selector (optional) A simple selector to filter the target or look for an ancestor of the target
-     * @param {Number/Mixed} maxDepth (optional) The max depth to search as a number or element (defaults to 10 || document.body)
-     * @param {Boolean} returnEl (optional) True to return a Ext.core.Element object instead of DOM node
-     * @return {HTMLelement}
+     * @param {Number/HTMLElement} maxDepth (optional) The max depth to search as a number or element (defaults to 10 || document.body)
+     * @param {Boolean} returnEl (optional) True to return a Ext.Element object instead of DOM node
+     * @return {HTMLElement}
      */
     getTarget : function(selector, maxDepth, returnEl){
         if (selector) {
@@ -468,8 +468,8 @@ Ext.define('Ext.EventObjectImpl', {
     /**
      * Gets the related target.
      * @param {String} selector (optional) A simple selector to filter the target or look for an ancestor of the target
-     * @param {Number/Mixed} maxDepth (optional) The max depth to search as a number or element (defaults to 10 || document.body)
-     * @param {Boolean} returnEl (optional) True to return a Ext.core.Element object instead of DOM node
+     * @param {Number/HTMLElement} maxDepth (optional) The max depth to search as a number or element (defaults to 10 || document.body)
+     * @param {Boolean} returnEl (optional) True to return a Ext.Element object instead of DOM node
      * @return {HTMLElement}
      */
     getRelatedTarget : function(selector, maxDepth, returnEl){
@@ -485,7 +485,7 @@ Ext.define('Ext.EventObjectImpl', {
      */
     correctWheelDelta : function (delta) {
         var scale = this.WHEEL_SCALE,
-            ret = Math.round(delta / scale + 0.5);
+            ret = Math.round(delta / scale);
 
         if (!ret && delta) {
             ret = (delta < 0) ? -1 : 1; // don't allow non-zero deltas to go to zero!
@@ -545,8 +545,8 @@ Ext.define('Ext.EventObjectImpl', {
     },
 
     /**
-    * Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
-    * Example usage:<pre><code>
+     * Returns true if the target of this event is a child of el.  Unless the allowEl parameter is set, it will return false if if the target is el.
+     * Example usage:<pre><code>
 // Handle click on any child of an element
 Ext.getBody().on('click', function(e){
     if(e.within('some-el')){
@@ -561,9 +561,9 @@ Ext.getBody().on('click', function(e,t){
     }
 });
 </code></pre>
-     * @param {Mixed} el The id, DOM element or Ext.core.Element to check
+     * @param {String/HTMLElement/Ext.Element} el The id, DOM element or Ext.Element to check
      * @param {Boolean} related (optional) true to test if the related target is within el instead of the target
-     * @param {Boolean} allowEl {optional} true to also check if the passed element is the target or related target
+     * @param {Boolean} allowEl (optional) true to also check if the passed element is the target or related target
      * @return {Boolean}
      */
     within : function(el, related, allowEl){
@@ -659,7 +659,7 @@ Ext.getBody().on('click', function(e,t){
      * <li>focus</li>
      * <li>blur</li>
      * </ul>
-     * @param {Element/HTMLElement} target If specified, the target for the event. This
+     * @param {Ext.Element/HTMLElement} target (optional) If specified, the target for the event. This
      * is likely to be used when relaying a DOM event. If not specified, {@link #getTarget}
      * is used to determine the target.
      */

@@ -14,55 +14,63 @@ If you are unsure which license is appropriate for your use, please contact the 
 */
 /**
  * @author Ed Spencer
- * @class Ext.data.validations
- * @extends Object
- * 
- * <p>This singleton contains a set of validation functions that can be used to validate any type
- * of data. They are most often used in {@link Ext.data.Model Models}, where they are automatically
- * set up and executed.</p>
+ *
+ * This singleton contains a set of validation functions that can be used to validate any type of data. They are most
+ * often used in {@link Ext.data.Model Models}, where they are automatically set up and executed.
  */
 Ext.define('Ext.data.validations', {
     singleton: true,
     
     /**
-     * The default error message used when a presence validation fails
-     * @property presenceMessage
-     * @type String
+     * @property {String} presenceMessage
+     * The default error message used when a presence validation fails.
      */
     presenceMessage: 'must be present',
     
     /**
-     * The default error message used when a length validation fails
-     * @property lengthMessage
-     * @type String
+     * @property {String} lengthMessage
+     * The default error message used when a length validation fails.
      */
     lengthMessage: 'is the wrong length',
     
     /**
-     * The default error message used when a format validation fails
-     * @property formatMessage
-     * @type Boolean
+     * @property {Boolean} formatMessage
+     * The default error message used when a format validation fails.
      */
     formatMessage: 'is the wrong format',
     
     /**
-     * The default error message used when an inclusion validation fails
-     * @property inclusionMessage
-     * @type String
+     * @property {String} inclusionMessage
+     * The default error message used when an inclusion validation fails.
      */
     inclusionMessage: 'is not included in the list of acceptable values',
     
     /**
-     * The default error message used when an exclusion validation fails
-     * @property exclusionMessage
-     * @type String
+     * @property {String} exclusionMessage
+     * The default error message used when an exclusion validation fails.
      */
     exclusionMessage: 'is not an acceptable value',
     
     /**
-     * Validates that the given value is present
-     * @param {Object} config Optional config object
-     * @param {Mixed} value The value to validate
+     * @property {String} emailMessage
+     * The default error message used when an email validation fails
+     */
+    emailMessage: 'is not a valid email address',
+    
+    /**
+     * @property {RegExp} emailRe
+     * The regular expression used to validate email addresses
+     */
+    emailRe: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+    
+    /**
+     * Validates that the given value is present.
+     * For example:
+     *
+     *     validations: [{type: 'presence', field: 'age'}]
+     *
+     * @param {Object} config Config object
+     * @param {Object} value The value to validate
      * @return {Boolean} True if validation passed
      */
     presence: function(config, value) {
@@ -70,17 +78,22 @@ Ext.define('Ext.data.validations', {
             value = config;
         }
         
-        return !!value;
+        //we need an additional check for zero here because zero is an acceptable form of present data
+        return !!value || value === 0;
     },
     
     /**
-     * Returns true if the given value is between the configured min and max values
-     * @param {Object} config Optional config object
+     * Returns true if the given value is between the configured min and max values.
+     * For example:
+     *
+     *     validations: [{type: 'length', field: 'name', min: 2}]
+     *
+     * @param {Object} config Config object
      * @param {String} value The value to validate
      * @return {Boolean} True if the value passes validation
      */
     length: function(config, value) {
-        if (value === undefined) {
+        if (value === undefined || value === null) {
             return false;
         }
         
@@ -96,8 +109,22 @@ Ext.define('Ext.data.validations', {
     },
     
     /**
-     * Returns true if the given value passes validation against the configured {@link #matcher} regex
-     * @param {Object} config Optional config object
+     * Validates that an email string is in the correct format
+     * @param {Object} config Config object
+     * @param {String} email The email address
+     * @return {Boolean} True if the value passes validation
+     */
+    email: function(config, email) {
+        return Ext.data.validations.emailRe.test(email);
+    },
+    
+    /**
+     * Returns true if the given value passes validation against the configured `matcher` regex.
+     * For example:
+     *
+     *     validations: [{type: 'format', field: 'username', matcher: /([a-z]+)[0-9]{2,3}/}]
+     *
+     * @param {Object} config Config object
      * @param {String} value The value to validate
      * @return {Boolean} True if the value passes the format validation
      */
@@ -106,7 +133,12 @@ Ext.define('Ext.data.validations', {
     },
     
     /**
-     * Validates that the given value is present in the configured {@link #list}
+     * Validates that the given value is present in the configured `list`.
+     * For example:
+     *
+     *     validations: [{type: 'inclusion', field: 'gender', list: ['Male', 'Female']}]
+     *
+     * @param {Object} config Config object
      * @param {String} value The value to validate
      * @return {Boolean} True if the value is present in the list
      */
@@ -115,8 +147,12 @@ Ext.define('Ext.data.validations', {
     },
     
     /**
-     * Validates that the given value is present in the configured {@link #list}
-     * @param {Object} config Optional config object
+     * Validates that the given value is present in the configured `list`.
+     * For example:
+     *
+     *     validations: [{type: 'exclusion', field: 'username', list: ['Admin', 'Operator']}]
+     *
+     * @param {Object} config Config object
      * @param {String} value The value to validate
      * @return {Boolean} True if the value is not present in the list
      */

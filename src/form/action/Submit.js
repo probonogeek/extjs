@@ -41,7 +41,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  * <p>Other data may be placed into the response for processing by the {@link Ext.form.Basic}'s callback
  * or event handler methods. The object decoded from this JSON is available in the
  * {@link Ext.form.action.Action#result result} property.</p>
- * <p>Alternatively, if an {@link #errorReader} is specified as an {@link Ext.data.reader.Xml XmlReader}:</p><pre><code>
+ * <p>Alternatively, if an {@link Ext.form.Basic#errorReader errorReader} is specified as an {@link Ext.data.reader.Xml XmlReader}:</p><pre><code>
     errorReader: new Ext.data.reader.Xml({
             record : 'field',
             success: '@success'
@@ -66,7 +66,8 @@ If you are unsure which license is appropriate for your use, please contact the 
 &lt;/message&gt;
 </code></pre>
  * <p>Other elements may be placed into the response XML for processing by the {@link Ext.form.Basic}'s callback
- * or event handler methods. The XML document is available in the {@link #errorReader}'s {@link Ext.data.reader.Xml#xmlData xmlData} property.</p>
+ * or event handler methods. The XML document is available in the {@link Ext.form.Basic#errorReader errorReader}'s
+ * {@link Ext.data.reader.Xml#xmlData xmlData} property.</p>
  */
 Ext.define('Ext.form.action.Submit', {
     extend:'Ext.form.action.Action',
@@ -76,7 +77,7 @@ Ext.define('Ext.form.action.Submit', {
     type: 'submit',
 
     /**
-     * @cfg {boolean} clientValidation Determines whether a Form's fields are validated
+     * @cfg {Boolean} clientValidation Determines whether a Form's fields are validated
      * in a final call to {@link Ext.form.Basic#isValid isValid} prior to submission.
      * Pass <tt>false</tt> in the Form's submit options to prevent this. Defaults to true.
      */
@@ -189,7 +190,7 @@ Ext.define('Ext.form.action.Submit', {
         }
 
         // Create the form
-        formEl = Ext.core.DomHelper.append(Ext.getBody(), formSpec);
+        formEl = Ext.DomHelper.append(Ext.getBody(), formSpec);
 
         // Special handling for file upload fields: since browser security measures prevent setting
         // their values programatically, and prevent carrying their selected values over when cloning,

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -15,11 +15,11 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-core-Element'>/**
-</span> * @class Ext.core.Element
+  <pre class="prettyprint lang-js"><span id='Ext-Element'>/**
+</span> * @class Ext.Element
  */
-Ext.override(Ext.core.Element, {
-<span id='Ext-core-Element-method-isScrollable'>    /**
+Ext.override(Ext.Element, {
+<span id='Ext-Element-method-isScrollable'>    /**
 </span>     * Returns true if this element is scrollable.
      * @return {Boolean}
      */
@@ -28,7 +28,7 @@ Ext.override(Ext.core.Element, {
         return dom.scrollHeight &gt; dom.clientHeight || dom.scrollWidth &gt; dom.clientWidth;
     },
 
-<span id='Ext-core-Element-method-getScroll'>    /**
+<span id='Ext-Element-method-getScroll'>    /**
 </span>     * Returns the current scroll position of the element.
      * @return {Object} An object containing the scroll position in the format {left: (scrollLeft), top: (scrollTop)}
      */
@@ -63,12 +63,12 @@ Ext.override(Ext.core.Element, {
         return ret;
     },
     
-<span id='Ext-core-Element-method-scrollTo'>    /**
+<span id='Ext-Element-method-scrollTo'>    /**
 </span>     * Scrolls this element the specified scroll point. It does NOT do bounds checking so if you scroll to a weird value it will try to do it. For auto bounds checking, use scroll().
      * @param {String} side Either &quot;left&quot; for scrollLeft values or &quot;top&quot; for scrollTop values.
      * @param {Number} value The new scroll value
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
-     * @return {Element} this
+     * @return {Ext.Element} this
      */
     scrollTo : function(side, value, animate) {
         //check if we're scrolling top or left
@@ -94,12 +94,12 @@ Ext.override(Ext.core.Element, {
         return me;
     },
 
-<span id='Ext-core-Element-method-scrollIntoView'>    /**
+<span id='Ext-Element-method-scrollIntoView'>    /**
 </span>     * Scrolls this element into view within the passed container.
-     * @param {Mixed} container (optional) The container element to scroll (defaults to document.body).  Should be a
-     * string (id), dom node, or Ext.core.Element.
+     * @param {String/HTMLElement/Ext.Element} container (optional) The container element to scroll (defaults to document.body).  Should be a
+     * string (id), dom node, or Ext.Element.
      * @param {Boolean} hscroll (optional) False to disable horizontal scroll (defaults to true)
-     * @return {Ext.core.Element} this
+     * @return {Ext.Element} this
      */
     scrollIntoView : function(container, hscroll) {
         container = Ext.getDom(container) || Ext.getBody().dom;
@@ -142,7 +142,7 @@ Ext.override(Ext.core.Element, {
         Ext.fly(child, '_scrollChildIntoView').scrollIntoView(this, hscroll);
     },
 
-<span id='Ext-core-Element-method-scroll'>    /**
+<span id='Ext-Element-method-scroll'>    /**
 </span>     * Scrolls this element the specified direction. Does bounds checking to make sure the scroll is
      * within this element's scrollable range.
      * @param {String} direction Possible values are: &quot;l&quot; (or &quot;left&quot;), &quot;r&quot; (or &quot;right&quot;), &quot;t&quot; (or &quot;top&quot;, or &quot;up&quot;), &quot;b&quot; (or &quot;bottom&quot;, or &quot;down&quot;).

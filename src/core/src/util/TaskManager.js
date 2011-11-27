@@ -42,8 +42,7 @@ Ext.TaskManager.start({
  * Also see {@link Ext.util.DelayedTask}. 
  * 
  * @constructor
- * @param {Number} interval (optional) The minimum precision in milliseconds supported by this TaskRunner instance
- * (defaults to 10)
+ * @param {Number} [interval=10] The minimum precision in milliseconds supported by this TaskRunner instance
  */
 Ext.ns('Ext.util');
 

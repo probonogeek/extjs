@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
-  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
   <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
@@ -76,7 +76,7 @@ Ext.define('Ext.draw.Color', {
 
 <span id='Ext-draw-Color-method-getRGB'>    /**
 </span>     * Get the RGB values.
-     * @return {[Number]}
+     * @return {Number[]}
      */
     getRGB: function() {
         var me = this;
@@ -85,7 +85,7 @@ Ext.define('Ext.draw.Color', {
 
 <span id='Ext-draw-Color-method-getHSL'>    /**
 </span>     * Get the equivalent HSL components of the color.
-     * @return {[Number]}
+     * @return {Number[]}
      */
     getHSL: function() {
         var me = this,
@@ -157,12 +157,12 @@ Ext.define('Ext.draw.Color', {
         return ['#', r, g, b].join('');
     },
 
-<span id='Ext-draw-Color-method-toHex'>    /**
+<span id='Ext-draw-Color-static-method-toHex'>    /**
 </span>     * Convert a color to hexadecimal format.
      *
      * **Note:** This method is both static and instance.
      *
-     * @param {String/[String]} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
+     * @param {String/String[]} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
      * Can also be an Array, in this case the function handles the first member.
      * @returns {String} The color in hexadecimal format.
      * @static
@@ -191,7 +191,7 @@ Ext.define('Ext.draw.Color', {
         }
     },
 
-<span id='Ext-draw-Color-method-fromString'>    /**
+<span id='Ext-draw-Color-static-method-fromString'>    /**
 </span>     * Parse the string and create a new color.
      *
      * Supported formats: '#rrggbb', '#rgb', and 'rgb(r,g,b)'.
@@ -245,7 +245,7 @@ Ext.define('Ext.draw.Color', {
         return this.r * 0.3 + this.g * 0.59 + this.b * 0.11;
     },
 
-<span id='Ext-draw-Color-method-fromHSL'>    /**
+<span id='Ext-draw-Color-static-method-fromHSL'>    /**
 </span>     * Create a new color based on the specified HSL values.
      *
      * **Note:** This method is both static and instance.

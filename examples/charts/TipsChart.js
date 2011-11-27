@@ -74,6 +74,7 @@ Ext.onReady(function () {
     var grid = Ext.create('Ext.grid.Panel', {
         store: gridStore,
         height: 130,
+        width: 480,
         columns: [
             {
                 text   : 'name',
@@ -147,6 +148,7 @@ Ext.onReady(function () {
                         this.setTitle("Information for " + storeItem.get('name'));
                         pieStore.loadData(data);
                         gridStore.loadData(data);
+                        grid.setSize(480, 130);
                     }
                 }
             }]
