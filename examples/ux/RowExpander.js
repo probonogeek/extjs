@@ -109,12 +109,21 @@ Ext.define('Ext.ux.RowExpander', {
 
     init: function(grid) {
         this.callParent(arguments);
-
+        this.grid = grid;
         // Columns have to be added in init (after columns has been used to create the
         // headerCt). Otherwise, shared column configs get corrupted, e.g., if put in the
         // prototype.
-        grid.headerCt.insert(0, this.getHeaderConfig());
+        this.addExpander();
         grid.on('render', this.bindView, this, {single: true});
+        grid.on('reconfigure', this.onReconfigure, this);
+    },
+    
+    onReconfigure: function(){
+        this.addExpander();
+    },
+    
+    addExpander: function(){
+        this.grid.headerCt.insert(0, this.getHeaderConfig());
     },
 
     getHeaderId: function() {
@@ -175,27 +184,29 @@ Ext.define('Ext.ux.RowExpander', {
     },
 
     toggleRow: function(rowIdx) {
-        var rowNode = this.view.getNode(rowIdx),
+        var view = this.view,
+            rowNode = view.getNode(rowIdx),
             row = Ext.get(rowNode),
             nextBd = Ext.get(row).down(this.rowBodyTrSelector),
-            record = this.view.getRecord(rowNode),
+            record = view.getRecord(rowNode),
             grid = this.getCmp();
 
         if (row.hasCls(this.rowCollapsedCls)) {
             row.removeCls(this.rowCollapsedCls);
             nextBd.removeCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = true;
-            this.view.fireEvent('expandbody', rowNode, record, nextBd.dom);
+            view.refreshSize();
+            view.fireEvent('expandbody', rowNode, record, nextBd.dom);
         } else {
             row.addCls(this.rowCollapsedCls);
             nextBd.addCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = false;
-            this.view.fireEvent('collapsebody', rowNode, record, nextBd.dom);
+            view.refreshSize();
+            view.fireEvent('collapsebody', rowNode, record, nextBd.dom);
         }
     },
 
     onDblClick: function(view, cell, rowIdx, cellIndex, e) {
-
         this.toggleRow(rowIdx);
     },
 

@@ -66,8 +66,12 @@
      */
 
     initComponent : function(){
-        var me = this;
-
+        var me = this,
+            cfg = Ext.apply({}, me.initialConfig);
+            
+        // Ensure we clear any listeners so they aren't duplicated
+        delete cfg.listeners;
+            
         Ext.apply(me, {
             showSeparator: false,
             plain: true,
@@ -77,7 +81,7 @@
                 cls: Ext.baseCSSPrefix + 'menu-date-item',
                 id: me.pickerId,
                 xtype: 'datepicker'
-            }, me.initialConfig)
+            }, cfg)
         });
 
         me.callParent(arguments);

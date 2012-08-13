@@ -77,7 +77,8 @@
  *         renderTo: Ext.getBody()
  *     });
  *
- * To use paging, pass the paging requirements to the server when the store is first loaded.
+ * To use paging, you need to set a pageSize configuration on the Store, and pass the paging requirements to
+ * the server when the store is first loaded.
  *
  *     store.load({
  *         params: {
@@ -143,84 +144,84 @@ Ext.define('Ext.toolbar.Paging', {
      */
     prependButtons: false,
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-displayMsg'>    /**
 </span>     * @cfg {String} displayMsg
      * The paging status message to display. Note that this string is
      * formatted using the braced numbers {0}-{2} as tokens that are replaced by the values for start, end and total
      * respectively. These tokens should be preserved when overriding this string if showing those values is desired.
      */
-    //&lt;locale&gt;
     displayMsg : 'Displaying {0} - {1} of {2}',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-emptyMsg'>    /**
 </span>     * @cfg {String} emptyMsg
      * The message to display when no records are found.
      */
-    //&lt;locale&gt;
     emptyMsg : 'No data to display',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-beforePageText'>    /**
 </span>     * @cfg {String} beforePageText
      * The text displayed before the input item.
      */
-    //&lt;locale&gt;
     beforePageText : 'Page',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-afterPageText'>    /**
 </span>     * @cfg {String} afterPageText
      * Customizable piece of the default paging text. Note that this string is formatted using
      * {0} as a token that is replaced by the number of total pages. This token should be preserved when overriding this
      * string if showing the total page count is desired.
      */
-    //&lt;locale&gt;
     afterPageText : 'of {0}',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-firstText'>    /**
 </span>     * @cfg {String} firstText
      * The quicktip text displayed for the first page button.
      * **Note**: quick tips must be initialized for the quicktip to show.
      */
-    //&lt;locale&gt;
     firstText : 'First Page',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-prevText'>    /**
 </span>     * @cfg {String} prevText
      * The quicktip text displayed for the previous page button.
      * **Note**: quick tips must be initialized for the quicktip to show.
      */
-    //&lt;locale&gt;
     prevText : 'Previous Page',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-nextText'>    /**
 </span>     * @cfg {String} nextText
      * The quicktip text displayed for the next page button.
      * **Note**: quick tips must be initialized for the quicktip to show.
      */
-    //&lt;locale&gt;
     nextText : 'Next Page',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-lastText'>    /**
 </span>     * @cfg {String} lastText
      * The quicktip text displayed for the last page button.
      * **Note**: quick tips must be initialized for the quicktip to show.
      */
-    //&lt;locale&gt;
     lastText : 'Last Page',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-toolbar-Paging-cfg-refreshText'>    /**
 </span>     * @cfg {String} refreshText
      * The quicktip text displayed for the Refresh button.
      * **Note**: quick tips must be initialized for the quicktip to show.
      */
-    //&lt;locale&gt;
     refreshText : 'Refresh',
     //&lt;/locale&gt;
 

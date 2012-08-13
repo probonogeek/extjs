@@ -200,6 +200,10 @@
                     "name": "ResultSet.js"
                 },
                 {
+                    "path": "../../../platform/src/",
+                    "name": "AbstractPlugin.js"
+                },
+                {
                     "path": "../../../platform/src/state/",
                     "name": "Provider.js"
                 },
@@ -969,6 +973,10 @@
                 },
                 {
                     "path": "../../src/view/",
+                    "name": "TableLayout.js"
+                },
+                {
+                    "path": "../../src/view/",
                     "name": "TableChunker.js"
                 },
                 {
@@ -978,6 +986,14 @@
                 {
                     "path": "",
                     "name": "WallpaperModel.js"
+                },
+                {
+                    "path": "../../src/selection/",
+                    "name": "CellModel.js"
+                },
+                {
+                    "path": "../../src/selection/",
+                    "name": "CheckboxModel.js"
                 },
                 {
                     "path": "../../src/grid/",

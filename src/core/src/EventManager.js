@@ -15,7 +15,11 @@ Ext.EventManager = new function() {
                 baseCSSPrefix = Ext.baseCSSPrefix,
                 cls = [baseCSSPrefix + 'body'],
                 htmlCls = [],
-                html;
+                supportsLG = Ext.supports.CSS3LinearGradient,
+                supportsBR = Ext.supports.CSS3BorderRadius,
+                resetCls = [],
+                html,
+                resetElementSpec;
 
             if (!bd) {
                 return false;
@@ -119,13 +123,45 @@ Ext.EventManager = new function() {
             if (Ext.isLinux) {
                 add('linux');
             }
-            if (!Ext.supports.CSS3BorderRadius) {
+            if (!supportsBR) {
                 add('nbr');
             }
-            if (!Ext.supports.CSS3LinearGradient) {
+            if (!supportsLG) {
                 add('nlg');
             }
-            if (!Ext.scopeResetCSS) {
+
+            // If we are not globally resetting scope, but just resetting it in a wrapper around
+            // serarately rendered widgets, then create a common reset element for use when creating
+            // measurable elements. Using a common DomHelper spec.
+            if (Ext.scopeResetCSS) {
+
+                // Create Ext.resetElementSpec for use in Renderable when wrapping top level Components.
+                resetElementSpec = Ext.resetElementSpec = {
+                    cls: baseCSSPrefix + 'reset'
+                };
+                
+                if (!supportsLG) {
+                    resetCls.push(baseCSSPrefix + 'nlg');
+                }
+                
+                if (!supportsBR) {
+                    resetCls.push(baseCSSPrefix + 'nbr');
+                }
+                
+                if (resetCls.length) {                    
+                    resetElementSpec.cn = {
+                        cls: resetCls.join(' ')
+                    };
+                }
+                
+                Ext.resetElement = Ext.getBody().createChild(resetElementSpec);
+                if (resetCls.length) {
+                    Ext.resetElement = Ext.get(Ext.resetElement.dom.firstChild);
+                }
+            }
+            // Otherwise, the common reset element is the document body
+            else {
+                Ext.resetElement = Ext.getBody();
                 add('reset');
             }
 
@@ -294,11 +330,12 @@ Ext.EventManager = new function() {
         },
 
         /**
-         * Adds a listener to be notified when the document is ready (before onload and before images are loaded). Can be
-         * accessed shorthanded as Ext.onReady().
+         * Adds a listener to be notified when the document is ready (before onload and before images are loaded).
+         *
          * @param {Function} fn The method the event invokes.
-         * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
-         * @param {Boolean} options (optional) Options object as passed to {@link Ext.Element#addListener}.
+         * @param {Object} [scope] The scope (`this` reference) in which the handler function executes.
+         * Defaults to the browser window.
+         * @param {Object} [options] Options object as passed to {@link Ext.Element#addListener}.
          */
         onDocumentReady: function(fn, scope, options) {
             options = options || {};
@@ -650,10 +687,10 @@ Ext.EventManager = new function() {
                     if (options.delegate) {
                         // double up '\' characters so escape sequences survive the
                         // string-literal translation
-                        f.push('var t = e.getTarget("' + (options.delegate + '').replace(escapeRx, '\\\\') + '", this);');
+                        f.push('var result, t = e.getTarget("' + (options.delegate + '').replace(escapeRx, '\\\\') + '", this);');
                         f.push('if(!t) {return;}');
                     } else {
-                        f.push('var t = e.target;');
+                        f.push('var t = e.target, result;');
                     }
 
                     if (options.target) {
@@ -686,7 +723,7 @@ Ext.EventManager = new function() {
                     }
 
                     // finally call the actual handler fn
-                    f.push('fn.call(scope || dom, e, t, options);');
+                    f.push('result = fn.call(scope || dom, e, t, options);');
 
                     if(options.single) {
                         f.push('evtMgr.removeListener(dom, ename, fn, scope);');
@@ -707,11 +744,12 @@ Ext.EventManager = new function() {
                     if(options.buffer) {
                         f.push('}, ' + options.buffer + ');');
                     }
+                    f.push('return result;')
 
                     gen = Ext.cacheableFunctionFactory('e', 'options', 'fn', 'scope', 'ename', 'dom', 'wrap', 'args', 'X', 'evtMgr', f.join('\n'));
                 }
 
-                gen.call(dom, e, options, fn, scope, ename, dom, wrap, args, Ext, EventManager);
+                return gen.call(dom, e, options, fn, scope, ename, dom, wrap, args, Ext, EventManager);
             };
             return wrap;
         },
@@ -1037,7 +1075,8 @@ Ext.EventManager = new function() {
                     scrollable = false;
                 }
 
-                if (scrollable) {
+                // on IE8, when running within an iFrame, document.body is not immediately available
+                if (scrollable && document.body) {
                     EventManager.onReadyEvent({
                         type:'doScroll'
                     });
@@ -1084,8 +1123,11 @@ Ext.EventManager = new function() {
 
                 //are we in an IFRAME? (doScroll ineffective here)
                 try {
-                    topContext = !window.frameElement;
+                    topContext = window.frameElement === undefined;
                 } catch(e) {
+                    // If we throw an exception, it means we're probably getting access denied,
+                    // which means we're in an iframe cross domain.
+                    topContext = false;
                 }
 
                 if (!topContext || !doc.documentElement.doScroll) {

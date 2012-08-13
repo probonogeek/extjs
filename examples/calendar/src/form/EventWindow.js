@@ -33,6 +33,8 @@ Ext.define('Ext.calendar.form.EventWindow', {
                 name: Ext.calendar.data.EventMappings.Title.name,
                 fieldLabel: 'Title',
                 xtype: 'textfield',
+                allowBlank: false,
+                emptyText: 'Event Title',
                 anchor: '100%'
             },
             {
@@ -71,6 +73,12 @@ Ext.define('Ext.calendar.form.EventWindow', {
             deletingMessage: 'Deleting event...',
             layout: 'fit',
     
+            defaultFocus: 'title',
+            onEsc: function(key, event) {
+                        event.target.blur(); // Remove the focus to avoid doing the validity checks when the window is shown again.
+                        this.onCancel();
+                    },
+
             fbar: [{
                 xtype: 'tbtext',
                 text: '<a href="#" id="tblink">Edit Details...</a>'
@@ -165,14 +173,6 @@ Ext.define('Ext.calendar.form.EventWindow', {
         this.dateRangeField = this.down('#date-range');
         this.calendarField = this.down('#calendar');
         this.deleteButton = this.down('#delete-btn');
-
-        this.titleField.isValid = function() {
-                                        var valid = this.getValue().length > 0;
-                                        if (!valid) {
-                                            this.focus();
-                                        }
-                                        return valid;
-                                    };
     },
     
     // private
@@ -198,7 +198,7 @@ Ext.define('Ext.calendar.form.EventWindow', {
             M = Ext.calendar.data.EventMappings;
 
         this.callParent([anim, function(){
-            me.titleField.focus(true, 100);
+            me.titleField.focus(true);
         }]);
         
         this.deleteButton[o.data && o.data[M.EventId.name] ? 'show': 'hide']();

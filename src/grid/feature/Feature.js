@@ -73,6 +73,15 @@ Ext.define('Ext.grid.feature.Feature', {
      * This is limited to one feature that manipulates the data per grid view.
      */
     collectData: false,
+    
+    constructor: function(config) {
+        this.initialConfig = config;
+        this.callParent(arguments);
+    },
+
+    clone: function() {
+        return new this.self(this.initialConfig);
+    },
 
     init: Ext.emptyFn,
 

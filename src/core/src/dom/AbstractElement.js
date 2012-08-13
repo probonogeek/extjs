@@ -34,7 +34,7 @@ Ext.define('Ext.dom.AbstractElement', {
         get: function(el) {
             var me = this,
                 El = Ext.dom.Element,
-                cache,
+                cacheItem,
                 extEl,
                 dom,
                 id;
@@ -50,13 +50,13 @@ Ext.define('Ext.dom.AbstractElement', {
                     return El.get(document);
                 }
                 
-                cache = Ext.cache[el];
+                cacheItem = Ext.cache[el];
                 // This code is here to catch the case where we've got a reference to a document of an iframe
                 // It getElementById will fail because it's not part of the document, so if we're skipping
                 // GC it means it's a window/document object that isn't the default window/document, which we have
                 // already handled above
-                if (cache && cache.skipGarbageCollection) {
-                    extEl = cache.el;
+                if (cacheItem && cacheItem.skipGarbageCollection) {
+                    extEl = cacheItem.el;
                     return extEl;
                 }
                 
@@ -64,32 +64,34 @@ Ext.define('Ext.dom.AbstractElement', {
                     return null;
                 }
 
-                if (cache && cache.el) {
-                    extEl = cache.el;
-                    extEl.dom = dom;
+                if (cacheItem && cacheItem.el) {
+                    extEl = Ext.updateCacheEntry(cacheItem, dom).el;
                 } else {
                     // Force new element if there's a cache but no el attached
-                    extEl = new El(dom, !!cache);
+                    extEl = new El(dom, !!cacheItem);
                 }
                 return extEl;
             } else if (el.tagName) { // dom element
                 if (!(id = el.id)) {
                     id = Ext.id(el);
                 }
-                cache = Ext.cache[id];
-                if (cache && cache.el) {
-                    extEl = Ext.cache[id].el;
-                    extEl.dom = el;
+                cacheItem = Ext.cache[id];
+                if (cacheItem && cacheItem.el) {
+                    extEl = Ext.updateCacheEntry(cacheItem, el).el;
                 } else {
                     // Force new element if there's a cache but no el attached
-                    extEl = new El(el, !!cache);
+                    extEl = new El(el, !!cacheItem);
                 }
                 return extEl;
             } else if (el instanceof me) {
                 if (el != me.docEl && el != me.winEl) {
+                    id = el.id;
                     // refresh dom element in case no longer valid,
                     // catch case where it hasn't been appended
-                    el.dom = document.getElementById(el.id) || el.dom;
+                    cacheItem = Ext.cache[id];
+                    if (cacheItem) {
+                        Ext.updateCacheEntry(cacheItem, document.getElementById(id) || el.dom);
+                    }
                 }
                 return el;
             } else if (el.isComposite) {
@@ -221,9 +223,9 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
          * Visibility mode constant for use with {@link Ext.dom.Element#setVisibilityMode}. 
          * Use the CSS 'visibility' property to hide the element.
          *
-         * Note that in this mode, {@link #isVisible} may return true for an element even though 
-         * it actually has a parent element that is hidden. For this reason, and in most cases,
-         * using the {@link #OFFSETS} mode is a better choice.
+         * Note that in this mode, {@link Ext.dom.Element#isVisible isVisible} may return true
+         * for an element even though it actually has a parent element that is hidden. For this
+         * reason, and in most cases, using the {@link #OFFSETS} mode is a better choice.
          * @static
          * @inheritable
          */
@@ -514,6 +516,10 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
 }, function() {
     var AbstractElement = this;
 
+    /**
+     * @private
+     * @member Ext
+     */
     Ext.getDetachedBody = function () {
         var detachedEl = AbstractElement.detachedBodyEl;
 
@@ -526,6 +532,10 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         return detachedEl;
     };
 
+    /**
+     * @private
+     * @member Ext
+     */
     Ext.getElementById = function (id) {
         var el = document.getElementById(id),
             detachedBodyEl;

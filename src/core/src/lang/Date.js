@@ -129,8 +129,8 @@ function xf(format) {
 
 Ext.Date = {
     /**
-     * Returns the current timestamp
-     * @return {Number} The current timestamp
+     * Returns the current timestamp.
+     * @return {Number} Milliseconds since UNIX epoch.
      * @method
      */
     now: Date.now || function() {

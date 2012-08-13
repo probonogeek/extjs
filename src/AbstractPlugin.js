@@ -21,17 +21,34 @@ Ext.define('Ext.AbstractPlugin', {
     disabled: false,
 
     constructor: function(config) {
-        //<debug>
-        if (!config.cmp && Ext.global.console) {
-            Ext.global.console.warn("Attempted to attach a plugin ");
-        }
-        //</debug>
+        this.initialConfig = config;
         Ext.apply(this, config);
+    },
+
+    clone: function() {
+        return new this.self(this.initialConfig);
     },
 
     getCmp: function() {
         return this.cmp;
     },
+
+    /**
+     * @cfg {String} pluginId
+     * A name for the plugin that can be set at creation time to then retrieve the plugin
+     * through {@link Ext.AbstractComponent#getPlugin getPlugin} method.  For example:
+     *
+     *     var grid = Ext.create('Ext.grid.Panel', {
+     *         plugins: [{
+     *             ptype: 'cellediting',
+     *             clicksToEdit: 2,
+     *             pluginId: 'cellplugin'
+     *         }]
+     *     });
+     *
+     *     // later on:
+     *     var plugin = grid.getPlugin('cellplugin');
+     */
 
     /**
      * @method

@@ -26,6 +26,11 @@
  *
  * Some other useful configuration options when using {@link #grow} are {@link #growMin} and {@link #growMax}.
  * These allow you to set the minimum and maximum grow heights for the textarea.
+ * 
+ * **NOTE:** In some browsers, carriage returns ('\r', not to be confused with new lines)
+ * will be automatically stripped out the value is set to the textarea. Since we cannot
+ * use any reasonable method to attempt to re-insert these, they will automatically be
+ * stripped out to ensure the behaviour is consistent across browser.
  */
 Ext.define('Ext.form.field.TextArea', {
     extend:'Ext.form.field.Text',
@@ -117,6 +122,8 @@ Ext.define('Ext.form.field.TextArea', {
     componentLayout: 'textareafield',
     
     setGrowSizePolicy: Ext.emptyFn,
+    
+    returnRe: /\r/g,
 
     // private
     getSubTplData: function() {
@@ -143,10 +150,36 @@ Ext.define('Ext.form.field.TextArea', {
 
         me.callParent(arguments);
 
-        me.needsMaxCheck = me.enforceMaxLength && !Ext.supports.TextAreaMaxLength;
+        me.needsMaxCheck = me.enforceMaxLength && me.maxLength !== Number.MAX_VALUE && !Ext.supports.TextAreaMaxLength;
         if (me.needsMaxCheck) {
             me.inputEl.on('paste', me.onPaste, me);
         }
+    },
+    
+    // The following overrides deal with an issue whereby some browsers
+    // will strip carriage returns from the textarea input, while others
+    // will not. Since there's no way to be sure where to insert returns,
+    // the best solution is to strip them out in all cases to ensure that
+    // the behaviour is consistent in a cross browser fashion. As such,
+    // we override in all cases when setting the value to control this.
+    transformRawValue: function(value){
+        return this.stripReturns(value);
+    },
+    
+    transformOriginalValue: function(value){
+        return this.stripReturns(value); 
+    },
+    
+    valueToRaw: function(value){
+        value = this.stripReturns(value);
+        return this.callParent([value]);
+    },
+    
+    stripReturns: function(value){
+        if (value) {
+            value = value.replace(this.returnRe, '');
+        }
+        return value;
     },
 
     onPaste: function(e){
@@ -172,18 +205,26 @@ Ext.define('Ext.form.field.TextArea', {
     // private
     fireKey: function(e) {
         var me = this,
+            key = e.getKey(),
             value;
             
-        if (e.isSpecialKey() && (me.enterIsSpecial || (e.getKey() !== e.ENTER || e.hasModifier()))) {
+        if (e.isSpecialKey() && (me.enterIsSpecial || (key !== e.ENTER || e.hasModifier()))) {
             me.fireEvent('specialkey', me, e);
         }
         
-        if (me.needsMaxCheck && e.getKey() !== e.BACKSPACE && !e.isNavKeyPress()) {
+        if (me.needsMaxCheck && key !== e.BACKSPACE && key !== e.DELETE && !e.isNavKeyPress() && !me.isCutCopyPasteSelectAll(e, key)) {
             value = me.getValue();
             if (value.length >= me.maxLength) {
                 e.stopEvent();
             }
         }
+    },
+    
+    isCutCopyPasteSelectAll: function(e, key) {
+        if (e.CTRL) {
+            return key === e.A || key === e.C || key === e.V || key === e.X;
+        }
+        return false;
     },
 
     /**

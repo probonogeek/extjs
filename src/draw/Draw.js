@@ -970,6 +970,9 @@ Ext.define('Ext.draw.Draw', {
         };
     },
 
+    /**
+     * @private
+     */
     snapEnds: function (from, to, stepsMax, prettyNumbers) {
         if (Ext.isDate(from)) {
             return this.snapEndsByDate(from, to, stepsMax);

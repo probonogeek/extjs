@@ -246,7 +246,7 @@ associations: [{
                     modelDefaults: modelDefaults
                 });
                 
-                me[storeName] = new Ext.data.Store(config);
+                me[storeName] = Ext.data.AbstractStore.create(config);
                 if (autoLoad) {
                     me[storeName].load();
                 }

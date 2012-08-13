@@ -112,7 +112,7 @@ Ext.onReady(function(){
         renderTo: Ext.getBody()
     });
 
-    var data = createFakeData(50000),
+    var data = createFakeData(49679),
         ln = data.length,
         records = [],
         i = 0;

@@ -21,6 +21,9 @@ Ext.define('Ext.layout.component.field.HtmlEditor', {
         ownerContext.iframeContext   = ownerContext.getEl('iframeEl');
         ownerContext.toolbarContext  = ownerContext.context.getCmp(this.owner.getToolbar());
     },
+    
+    // It's not a container, can never add/remove dynamically
+    renderItems: Ext.emptyFn,
 
     getItemSizePolicy: function (item) {
         // we are only ever called by the toolbar
@@ -43,7 +46,7 @@ Ext.define('Ext.layout.component.field.HtmlEditor', {
                           ownerContext.toolbarContext.getProp('height') -
                           ownerContext.bodyCellContext.getPaddingInfo().height;
 
-        // If the Toolbar has not acheieved a height yest, we are not done laying out.
+        // If the Toolbar has not acheieved a height yet, we are not done laying out.
         if (Ext.isNumber(innerHeight)) {
             ownerContext.textAreaContext.setHeight(innerHeight);
             ownerContext.iframeContext.setHeight(innerHeight);

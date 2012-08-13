@@ -57,9 +57,17 @@ Ext.define('Ext.menu.Menu', {
      * @property {Ext.menu.Menu} parentMenu
      * The parent Menu of this Menu.
      */
+    
+    /**
+     * @cfg {Boolean} [enableKeyNav=true]
+     * True to enable keyboard navigation for controlling the menu.
+     * This option should generally be disabled when form fields are
+     * being used inside the menu.
+     */
+    enableKeyNav: true,
 
     /**
-     * @cfg {Boolean} allowOtherMenus
+     * @cfg {Boolean} [allowOtherMenus=false]
      * True to allow multiple menus to be displayed at the same time.
      */
     allowOtherMenus: false,
@@ -77,14 +85,14 @@ Ext.define('Ext.menu.Menu', {
      */
 
     /**
-     * @cfg {String} defaultAlign
+     * @cfg {String} [defaultAlign="tl-bl?"]
      * The default {@link Ext.Element#getAlignToXY Ext.Element#getAlignToXY} anchor position value for this menu
      * relative to its element of origin.
      */
     defaultAlign: 'tl-bl?',
 
     /**
-     * @cfg {Boolean} floating
+     * @cfg {Boolean} [floating=true]
      * A Menu configured as `floating: true` (the default) will be rendered as an absolutely positioned,
      * {@link Ext.Component#floating floating} {@link Ext.Component Component}. If configured as `floating: false`, the Menu may be
      * used as a child item of another {@link Ext.container.Container Container}.
@@ -109,14 +117,14 @@ Ext.define('Ext.menu.Menu', {
     hideMode: 'visibility',
 
     /**
-     * @cfg {Boolean} ignoreParentClicks
+     * @cfg {Boolean} [ignoreParentClicks=false]
      * True to ignore clicks on any item in this menu that is a parent item (displays a submenu)
      * so that the submenu is not dismissed when clicking the parent item.
      */
     ignoreParentClicks: false,
 
     /**
-     * @property {Boolean} isAction
+     * @property {Boolean} isMenu
      * `true` in this class to identify an object as an instantiated Menu, or subclass thereof.
      */
     isMenu: true,
@@ -127,7 +135,7 @@ Ext.define('Ext.menu.Menu', {
      */
 
     /**
-     * @cfg {Boolean} showSeparator
+     * @cfg {Boolean} [showSeparator=true]
      * True to show the icon separator.
      */
     showSeparator : true,
@@ -271,7 +279,9 @@ Ext.define('Ext.menu.Menu', {
         });
         me.mouseMonitor = me.el.monitorMouseLeave(100, me.onMouseLeave, me);
 
-        me.keyNav = new Ext.menu.KeyNav(me);
+        if (me.enableKeyNav) {
+            me.keyNav = new Ext.menu.KeyNav(me);
+        }
     },
 
     getBubbleTarget: function() {
@@ -422,7 +432,7 @@ Ext.define('Ext.menu.Menu', {
         delete me.ownerButton;
         if (me.rendered) {
             me.el.un(me.mouseMonitor);
-            me.keyNav.destroy();
+            Ext.destroy(me.keyNav);
             delete me.keyNav;
         }
         me.callParent(arguments);

@@ -299,13 +299,17 @@ Ext.define('Ext.tip.QuickTip', {
             me.update(target.text);
             me.autoHide = target.autoHide;
             me.dismissDelay = target.dismissDelay || me.dismissDelay;
-            
+            if (target.mouseOffset) {
+                xy[0] += target.mouseOffset[0];
+                xy[1] += target.mouseOffset[1];
+            }
+
             cls = me.lastCls;
             if (cls) {
                 me.removeCls(cls);
                 delete me.lastCls;
             }
-            
+
             cls = target.cls;
             if (cls) {
                 me.addCls(cls);

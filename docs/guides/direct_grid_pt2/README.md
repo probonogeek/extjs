@@ -5,7 +5,7 @@ Duration: around 30 minutes
 
 I. Introduction
 ---------------
-In [the last tutorial](http://) we created a grid that pulled information from a MySQL database using Ext Direct. Through the power and simplicity of grids we created what was essentially a glorified table (albeit 'turbocharged'). To add to the dynamism that grids present to us we'll be adding CRUD (Create, Read, Update, Delete) capabilities as well. A typical scenario that benefits from this is backend interfaces where a client might want to do anything from update someone's address or rename a blog post. We've already got it reading from a database so we're a quarter of the way there already!
+In [the last tutorial](#!/guide/direct_grid_pt1) we created a grid that pulled information from a MySQL database using Ext Direct. Through the power and simplicity of grids we created what was essentially a glorified table (albeit 'turbocharged'). To add to the dynamism that grids present to us we'll be adding CRUD (Create, Read, Update, Delete) capabilities as well. A typical scenario that benefits from this is backend interfaces where a client might want to do anything from update someone's address or rename a blog post. We've already got it reading from a database so we're a quarter of the way there already!
 
 By the end of this tutorial, we should have something that looks like this.
 
@@ -23,7 +23,7 @@ You will need:
 
 Personally, I find Firefox with Firebug best for debugging Ext.
 
-It's highly recommended that you complete Part 1 before embarking on this tutorial to fully understand what we're doing. The base files that we'll be following on from [can be found here](start.zip).
+It's highly recommended that you complete Part 1 before embarking on this tutorial to fully understand what we're doing. The base files that we'll be following on from [can be found here](guides/direct_grid_pt1/start.zip).
 
 III. Writing the Application
 ----------------------------
@@ -347,4 +347,4 @@ In this tutorial we've covered a lot of ground. You should now know how to imple
 
 If you're going to integrate this into production code, you could look into how to optimize it using [Ext Loader to only load the classes that we use](http://www.sencha.com/blog/using-ext-loader-for-your-application/) or process actions in batches with a 'Save changes' button so permanent changes aren't immediate.
 
-Finally, for reference, you can find the [completed source files here](reference-files.zip).
+Finally, for reference, you can find the [completed source files here](guides/direct_grid_pt1/reference-files.zip).

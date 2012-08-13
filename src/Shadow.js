@@ -85,6 +85,27 @@ Ext.define('Ext.Shadow', {
     },
 
     /**
+     * @private
+     * Returns the shadow size on each side of the element in standard CSS order: top, right, bottom, left;
+     * @return {Number[]} Top, right, bottom and left shadow size.
+     */
+    getShadowSize: function() {
+        var me = this,
+            offset = me.el ? me.offset : 0,
+            result = [offset, offset, offset, offset],
+            mode = me.mode.toLowerCase();
+
+        // There are only offsets if the shadow element is present.
+        if (me.el && mode !== 'frame') {
+            result[0] = 0;
+            if (mode == 'drop') {
+                result[3] = 0;
+            }
+        }
+        return result;
+    },
+
+    /**
      * @cfg {String} mode
      * The shadow display mode.  Supports the following options:
      *
@@ -142,8 +163,8 @@ Ext.define('Ext.Shadow', {
             me.el.dom.style.filter = "progid:DXImageTransform.Microsoft.alpha(opacity=" + me.opacity + ") progid:DXImageTransform.Microsoft.Blur(pixelradius=" + (me.offset) + ")";
         }
         me.realign(
-            target.getLeft(true),
-            target.getTop(true),
+            target.getLocalX(),
+            target.getLocalY(),
             target.dom.offsetWidth,
             target.dom.offsetHeight
         );

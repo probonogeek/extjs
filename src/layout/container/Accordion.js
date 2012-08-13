@@ -1,6 +1,7 @@
 /**
- * This is a layout that manages multiple Panels in an expandable accordion style such that only
- * **one Panel can be expanded at any given time**. Each Panel has built-in support for expanding and collapsing.
+ * This is a layout that manages multiple Panels in an expandable accordion style such that by default only
+ * one Panel can be expanded at any given time (set {@link #multi} config to have more open). Each Panel has
+ * built-in support for expanding and collapsing.
  *
  * Note: Only Ext Panels and all subclasses of Ext.panel.Panel may be used in an accordion layout Container.
  *
@@ -275,6 +276,11 @@ Ext.define('Ext.layout.container.Accordion', {
             toExpand,
             expanded,
             previousValue;
+
+        if (me.owner.items.getCount() === 1) {
+            // do not allow collapse if there is only one item
+            return false;
+        }
 
         if (!me.processing) {
             me.processing = true;

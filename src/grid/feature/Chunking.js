@@ -27,37 +27,36 @@ Ext.define('Ext.grid.feature.Chunking', {
         }
     },
 
-    collectData: function(records, preppedRecords, startIndex, fullWidth, orig) {
-        var o = {
-            fullWidth: orig.fullWidth,
-            chunks: []
-        },
+    collectData: function(records, preppedRecords, startIndex, fullWidth, o) {
         //headerCt = this.view.headerCt,
         //colums = headerCt.getColumnsForTpl(),
-        recordCount = orig.rows.length,
-        start = 0,
-        i = 0,
-        visibleChunk = this.visibleChunk,
-        chunk,
-        rows,
-        chunkLength;
+        var me = this,
+            recordCount = o.rows.length,
+            start = 0,
+            i = 0,
+            visibleChunk = me.visibleChunk,
+            rows,
+            chunkLength,
+            origRows = o.rows;
 
-        for (; start < recordCount; start+=this.chunkSize, i++) {
-            if (start+this.chunkSize > recordCount) {
+        delete o.rows;
+        o.chunks = [];
+        for (; start < recordCount; start += me.chunkSize, i++) {
+            if (start + me.chunkSize > recordCount) {
                 chunkLength = recordCount - start;
             } else {
-                chunkLength = this.chunkSize;
+                chunkLength = me.chunkSize;
             }
             
             if (i >= visibleChunk - 1 && i <= visibleChunk + 1) {
-                rows = orig.rows.slice(start, start+this.chunkSize);
+                rows = origRows.slice(start, start + me.chunkSize);
             } else {
                 rows = [];
             }
             o.chunks.push({
                 rows: rows,
                 fullWidth: fullWidth,
-                chunkHeight: chunkLength * this.rowHeight
+                chunkHeight: chunkLength * me.rowHeight
             });
         }
 

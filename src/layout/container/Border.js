@@ -83,6 +83,13 @@ Ext.define('Ext.layout.container.Border', {
      * Each region with `split:true` will get a {@link Ext.resizer.BorderSplitter Splitter} that
      * allows for manual resizing of the container. Except for the `center` region.
      */
+    
+    /**
+     * @cfg {Boolean} [splitterResize=true]
+     * This configuration option is to be applied to the **child `items`** managed by this layout and
+     * is used in conjunction with {@link #split}. By default, when specifying {@link #split}, the region
+     * can be dragged to be resized. Set this option to false to show the split bar but prevent resizing.
+     */
 
     /**
      * @cfg {Number/String/Object} padding
@@ -279,7 +286,8 @@ Ext.define('Ext.layout.container.Border', {
             pad = me.padding,
             type = typeof pad,
             padOnContainer = false,
-            childContext, item, length, i, regions, collapseTarget;
+            childContext, item, length, i, regions, collapseTarget,
+            doShow, hidden, region;
 
         // We sync the visibility state of splitters with their region:
         if (pad) {
@@ -296,11 +304,19 @@ Ext.define('Ext.layout.container.Border', {
         for (i = 0, length = items.length; i < length; ++i) {
             item = items[i];
             collapseTarget = me.getSplitterTarget(item);
-
-            if (collapseTarget && item.hidden !== collapseTarget.hidden) {
-                if (item.hidden) {
+            if (collapseTarget) {
+                hidden = !!item.hidden;
+                if (!collapseTarget.split) {
+                    if (collapseTarget.isCollapsingOrExpanding) {
+                        doShow = !!collapseTarget.collapsed;
+                    }
+                } else if (hidden !== collapseTarget.hidden) {
+                    doShow = !collapseTarget.hidden;
+                }
+                
+                if (doShow === true) {
                     item.show();
-                } else {
+                } else if (doShow === false) {
                     item.hide();
                 }
             }
@@ -326,7 +342,15 @@ Ext.define('Ext.layout.container.Border', {
             collapseTarget = me.getSplitterTarget(childContext.target);
 
             if (collapseTarget) { // if (splitter)
-                childContext.collapseTarget = collapseTarget = regions[collapseTarget.id];
+                region = regions[collapseTarget.id]
+                if (!region) {
+                        // if the region was hidden it will not be part of childItems, and
+                        // so beginAxis() won't add it to the regions object, so we have
+                        // to create the context item here.
+                        region = ownerContext.getEl(collapseTarget.el, me);
+                        region.region = collapseTarget.region;
+                }
+                childContext.collapseTarget = collapseTarget = region;
                 childContext.weight = collapseTarget.weight;
                 childContext.reverseWeighting = collapseTarget.reverseWeighting;
                 collapseTarget.splitter = childContext;
@@ -557,13 +581,14 @@ Ext.define('Ext.layout.container.Border', {
      * on the component as "splitter".
      * @private
      */
-    insertSplitter: function (item, index) {
+    insertSplitter: function (item, index, hidden) {
         var region = item.region,
             splitter = {
                 xtype: 'bordersplitter',
                 collapseTarget: item,
                 id: item.id + '-splitter',
-                hidden: !!item.hidden
+                hidden: hidden,
+                canResize: item.splitterResize !== false
             },
             at = index + ((region == 'south' || region == 'east') ? 0 : 1);
 
@@ -590,7 +615,9 @@ Ext.define('Ext.layout.container.Border', {
     onAdd: function (item, index) {
         var me = this,
             placeholderFor = item.placeholderFor,
-            region = item.region;
+            region = item.region,
+            split,
+            hidden;
 
         me.callParent(arguments);
 
@@ -606,9 +633,10 @@ Ext.define('Ext.layout.container.Border', {
                 me.centerRegion = item;
             } else {
                 item.collapseDirection = this.collapseDirections[region];
-
-                if (item.split && (item.isHorz || item.isVert)) {
-                    me.insertSplitter(item, index);
+                split = item.split;
+                hidden = !!item.hidden;
+                if ((item.isHorz || item.isVert) && (split || item.collapseMode == 'mini')) {
+                    me.insertSplitter(item, index, hidden || !split);
                 }
             }
 

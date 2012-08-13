@@ -23,7 +23,7 @@
  *             { name: 'address_id', type: 'int'}
  *         ],
  *         // we can use the hasOne shortcut on the model to create a hasOne association
- *         associations: { type: 'hasOne', model: 'Address' }
+ *         associations: [{ type: 'hasOne', model: 'Address' }]
  *     });
  *
  * In the example above we have created models for People and Addresses, and linked them together
@@ -256,7 +256,7 @@ Ext.define('Ext.data.association.HasOne', {
                 options.success = function(rec){
                     model[instanceName] = rec;
                     if (success) {
-                        success.call(this, arguments);
+                        success.apply(this, arguments);
                     }
                 };
 
@@ -267,7 +267,7 @@ Ext.define('Ext.data.association.HasOne', {
             } else {
                 instance = model[instanceName];
                 args = [instance];
-                scope = scope || model;
+                scope = scope || options.scope || model;
 
                 //TODO: We're duplicating the callback invokation code that the instance.load() call above
                 //makes here - ought to be able to normalize this - perhaps by caching at the Model.load layer

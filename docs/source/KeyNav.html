@@ -89,7 +89,7 @@ Ext.define('Ext.util.KeyNav', {
             target: el
         }, config));
     },
-    
+
 <span id='Ext-util-KeyNav-method-setConfig'>    /**
 </span>     * Sets up a configuration for the KeyNav.
      * @private
@@ -100,6 +100,7 @@ Ext.define('Ext.util.KeyNav', {
         var me = this,
             keymapCfg = {
                 target: config.target,
+                ignoreInputFields: config.ignoreInputFields,
                 eventName: me.getKeyEvent('forceKeyDown' in config ? config.forceKeyDown : me.forceKeyDown, config.eventName)
             },
             map, keyCodes, defaultScope, keyName, binding;
@@ -202,11 +203,17 @@ Ext.define('Ext.util.KeyNav', {
      * The scope (`this` context) in which the {@link #processEvent} method is executed.
      */
 
+<span id='Ext-util-KeyNav-cfg-ignoreInputFields'>    /**
+</span>     * @cfg {Boolean} [ignoreInputFields=false]
+     * Configure this as `true` if there are any input fields within the {@link #target}, and this KeyNav
+     * should not process events from input fields, (`&amp;lt;input&gt;, &amp;lt;textarea&gt; and elements with `contentEditable=&quot;true&quot;`)
+     */
+
 <span id='Ext-util-KeyNav-method-destroy'>    /**
 </span>     * Destroy this KeyNav (this is the same as calling disable).
      * @param {Boolean} removeEl True to remove the element associated with this KeyNav.
      */
-    destroy: function(removeEl){
+    destroy: function(removeEl) {
         this.map.destroy(removeEl);
         delete this.map;
     },
@@ -231,7 +238,7 @@ Ext.define('Ext.util.KeyNav', {
 </span>     * Convenience function for setting disabled/enabled by boolean.
      * @param {Boolean} disabled
      */
-    setDisabled : function(disabled){
+    setDisabled : function(disabled) {
         this.map.setDisabled(disabled);
         this.disabled = disabled;
     },
@@ -246,7 +253,7 @@ Ext.define('Ext.util.KeyNav', {
      *
      * @return {String} The type of event to listen for.
      */
-    getKeyEvent: function(forceKeyDown, configuredEventName){
+    getKeyEvent: function(forceKeyDown, configuredEventName) {
         if (forceKeyDown || (Ext.EventManager.useKeyDown &amp;&amp; !configuredEventName)) {
             return 'keydown';
         } else {

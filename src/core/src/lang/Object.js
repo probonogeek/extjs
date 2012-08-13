@@ -568,6 +568,7 @@ Ext.merge = Ext.Object.merge;
 
 /**
  * @private
+ * @member Ext
  */
 Ext.mergeIf = Ext.Object.mergeIf;
 

@@ -221,7 +221,8 @@ Ext.onReady(function(){
     tb.add('-', {
         icon: 'list-items.gif', // icons can also be specified inline
         cls: 'x-btn-icon',
-        tooltip: '<b>Quick Tips</b><br/>Icon only button with tooltip',
+        tooltip: '<b>Quick Tips</b><br/>Icon only button with tooltip<br><b>Activated on mousedown</b>',
+        clickEvent: 'mousedown',
         handler: function(){
             Ext.example.msg('Button Click','You clicked the "icon only" button.');
         }
@@ -257,7 +258,7 @@ Ext.onReady(function(){
         store: store,
         displayField: 'state',
         typeAhead: true,
-        mode: 'local',
+        queryMode: 'local',
         triggerAction: 'all',
         emptyText:'Select a state...',
         selectOnFocus:true,

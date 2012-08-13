@@ -111,27 +111,27 @@ Ext.define('Ext.picker.Date', {
         }
     ],
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-todayText'>    /**
 </span>     * @cfg {String} todayText
      * The text to display on the button that selects the current date
      */
-    //&lt;locale&gt;
     todayText : 'Today',
     //&lt;/locale&gt;
     
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-ariaTitle'>    /**
 </span>     * @cfg {String} ariaTitle
      * The text to display for the aria title
      */
-    //&lt;locale&gt;
     ariaTitle: 'Date Picker: {0}',
     //&lt;/locale&gt;
     
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-ariaTitleDateFormat'>    /**
 </span>     * @cfg {String} ariaTitleDateFormat
      * The date format to display for the current value in the {@link #ariaTitle}
      */
-    //&lt;locale&gt;
     ariaTitleDateFormat: 'F d, Y',
     //&lt;/locale&gt;
 
@@ -156,28 +156,28 @@ Ext.define('Ext.picker.Date', {
      * Defaults to this DatePicker instance.
      */
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-todayTip'>    /**
 </span>     * @cfg {String} todayTip
      * A string used to format the message for displaying in a tooltip over the button that selects the current date.
      * The `{0}` token in string is replaced by today's date.
      */
-    //&lt;locale&gt;
     todayTip : '{0} (Spacebar)',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-minText'>    /**
 </span>     * @cfg {String} minText
      * The error text to display if the minDate validation fails.
      */
-    //&lt;locale&gt;
     minText : 'This date is before the minimum date',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-maxText'>    /**
 </span>     * @cfg {String} maxText
      * The error text to display if the maxDate validation fails.
      */
-    //&lt;locale&gt;
     maxText : 'This date is after the maximum date',
     //&lt;/locale&gt;
 
@@ -187,19 +187,19 @@ Ext.define('Ext.picker.Date', {
      * according to {@link Ext.Date#parse} (defaults to {@link Ext.Date#defaultFormat}).
      */
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-disabledDaysText'>    /**
 </span>     * @cfg {String} disabledDaysText
      * The tooltip to display when the date falls on a disabled day.
      */
-    //&lt;locale&gt;
     disabledDaysText : 'Disabled',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-disabledDatesText'>    /**
 </span>     * @cfg {String} disabledDatesText
      * The tooltip text to display when the date falls on a disabled date.
      */
-    //&lt;locale&gt;
     disabledDatesText : 'Disabled',
     //&lt;/locale&gt;
 
@@ -213,54 +213,54 @@ Ext.define('Ext.picker.Date', {
      * An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
      */
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-nextText'>    /**
 </span>     * @cfg {String} nextText
      * The next month navigation button tooltip
      */
-    //&lt;locale&gt;
     nextText : 'Next Month (Control+Right)',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-prevText'>    /**
 </span>     * @cfg {String} prevText
      * The previous month navigation button tooltip
      */
-    //&lt;locale&gt;
     prevText : 'Previous Month (Control+Left)',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-monthYearText'>    /**
 </span>     * @cfg {String} monthYearText
      * The header month selector tooltip
      */
-    //&lt;locale&gt;
     monthYearText : 'Choose a month (Control+Up/Down to move years)',
     //&lt;/locale&gt;
     
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-monthYearFormat'>    /**
 </span>     * @cfg {String} monthYearFormat
      * The date format for the header month
      */
-    //&lt;locale&gt;
     monthYearFormat: 'F Y',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-startDay'>    /**
 </span>     * @cfg {Number} [startDay=undefined]
      * Day index at which the week should begin, 0-based.
      *
      * Defaults to `0` (Sunday).
      */
-    //&lt;locale&gt;
     startDay : 0,
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-showToday'>    /**
 </span>     * @cfg {Boolean} showToday
      * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar that
      * selects the current date.
      */
-    //&lt;locale&gt;
     showToday : true,
     //&lt;/locale&gt;
 
@@ -324,11 +324,11 @@ Ext.define('Ext.picker.Date', {
      * The class to apply to disabled cells.
      */
 
+    //&lt;locale&gt;
 <span id='Ext-picker-Date-cfg-longDayFormat'>    /**
 </span>     * @cfg {String} longDayFormat
      * The format for displaying a date in a longer format.
      */
-    //&lt;locale&gt;
     longDayFormat: 'F d, Y',
     //&lt;/locale&gt;
 
@@ -411,6 +411,12 @@ Ext.define('Ext.picker.Date', {
             days = new Array(me.numDays),
             today = Ext.Date.format(new Date(), me.format);
 
+        // If there's a Menu among our ancestors, then add the menu class.
+        // This is so that the MenuManager does not see a mousedown in this Component as a document mousedown, outside the Menu
+        if (me.up('menu')) {
+            me.addCls(Ext.baseCSSPrefix + 'menu');
+        }
+
         me.monthBtn = new Ext.button.Split({
             ownerCt: me,
             ownerLayout: me.getComponentLayout(),
@@ -429,6 +435,7 @@ Ext.define('Ext.picker.Date', {
                 ownerLayout: me.getComponentLayout(),
                 text: Ext.String.format(me.todayText, today),
                 tooltip: Ext.String.format(me.todayTip, today),
+                tooltipType: 'title',
                 handler: me.selectToday,
                 scope: me
             });

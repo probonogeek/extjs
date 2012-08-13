@@ -44,14 +44,15 @@ Ext.define('Ext.toolbar.TextItem', {
 
     /**
      * Updates this item's text, setting the text to be used as innerHTML.
-     * @param {String} t The text to display (html accepted).
+     * @param {String} text The text to display (html accepted).
      */
-    setText : function(t) {
-        if (this.rendered) {
-            this.el.update(t);
-            this.ownerCt.doLayout(); // In case an empty text item (centered at zero height) receives new text.
+    setText : function(text) {
+        var me = this;
+        if (me.rendered) {
+            me.el.update(text);
+            me.updateLayout();
         } else {
-            this.text = t;
+            this.text = text;
         }
     }
 });

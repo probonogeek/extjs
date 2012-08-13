@@ -88,7 +88,7 @@ and so its Container Tab Panel instantiates and renders it immediately.
 {@img lazy_render1.png Lazy Render 1}
 
 The alert for the second tab does not get displayed until the tab is clicked on. This shows that the tab was not rendered until
-needed, since the `{@link Ext.Component#render render}` event did not fire until the tab was activated.
+needed, since the `{@link Ext.Component#event-render render}` event did not fire until the tab was activated.
 
 {@img lazy_render2.png Lazy Render 2}
 
@@ -309,7 +309,7 @@ Usage:
         height: 200,
         renderTo: Ext.getBody(),
         items: [ image ]
-    })
+    });
 
     image.on('load', function() {
         console.log('image loaded: ', image.getSrc());

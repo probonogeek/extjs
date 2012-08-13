@@ -318,7 +318,7 @@ Ext4.onReady(function() {
         }]
     };
 
-    win = Ext4.createWidget('window', {
+    win = Ext4.widget('window', {
         x: 90,
         y: 50,
         width: 800,

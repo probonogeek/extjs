@@ -80,7 +80,7 @@
  * Ext.Loader will automatically fetch all dependencies on demand as they're needed during run-time. For example:
  *
  *     Ext.onReady(function(){
- *         var window = Ext.createWidget('window', {
+ *         var window = Ext.widget('window', {
  *             width: 500,
  *             height: 300,
  *             layout: {
@@ -763,7 +763,8 @@ Ext.Loader = new function() {
             var config = Loader.getConfig(),
                 noCacheUrl = url + (config.disableCaching ? ('?' + config.disableCachingParam + '=' + Ext.Date.now()) : ''),
                 isCrossOriginRestricted = false,
-                xhr, status, onScriptError;
+                xhr, status, onScriptError,
+                debugSourceURL = "";
 
             scope = scope || Loader;
 
@@ -815,7 +816,11 @@ Ext.Loader = new function() {
                 ) {
                     // Debugger friendly, file names are still shown even though they're eval'ed code
                     // Breakpoints work on both Firebug and Chrome's Web Inspector
-                    Ext.globalEval(xhr.responseText + "\n//@ sourceURL=" + url);
+                    if (!Ext.isIE) {
+                        debugSourceURL = "\n//@ sourceURL=" + url;
+                    }
+
+                    Ext.globalEval(xhr.responseText + debugSourceURL);
 
                     onLoad.call(scope);
                 }
@@ -1222,6 +1227,7 @@ Ext.Loader = new function() {
     /**
      * @member Ext
      * @method onReady
+     * @ignore
      */
     Ext.onReady = function(fn, scope, options) {
         Loader.onReady(fn, scope, true, options);

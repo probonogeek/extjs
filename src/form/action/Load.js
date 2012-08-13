@@ -19,6 +19,10 @@
  *
  *     var myFormPanel = new Ext.form.Panel({
  *         title: 'Client and routing info',
+ *         renderTo: Ext.getBody(),
+ *         defaults: {
+ *             xtype: 'textfield'
+ *         },
  *         items: [{
  *             fieldLabel: 'Client',
  *             name: 'clientName'

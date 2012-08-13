@@ -29,6 +29,9 @@ Ext.define('Ext.resizer.Splitter', {
 
     baseCls: Ext.baseCSSPrefix + 'splitter',
     collapsedClsInternal: Ext.baseCSSPrefix + 'splitter-collapsed',
+    
+    // Default to tree, allow internal classes to disable resizing
+    canResize: true,
 
     /**
      * @cfg {Boolean} collapsible
@@ -68,9 +71,6 @@ Ext.define('Ext.resizer.Splitter', {
      * A class to add to the splitter when it is collapsed. See {@link #collapsible}.
      */
 
-    width: 5,
-    height: 5,
-
     /**
      * @cfg {String/Ext.panel.Panel} collapseTarget
      * A string describing the relative position of the immediate sibling Panel to collapse. May be 'prev' or 'next'.
@@ -109,15 +109,31 @@ Ext.define('Ext.resizer.Splitter', {
     beforeRender: function() {
         var me = this,
             target = me.getCollapseTarget(),
-            collapseDir = me.getCollapseDirection();
+            collapseDir = me.getCollapseDirection(),
+            vertical = me.vertical,
+            fixedSizeProp = vertical ? 'width' : 'height',
+            stretchSizeProp = vertical ? 'height' : 'width',
+            cls;
 
         me.callParent();
-        
+
+        if (!me.hasOwnProperty(stretchSizeProp)) {
+            me[stretchSizeProp] = '100%';
+        }
+        if (!me.hasOwnProperty(fixedSizeProp)) {
+            me[fixedSizeProp] = 5;
+        }
+
         if (target.collapsed) {
             me.addCls(me.collapsedClsInternal);
         }
         
-        me.addCls(me.baseCls + '-' + me.orientation);
+        cls = me.baseCls + '-' + me.orientation;
+        me.addCls(cls);
+        if (!me.canResize) {
+            me.addCls(cls + '-noresize');
+        }
+        
         Ext.applyIf(me.renderData, {
             collapseDir: collapseDir,
             collapsible: me.collapsible || target.collapsible
@@ -147,10 +163,11 @@ Ext.define('Ext.resizer.Splitter', {
         });
 
         me.el.unselectable();
-        me.tracker = Ext.create(me.getTrackerConfig());
-
-        // Relay the most important events to our owner (could open wider later):
-        me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
+        if (me.canResize) {
+            me.tracker = Ext.create(me.getTrackerConfig());
+            // Relay the most important events to our owner (could open wider later):
+            me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
+        }
     },
 
     getCollapseDirection: function() {
@@ -238,5 +255,10 @@ Ext.define('Ext.resizer.Splitter', {
         if (Ext.isIE && me.el) {
             me.el.repaint();
         }
+    },
+    
+    beforeDestroy: function(){
+        Ext.destroy(this.tracker);
+        this.callParent();
     }
 });

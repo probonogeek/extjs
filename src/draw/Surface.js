@@ -1,13 +1,16 @@
 /**
- * A Surface is an interface to render methods inside a draw {@link Ext.draw.Component}.
- * A Surface contains methods to render sprites, get bounding boxes of sprites, add
- * sprites to the canvas, initialize other graphic components, etc. One of the most used
- * methods for this class is the `add` method, to add Sprites to the surface.
+ * A Surface is an interface to render methods inside {@link Ext.draw.Component}.
  *
  * Most of the Surface methods are abstract and they have a concrete implementation
- * in VML or SVG engines.
+ * in {@link Ext.draw.engine.Vml VML} or {@link Ext.draw.engine.Svg SVG} engines.
  *
- * A Surface instance can be accessed as a property of a draw component. For example:
+ * A Surface contains methods to render {@link Ext.draw.Sprite sprites}, get bounding
+ * boxes of sprites, add sprites to the canvas, initialize other graphic components, etc.
+ *
+ * ## Adding sprites to surface
+ *
+ * One of the most used methods for this class is the {@link #add} method, to add Sprites to
+ * the surface. For example:
  *
  *     drawComponent.surface.add({
  *         type: 'circle',
@@ -17,109 +20,23 @@
  *         y: 100
  *     });
  *
- * The configuration object passed in the `add` method is the same as described in the {@link Ext.draw.Sprite}
- * class documentation.
+ * The configuration object passed in the `add` method is the same as described in the
+ * {@link Ext.draw.Sprite} class documentation.
  *
- * # Listeners
+ * Sprites can also be added to surface by setting their surface config at creation time:
  *
- * You can also add event listeners to the surface using the `Observable` listener syntax. Supported events are:
- *
- * - mousedown
- * - mouseup
- * - mouseover
- * - mouseout
- * - mousemove
- * - mouseenter
- * - mouseleave
- * - click
- * - dblclick
- *
- * For example:
- *
- *     drawComponent.surface.on({
- *        'mousemove': function() {
- *             console.log('moving the mouse over the surface');
- *         }
+ *     var sprite = Ext.create('Ext.draw.Sprite', {
+ *         type: 'circle',
+ *         fill: '#ff0',
+ *         surface: drawComponent.surface,
+ *         radius: 5
  *     });
  *
- * # Example
+ * In order to properly apply properties and render the sprite we have to
+ * `show` the sprite setting the option `redraw` to `true`:
  *
- *     var drawComponent = Ext.create('Ext.draw.Component', {
- *         width: 800,
- *         height: 600,
- *         renderTo: document.body
- *     }), surface = drawComponent.surface;
+ *     sprite.show(true);
  *
- *     surface.add([{
- *         type: 'circle',
- *         radius: 10,
- *         fill: '#f00',
- *         x: 10,
- *         y: 10,
- *         group: 'circles'
- *     }, {
- *         type: 'circle',
- *         radius: 10,
- *         fill: '#0f0',
- *         x: 50,
- *         y: 50,
- *         group: 'circles'
- *     }, {
- *         type: 'circle',
- *         radius: 10,
- *         fill: '#00f',
- *         x: 100,
- *         y: 100,
- *         group: 'circles'
- *     }, {
- *         type: 'rect',
- *         width: 20,
- *         height: 20,
- *         fill: '#f00',
- *         x: 10,
- *         y: 10,
- *         group: 'rectangles'
- *     }, {
- *         type: 'rect',
- *         width: 20,
- *         height: 20,
- *         fill: '#0f0',
- *         x: 50,
- *         y: 50,
- *         group: 'rectangles'
- *     }, {
- *         type: 'rect',
- *         width: 20,
- *         height: 20,
- *         fill: '#00f',
- *         x: 100,
- *         y: 100,
- *         group: 'rectangles'
- *     }]);
- *
- *     // Get references to my groups
- *     circles = surface.getGroup('circles');
- *     rectangles = surface.getGroup('rectangles');
- *
- *     // Animate the circles down
- *     circles.animate({
- *         duration: 1000,
- *         to: {
- *             translate: {
- *                 y: 200
- *             }
- *         }
- *     });
- *
- *     // Animate the rectangles across
- *     rectangles.animate({
- *         duration: 1000,
- *         to: {
- *             translate: {
- *                 x: 200
- *             }
- *         }
- *     });
  */
 Ext.define('Ext.draw.Surface', {
 
@@ -158,20 +75,32 @@ Ext.define('Ext.draw.Surface', {
             return false;
         },
         
-        save: function(config, surface){
+        /**
+         * Exports a {@link Ext.draw.Surface surface} in a different format.
+         * The surface may be exported to an SVG string, using the
+         * {@link Ext.draw.engine.SvgExporter}. It may also be exported
+         * as an image using the {@link Ext.draw.engine.ImageExporter ImageExporter}.
+         * Note that this requires sending data to a remote server to process
+         * the SVG into an image, see the {@link Ext.draw.engine.ImageExporter} for
+         * more details.
+         * @param {Ext.draw.Surface} surface The surface to export.
+         * @param {Object} [config] The configuration to be passed to the exporter.
+         * See the export method for the appropriate exporter for the relevant
+         * configuration options
+         * @return {Object} See the return types for the appropriate exporter
+         * @static
+         */
+        save: function(surface, config) {
+            config = config || {};
             var exportTypes = {
-                    /* 
-                    example adds
-                    'image/png': 'Image',
-                    'image/jpeg': 'Image',
-                    */
                     'image/png': 'Image',
                     'image/jpeg': 'Image',
                     'image/svg+xml': 'Svg'
                 },
-                prefix = exportTypes[config.type] || 'Svg';           
+                prefix = exportTypes[config.type] || 'Svg',
+                exporter = Ext.draw.engine[prefix + 'Exporter'];           
 
-            return (Ext.draw.engine[prefix + 'Exporter']).self.generate(config, surface);
+            return exporter.generate(surface, config);
             
         }
     },
@@ -237,6 +166,11 @@ Ext.define('Ext.draw.Surface', {
     y: 0,
 
     /**
+     * @cfg {Ext.draw.Sprite[]} items
+     * Array of sprites or sprite config objects to add initially to the surface.
+     */
+
+    /**
      * @private Flag indicating that the surface implementation requires sprites to be maintained
      * in order of their zIndex. Impls that don't require this can set it to false.
      */
@@ -257,14 +191,59 @@ Ext.define('Ext.draw.Surface', {
         me.customAttributes = {};
 
         me.addEvents(
+            /**
+             * @event
+             * Fires when a mousedown is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mousedown',
+            /**
+             * @event
+             * Fires when a mouseup is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mouseup',
+            /**
+             * @event
+             * Fires when a mouseover is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mouseover',
+            /**
+             * @event
+             * Fires when a mouseout is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mouseout',
+            /**
+             * @event
+             * Fires when a mousemove is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mousemove',
+            /**
+             * @event
+             * Fires when a mouseenter is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mouseenter',
+            /**
+             * @event
+             * Fires when a mouseleave is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'mouseleave',
+            /**
+             * @event
+             * Fires when a click is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'click',
+            /**
+             * @event
+             * Fires when a dblclick is detected within the surface.
+             * @param {Ext.EventObject} e An object encapsulating the DOM event.
+             */
             'dblclick'
         );
 
@@ -546,7 +525,7 @@ Ext.define('Ext.draw.Surface', {
      *         y: 100
      *     });
      *
-     * @param {Ext.draw.Sprite[]/Ext.draw.Sprite...} args One or more Sprite objects of configs.
+     * @param {Ext.draw.Sprite[]/Ext.draw.Sprite...} args One or more Sprite objects or configs.
      * @return {Ext.draw.Sprite[]/Ext.draw.Sprite} The sprites added.
      */
     add: function() {

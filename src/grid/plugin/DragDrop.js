@@ -161,6 +161,15 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * of the node.
      */
     //<locale>
+    /**
+     * @cfg
+     * The text to show while dragging.
+     *
+     * Two placeholders can be used in the text:
+     *
+     * - `{0}` The number of selected items.
+     * - `{1}` 's' when more than 1 items (only useful for English).
+     */
     dragText : '{0} selected row{1}',
     //</locale>
 

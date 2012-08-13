@@ -122,6 +122,14 @@ Ext.onReady(function () {
                         }]
                     }
                 }]
+            }, {
+                expanded: false,
+                items: {
+                    title: 'Single item in third',
+                    bodyPadding: 10,
+                    html: '<h1>The third tab group only has a single entry.<br>This is to test the tab being tagged with both "first" and "last" classes to ensure rounded corners are applied top and bottom</h1>',
+                    border: false
+                }
             }]
         }]
     });

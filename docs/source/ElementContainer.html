@@ -33,7 +33,7 @@
  *          ],
  *          
  *          renderTpl: [
- *              '&amp;lt;div id=&quot;{id}-bodyEl&quot;&amp;gt;&amp;lt;/div&amp;gt;'
+ *              '&lt;div id=&quot;{id}-bodyEl&quot;&gt;&lt;/div&gt;'
  *          ],
  *          
  *          // ...
@@ -88,9 +88,9 @@
  *          ],
  *          
  *          renderTpl: [
- *              '&amp;lt;div id=&quot;{id}-bodyEl&quot;&amp;gt;'
- *                  '&amp;lt;div id=&quot;{id}-innerEl&quot;&amp;gt;&amp;lt;/div&amp;gt;'
- *              '&amp;lt;/div&amp;gt;'
+ *              '&lt;div id=&quot;{id}-bodyEl&quot;&gt;'
+ *                  '&lt;div id=&quot;{id}-innerEl&quot;&gt;&lt;/div&gt;'
+ *              '&lt;/div&gt;'
  *          ],
  *          
  *          // ...
@@ -146,7 +146,7 @@ Ext.define('Ext.util.ElementContainer', {
     },
 
 <span id='Ext-util-ElementContainer-method-addChildEls'>    /**
-</span>     * Adds each argument passed to this method to the {@link #childEls} array.
+</span>     * Adds each argument passed to this method to the {@link Ext.AbstractComponent#cfg-childEls childEls} array.
      */
     addChildEls: function () {
         var me = this,

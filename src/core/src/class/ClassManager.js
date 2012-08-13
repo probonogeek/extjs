@@ -193,6 +193,16 @@
  */
 (function(Class, alias, arraySlice, arrayFrom, global) {
 
+    // Creates a constructor that has nothing extra in its scope chain.
+    function makeCtor () {
+        function constructor () {
+            // Opera has some problems returning from a constructor when Dragonfly isn't running. The || null seems to
+            // be sufficient to stop it misbehaving. Known to be required against 10.53, 11.51 and 11.61.
+            return this.constructor.apply(this, arguments) || null;
+        }
+        return constructor;
+    }
+
     var Manager = Ext.ClassManager = {
 
         /**
@@ -647,14 +657,25 @@
          */
         create: function(className, data, createdFn) {
             //<debug error>
-            if (typeof className != 'string') {
+            if (className != null && typeof className != 'string') {
                 throw new Error("[Ext.define] Invalid class name '" + className + "' specified, must be a non-empty string");
+            }
+            //</debug>
+
+            var ctor = makeCtor();
+            if (typeof data == 'function') {
+                data = data(ctor);
+            }
+
+            //<debug>
+            if (className) {
+                ctor.displayName = className;
             }
             //</debug>
 
             data.$className = className;
 
-            return new Class(data, function() {
+            return new Class(ctor, data, function() {
                 var postprocessorStack = data.postprocessors || Manager.defaultPostprocessors,
                     registeredPostprocessors = Manager.postprocessors,
                     postprocessors = [],
@@ -700,13 +721,17 @@
                 createdFn = clsData.createdFn;
 
             if (!postprocessor) {
-                me.set(className, cls);
-
-                if (createdFn) {
-                     createdFn.call(cls, cls);
+                if (className) {
+                    me.set(className, cls);
                 }
 
-                me.triggerCreated(className);
+                if (createdFn) {
+                    createdFn.call(cls, cls);
+                }
+
+                if (className) {
+                    me.triggerCreated(className);
+                }
                 return;
             }
 
@@ -1308,7 +1333,7 @@
          *      Ext.define('My.awesome.Class', {
          *          someProperty: 'something',
          *
-         *          someMethod: function() {
+         *          someMethod: function(s) {
          *              alert(s + this.someProperty);
          *          }
          *
@@ -1319,7 +1344,48 @@
          *
          *      obj.someMethod('Say '); // alerts 'Say something'
          *
-         * To defines an override, include the `override` property. The content of an
+         * To create an anonymous class, pass `null` for the `className`:
+         * 
+         *      Ext.define(null, {
+         *          constructor: function () {
+         *              // ...
+         *          }
+         *      });
+         *
+         * In some cases, it is helpful to create a nested scope to contain some private
+         * properties. The best way to do this is to pass a function instead of an object
+         * as the second parameter. This function will be called to produce the class
+         * body:
+         * 
+         *      Ext.define('MyApp.foo.Bar', function () {
+         *          var id = 0;
+         *          
+         *          return {
+         *              nextId: function () {
+         *                  return ++id;
+         *              }
+         *          };
+         *      });
+         * 
+         * When using this form of `Ext.define`, the function is passed a reference to its
+         * class. This can be used as an efficient way to access any static properties you
+         * may have:
+         * 
+         *      Ext.define('MyApp.foo.Bar', function (Bar) {
+         *          return {
+         *              statics: {
+         *                  staticMethod: function () {
+         *                      // ...
+         *                  }
+         *              },
+         *              
+         *              method: function () {
+         *                  return Bar.staticMethod();
+         *              }
+         *          };
+         *      });
+         *
+         * To define an override, include the `override` property. The content of an
          * override is aggregated with the specified class in order to extend or modify
          * that class. This can be as simple as setting default property values or it can
          * extend and/or replace methods. This can also extend the statics of the class.
@@ -1398,6 +1464,7 @@
          * It is highly recommended to follow this simple convention:
          *  - The root and the class name are 'CamelCased'
          *  - Everything else is lower-cased
+         * Pass `null` to create an anonymous class.
          * @param {Object} data The key - value pairs of properties to apply to this class. Property names can be of any valid
          * strings, except those in the reserved listed below:
          *  - `mixins`

@@ -100,6 +100,7 @@ Ext.define('Ext.form.field.Display', {
         me.rawValue = value;
         if (me.rendered) {
             me.inputEl.dom.innerHTML = me.getDisplayValue();
+            me.updateLayout();
         }
         return value;
     },

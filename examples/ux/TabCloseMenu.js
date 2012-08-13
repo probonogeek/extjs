@@ -23,7 +23,7 @@ Ext.define('Ext.ux.TabCloseMenu', {
     showCloseOthers: true,
 
     /**
-     * @cfg {String} closeOtherTabsText
+     * @cfg {String} closeOthersTabsText
      * The text for closing all tabs except the current one.
      */
     closeOthersTabsText: 'Close Other Tabs',

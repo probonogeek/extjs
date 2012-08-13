@@ -94,11 +94,11 @@ Ext.define('Ext.form.CheckboxGroup', {
      */
     allowBlank : true,
 
+    //<locale>
     /**
      * @cfg {String} blankText
      * Error text to display if the {@link #allowBlank} validation fails
      */
-    //<locale>
     blankText : "You must select at least one item in this group",
     //</locale>
 

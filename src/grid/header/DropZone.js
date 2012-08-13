@@ -63,7 +63,7 @@ Ext.define('Ext.grid.header.DropZone', {
             pos    = location.pos,
             nextHd = draggedHeader.nextSibling('gridcolumn:not([hidden])'),
             prevHd = draggedHeader.previousSibling('gridcolumn:not([hidden])'),
-            region, topIndicator, bottomIndicator, topAnchor, bottomAnchor,
+            topIndicator, bottomIndicator, topAnchor, bottomAnchor,
             topXY, bottomXY, headerCtEl, minX, maxX,
             allDropZones, ln, i, dropZone;
 
@@ -170,13 +170,14 @@ Ext.define('Ext.grid.header.DropZone', {
 
     onNodeDrop: function(node, dragZone, e, data) {
         if (this.valid) {
-            this.invalidateDrop();
             var dragHeader   = data.header,
                 lastLocation = this.lastLocation,
                 targetHeader = lastLocation.header,
                 fromCt       = dragHeader.ownerCt,
+                fromHeader   = dragHeader.up('headercontainer:not(gridcolumn)'),
                 localFromIdx = fromCt.items.indexOf(dragHeader), // Container.items is a MixedCollection
                 toCt         = targetHeader.ownerCt,
+                toHeader     = targetHeader.up('headercontainer:not(gridcolumn)'),
                 localToIdx   = toCt.items.indexOf(targetHeader),
                 headerCt     = this.headerCt,
                 fromIdx      = headerCt.getHeaderIndex(dragHeader),
@@ -192,15 +193,26 @@ Ext.define('Ext.grid.header.DropZone', {
             }
 
             // If we are dragging in between two HeaderContainers that have had the lockable
-            // mixin injected we will lock/unlock headers in between sections. Note that lockable
-            // does NOT currently support grouped headers.
-            if (fromCt !== toCt && fromCt.lockableInjected && toCt.lockableInjected && toCt.lockedCt) {
+            // mixin injected we will lock/unlock headers in between sections, and then continue
+            // with another execution of onNodeDrop to ensure the header is dropped into the correct group
+            if (fromHeader !== toHeader && fromHeader.lockableInjected && toHeader.lockableInjected && toHeader.lockedCt) {
                 scrollerOwner = fromCt.up('[scrollerOwner]');
                 scrollerOwner.lock(dragHeader, localToIdx);
-            } else if (fromCt !== toCt && fromCt.lockableInjected && toCt.lockableInjected && fromCt.lockedCt) {
+
+                // Now that the header has been transferred into the correct HeaderContainer, recurse, and continue the drop operation with the same dragData
+                this.onNodeDrop(node, dragZone, e, data);
+            } else if (fromHeader !== toHeader && fromHeader.lockableInjected && toHeader.lockableInjected && fromHeader.lockedCt) {
                 scrollerOwner = fromCt.up('[scrollerOwner]');
                 scrollerOwner.unlock(dragHeader, localToIdx);
-            } else {
+
+                // Now that the header has been transferred into the correct HeaderContainer, recurse, and continue the drop operation with the same dragData
+                this.onNodeDrop(node, dragZone, e, data);
+            }
+            
+            // This is a drop within the same HeaderContainer.
+            else {
+                this.invalidateDrop();
+
                 // If dragging rightwards, then after removal, the insertion index will be less when moving
                 // within the same container.
                 if ((fromCt === toCt) && (localToIdx > localFromIdx)) {

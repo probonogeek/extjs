@@ -1,50 +1,56 @@
 /**
  * @class Ext.util.Format
-
-This class is a centralized place for formatting functions. It includes
-functions to format various different types of data, such as text, dates and numeric values.
-
-__Localization__
-This class contains several options for localization. These can be set once the library has loaded,
-all calls to the functions from that point will use the locale settings that were specified.
-Options include:
-- thousandSeparator
-- decimalSeparator
-- currenyPrecision
-- currencySign
-- currencyAtEnd
-This class also uses the default date format defined here: {@link Ext.Date#defaultFormat}.
-
-__Using with renderers__
-There are two helper functions that return a new function that can be used in conjunction with
-grid renderers:
-
-    columns: [{
-        dataIndex: 'date',
-        renderer: Ext.util.Format.dateRenderer('Y-m-d')
-    }, {
-        dataIndex: 'time',
-        renderer: Ext.util.Format.numberRenderer('0.000')
-    }]
-
-Functions that only take a single argument can also be passed directly:
-    columns: [{
-        dataIndex: 'cost',
-        renderer: Ext.util.Format.usMoney
-    }, {
-        dataIndex: 'productCode',
-        renderer: Ext.util.Format.uppercase
-    }]
-
-__Using with XTemplates__
-XTemplates can also directly use Ext.util.Format functions:
-
-    new Ext.XTemplate([
-        'Date: {startDate:date("Y-m-d")}',
-        'Cost: {cost:usMoney}'
-    ]);
-
- * @markdown
+ *  
+ * This class is a centralized place for formatting functions. It includes
+ * functions to format various different types of data, such as text, dates and numeric values.
+ *  
+ * ## Localization
+ *
+ * This class contains several options for localization. These can be set once the library has loaded,
+ * all calls to the functions from that point will use the locale settings that were specified.
+ *
+ * Options include:
+ *
+ * - thousandSeparator
+ * - decimalSeparator
+ * - currenyPrecision
+ * - currencySign
+ * - currencyAtEnd
+ *
+ * This class also uses the default date format defined here: {@link Ext.Date#defaultFormat}.
+ *
+ * ## Using with renderers
+ *
+ * There are two helper functions that return a new function that can be used in conjunction with
+ * grid renderers:
+ *  
+ *     columns: [{
+ *         dataIndex: 'date',
+ *         renderer: Ext.util.Format.dateRenderer('Y-m-d')
+ *     }, {
+ *         dataIndex: 'time',
+ *         renderer: Ext.util.Format.numberRenderer('0.000')
+ *     }]
+ *  
+ * Functions that only take a single argument can also be passed directly:
+ *
+ *     columns: [{
+ *         dataIndex: 'cost',
+ *         renderer: Ext.util.Format.usMoney
+ *     }, {
+ *         dataIndex: 'productCode',
+ *         renderer: Ext.util.Format.uppercase
+ *     }]
+ *  
+ * ## Using with XTemplates
+ *
+ * XTemplates can also directly use Ext.util.Format functions:
+ *  
+ *     new Ext.XTemplate([
+ *         'Date: {startDate:date("Y-m-d")}',
+ *         'Cost: {cost:usMoney}'
+ *     ]);
+ *
  * @singleton
  */
 (function() {
@@ -64,54 +70,59 @@ XTemplates can also directly use Ext.util.Format functions:
         I18NFormatCleanRe;
 
     Ext.apply(UtilFormat, {
+        //<locale>
         /**
          * @property {String} thousandSeparator
-         * <p>The character that the {@link #number} function uses as a thousand separator.</p>
-         * <p>This may be overridden in a locale file.</p>
+         * The character that the {@link #number} function uses as a thousand separator.
+         *
+         * This may be overridden in a locale file.
          */
-        //<locale>
         thousandSeparator: ',',
         //</locale>
 
+        //<locale>
         /**
          * @property {String} decimalSeparator
-         * <p>The character that the {@link #number} function uses as a decimal point.</p>
-         * <p>This may be overridden in a locale file.</p>
+         * The character that the {@link #number} function uses as a decimal point.
+         *
+         * This may be overridden in a locale file.
          */
-        //<locale>
         decimalSeparator: '.',
         //</locale>
 
+        //<locale>
         /**
          * @property {Number} currencyPrecision
-         * <p>The number of decimal places that the {@link #currency} function displays.</p>
-         * <p>This may be overridden in a locale file.</p>
+         * The number of decimal places that the {@link #currency} function displays.
+         *
+         * This may be overridden in a locale file.
          */
-        //<locale>
         currencyPrecision: 2,
         //</locale>
 
+         //<locale>
         /**
          * @property {String} currencySign
-         * <p>The currency sign that the {@link #currency} function displays.</p>
-         * <p>This may be overridden in a locale file.</p>
+         * The currency sign that the {@link #currency} function displays.
+         *
+         * This may be overridden in a locale file.
          */
-         //<locale>
         currencySign: '$',
         //</locale>
 
+        //<locale>
         /**
          * @property {Boolean} currencyAtEnd
-         * <p>This may be set to <code>true</code> to make the {@link #currency} function
-         * append the currency sign to the formatted value.</p>
-         * <p>This may be overridden in a locale file.</p>
+         * This may be set to <code>true</code> to make the {@link #currency} function
+         * append the currency sign to the formatted value.
+         *
+         * This may be overridden in a locale file.
          */
-        //<locale>
         currencyAtEnd: false,
         //</locale>
 
         /**
-         * Checks a reference and converts it to empty string if it is undefined
+         * Checks a reference and converts it to empty string if it is undefined.
          * @param {Object} value Reference to check
          * @return {Object} Empty string if converted, otherwise the original value
          */
@@ -120,9 +131,9 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Checks a reference and converts it to the default value if it's empty
+         * Checks a reference and converts it to the default value if it's empty.
          * @param {Object} value Reference to check
-         * @param {String} defaultValue The value to insert of it's undefined (defaults to "")
+         * @param {String} [defaultValue=""] The value to insert of it's undefined.
          * @return {String}
          */
         defaultValue : function(value, defaultValue) {
@@ -130,11 +141,12 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Returns a substring from within an original string
+         * Returns a substring from within an original string.
          * @param {String} value The original text
          * @param {Number} start The start index of the substring
          * @param {Number} length The length of the substring
          * @return {String} The substring
+         * @method
          */
         substr : 'ab'.substr(-1) != 'b'
         ? function (value, start, length) {
@@ -148,7 +160,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Converts a string to all lower case letters
+         * Converts a string to all lower case letters.
          * @param {String} value The text to convert
          * @return {String} The converted text
          */
@@ -157,7 +169,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Converts a string to all upper case letters
+         * Converts a string to all upper case letters.
          * @param {String} value The text to convert
          * @return {String} The converted text
          */
@@ -166,7 +178,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Format a number as US currency
+         * Format a number as US currency.
          * @param {Number/String} value The numeric value to format
          * @return {String} The formatted currency string
          */
@@ -175,11 +187,13 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Format a number as a currency
+         * Format a number as a currency.
          * @param {Number/String} value The numeric value to format
-         * @param {String} sign The currency sign to use (defaults to {@link #currencySign})
-         * @param {Number} decimals The number of decimals to use for the currency (defaults to {@link #currencyPrecision})
-         * @param {Boolean} end True if the currency sign should be at the end of the string (defaults to {@link #currencyAtEnd})
+         * @param {String} [sign] The currency sign to use (defaults to {@link #currencySign})
+         * @param {Number} [decimals] The number of decimals to use for the currency
+         * (defaults to {@link #currencyPrecision})
+         * @param {Boolean} [end] True if the currency sign should be at the end of the string
+         * (defaults to {@link #currencyAtEnd})
          * @return {String} The formatted currency string
          */
         currency: function(v, currencySign, decimals, end) {
@@ -206,9 +220,9 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Formats the passed date using the specified format pattern.
-         * @param {String/Date} value The value to format. If a string is passed, it is converted to a Date by the Javascript
-         * Date object's <a href="http://www.w3schools.com/jsref/jsref_parse.asp">parse()</a> method.
-         * @param {String} format (Optional) Any valid date format string. Defaults to {@link Ext.Date#defaultFormat}.
+         * @param {String/Date} value The value to format. If a string is passed, it is converted to a Date
+         * by the Javascript's built-in Date#parse method.
+         * @param {String} [format] Any valid date format string. Defaults to {@link Ext.Date#defaultFormat}.
          * @return {String} The formatted date string.
          */
         date: function(v, format) {
@@ -222,7 +236,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Returns a date rendering function that can be reused to apply a date format multiple times efficiently
+         * Returns a date rendering function that can be reused to apply a date format multiple times efficiently.
          * @param {String} format Any valid date format string. Defaults to {@link Ext.Date#defaultFormat}.
          * @return {Function} The date formatting function
          */
@@ -233,7 +247,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Strips all HTML tags
+         * Strips all HTML tags.
          * @param {Object} value The text from which to strip tags
          * @return {String} The stripped text
          */
@@ -242,7 +256,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Strips all script tags
+         * Strips all script tags.
          * @param {Object} value The text from which to strip script tags
          * @return {String} The stripped text
          */
@@ -251,7 +265,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Simple format for a file size (xxx bytes, xxx KB, xxx MB)
+         * Simple format for a file size (xxx bytes, xxx KB, xxx MB).
          * @param {Number/String} size The numeric value to format
          * @return {String} The formatted file size
          */
@@ -266,9 +280,10 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * It does simple math for use in a template, for example:<pre><code>
-         * var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
-         * </code></pre>
+         * It does simple math for use in a template, for example:
+         *
+         *     var tpl = new Ext.Template('{value} * 10 = {value:math("* 10")}');
+         *
          * @return {Function} A function that operates on the passed value.
          * @method
          */
@@ -299,30 +314,40 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * <p>Formats the passed number according to the passed format string.</p>
-         * <p>The number of digits after the decimal separator character specifies the number of
-         * decimal places in the resulting string. The <u>local-specific</u> decimal character is used in the result.</p>
-         * <p>The <i>presence</i> of a thousand separator character in the format string specifies that
-         * the <u>locale-specific</u> thousand separator (if any) is inserted separating thousand groups.</p>
-         * <p>By default, "," is expected as the thousand separator, and "." is expected as the decimal separator.</p>
-         * <p><b>New to Ext JS 4</b></p>
-         * <p>Locale-specific characters are always used in the formatted output when inserting
-         * thousand and decimal separators.</p>
-         * <p>The format string must specify separator characters according to US/UK conventions ("," as the
-         * thousand separator, and "." as the decimal separator)</p>
-         * <p>To allow specification of format strings according to local conventions for separator characters, add
-         * the string <code>/i</code> to the end of the format string.</p>
-         * <div style="margin-left:40px">examples (123456.789):
-         * <div style="margin-left:10px">
-         * 0 - (123456) show only digits, no precision<br>
-         * 0.00 - (123456.78) show only digits, 2 precision<br>
-         * 0.0000 - (123456.7890) show only digits, 4 precision<br>
-         * 0,000 - (123,456) show comma and digits, no precision<br>
-         * 0,000.00 - (123,456.78) show comma and digits, 2 precision<br>
-         * 0,0.00 - (123,456.78) shortcut method, show comma and digits, 2 precision<br>
-         * To allow specification of the formatting string using UK/US grouping characters (,) and decimal (.) for international numbers, add /i to the end.
-         * For example: 0.000,00/i
-         * </div></div>
+         * Formats the passed number according to the passed format string.
+         *
+         * The number of digits after the decimal separator character specifies the number of
+         * decimal places in the resulting string. The *local-specific* decimal character is
+         * used in the result.
+         *
+         * The *presence* of a thousand separator character in the format string specifies that
+         * the *locale-specific* thousand separator (if any) is inserted separating thousand groups.
+         *
+         * By default, "," is expected as the thousand separator, and "." is expected as the decimal separator.
+         *
+         * ## New to Ext JS 4
+         *
+         * Locale-specific characters are always used in the formatted output when inserting
+         * thousand and decimal separators.
+         *
+         * The format string must specify separator characters according to US/UK conventions ("," as the
+         * thousand separator, and "." as the decimal separator)
+         *
+         * To allow specification of format strings according to local conventions for separator characters, add
+         * the string `/i` to the end of the format string.
+         *
+         * examples (123456.789):
+         * 
+         * - `0` - (123456) show only digits, no precision
+         * - `0.00` - (123456.78) show only digits, 2 precision
+         * - `0.0000` - (123456.7890) show only digits, 4 precision
+         * - `0,000` - (123,456) show comma and digits, no precision
+         * - `0,000.00` - (123,456.78) show comma and digits, 2 precision
+         * - `0,0.00` - (123,456.78) shortcut method, show comma and digits, 2 precision
+         *
+         * To allow specification of the formatting string using UK/US grouping characters (,) and
+         * decimal (.) for international numbers, add /i to the end. For example: 0.000,00/i
+         *
          * @param {Number} v The number to format.
          * @param {String} format The way you would like to format this text.
          * @return {String} The formatted number.
@@ -426,7 +451,9 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Returns a number rendering function that can be reused to apply a number format multiple times efficiently
+         * Returns a number rendering function that can be reused to apply a number format multiple
+         * times efficiently.
+         *
          * @param {String} format Any valid number format string for {@link #number}
          * @return {Function} The number formatting function
          */
@@ -438,20 +465,22 @@ XTemplates can also directly use Ext.util.Format functions:
 
         /**
          * Selectively do a plural form of a word based on a numeric value. For example, in a template,
-         * {commentCount:plural("Comment")}  would result in "1 Comment" if commentCount was 1 or would be "x Comments"
-         * if the value is 0 or greater than 1.
+         * `{commentCount:plural("Comment")}`  would result in `"1 Comment"` if commentCount was 1 or
+         * would be `"x Comments"` if the value is 0 or greater than 1.
+         *
          * @param {Number} value The value to compare against
          * @param {String} singular The singular form of the word
-         * @param {String} plural (optional) The plural form of the word (defaults to the singular with an "s")
+         * @param {String} [plural] The plural form of the word (defaults to the singular with an "s")
          */
         plural : function(v, s, p) {
             return v +' ' + (v == 1 ? s : (p ? p : s+'s'));
         },
 
         /**
-         * Converts newline characters to the HTML tag &lt;br/>
+         * Converts newline characters to the HTML tag `<br/>`
+         *
          * @param {String} The string value to format.
-         * @return {String} The string with embedded &lt;br/> tags in place of newlines.
+         * @return {String} The string with embedded `<br/>` tags in place of newlines.
          */
         nl2br : function(v) {
             return Ext.isEmpty(v) ? '' : v.replace(nl2brRe, '<br/>');
@@ -507,8 +536,10 @@ XTemplates can also directly use Ext.util.Format functions:
         trim : Ext.String.trim,
 
         /**
-         * Parses a number or string representing margin sizes into an object. Supports CSS-style margin declarations
-         * (e.g. 10, "10", "10 10", "10 10 10" and "10 10 10 10" are all valid options and would return the same result)
+         * Parses a number or string representing margin sizes into an object.
+         * Supports CSS-style margin declarations (e.g. 10, "10", "10 10", "10 10 10" and
+         * "10 10 10 10" are all valid options and would return the same result).
+         *
          * @param {Number/String} v The encoded margins
          * @return {Object} An object with margin sizes for top, right, bottom and left
          */
@@ -540,7 +571,7 @@ XTemplates can also directly use Ext.util.Format functions:
         },
 
         /**
-         * Escapes the passed string for use in a regular expression
+         * Escapes the passed string for use in a regular expression.
          * @param {String} str
          * @return {String}
          */

@@ -1,10 +1,7 @@
 /**
- * @class Ext.draw.Component
- *
  * The Draw Component is a surface in which sprites can be rendered. The Draw Component
- * manages and holds a `Surface` instance: an interface that has
- * an SVG or VML implementation depending on the browser capabilities and where
- * Sprites can be appended.
+ * manages and holds an {@link Ext.draw.Surface} instance where
+ * {@link Ext.draw.Sprite Sprites} can be appended.
  *
  * One way to create a draw component is:
  *
@@ -27,8 +24,8 @@
  *         items: [drawComponent]
  *     }).show();
  *
- * In this case we created a draw component and added a sprite to it.
- * The *type* of the sprite is *circle* so if you run this code you'll see a yellow-ish
+ * In this case we created a draw component and added a {@link Ext.draw.Sprite sprite} to it.
+ * The {@link Ext.draw.Sprite#type type} of the sprite is `circle` so if you run this code you'll see a yellow-ish
  * circle in a Window. When setting `viewBox` to `false` we are responsible for setting the object's position and
  * dimensions accordingly.
  *
@@ -42,8 +39,88 @@
  *         y: 100
  *     });
  *
+ * ## Larger example
+ *
+ *     @example
+ *     var drawComponent = Ext.create('Ext.draw.Component', {
+ *         width: 800,
+ *         height: 600,
+ *         renderTo: document.body
+ *     }), surface = drawComponent.surface;
+ *
+ *     surface.add([{
+ *         type: 'circle',
+ *         radius: 10,
+ *         fill: '#f00',
+ *         x: 10,
+ *         y: 10,
+ *         group: 'circles'
+ *     }, {
+ *         type: 'circle',
+ *         radius: 10,
+ *         fill: '#0f0',
+ *         x: 50,
+ *         y: 50,
+ *         group: 'circles'
+ *     }, {
+ *         type: 'circle',
+ *         radius: 10,
+ *         fill: '#00f',
+ *         x: 100,
+ *         y: 100,
+ *         group: 'circles'
+ *     }, {
+ *         type: 'rect',
+ *         width: 20,
+ *         height: 20,
+ *         fill: '#f00',
+ *         x: 10,
+ *         y: 10,
+ *         group: 'rectangles'
+ *     }, {
+ *         type: 'rect',
+ *         width: 20,
+ *         height: 20,
+ *         fill: '#0f0',
+ *         x: 50,
+ *         y: 50,
+ *         group: 'rectangles'
+ *     }, {
+ *         type: 'rect',
+ *         width: 20,
+ *         height: 20,
+ *         fill: '#00f',
+ *         x: 100,
+ *         y: 100,
+ *         group: 'rectangles'
+ *     }]);
+ *
+ *     // Get references to my groups
+ *     circles = surface.getGroup('circles');
+ *     rectangles = surface.getGroup('rectangles');
+ *
+ *     // Animate the circles down
+ *     circles.animate({
+ *         duration: 1000,
+ *         to: {
+ *             translate: {
+ *                 y: 200
+ *             }
+ *         }
+ *     });
+ *
+ *     // Animate the rectangles across
+ *     rectangles.animate({
+ *         duration: 1000,
+ *         to: {
+ *             translate: {
+ *                 x: 200
+ *             }
+ *         }
+ *     });
+ *
  * For more information on Sprites, the core elements added to a draw component's surface,
- * refer to the Ext.draw.Sprite documentation.
+ * refer to the {@link Ext.draw.Sprite} documentation.
  */
 Ext.define('Ext.draw.Component', {
 
@@ -129,16 +206,62 @@ Ext.define('Ext.draw.Component', {
      *         fill: 'url(#gradientId)'
      *     }, true);
      */
+
+    /**
+     * @cfg {Ext.draw.Sprite[]} items
+     * Array of sprites or sprite config objects to add initially to the surface.
+     */
+
+    /**
+     * @property {Ext.draw.Surface} surface
+     * The Surface instance managed by this component.
+     */
+
     initComponent: function() {
         this.callParent(arguments);
 
         this.addEvents(
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#mousedown
+             */
             'mousedown',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#mouseup
+             */
             'mouseup',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#mousemove
+             */
             'mousemove',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#mouseenter
+             */
             'mouseenter',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#mouseleave
+             */
             'mouseleave',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#click
+             */
             'click',
+            /**
+             * @event
+             * Event forwarded from {@link Ext.draw.Surface surface}.
+             * @inheritdoc Ext.draw.Surface#dblclick
+             */
             'dblclick'
         );
     },
@@ -193,6 +316,8 @@ Ext.define('Ext.draw.Component', {
      * created you can use the handle to that instance to add sprites. For example:
      *
      *     drawComponent.surface.add(sprite);
+     *
+     * @private
      */
     createSurface: function() {
         var me = this,

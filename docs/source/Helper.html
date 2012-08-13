@@ -15,10 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dom-Helper'>/**
-</span> * @class Ext.dom.Helper
- * @extends Ext.dom.AbstractHelper
- * @alternateClassName Ext.DomHelper
+  <pre class="prettyprint lang-js"><span id='Ext-DomHelper'>/**
+</span> * @class Ext.DomHelper
+ * @extends Ext.dom.Helper
  * @alternateClassName Ext.core.DomHelper
  * @singleton
  *
@@ -177,6 +176,13 @@ var afterbegin = 'afterbegin',
         beforeend: ['BeforeEnd', 'lastChild']
     };
 
+<span id='Ext-dom-Helper'>/**
+</span> * The actual class of which {@link Ext.DomHelper} is instance of.
+ * 
+ * Use singleton {@link Ext.DomHelper} instead.
+ * 
+ * @private
+ */
 Ext.define('Ext.dom.Helper', {
     extend: 'Ext.dom.AbstractHelper',
 

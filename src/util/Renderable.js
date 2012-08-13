@@ -192,8 +192,10 @@ Ext.define('Ext.util.Renderable', {
         // the sized element to the center of either the container or the ownerCt
         if (me.floating && (!hasX || !hasY)) {
             if (me.floatParent) {
+                pos = me.floatParent.getTargetEl().getViewRegion();
                 xy = me.el.getAlignToXY(me.floatParent.getTargetEl(), 'c-c');
-                pos = me.floatParent.getTargetEl().translatePoints(xy[0], xy[1]);
+                pos.left = xy[0] - pos.left;
+                pos.top =  xy[1] - pos.top;
             } else {
                 xy = me.el.getAlignToXY(me.container, 'c-c');
                 pos = me.container.translatePoints(xy[0], xy[1]);
@@ -215,8 +217,8 @@ Ext.define('Ext.util.Renderable', {
     onBoxReady: Ext.emptyFn,
 
     /**
-     * Sets references to elements inside the component. This applies {@link #renderSelectors}
-     * as well as {@link #childEls}.
+     * Sets references to elements inside the component. This applies {@link Ext.AbstractComponent#cfg-renderSelectors renderSelectors}
+     * as well as {@link Ext.AbstractComponent#cfg-childEls childEls}.
      * @private
      */
     applyRenderSelectors: function() {
@@ -272,7 +274,7 @@ Ext.define('Ext.util.Renderable', {
      * Called from the selected frame generation template to insert this Component's inner structure inside the framing structure.
      *
      * When framing is used, a selected frame generation template is used as the primary template of the #getElConfig instead
-     * of the configured {@link #renderTpl}. The {@link #renderTpl} is invoked by this method which is injected into the framing template.
+     * of the configured {@link Ext.AbstractComponent#renderTpl renderTpl}. The renderTpl is invoked by this method which is injected into the framing template.
      */
     doApplyRenderTpl: function(out, values) {
         // Careful! This method is bolted on to the frameTpl so all we get for context is
@@ -466,7 +468,6 @@ Ext.define('Ext.util.Renderable', {
             frameInfo = me.getFrameInfo(),
             config = {
                 tag: 'div',
-                id: me.id,
                 tpl: frameInfo ? me.initFramingTpl(frameInfo.table) : me.initRenderTpl()
             },
             i, frameElNames, len, suffix, frameGenId;
@@ -480,6 +481,9 @@ Ext.define('Ext.util.Renderable', {
         } else {
             Ext.apply(config, autoEl); // harmless if !autoEl
         }
+
+        // It's important to assign the id here as an autoEl.id could have been (wrongly) applied and this would get things out of sync
+        config.id = me.id;
 
         if (config.tpl) {
             // Use the framingTpl as the main content creating template. It will call out to this.applyRenderTpl(out, values)
@@ -661,19 +665,26 @@ Ext.define('Ext.util.Renderable', {
             x = me.x,
             y = me.y,
             lastBox, width, height,
-            el = me.el;
+            el = me.el,
+            body = Ext.getBody().dom;
 
-        // After the container property has been collected, we can wrap the Component in a reset wraper if necessary
+        // Wrap this Component in a reset wraper if necessary
         if (Ext.scopeResetCSS && !me.ownerCt) {
             // If this component's el is the body element, we add the reset class to the html tag
-            if (el.dom == Ext.getBody().dom) {
+            if (el.dom === body) {
                 el.parent().addCls(Ext.resetCls);
             }
+            // Otherwise, we ensure that there is a wrapper which has the reset class
             else {
+                // Floaters rendered into the body can all be bumped into the common reset element
+                if (me.floating && me.el.dom.parentNode === body) {
+                    Ext.resetElement.appendChild(me.el);
+                }
                 // Else we wrap this element in an element that adds the reset class.
-                me.resetEl = el.wrap({
-                    cls: Ext.resetCls
-                });
+                else {
+                    // Wrap this Component's DOM with a reset structure as determined in EventManager's initExtCss closure.
+                    me.resetEl = el.wrap(Ext.resetElementSpec, false, Ext.supports.CSS3LinearGradient ? undefined : '*');
+                }
             }
         }
 
@@ -716,9 +727,39 @@ Ext.define('Ext.util.Renderable', {
         me.lastBox = me.el.lastBox = lastBox;
     },
 
+    /**
+     * Renders the Component into the passed HTML element.
+     * 
+     * **If you are using a {@link Ext.container.Container Container} object to house this
+     * Component, then do not use the render method.**
+     *
+     * A Container's child Components are rendered by that Container's
+     * {@link Ext.container.Container#layout layout} manager when the Container is first rendered.
+     *
+     * If the Container is already rendered when a new child Component is added, you may need to call
+     * the Container's {@link Ext.container.Container#doLayout doLayout} to refresh the view which
+     * causes any unrendered child Components to be rendered. This is required so that you can add
+     * multiple child components if needed while only refreshing the layout once.
+     *
+     * When creating complex UIs, it is important to remember that sizing and positioning
+     * of child items is the responsibility of the Container's {@link Ext.container.Container#layout layout}
+     * manager.  If you expect child items to be sized in response to user interactions, you must
+     * configure the Container with a layout manager which creates and manages the type of layout you
+     * have in mind.
+     *
+     * **Omitting the Container's {@link Ext.Container#layout layout} config means that a basic
+     * layout manager is used which does nothing but render child components sequentially into the
+     * Container. No sizing or positioning will be performed in this situation.**
+     *
+     * @param {Ext.Element/HTMLElement/String} [container] The element this Component should be
+     * rendered into. If it is being created from existing markup, this should be omitted.
+     * @param {String/Number} [position] The element ID or DOM node index within the container **before**
+     * which this component will be inserted (defaults to appending to the end of the container)
+     */
     render: function(container, position) {
         var me = this,
             el = me.el && (me.el = Ext.get(me.el)), // ensure me.el is wrapped
+            vetoed,
             tree,
             nextSibling;
 
@@ -730,6 +771,9 @@ Ext.define('Ext.util.Renderable', {
 
         if (!el) {
             tree = me.getRenderTree();
+            if (me.ownerLayout && me.ownerLayout.transformItemRenderTree) {
+                tree = me.ownerLayout.transformItemRenderTree(tree);
+            }
 
             // tree will be null if a beforerender listener returns false
             if (tree) {
@@ -742,19 +786,23 @@ Ext.define('Ext.util.Renderable', {
                 me.wrapPrimaryEl(el);
             }
         } else {
-            // Set configured styles on pre-rendered Component's element
-            me.initStyles(el);
-            if (me.allowDomMove !== false) {
-                //debugger; // TODO
-                if (nextSibling) {
-                    container.dom.insertBefore(el.dom, nextSibling);
-                } else {
-                    container.dom.appendChild(el.dom);
+            if (!me.hasListeners.beforerender || me.fireEvent('beforerender', me) !== false) {
+                // Set configured styles on pre-rendered Component's element
+                me.initStyles(el);
+                if (me.allowDomMove !== false) {
+                    //debugger; // TODO
+                    if (nextSibling) {
+                        container.dom.insertBefore(el.dom, nextSibling);
+                    } else {
+                        container.dom.appendChild(el.dom);
+                    }
                 }
+            } else {
+                vetoed = true;
             }
         }
 
-        if (el) {
+        if (el && !vetoed) {
             me.finishRender(position);
         }
 
@@ -776,7 +824,7 @@ Ext.define('Ext.util.Renderable', {
         }
 
         if (comp.container.isDetachedBody) {
-            comp.container = body = Ext.getBody();
+            comp.container = body = Ext.resetElement;
             body.appendChild(comp.el.dom);
             if (runLayout) {
                 comp.updateLayout();
@@ -1003,7 +1051,7 @@ Ext.define('Ext.util.Renderable', {
      * This is because child item rendering takes place in a detached div which, being not part of the document, has no styling.
      */
     getStyleProxy: function(cls) {
-        var result = this.styleProxyEl || (Ext.AbstractComponent.prototype.styleProxyEl = Ext.getBody().createChild({
+        var result = this.styleProxyEl || (Ext.AbstractComponent.prototype.styleProxyEl = Ext.resetElement.createChild({
                 style: {
                     position: 'absolute',
                     top: '-10000px'

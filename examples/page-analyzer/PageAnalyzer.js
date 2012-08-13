@@ -496,6 +496,11 @@ Ext.define('PageAnalyzer.MainForm', {
                                 text: 'Update Stats',
                                 handler: me.onGatherStats,
                                 scope: me
+                            },
+                            me.noCharts ? null : {
+                                text: 'Reset',
+                                handler: this.onResetStats,
+                                scope: this
                             }
                         ]
                     },
@@ -926,9 +931,12 @@ Ext.define('PageAnalyzer.MainForm', {
     },
 
     onClearStats: function() {
-        var con = this.viewport.down('#perfcon');
+        this.viewport.down('#perfcon').clearSamples();
+        this.onResetStats();
+    },
 
-        con.clearSamples();
+    onResetStats: function(){
+        this.target.Ext.Perf.reset();
     },
 
     getHrefMinusHash: function() {

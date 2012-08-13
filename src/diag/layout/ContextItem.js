@@ -91,13 +91,6 @@ Ext.define('Ext.diag.layout.ContextItem', {
         return this.callParent(arguments);
     },
 
-    doInvalidate: function () {
-        if (this.context.logOn.doInvalidate) {
-            Ext.log('doInvalidate: ', this.id);
-        }
-        return this.callParent(arguments);
-    },
-
     getEl: function (el) {
         var child = this.callParent(arguments);
         if (child && child !== this && child.parent !== this) {
@@ -109,15 +102,18 @@ Ext.define('Ext.diag.layout.ContextItem', {
     },
 
     init: function () {
-        var me = this;
+        var me = this,
+            ret;
 
-        me.callParent(arguments);
+        ret = me.callParent(arguments);
 
-        if (this.context.logOn.initItem) {
+        if (me.context.logOn.initItem) {
             Ext.log(me.id, ' consumers: content=', me.consumersContentWidth,'/',me.consumersContentHeight,
                 ', container=', me.consumersContainerWidth,'/',me.consumersContainerHeight,
                 ', size=', me.consumersWidth,'/',me.consumersHeight);
         }
+
+        return ret;
     },
 
     invalidate: function () {

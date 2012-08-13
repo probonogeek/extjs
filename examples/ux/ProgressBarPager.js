@@ -3,11 +3,10 @@
 * @extends Object
 * Plugin for displaying a progressbar inside of a paging toolbar instead of plain text
 * @constructor
-* Create a new ItemSelector
+* Create a new ProgressBarPager
 * @param {Object} config Configuration options
 */
 Ext.define('Ext.ux.ProgressBarPager', {
-    extend: 'Object',
 
     requires: ['Ext.ProgressBar'],
     /**
@@ -37,7 +36,7 @@ Ext.define('Ext.ux.ProgressBarPager', {
     //public
     init : function (parent) {
         var displayItem;
-        if(parent.displayInfo) {
+        if (parent.displayInfo) {
             this.parent = parent;
 
             displayItem = parent.child("#displayItem");
@@ -48,18 +47,22 @@ Ext.define('Ext.ux.ProgressBarPager', {
             this.progressBar = Ext.create('Ext.ProgressBar', {
                 text    : this.defaultText,
                 width   : this.width,
-                animate : this.defaultAnimCfg
+                animate : this.defaultAnimCfg,
+                style: {
+                    cursor: 'pointer'
+                },
+                listeners: {
+                    el: {
+                        scope: this,
+                        click: this.handleProgressBarClick
+                    }
+                }
             });
 
             parent.displayItem = this.progressBar;
 
             parent.add(parent.displayItem);
-            parent.doLayout();
             Ext.apply(parent, this.parentOverrides);
-
-            this.progressBar.on('render', function(pb) {
-                pb.mon(pb.getEl().applyStyles('cursor:pointer'), 'click', this.handleProgressBarClick, this);
-            }, this, {single: true});
         }
     },
     // private
@@ -70,10 +73,10 @@ Ext.define('Ext.ux.ProgressBarPager', {
             box = this.progressBar.getBox(),
             xy = e.getXY(),
             position = xy[0]- box.x,
-            pages = Math.ceil(parent.store.getTotalCount()/parent.pageSize),
-            newpage = Math.ceil(position/(displayItem.width/pages));
+            pages = Math.ceil(parent.store.getTotalCount() / parent.pageSize),
+            newPage = Math.max(Math.ceil(position / (displayItem.width / pages)), 1);
 
-        parent.store.loadPage(newpage);
+        parent.store.loadPage(newPage);
     },
 
     // private, overriddes

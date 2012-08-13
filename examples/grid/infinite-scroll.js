@@ -1,12 +1,10 @@
-Ext.Loader.setConfig({enabled: true});
-
-Ext.Loader.setPath('Ext.ux', '../ux/');
 Ext.require([
     'Ext.grid.*',
     'Ext.data.*',
     'Ext.util.*',
     'Ext.grid.PagingScroller'
 ]);
+
 
 Ext.onReady(function(){
     Ext.define('ForumThread', {
@@ -30,13 +28,14 @@ Ext.onReady(function(){
     var store = Ext.create('Ext.data.Store', {
         id: 'store',
         model: 'ForumThread',
-        remoteSort: true,
+        remoteGroup: true,
         // allow the grid to interact with the paging scroller by buffering
         buffered: true,
+        leadingBufferZone: 300,
         pageSize: 100,
         proxy: {
             // load using script tags for cross domain, if the data in on the same domain as
-            // this page, an HttpProxy would be better
+            // this page, an Ajax proxy would be better
             type: 'jsonp',
             url: 'http://www.sencha.com/forum/remote_topics/index.php',
             reader: {
@@ -44,13 +43,39 @@ Ext.onReady(function(){
                 totalProperty: 'totalCount'
             },
             // sends single sort as multi parameter
-            simpleSortMode: true
+            simpleSortMode: true,
+            // sends single group as multi parameter
+            simpleGroupMode: true,
+
+            // This particular service cannot sort on more than one field, so grouping === sorting.
+            groupParam: 'sort',
+            groupDirectionParam: 'dir'
         },
         sorters: [{
-            property: 'lastpost',
-            direction: 'DESC'
+            property: 'threadid',
+            direction: 'ASC'
         }],
-        autoLoad: true
+        autoLoad: true,
+        listeners: {
+
+            // This particular service cannot sort on more than one field, so if grouped, disable sorting
+            groupchange: function(store, groupers) {
+                var sortable = !store.isGrouped(),
+                    headers = grid.headerCt.getVisibleGridColumns(),
+                    i, len = headers.length;
+                
+                for (i = 0; i < len; i++) {
+                    headers[i].sortable = (headers[i].sortable !== undefined) ? headers[i].sortable : sortable;
+                }
+            },
+
+            // This particular service cannot sort on more than one field, so if grouped, disable sorting
+            beforeprefetch: function(store, operation) {
+                if (operation.groupers && operation.groupers.length) {
+                    delete operation.sorters;
+                }
+            }
+        }
     });
 
     function renderTopic(value, p, record) {
@@ -77,6 +102,14 @@ Ext.onReady(function(){
         viewConfig: {
             trackOver: false
         },
+        features:[{
+            ftype: 'grouping',
+            hideGroupedHeader: false
+        }],
+        verticalScroller:{
+            variableRowHeight: true
+
+        },
         // grid columns
         columns:[{
             xtype: 'rownumberer',
@@ -88,7 +121,7 @@ Ext.onReady(function(){
             dataIndex: 'title',
             flex: 1,
             renderer: renderTopic,
-            sortable: false
+            sortable: true
         },{
             text: "Author",
             dataIndex: 'username',
@@ -107,7 +140,8 @@ Ext.onReady(function(){
             dataIndex: 'lastpost',
             width: 130,
             renderer: Ext.util.Format.dateRenderer('n/j/Y g:i A'),
-            sortable: true
+            sortable: true,
+            groupable: false
         }],
         renderTo: Ext.getBody()
     });

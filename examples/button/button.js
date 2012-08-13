@@ -46,19 +46,19 @@ Ext.onReady(function() {
             var generateButtons = function(config) {
                 //Ext.each(['gray', 'darkgray', 'blue', 'darkblue', 'red', 'green'], function(color) {
                 Ext.each(['default'], function(color) {
-                    Ext.createWidget(defaultConfig.defaultType || 'button', Ext.apply({
+                    Ext.widget(defaultConfig.defaultType || 'button', Ext.apply({
                         text : 'Small',
                         scale: 'small',
                         color: color
                     }, config, defaultConfig));
 
-                    Ext.createWidget(defaultConfig.defaultType || 'button', Ext.apply({
+                    Ext.widget(defaultConfig.defaultType || 'button', Ext.apply({
                         text : 'Medium',
                         scale: 'medium',
                         color: color
                     }, config, defaultConfig));
 
-                    Ext.createWidget(defaultConfig.defaultType || 'button', Ext.apply({
+                    Ext.widget(defaultConfig.defaultType || 'button', Ext.apply({
                         text : 'Large',
                         scale: 'large',
                         color: color

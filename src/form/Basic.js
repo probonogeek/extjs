@@ -50,10 +50,10 @@
  *                     // Submit the Ajax request and handle the response
  *                     form.submit({
  *                         success: function(form, action) {
- *                            Ext.Msg.alert('Success', action.result.msg);
+ *                            Ext.Msg.alert('Success', action.result.message);
  *                         },
  *                         failure: function(form, action) {
- *                             Ext.Msg.alert('Failed', action.result ? action.result.msg : 'No response');
+ *                             Ext.Msg.alert('Failed', action.result ? action.result.message : 'No response');
  *                         }
  *                     });
  *                 }
@@ -216,21 +216,20 @@ Ext.define('Ext.form.Basic', {
 
     /**
      * @cfg {Object} api
-     * If specified, load and submit actions will be handled
-     * with {@link Ext.form.action.DirectLoad} and {@link Ext.form.action.DirectLoad}.
-     * Methods which have been imported by {@link Ext.direct.Manager} can be specified here to load and submit
-     * forms. API methods may also be specified as strings. See {@link Ext.data.proxy.Direct#directFn}.
-     * Such as the following:
+     * If specified, load and submit actions will be handled with {@link Ext.form.action.DirectLoad DirectLoad}
+     * and {@link Ext.form.action.DirectSubmit DirectSubmit}.  Methods which have been imported by
+     * {@link Ext.direct.Manager} can be specified here to load and submit forms. API methods may also be
+     * specified as strings. See {@link Ext.data.proxy.Direct#directFn}.  Such as the following:
      *
      *     api: {
      *         load: App.ss.MyProfile.load,
      *         submit: App.ss.MyProfile.submit
      *     }
      *
-     * Load actions can use {@link #paramOrder} or {@link #paramsAsHash}
-     * to customize how the load method is invoked.
-     * Submit actions will always use a standard form submit. The `formHandler` configuration must
-     * be set on the associated server-side method which has been imported by {@link Ext.direct.Manager}.
+     * Load actions can use {@link #paramOrder} or {@link #paramsAsHash} to customize how the load method
+     * is invoked.  Submit actions will always use a standard form submit. The `formHandler` configuration
+     * (see Ext.direct.RemotingProvider#action) must be set on the associated server-side method which has
+     * been imported by {@link Ext.direct.Manager}.
      */
 
     /**
@@ -257,11 +256,11 @@ Ext.define('Ext.form.Basic', {
      */
     paramsAsHash: false,
 
+    //<locale>
     /**
      * @cfg {String} waitTitle
      * The default title to show for the waiting message box
      */
-    //<locale>
     waitTitle: 'Please Wait...',
     //</locale>
 
@@ -325,7 +324,7 @@ Ext.define('Ext.form.Basic', {
             handleField(child);
         } else if (isContainer) {
             // Walk down
-            if (child.isDestroyed) {
+            if (child.isDestroyed || child.destroying) {
                 // the container is destroyed, this means we may have child fields, so here
                 // we just invalidate all the fields to be sure.
                 delete me._fields;
@@ -625,7 +624,17 @@ Ext.define('Ext.form.Basic', {
      * @return {Ext.form.Basic} this
      */
     submit: function(options) {
-        return this.doAction(this.standardSubmit ? 'standardsubmit' : this.api ? 'directsubmit' : 'submit', options);
+        options = options || {};
+        var me = this,
+            action;
+            
+        if (options.standardSubmit || me.standardSubmit) {
+            action = 'standardsubmit';
+        } else {
+            action = me.api ? 'directsubmit' : 'submit';
+        }
+            
+        return me.doAction(action, options);
     },
 
     /**
@@ -735,15 +744,18 @@ Ext.define('Ext.form.Basic', {
      */
     afterAction: function(action, success) {
         if (action.waitMsg) {
-            var MessageBox = Ext.MessageBox,
+            var messageBox = Ext.MessageBox,
                 waitMsgTarget = this.waitMsgTarget;
             if (waitMsgTarget === true) {
                 this.owner.el.unmask();
             } else if (waitMsgTarget) {
                 waitMsgTarget.unmask();
             } else {
-                MessageBox.updateProgress(1);
-                MessageBox.hide();
+                // Do not fire the hide event because that triggers complex processing
+                // which is not necessary just for the wait window, and which may interfere with the app.
+                messageBox.suspendEvents();
+                messageBox.hide();
+                messageBox.resumeEvents();
             }
         }
         if (success) {
@@ -869,13 +881,17 @@ Ext.define('Ext.form.Basic', {
      * Retrieves the fields in the form as a set of key/value pairs, using their
      * {@link Ext.form.field.Field#getSubmitData getSubmitData()} method to collect the values.
      * If multiple fields return values under the same name those values will be combined into an Array.
-     * This is similar to {@link #getFieldValues} except that this method collects only String values for
-     * submission, while getFieldValues collects type-specific data values (e.g. Date objects for date fields.)
+     * This is similar to {@link Ext.form.Basic#getFieldValues getFieldValues} except that this method
+     * collects only String values for submission, while getFieldValues collects type-specific data
+     * values (e.g. Date objects for date fields.)
      *
      * @param {Boolean} [asString=false] If true, will return the key/value collection as a single
      * URL-encoded param string.
      * @param {Boolean} [dirtyOnly=false] If true, only fields that are dirty will be included in the result.
-     * @param {Boolean} [includeEmptyText=false]] If true, the configured emptyText of empty fields will be used.
+     * @param {Boolean} [includeEmptyText=false] If true, the configured emptyText of empty fields will be used.
+     * @param {Boolean} [useDataValues=false] If true, the {@link Ext.form.field.Field#getModelData getModelData}
+     * method is used to retrieve values from fields, otherwise the {@link Ext.form.field.Field#getSubmitData getSubmitData}
+     * method is used.
      * @return {String/Object}
      */
     getValues: function(asString, dirtyOnly, includeEmptyText, useDataValues) {

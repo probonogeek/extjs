@@ -133,7 +133,9 @@ Ext.define('FeedViewer.FeedGrid', {
      * @private
      */
     onLoad: function(){
-        this.getSelectionModel().select(0);
+        if (this.getStore().getCount()) {
+            this.getSelectionModel().select(0);
+        }
     },
 
     /**

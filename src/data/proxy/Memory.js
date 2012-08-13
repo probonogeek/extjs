@@ -139,13 +139,9 @@ Ext.define('Ext.data.proxy.Memory', {
      * @param {Object} scope The scope to call the callback function in
      */
     read: function(operation, callback, scope) {
-        var me     = this,
-            reader = me.getReader(),
-            result = reader.read(me.data);
+        var me = this;
 
-        Ext.apply(operation, {
-            resultSet: result
-        });
+        operation.resultSet = me.getReader().read(me.data);
 
         operation.setCompleted();
         operation.setSuccessful();

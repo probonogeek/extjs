@@ -93,23 +93,11 @@
             var name, i;
 
             if (!Class) {
-                // This "helped" a bit in IE8 when we create 450k instances (3400ms->2700ms),
-                // but removes some flexibility as a result because overrides cannot override
-                // the constructor method... kept in case we want to reconsider because it is
-                // more involved than just use the pass 'constructor'
-                //
-                //if (data.hasOwnProperty('constructor')) {
-                //    Class = data.constructor;
-                //    delete data.constructor;
-                //    Class.$owner = Class;
-                //    Class.$name = 'constructor';
-                //} else {
                 Class = makeCtor(
                     //<debug>
                     data.$className
                     //</debug>
                 );
-                //}
             }
 
             for (i = 0; i < baseStaticMemberLength; i++) {
@@ -293,7 +281,7 @@
          *
          * @private
          * @param {String} name The pre-processor name. Note that it needs to be registered with
-         * {@link Ext#registerPreprocessor registerPreprocessor} before this
+         * {@link Ext.Class#registerPreprocessor registerPreprocessor} before this
          * @param {String} offset The insertion position. Four possible values are:
          * 'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)
          * @param {String} relativeName
@@ -656,8 +644,9 @@
 
         if (Class) {
             cls = new ExtClass(Class, members);
-        }
-        else {
+            // The 'constructor' is given as 'Class' but also needs to be on prototype
+            cls.prototype.constructor = Class;
+        } else {
             cls = new ExtClass(members);
         }
 

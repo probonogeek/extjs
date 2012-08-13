@@ -116,7 +116,9 @@ Ext.define('Ext.data.proxy.WebStorage', {
             //read a single record
             if (id) {
                 data = me.getRecord(id);
-                record = new Model(data, id, data);
+                if (data !== null) {
+                    record = new Model(data, id, data);
+                }
 
                 if (record) {
                     records.push(record);

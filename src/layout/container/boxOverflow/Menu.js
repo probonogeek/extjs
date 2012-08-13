@@ -106,7 +106,6 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
         var me = this,
             layout = me.layout,
             names = layout.getNames(),
-            methodName = 'get' + names.widthCap,
             plan = ownerContext.state.boxPlan,
             posArgs = [null, null];
 
@@ -114,11 +113,11 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
 
         // Center the menuTrigger button.
         // TODO: Should we emulate align: 'middle' like this, or should we 'stretchmax' the menuTrigger?
-        posArgs[names.heightIndex] = (plan.maxSize - me.menuTrigger['get' + names.heightCap]()) / 2;
+        posArgs[names.heightIndex] = (plan.maxSize - me.menuTrigger[names.getHeight]()) / 2;
         me.menuTrigger.setPosition.apply(me.menuTrigger, posArgs);
 
         return {
-            reservedSpace: me.menuTrigger[methodName]()
+            reservedSpace: me.menuTrigger[names.getWidth]()
         };
     },
 
@@ -133,6 +132,8 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
         }
     },
 
+    _asLayoutRoot: { isRoot: true },
+
     /**
      * @private
      * Called by the layout, when it determines that there is no overflow.
@@ -145,7 +146,8 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
             item,
             i = 0,
             length = items.length,
-            owner = me.layout.owner;
+            owner = me.layout.owner,
+            asLayoutRoot = me._asLayoutRoot;
 
         owner.suspendLayouts();
         me.captureChildElements();
@@ -159,7 +161,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
             // owner component. We need just the button to be added to the layout run.
             item.suspendLayouts();
             item.show();
-            item.resumeLayouts({ isRoot: true });
+            item.resumeLayouts(asLayoutRoot);
         }
 
         items.length = 0;
@@ -189,7 +191,7 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
         // we force just the button to be invalidated and added to the current run.
         menuTrigger.suspendLayouts();
         menuTrigger.show();
-        menuTrigger.resumeLayouts({ isRoot: true });
+        menuTrigger.resumeLayouts(me._asLayoutRoot);
 
         available -= me.menuTrigger.getWidth();
 
@@ -283,12 +285,34 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
             destroyMenu: false
         });
 
-        if (group || component.enableToggle) {
+        // Clone must have same value, and must sync original's value on change
+        if (component.isFormField) {
+            config.value = component.getValue();
+
+            // We're going to add a listener
+            if (!config.listeners) {
+                config.listeners = {};
+            }
+
+            // Sync the original component's value when the clone changes value.
+            // This intentionally overwrites any developer-configured change listener on the clone.
+            // That's because we monitor the clone's change event, and sync the
+            // original field by calling setValue, so the original field's change
+            // event will still fire.
+            config.listeners.change = function(c, newVal, oldVal) {                            
+                component.setValue(newVal);
+            }
+        }
+
+        // ToggleButtons become CheckItems
+        else if (group || component.enableToggle) {
             Ext.apply(config, {
+                iconAlign: 'right',
+                hideOnClick: false,
                 group  : group,
                 checked: component.pressed,
                 listeners: {
-                    checkchange: function(item, checked){
+                    checkchange: function(item, checked) {
                         component.toggle(checked);
                     }
                 }
@@ -306,11 +330,14 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * Adds the given Toolbar item to the given menu. Buttons inside a buttongroup are added individually.
      * @param {Ext.menu.Menu} menu The menu to add to
      * @param {Ext.Component} component The component to add
+     * TODO: Implement overrides in Ext.layout.container.boxOverflow which create overrides
+     * for SplitButton, Button, ButtonGroup, and TextField. And a generic one for Component
+     * which create clones suitable for use in an overflow menu.
      */
     addComponentToMenu : function(menu, component) {
         var me = this,
         i, items, iLen;
-        
+
         if (component instanceof Ext.toolbar.Separator) {
             menu.add('-');
         } else if (component.isComponent) {
@@ -339,8 +366,8 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * splitbuttons and buttongroups, where the Toolbar item cannot be represented by a single menu item
      */
     clearMenu : function() {
-        var menu = this.moreMenu,
-        items, i, iLen, item;
+        var menu = this.menu,
+            items, i, iLen, item;
         
         if (menu && menu.items) {
             items = menu.items.items;
@@ -348,9 +375,8 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
             
             for (i = 0; i < iLen; i++) {
                 item = items[i];
-
-                if (item.menu) {
-                    delete item.menu;
+                if (item.setMenu) {
+                    item.setMenu(null);
                 }
             }
         }
@@ -360,6 +386,13 @@ Ext.define('Ext.layout.container.boxOverflow.Menu', {
      * @private
      */
     destroy: function() {
-        Ext.destroy(this.menu, this.menuTrigger);
+        var trigger = this.menuTrigger;
+            
+        if (trigger && !this.layout.owner.items.contains(trigger)) {
+            // Ensure we delete the ownerCt if it's not in the items
+            // so we don't get spurious container remove warnings.
+            delete trigger.ownerCt;
+        }
+        Ext.destroy(this.menu, trigger);
     }
 });

@@ -58,12 +58,14 @@ Ext.define('Ext.container.DockingContainer', {
         bottom: 1
     },
 
-/**
+    /**
      * Adds docked item(s) to the container.
+     *
      * @param {Object/Object[]} component The Component or array of components to add. The components
-     * must include a 'dock' parameter on each component to indicate where it should be docked ('top', 'right',
-     * 'bottom', 'left').
-     * @param {Number} pos (optional) The index at which the Component will be added
+     * must include a 'dock' parameter on each component to indicate where it should be docked
+     * ('top', 'right', 'bottom', 'left').
+     * @param {Number} [pos] The index at which the Component will be added
+     * @return {Ext.Component[]} The added components.
      */
     addDocked : function(items, pos) {
         var me = this,
@@ -133,7 +135,7 @@ Ext.define('Ext.container.DockingContainer', {
 
     /**
      * Finds a docked component by id, itemId or position. Also see {@link #getDockedItems}
-     * @param {String/Number} comp The id, itemId or position of the docked component (see {@link #getComponent} for details)
+     * @param {String/Number} comp The id, itemId or position of the docked component (see {@link Ext.panel.AbstractPanel#getComponent getComponent} for details)
      * @return {Ext.Component} The docked component (if found)
      */
     getDockedComponent: function(comp) {

@@ -73,6 +73,8 @@ Ext.define('Ext.layout.container.HBox', {
         x: 'x',
         scrollLeft: 'scrollLeft',
         overflowX: 'overflowX',
+        hasOverflowX: 'hasOverflowX',
+        invalidateScrollX: 'invalidateScrollX',
 
         // perpendicular
         center: 'middle',
@@ -89,6 +91,8 @@ Ext.define('Ext.layout.container.HBox', {
         y: 'y',
         scrollTop: 'scrollTop',
         overflowY: 'overflowY',
+        hasOverflowY: 'hasOverflowY',
+        invalidateScrollY: 'invalidateScrollY',
 
         // Methods
         getWidth: 'getWidth',
@@ -98,7 +102,9 @@ Ext.define('Ext.layout.container.HBox', {
         gotWidth: 'gotWidth',
         gotHeight: 'gotHeight',
         setContentWidth: 'setContentWidth',
-        setContentHeight: 'setContentHeight'
+        setContentHeight: 'setContentHeight',
+        setWidthInDom: 'setWidthInDom',
+        setHeightInDom: 'setHeightInDom'
     },
 
     sizePolicy: {

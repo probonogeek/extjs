@@ -214,6 +214,7 @@ Ext.define('Ext.layout.component.Component', {
 
         var me = this,
             owner = me.owner,
+            containerLayout = owner.layout,
             heightModel = ownerContext.heightModel,
             widthModel = ownerContext.widthModel,
             boxParent = ownerContext.boxParent,
@@ -229,7 +230,7 @@ Ext.define('Ext.layout.component.Component', {
             zeroWidth, zeroHeight,
             needed = 0,
             got = 0,
-            ready, size;
+            ready, size, temp;
 
         // Note: this method is called *a lot*, so we have to be careful not to waste any
         // time or make useless calls or, especially, read the DOM when we can avoid it.
@@ -277,8 +278,18 @@ Ext.define('Ext.layout.component.Component', {
                     }
 
                     if (ready) {
-                        if (!isNaN(ret.contentWidth = zeroWidth ? 0 : me.measureContentWidth(ownerContext))) {
-                            ownerContext.setContentWidth(ret.contentWidth, true);
+                        if (zeroWidth) {
+                            temp = 0;
+                        } else if (containerLayout && containerLayout.measureContentWidth) {
+                            // Allow the container layout to do the measurement since it
+                            // may have a better idea of how to do it even with no items:
+                            temp = containerLayout.measureContentWidth(ownerContext);
+                        } else {
+                            temp = me.measureContentWidth(ownerContext);
+                        }
+
+                        if (!isNaN(ret.contentWidth = temp)) {
+                            ownerContext.setContentWidth(temp, true);
                             ret.gotWidth = true;
                             ++got;
                         }
@@ -361,8 +372,18 @@ Ext.define('Ext.layout.component.Component', {
                     }
 
                     if (ready) {
-                        if (!isNaN(ret.contentHeight = zeroHeight ? 0 : me.measureContentHeight(ownerContext))) {
-                            ownerContext.setContentHeight(ret.contentHeight, true);
+                        if (zeroHeight) {
+                            temp = 0;
+                        } else if (containerLayout && containerLayout.measureContentHeight) {
+                            // Allow the container layout to do the measurement since it
+                            // may have a better idea of how to do it even with no items:
+                            temp = containerLayout.measureContentHeight(ownerContext);
+                        } else {
+                            temp = me.measureContentHeight(ownerContext);
+                        }
+
+                        if (!isNaN(ret.contentHeight = temp)) {
+                            ownerContext.setContentHeight(temp, true);
                             ret.gotHeight = true;
                             ++got;
                         }

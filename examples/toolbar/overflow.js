@@ -1,4 +1,4 @@
-Ext.require(['Ext.window.Window', 'Ext.toolbar.Toolbar', 'Ext.menu.ColorPicker']);
+Ext.require(['Ext.window.Window', 'Ext.toolbar.Toolbar', 'Ext.menu.ColorPicker', 'Ext.form.field.Date']);
 Ext.onReady(function(){
 
     var handleAction = function(action){
@@ -47,10 +47,25 @@ Ext.onReady(function(){
                 text: 'Format',
                 iconCls: 'add16',
                 handler: Ext.Function.pass(handleAction, 'Format')
-            },'->',{
-                text: 'Right',
+            },'->', {
+                fieldLabel: 'Action',
+                labelAlign: 'right',
+                labelWidth: 70,
+                width: 180,
+                xtype: 'datefield',
+                listeners: {
+                    change: function(d, newVal, oldVal) {
+                        Ext.example.msg('<b>Action date</b>', 'You picked ' + Ext.Date.format(newVal, d.format));
+                    }
+                }
+            }, {
+                text: 'Released',
                 iconCls: 'add16',
-                handler: Ext.Function.pass(handleAction, 'Right')
+                enableToggle: true,
+                toggleHandler: function(button, pressed) {
+                    Ext.example.msg('<b>Action</b>', 'Right ToggleButton ' + (pressed ? 'Pressed' : 'Released'));
+                    button.setText(pressed ? 'Pressed' : 'Released')
+                }
             }, {
                 text: 'Choose a Color',
                 menu: colorMenu // <-- submenu by reference

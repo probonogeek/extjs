@@ -23,7 +23,38 @@
  */
 
 Ext.dom.Element.override({
-    // @private override base Ext.util.Animate mixin for animate for backwards compatibility
+    /**
+     * Performs custom animation on this Element.
+     *
+     * The following properties may be specified in `from`, `to`, and `keyframe` objects:
+     *
+     *   - `x` - The page X position in pixels.
+     *
+     *   - `y` - The page Y position in pixels
+     *
+     *   - `left` - The element's CSS `left` value. Units must be supplied.
+     *
+     *   - `top` - The element's CSS `top` value. Units must be supplied.
+     *
+     *   - `width` - The element's CSS `width` value. Units must be supplied.
+     *
+     *   - `height` - The element's CSS `height` value. Units must be supplied.
+     *
+     *   - `scrollLeft` - The element's `scrollLeft` value.
+     *
+     *   - `scrollTop` - The element's `scrollTop` value.
+     *
+     *   - `opacity` - The element's `opacity` value. This must be a value between `0` and `1`.
+     *
+     * **Be aware** that animating an Element which is being used by an Ext Component without in some way informing the
+     * Component about the changed element state will result in incorrect Component behaviour. This is because the
+     * Component will be using the old state of the element. To avoid this problem, it is now possible to directly
+     * animate certain properties of Components.
+     *
+     * @param {Object} config  Configuration for {@link Ext.fx.Anim}.
+     * Note that the {@link Ext.fx.Anim#to to} config is required.
+     * @return {Ext.dom.Element} this
+     */
     animate: function(config) {
         var me = this,
             listeners,
@@ -49,7 +80,7 @@ Ext.dom.Element.override({
         return me;
     },
 
-    // @private override base Ext.util.Animate mixin for animate for backwards compatibility
+    // @private - process the passed fx configuration.
     anim: function(config) {
         if (!Ext.isObject(config)) {
             return (config) ? {} : false;
@@ -277,17 +308,17 @@ Ext.dom.Element.override({
                 case 'bl':
                     anim = {
                         from: {
-                            x: box.x + box.width,
+                            y: box.y + box.height,
                             width: '0px',
                             height: '0px'
                         },
                         to: {
-                            x: box.x,
+                            y: box.y,
                             width: box.width + 'px',
                             height: box.height + 'px'
                         }
                     };
-                    elStyle.right = '0px';
+                    elStyle.bottom = '0px';
                     break;
                 case 'br':
                     anim = {
@@ -308,17 +339,17 @@ Ext.dom.Element.override({
                 case 'tr':
                     anim = {
                         from: {
-                            y: box.y + box.height,
+                            x: box.x + box.width,
                             width: '0px',
                             height: '0px'
                         },
                         to: {
-                            y: box.y,
+                            x: box.x,
                             width: box.width + 'px',
                             height: box.height + 'px'
                         }
                     };
-                    elStyle.bottom = '0px';
+                    elStyle.right = '0px';
                     break;
             }
 
@@ -560,18 +591,17 @@ Ext.dom.Element.override({
      *     el.frame();
      *
      *     // custom: 3 red ripples lasting 3 seconds total
-     *     el.frame("#ff0000", 3, { duration: 3 });
+     *     el.frame("#ff0000", 3, { duration: 3000 });
      *
      *     // common config options shown with default values
      *     el.frame("#C3DAF9", 1, {
-     *         duration: 1 //duration of each individual ripple.
+     *         duration: 1000 // duration of each individual ripple.
      *         // Note: Easing is not configurable and will be ignored if included
      *     });
      *
-     * @param {String} color (optional) The color of the border. Should be a 6 char hex color without the leading #
-     * (defaults to light blue: 'C3DAF9').
-     * @param {Number} count (optional) The number of ripples to display (defaults to 1)
-     * @param {Object} options (optional) Object literal with any of the Fx config options
+     * @param {String} [color='#C3DAF9'] The hex color value for the border.
+     * @param {Number} [count=1] The number of ripples to display.
+     * @param {Object} [options] Object literal with any of the Fx config options
      * @return {Ext.dom.Element} The Element
      */
     frame : function(color, count, obj){
@@ -800,12 +830,12 @@ Ext.dom.Element.override({
     },
 
    /**
-    * @deprecated 4.0
     * Creates a pause before any subsequent queued effects begin. If there are no effects queued after the pause it will
     * have no effect. Usage:
     *
     *     el.pause(1);
     *
+    * @deprecated 4.0 Use the `delay` config to {@link #animate} instead.
     * @param {Number} seconds The length of time to pause (in seconds)
     * @return {Ext.Element} The Element
     */
@@ -901,7 +931,6 @@ Ext.dom.Element.override({
     },
 
     /**
-     * @deprecated 4.0
      * Animates the transition of an element's dimensions from a starting height/width to an ending height/width. This
      * method is a convenience implementation of {@link #shift}. Usage:
      *
@@ -914,10 +943,11 @@ Ext.dom.Element.override({
      *         [element's width],
      *         [element's height], {
      *             easing: 'easeOut',
-     *             duration: .35
+     *             duration: 350
      *         }
      *     );
      *
+     * @deprecated 4.0 Just use {@link #animate} instead.
      * @param {Number} width The new width (pass undefined to keep the original width)
      * @param {Number} height The new height (pass undefined to keep the original height)
      * @param {Object} options (optional) Object literal with any of the Fx config options
@@ -932,7 +962,6 @@ Ext.dom.Element.override({
     },
 
     /**
-     * @deprecated 4.0
      * Animates the transition of any combination of an element's dimensions, xy position and/or opacity. Any of these
      * properties not specified in the config object will not be changed. This effect requires that at least one new
      * dimension, position or opacity setting must be passed in on the config object in order for the function to have
@@ -949,9 +978,10 @@ Ext.dom.Element.override({
      *         y: [element's y position],
      *         opacity: [element's opacity],
      *         easing: 'easeOut',
-     *         duration: .35
+     *         duration: 350
      *     });
      *
+     * @deprecated 4.0 Just use {@link #animate} instead.
      * @param {Object} options Object literal with any of the Fx config options
      * @return {Ext.Element} The Element
      */

@@ -438,6 +438,14 @@ Ext.define('Ext.dd.DragDropManager', {
         this.dragCurrent = oDD;
 
         var el = oDD.getEl();
+        
+        // We use this to handle an issu where a mouseup will not be detected 
+        // if the mouseup event happens outside of the browser window. When the 
+        // mouse comes back, any drag will still be active
+        // http://msdn.microsoft.com/en-us/library/ms537630(VS.85).aspx
+        if (Ext.isIE && el.setCapture) {
+            el.setCapture();
+        }
 
         // track start position
         this.startX = e.getPageX();
@@ -478,12 +486,18 @@ Ext.define('Ext.dd.DragDropManager', {
      * @private
      */
     handleMouseUp: function(e) {
-
+        var current = this.dragCurrent;
+        
         if(Ext.tip && Ext.tip.QuickTipManager){
             Ext.tip.QuickTipManager.ddEnable();
         }
-        if (! this.dragCurrent) {
+        if (!current) {
             return;
+        }
+        
+        // See setCapture call in handleMouseDown
+        if (Ext.isIE && document.releaseCapture) {
+            document.releaseCapture();
         }
 
         clearTimeout(this.clickTimeout);
@@ -547,37 +561,32 @@ Ext.define('Ext.dd.DragDropManager', {
      * @private
      */
     handleMouseMove: function(e) {
-        if (! this.dragCurrent) {
+        var me = this,
+            diffX,
+            diffY;
+            
+        if (!me.dragCurrent) {
             return true;
         }
-        // var button = e.which || e.button;
 
-        // check for IE mouseup outside of page boundary
-        if (Ext.isIE && (e.button !== 0 && e.button !== 1 && e.button !== 2)) {
-            this.stopEvent(e);
-            return this.handleMouseUp(e);
-        }
-        
-        var diffX, diffY;
-
-        if (!this.dragThreshMet) {
-            diffX = Math.abs(this.startX - e.getPageX());
-            diffY = Math.abs(this.startY - e.getPageY());
-            if (diffX > this.clickPixelThresh ||
-                        diffY > this.clickPixelThresh) {
-                this.startDrag(this.startX, this.startY);
+        if (!me.dragThreshMet) {
+            diffX = Math.abs(me.startX - e.getPageX());
+            diffY = Math.abs(me.startY - e.getPageY());
+            if (diffX > me.clickPixelThresh ||
+                        diffY > me.clickPixelThresh) {
+                me.startDrag(me.startX, me.startY);
             }
         }
 
-        if (this.dragThreshMet) {
-            this.dragCurrent.b4Drag(e);
-            this.dragCurrent.onDrag(e);
-            if(!this.dragCurrent.moveOnly){
-                this.fireEvents(e, false);
+        if (me.dragThreshMet) {
+            me.dragCurrent.b4Drag(e);
+            me.dragCurrent.onDrag(e);
+            if(!me.dragCurrent.moveOnly){
+                me.fireEvents(e, false);
             }
         }
 
-        this.stopEvent(e);
+        me.stopEvent(e);
 
         return true;
     },

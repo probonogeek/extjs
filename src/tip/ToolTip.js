@@ -61,7 +61,7 @@
  *         view.tip = Ext.create('Ext.tip.ToolTip', {
  *             // The overall target element.
  *             target: view.el,
- *             // Each grid row causes its own seperate show and hide.
+ *             // Each grid row causes its own separate show and hide.
  *             delegate: view.itemSelector,
  *             // Moving within the row should not hide the tip.
  *             trackMouse: true,
@@ -109,7 +109,7 @@ Ext.define('Ext.tip.ToolTip', {
      * @property {HTMLElement} triggerElement
      * When a ToolTip is configured with the `{@link #delegate}`
      * option to cause selected child elements of the `{@link #target}`
-     * Element to each trigger a seperate show event, this property is set to
+     * Element to each trigger a separate show event, this property is set to
      * the DOM element which triggered the show.
      */
     /**
@@ -476,6 +476,11 @@ Ext.define('Ext.tip.ToolTip', {
         else if (!me.hidden && me.autoHide !== false) {
             me.show();
         }
+    },
+    
+    onShowVeto: function(){
+        this.callParent();
+        this.clearTimer('show');
     },
 
     // private

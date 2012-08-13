@@ -35,6 +35,10 @@ Ext.define('FeedViewer.FeedGrid', {
                     reader: {
                         type: 'xml',
                         record: 'item'
+                    },
+                    listeners: {
+                        exception: this.onProxyException,
+                        scope: this
                     }
                 },
                 listeners: {
@@ -105,8 +109,21 @@ Ext.define('FeedViewer.FeedGrid', {
      * Listens for the store loading
      * @private
      */
-    onLoad: function(){
-        this.getSelectionModel().select(0);
+    onLoad: function(store, records, success) {
+        if (this.getStore().getCount()) {
+            this.getSelectionModel().select(0);
+        }
+    },
+
+    /**
+     * Listen for proxy eerrors.
+     */
+    onProxyException: function(proxy, response, operation) {
+        Ext.Msg.alert("Error with data from server", operation.error);
+        this.view.el.update('');
+        
+        // Update the detail view with a dummy empty record
+        this.fireEvent('select', this, {data:{}});
     },
 
     /**

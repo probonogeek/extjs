@@ -110,6 +110,7 @@ Ext.define('Ext.form.field.Field', {
     initValue: function() {
         var me = this;
 
+        me.value = me.transformOriginalValue(me.value);
         /**
          * @property {Object} originalValue
          * The original value of the field as configured in the {@link #value} configuration, or as loaded by the last
@@ -121,6 +122,17 @@ Ext.define('Ext.form.field.Field', {
         me.suspendCheckChange++;
         me.setValue(me.value);
         me.suspendCheckChange--;
+    },
+    
+    /**
+     * Allows for any necessary modifications before the original
+     * value is set
+     * @protected
+     * @param {Object} value The initial value
+     * @return {Object} The modified initial value
+     */
+    transformOriginalValue: function(value){
+        return value;
     },
 
     /**
@@ -229,11 +241,18 @@ Ext.define('Ext.form.field.Field', {
     reset : function(){
         var me = this;
 
+        me.beforeReset();
         me.setValue(me.originalValue);
         me.clearInvalid();
         // delete here so we reset back to the original state
         delete me.wasValid;
     },
+    
+    /**
+     * Template method before a field is reset.
+     * @protected
+     */
+    beforeReset: Ext.emptyFn,
 
     /**
      * Resets the field's {@link #originalValue} property so it matches the current {@link #getValue value}. This is
