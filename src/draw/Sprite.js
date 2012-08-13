@@ -1,104 +1,130 @@
 /**
  * A Sprite is an object rendered in a Drawing surface.
  *
- * # Translation
+ * ## Types
  *
- * For translate, the configuration object contains x and y attributes that indicate where to
- * translate the object. For example:
+ * The following sprite types are supported:
  *
- *     sprite.setAttributes({
- *       translate: {
- *        x: 10,
- *        y: 10
- *       }
- *     }, true);
+ * ### Rect
  *
+ * Rectangle requires `width` and `height` attributes:
  *
- * # Rotation
- *
- * For rotation, the configuration object contains x and y attributes for the center of the rotation (which are optional),
- * and a `degrees` attribute that specifies the rotation in degrees. For example:
- *
- *     sprite.setAttributes({
- *       rotate: {
- *        degrees: 90
- *       }
- *     }, true);
- *
- * That example will create a 90 degrees rotation using the centroid of the Sprite as center of rotation, whereas:
- *
- *     sprite.setAttributes({
- *       rotate: {
- *        x: 0,
- *        y: 0,
- *        degrees: 90
- *       }
- *     }, true);
- *
- * will create a rotation around the `(0, 0)` axis.
- *
- *
- * # Scaling
- *
- * For scaling, the configuration object contains x and y attributes for the x-axis and y-axis scaling. For example:
- *
- *     sprite.setAttributes({
- *       scale: {
- *        x: 10,
- *        y: 3
- *       }
- *     }, true);
- *
- * You can also specify the center of scaling by adding `cx` and `cy` as properties:
- *
- *     sprite.setAttributes({
- *       scale: {
- *        cx: 0,
- *        cy: 0,
- *        x: 10,
- *        y: 3
- *       }
- *     }, true);
- *
- * That last example will scale a sprite taking as centers of scaling the `(0, 0)` coordinate.
- *
- *
- * # Creating and adding a Sprite to a Surface
- *
- * Sprites can be created with a reference to a {@link Ext.draw.Surface}
- *
- *     var drawComponent = Ext.create('Ext.draw.Component', options here...);
- *
- *     var sprite = Ext.create('Ext.draw.Sprite', {
- *         type: 'circle',
- *         fill: '#ff0',
- *         surface: drawComponent.surface,
- *         radius: 5
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: 'rect',
+ *             width: 100,
+ *             height: 50,
+ *             radius: 10,
+ *             fill: 'green',
+ *             opacity: 0.5,
+ *             stroke: 'red',
+ *             'stroke-width': 2
+ *         }]
  *     });
  *
- * Sprites can also be added to the surface as a configuration object:
+ * ### Circle
  *
- *     var sprite = drawComponent.surface.add({
- *         type: 'circle',
- *         fill: '#ff0',
- *         radius: 5
+ * Circle requires `x`, `y` and `radius` attributes:
+ *
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: 'circle',
+ *             radius: 90,
+ *             x: 100,
+ *             y: 100,
+ *             fill: 'blue',
+ *         }]
  *     });
  *
- * In order to properly apply properties and render the sprite we have to
- * `show` the sprite setting the option `redraw` to `true`:
+ * ### Ellipse
  *
- *     sprite.show(true);
+ * Ellipse requires `x`, `y`, `radiusX` and `radiusY` attributes:
  *
- * The constructor configuration object of the Sprite can also be used and passed into the {@link Ext.draw.Surface}
- * add method to append a new sprite to the canvas. For example:
- *
- *     drawComponent.surface.add({
- *         type: 'circle',
- *         fill: '#ffc',
- *         radius: 100,
- *         x: 100,
- *         y: 100
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: "ellipse",
+ *             radiusX: 100,
+ *             radiusY: 50,
+ *             x: 100,
+ *             y: 100,
+ *             fill: 'red'
+ *         }]
  *     });
+ *
+ * ### Path
+ *
+ * Path requires the `path` attribute:
+ *
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: "path",
+ *             path: "M-66.6 26C-66.6 26 -75 22 -78.2 18.4C-81.4 14.8 -80.948 19.966 " +
+ *                   "-85.8 19.6C-91.647 19.159 -90.6 3.2 -90.6 3.2L-94.6 10.8C-94.6 " +
+ *                   "10.8 -95.8 25.2 -87.8 22.8C-83.893 21.628 -82.6 23.2 -84.2 " +
+ *                   "24C-85.8 24.8 -78.6 25.2 -81.4 26.8C-84.2 28.4 -69.8 23.2 -72.2 " +
+ *                   "33.6L-66.6 26z",
+ *             fill: "purple"
+ *         }]
+ *     });
+ *
+ * ### Text
+ *
+ * Text requires the `text` attribute:
+ *
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: "text",
+ *             text: "Hello, Sprite!",
+ *             fill: "green",
+ *             font: "18px monospace"
+ *         }]
+ *     });
+ *
+ * ### Image
+ *
+ * Image requires `width`, `height` and `src` attributes:
+ *
+ *     @example
+ *     Ext.create('Ext.draw.Component', {
+ *         renderTo: Ext.getBody(),
+ *         width: 200,
+ *         height: 200,
+ *         items: [{
+ *             type: "image",
+ *             src: "http://www.sencha.com/img/apple-touch-icon.png",
+ *             width: 200,
+ *             height: 200
+ *         }]
+ *     });
+ *
+ * ## Creating and adding a Sprite to a Surface
+ *
+ * See {@link Ext.draw.Surface} documentation.
+ *
+ * ## Transforming sprites
+ *
+ * See {@link #setAttributes} method documentation for examples on how to translate, scale and rotate the sprites.
+ *
  */
 Ext.define('Ext.draw.Sprite', {
 
@@ -114,35 +140,42 @@ Ext.define('Ext.draw.Sprite', {
     /* End Definitions */
 
     /**
-     * @cfg {String} type The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'
+     * @cfg {String} type The type of the sprite.
+     * Possible options are 'circle', 'ellipse', 'path', 'rect', 'text', 'image'.
+     *
+     * See {@link Ext.draw.Sprite} class documentation for examples of all types.
      */
 
     /**
-     * @cfg {Number} width Used in rectangle sprites, the width of the rectangle
+     * @cfg {Number} width The width of the rect or image sprite.
      */
 
     /**
-     * @cfg {Number} height Used in rectangle sprites, the height of the rectangle
+     * @cfg {Number} height The height of the rect or image sprite.
      */
 
     /**
-     * @cfg {Number} size Used in square sprites, the dimension of the square
+     * @cfg {Number} radius The radius of the circle sprite. Or in case of rect sprite, the border radius.
      */
 
     /**
-     * @cfg {Number} radius Used in circle sprites, the radius of the circle
+     * @cfg {Number} radiusX The radius of the ellipse sprite along x-axis.
      */
 
     /**
-     * @cfg {Number} x The position along the x-axis
+     * @cfg {Number} radiusY The radius of the ellipse sprite along y-axis.
      */
 
     /**
-     * @cfg {Number} y The position along the y-axis
+     * @cfg {Number} x Sprite position along the x-axis.
      */
 
     /**
-     * @cfg {String} path Used in path sprites, the path of the sprite written in SVG-like path syntax.
+     * @cfg {Number} y Sprite position along the y-axis.
+     */
+
+    /**
+     * @cfg {String} path The path of the path sprite written in SVG-like path syntax.
      */
 
     /**
@@ -150,28 +183,37 @@ Ext.define('Ext.draw.Sprite', {
      */
 
     /**
-     * @cfg {String} fill The fill color
+     * @cfg {String} fill The fill color.
      */
 
     /**
-     * @cfg {String} stroke The stroke color
+     * @cfg {String} stroke The stroke color.
      */
 
     /**
-     * @cfg {Number} stroke-width The width of the stroke
+     * @cfg {Number} stroke-width The width of the stroke.
+     *
+     * Note that this attribute needs to be quoted when used.  Like so:
+     *
+     *     "stroke-width": 12,
      */
 
     /**
-     * @cfg {String} font Used with text type sprites. The full font description. Uses the same syntax as the CSS font parameter
+     * @cfg {String} font Used with text type sprites. The full font description.
+     * Uses the same syntax as the CSS font parameter
      */
 
     /**
-     * @cfg {String} text Used with text type sprites. The text itself
+     * @cfg {String} text The actual text to render in text sprites.
      */
 
     /**
-     * @cfg {String/String[]} group The group that this sprite belongs to, or an array of groups. Only relevant when added to a
-     * {@link Ext.draw.Surface}
+     * @cfg {String} src Path to the image to show in image sprites.
+     */
+
+    /**
+     * @cfg {String/String[]} group The group that this sprite belongs to, or an array of groups.
+     * Only relevant when added to a {@link Ext.draw.Surface Surface}.
      */
 
     /**
@@ -321,8 +363,70 @@ Ext.define('Ext.draw.Sprite', {
 
     /**
      * Change the attributes of the sprite.
+     *
+     * ## Translation
+     *
+     * For translate, the configuration object contains x and y attributes that indicate where to
+     * translate the object. For example:
+     *
+     *     sprite.setAttributes({
+     *       translate: {
+     *        x: 10,
+     *        y: 10
+     *       }
+     *     }, true);
+     *
+     *
+     * ## Rotation
+     *
+     * For rotation, the configuration object contains x and y attributes for the center of the rotation (which are optional),
+     * and a `degrees` attribute that specifies the rotation in degrees. For example:
+     *
+     *     sprite.setAttributes({
+     *       rotate: {
+     *        degrees: 90
+     *       }
+     *     }, true);
+     *
+     * That example will create a 90 degrees rotation using the centroid of the Sprite as center of rotation, whereas:
+     *
+     *     sprite.setAttributes({
+     *       rotate: {
+     *        x: 0,
+     *        y: 0,
+     *        degrees: 90
+     *       }
+     *     }, true);
+     *
+     * will create a rotation around the `(0, 0)` axis.
+     *
+     *
+     * ## Scaling
+     *
+     * For scaling, the configuration object contains x and y attributes for the x-axis and y-axis scaling. For example:
+     *
+     *     sprite.setAttributes({
+     *       scale: {
+     *        x: 10,
+     *        y: 3
+     *       }
+     *     }, true);
+     *
+     * You can also specify the center of scaling by adding `cx` and `cy` as properties:
+     *
+     *     sprite.setAttributes({
+     *       scale: {
+     *        cx: 0,
+     *        cy: 0,
+     *        x: 10,
+     *        y: 3
+     *       }
+     *     }, true);
+     *
+     * That last example will scale a sprite taking as centers of scaling the `(0, 0)` coordinate.
+     *
      * @param {Object} attrs attributes to be changed on the sprite.
-     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @param {Boolean} redraw Flag to immediately draw the change.
      * @return {Ext.draw.Sprite} this
      */
     setAttributes: function(attrs, redraw) {
@@ -433,7 +537,7 @@ Ext.define('Ext.draw.Sprite', {
                 me.dirtyTransform = true;
             }
         }
-        
+
         Ext.apply(spriteAttrs, attrs);
         me.dirty = true;
 
@@ -458,7 +562,7 @@ Ext.define('Ext.draw.Sprite', {
 
     /**
      * Hides the sprite.
-     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @param {Boolean} redraw Flag to immediately draw the change.
      * @return {Ext.draw.Sprite} this
      */
     hide: function(redraw) {
@@ -470,7 +574,7 @@ Ext.define('Ext.draw.Sprite', {
 
     /**
      * Shows the sprite.
-     * @param {Boolean} redraw Flag to immediatly draw the change.
+     * @param {Boolean} redraw Flag to immediately draw the change.
      * @return {Ext.draw.Sprite} this
      */
     show: function(redraw) {

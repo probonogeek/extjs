@@ -226,8 +226,8 @@ Ext.define('Ext.Layer', {
 
         if (!me.updating && me.isVisible() && (shadow || me.useShim)) {
             shim = me.getShim();
-            l = me.getLeft(true);
-            t = me.getTop(true);
+            l = me.getLocalX();
+            t = me.getLocalY();
             w = me.dom.offsetWidth;
             h = me.dom.offsetHeight;
 

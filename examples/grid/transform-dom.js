@@ -11,6 +11,10 @@ Ext.require([
 
 Ext.onReady(function(){
     var btn = Ext.get('create-grid');
+    // Always enable the button, after a refresh some browsers 
+    // will remember the disabled state for us
+    btn.dom.disabled = false;
+    
     btn.on('click', function(){
         btn.dom.disabled = true;
 

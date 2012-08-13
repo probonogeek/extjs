@@ -138,12 +138,16 @@ Ext.define('Ext.util.HashMap', {
 
 <span id='Ext-util-HashMap-method-add'>    /**
 </span>     * Adds an item to the collection. Fires the {@link #event-add} event when complete.
-     * @param {String} key &lt;p&gt;The key to associate with the item, or the new item.&lt;/p&gt;
-     * &lt;p&gt;If a {@link #getKey} implementation was specified for this HashMap,
-     * or if the key of the stored items is in a property called &lt;tt&gt;&lt;b&gt;id&lt;/b&gt;&lt;/tt&gt;,
-     * the HashMap will be able to &lt;i&gt;derive&lt;/i&gt; the key for the new item.
-     * In this case just pass the new item in this parameter.&lt;/p&gt;
-     * @param {Object} o The item to add.
+     *
+     * @param {String/Object} key The key to associate with the item, or the new item.
+     *
+     * If a {@link #getKey} implementation was specified for this HashMap,
+     * or if the key of the stored items is in a property called `id`,
+     * the HashMap will be able to *derive* the key for the new item.
+     * In this case just pass the new item in this parameter.
+     *
+     * @param {Object} [o] The item to add.
+     *
      * @return {Object} The item added.
      */
     add: function(key, value) {

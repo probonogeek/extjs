@@ -388,6 +388,12 @@ describe("Ext.Class", function() {
                 });
 
                 Ext.define('Foo.SomeClass', {
+                    prop: 1,
+
+                    constructor: function () {
+                        this.prop = 2;
+                    },
+
                     method1: function(x) {
                         return 'b' + x;
                     },
@@ -402,6 +408,11 @@ describe("Ext.Class", function() {
                 // this override comes after its target:
                 Ext.define('Foo.SomeClassOverride', {
                     override: 'Foo.SomeClass',
+
+                    constructor: function () {
+                        this.callParent(arguments);
+                        this.prop *= 21;
+                    },
 
                     method1: function(x) {
                         return 'a' + this.callParent([x*2]) + 'c';
@@ -450,6 +461,10 @@ describe("Ext.Class", function() {
                 expect(createFnsCalled.length).toEqual(2);
                 expect(createFnsCalled[0]).toEqual('Foo.Singleton');
                 expect(createFnsCalled[1]).toEqual('Foo.SomeClass');
+            });
+
+            it("can override constructor", function() {
+                expect(obj.prop).toEqual(42);
             });
 
             it("can add new methods", function() {

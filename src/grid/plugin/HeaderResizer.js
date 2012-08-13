@@ -3,7 +3,7 @@
  * Always resizing header to the left of the splitter you are resizing.
  */
 Ext.define('Ext.grid.plugin.HeaderResizer', {
-    extend: 'Ext.util.Observable',
+    extend: 'Ext.AbstractPlugin',
     requires: ['Ext.dd.DragTracker', 'Ext.util.Region'],
     alias: 'plugin.gridheaderresizer',
 
@@ -195,8 +195,8 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
             lhsMarker    = gridSection.getLhsMarker();
             rhsMarker    = gridSection.getRhsMarker();
             el           = rhsMarker.parent();
-            offsetLeft   = el.getLeft(true);
-            offsetTop    = el.getTop(true);
+            offsetLeft   = el.getLocalX();
+            offsetTop    = el.getLocalY();
             topLeft      = el.translatePoints(xy);
             markerHeight = firstSection.body.getHeight() + headerCt.getHeight();
             top = topLeft.top - offsetTop;
@@ -218,7 +218,7 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
                 rhsMarker   = gridSection.getRhsMarker(),
                 el          = rhsMarker.parent(),
                 topLeft     = el.translatePoints(xy),
-                offsetLeft  = el.getLeft(true);
+                offsetLeft  = el.getLocalX();
 
             rhsMarker.setLeft(topLeft.left - offsetLeft);
         // Resize as user interacts

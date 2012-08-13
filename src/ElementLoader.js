@@ -37,7 +37,7 @@ Ext.define('Ext.ElementLoader', {
     /* End Definitions */
 
     /**
-     * @cfg {String} url
+     * @cfg {String} url (required)
      * The url to retrieve the content from.
      */
     url: null,

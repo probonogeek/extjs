@@ -97,7 +97,7 @@ Ext.define('Ext.ux.GroupTabPanel', {
                         if (node.previousSibling) {
                             cls += ' x-grouptab-prev';
                         }
-                        if (!node.get('expanded')) {
+                        if (!node.get('expanded') || node.firstChild == null) {
                             cls += ' x-grouptab-last';
                         }
                     } else if (node.nextSibling === null) {
@@ -362,11 +362,11 @@ Ext.define('Ext.ux.GroupTreeChunker', {
     requires: ['Ext.XTemplate'],
     metaTableTpl: [
         '{%if (this.openTableWrap)out.push(this.openTableWrap())%}',
-        '&lt;div class=&quot;' + Ext.baseCSSPrefix + 'grid-table-resizer&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; {[this.embedFullWidth(values)]}&gt;',
+        '&lt;table class=&quot;' + Ext.baseCSSPrefix + 'grid-table-resizer&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; {[this.embedFullWidth(values)]}&gt;&lt;tr&gt;&lt;td&gt;',
             '{[this.openRows()]}',
                 '{row}',
             '{[this.closeRows()]}',
-        '&lt;/div&gt;',
+        '&lt;/td&gt;&lt;/tr&gt;&lt;table&gt;',
         '{%if (this.closeTableWrap)out.push(this.closeTableWrap())%}'
     ],
 

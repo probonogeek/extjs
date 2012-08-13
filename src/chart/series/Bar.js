@@ -433,6 +433,17 @@ Ext.define('Ext.chart.series.Bar', {
                 items[i * counter].totalNegDim = totalNegDim;
             }
         }
+        if (stacked && counter == 0) {
+            // Remove ghost shadow ref: EXTJSIV-5982
+            for (i = 0, total = data.length; i < total; i++) {
+                for (shadowIndex = 0; shadowIndex < shadowGroupsLn; shadowIndex++) {
+                    shadow = shadowGroups[shadowIndex].getAt(i);
+                    if (shadow) {
+                        shadow.hide(true);
+                    }
+                }
+            }
+        }
     },
 
     // @private render/setAttributes on the shadows

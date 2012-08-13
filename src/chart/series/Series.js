@@ -98,8 +98,8 @@ Ext.define('Ext.chart.series.Series', {
      */
     shadowAttributes: null,
 
-    // @private triggerdrawlistener flag
-    triggerAfterDraw: false,
+    // @private animating flag
+    animating: false,
 
     /**
      * @cfg {Object} listeners
@@ -217,14 +217,14 @@ Ext.define('Ext.chart.series.Series', {
     onAnimate: function(sprite, attr) {
         var me = this;
         sprite.stopAnimation();
-        if (me.triggerAfterDraw) {
+        if (me.animating) {
             return sprite.animate(Ext.applyIf(attr, me.chart.animate));
         } else {
-            me.triggerAfterDraw = true;
+            me.animating = true;
             return sprite.animate(Ext.apply(Ext.applyIf(attr, me.chart.animate), {
                 listeners: {
                     'afteranimate': function() {
-                        me.triggerAfterDraw = false;
+                        me.animating = false;
                         me.fireEvent('afterrender');
                     }
                 }

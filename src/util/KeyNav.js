@@ -72,7 +72,7 @@ Ext.define('Ext.util.KeyNav', {
             target: el
         }, config));
     },
-    
+
     /**
      * Sets up a configuration for the KeyNav.
      * @private
@@ -83,6 +83,7 @@ Ext.define('Ext.util.KeyNav', {
         var me = this,
             keymapCfg = {
                 target: config.target,
+                ignoreInputFields: config.ignoreInputFields,
                 eventName: me.getKeyEvent('forceKeyDown' in config ? config.forceKeyDown : me.forceKeyDown, config.eventName)
             },
             map, keyCodes, defaultScope, keyName, binding;
@@ -186,10 +187,16 @@ Ext.define('Ext.util.KeyNav', {
      */
 
     /**
+     * @cfg {Boolean} [ignoreInputFields=false]
+     * Configure this as `true` if there are any input fields within the {@link #target}, and this KeyNav
+     * should not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable="true"`)
+     */
+
+    /**
      * Destroy this KeyNav (this is the same as calling disable).
      * @param {Boolean} removeEl True to remove the element associated with this KeyNav.
      */
-    destroy: function(removeEl){
+    destroy: function(removeEl) {
         this.map.destroy(removeEl);
         delete this.map;
     },
@@ -214,7 +221,7 @@ Ext.define('Ext.util.KeyNav', {
      * Convenience function for setting disabled/enabled by boolean.
      * @param {Boolean} disabled
      */
-    setDisabled : function(disabled){
+    setDisabled : function(disabled) {
         this.map.setDisabled(disabled);
         this.disabled = disabled;
     },
@@ -229,7 +236,7 @@ Ext.define('Ext.util.KeyNav', {
      *
      * @return {String} The type of event to listen for.
      */
-    getKeyEvent: function(forceKeyDown, configuredEventName){
+    getKeyEvent: function(forceKeyDown, configuredEventName) {
         if (forceKeyDown || (Ext.EventManager.useKeyDown && !configuredEventName)) {
             return 'keydown';
         } else {

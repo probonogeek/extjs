@@ -78,6 +78,8 @@ Ext.define('Ext.layout.container.VBox', {
         x: 'y',
         scrollLeft: 'scrollTop',
         overflowX: 'overflowY',
+        hasOverflowX: 'hasOverflowY',
+        invalidateScrollX: 'invalidateScrollY',
 
         // perpendicular
         center: 'center',
@@ -94,6 +96,8 @@ Ext.define('Ext.layout.container.VBox', {
         y: 'x',
         scrollTop: 'scrollLeft',
         overflowY: 'overflowX',
+        hasOverflowY: 'hasOverflowX',
+        invalidateScrollY: 'invalidateScrollX',
 
         // Methods
         getWidth: 'getHeight',
@@ -103,7 +107,9 @@ Ext.define('Ext.layout.container.VBox', {
         gotWidth: 'gotHeight',
         gotHeight: 'gotWidth',
         setContentWidth: 'setContentHeight',
-        setContentHeight: 'setContentWidth'
+        setContentHeight: 'setContentWidth',
+        setWidthInDom: 'setHeightInDom',
+        setHeightInDom: 'setWidthInDom'
     },
 
     sizePolicy: {

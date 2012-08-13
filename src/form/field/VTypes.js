@@ -93,12 +93,12 @@ Ext.define('Ext.form.field.VTypes', (function(){
         'email' : function(v){
             return email.test(v);
         },
+        //<locale>
         /**
          * @property {String} emailText
          * The error text to display when the email validation function returns false.
          * Defaults to: 'This field should be an e-mail address in the format "user@example.com"'
          */
-        //<locale>
         'emailText' : 'This field should be an e-mail address in the format "user@example.com"',
         //</locale>
         /**
@@ -116,12 +116,12 @@ Ext.define('Ext.form.field.VTypes', (function(){
         'url' : function(v){
             return url.test(v);
         },
+        //<locale>
         /**
          * @property {String} urlText
          * The error text to display when the url validation function returns false.
          * Defaults to: 'This field should be a URL in the format "http:/'+'/www.example.com"'
          */
-        //<locale>
         'urlText' : 'This field should be a URL in the format "http:/'+'/www.example.com"',
         //</locale>
 
@@ -133,12 +133,12 @@ Ext.define('Ext.form.field.VTypes', (function(){
         'alpha' : function(v){
             return alpha.test(v);
         },
+        //<locale>
         /**
          * @property {String} alphaText
          * The error text to display when the alpha validation function returns false.
          * Defaults to: 'This field should only contain letters and _'
          */
-        //<locale>
         'alphaText' : 'This field should only contain letters and _',
         //</locale>
         /**
@@ -155,12 +155,12 @@ Ext.define('Ext.form.field.VTypes', (function(){
         'alphanum' : function(v){
             return alphanum.test(v);
         },
+        //<locale>
         /**
          * @property {String} alphanumText
          * The error text to display when the alphanumeric validation function returns false.
          * Defaults to: 'This field should only contain letters, numbers and _'
          */
-        //<locale>
         'alphanumText' : 'This field should only contain letters, numbers and _',
         //</locale>
         /**

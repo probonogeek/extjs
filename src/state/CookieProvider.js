@@ -9,7 +9,7 @@
  *
  * Example:
  *
- *     Ext.create('Ext.state.CookieProvider', {
+ *     var cp = Ext.create('Ext.state.CookieProvider', {
  *         path: "/cgi-bin/",
  *         expires: new Date(new Date().getTime()+(1000*60*60*24*30)), //30 days
  *         domain: "sencha.com"

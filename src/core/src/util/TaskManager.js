@@ -26,7 +26,7 @@
  *
  * To end a running task:
  * 
- *      task.destroy();
+ *      Ext.TaskManager.stop(task);
  *
  * If a task needs to be started and stopped repeated over time, you can create a
  * {@link Ext.util.TaskRunner.Task Task} instance.

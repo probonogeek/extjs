@@ -792,8 +792,20 @@
                     "name": "RowModel.js"
                 },
                 {
+                    "path": "../../../src/selection/",
+                    "name": "CellModel.js"
+                },
+                {
+                    "path": "../../../src/selection/",
+                    "name": "CheckboxModel.js"
+                },
+                {
                     "path": "../../../src/grid/",
                     "name": "PagingScroller.js"
+                },
+                {
+                    "path": "../../../src/view/",
+                    "name": "TableLayout.js"
                 },
                 {
                     "path": "../../../src/view/",
@@ -804,12 +816,12 @@
                     "name": "ColumnLayout.js"
                 },
                 {
-                    "path": "../../../src/grid/plugin/",
-                    "name": "HeaderResizer.js"
-                },
-                {
                     "path": "../../../src/grid/",
                     "name": "LockingView.js"
+                },
+                {
+                    "path": "../../../../platform/src/",
+                    "name": "AbstractPlugin.js"
                 },
                 {
                     "path": "../../../src/dd/",
@@ -830,6 +842,10 @@
                 {
                     "path": "../../../src/grid/",
                     "name": "Lockable.js"
+                },
+                {
+                    "path": "../../../src/grid/plugin/",
+                    "name": "HeaderResizer.js"
                 },
                 {
                     "path": "../../../src/grid/header/",

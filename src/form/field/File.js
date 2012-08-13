@@ -57,12 +57,12 @@ Ext.define("Ext.form.field.File", {
     alternateClassName: ['Ext.form.FileUploadField', 'Ext.ux.form.FileUploadField', 'Ext.form.File'],
     uses: ['Ext.button.Button', 'Ext.layout.component.field.Field'],
 
+    //<locale>
     /**
      * @cfg {String} buttonText
      * The button text to display on the upload button. Note that if you supply a value for
      * {@link #buttonConfig}, the buttonConfig.text value will be used instead if available.
      */
-    //<locale>
     buttonText: 'Browse...',
     //</locale>
 
@@ -116,6 +116,12 @@ Ext.define("Ext.form.field.File", {
      * Unlike with other form fields, the readOnly config defaults to true in File field.
      */
     readOnly: true,
+
+    /**
+     * Do not show hand pointer over text field since file choose dialog is only shown when clicking in the button
+     * @private
+     */
+    triggerNoEditCls: '',
 
     // private
     componentLayout: 'triggerfield',
@@ -245,7 +251,7 @@ Ext.define("Ext.form.field.File", {
         var me = this;
         me.callParent();
         me.fileInputEl.dom.disabled = false;
-        this['buttonEl-btnEl'].dom.disabled = true;
+        this['buttonEl-btnEl'].dom.disabled = false;
     },
 
     isFileUpload: function() {

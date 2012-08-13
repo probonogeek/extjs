@@ -66,17 +66,23 @@ Ext.define('Ext.form.field.Trigger', {
      */
 
     /**
-     * @cfg {String} [triggerBaseCls='x-form-trigger']
+     * @cfg
      * The base CSS class that is always added to the trigger button. The {@link #triggerCls} will be appended in
      * addition to this class.
      */
     triggerBaseCls: Ext.baseCSSPrefix + 'form-trigger',
 
     /**
-     * @cfg {String} [triggerWrapCls='x-form-trigger-wrap']
+     * @cfg
      * The CSS class that is added to the div wrapping the trigger button(s).
      */
     triggerWrapCls: Ext.baseCSSPrefix + 'form-trigger-wrap',
+
+    /**
+     * @cfg
+     * The CSS class that is added to the text field when component is read-only or not editable.
+     */
+    triggerNoEditCls: Ext.baseCSSPrefix + 'trigger-noedit',
 
     /**
      * @cfg {Boolean} hideTrigger
@@ -147,7 +153,7 @@ Ext.define('Ext.form.field.Trigger', {
             editable = me.editable !== false;
         
         return Ext.apply(data, {
-            editableCls: (readOnly || !editable) ? ' ' + Ext.baseCSSPrefix + 'trigger-noedit' : '',
+            editableCls: (readOnly || !editable) ? ' ' + me.triggerNoEditCls : '',
             readOnly: !editable || readOnly
         });  
     },
@@ -207,9 +213,15 @@ Ext.define('Ext.form.field.Trigger', {
             triggerBaseCls = me.triggerBaseCls,
             tempEl;
             
-        // Measure width of a trigger element.
+        /**
+         * @property {Number} triggerWidth
+         * Width of the trigger element. Unless set explicitly, it will be
+         * automatically calculated through creating a temporary element
+         * on page. (That will be done just once per app run.)
+         * @private
+         */
         if (!me.triggerWidth) {
-            tempEl = Ext.getBody().createChild({
+            tempEl = Ext.resetElement.createChild({
                 style: 'position: absolute;', 
                 cls: Ext.baseCSSPrefix + 'form-trigger'
             });
@@ -301,7 +313,7 @@ Ext.define('Ext.form.field.Trigger', {
                 preventDefault: true,
                 handler: me.onTriggerWrapClick,
                 listeners: {
-                    mouseup: me.onTriggerWrapMousup,
+                    mouseup: me.onTriggerWrapMouseup,
                     scope: me
                 },
                 scope: me
@@ -309,7 +321,7 @@ Ext.define('Ext.form.field.Trigger', {
         } else {
             me.mon(triggerWrap, {
                 click: me.onTriggerWrapClick,
-                mouseup: me.onTriggerWrapMousup,
+                mouseup: me.onTriggerWrapMouseup,
                 scope: me
             });
         }
@@ -443,7 +455,7 @@ Ext.define('Ext.form.field.Trigger', {
     // private
     // Handle trigger mouse up gesture. To be implemented in subclasses.
     // Currently the Spinner subclass refocuses the input element upon end of spin.
-    onTriggerWrapMousup: Ext.emptyFn,
+    onTriggerWrapMouseup: Ext.emptyFn,
 
     /**
      * @method onTriggerClick

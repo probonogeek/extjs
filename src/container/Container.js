@@ -148,7 +148,7 @@ Ext.define('Ext.container.Container', {
     extend: 'Ext.container.AbstractContainer',
     alias: 'widget.container',
     alternateClassName: 'Ext.Container',
-    
+
     /*
      * For more information on the following methods, see the note for the
      * hierarchyEventSource observer defined in the class' callback
@@ -166,6 +166,13 @@ Ext.define('Ext.container.Container', {
     afterShow: function(){
         this.callParent(arguments);
         this.fireHierarchyEvent('show');
+    },
+
+    onAdded: function() {
+        this.callParent(arguments);
+        if (this.hierarchyEventSource.hasListeners.added) {
+            this.fireHierarchyEvent('added');
+        }
     },
 
     /**
@@ -207,6 +214,7 @@ Ext.define('Ext.container.Container', {
         hide: true,
         show: true,
         collapse: true,
-        expand: true
+        expand: true,
+        added: true
     }});
 });

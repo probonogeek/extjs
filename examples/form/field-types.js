@@ -22,6 +22,10 @@ Ext.onReady(function() {
             fieldLabel: 'Text field',
             value: 'Text field value'
         }, {
+            xtype: 'hiddenfield',
+            name: 'hidden1',
+            value: 'Hidden field value'
+        },{
             xtype: 'textfield',
             name: 'password1',
             inputType: 'password',

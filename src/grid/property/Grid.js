@@ -60,7 +60,7 @@ Ext.define('Ext.grid.property.Grid', {
      *
      *         // Custom editors for certain property names
      *         customEditors: {
-     *             evtStart: Ext.create('Ext.form.TimeField' {selectOnFocus:true})
+     *             evtStart: Ext.create('Ext.form.TimeField', {selectOnFocus: true})
      *         },
      *
      *         // Displayed name for property names in the source

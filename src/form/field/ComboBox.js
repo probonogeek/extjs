@@ -64,6 +64,45 @@
  * 
  * If you have a local store that is already filtered, you can use the {@link #lastQuery} config option
  * to prevent the store from having the filter being cleared on first expand.
+ *
+ * ## Customized combobox
+ *
+ * Both the text shown in dropdown menu and text field can be easily customized:
+ *
+ *     @example
+ *     var states = Ext.create('Ext.data.Store', {
+ *         fields: ['abbr', 'name'],
+ *         data : [
+ *             {"abbr":"AL", "name":"Alabama"},
+ *             {"abbr":"AK", "name":"Alaska"},
+ *             {"abbr":"AZ", "name":"Arizona"}
+ *         ]
+ *     });
+ *
+ *     Ext.create('Ext.form.ComboBox', {
+ *         fieldLabel: 'Choose State',
+ *         store: states,
+ *         queryMode: 'local',
+ *         valueField: 'abbr',
+ *         renderTo: Ext.getBody(),
+ *         // Template for the dropdown menu.
+ *         // Note the use of "x-boundlist-item" class,
+ *         // this is required to make the items selectable.
+ *         tpl: Ext.create('Ext.XTemplate',
+ *             '<tpl for=".">',
+ *                 '<div class="x-boundlist-item">{abbr} - {name}</div>',
+ *             '</tpl>'
+ *         ),
+ *         // template for the content inside text field
+ *         displayTpl: Ext.create('Ext.XTemplate',
+ *             '<tpl for=".">',
+ *                 '{abbr} - {name}',
+ *             '</tpl>'
+ *         )
+ *     });
+ *
+ * See also the {@link #listConfig} option for additional configuration of the dropdown.
+ *
  */
 Ext.define('Ext.form.field.ComboBox', {
     extend:'Ext.form.field.Picker',
@@ -90,6 +129,11 @@ Ext.define('Ext.form.field.ComboBox', {
      * will not be created unless a hiddenName is specified.
      */
     hiddenName: '',
+    
+    /**
+     * @property {Ext.Element} hiddenDataEl
+     * @private
+     */
 
     /**
      * @private
@@ -164,12 +208,12 @@ Ext.define('Ext.form.field.ComboBox', {
      */
     multiSelect: false,
 
+    //<locale>
     /**
      * @cfg {String} delimiter
      * The character(s) used to separate the {@link #displayField display values} of multiple selected items when
      * `{@link #multiSelect} = true`.
      */
-    //<locale>
     delimiter: ', ',
     //</locale>
 
@@ -393,16 +437,16 @@ Ext.define('Ext.form.field.ComboBox', {
      * An optional set of configuration properties that will be passed to the {@link Ext.view.BoundList}'s constructor.
      * Any configuration that is valid for BoundList can be included. Some of the more useful ones are:
      *
-     *   - {@link Ext.view.BoundList#cls} - defaults to empty
-     *   - {@link Ext.view.BoundList#emptyText} - defaults to empty string
-     *   - {@link Ext.view.BoundList#itemSelector} - defaults to the value defined in BoundList
-     *   - {@link Ext.view.BoundList#loadingText} - defaults to `'Loading...'`
-     *   - {@link Ext.view.BoundList#minWidth} - defaults to `70`
-     *   - {@link Ext.view.BoundList#maxWidth} - defaults to `undefined`
-     *   - {@link Ext.view.BoundList#maxHeight} - defaults to `300`
-     *   - {@link Ext.view.BoundList#resizable} - defaults to `false`
-     *   - {@link Ext.view.BoundList#shadow} - defaults to `'sides'`
-     *   - {@link Ext.view.BoundList#width} - defaults to `undefined` (automatically set to the width of the ComboBox
+     *   - {@link Ext.view.BoundList#cls cls} - defaults to empty
+     *   - {@link Ext.view.BoundList#emptyText emptyText} - defaults to empty string
+     *   - {@link Ext.view.BoundList#itemSelector itemSelector} - defaults to the value defined in BoundList
+     *   - {@link Ext.view.BoundList#loadingText loadingText} - defaults to `'Loading...'`
+     *   - {@link Ext.view.BoundList#minWidth minWidth} - defaults to `70`
+     *   - {@link Ext.view.BoundList#maxWidth maxWidth} - defaults to `undefined`
+     *   - {@link Ext.view.BoundList#maxHeight maxHeight} - defaults to `300`
+     *   - {@link Ext.view.BoundList#resizable resizable} - defaults to `false`
+     *   - {@link Ext.view.BoundList#shadow shadow} - defaults to `'sides'`
+     *   - {@link Ext.view.BoundList#width width} - defaults to `undefined` (automatically set to the width of the ComboBox
      *     field if {@link #matchFieldWidth} is true)
      */
 
@@ -626,8 +670,11 @@ Ext.define('Ext.form.field.ComboBox', {
 
     // invoked when a different store is bound to this combo
     // than the original
-    resetToDefault: function() {
-
+    resetToDefault: Ext.emptyFn,
+    
+    beforeReset: function() {
+        this.callParent();
+        this.clearFilter();    
     },
     
     onUnbindStore: function(store) {
@@ -635,6 +682,7 @@ Ext.define('Ext.form.field.ComboBox', {
         if (!store && picker) {
             picker.bindStore(null);
         }
+        this.clearFilter();
     },
     
     onBindStore: function(store, initial) {
@@ -846,8 +894,8 @@ Ext.define('Ext.form.field.ComboBox', {
      */
     clearFilter: function() {
         var store = this.store,
-            filters = store.filters,
             filter = this.activeFilter,
+            filters = store.filters,
             remaining;
             
         if (filter) {
@@ -990,7 +1038,6 @@ Ext.define('Ext.form.field.ComboBox', {
     createPicker: function() {
         var me = this,
             picker,
-            menuCls = Ext.baseCSSPrefix + 'menu',
             pickerCfg = Ext.apply({
                 xtype: 'boundlist',
                 pickerField: me,
@@ -999,11 +1046,6 @@ Ext.define('Ext.form.field.ComboBox', {
                 },
                 floating: true,
                 hidden: true,
-
-                // The picker (the dropdown) must have its zIndex managed by the same ZIndexManager which is
-                // providing the zIndex of our Container.
-                ownerCt: me.up('[floating]'),
-                cls: me.el && me.el.up('.' + menuCls) ? menuCls : '',
                 store: me.store,
                 displayField: me.displayField,
                 focusOnToFront: false,

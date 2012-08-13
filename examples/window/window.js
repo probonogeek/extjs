@@ -59,7 +59,9 @@ Ext.onReady(function(){
             title: 'Constrained Window',
             width: 200,
             height: 100,
-            x: 20,
+
+            // Constraining will pull the Window leftwards so that it's within the parent Window
+            x: 1000,
             y: 20,
             constrain: true,
             layout: 'fit',

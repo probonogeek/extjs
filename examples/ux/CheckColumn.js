@@ -64,14 +64,13 @@ Ext.define('Ext.ux.CheckColumn', {
      * @private
      * Process and refire events routed from the GridView's processEvent method.
      */
-    processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
+    processEvent: function(type, view, cell, recordIndex, cellIndex, e, record, row) {
         var me = this,
             key = type === 'keydown' && e.getKey(),
             mousedown = type == 'mousedown';
 
         if (mousedown || (key == e.ENTER || key == e.SPACE)) {
-            var record = view.panel.store.getAt(recordIndex),
-                dataIndex = me.dataIndex,
+            var dataIndex = me.dataIndex,
                 checked = !record.get(dataIndex);
 
             // Allow apps to hook beforecheckchange

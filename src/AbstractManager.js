@@ -106,18 +106,20 @@ Ext.define('Ext.AbstractManager', {
      */
     onAvailable : function(id, fn, scope){
         var all = this.all,
-            item;
+            item,
+            callback;
         
         if (all.containsKey(id)) {
             item = all.get(id);
             fn.call(scope || item, item);
         } else {
-            all.on('add', function(map, key, item){
+            callback = function(map, key, item){
                 if (key == id) {
                     fn.call(scope || item, item);
-                    all.un('add', fn, scope);
+                    all.un('add', callback);
                 }
-            });
+            }; 
+            all.on('add', callback);
         }
     },
     

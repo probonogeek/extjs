@@ -18,9 +18,9 @@ Ext.define('Ext.layout.component.Draw', {
     
     measureContentWidth : function (ownerContext) {
         var target = ownerContext.target,
-            surface = target.surface,
             paddingInfo = ownerContext.getPaddingInfo(),
-            bbox = ownerContext.surfaceBBox || (ownerContext.surfaceBBox = surface.items.getBBox());
+            bbox = this.getBBox(ownerContext);
+            
         if (!target.viewBox) {
             if (target.autoSize) {
                 return bbox.width + paddingInfo.width;
@@ -38,9 +38,9 @@ Ext.define('Ext.layout.component.Draw', {
     
     measureContentHeight : function (ownerContext) {
         var target = ownerContext.target,
-            surface = target.surface,
             paddingInfo = ownerContext.getPaddingInfo(),
-            bbox = ownerContext.surfaceBBox || (ownerContext.surfaceBBox = surface.items.getBBox());
+            bbox = this.getBBox(ownerContext);
+            
         if (!ownerContext.target.viewBox) {
             if (target.autoSize) {
                 return bbox.height + paddingInfo.height;
@@ -54,6 +54,19 @@ Ext.define('Ext.layout.component.Draw', {
                 return bbox.height / bbox.width * (ownerContext.getProp('contentWidth') - paddingInfo.width) + paddingInfo.height;
             }
         }
+    },
+    
+    getBBox: function(ownerContext) {
+        var bbox = ownerContext.surfaceBBox;
+        if (!bbox) {
+            bbox = ownerContext.target.surface.items.getBBox();
+            // If the surface is empty, we'll get these values, normalize them
+            if (bbox.width === -Infinity && bbox.height === -Infinity) {
+                bbox.width = bbox.height = bbox.x = bbox.y = 0;
+            }
+            ownerContext.surfaceBBox = bbox;
+        }
+        return bbox;
     },
 
     publishInnerWidth: function (ownerContext, width) {

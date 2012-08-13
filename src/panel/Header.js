@@ -133,7 +133,7 @@ Ext.define('Ext.panel.Header', {
             if (rule) {
                 style = rule.style;
             } else {
-                style = (tempEl = Ext.getBody().createChild({style: 'position:absolute', cls: me.baseCls + '-text-' + ui})).getStyles('fontFamily', 'fontWeight', 'fontSize', 'color');
+                style = (tempEl = Ext.resetElement.createChild({style: 'position:absolute', cls: me.baseCls + '-text-' + ui})).getStyles('fontFamily', 'fontWeight', 'fontSize', 'color');
                 tempEl.remove();
             }
             if (style) {

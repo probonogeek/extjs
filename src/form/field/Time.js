@@ -61,30 +61,31 @@ Ext.define('Ext.form.field.Time', {
      * valid format -- see {@link #format} and {@link #altFormats}.
      */
 
+    //<locale>
     /**
      * @cfg {String} minText
      * The error text to display when the entered time is before {@link #minValue}.
      */
-    //<locale>
     minText : "The time in this field must be equal to or after {0}",
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} maxText
      * The error text to display when the entered time is after {@link #maxValue}.
      */
-    //<locale>
     maxText : "The time in this field must be equal to or before {0}",
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} invalidText
      * The error text to display when the time in the field is invalid.
      */
-    //<locale>
     invalidText : "{0} is not a valid time",
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} [format=undefined]
      * The default time format string which can be overriden for localization support. The format must be valid
@@ -92,10 +93,10 @@ Ext.define('Ext.form.field.Time', {
      *
      * Defaults to `'g:i A'`, e.g., `'3:15 PM'`. For 24-hour time format try `'H:i'` instead.
      */
-    //<locale>
     format : "g:i A",
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} [submitFormat=undefined]
      * The date format string which will be submitted to the server. The format must be valid according to
@@ -103,16 +104,14 @@ Ext.define('Ext.form.field.Time', {
      *
      * Defaults to {@link #format}.
      */
-    //<locale>
-    submitFormat: 'g:i A',
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} altFormats
      * Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined
      * format.
      */
-    //<locale>
     altFormats : "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A",
     //</locale>
 
@@ -175,6 +174,23 @@ Ext.define('Ext.form.field.Time', {
             formatDate: Ext.Function.bind(me.formatDate, me)
         });
         this.callParent();
+    },
+
+    /**
+     * @private
+     */
+    transformOriginalValue: function(value) {
+        if (Ext.isString(value)) {
+            return this.rawToValue(value);
+        }
+        return value;
+    },
+
+    /**
+     * @private
+     */
+    isEqual: function(v1, v2) {
+        return Ext.Date.isEqual(v1, v2);
     },
 
     /**
@@ -444,16 +460,15 @@ Ext.define('Ext.form.field.Time', {
         me.setRawValue(me.formatDate(me.getValue()));
     },
 
-    setValue: function(v) {
+    setValue: function() {
 
         // Store MUST be created for parent setValue to function
         this.getPicker();
 
-        this.callParent([this.parseDate(v)]);
+        this.callParent(arguments);
     },
 
     getValue: function() {
-        var val = this.callParent(arguments);
-        return this.parseDate(val);
+        return this.parseDate(this.callParent(arguments));
     }
 });

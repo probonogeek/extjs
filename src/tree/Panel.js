@@ -45,7 +45,6 @@ Ext.define('Ext.tree.Panel', {
     deferRowRender: false,
 
     /**
-     * @private
      * @cfg {Boolean} rowLines
      * False so that rows are not separated by lines.
      */
@@ -202,18 +201,18 @@ Ext.define('Ext.tree.Panel', {
         me.relayEvents(me.store, [
             /**
              * @event beforeload
-             * @inheritdoc Ext.data.Store#beforeload
+             * @inheritdoc Ext.data.TreeStore#beforeload
              */
             'beforeload',
 
             /**
              * @event load
-             * @inheritdoc Ext.data.Store#load
+             * @inheritdoc Ext.data.TreeStore#load
              */
             'load'
         ]);
 
-        me.store.on({
+        me.mon(me.store, {
             /**
              * @event itemappend
              * @inheritdoc Ext.data.TreeStore#append
@@ -313,7 +312,7 @@ Ext.define('Ext.tree.Panel', {
             /**
              * @event checkchange
              * Fires when a node with a checkbox's checked property changes
-             * @param {Ext.data.Nodeinterface} node The node who's checked property was changed
+             * @param {Ext.data.NodeInterface} node The node who's checked property was changed
              * @param {Boolean} checked The node's new checked state
              */
             'checkchange',
@@ -373,6 +372,28 @@ Ext.define('Ext.tree.Panel', {
     isItemChecked: function(rec) {
         return rec.get('checked');
     },
+    
+    /**
+     * Expands a record that is loaded in the tree.
+     * @param {Ext.data.Model} record The record to expand
+     * @param {Boolean} [deep] True to expand nodes all the way down the tree hierarchy.
+     * @param {Function} [callback] The function to run after the expand is completed
+     * @param {Object} [scope] The scope of the callback function.
+     */
+    expandNode: function(record, deep, callback, scope) {
+        return this.getView().expand(record, deep, callback, scope || this);
+    },
+
+    /**
+     * Collapses a record that is loaded in the tree.
+     * @param {Ext.data.Model} record The record to collapse
+     * @param {Boolean} [deep] True to collapse nodes all the way up the tree hierarchy.
+     * @param {Function} [callback] The function to run after the collapse is completed
+     * @param {Object} [scope] The scope of the callback function.
+     */
+    collapseNode: function(record, deep, callback, scope) {
+        return this.getView().collapse(record, deep, callback, scope || this);
+    },
 
     /**
      * Expand all nodes
@@ -380,14 +401,15 @@ Ext.define('Ext.tree.Panel', {
      * @param {Object} [scope] The scope of the callback function
      */
     expandAll : function(callback, scope) {
-        var root = this.getRootNode(),
-            animate = this.enableAnimations,
-            view = this.getView();
+        var me = this,
+            root = me.getRootNode(),
+            animate = me.enableAnimations,
+            view = me.getView();
         if (root) {
             if (!animate) {
                 view.beginBulkUpdate();
             }
-            root.expand(true, callback, scope);
+            root.expand(true, callback, scope || me);
             if (!animate) {
                 view.endBulkUpdate();
             }
@@ -400,14 +422,16 @@ Ext.define('Ext.tree.Panel', {
      * @param {Object} [scope] The scope of the callback function
      */
     collapseAll : function(callback, scope) {
-        var root = this.getRootNode(),
-            animate = this.enableAnimations,
-            view = this.getView();
+        var me = this,
+            root = me.getRootNode(),
+            animate = me.enableAnimations,
+            view = me.getView();
 
         if (root) {
             if (!animate) {
                 view.beginBulkUpdate();
             }
+            scope = scope || me;
             if (view.rootVisible) {
                 root.collapse(true, callback, scope);
             } else {
@@ -478,6 +502,7 @@ Ext.define('Ext.tree.Panel', {
      */
     selectPath: function(path, field, separator, callback, scope) {
         var me = this,
+            root,
             keys,
             last;
 
@@ -486,20 +511,27 @@ Ext.define('Ext.tree.Panel', {
 
         keys = path.split(separator);
         last = keys.pop();
-
-        me.expandPath(keys.join(separator), field, separator, function(success, node){
-            var doSuccess = false;
-            if (success && node) {
-                node = node.findChild(field, last);
-                if (node) {
-                    me.getSelectionModel().select(node);
-                    Ext.callback(callback, scope || me, [true, node]);
-                    doSuccess = true;
+        if (keys.length > 1) {
+            me.expandPath(keys.join(separator), field, separator, function(success, node){
+                var lastNode = node;
+                if (success && node) {
+                    node = node.findChild(field, last);
+                    if (node) {
+                        me.getSelectionModel().select(node);
+                        Ext.callback(callback, scope || me, [true, node]);
+                        return;
+                    }
                 }
-            } else if (node === me.getRootNode()) {
-                doSuccess = true;
+                Ext.callback(callback, scope || me, [false, lastNode]);
+            }, me);
+        } else {
+            root = me.getRootNode();
+            if (root.getId() === last) {
+                me.getSelectionModel().select(root);
+                Ext.callback(callback, scope || me, [true, root]);
+            } else {
+                Ext.callback(callback, scope || me, [false, null]);
             }
-            Ext.callback(callback, scope || me, [doSuccess, node]);
-        }, me);
+        }
     }
 });

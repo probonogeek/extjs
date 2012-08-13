@@ -406,6 +406,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
      * @member Ext.dom.Element
      * @method select
      * @static
+     * @ignore
      */
    Ext.dom.Element.select = function(selector, root) {
         var elements;
@@ -429,6 +430,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
      * @member Ext
      * @method select
      * @inheritdoc Ext.dom.Element#select
+     * @ignore
      */
     Ext.select = function() {
         return Ext.dom.Element.select.apply(Ext.dom.Element, arguments);

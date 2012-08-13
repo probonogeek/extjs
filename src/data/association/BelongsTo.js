@@ -132,7 +132,7 @@ Ext.define('Ext.data.association.BelongsTo', {
      *     Ext.define('Product', {
      *         extend: 'Ext.data.Model',
      *         fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
-     *         belongsTo: 'Group'
+     *         belongsTo: 'Order'
      *     });
      *     var product = new Product({
      *         id: 1,

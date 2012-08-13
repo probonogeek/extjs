@@ -59,7 +59,7 @@
     background-image: url(images/info.gif) !important;
 }
 
-.pgan-load-run .pgan-rendered-container{
+.pgan-load-run, .pgan-rendered-container{
     background-image: url(images/folder-open.gif) !important;
 }
 

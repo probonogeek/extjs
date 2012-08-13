@@ -172,9 +172,12 @@ Ext.define('Ext.ZIndexManager', {
         }
         me.mask.maskTarget = maskTarget;
         maskTarget.addCls(Ext.baseCSSPrefix + 'body-masked');
-        me.mask.setBox(viewSize);
         me.mask.setStyle('zIndex', zIndex);
+
+        // setting mask box before showing it in an IE7 strict iframe within a quirks page
+        // can cause body scrolling [EXTJSIV-6219]
         me.mask.show();
+        me.mask.setBox(viewSize);
     },
 
     _hideModalMask: function() {
@@ -347,18 +350,25 @@ Ext.define('Ext.ZIndexManager', {
      * they should all be hidden just for the duration of the drag.
      */
     hide: function() {
-        var i = 0,
-            stack = this.zIndexStack,
+        var me = this,
+            mask = me.mask,
+            i = 0,
+            stack = me.zIndexStack,
             len = stack.length,
             comp;
 
-        this.tempHidden = [];
+        me.tempHidden = me.tempHidden||[];
         for (; i < len; i++) {
             comp = stack[i];
             if (comp.isVisible()) {
-                this.tempHidden.push(comp);
+                me.tempHidden.push(comp);
                 comp.el.hide();
             }
+        }
+        
+        // Also hide modal mask during hidden state
+        if (mask) {
+            mask.hide();
         }
     },
 
@@ -367,8 +377,10 @@ Ext.define('Ext.ZIndexManager', {
      * Restores temporarily hidden managed Components to visibility.
      */
     show: function() {
-        var i = 0,
-            tempHidden = this.tempHidden,
+        var me = this,
+            mask = me.mask,
+            i = 0,
+            tempHidden = me.tempHidden,
             len = tempHidden ? tempHidden.length : 0,
             comp;
 
@@ -377,7 +389,13 @@ Ext.define('Ext.ZIndexManager', {
             comp.el.show();
             comp.setPosition(comp.x, comp.y);
         }
-        delete this.tempHidden;
+        me.tempHidden.length = 0;
+
+        // Also restore mask to visibility and ensure it is aligned with its target element
+        if (mask) {
+            mask.show();
+            mask.alignTo(mask.maskTarget, 'tl-tl');
+        }
     },
 
     /**

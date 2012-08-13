@@ -166,7 +166,9 @@ Ext.onReady(function(){
             valueField: 'value',
             value: ['3', '4', '6'],
             allowBlank: false,
-            msgTarget: 'side'
+            msgTarget: 'side',
+            fromTitle: 'Available',
+            toTitle: 'Selected'
         }],
         dockedItems: createDockedItems('itemselector-field')
     });

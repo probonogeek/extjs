@@ -125,7 +125,7 @@
  *                 '<p>teenager</p>',
  *             '<tpl elseif="age &gt;= 2">',
  *                 '<p>kid</p>',
- *             '<tpl else">',
+ *             '<tpl else>',
  *                 '<p>baby</p>',
  *             '</tpl>',
  *         '</tpl></p>'
@@ -139,7 +139,7 @@
  *             '<tpl switch="name">',
  *                 '<tpl case="Aubrey" case="Nikol">',
  *                     '<p>girl</p>',
- *                 '<tpl default">',
+ *                 '<tpl default>',
  *                     '<p>boy</p>',
  *             '</tpl>',
  *         '</tpl></p>'
@@ -249,7 +249,7 @@
  *             disableFormats: true,
  *             // member functions:
  *             isGirl: function(name){
- *                return name == 'Sara Grace';
+ *                return name == 'Aubrey' || name == 'Nikol';
  *             },
  *             isBaby: function(age){
  *                return age < 1;
@@ -264,6 +264,11 @@ Ext.define('Ext.XTemplate', {
     requires: 'Ext.XTemplateCompiler',
 
     /**
+     * @private
+     */
+    emptyObj: {},
+
+    /**
      * @cfg {Boolean} compiled
      * Only applies to {@link Ext.Template}, XTemplates are compiled automatically on the
      * first call to {@link #apply} or {@link #applyOut}.
@@ -275,11 +280,11 @@ Ext.define('Ext.XTemplate', {
      * be accessed within the scope of the generated function.
      */
 
-    apply: function(values) {
-        return this.applyOut(values, []).join('');
+    apply: function(values, parent) {
+        return this.applyOut(values, [], parent).join('');
     },
 
-    applyOut: function(values, out) {
+    applyOut: function(values, out, parent) {
         var me = this,
             compiler;
 
@@ -293,7 +298,7 @@ Ext.define('Ext.XTemplate', {
         }
 
         try {
-            me.fn.call(me, out, values, {}, 1, 1);
+            me.fn.call(me, out, values, parent || me.emptyObj, 1, 1);
         } catch (e) {
             //<debug>
             Ext.log('Error: ' + e.message);

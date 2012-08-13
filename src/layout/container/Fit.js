@@ -81,108 +81,179 @@ Ext.define('Ext.layout.container.Fit', {
         3: { setsWidth: 1, setsHeight: 1 }
     },
 
-    getItemSizePolicy: function (item) {
+    getItemSizePolicy: function (item, ownerSizeModel) {
         // this layout's sizePolicy is derived from its owner's sizeModel:
-        var sizeModel = this.owner.getSizeModel(),
+        var sizeModel = ownerSizeModel || this.owner.getSizeModel(),
             mode = (sizeModel.width.shrinkWrap ? 0 : 1) |
                    (sizeModel.height.shrinkWrap ? 0 : 2);
 
        return this.sizePolicies[mode];
     },
 
-    beginLayoutCycle: function(ownerContext, firstCycle) {
+    beginLayoutCycle: function (ownerContext, firstCycle) {
         var me = this,
-            widthModel = ownerContext.widthModel,
-            heightModel = ownerContext.heightModel,
-            childItems = ownerContext.childItems,
-            childWidthCalculated = !widthModel.shrinkWrap,
-            childHeightCalculated = !heightModel.shrinkWrap,
-            length = childItems.length,
-            clearItemSizes = (ownerContext.targetContext.el.dom.tagName.toUpperCase() === 'TD'),
-            i, invalidateOptions, itemContext, targetEl;
+            // determine these before the lastSizeModels get updated:
+            resetHeight = me.lastHeightModel && me.lastHeightModel.calculated,
+            resetWidth = me.lastWidthModel && me.lastWidthModel.calculated,
+            resetSizes = resetWidth || resetHeight,
+            maxChildMinHeight = 0, maxChildMinWidth = 0,
+            c, childItems, i, item, length, margins, minHeight, minWidth, style, undef;
 
         me.callParent(arguments);
 
+        // Clear any dimensions which we set before calculation, in case the current
+        // settings affect the available size. This particularly effects self-sizing
+        // containers such as fields, in which the target element is naturally sized,
+        // and should not be stretched by a sized child item.
+        if (resetSizes && ownerContext.targetContext.el.dom.tagName.toUpperCase() != 'TD') {
+            resetSizes = resetWidth = resetHeight = false;
+        }
+
+        childItems = ownerContext.childItems;
+        length = childItems.length;
+
         for (i = 0; i < length; ++i) {
-            itemContext = childItems[i];
+            item = childItems[i];
 
-            if (!firstCycle) {
-                if (itemContext.widthModel.calculated == childWidthCalculated) {
-                    invalidateOptions = null;
-                } else {
-                    invalidateOptions = {
-                        widthModel: childWidthCalculated ? me.sizeModels.calculated
-                                                         : itemContext.sizeModel.width
-                    };
-                }
+            // On the firstCycle, we determine the max of the minWidth/Height of the items
+            // since these can cause the container to grow scrollbars despite our attempts
+            // to fit the child to the container.
+            if (firstCycle) {
+                c = item.target;
+                minHeight = c.minHeight;
+                minWidth = c.minWidth;
 
-                if (itemContext.heightModel.calculated != childHeightCalculated) {
-                    (invalidateOptions || (invalidateOptions = {})).heightModel =
-                        childHeightCalculated ? me.sizeModels.calculated
-                                              : itemContext.sizeModel.height
-                }
+                if (minWidth || minHeight) {
+                    margins = item.marginInfo || item.getMarginInfo();
+                    // if the child item has undefined minWidth/Height, these will become
+                    // NaN by adding the margins...
+                    minHeight += margins.height;
+                    minWidth += margins.height;
 
-                if (invalidateOptions) {
-                    invalidateOptions.before = me.onBeforeInvalidateChild;
-                    itemContext.invalidate(invalidateOptions);
+                    // if the child item has undefined minWidth/Height, these comparisons
+                    // will evaluate to false... that is, "0 < NaN" == false...
+                    if (maxChildMinHeight < minHeight) {
+                        maxChildMinHeight = minHeight;
+                    }
+                    if (maxChildMinWidth < minWidth) {
+                        maxChildMinWidth = minWidth;
+                    }
                 }
             }
 
-            // Clear any dimensions which we set before calculation, in case the current
-            // settings affect the available size. This particularly effects self-sizing
-            // containers such as fields, in which the target element is naturally sized,
-            // and should not be stretched by a sized child item.
-            if (clearItemSizes) {
-                targetEl = itemContext.target.el.dom;
-                if (itemContext.heightModel.calculated) {
-                    targetEl.style.height = '';
+            if (resetSizes) {
+                style = item.el.dom.style;
+
+                if (resetHeight) {
+                    style.height = '';
                 }
-                if (itemContext.widthModel.calculated) {
-                    targetEl.style.width = '';
+                if (resetWidth) {
+                    style.width = '';
                 }
             }
         }
+
+        if (firstCycle) {
+            ownerContext.maxChildMinHeight = maxChildMinHeight;
+            ownerContext.maxChildMinWidth = maxChildMinWidth;
+        }
+
+        // Cache the overflowX/Y flags, but make them false in shrinkWrap mode (since we
+        // won't be triggering overflow in that case) and false if we have no minSize (so
+        // no child to trigger an overflow).
+        c = ownerContext.target;
+        ownerContext.overflowX = (!ownerContext.widthModel.shrinkWrap && 
+                                   ownerContext.maxChildMinWidth &&
+                                   (c.autoScroll || c.overflowX)) || undef;
+
+        ownerContext.overflowY = (!ownerContext.heightModel.shrinkWrap &&
+                                   ownerContext.maxChildMinHeight &&
+                                   (c.autoScroll || c.overflowY)) || undef;
     },
 
-    // @private
     calculate : function (ownerContext) {
         var me = this,
             childItems = ownerContext.childItems,
             length = childItems.length,
+            containerSize = me.getContainerSize(ownerContext),
             info = {
-                contentWidth: 0,
-                contentHeight: 0,
                 length: length,
                 ownerContext: ownerContext,
-                targetSize: me.getContainerSize(ownerContext)
+                targetSize: containerSize
             },
-            calcWidth = ownerContext.widthModel.shrinkWrap,
-            calcHeight = ownerContext.heightModel.shrinkWrap,
-            padWidth = 0,
-            padHeight = 0,
-            padding,
-            i;
+            shrinkWrapWidth = ownerContext.widthModel.shrinkWrap,
+            shrinkWrapHeight = ownerContext.heightModel.shrinkWrap,
+            overflowX = ownerContext.overflowX,
+            overflowY = ownerContext.overflowY,
+            scrollbars, scrollbarSize, padding, i, contentWidth, contentHeight;
 
+        if (overflowX || overflowY) {
+            // If we have children that have minHeight/Width, we may be forced to overflow
+            // and gain scrollbars. If so, we want to remove their space from the other
+            // axis so that we fit things inside the scrollbars rather than under them.
+            scrollbars = me.getScrollbarsNeeded(
+                    overflowX && containerSize.width, overflowY && containerSize.height,
+                    ownerContext.maxChildMinWidth, ownerContext.maxChildMinHeight);
+
+            if (scrollbars) {
+                scrollbarSize = Ext.getScrollbarSize();
+                if (scrollbars & 1) { // if we need the hscrollbar, remove its height
+                    containerSize.height -= scrollbarSize.height;
+                }
+                if (scrollbars & 2) { // if we need the vscrollbar, remove its width
+                    containerSize.width -= scrollbarSize.width;
+                }
+            }
+        }
+
+        // Size the child items to the container (if non-shrinkWrap):
         for (i = 0; i < length; ++i) {
             info.index = i;
             me.fitItem(childItems[i], info);
         }
         
-        if (calcHeight || calcWidth) {
+        if (shrinkWrapHeight || shrinkWrapWidth) {
             padding = ownerContext.targetContext.getPaddingInfo();
             
-            if (calcWidth) {
-                padWidth = padding.width;
+            if (shrinkWrapWidth) {
+                if (overflowY && !containerSize.gotHeight) {
+                    // if we might overflow vertically and don't have the container height,
+                    // we don't know if we will need a vscrollbar or not, so we must wait
+                    // for that height so that we can determine the contentWidth...
+                    me.done = false;
+                } else {
+                    contentWidth = info.contentWidth + padding.width;
+                    // the scrollbar flag (if set) will indicate that an overflow exists on
+                    // the horz(1) or vert(2) axis... if not set, then there could never be
+                    // an overflow...
+                    if (scrollbars & 2) { // if we need the vscrollbar, add its width
+                        contentWidth += scrollbarSize.width;
+                    }
+                    if (!ownerContext.setContentWidth(contentWidth)) {
+                        me.done = false;
+                    }
+                }
             }
-            
-            if (calcHeight) {
-                padHeight = padding.height;
-            }
-        }
 
-        // contentWidth and contentHeight include the margins
-        if (!ownerContext.setContentSize(info.contentWidth + padWidth, info.contentHeight + padHeight)) {
-            me.done = false;
+            if (shrinkWrapHeight) {
+                if (overflowX && !containerSize.gotWidth) {
+                    // if we might overflow horizontally and don't have the container width,
+                    // we don't know if we will need a hscrollbar or not, so we must wait
+                    // for that width so that we can determine the contentHeight...
+                    me.done = false;
+                } else {
+                    contentHeight = info.contentHeight + padding.height;
+                    // the scrollbar flag (if set) will indicate that an overflow exists on
+                    // the horz(1) or vert(2) axis... if not set, then there could never be
+                    // an overflow...
+                    if (scrollbars & 1) { // if we need the hscrollbar, add its height
+                        contentHeight += scrollbarSize.height;
+                    }
+                    if (!ownerContext.setContentHeight(contentHeight)) {
+                        me.done = false;
+                    }
+                }
+            }
         }
     },
 
@@ -207,10 +278,19 @@ Ext.define('Ext.layout.container.Fit', {
     },
 
     fitItemWidth: function (itemContext, info) {
+        var contentWidth, width;
         // Attempt to set only dimensions that are being controlled, not shrinkWrap dimensions
         if (info.ownerContext.widthModel.shrinkWrap) {
             // contentWidth must include the margins to be consistent with setItemWidth
-            info.contentWidth = Math.max(info.contentWidth, itemContext.getProp('width') + info.margins.width);
+            width = itemContext.getProp('width') + info.margins.width;
+            // because we add margins, width will be NaN or a number (not undefined)
+
+            contentWidth = info.contentWidth;
+            if (contentWidth === undefined) {
+                info.contentWidth = width;
+            } else {
+                info.contentWidth = Math.max(contentWidth, width);
+            }
         } else if (itemContext.widthModel.calculated) {
             ++info.needed;
             if (info.targetSize.gotWidth) {
@@ -223,9 +303,18 @@ Ext.define('Ext.layout.container.Fit', {
     },
 
     fitItemHeight: function (itemContext, info) {
+        var contentHeight, height;
         if (info.ownerContext.heightModel.shrinkWrap) {
             // contentHeight must include the margins to be consistent with setItemHeight
-            info.contentHeight = Math.max(info.contentHeight, itemContext.getProp('height') + info.margins.height);
+            height = itemContext.getProp('height') + info.margins.height;
+            // because we add margins, height will be NaN or a number (not undefined)
+
+            contentHeight = info.contentHeight;
+            if (contentHeight === undefined) {
+                info.contentHeight = height;
+            } else {
+                info.contentHeight = Math.max(contentHeight, height);
+            }
         } else if (itemContext.heightModel.calculated) {
             ++info.needed;
             if (info.targetSize.gotHeight) {
@@ -235,17 +324,6 @@ Ext.define('Ext.layout.container.Fit', {
         }
 
         this.positionItemY(itemContext, info);
-    },
-
-    onBeforeInvalidateChild: function (itemContext, options) {
-        ++itemContext.context.progressCount;
-
-        if (options.widthModel) {
-            itemContext.widthModel = options.widthModel;
-        }
-        if (options.heightModel) {
-            itemContext.heightModel = options.heightModel;
-        }
     },
 
     positionItemX: function (itemContext, info) {
@@ -284,4 +362,3 @@ Ext.define('Ext.layout.container.Fit', {
         itemContext.setWidth(info.targetSize.width - info.margins.width);
     }
 });
-

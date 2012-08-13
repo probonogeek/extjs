@@ -409,7 +409,7 @@ Ext.onReady(function () {
         width: 800,
         height: 600,
         minHeight: 400,
-        minWidth: 550,
+        minWidth: 650,
         hidden: false,
         maximizable: true,
         title: 'Scatter Chart Renderer',

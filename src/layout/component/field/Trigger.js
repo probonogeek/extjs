@@ -35,8 +35,9 @@ Ext.define('Ext.layout.component.field.Trigger', {
     beginLayoutFixed: function (ownerContext, width, suffix) {
         var me = this,
             owner = ownerContext.target,
-            ieInputWidthAdjustment = me.ieInputWidthAdjustment,
-            inputWidth = '100%';
+            ieInputWidthAdjustment = me.ieInputWidthAdjustment || 0,
+            inputWidth = '100%',
+            triggerWrap = owner.triggerWrap;
 
         me.callParent(arguments);
 
@@ -46,24 +47,44 @@ Ext.define('Ext.layout.component.field.Trigger', {
             // RTL: This might have to be padding-left unless the senses of the padding styles switch when in RTL mode.
             owner.inputCell.setStyle('padding-right', ieInputWidthAdjustment + 'px');
             if(suffix === 'px') {
-                inputWidth = width - ieInputWidthAdjustment - owner.getTriggerWidth();
+                if (owner.inputWidth) {
+                    inputWidth = owner.inputWidth - owner.getTriggerWidth();
+                } else {
+                    inputWidth = width - ieInputWidthAdjustment - owner.getTriggerWidth();
+                }
+                inputWidth += 'px';
             }
         }
         owner.inputEl.setStyle('width', inputWidth);
-        owner.triggerWrap.setStyle('width', width + suffix);
-        owner.triggerWrap.setStyle('table-layout', 'fixed');
+        inputWidth = owner.inputWidth;
+        if (inputWidth) {
+            triggerWrap.setStyle('width', inputWidth + (ieInputWidthAdjustment) + 'px');
+        } else {
+            triggerWrap.setStyle('width', width + suffix);
+        }
+        triggerWrap.setStyle('table-layout', 'fixed');
     },
 
     beginLayoutShrinkWrap: function (ownerContext) {
         var owner = ownerContext.target,
-            emptyString = '';
+            emptyString = '',
+            inputWidth = owner.inputWidth,
+            triggerWrap = owner.triggerWrap,
+            ieInputWidthAdjustment = this.ieInputWidthAdjustment || 0;
 
         this.callParent(arguments);
 
-        owner.triggerWrap.setStyle('width', emptyString);
-        owner.inputCell.setStyle('width', emptyString);
-        owner.inputEl.setStyle('width', emptyString);
-        owner.triggerWrap.setStyle('table-layout', 'auto');
+        if (inputWidth) {
+            triggerWrap.setStyle('width', inputWidth + 'px');
+            inputWidth = (inputWidth - owner.getTriggerWidth()) + 'px';
+            owner.inputEl.setStyle('width', inputWidth);
+            owner.inputCell.setStyle('width', inputWidth);
+        } else {
+            owner.inputCell.setStyle('width', emptyString);
+            owner.inputEl.setStyle('width', emptyString);
+            triggerWrap.setStyle('width', emptyString);
+            triggerWrap.setStyle('table-layout', 'auto');
+        }
     },
 
     getTextWidth: function () {

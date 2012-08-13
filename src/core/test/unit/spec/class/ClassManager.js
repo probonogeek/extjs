@@ -324,6 +324,26 @@ describe("Ext.ClassManager", function() {
         });
     });
 
+    describe('define', function () {
+        it('should allow anonymous classes', function () {
+            var T = Ext.define(null, function (Self) {
+                return {
+                    constructor: function () {
+                        this.foo = 1;
+                        this.T = Self;
+                    }
+                }
+            });
+            
+            var obj = new T();
+            
+            expect(obj.foo).toBe(1);
+            expect(T).toBe(obj.self);
+            expect(obj.T).toBe(T);
+            expect(obj.$className).toBeNull();
+        })
+    });
+
     describe("instantiate", function() {
         beforeEach(function() {
             manager.create('Test.stuff.Person', {

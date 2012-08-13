@@ -170,16 +170,7 @@ Ext.define('Ext.data.Tree', {
      * @return {Ext.data.NodeInterface[]} The flattened nodes.
      */
     flatten: function(){
-        var nodes = [],
-            hash = this.nodeHash,
-            key;
-
-        for (key in hash) {
-            if (hash.hasOwnProperty(key)) {
-                nodes.push(hash[key]);
-            }
-        }
-        return nodes;
+        return Ext.Object.getValues(this.nodeHash);
     },
 
     /**

@@ -17,6 +17,7 @@
  *
  * - {@link Ext.data.proxy.Ajax Ajax} - sends requests to a server on the same domain
  * - {@link Ext.data.proxy.JsonP JsonP} - uses JSON-P to send requests to a server on a different domain
+ * - {@link Ext.data.proxy.Rest Rest} - uses RESTful HTTP methods (GET/PUT/POST/DELETE) to communicate with server
  * - {@link Ext.data.proxy.Direct Direct} - uses {@link Ext.direct.Manager} to send requests
  *
  * Proxies operate on the principle that all operations performed are either Create, Read, Update or Delete. These four
@@ -107,9 +108,7 @@ Ext.define('Ext.data.proxy.Proxy', {
             delete config.model;
         }
 
-        Ext.apply(this, config);
-
-        this.mixins.observable.constructor.call(this);
+        this.mixins.observable.constructor.call(this, config);
 
         if (this.model !== undefined && !(this.model instanceof Ext.data.Model)) {
             this.setModel(this.model);
@@ -164,17 +163,22 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @return {Ext.data.reader.Reader} The attached Reader object
      */
     setReader: function(reader) {
-        var me = this;
+        var me = this,
+            needsCopy = true;
 
         if (reader === undefined || typeof reader == 'string') {
             reader = {
                 type: reader
             };
+            needsCopy = false;
         }
 
         if (reader.isReader) {
             reader.setModel(me.model);
         } else {
+            if (needsCopy) {
+                reader = Ext.apply({}, reader);
+            }
             Ext.applyIf(reader, {
                 proxy: me,
                 model: me.model,
@@ -216,24 +220,31 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @return {Ext.data.writer.Writer} The attached Writer object
      */
     setWriter: function(writer) {
+        var me = this,
+            needsCopy = true;
+            
         if (writer === undefined || typeof writer == 'string') {
             writer = {
                 type: writer
             };
+            needsCopy = false;
         }
 
         if (!writer.isWriter) {
+            if (needsCopy) {
+                writer = Ext.apply({}, writer);
+            }
             Ext.applyIf(writer, {
-                model: this.model,
-                type : this.defaultWriterType
+                model: me.model,
+                type : me.defaultWriterType
             });
 
             writer = Ext.createByAlias('writer.' + writer.type, writer);
         }
 
-        this.writer = writer;
+        me.writer = writer;
 
-        return this.writer;
+        return me.writer;
     },
 
     /**

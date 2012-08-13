@@ -169,13 +169,13 @@ Ext.define('Ext.flash.Component', {
 
         me.callParent();
 
-        Ext.apply({
+        flashParams = Ext.apply({
             allowScriptAccess: 'always',
             bgcolor: me.backgroundColor,
             wmode: me.wmode
         }, flashParams);
 
-        Ext.apply({
+        flashVars = Ext.apply({
             allowedDomain: document.location.hostname
         }, flashVars);
 

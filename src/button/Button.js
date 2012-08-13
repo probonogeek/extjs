@@ -219,7 +219,8 @@ Ext.define('Ext.button.Button', {
 
     /**
      * @cfg {String} toggleGroup
-     * The group this toggle button is a member of (only 1 per group can be pressed)
+     * The group this toggle button is a member of (only 1 per group can be pressed). If a toggleGroup
+     * is specified, the {@link #enableToggle} configuration will automatically be set to true.
      */
 
     /**
@@ -240,7 +241,8 @@ Ext.define('Ext.button.Button', {
 
     /**
      * @cfg {Boolean} [enableToggle=false]
-     * True to enable pressed/not pressed toggling.
+     * True to enable pressed/not pressed toggling. If a {@link #toggleGroup} is specified, this
+     * option will be set to true.
      */
     enableToggle: false,
 
@@ -585,8 +587,13 @@ Ext.define('Ext.button.Button', {
             me.preventDefault = false;
         }
 
-        if (Ext.isString(me.toggleGroup)) {
+        if (Ext.isString(me.toggleGroup) && me.toggleGroup !== '') {
             me.enableToggle = true;
+        }
+        
+        if (me.html && !me.text) {
+            me.text = me.html;
+            delete me.html;
         }
 
     },
@@ -598,7 +605,7 @@ Ext.define('Ext.button.Button', {
 
     // inherit docs
     getFocusEl: function() {
-        return this.inOnFocus ? this.el : this.btnEl;
+        return this.useElForFocus ? this.el : this.btnEl;
     },
 
     // Buttons add the focus class to the *outermost element*, not the focusEl!
@@ -607,31 +614,23 @@ Ext.define('Ext.button.Button', {
 
         // Set this flag, so that when AbstractComponent's onFocus gets the focusEl to add the focusCls
         // to, it will get the encapsulating element - that's what the CSS rules for Button need right now
-        me.inOnFocus = true;
+        me.useElForFocus = true;
         me.callParent(arguments);
-        me.inOnFocus = false;
+        me.useElForFocus = false;
     },
 
-    // Buttons add the focus class to the *outermost element*, not the focusEl!
+    // See comments in onFocus
     onBlur : function(e) {
-        var me = this,
-            focusCls = me.focusCls,
-            targetEl = me.getEl();
-
-        if (me.destroying) {
-            return;
-        }
-
-        me.beforeBlur(e);
-        if (focusCls && targetEl) {
-            targetEl.removeCls(me.removeClsWithUI(focusCls, true));
-        }
-        if (me.validateOnBlur) {
-            me.validate();
-        }
-        me.hasFocus = false;
-        me.fireEvent('blur', me, e);
-        me.postBlur(e);
+        this.useElForFocus = true;
+        this.callParent(arguments);
+        this.useElForFocus = false;
+    },
+    
+    // See comments in onFocus
+    onDisable: function(){
+        this.useElForFocus = true;
+        this.callParent(arguments);
+        this.useElForFocus = false;
     },
 
     // private
@@ -689,6 +688,7 @@ Ext.define('Ext.button.Button', {
     // private
     onRender: function() {
         var me = this,
+            addOnclick,
             btn,
             btnListeners;
 
@@ -744,11 +744,22 @@ Ext.define('Ext.button.Button', {
         if (me.repeat) {
             me.mon(new Ext.util.ClickRepeater(btn, Ext.isObject(me.repeat) ? me.repeat: {}), 'click', me.onRepeatClick, me);
         } else {
-            btnListeners[me.clickEvent] = me.onClick;
+
+            // If the activation event already has a handler, make a note to add the handler later
+            if (btnListeners[me.clickEvent]) {
+                addOnclick = true;
+            } else {
+                btnListeners[me.clickEvent] = me.onClick;
+            }
         }
 
         // Add whatever button listeners we need
         me.mon(btn, btnListeners);
+
+        // If the listeners object had an entry for our clickEvent, add a listener now
+        if (addOnclick) {
+            me.mon(btn, me.clickEvent, me.onClick, me);
+        }
 
         // Register the button in the toggle manager
         Ext.ButtonToggleManager.register(me);
@@ -1393,8 +1404,9 @@ Ext.define('Ext.button.Button', {
      */
     getPersistentPadding: function() {
         var me = this,
+            reset = Ext.scopeResetCSS,
             padding = me.persistentPadding,
-            btn, leftTop, btnEl, btnInnerEl;
+            btn, leftTop, btnEl, btnInnerEl, wrap;
 
         // Create auto-size button offscreen and measure its insides
         // Short-circuit IE as it sometimes gives false positive for padding
@@ -1405,7 +1417,7 @@ Ext.define('Ext.button.Button', {
                     text: 'test',
                     style: 'position:absolute;top:-999px;'
                 });
-                btn.el = Ext.DomHelper.append(Ext.getBody(), btn.getRenderTree(), true);
+                btn.el = Ext.DomHelper.append(Ext.resetElement, btn.getRenderTree(), true);
                 btn.applyChildEls(btn.el);
                 btnEl = btn.btnEl;
                 btnInnerEl = btn.btnInnerEl;

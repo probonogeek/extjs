@@ -10,6 +10,8 @@ Ext.define('Ext.layout.component.field.TextArea', {
     
     canGrowWidth: false,
     
+    naturalSizingProp: 'cols',
+    
     beginLayout: function(ownerContext){
         this.callParent(arguments);
         ownerContext.target.inputEl.setStyle('height', '');

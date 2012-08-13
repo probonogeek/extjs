@@ -311,8 +311,8 @@ Element.override({
      * @return {Object} box An object in the format
      *
      *     {
-     *         x: <Element's X position>,
-     *         y: <Element's Y position>,
+     *         left: <Element's X position>,
+     *         top: <Element's Y position>,
      *         width: <Element's width>,
      *         height: <Element's height>,
      *         bottom: <Element's lower bound>,

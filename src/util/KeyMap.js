@@ -54,7 +54,9 @@
  *
  * Since 4.1.0, KeyMaps can bind to Components and process key-based events fired by Components.
  *
- * To bind to a Component, use the single parameter form of constructor:
+ * To bind to a Component, use the single parameter form of constructor and include the Component event name
+ * to listen for, and a `processEvent` implementation which returns the key event for further processing by
+ * the KeyMap:
  *
  *     var map = new Ext.util.KeyMap({
  *         target: myGridView,
@@ -74,7 +76,7 @@
  *                 e.store.remove(e.record);
  *
  *                 // Attempt to select the record that's now in its place
- *                 e.view.getSelectionModel().select(e,index);
+ *                 e.view.getSelectionModel().select(e.index);
  *                 e.view.el.focus();
  *             }
  *         }
@@ -109,6 +111,12 @@ Ext.define('Ext.util.KeyMap', {
     /**
      * @cfg {Object} [processEventScope=this]
      * The scope (`this` context) in which the {@link #processEvent} method is executed.
+     */
+
+    /**
+     * @cfg {Boolean} [ignoreInputFields=false]
+     * Configure this as `true` if there are any input fields within the {@link #target}, and this KeyNav
+     * should not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable="true"`)
      */
 
     /**
@@ -246,40 +254,58 @@ Ext.define('Ext.util.KeyMap', {
     },
 
     /**
-     * Process any keydown events on the element
+     * Process the {@link #eventName event} from the {@link #target}.
      * @private
      * @param {Ext.EventObject} event
      */
-    handleKeyDown: function(event) {
-        var me = this,
-            bindings, i, len;
+    handleTargetEvent: (function() {
+        var tagRe = /input|textarea/i;
 
-        if (this.enabled) { //just in case
-            bindings = this.bindings;
-            i = 0;
-            len = bindings.length;
+        return function(event) {
+            var me = this,
+                bindings, i, len,
+                target, contentEditable;
 
-            // Process the event
-            event = me.processEvent.apply(me||me.processEventScope, arguments);
+            if (this.enabled) { //just in case
+                bindings = this.bindings;
+                i = 0;
+                len = bindings.length;
 
-            // If the processor does not return a keyEvent, we can't process it.
-            // Allow them to return false to cancel processing of the event
-            if (!event.getKey) {
-                return event;
-            }
-            for(; i < len; ++i){
-                this.processBinding(bindings[i], event);
+                // Process the event
+                event = me.processEvent.apply(me||me.processEventScope, arguments);
+
+                // Ignore events from input fields if configured to do so
+                if (me.ignoreInputFields) {
+                    target = event.target;
+                    contentEditable = target.contentEditable;
+                    // contentEditable will default to inherit if not specified, only check if the
+                    // attribute has been set or explicitly set to true
+                    // http://html5doctor.com/the-contenteditable-attribute/
+                    if (tagRe.test(target.tagName) || (contentEditable === '' || contentEditable === 'true')) {
+                        return;
+                    }
+                }
+
+                // If the processor does not return a keyEvent, we can't process it.
+                // Allow them to return false to cancel processing of the event
+                if (!event.getKey) {
+                    return event;
+                }
+                for(; i < len; ++i){
+                    this.processBinding(bindings[i], event);
+                }
             }
         }
-    },
+    }()),
 
     /**
      * @cfg {Function} processEvent
      * An optional event processor function which accepts the argument list provided by the
      * {@link #eventName configured event} of the {@link #target}, and returns a keyEvent for processing by the KeyMap.
      *
-     * This may be useful when the {@link #target} is a Component with s complex event signature. Extra information from
-     * the event arguments may be injected into the event for use by the handler functions before returning it.
+     * This may be useful when the {@link #target} is a Component with s complex event signature, where the event is not
+     * the first parameter. Extra information from the event arguments may be injected into the event for use by the handler
+     * functions before returning it.
      */
     processEvent: function(event){
         return event;
@@ -381,7 +407,7 @@ Ext.define('Ext.util.KeyMap', {
         var me = this;
         
         if (!me.enabled) {
-            me.target.on(me.eventName, me.handleKeyDown, me);
+            me.target.on(me.eventName, me.handleTargetEvent, me);
             me.enabled = true;
         }
     },
@@ -393,7 +419,7 @@ Ext.define('Ext.util.KeyMap', {
         var me = this;
         
         if (me.enabled) {
-            me.target.removeListener(me.eventName, me.handleKeyDown, me);
+            me.target.removeListener(me.eventName, me.handleTargetEvent, me);
             me.enabled = false;
         }
     },
@@ -415,12 +441,17 @@ Ext.define('Ext.util.KeyMap', {
      * @param {Boolean} removeTarget True to also remove the {@link #target}
      */
     destroy: function(removeTarget) {
-        var me = this;
+        var me = this,
+            target = me.target;
 
         me.bindings = [];
         me.disable();
         if (removeTarget === true) {
-            me.target.isComponent ? me.target.destroy() : me.target.remove();
+            if (target.isComponent) {
+                target.destroy();
+            } else {
+                target.remove();
+            }
         }
         delete me.target;
     }

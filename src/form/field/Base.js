@@ -99,7 +99,7 @@ Ext.define('Ext.form.field.Base', {
             '<tpl if="name"> name="{name}"</tpl>',
             '<tpl if="value"> value="{[Ext.util.Format.htmlEncode(values.value)]}"</tpl>',
             '<tpl if="placeholder"> placeholder="{placeholder}"</tpl>',
-            '<tpl if="maxLength !== undefined"> maxlength="{maxLength}"</tpl>',
+            '{%if (values.maxLength !== undefined){%} maxlength="{maxLength}"{%}%}',
             '<tpl if="readOnly"> readonly="readonly"</tpl>',
             '<tpl if="disabled"> disabled="disabled"</tpl>',
             '<tpl if="tabIdx"> tabIndex="{tabIdx}"</tpl>',
@@ -145,11 +145,11 @@ Ext.define('Ext.form.field.Base', {
      * applyTo
      */
 
+    //<locale>
     /**
      * @cfg {String} invalidText
      * The error text to use when marking a field invalid and no message is provided
      */
-    //<locale>
     invalidText : 'The value in this field is invalid',
     //</locale>
 
@@ -493,13 +493,23 @@ Ext.define('Ext.form.field.Base', {
      */
     setRawValue: function(value) {
         var me = this;
-        value = Ext.value(value, '');
+        value = Ext.value(me.transformRawValue(value), '');
         me.rawValue = value;
 
         // Some Field subclasses may not render an inputEl
         if (me.inputEl) {
             me.inputEl.dom.value = value;
         }
+        return value;
+    },
+    
+    /**
+     * Transform the raw value before it is set
+     * @protected
+     * @param {Object} value The value
+     * @return {Object} The value to set
+     */
+    transformRawValue: function(value) {
         return value;
     },
 

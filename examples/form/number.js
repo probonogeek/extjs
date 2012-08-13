@@ -1,7 +1,7 @@
 Ext.require('Ext.form.*');
 
 Ext.onReady(function() {
-    Ext.createWidget('form', {
+    Ext.widget('form', {
         renderTo: 'example-form',
         title: 'Number fields with spinner',
         bodyPadding: 5,

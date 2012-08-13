@@ -186,7 +186,7 @@ Ext.define('Ext.data.Connection', {
      * @param {Object} options.success.response The XMLHttpRequest object containing the response data.
      * @param {Object} options.success.options The parameter to the request call.
      *
-     * @param {Function} options.failure The function to be called upon success of the request.
+     * @param {Function} options.failure The function to be called upon failure of the request.
      * The callback is passed the following parameters:
      * @param {Object} options.failure.response The XMLHttpRequest object containing the response data.
      * @param {Object} options.failure.options The parameter to the request call.
@@ -410,16 +410,27 @@ Ext.define('Ext.data.Connection', {
             response = {
                 responseText: '',
                 responseXML: null
-            }, doc, firstChild;
+            }, doc, contentNode;
 
         try {
             doc = frame.contentWindow.document || frame.contentDocument || window.frames[frame.id].document;
             if (doc) {
                 if (doc.body) {
-                    if (/textarea/i.test((firstChild = doc.body.firstChild || {}).tagName)) { // json response wrapped in textarea
-                        response.responseText = firstChild.value;
-                    } else {
-                        response.responseText = doc.body.innerHTML;
+
+                    // Response sent as Content-Type: text/json or text/plain. Browser will embed in a <pre> element
+                    // Note: The statement below tests the result of an assignment.
+                    if ((contentNode = doc.body.firstChild) && /pre/i.test(contentNode.tagName)) {
+                        response.responseText = contentNode.innerText;
+                    }
+
+                    // Response sent as Content-Type: text/html. We must still support JSON response wrapped in textarea.
+                    // Note: The statement below tests the result of an assignment.
+                    else if (contentNode = doc.getElementsByTagName('textarea')[0]) {
+                        response.responseText = contentNode.value;
+                    }
+                    // Response sent as Content-Type: text/html with no wrapping. Scrape JSON response out of text
+                    else {
+                        response.responseText = doc.body.textContent || doc.body.innerText;
                     }
                 }
                 //in IE the document may still have a body even if returns XML.

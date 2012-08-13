@@ -39,8 +39,18 @@ Ext.define('Ext.panel.Tool', {
 
     baseCls: Ext.baseCSSPrefix + 'tool',
     disabledCls: Ext.baseCSSPrefix + 'tool-disabled',
+    
+    /**
+     * @cfg
+     * @private
+     */
     toolPressedCls: Ext.baseCSSPrefix + 'tool-pressed',
+    /**
+     * @cfg
+     * @private
+     */
     toolOverCls: Ext.baseCSSPrefix + 'tool-over',
+
     ariaRole: 'button',
 
     childEls: [

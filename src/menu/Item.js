@@ -37,7 +37,6 @@ Ext.define('Ext.menu.Item', {
     /**
      * @cfg {String} activeCls
      * The CSS class added to the menu item when the item is activated (focused/mouseover).
-     * Defaults to `Ext.baseCSSPrefix + 'menu-item-active'`.
      */
     activeCls: Ext.baseCSSPrefix + 'menu-item-active',
 
@@ -49,98 +48,93 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {Boolean} canActivate
-     * Whether or not this menu item can be activated when focused/mouseovered. Defaults to `true`.
+     * Whether or not this menu item can be activated when focused/mouseovered.
      */
     canActivate: true,
 
     /**
      * @cfg {Number} clickHideDelay
      * The delay in milliseconds to wait before hiding the menu after clicking the menu item.
-     * This only has an effect when `hideOnClick: true`. Defaults to `1`.
+     * This only has an effect when `hideOnClick: true`.
      */
     clickHideDelay: 1,
 
     /**
      * @cfg {Boolean} destroyMenu
-     * Whether or not to destroy any associated sub-menu when this item is destroyed. Defaults to `true`.
+     * Whether or not to destroy any associated sub-menu when this item is destroyed.
      */
     destroyMenu: true,
 
     /**
      * @cfg {String} disabledCls
      * The CSS class added to the menu item when the item is disabled.
-     * Defaults to `Ext.baseCSSPrefix + 'menu-item-disabled'`.
      */
     disabledCls: Ext.baseCSSPrefix + 'menu-item-disabled',
 
     /**
-     * @cfg {String} href
-     * The href attribute to use for the underlying anchor link. Defaults to `#`.
-     * @markdown
+     * @cfg {String} [href='#']
+     * The href attribute to use for the underlying anchor link.
      */
 
-     /**
-      * @cfg {String} hrefTarget
-      * The target attribute to use for the underlying anchor link. Defaults to `undefined`.
-      * @markdown
-      */
+    /**
+     * @cfg {String} hrefTarget
+     * The target attribute to use for the underlying anchor link.
+     */
 
     /**
      * @cfg {Boolean} hideOnClick
-     * Whether to not to hide the owning menu when this item is clicked. Defaults to `true`.
-     * @markdown
+     * Whether to not to hide the owning menu when this item is clicked.
      */
     hideOnClick: true,
 
     /**
      * @cfg {String} icon
-     * The path to an icon to display in this item. Defaults to `Ext.BLANK_IMAGE_URL`.
-     * @markdown
+     * The path to an icon to display in this item.
+     *
+     * Defaults to `Ext.BLANK_IMAGE_URL`.
      */
 
     /**
      * @cfg {String} iconCls
-     * A CSS class that specifies a `background-image` to use as the icon for this item. Defaults to `undefined`.
-     * @markdown
+     * A CSS class that specifies a `background-image` to use as the icon for this item.
      */
 
     isMenuItem: true,
 
     /**
-     * @cfg {Mixed} menu
+     * @cfg {Ext.menu.Menu/Object} menu
      * Either an instance of {@link Ext.menu.Menu} or a config object for an {@link Ext.menu.Menu}
      * which will act as a sub-menu to this item.
-     * @markdown
+     */
+
+    /**
      * @property {Ext.menu.Menu} menu The sub-menu associated with this item, if one was configured.
      */
 
     /**
      * @cfg {String} menuAlign
      * The default {@link Ext.Element#getAlignToXY Ext.Element.getAlignToXY} anchor position value for this
-     * item's sub-menu relative to this item's position. Defaults to `'tl-tr?'`.
-     * @markdown
+     * item's sub-menu relative to this item's position.
      */
     menuAlign: 'tl-tr?',
 
     /**
      * @cfg {Number} menuExpandDelay
-     * The delay in milliseconds before this item's sub-menu expands after this item is moused over. Defaults to `200`.
-     * @markdown
+     * The delay in milliseconds before this item's sub-menu expands after this item is moused over.
      */
     menuExpandDelay: 200,
 
     /**
      * @cfg {Number} menuHideDelay
-     * The delay in milliseconds before this item's sub-menu hides after this item is moused out. Defaults to `200`.
-     * @markdown
+     * The delay in milliseconds before this item's sub-menu hides after this item is moused out.
      */
     menuHideDelay: 200,
 
     /**
      * @cfg {Boolean} plain
-     * Whether or not this item is plain text/html with no icon or visual activation. Defaults to `false`.
-     * @markdown
+     * Whether or not this item is plain text/html with no icon or visual activation.
      */
+
     /**
      * @cfg {String/Object} tooltip
      * The tooltip for the button - can be a string to be used as innerHTML (html tags are accepted) or
@@ -175,8 +169,7 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {String} text
-     * The text/html to display in this item. Defaults to `undefined`.
-     * @markdown
+     * The text/html to display in this item.
      */
 
     /**
@@ -386,18 +379,27 @@ Ext.define('Ext.menu.Item', {
 
     beforeRender: function() {
         var me = this,
-            blank = Ext.BLANK_IMAGE_URL;
+            blank = Ext.BLANK_IMAGE_URL,
+            iconCls,
+            arrowCls;
 
         me.callParent();
 
+        if (me.iconAlign === 'right') {
+            iconCls = me.checkChangeDisabled ? me.disabledCls : '';
+            arrowCls = Ext.baseCSSPrefix + 'menu-item-icon-right ' + me.iconCls;
+        } else {
+            iconCls = me.iconCls + (me.checkChangeDisabled ? ' ' + me.disabledCls : '');
+            arrowCls = me.menu ? me.arrowCls : '';
+        }
         Ext.applyIf(me.renderData, {
             href: me.href || '#',
             hrefTarget: me.hrefTarget,
             icon: me.icon || blank,
-            iconCls: me.iconCls + (me.checkChangeDisabled ? ' ' + me.disabledCls : ''),
+            iconCls: iconCls,
             plain: me.plain,
             text: me.text,
-            arrowCls: me.menu ? me.arrowCls : '',
+            arrowCls: arrowCls,
             blank: blank
         });
     },
@@ -413,7 +415,7 @@ Ext.define('Ext.menu.Item', {
     },
     
     /**
-     * Set a child menu for this item. See the {@link #menu} configuration.
+     * Set a child menu for this item. See the {@link #cfg-menu} configuration.
      * @param {Ext.menu.Menu/Object} menu A menu, or menu configuration. null may be
      * passed to remove the menu.
      * @param {Boolean} [destroyMenu] True to destroy any existing menu. False to
@@ -422,7 +424,8 @@ Ext.define('Ext.menu.Item', {
      */
     setMenu: function(menu, destroyMenu) {
         var me = this,
-            oldMenu = me.menu;
+            oldMenu = me.menu,
+            arrowEl = me.arrowEl;
             
         if (oldMenu) {
             delete oldMenu.parentItem;
@@ -441,8 +444,8 @@ Ext.define('Ext.menu.Item', {
             me.menu = null;
         }
         
-        if (me.rendered && !me.destroying) {
-            me.arrowEl[me.menu ? 'addCls' : 'removeCls'](me.arrowCls);
+        if (me.rendered && !me.destroying && arrowEl) {
+            arrowEl[me.menu ? 'addCls' : 'removeCls'](me.arrowCls);
         }
     },
 

@@ -37,6 +37,19 @@ Ext.define('Ext.data.AbstractStore', {
     },
 
     statics: {
+        /**
+         * Creates a store from config object.
+         * 
+         * @param {Object/Ext.data.AbstractStore} store A config for
+         * the store to be created.  It may contain a `type` field
+         * which defines the particular type of store to create.
+         * 
+         * Alteratively passing an actual store to this method will
+         * just return it, no changes made.
+         * 
+         * @return {Ext.data.AbstractStore} The created store.
+         * @static
+         */
         create: function(store) {
             if (!store.isStore) {
                 if (!store.type) {
@@ -48,7 +61,16 @@ Ext.define('Ext.data.AbstractStore', {
         }
     },
 
+    /**
+     * @cfg {Boolean} remoteSort
+     * True to defer any sorting operation to the server. If false, sorting is done locally on the client.
+     */
     remoteSort  : false,
+
+    /**
+     * @cfg {Boolean} remoteFilter
+     * True to defer any filtering operation to the server. If false, filtering is done locally on the client.
+     */
     remoteFilter: false,
 
     /**
@@ -72,7 +94,7 @@ Ext.define('Ext.data.AbstractStore', {
     autoSync: false,
 
     /**
-     * @property {String} batchUpdateMode
+     * @cfg {String} batchUpdateMode
      * Sets the updating behavior based on batch synchronization. 'operation' (the default) will update the Store's
      * internal representation of the data after each operation of the batch has completed, 'complete' will wait until
      * the entire batch has been completed before updating the Store's data. 'complete' is a good choice for local
@@ -81,14 +103,14 @@ Ext.define('Ext.data.AbstractStore', {
     batchUpdateMode: 'operation',
 
     /**
-     * @property {Boolean} filterOnLoad
+     * @cfg {Boolean} filterOnLoad
      * If true, any filters attached to this Store will be run after loading data, before the datachanged event is fired.
      * Defaults to true, ignored if {@link Ext.data.Store#remoteFilter remoteFilter} is true
      */
     filterOnLoad: true,
 
     /**
-     * @property {Boolean} sortOnLoad
+     * @cfg {Boolean} sortOnLoad
      * If true, any sorters attached to this Store will be run after loading data, before the datachanged event is fired.
      * Defaults to true, igored if {@link Ext.data.Store#remoteSort remoteSort} is true
      */
@@ -134,8 +156,8 @@ Ext.define('Ext.data.AbstractStore', {
      * @cfg {Object[]} fields
      * This may be used in place of specifying a {@link #model} configuration. The fields should be a
      * set of {@link Ext.data.Field} configuration objects. The store will automatically create a {@link Ext.data.Model}
-     * with these fields. In general this configuration option should be avoided, it exists for the purposes of
-     * backwards compatibility. For anything more complicated, such as specifying a particular id property or
+     * with these fields. In general this configuration option should only be used for simple stores like
+     * a two-field store of ComboBox. For anything more complicated, such as specifying a particular id property or
      * associations, a {@link Ext.data.Model} should be defined and specified for the {@link #model}
      * config.
      */
@@ -147,8 +169,18 @@ Ext.define('Ext.data.AbstractStore', {
      */
 
     /**
-     * @cfg {Object[]} filters
-     * Array of {@link Ext.util.Filter Filters} for this store.
+     * @cfg {Object[]/Function[]} filters
+     * Array of {@link Ext.util.Filter Filters} for this store. Can also be passed array of
+     * functions which will be used as the {@link Ext.util.Filter#filterFn filterFn} config
+     * for filters:
+     * 
+     *     filters: [
+     *         function(item) {
+     *             return item.internalId > 0;
+     *         }
+     *     ]
+     *
+     * To filter after the grid is loaded use the {@link Ext.data.Store#filterBy filterBy} function.
      */
 
     sortRoot: 'data',
@@ -258,14 +290,19 @@ Ext.define('Ext.data.AbstractStore', {
         me.removed = [];
 
         me.mixins.observable.constructor.apply(me, arguments);
+
+        // <debug>
+        var configModel = me.model;
+        // </debug>
+
         me.model = Ext.ModelManager.getModel(me.model);
 
         /**
          * @property {Object} modelDefaults
          * @private
-         * A set of default values to be applied to every model instance added via {@link #insert} or created via {@link #create}.
-         * This is used internally by associations to set foreign keys and other fields. See the Association classes source code
-         * for examples. This should not need to be used by application developers.
+         * A set of default values to be applied to every model instance added via {@link Ext.data.Store#insert insert} or created
+         * via {@link Ext.data.Store#createModel createModel}. This is used internally by associations to set foreign keys and
+         * other fields. See the Association classes source code for examples. This should not need to be used by application developers.
          */
         Ext.applyIf(me, {
             modelDefaults: {}
@@ -286,9 +323,17 @@ Ext.define('Ext.data.AbstractStore', {
 
         // <debug>
         if (!me.model && me.useModelWarning !== false) {
-            if (Ext.isDefined(Ext.global.console)) {
-                Ext.global.console.warn('Store defined with no model. You may have mistyped the model name.');
+            // There are a number of ways things could have gone wrong, try to give as much information as possible
+            var logMsg = [
+                Ext.getClassName(me) || 'Store',
+                ' created with no model.'
+            ];
+
+            if (typeof configModel === 'string') {
+                logMsg.push(" The name '", configModel, "'", ' does not correspond to a valid model.');
             }
+
+            Ext.log.warn(logMsg.join(''));
         }
         // </debug>
 
@@ -497,6 +542,9 @@ Ext.define('Ext.data.AbstractStore', {
         me.fireEvent('refresh', me);
     },
 
+    /**
+     * @private
+     */
     onBatchException: function(batch, operation) {
         // //decide what to do... could continue with the next operation
         // batch.start();
@@ -735,12 +783,13 @@ Ext.define('Ext.data.AbstractStore', {
         var me = this,
             operation;
 
-        options = options || {};
-        
-        options.action = options.action || 'read';
-        options.filters = options.filters || me.filters.items;
-        options.sorters = options.sorters || me.getSorters();
-        
+        options = Ext.apply({
+            action: 'read',
+            filters: me.filters.items,
+            sorters: me.getSorters()
+        }, options);
+        me.lastOptions = options;
+
         operation = new Ext.data.Operation(options);
 
         if (me.fireEvent('beforeload', me, operation) !== false) {
@@ -749,6 +798,14 @@ Ext.define('Ext.data.AbstractStore', {
         }
 
         return me;
+    },
+
+    /**
+     * Reloads the store using the last options passed to the {@link #method-load} method.
+     * @param {Object} options A config object which contains options which may override the options passed to the previous load call.
+     */
+    reload: function(options) {
+        return this.load(Ext.apply(this.lastOptions, options));
     },
 
     /**
@@ -762,14 +819,14 @@ Ext.define('Ext.data.AbstractStore', {
             i, shouldSync;
 
         if (me.autoSync && !me.autoSyncSuspended) {
-            for(i = modifiedFieldNames.length; i--;) {
+            for (i = modifiedFieldNames.length; i--;) {
                 // only sync if persistent fields were modified
-                if(record.fields.get(modifiedFieldNames[i]).persist) {
+                if (record.fields.get(modifiedFieldNames[i]).persist) {
                     shouldSync = true;
                     break;
                 }
             }
-            if(shouldSync) {
+            if (shouldSync) {
                 me.sync();
             }
         }

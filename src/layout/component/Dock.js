@@ -59,7 +59,7 @@ Ext.define('Ext.layout.component.Dock', {
             oldBorders = me.borders,
             opposites = me.dockOpposites,
             currentGeneration = owner.dockedItems.generation,
-            i, ln, item, dock, side,
+            i, ln, item, dock, side, borderItem,
             collapsed = me.collapsed;
 
         if (me.initializedBorders == currentGeneration || (owner.border && !owner.manageBodyBorders)) {
@@ -108,7 +108,10 @@ Ext.define('Ext.layout.component.Dock', {
                     ln = oldBorders[side].length;
                     if (!owner.manageBodyBorders) {
                         for (i = 0; i < ln; i++) {
-                            oldBorders[side][i].removeCls(Ext.baseCSSPrefix + 'docked-noborder-' + side);
+                            borderItem = oldBorders[side][i];
+                            if (!borderItem.isDestroyed) {
+                                borderItem.removeCls(Ext.baseCSSPrefix + 'docked-noborder-' + side);
+                            }
                         }
                         if (!oldBorders[side].satisfied && !owner.bodyBorder) {
                             owner.removeBodyCls(Ext.baseCSSPrefix + 'docked-noborder-' + side);
@@ -141,14 +144,42 @@ Ext.define('Ext.layout.component.Dock', {
         me.borders = borders;
     },
 
+    beforeLayoutCycle: function (ownerContext) {
+        var me = this,
+            owner = me.owner,
+            shrinkWrap = me.sizeModels.shrinkWrap,
+            collapsedHorz, collapsedVert;
+
+        if (owner.collapsed) {
+            if (owner.collapsedVertical()) {
+                collapsedVert = true;
+                ownerContext.measureDimensions = 1;
+            } else {
+                collapsedHorz = true;
+                ownerContext.measureDimensions = 2;
+            }
+        }
+
+        ownerContext.collapsedVert = collapsedVert;
+        ownerContext.collapsedHorz = collapsedHorz;
+
+        // If we are collapsed, we want to auto-layout using the placeholder/expander
+        // instead of the normal items/dockedItems. This must be done here since we could
+        // be in a box layout w/stretchmax which sets the width/heightModel to allow it to
+        // control the size.
+        if (collapsedVert) {
+            ownerContext.heightModel = shrinkWrap;
+        } else if (collapsedHorz) {
+            ownerContext.widthModel = shrinkWrap;
+        }
+    },
+
     beginLayout: function(ownerContext) {
         var me = this,
             owner = me.owner,
             docked = me.getLayoutItems(),
             layoutContext = ownerContext.context,
             dockedItemCount = docked.length,
-            collapsedVert = false,
-            collapsedHorz = false,
             dockedItems, i, item, itemContext, offsets,
             collapsed;
 
@@ -159,8 +190,7 @@ Ext.define('Ext.layout.component.Dock', {
         // Cache the children as ContextItems (like a Container). Also setup to handle
         // collapsed state:
         collapsed = owner.getCollapsed();
-        if (Ext.isDefined(me.lastCollapsedState) && (collapsed !== me.lastCollapsedState)) {
-
+        if (collapsed !== me.lastCollapsedState && Ext.isDefined(me.lastCollapsedState)) {
             // If we are collapsing...
             if (me.owner.collapsed) {
                 ownerContext.isCollapsingOrExpanding = 1;
@@ -179,26 +209,15 @@ Ext.define('Ext.layout.component.Dock', {
 
         for (i = 0; i < dockedItemCount; i++) {
             item = docked[i];
-            itemContext = layoutContext.getCmp(item);
-            itemContext.dockedAt = { x: 0, y: 0 };
-            itemContext.offsets = offsets = Ext.Element.parseBox(item.offsets || {});
-            offsets.width = offsets.left + offsets.right;
-            offsets.height = offsets.top + offsets.bottom;
-            dockedItems.push(itemContext);
-        }
-
-        if (owner.collapsed) {
-            if (owner.collapsedVertical()) {
-                collapsedVert = true;
-                ownerContext.measureDimensions = 1;
-            } else {
-                collapsedHorz = true;
-                ownerContext.measureDimensions = 2;
+            if (item.rendered) {
+                itemContext = layoutContext.getCmp(item);
+                itemContext.dockedAt = { x: 0, y: 0 };
+                itemContext.offsets = offsets = Ext.Element.parseBox(item.offsets || {});
+                offsets.width = offsets.left + offsets.right;
+                offsets.height = offsets.top + offsets.bottom;
+                dockedItems.push(itemContext);
             }
         }
-
-        ownerContext.collapsedVert = collapsedVert;
-        ownerContext.collapsedHorz = collapsedHorz;
 
         ownerContext.bodyContext = ownerContext.getEl('body');
     },
@@ -214,19 +233,8 @@ Ext.define('Ext.layout.component.Dock', {
 
         me.callParent(arguments);
 
-        // If we are collapsed, we want to auto-layout using the placeholder/expander
-        // instead of the normal items/dockedItems. This must be done here since we could
-        // be in a box layout w/stretchmax which sets the width/heightModel to allow it to
-        // control the size.
-        if (ownerContext.collapsedVert) {
-            ownerContext.heightModel = me.sizeModels.shrinkWrap;
-        } else if (ownerContext.collapsedHorz) {
-            ownerContext.widthModel = me.sizeModels.shrinkWrap;
-        }
-
         if (lastHeightModel && lastHeightModel.shrinkWrap &&
-            !ownerContext.heightModel.shrinkWrap &&
-            !me.owner.manageHeight) {
+                    !ownerContext.heightModel.shrinkWrap && !me.owner.manageHeight) {
             owner.body.dom.style.marginBottom = '';
         }
 
@@ -344,12 +352,10 @@ Ext.define('Ext.layout.component.Dock', {
             maxSize = owner['max' + sizePropCap],
             minSize = owner['min' + sizePropCap] || 0,
             hasMaxSize = maxSize != null, // exactly the same as "maxSize !== null && maxSize !== undefined"
-            constrainedSize = ownerContext.state['constrained' + sizePropCap],
-            isConstrainedSize = constrainedSize != null,
             setSize = 'set' + sizePropCap,
             border, bodyContext, frameSize, padding, end;
 
-        if (sizeModel.shrinkWrap && !isConstrainedSize) {
+        if (sizeModel.shrinkWrap) {
             // End position before adding docks around the content is content size plus the body borders in this axis.
             // If collapsed in this axis, the body borders will not be shown.
             if (collapsedAxis) {
@@ -363,15 +369,9 @@ Ext.define('Ext.layout.component.Dock', {
             frameSize = ownerContext.framingInfo;
             padding   = ownerContext.paddingInfo;
 
-            if (isConstrainedSize) {
-                end = constrainedSize;
-                sizeModel = this.sizeModels.calculated; // behave as if calculated
-                ownerContext[setSize](constrainedSize);
-            } else {
-                end = ownerContext.getProp(sizeProp);
-            }
-
+            end = ownerContext.getProp(sizeProp);
             end -= border[dockEnd] + padding[dockEnd] + frameSize[dockEnd];
+
             begin = border[dockBegin] + padding[dockBegin] + frameSize[dockBegin];
         }
 
@@ -387,7 +387,6 @@ Ext.define('Ext.layout.component.Dock', {
             ignoreFrameEnd: false,
             initialSize: end - begin,
             hasMinMaxConstraints: (minSize || hasMaxSize) && sizeModel.shrinkWrap,
-            isConstrainedSize: isConstrainedSize,
             minSize: minSize,
             maxSize: hasMaxSize ? maxSize : 1e9,
             bodyPosProp: this.owner.manageHeight ? posProp : ('margin-' + dockBegin), // 'margin-left' or 'margin-top'
@@ -656,101 +655,90 @@ Ext.define('Ext.layout.component.Dock', {
      * @private
      */
     finishConstraints: function (ownerContext, horz, vert) {
-        var horzTooSmall = horz.size < horz.minSize,
-            horzTooBig   = horz.size > horz.maxSize,
-            vertTooSmall = vert.size < vert.minSize,
-            vertTooBig   = vert.size > vert.maxSize,
-            state = ownerContext.state,
-            ret = true,
-            configured = this.sizeModels.configured,
-            dirty;
+        var sizeModels = this.sizeModels,
+            publishWidth = horz.shrinkWrap,
+            publishHeight = vert.shrinkWrap,
+            dirty, height, width, heightModel, widthModel, size;
 
-        // Analysis of the potential constraint feedback given the possibilities for the
-        // various constraints:
-        //
-        //   #1: h < min, v > max : (Expand width, Shrink height)
-        //          In general, making the panel wider could possibly cause the content to
-        //          be shorter thereby eliminating the need to reduce the height, but we
-        //          just measured the content width given effectively infinite space in
-        //          which to expand. This means it is very unlikey (if not impossible) for
-        //          the height to change given more width, so no special concerns.
-        //
-        //   #2: h < min, v < min : (Expand width, Expand height)
-        //          Making panel bigger in both directions has no concerns. Again, making
-        //          the panel wider could only reduce height, so the need to expand the
-        //          height would remain.
-        //
-        //   #3: h > max, v > max : (Shrink width, Shrink height)
-        //          Making the panel narrower cannot cause the maxHeight violation to go
-        //          away, so no special concerns.
-        //
-        //   #4: h > max, v < min : (Shrink width, Expand height)
-        //          Finally an interesting case! Shrinking the width can cause the height
-        //          to increase. We cannot know if it will increase enough to avoid the
-        //          minHeight violation, but if we apply the minHeight constraint, we will
-        //          not be able to tell that we should not have done so. Which means, in
-        //          this case, we must only apply the maxWidth constraint, allowing the
-        //          layout to rerun and perhaps apply the minHeight constraint next time.
+        if (publishWidth) {
+            size = horz.size;
 
-        // NOTE: if we are already applying a constraint on a given axis, that axis will
-        // *not* be in shrinkWrap mode.
-
-        if (horz.shrinkWrap && horzTooBig && vert.shrinkWrap && vertTooSmall) { // if (#4)
-            state.constrainedWidth = horz.maxSize;
-            ownerContext.widthModel = configured; // via maxWidth config
-            ret = false;
-        } else {
-            if (horz.shrinkWrap) {
-                if (horzTooBig) {
-                    state.constrainedWidth = horz.maxSize;
-                    ownerContext.widthModel = configured;
-                    ret = false;
-                } else if (horzTooSmall) {
-                    state.constrainedWidth = horz.minSize;
-                    ownerContext.widthModel = configured;
-                    ret = false;
-                }
-            }
-
-            if (vert.shrinkWrap) {
-                if (vertTooBig) {
-                    state.constrainedHeight = vert.maxSize;
-                    ownerContext.heightModel = configured;
-                    ret = false;
-                } else if (vertTooSmall) {
-                    state.constrainedHeight = vert.minSize;
-                    ownerContext.heightModel = configured;
-                    ret = false;
-                }
+            if (size < horz.minSize) {
+                widthModel = sizeModels.constrainedMin;
+                width = horz.minSize;
+            } else if (size > horz.maxSize) {
+                widthModel = sizeModels.constrainedMax;
+                width = horz.maxSize;
+            } else {
+                width = size;
             }
         }
 
-        if (ret) {
-            if (horz.shrinkWrap) {
-                ownerContext.setWidth(horz.size);
-            }
-            if (vert.shrinkWrap) {
+        if (publishHeight) {
+            size = vert.size;
+
+            if (size < vert.minSize) {
+                heightModel = sizeModels.constrainedMin;
+                height = vert.minSize;
+            } else if (size > vert.maxSize) {
+                heightModel = sizeModels.constrainedMax;
+                height = vert.maxSize;
+            } else {
                 if (!ownerContext.collapsedVert && !this.owner.manageHeight) {
-                    // height of the outerEl is provided by the height (including margins) of
-                    // the bodyEl, so this value does not need to be written to the DOM:
+                    // height of the outerEl is provided by the height (including margins)
+                    // of the bodyEl, so this value does not need to be written to the DOM
                     dirty = false;
 
                     // so long as we set top and bottom margins on the bodyEl!
                     ownerContext.bodyContext.setProp('margin-bottom', vert.dockedPixelsEnd);
                 }
 
-                ownerContext.setHeight(vert.size, dirty);
+                height = size;
             }
-        } else {
-            ownerContext.invalidate({
-                state: {
-                    constrainedWidth: state.constrainedWidth,
-                    constrainedHeight: state.constrainedHeight
-                }
-            });
         }
 
-        return ret;
+        // Handle the constraints...
+
+        if (widthModel || heightModel) {
+            // See ContextItem#init for an analysis of why this case is special. Basically,
+            // in this case, we only know the width and the height could be anything.
+            if (widthModel && heightModel &&
+                        widthModel.constrainedMax &&  heightModel.constrainedMin) {
+                ownerContext.invalidate({ widthModel: widthModel });
+                return false;
+            }
+
+            // To process a width or height other than that to which we have shrinkWrapped,
+            // we need to invalidate our component and carry forward w/these constrains...
+            // unless the ownerLayout wants these results and will invalidate us anyway.
+            if (!ownerContext.widthModel.calculatedFromShrinkWrap &&
+                        !ownerContext.heightModel.calculatedFromShrinkWrap) {
+                // nope, just us to handle the constraint...
+                ownerContext.invalidate({ widthModel: widthModel, heightModel: heightModel });
+                return false;
+            }
+
+            // We have a constraint to deal with, so we just adjust the size models and
+            // allow the ownerLayout to invalidate us with its contribution to our final
+            // size...
+        }
+
+        // we only publish the sizes if we are not invalidating the result...
+
+        if (publishWidth) {
+            ownerContext.setWidth(width);
+            if (widthModel) {
+                ownerContext.widthModel = widthModel; // important to the ownerLayout
+            }
+        }
+        if (publishHeight) {
+            ownerContext.setHeight(height, dirty);
+            if (heightModel) {
+                ownerContext.heightModel = heightModel; // important to the ownerLayout
+            }
+        }
+
+        return true;
     },
 
     /**
@@ -817,13 +805,14 @@ Ext.define('Ext.layout.component.Dock', {
      */
     getDockedItems: function(order, beforeBody) {
         var me = this,
-            all = me.owner.dockedItems.items,
+            renderedOnly = (order === 'visual'),
+            all = renderedOnly ? Ext.ComponentQuery.query('[rendered]', me.owner.dockedItems.items) : me.owner.dockedItems.items,
             sort = all && all.length && order !== false,
             renderOrder,
             dock, dockedItems, i, isBefore, length;
 
         if (beforeBody == null) {
-            dockedItems = sort ? all.slice() : all;
+            dockedItems = sort && !renderedOnly ? all.slice() : all;
         } else {
             dockedItems = [];
 
@@ -952,7 +941,6 @@ Ext.define('Ext.layout.component.Dock', {
             dockedItemCount = items.length,
             itemIndex = 0,
             correctPosition = 0,
-            item,
             staticNodeCount = 0,
             targetNodes = me.getRenderTarget().dom.childNodes,
             targetChildCount = targetNodes.length,

@@ -25,7 +25,7 @@ Ext.ns('Ext.samples');
                                     '<span class="updated-sample"> (Updated)</span>',
                                 '<tpl elseif="this.isExperimental(values.status)">',
                                     '<span class="new-sample"> (Experimental)</span>',
-                                '<tpl else>',
+                                '<tpl elseif="status">',
                                     '<span class="status"> ({status})</span>',
                                 '</tpl>',
                             '</h4><p>{desc}</p></div>',

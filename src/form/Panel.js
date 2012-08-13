@@ -18,21 +18,6 @@
  * of the config options supported by the {@link Ext.form.Basic} class, and will pass them along to
  * the internal BasicForm when it is created.
  * 
- * **Note**: If subclassing FormPanel, any configuration options for the BasicForm must be applied to
- * the `initialConfig` property of the FormPanel. Applying {@link Ext.form.Basic BasicForm}
- * configuration settings to `this` will *not* affect the BasicForm's configuration.
- * 
- *     Ext.define('MyForm', {
- *         extend: 'Ext.form.Panel',
- *         constructor: function(config) {
- *             Ext.applyIf(config, {
- *                 // defaults for configs that should be passed along to the Basic form constructor go here
- *                 trackResetOnLoad: true
- *             });
- *             this.callParent(arguments);
- *         }
- *     });
- * 
  * The following events fired by the BasicForm will be re-fired by the FormPanel and can therefore be
  * listened for on the FormPanel itself:
  * 
@@ -162,6 +147,22 @@ Ext.define('Ext.form.Panel', {
     layout: 'anchor',
 
     ariaRole: 'form',
+    
+    basicFormConfigs: [
+        'api', 
+        'baseParams', 
+        'errorReader', 
+        'method', 
+        'paramOrder',
+        'paramsAsHash',
+        'reader',
+        'standardSubmit',
+        'timeout',
+        'trackResetOnLoad',
+        'url',
+        'waitMsgTarget',
+        'waitTitle'
+    ],
 
     initComponent: function() {
         var me = this;
@@ -225,7 +226,17 @@ Ext.define('Ext.form.Panel', {
      * @private
      */
     createForm: function() {
-        return new Ext.form.Basic(this, Ext.applyIf({listeners: {}}, this.initialConfig));
+        var cfg = {},
+            props = this.basicFormConfigs,
+            len = props.length,
+            i = 0,
+            prop;
+            
+        for (; i < len; ++i) {
+            prop = props[i];
+            cfg[prop] = this[prop];
+        }
+        return new Ext.form.Basic(this, cfg);
     },
 
     /**
@@ -256,12 +267,9 @@ Ext.define('Ext.form.Panel', {
 
     /**
      * Convenience function for fetching the current value of each field in the form. This is the same as calling
-     * {@link Ext.form.Basic#getValues this.getForm().getValues()}
-     * @param {Boolean} [asString=false] If true, will return the key/value collection as a single
-     * URL-encoded param string.
-     * @param {Boolean} [dirtyOnly=false] If true, only fields that are dirty will be included in the result.
-     * @param {Boolean} [includeEmptyText=false]] If true, the configured emptyText of empty fields will be used.
-     * @return {String/Object}
+     * {@link Ext.form.Basic#getValues this.getForm().getValues()}.
+     *
+     * @inheritdoc Ext.form.Basic#getValues
      */
     getValues: function(asString, dirtyOnly, includeEmptyText, useDataValues) {
         return this.getForm().getValues(asString, dirtyOnly, includeEmptyText, useDataValues);

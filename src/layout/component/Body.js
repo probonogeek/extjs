@@ -64,7 +64,8 @@ Ext.define('Ext.layout.component.Body', {
             innerHeight -= ownerContext.getPaddingInfo().height;
         }
 
-        ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
+        // return the value here, it may get used in a subclass
+        return ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
     },
 
     publishInnerWidth: function (ownerContext, width) {

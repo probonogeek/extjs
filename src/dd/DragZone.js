@@ -100,6 +100,7 @@ Ext.define('Ext.dd.DragZone', {
      * @param {Number} x The x position of the click on the dragged object
      * @param {Number} y The y position of the click on the dragged object
      * @return {Boolean} true to continue the drag, false to cancel
+     * @template
      */
     onInitDrag : function(x, y){
         this.proxy.update(this.dragData.ddel.cloneNode(true));
@@ -109,6 +110,7 @@ Ext.define('Ext.dd.DragZone', {
 
     /**
      * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
+     * @template
      */
     afterRepair : function(){
         var me = this;
@@ -123,6 +125,7 @@ Ext.define('Ext.dd.DragZone', {
      * this.dragData.ddel
      * @param {Event} e The mouse up event
      * @return {Number[]} The xy location (e.g. `[100, 200]`)
+     * @template
      */
     getRepairXY : function(e){
         return Ext.fly(this.dragData.ddel).getXY();

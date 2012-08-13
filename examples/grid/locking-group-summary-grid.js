@@ -72,6 +72,8 @@ Ext.onReady(function(){
             items: [{
                 tooltip: 'Toggle the visibility of the summary row',
                 text: 'Toggle Summary',
+                enableToggle: true,
+                pressed: true,
                 handler: function(){
                     showSummary = !showSummary;
                     var view = grid.lockedGrid.getView();

@@ -11,7 +11,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
 
     /**
      * @property {Boolean} isMixedCollection
-     * `true` in this class to identify an objact as an instantiated MixedCollection, or subclass thereof.
+     * `true` in this class to identify an object as an instantiated MixedCollection, or subclass thereof.
      */
     isMixedCollection: true,
 
@@ -73,12 +73,16 @@ Ext.define('Ext.util.AbstractMixedCollection', {
 
     /**
      * Adds an item to the collection. Fires the {@link #event-add} event when complete.
-     * @param {String} key <p>The key to associate with the item, or the new item.</p>
-     * <p>If a {@link #getKey} implementation was specified for this MixedCollection,
-     * or if the key of the stored items is in a property called <code><b>id</b></code>,
-     * the MixedCollection will be able to <i>derive</i> the key for the new item.
-     * In this case just pass the new item in this parameter.</p>
-     * @param {Object} o The item to add.
+     *
+     * @param {String/Object} key The key to associate with the item, or the new item.
+     *
+     * If a {@link #getKey} implementation was specified for this MixedCollection,
+     * or if the key of the stored items is in a property called `id`,
+     * the MixedCollection will be able to *derive* the key for the new item.
+     * In this case just pass the new item in this parameter.
+     *
+     * @param {Object} [o] The item to add.
+     *
      * @return {Object} The item added.
      */
     add : function(key, obj){
@@ -205,15 +209,16 @@ mc.add(otherEl);
     },
 
     /**
-     * Executes the specified function once for every item in the collection, passing the following arguments:
-     * <div class="mdetail-params"><ul>
-     * <li><b>item</b> : Mixed<p class="sub-desc">The collection item</p></li>
-     * <li><b>index</b> : Number<p class="sub-desc">The item's index</p></li>
-     * <li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
-     * </ul></div>
-     * The function should return a boolean value. Returning false from the function will stop the iteration.
+     * Executes the specified function once for every item in the collection.
+     * The function should return a boolean value.
+     * Returning false from the function will stop the iteration.
+     *
      * @param {Function} fn The function to execute for each item.
-     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the current item in the iteration.
+     * @param {Mixed} fn.item The collection item.
+     * @param {Number} fn.index The index of item.
+     * @param {Number} fn.len Total length of collection.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference)
+     * in which the function is executed. Defaults to the current item in the iteration.
      */
     each : function(fn, scope){
         var items = [].concat(this.items), // each safe for removal
@@ -233,7 +238,12 @@ mc.add(otherEl);
      * Executes the specified function once for every key in the collection, passing each
      * key, and its associated item as the first two parameters.
      * @param {Function} fn The function to execute for each item.
-     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.
+     * @param {String} fn.key The key of collection item.
+     * @param {Mixed} fn.item The collection item.
+     * @param {Number} fn.index The index of item.
+     * @param {Number} fn.len Total length of collection.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the
+     * function is executed. Defaults to the browser window.
      */
     eachKey : function(fn, scope){
         var keys = this.keys,
@@ -250,8 +260,12 @@ mc.add(otherEl);
      * Returns the first item in the collection which elicits a true return value from the
      * passed selection function.
      * @param {Function} fn The selection function to execute for each item.
-     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to the browser window.
-     * @return {Object} The first item in the collection which returned true from the selection function, or null if none was found
+     * @param {Mixed} fn.item The collection item.
+     * @param {String} fn.key The key of collection item.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the
+     * function is executed. Defaults to the browser window.
+     * @return {Object} The first item in the collection which returned true from the selection
+     * function, or null if none was found.
      */
     findBy : function(fn, scope) {
         var keys = this.keys,
@@ -658,8 +672,11 @@ var middleAged = people.filter('age', 24);
      * Filter by a function. Returns a <i>new</i> collection that has been filtered.
      * The passed function will be called with each object in the collection.
      * If the function returns true, the value is included otherwise it is filtered.
-     * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key)
-     * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.
+     * @param {Function} fn The function to be called.
+     * @param {Mixed} fn.item The collection item.
+     * @param {String} fn.key The key of collection item.
+     * @param {Object} scope (optional) The scope (<code>this</code> reference) in
+     * which the function is executed. Defaults to this MixedCollection.
      * @return {Ext.util.MixedCollection} The new filtered collection
      */
     filterBy : function(fn, scope) {
@@ -704,7 +721,9 @@ var middleAged = people.filter('age', 24);
     /**
      * Find the index of the first matching object in this collection by a function.
      * If the function returns <i>true</i> it is considered a match.
-     * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key).
+     * @param {Function} fn The function to be called.
+     * @param {Mixed} fn.item The collection item.
+     * @param {String} fn.key The key of collection item.
      * @param {Object} [scope] The scope (<code>this</code> reference) in which the function is executed. Defaults to this MixedCollection.
      * @param {Number} [start=0] The index to start searching at.
      * @return {Number} The matched index or -1

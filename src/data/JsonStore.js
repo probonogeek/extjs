@@ -9,7 +9,6 @@
 <pre><code>
 var store = new Ext.data.JsonStore({
     // store configs
-    autoDestroy: true,
     storeId: 'myStore',
 
     proxy: {

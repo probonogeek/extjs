@@ -16,7 +16,7 @@
  *          ],
  *          
  *          renderTpl: [
- *              '&lt;div id="{id}-bodyEl"&gt;&lt;/div&gt;'
+ *              '<div id="{id}-bodyEl"></div>'
  *          ],
  *          
  *          // ...
@@ -71,9 +71,9 @@
  *          ],
  *          
  *          renderTpl: [
- *              '&lt;div id="{id}-bodyEl"&gt;'
- *                  '&lt;div id="{id}-innerEl"&gt;&lt;/div&gt;'
- *              '&lt;/div&gt;'
+ *              '<div id="{id}-bodyEl">'
+ *                  '<div id="{id}-innerEl"></div>'
+ *              '</div>'
  *          ],
  *          
  *          // ...
@@ -129,7 +129,7 @@ Ext.define('Ext.util.ElementContainer', {
     },
 
     /**
-     * Adds each argument passed to this method to the {@link #childEls} array.
+     * Adds each argument passed to this method to the {@link Ext.AbstractComponent#cfg-childEls childEls} array.
      */
     addChildEls: function () {
         var me = this,

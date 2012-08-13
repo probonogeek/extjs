@@ -75,7 +75,6 @@
  *                 type: 'Time',
  *                 position: 'bottom',
  *                 fields: ['date'],
- *                 groupBy: 'hour',
  *                 dateFormat: 'ga'
  *             }
  *         ]
@@ -87,8 +86,7 @@
  * 
  * The horizontal axis is a {@link Ext.chart.axis.Time Time Axis} and is positioned on the bottom edge of the Chart.
  * It represents the bounds of the data contained in the "WeatherPoint" Model's "date" field.
- * The {@link Ext.chart.axis.Time#cfg-groupBy groupBy} configuration is used to specify that this axis
- * will group times in one-hour increments, and the {@link Ext.chart.axis.Time#cfg-dateFormat dateFormat}
+ * The {@link Ext.chart.axis.Time#cfg-dateFormat dateFormat}
  * configuration tells the Time Axis how to format it's labels.
  * 
  * Here's what the Chart looks like now that it has its Axes configured:
@@ -120,7 +118,7 @@
  * 
  * {@img Ext.chart.Chart/Ext.chart.Chart2.png Line Series}
  * 
- * See the [Simple Chart Example](doc-resources/Ext.chart.Chart/examples/simple_chart/index.html) for a live demo.
+ * See the [Line Charts Example](#!/example/charts/Charts.html) for a live demo.
  * 
  * ## Themes
  * 
@@ -149,7 +147,8 @@ Ext.define('Ext.chart.Chart', {
         themeManager: 'Ext.chart.theme.Theme',
         mask: 'Ext.chart.Mask',
         navigation: 'Ext.chart.Navigation',
-        bindable: 'Ext.util.Bindable'
+        bindable: 'Ext.util.Bindable',
+        observable: 'Ext.util.Observable'
     },
 
     uses: [
@@ -351,11 +350,11 @@ Ext.define('Ext.chart.Chart', {
             }
         }
 
+        me.mixins.observable.constructor.call(me, config);
         if (config.enableMask) {
-            me.mixins.mask.constructor.call(me, config);
+            me.mixins.mask.constructor.call(me);
         }
-
-        me.mixins.navigation.constructor.call(me, config);
+        me.mixins.navigation.constructor.call(me);
         me.callParent([config]);
     },
     
@@ -381,7 +380,7 @@ Ext.define('Ext.chart.Chart', {
             /**
              * @event beforerefresh
              * Fires before a refresh to the chart data is called. If the beforerefresh handler returns false the
-             * {@link #refresh} action will be cancelled.
+             * {@link #event-refresh} action will be cancelled.
              * @param {Ext.chart.Chart} this
              */
             'beforerefresh',
@@ -431,9 +430,14 @@ Ext.define('Ext.chart.Chart', {
     afterComponentLayout: function(width, height) {
         var me = this;
         if (Ext.isNumber(width) && Ext.isNumber(height)) {
-            me.curWidth = width;
-            me.curHeight = height;
-            me.redraw(true);
+            if (width !== me.curWidth || height !== me.curHeight) {
+                me.curWidth = width;
+                me.curHeight = height;
+                me.redraw(true);
+            } else if (me.needsRedraw) {
+                delete me.needsRedraw;
+                me.redraw();
+            }
         }
         this.callParent(arguments);
     },
@@ -519,6 +523,26 @@ Ext.define('Ext.chart.Chart', {
         }
         me.bindStore(me.store, true);
         me.refresh();
+
+        if (me.surface.engine === 'Vml') {
+            me.on('added', me.onAddedVml, me);
+            me.mon(Ext.container.Container.hierarchyEventSource, 'added', me.onContainerAddedVml, me);
+        }
+    },
+
+    // When using a vml surface we need to redraw when this chart or one of its ancestors
+    // is moved to a new container after render, because moving the vml chart causes the
+    // vml elements to go haywire, some displaing incorrectly or not displaying at all.
+    // This appears to be caused by the component being moved to the detached body element
+    // before being added to the new container.
+    onAddedVml: function() {
+        this.needsRedraw = true; // redraw after component layout
+    },
+
+    onContainerAddedVml: function(container) {
+        if (this.isDescendantOf(container)) {
+            this.needsRedraw = true; // redraw after component layout
+        }
     },
 
     // @private get x and y position of the mouse cursor.
@@ -692,12 +716,49 @@ Ext.define('Ext.chart.Chart', {
     // @private
     refresh: function() {
         var me = this;
+            
         if (me.rendered && me.curWidth !== undefined && me.curHeight !== undefined) {
+            if (!me.isVisible(true) && !me.refreshPending) {
+                me.setShowListeners('mon');
+                me.refreshPending = true;
+                return;
+            }
             if (me.fireEvent('beforerefresh', me) !== false) {
                 me.redraw();
                 me.fireEvent('refresh', me);
             }
         }
+    },
+    
+    onShow: function(){
+        var me = this;
+        me.callParent(arguments);
+        if (me.refreshPending) {
+            me.delayRefresh();
+            me.setShowListeners('mun');
+        }
+        delete me.refreshPending;
+    },
+    
+    setShowListeners: function(method){
+        var me = this;
+        me[method](Ext.container.Container.hierarchyEventSource, {
+            scope: me,
+            single: true,
+            show: me.forceRefresh,
+            expand: me.forceRefresh
+        });
+    },
+    
+    forceRefresh: function(container) {
+        var me = this;
+        if (me.isDescendantOf(container) && me.refreshPending) {
+            // Add unbind here, because either expand/show could be fired,
+            // so be sure to unbind the listener that didn't
+            me.setShowListeners('mun');
+            me.delayRefresh();
+        }    
+        delete me.refreshPending;
     },
 
     bindStore: function(store, initial) {
@@ -936,26 +997,35 @@ Ext.define('Ext.chart.Chart', {
         }
     },
     /**
-     * Saves the chart by either triggering a download or returning a string containing the chart data. 
-     * The action depends on the export type specified in the passed configuration.
+     * Saves the chart by either triggering a download or returning a string containing the chart data
+     * as SVG.  The action depends on the export type specified in the passed configuration. The chart
+     * will be exported using either the {@link Ext.draw.engine.SvgExporter} or the {@link Ext.draw.engine.ImageExporter}
+     * classes.
      *
      * Possible export types:
-     * - "image/png"
-     * - "image/svg+xml"
      *
-     * Other configuration properties:
-     * - width
+     * - 'image/png'
+     * - 'image/jpeg',
+     * - 'image/svg+xml'
+     *
+     * If 'image/svg+xml' is specified, the SvgExporter will be used. 
+     * If 'image/png' or 'image/jpeg' are specified, the ImageExporter will be used. This exporter
+     * must post the SVG data to a remote server to have the data processed, see the {@link Ext.draw.engine.ImageExporter}
+     * for more details.
      *
      * Example usage:
      *
-     * chart.save({
-     *      type: 'image/png'
-     * });
+     *     chart.save({
+     *          type: 'image/png'
+     *     });
      *
-     * @param {Object} config (required) Object which contains information about the export-type
+     * @param {Object} [config] The configuration to be passed to the exporter.
+     * See the export method for the appropriate exporter for the relevant
+     * configuration options
+     * @return {Object} See the return types for the appropriate exporter
      */
     save: function(config){
-        return Ext.draw.Surface.save(config, this.surface);
+        return Ext.draw.Surface.save(this.surface, config);
     },
     // @private remove gently.
     destroy: function() {

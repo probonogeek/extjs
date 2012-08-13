@@ -8,14 +8,11 @@ Ext.define('Ext.layout.component.FieldSet', {
 
     type: 'fieldset',
 
-    /*beginLayout: function (ownerContext) {
-        this.callParent(arguments);
-
-        var legend = this.owner.legend;
-        if (legend) {
-            ownerContext.legendContext = ownerContext.context.getCmp(legend);
+    beforeLayoutCycle: function (ownerContext) {
+        if (ownerContext.target.collapsed) {
+            ownerContext.heightModel = this.sizeModels.shrinkWrap;
         }
-    },*/
+    },
 
     beginLayoutCycle: function (ownerContext) {
         var target = ownerContext.target,
@@ -27,7 +24,6 @@ Ext.define('Ext.layout.component.FieldSet', {
         // known contentHeight if we are collapsed:
         //
         if (target.collapsed) {
-            ownerContext.heightModel = this.sizeModels.shrinkWrap;
             ownerContext.setContentHeight(0);
 
             // If we are also shrinkWrap width, we must provide a contentWidth (since the
@@ -41,21 +37,28 @@ Ext.define('Ext.layout.component.FieldSet', {
     },
 
     calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
+        var border = ownerContext.getBorderInfo(),
+            legend = ownerContext.target.legend;
+            
         // Height of fieldset is content height plus top border width (which is either the legend height or top border width) plus bottom border width
-        return ownerContext.getProp('contentHeight') + ownerContext.getPaddingInfo().height + (ownerContext.target.legend ? ownerContext.target.legend.getHeight() : ownerContext.getBorderInfo().top) + ownerContext.getBorderInfo().bottom;
+        return ownerContext.getProp('contentHeight') + ownerContext.getPaddingInfo().height + (legend ? legend.getHeight() : border.top) + border.bottom;
     },
 
     publishInnerHeight: function (ownerContext, height) {
-        this.callParent(arguments);
-        if (ownerContext.target.legend) {
-            ownerContext.bodyContext.setHeight(ownerContext.bodyContext.getProp('height') - ownerContext.target.legend.getHeight(), !ownerContext.heightModel.natural);
+        // Subtract the legend off here and pass it up to the body
+        // We do this because we don't want to set an incorrect body height
+        // and then setting it again with the correct value
+        var legend = ownerContext.target.legend;
+        if (legend) {
+            height -= legend.getHeight();
         }
+        this.callParent([ownerContext, height]);
     },
 
     getLayoutItems : function() {
         var legend = this.owner.legend;
         if (legend) {
-            return [ legend ];
+            return [legend];
         }
         return [];
     }

@@ -1,125 +1,110 @@
 /**
  * @author Ed Spencer
- * @class Ext.data.reader.Json
  *
- * <p>The JSON Reader is used by a Proxy to read a server response that is sent back in JSON format. This usually
- * happens as a result of loading a Store - for example we might create something like this:</p>
+ * The JSON Reader is used by a Proxy to read a server response that is sent back in JSON format. This usually
+ * happens as a result of loading a Store - for example we might create something like this:
  *
-<pre><code>
-Ext.define('User', {
-    extend: 'Ext.data.Model',
-    fields: ['id', 'name', 'email']
-});
-
-var store = Ext.create('Ext.data.Store', {
-    model: 'User',
-    proxy: {
-        type: 'ajax',
-        url : 'users.json',
-        reader: {
-            type: 'json'
-        }
-    }
-});
-</code></pre>
+ *     Ext.define('User', {
+ *         extend: 'Ext.data.Model',
+ *         fields: ['id', 'name', 'email']
+ *     });
  *
- * <p>The example above creates a 'User' model. Models are explained in the {@link Ext.data.Model Model} docs if you're
- * not already familiar with them.</p>
+ *     var store = Ext.create('Ext.data.Store', {
+ *         model: 'User',
+ *         proxy: {
+ *             type: 'ajax',
+ *             url : 'users.json',
+ *             reader: {
+ *                 type: 'json'
+ *             }
+ *         }
+ *     });
  *
- * <p>We created the simplest type of JSON Reader possible by simply telling our {@link Ext.data.Store Store}'s
+ * The example above creates a 'User' model. Models are explained in the {@link Ext.data.Model Model} docs if you're
+ * not already familiar with them.
+ *
+ * We created the simplest type of JSON Reader possible by simply telling our {@link Ext.data.Store Store}'s
  * {@link Ext.data.proxy.Proxy Proxy} that we want a JSON Reader. The Store automatically passes the configured model to the
  * Store, so it is as if we passed this instead:
  *
-<pre><code>
-reader: {
-    type : 'json',
-    model: 'User'
-}
-</code></pre>
+ *     reader: {
+ *         type : 'json',
+ *         model: 'User'
+ *     }
  *
- * <p>The reader we set up is ready to read data from our server - at the moment it will accept a response like this:</p>
+ * The reader we set up is ready to read data from our server - at the moment it will accept a response like this:
  *
-<pre><code>
-[
-    {
-        "id": 1,
-        "name": "Ed Spencer",
-        "email": "ed@sencha.com"
-    },
-    {
-        "id": 2,
-        "name": "Abe Elias",
-        "email": "abe@sencha.com"
-    }
-]
-</code></pre>
+ *     [
+ *         {
+ *             "id": 1,
+ *             "name": "Ed Spencer",
+ *             "email": "ed@sencha.com"
+ *         },
+ *         {
+ *             "id": 2,
+ *             "name": "Abe Elias",
+ *             "email": "abe@sencha.com"
+ *         }
+ *     ]
  *
- * <p><u>Reading other JSON formats</u></p>
+ * ## Reading other JSON formats
  *
- * <p>If you already have your JSON format defined and it doesn't look quite like what we have above, you can usually
+ * If you already have your JSON format defined and it doesn't look quite like what we have above, you can usually
  * pass JsonReader a couple of configuration options to make it parse your format. For example, we can use the
- * {@link #root} configuration to parse data that comes back like this:</p>
+ * {@link #cfg-root} configuration to parse data that comes back like this:
  *
-<pre><code>
-{
-    "users": [
-       {
-           "id": 1,
-           "name": "Ed Spencer",
-           "email": "ed@sencha.com"
-       },
-       {
-           "id": 2,
-           "name": "Abe Elias",
-           "email": "abe@sencha.com"
-       }
-    ]
-}
-</code></pre>
+ *     {
+ *         "users": [
+ *            {
+ *                "id": 1,
+ *                "name": "Ed Spencer",
+ *                "email": "ed@sencha.com"
+ *            },
+ *            {
+ *                "id": 2,
+ *                "name": "Abe Elias",
+ *                "email": "abe@sencha.com"
+ *            }
+ *         ]
+ *     }
  *
- * <p>To parse this we just pass in a {@link #root} configuration that matches the 'users' above:</p>
+ * To parse this we just pass in a {@link #root} configuration that matches the 'users' above:
  *
-<pre><code>
-reader: {
-    type: 'json',
-    root: 'users'
-}
-</code></pre>
+ *     reader: {
+ *         type: 'json',
+ *         root: 'users'
+ *     }
  *
- * <p>Sometimes the JSON structure is even more complicated. Document databases like CouchDB often provide metadata
- * around each record inside a nested structure like this:</p>
+ * Sometimes the JSON structure is even more complicated. Document databases like CouchDB often provide metadata
+ * around each record inside a nested structure like this:
  *
-<pre><code>
-{
-    "total": 122,
-    "offset": 0,
-    "users": [
-        {
-            "id": "ed-spencer-1",
-            "value": 1,
-            "user": {
-                "id": 1,
-                "name": "Ed Spencer",
-                "email": "ed@sencha.com"
-            }
-        }
-    ]
-}
-</code></pre>
+ *     {
+ *         "total": 122,
+ *         "offset": 0,
+ *         "users": [
+ *             {
+ *                 "id": "ed-spencer-1",
+ *                 "value": 1,
+ *                 "user": {
+ *                     "id": 1,
+ *                     "name": "Ed Spencer",
+ *                     "email": "ed@sencha.com"
+ *                 }
+ *             }
+ *         ]
+ *     }
  *
- * <p>In the case above the record data is nested an additional level inside the "users" array as each "user" item has
+ * In the case above the record data is nested an additional level inside the "users" array as each "user" item has
  * additional metadata surrounding it ('id' and 'value' in this case). To parse data out of each "user" item in the
- * JSON above we need to specify the {@link #record} configuration like this:</p>
+ * JSON above we need to specify the {@link #record} configuration like this:
  *
-<pre><code>
-reader: {
-    type  : 'json',
-    root  : 'users',
-    record: 'user'
-}
-</code></pre>
+ *     reader: {
+ *         type  : 'json',
+ *         root  : 'users',
+ *         record: 'user'
+ *     }
  *
- * <p><u>Response MetaData</u></p>
+ * ## Response MetaData
  *
  * The server can return metadata in its response, in addition to the record data, that describe attributes
  * of the data set itself or are used to reconfigure the Reader. To pass metadata in the response you simply
@@ -136,37 +121,37 @@ reader: {
  * 
  * An initial Reader configuration containing all of these properties might look like this ("fields" would be
  * included in the Model definition, not shown):
-
-    reader: {
-        type : 'json',
-        root : 'root',
-        idProperty     : 'id',
-        totalProperty  : 'total',
-        successProperty: 'success',
-        messageProperty: 'message'
-    }
-
-If you were to pass a response object containing attributes different from those initially defined above, you could
-use the `metaData` attribute to reconifgure the Reader on the fly. For example:
-
-    {
-        "count": 1,
-        "ok": true,
-        "msg": "Users found",
-        "users": [{
-            "userId": 123,
-            "name": "Ed Spencer",
-            "email": "ed@sencha.com"
-        }],
-        "metaData": {
-            "root": "users",
-            "idProperty": 'userId',
-            "totalProperty": 'count',
-            "successProperty": 'ok',
-            "messageProperty": 'msg'
-        }
-    }
-
+ *
+ *     reader: {
+ *         type : 'json',
+ *         root : 'root',
+ *         idProperty     : 'id',
+ *         totalProperty  : 'total',
+ *         successProperty: 'success',
+ *         messageProperty: 'message'
+ *     }
+ *
+ * If you were to pass a response object containing attributes different from those initially defined above, you could
+ * use the `metaData` attribute to reconifgure the Reader on the fly. For example:
+ *
+ *     {
+ *         "count": 1,
+ *         "ok": true,
+ *         "msg": "Users found",
+ *         "users": [{
+ *             "userId": 123,
+ *             "name": "Ed Spencer",
+ *             "email": "ed@sencha.com"
+ *         }],
+ *         "metaData": {
+ *             "root": "users",
+ *             "idProperty": 'userId',
+ *             "totalProperty": 'count',
+ *             "successProperty": 'ok',
+ *             "messageProperty": 'msg'
+ *         }
+ *     }
+ *
  * You can also place any other arbitrary data you need into the `metaData` attribute which will be ignored by the Reader,
  * but will be accessible via the Reader's {@link #metaData} property (which is also passed to listeners via the Proxy's
  * {@link Ext.data.proxy.Proxy#metachange metachange} event (also relayed by the {@link Ext.data.AbstractStore#metachange
@@ -177,37 +162,37 @@ use the `metaData` attribute to reconifgure the Reader on the fly. For example:
  * reflected automatically in the grid unless you also update the column configuration. You could do this manually, or you
  * could simply pass a standard grid {@link Ext.panel.Table#columns column} config object as part of the `metaData` attribute
  * and then pass that along to the grid. Here's a very simple example for how that could be accomplished:
-
-    // response format:
-    {
-        ...
-        "metaData": {
-            "fields": [
-                { "name": "userId", "type": "int" },
-                { "name": "name", "type": "string" },
-                { "name": "birthday", "type": "date", "dateFormat": "Y-j-m" },
-            ],
-            "columns": [
-                { "text": "User ID", "dataIndex": "userId", "width": 40 },
-                { "text": "User Name", "dataIndex": "name", "flex": 1 },
-                { "text": "Birthday", "dataIndex": "birthday", "flex": 1, "format": 'Y-j-m', "xtype": "datecolumn" }
-            ]
-        }
-    }
-
-The Reader will automatically read the meta fields config and rebuild the Model based on the new fields, but to handle
-the new column configuration you would need to handle the metadata within the application code. This is done simply enough
-by handling the metachange event on either the store or the proxy, e.g.:
-
-        var store = Ext.create('Ext.data.Store', {
-            ...
-            listeners: {
-                'metachange': function(store, meta) {
-                    myGrid.reconfigure(store, meta.columns);
-                }
-            }
-        });
-
+ *
+ *     // response format:
+ *     {
+ *         ...
+ *         "metaData": {
+ *             "fields": [
+ *                 { "name": "userId", "type": "int" },
+ *                 { "name": "name", "type": "string" },
+ *                 { "name": "birthday", "type": "date", "dateFormat": "Y-j-m" },
+ *             ],
+ *             "columns": [
+ *                 { "text": "User ID", "dataIndex": "userId", "width": 40 },
+ *                 { "text": "User Name", "dataIndex": "name", "flex": 1 },
+ *                 { "text": "Birthday", "dataIndex": "birthday", "flex": 1, "format": 'Y-j-m', "xtype": "datecolumn" }
+ *             ]
+ *         }
+ *     }
+ *
+ * The Reader will automatically read the meta fields config and rebuild the Model based on the new fields, but to handle
+ * the new column configuration you would need to handle the metadata within the application code. This is done simply enough
+ * by handling the metachange event on either the store or the proxy, e.g.:
+ *
+ *     var store = Ext.create('Ext.data.Store', {
+ *         ...
+ *         listeners: {
+ *             'metachange': function(store, meta) {
+ *                 myGrid.reconfigure(store, meta.columns);
+ *             }
+ *         }
+ *     });
+ *
  */
 Ext.define('Ext.data.reader.Json', {
     extend: 'Ext.data.reader.Reader',
@@ -223,7 +208,8 @@ Ext.define('Ext.data.reader.Json', {
 
     /**
      * @cfg {Boolean} useSimpleAccessors True to ensure that field names/mappings are treated as literals when
-     * reading values. Defalts to <tt>false</tt>.
+     * reading values.
+     *
      * For example, by default, using the mapping "foo.bar.baz" will try and read a property foo from the root, then a property bar
      * from foo, then a property baz from bar. Setting the simple accessors to true will read the property with the name
      * "foo.bar.baz" direct from the root object.
@@ -243,8 +229,9 @@ Ext.define('Ext.data.reader.Json', {
         }
 
         /**
-         * @deprecated will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead
          * @property {Object} jsonData
+         * A copy of this.rawData.
+         * @deprecated Will be removed in Ext JS 5.0. This is just a copy of this.rawData - use that instead.
          */
         this.jsonData = data;
         return this.callParent([data]);
@@ -320,10 +307,13 @@ Ext.define('Ext.data.reader.Json', {
 
     /**
      * @private
+     * @method
      * Returns an accessor function for the given property string. Gives support for properties such as the following:
-     * 'someProperty'
-     * 'some.property'
-     * 'some["property"]'
+     *
+     * - 'someProperty'
+     * - 'some.property'
+     * - 'some["property"]'
+     * 
      * This is used by buildExtractors to create optimized extractor functions when casting raw data into model instances.
      */
     createAccessor: (function() {
@@ -350,10 +340,13 @@ Ext.define('Ext.data.reader.Json', {
 
     /**
      * @private
+     * @method
      * Returns an accessor expression for the passed Field. Gives support for properties such as the following:
-     * 'someProperty'
-     * 'some.property'
-     * 'some["property"]'
+     * 
+     * - 'someProperty'
+     * - 'some.property'
+     * - 'some["property"]'
+     * 
      * This is used by buildExtractors to create optimized on extractor function which converts raw data into model instances.
      */
     createFieldAccessExpression: (function() {

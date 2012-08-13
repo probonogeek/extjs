@@ -20,7 +20,7 @@ Ext.define('Ext.ux.PreviewPlugin', {
     
     /**
      * @cfg {String} bodyField
-     * Field to display in the preview. Must me a field within the Model definition
+     * Field to display in the preview. Must be a field within the Model definition
      * that the store is using.
      */
     bodyField: '',

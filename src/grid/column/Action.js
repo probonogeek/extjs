@@ -72,6 +72,8 @@ Ext.define('Ext.grid.column.Action', {
      * @cfg {Number} handler.colIndex The column index clicked on.
      * @cfg {Object} handler.item The clicked item (or this Column if multiple {@link #cfg-items} were not configured).
      * @cfg {Event} handler.e The click event.
+     * @cfg {Ext.data.Model} handler.record The Record underlying the clicked row.
+     * @cfg {HtmlElement} row The table row clicked upon.
      */
     /**
      * @cfg {Object} scope
@@ -165,7 +167,10 @@ Ext.define('Ext.grid.column.Action', {
     constructor: function(config) {
         var me = this,
             cfg = Ext.apply({}, config),
-            items = cfg.items || [me];
+            items = cfg.items || [me],
+            hasGetClass,
+            i,
+            len;
 
 
         me.origRenderer = cfg.renderer || me.renderer;
@@ -183,7 +188,15 @@ Ext.define('Ext.grid.column.Action', {
         // Items is an array property of ActionColumns
         me.items = items;
         
-        if (me.origRenderer) {
+        for (i = 0, len = items.length; i < len; ++i) {
+            if (items[i].getClass) {
+                hasGetClass = true;
+                break;
+            }
+        }
+        
+        // Also need to check for getClass, since it changes how the cell renders
+        if (me.origRenderer || hasGetClass) {
             me.hasCustomRenderer = true;
         }
     },
@@ -297,7 +310,7 @@ Ext.define('Ext.grid.column.Action', {
                 if (type == 'click' || (key == e.ENTER || key == e.SPACE)) {
                     fn = item.handler || me.handler;
                     if (fn && !item.disabled) {
-                        fn.call(item.scope || me.scope || me, view, recordIndex, cellIndex, item, e, record, row);
+                        fn.call(item.scope || me.origScope || me, view, recordIndex, cellIndex, item, e, record, row);
                     }
                 } else if (type == 'mousedown' && item.stopSelection !== false) {
                     return false;

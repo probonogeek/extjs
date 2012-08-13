@@ -121,23 +121,13 @@ var panel = new Ext.panel.Panel({
 
     border: true,
 
+    /**
+     * @private
+     */
+    emptyArray: [],
+
     initComponent : function() {
         var me = this;
-
-        me.addEvents(
-            /**
-             * @event bodyresize
-             * Fires after the Panel has been resized.
-             * @param {Ext.panel.Panel} p the Panel which has been resized.
-             * @param {Number} width The Panel body's new width.
-             * @param {Number} height The Panel body's new height.
-             */
-            'bodyresize'
-            // // inherited
-            // 'activate',
-            // // inherited
-            // 'deactivate'
-        );
 
         //!frame
         //!border
@@ -235,13 +225,15 @@ var panel = new Ext.panel.Panel({
     },
 
     getCollapsedDockedItems: function () {
-        return [ this.getReExpander() ];
+        var me = this;
+        return me.collapseMode == 'placeholder' ? me.emptyArray : [ me.getReExpander() ];
     },
 
     /**
      * Sets the body style according to the passed parameters.
      * @param {Mixed} style A full style specification string, or object, or the name of a style property to set.
      * @param {String} value If the first param was a style property name, the style property value.
+     * @return {Ext.panel.Panel} this
      */
     setBodyStyle: function(style, value) {
         var me = this,
@@ -250,25 +242,42 @@ var panel = new Ext.panel.Panel({
         if (Ext.isFunction(style)) {
             style = style();
         }
-        if (arguments.length == 1 && Ext.isString(style)) {
-            style = Ext.Element.parseStyles(style);
+        if (arguments.length == 1) {
+            if (Ext.isString(style)) {
+                style = Ext.Element.parseStyles(style);     
+            }
+            body.setStyle(style);
+        } else {
+            body.setStyle(style, value);
         }
-
-        body.setStyle.apply(me.body, arguments);
+        return me;
     },
 
+    /**
+     * Adds a CSS class to the body element. If not rendered, the class will
+     * be added when the panel is rendered. 
+     * @param {String} cls The class to add
+     * @return {Ext.panel.Panel} this
+     */
     addBodyCls: function(cls) {
         var me = this,
             body = me.rendered ? me.body : me.getProtoBody();
 
         body.addCls(cls);
+        return me;
     },
 
+    /**
+     * Removes a CSS class from the body element.
+     * @param {String} cls The class to remove
+     * @return {Ext.panel.Panel} this
+     */
     removeBodyCls: function(cls) {
         var me = this,
             body = me.rendered ? me.body : me.getProtoBody();
 
         body.removeCls(cls);
+        return me;
     },
 
     // inherit docs

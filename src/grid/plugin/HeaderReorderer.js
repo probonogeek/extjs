@@ -2,7 +2,7 @@
  * @private
  */
 Ext.define('Ext.grid.plugin.HeaderReorderer', {
-    extend: 'Ext.util.Observable',
+    extend: 'Ext.AbstractPlugin',
     requires: ['Ext.grid.header.DragZone', 'Ext.grid.header.DropZone'],
     alias: 'plugin.gridheaderreorderer',
 

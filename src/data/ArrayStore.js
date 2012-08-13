@@ -8,10 +8,8 @@
  *
  *     var store = Ext.create('Ext.data.ArrayStore', {
  *         // store configs
- *         autoDestroy: true,
  *         storeId: 'myStore',
  *         // reader configs
- *         idIndex: 0,
  *         fields: [
  *            'company',
  *            {name: 'price', type: 'float'},

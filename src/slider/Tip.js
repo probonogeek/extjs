@@ -123,6 +123,8 @@ Ext.define('Ext.slider.Tip', {
      * Thumb that the Tip is attached to. Override to customize.
      * @param {Ext.slider.Thumb} thumb The Thumb that the Tip is attached to
      * @return {String} The text to display in the tip
+     * @protected
+     * @template
      */
     getText : function(thumb) {
         return String(thumb.value);

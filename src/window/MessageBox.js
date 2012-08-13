@@ -529,10 +529,16 @@ Ext.define('Ext.window.MessageBox', {
      * @param {Number} [config.buttons=false]
      * A bitwise button specifier consisting of the sum of any of the following constants:
      *
-     *  - Ext.window.MessageBox.OK
-     *  - Ext.window.MessageBox.YES
-     *  - Ext.window.MessageBox.NO
-     *  - Ext.window.MessageBox.CANCEL
+     *  - Ext.MessageBox.OK
+     *  - Ext.MessageBox.YES
+     *  - Ext.MessageBox.NO
+     *  - Ext.MessageBox.CANCEL
+     *
+     * Some common combinations have already been predefined:
+     *
+     *  - Ext.MessageBox.OKCANCEL
+     *  - Ext.MessageBox.YESNO
+     *  - Ext.MessageBox.YESNOCANCEL
      *
      * Or false to not show any buttons.
      *
@@ -571,17 +577,24 @@ Ext.define('Ext.window.MessageBox', {
      * An object containing string properties which override the system-supplied button text values just for this
      * invocation. The property names are:
      *
-     *     - ok
-     *     - yes
-     *     - no
-     *     - cancel
+     * - ok
+     * - yes
+     * - no
+     * - cancel
      *
      * @param {Object} config.scope
      * The scope (`this` reference) in which the function will be executed.
      *
      * @param {String} config.icon
-     * A CSS class that provides a background image to be used as the body icon for the dialog (e.g.
-     * Ext.window.MessageBox.WARNING or 'custom-class') (defaults to '')
+     * A CSS class that provides a background image to be used as the body icon for the dialog.
+     * One can use a predefined icon class:
+     *
+     *  - Ext.MessageBox.INFO
+     *  - Ext.MessageBox.WARNING
+     *  - Ext.MessageBox.QUESTION
+     *  - Ext.MessageBox.ERROR
+     *
+     * or use just any `'custom-class'`. Defaults to empty string.
      *
      * @param {String} config.iconCls
      * The standard {@link Ext.window.Window#iconCls} to add an optional header icon (defaults to '')
@@ -746,7 +759,8 @@ Ext.define('Ext.window.MessageBox', {
      *
      * @param {String} title The title bar text
      * @param {String} msg The message box body text
-     * @param {Function} [fn] The callback function invoked after the message box is closed
+     * @param {Function} [fn] The callback function invoked after the message box is closed.
+     * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (`this` reference) in which the callback is executed.
      * @return {Ext.window.MessageBox} this
      */
@@ -772,7 +786,8 @@ Ext.define('Ext.window.MessageBox', {
      *
      * @param {String} title The title bar text
      * @param {String} msg The message box body text
-     * @param {Function} [fn] The callback function invoked after the message box is closed
+     * @param {Function} [fn] The callback function invoked after the message box is closed.
+     * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (`this` reference) in which the callback is executed.
      * @param {Boolean/Number} [multiline=false] True to create a multiline textbox using the defaultTextHeight
      * property, or the height in pixels to create the textbox/
@@ -829,7 +844,8 @@ Ext.define('Ext.window.MessageBox', {
      *
      * @param {String} title The title bar text
      * @param {String} msg The message box body text
-     * @param {Function} [fn] The callback function invoked after the message box is closed
+     * @param {Function} [fn] The callback function invoked after the message box is closed.
+     * See {@link #method-show} method for details.
      * @param {Object} [scope=window] The scope (<code>this</code> reference) in which the callback is executed.
      * @return {Ext.window.MessageBox} this
      */
@@ -848,8 +864,9 @@ Ext.define('Ext.window.MessageBox', {
     },
 
     /**
-     * Displays a message box with a progress bar.  This message box has no buttons and is not closeable by
-     * the user.  You are responsible for updating the progress bar as needed via {@link Ext.window.MessageBox#updateProgress}
+     * Displays a message box with a progress bar.
+     *
+     * You are responsible for updating the progress bar as needed via {@link Ext.window.MessageBox#updateProgress}
      * and closing the message box when the process is complete.
      *
      * @param {String} title The title bar text

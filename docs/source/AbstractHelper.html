@@ -16,17 +16,16 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-dom-AbstractHelper'>/**
-</span> * @class Ext.dom.AbstractHelper
- * @private
- * Abstract base class for {@link Ext.dom.Helper}.
+</span> * Abstract base class for {@link Ext.dom.Helper}.
  * @private
  */
 Ext.define('Ext.dom.AbstractHelper', {
     emptyTags : /^(?:br|frame|hr|img|input|link|meta|range|spacer|wbr|area|param|col)$/i,
-    confRe : /tag|children|cn|html|tpl|tplData$/i,
+    confRe : /(?:tag|children|cn|html|tpl|tplData)$/i,
     endRe : /end/i,
 
-    attribXlat: { cls : 'class', htmlFor : 'for' },
+    // Since cls &amp; for are reserved words, we need to transform them
+    attributeTransform: { cls : 'class', htmlFor : 'for' },
 
     closeTags: {},
 
@@ -67,7 +66,7 @@ Ext.define('Ext.dom.AbstractHelper', {
                             buffer.push(' ', attr, '=&quot;');
                             me.generateStyles(val, buffer).push('&quot;');
                         } else {
-                            buffer.push(' ', me.attribXlat[attr] || attr, '=&quot;', val, '&quot;');
+                            buffer.push(' ', me.attributeTransform[attr] || attr, '=&quot;', val, '&quot;');
                         }
                     }
                 }

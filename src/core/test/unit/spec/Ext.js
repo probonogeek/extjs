@@ -359,48 +359,149 @@ describe("Ext", function() {
 
 
     describe("Ext.extend", function() {
-        var Dude, Awesome, david;
+        describe("class creation", function () {
+            var Child, Parent, baz;
 
-        beforeEach(function() {
-            Dude = Ext.extend(Object, {
+            Parent = Ext.extend(Object, {
                 constructor: function(config){
                     Ext.apply(this, config);
-                    this.isBadass = false;
+                    this.foobar = false;
                 }
             });
 
-            Awesome = Ext.extend(Dude, {
+            Child = Ext.extend(Parent, {
                 constructor: function(){
-                    Awesome.superclass.constructor.apply(this, arguments);
-                    this.isBadass = true;
+                    Child.superclass.constructor.apply(this, arguments);
+                    this.foobar = true;
                 }
             });
 
-            david = new Awesome({
-                davis: 'isAwesome'
+            baz = new Child({
+                sencha: 'isAwesome'
+            });
+
+            it("should throw an error if superclass isn't defined", function() {
+                expect(function() {
+                    Ext.extend(undefined, {});
+                }).toThrow("Attempting to extend from a class which has not been loaded on the page.");
+            });
+
+            it("should create a superclass that refers to its (usually unreachable) parent prototype", function() {
+                expect(baz.superclass).toEqual(Parent.prototype);
+            });
+
+            it("should add override method", function() {
+                expect(typeof baz.override === 'function').toBe(true);
+            });
+
+            it("should override redefined methods", function() {
+                expect(baz.foobar).toBe(true);
+            });
+
+            it("should keep new properties", function() {
+                expect(baz.sencha).toEqual('isAwesome');
             });
         });
 
-        it("should throw an error if superclass isn't defined", function() {
-            expect(function() {
-                Ext.extend(undefined, {});
-            }).toThrow("Attempting to extend from a class which has not been loaded on the page.");
+        describe("constructors", function () {
+            // Extending Object
+            var A = function () {
+                A.superclass.constructor.call(this);
+                this.data = 'a';
+            };
+            Ext.extend(A, Object, {});
+
+            // Extending class created via 3 argument form using 3 arg form
+            var B = function () {
+                B.superclass.constructor.call(this);
+                this.data += 'b';
+            };
+            Ext.extend(B, A, {});
+
+            // Extending class produced via 3 argument form using 2 argument form
+            var C = Ext.extend(B, {
+                constructor: function () {
+                    C.superclass.constructor.call(this);
+                    this.data += 'c';
+                }
+            });
+
+            // Extending class produced via 2 argument form using 2 argument form
+            var D = Ext.extend(C, {
+                constructor: function () {
+                    D.superclass.constructor.call(this);
+                    this.data += 'd';
+                }
+            });
+
+            // Extending again using 3 argument form
+            var E = function () {
+                E.superclass.constructor.call(this);
+                this.data += 'e';
+            };
+            Ext.extend(E, D, {});
+
+            it("should call each constructor ", function () {
+                var instance = new E();
+                expect(instance.data).toBe('abcde');
+            });
+
+            it("should correctly set the constructor", function () {
+                expect(E.superclass.constructor).toEqual(D.prototype.constructor);
+                expect(D.superclass.constructor).toEqual(C.prototype.constructor);
+                expect(C.superclass.constructor).toEqual(B);
+                expect(B.superclass.constructor).toEqual(A);
+            });
         });
 
-        it("should create a superclass that return the original classe", function() {
-            expect(david.superclass).toEqual(Dude.prototype);
-        });
+        describe("derive from Ext.define'd base", function () {
+            var A = Ext.define(null, {
+                constructor: function () {
+                    this.data = 'a';
+                }
+            });
 
-        it("should add override method", function() {
-            expect(typeof david.override === 'function').toBe(true);
-        });
+            // Extending class created via 3 argument form using 3 arg form
+            var B = function () {
+                B.superclass.constructor.call(this);
+                this.data += 'b';
+            };
+            Ext.extend(B, A, {});
 
-        it("should override redefined methods", function() {
-            expect(david.isBadass).toBe(true);
-        });
+            // Extending class produced via 3 argument form using 2 argument form
+            var C = Ext.extend(B, {
+                constructor: function () {
+                    C.superclass.constructor.call(this);
+                    this.data += 'c';
+                }
+            });
 
-        it("should keep new properties", function() {
-            expect(david.davis).toEqual('isAwesome');
+            // Extending class produced via 2 argument form using 2 argument form
+            var D = Ext.extend(C, {
+                constructor: function () {
+                    D.superclass.constructor.call(this);
+                    this.data += 'd';
+                }
+            });
+
+            // Extending again using 3 argument form
+            var E = function () {
+                E.superclass.constructor.call(this);
+                this.data += 'e';
+            };
+            Ext.extend(E, D, {});
+
+            it("should call each constructor ", function () {
+                var instance = new E();
+                expect(instance.data).toBe('abcde');
+            });
+
+            it("should correctly set the constructor", function () {
+                expect(E.superclass.constructor).toEqual(D.prototype.constructor);
+                expect(D.superclass.constructor).toEqual(C.prototype.constructor);
+                expect(C.superclass.constructor).toEqual(B);
+                expect(B.superclass.constructor).toEqual(A.prototype.constructor);
+            });
         });
     });
 

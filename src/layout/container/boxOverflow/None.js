@@ -62,12 +62,13 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
     },
     
     getOwnerType: function(owner){
-        var type = '';
-        
-        if (owner.is('toolbar')) {
+        var type;
+        if (owner.isToolbar) {
             type = 'toolbar';
-        } else if (owner.is('tabbar')) {
+        } else if (owner.isTabBar) {
             type = 'tabbar';
+        } else if (owner.isMenu) {
+            type = 'menu';
         } else {
             type = owner.getXType();
         }

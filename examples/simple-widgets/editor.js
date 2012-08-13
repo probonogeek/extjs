@@ -74,8 +74,8 @@ Ext.onReady(function(){
                 });
 
                 var titleEditor = Ext.create('Ext.Editor', Ext.apply({
-                    alignment: 'bl-l',
-                    offsets: [0, 15],
+                    alignment: 'tl',
+                    offsets: [0, -3],
                     field: {
                         width: 130,
                         xtype: 'combo',

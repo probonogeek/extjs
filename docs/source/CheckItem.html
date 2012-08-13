@@ -46,6 +46,25 @@ Ext.define('Ext.menu.CheckItem', {
 </span>     * @cfg {Boolean} [checked=false]
      * True to render the menuitem initially checked.
      */
+    
+<span id='Ext-menu-CheckItem-cfg-checkHandler'>    /**
+</span>     * @cfg {Function} checkHandler
+     * Alternative for the {@link #checkchange} event.  Gets called with the same parameters.
+     */
+
+<span id='Ext-menu-CheckItem-cfg-scope'>    /**
+</span>     * @cfg {Object} scope
+     * Scope for the {@link #checkHandler} callback.
+     */
+    
+<span id='Ext-menu-CheckItem-cfg-group'>    /**
+</span>     * @cfg {String} group
+     * Name of a radio group that the item belongs.
+     *
+     * Specifying this option will turn check item into a radio item.
+     *
+     * Note that the group name must be globally unique.
+     */
 
 <span id='Ext-menu-CheckItem-cfg-checkedCls'>    /**
 </span>     * @cfg {String} checkedCls
@@ -134,6 +153,11 @@ Ext.define('Ext.menu.CheckItem', {
 
         if (iconEl) {
             iconEl.addCls(me.disabledCls);
+        }
+        // In some cases the checkbox will disappear until repainted
+        // Happens in everything except IE9 strict, see: EXTJSIV-6412
+        if (!(Ext.isIE9 &amp;&amp; Ext.isStrict) &amp;&amp; me.rendered) {
+            me.el.repaint();
         }
         me.checkChangeDisabled = true;
     },

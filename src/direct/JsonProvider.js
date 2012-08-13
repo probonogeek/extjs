@@ -55,7 +55,7 @@ Ext.define('Ext.direct.JsonProvider', {
             event = new Ext.direct.ExceptionEvent({
                 data: e,
                 xhr: response,
-                code: Ext.direct.Manager.self.exceptions.PARSE,
+                code: Ext.direct.Manager.exceptions.PARSE,
                 message: 'Error parsing json response: \n\n ' + data
             });
             return [event];

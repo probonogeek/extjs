@@ -116,7 +116,7 @@ Ext.define('Ext.form.field.Base', {
             '&lt;tpl if=&quot;name&quot;&gt; name=&quot;{name}&quot;&lt;/tpl&gt;',
             '&lt;tpl if=&quot;value&quot;&gt; value=&quot;{[Ext.util.Format.htmlEncode(values.value)]}&quot;&lt;/tpl&gt;',
             '&lt;tpl if=&quot;placeholder&quot;&gt; placeholder=&quot;{placeholder}&quot;&lt;/tpl&gt;',
-            '&lt;tpl if=&quot;maxLength !== undefined&quot;&gt; maxlength=&quot;{maxLength}&quot;&lt;/tpl&gt;',
+            '{%if (values.maxLength !== undefined){%} maxlength=&quot;{maxLength}&quot;{%}%}',
             '&lt;tpl if=&quot;readOnly&quot;&gt; readonly=&quot;readonly&quot;&lt;/tpl&gt;',
             '&lt;tpl if=&quot;disabled&quot;&gt; disabled=&quot;disabled&quot;&lt;/tpl&gt;',
             '&lt;tpl if=&quot;tabIdx&quot;&gt; tabIndex=&quot;{tabIdx}&quot;&lt;/tpl&gt;',
@@ -162,11 +162,11 @@ Ext.define('Ext.form.field.Base', {
      * applyTo
      */
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Base-cfg-invalidText'>    /**
 </span>     * @cfg {String} invalidText
      * The error text to use when marking a field invalid and no message is provided
      */
-    //&lt;locale&gt;
     invalidText : 'The value in this field is invalid',
     //&lt;/locale&gt;
 
@@ -510,13 +510,23 @@ Ext.define('Ext.form.field.Base', {
      */
     setRawValue: function(value) {
         var me = this;
-        value = Ext.value(value, '');
+        value = Ext.value(me.transformRawValue(value), '');
         me.rawValue = value;
 
         // Some Field subclasses may not render an inputEl
         if (me.inputEl) {
             me.inputEl.dom.value = value;
         }
+        return value;
+    },
+    
+<span id='Ext-form-field-Base-method-transformRawValue'>    /**
+</span>     * Transform the raw value before it is set
+     * @protected
+     * @param {Object} value The value
+     * @return {Object} The value to set
+     */
+    transformRawValue: function(value) {
         return value;
     },
 

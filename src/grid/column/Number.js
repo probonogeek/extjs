@@ -38,14 +38,23 @@ Ext.define('Ext.grid.column.Number', {
     requires: ['Ext.util.Format'],
     alternateClassName: 'Ext.grid.NumberColumn',
 
+    //<locale>
     /**
      * @cfg {String} format
      * A formatting string as used by {@link Ext.util.Format#number} to format a numeric value for this Column.
      */
-    //<locale>
     format : '0,000.00',
     //</locale>
-    
+
+    /**
+     * @cfg renderer
+     * @hide
+     */
+    /**
+     * @cfg scope
+     * @hide
+     */
+
     defaultRenderer: function(value){
         return Ext.util.Format.number(value, this.format);
     }

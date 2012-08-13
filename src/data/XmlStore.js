@@ -5,7 +5,6 @@
  * <p>A store configuration would be something like:<pre><code>
 var store = new Ext.data.XmlStore({
     // store configs
-    autoDestroy: true,
     storeId: 'myStore',
     url: 'sheldon.xml', // automatically configures a HttpProxy
     // reader configs

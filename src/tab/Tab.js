@@ -48,11 +48,11 @@ Ext.define('Ext.tab.Tab', {
      */
     closable: true,
 
+    //<locale>
     /**
      * @cfg {String} closeText
      * The accessible text label for the close button link; only used when {@link #cfg-closable} = true.
      */
-    //<locale>
     closeText: 'Close Tab',
     //</locale>
 

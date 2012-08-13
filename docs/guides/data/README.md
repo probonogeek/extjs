@@ -306,7 +306,7 @@ Validations follow the same format as field definitions. In each case, we specif
 
 - `presence` simply ensures that the field has a value. Zero counts as a valid value but empty strings do not.
 - `length` ensures that a string is between a min and max length. Both constraints are optional.
-- `format` ensures that a string matches a regular expression format. In the example above we ensure that the age field is 4 numbers followed by at least one letter.
+- `format` ensures that a string matches a regular expression format. In the example above we ensure that the age field consists only of numbers.
 - `inclusion` ensures that a value is within a specific set of values (e.g. ensuring gender is either male or female).
 - `exclusion` ensures that a value is not one of the specific set of values (e.g. blacklisting usernames like 'admin').
 

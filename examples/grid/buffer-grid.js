@@ -71,7 +71,9 @@ Ext.onReady(function(){
         title: 'Bufffered Grid of 5,000 random records',
         store: store,
         loadMask: true,
-        disableSelection: true,
+        selModel: {
+            pruneRemoved: false
+        },
         viewConfig: {
             trackOver: false
         },

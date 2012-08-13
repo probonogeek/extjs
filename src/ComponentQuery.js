@@ -2,10 +2,19 @@
  * Provides searching of Components within Ext.ComponentManager (globally) or a specific
  * Ext.container.Container on the document with a similar syntax to a CSS selector.
  *
- * Components can be retrieved by using their {@link Ext.Component xtype} with an optional . prefix
+ * Components can be retrieved by using their {@link Ext.Component xtype}
  *
- * - `component` or `.component`
- * - `gridpanel` or `.gridpanel`
+ * - `component`
+ * - `gridpanel`
+ * 
+ * Matching by xtype matches inherited types, so in the following code, the previous field
+ * *of any type which inherits from `TextField`* will be found:
+ *
+ *     prevField = myField.previousNode('textfield');
+ *
+ * To match only the exact type, pass the "shallow" flag (See {@link Ext.AbstractComponent#isXType AbstractComponent's isXType method})
+ *
+ *     prevTextField = myField.previousNode('textfield(true)');
  *
  * An itemId or id must be prefixed with a #
  *
@@ -45,6 +54,7 @@
  * Default pseudos include:
  *
  * - not
+ * - first
  * - last
  *
  * Queries return an array of components.
@@ -337,8 +347,22 @@ Ext.define('Ext.ComponentQuery', {
                 }
                 return results;
             },
+            first: function(components) {
+                var ret = [];
+                    
+                if (components.length > 0) {
+                    ret.push(components[0]);
+                }
+                return ret;       
+            },
             last: function(components) {
-                return components[components.length - 1];
+                var len = components.length,
+                    ret = [];
+                    
+                if (len > 0) {
+                    ret.push(components[len - 1]);
+                }
+                return ret;
             }
         },
 
@@ -413,6 +437,7 @@ Ext.define('Ext.ComponentQuery', {
                     return true;
                 }
             }
+            return false;
         },
 
         parse: function(selector) {

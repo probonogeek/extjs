@@ -262,6 +262,13 @@ Ext.samples = {
                     "icon": "grid-infinite-scroll.gif",
                     "desc": "Sample grid which scrolls through thousands of rows dynamically loaded from a server with a filtering UI",
                     "status": "new"
+                },
+                {
+                    "text": "Locking Grouping Grid with Summary and grouped headers",
+                    "url": "grid/locking-grp-summary-grp-hdrs-grid.html",
+                    "icon": "grid-summary.gif",
+                    "desc": "Grouped grid with locked columns and grouped column headers",
+                    "status": "new"
                 }
             ]
         },

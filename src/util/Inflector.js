@@ -14,7 +14,7 @@
  *
  *     //ordinalizing numbers
  *     Ext.util.Inflector.ordinalize(11); //"11th"
- *     Ext.util.Inflector.ordinalize(21); //"21th"
+ *     Ext.util.Inflector.ordinalize(21); //"21st"
  *     Ext.util.Inflector.ordinalize(1043); //"1043rd"
  *
  * # Customization

@@ -107,29 +107,29 @@ Ext.define('Ext.form.field.Number', {
      */
     allowDecimals : true,
 
+    //<locale>
     /**
      * @cfg {String} decimalSeparator
      * Character(s) to allow as the decimal separator
      */
-    //<locale>
     decimalSeparator : '.',
     //</locale>
     
+    //<locale>
     /**
      * @cfg {Boolean} [submitLocaleSeparator=true]
      * False to ensure that the {@link #getSubmitValue} method strips
      * always uses `.` as the separator, regardless of the {@link #decimalSeparator}
      * configuration.
      */
-    //<locale>
     submitLocaleSeparator: true,
     //</locale>
 
+    //<locale>
     /**
      * @cfg {Number} decimalPrecision
      * The maximum precision to display after the decimal separator
      */
-    //<locale>
     decimalPrecision : 2,
     //</locale>
 
@@ -158,37 +158,37 @@ Ext.define('Ext.form.field.Number', {
      */
     step: 1,
 
+    //<locale>
     /**
      * @cfg {String} minText
      * Error text to display if the minimum value validation fails.
      */
-    //<locale>
     minText : 'The minimum value for this field is {0}',
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} maxText
      * Error text to display if the maximum value validation fails.
      */
-    //<locale>
     maxText : 'The maximum value for this field is {0}',
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} nanText
      * Error text to display if the value is not a valid number. For example, this can happen if a valid character like
      * '.' or '-' is left in the field with no number.
      */
-    //<locale>
     nanText : '{0} is not a valid number',
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} negativeText
      * Error text to display if the value is negative and {@link #minValue} is set to 0. This is used instead of the
      * {@link #minText} in that circumstance only.
      */
-    //<locale>
     negativeText : 'The value cannot be negative',
     //</locale>
 

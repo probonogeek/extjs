@@ -66,7 +66,7 @@ In the above example we did not specify a layout for the Container {@link Ext.pa
         ]
     });
 
-Ext JS comes with a full set of layouts out of the box and can accomodate almost any type of layout you can imagine.  See the [Layout Examples](extjs/examples/#sample-7) to get an idea of what's possible.
+Ext JS comes with a full set of layouts out of the box and can accomodate almost any type of layout you can imagine.  See the [Layout Browser](#!/example/layout-browser/layout-browser.html) to get an idea of what's possible.
 
 ### How the layout system works
 

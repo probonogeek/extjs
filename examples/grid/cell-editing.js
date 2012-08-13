@@ -13,6 +13,12 @@ Ext.require([
     'Ext.ux.CheckColumn'
 ]);
 
+if (window.location.search.indexOf('scopecss') !== -1) {
+    // We are using ext-all-scoped.css, so all rendered ExtJS Components must have a
+    // reset wrapper round them to provide localized CSS resetting.
+    Ext.scopeResetCSS = true;
+}
+
 Ext.onReady(function(){
     Ext.QuickTips.init();
  

@@ -21,7 +21,7 @@ Ext.define('Ext.chart.axis.Abstract', {
      * The fields of model to bind to this axis.
      * 
      * For example if you have a data set of lap times per car, each having the fields:
-     * 'carName', 'agvSpeed', 'maxSpeed'. Then you might want to show the data on chart
+     * `'carName'`, `'avgSpeed'`, `'maxSpeed'`. Then you might want to show the data on chart
      * with `['carName']` on Name axis and `['avgSpeed', 'maxSpeed']` on Speed axis.
      */
 

@@ -76,6 +76,9 @@ Ext.define('Ext.data.TreeStore', {
      * The root property to specify on the reader if one is not explicitly defined.
      */
     defaultRootProperty: 'children',
+    
+    // Keep a copy of the default so we know if it's been changed in a subclass/config
+    rootProperty: 'children',
 
     /**
      * @cfg {Boolean} [folderSort=false]
@@ -86,7 +89,8 @@ Ext.define('Ext.data.TreeStore', {
     constructor: function(config) {
         var me = this,
             root,
-            fields;
+            fields,
+            defaultRoot;
 
         config = Ext.apply({}, config);
 
@@ -99,6 +103,15 @@ Ext.define('Ext.data.TreeStore', {
             config.fields = [
                 {name: 'text', type: 'string'}
             ];
+            defaultRoot = config.defaultRootProperty || me.defaultRootProperty;
+            if (defaultRoot !== me.defaultRootProperty) {
+                config.fields.push({
+                    name: defaultRoot,   
+                    type: 'auto',   
+                    defaultValue: null, 
+                    persist: false
+                });
+            }
         }
 
         me.callParent([config]);
@@ -352,7 +365,9 @@ Ext.define('Ext.data.TreeStore', {
      * @return {Ext.data.NodeInterface} The new root
      */
     setRootNode: function(root, /* private */ preventLoad) {
-        var me = this;
+        var me = this,
+            model = me.model,
+            idProperty = model.prototype.idProperty
 
         root = root || {};
         if (!root.isModel) {
@@ -362,10 +377,13 @@ Ext.define('Ext.data.TreeStore', {
                 text: 'Root',
                 allowDrag: false
             });
-            Ext.data.NodeInterface.decorate(me.model);
-            root = Ext.ModelManager.create(root, me.model);
+            if (root[idProperty] === undefined) {
+                root[idProperty] = me.defaultRootId;
+            }
+            Ext.data.NodeInterface.decorate(model);
+            root = Ext.ModelManager.create(root, model);
         } else if (root.isModel && !root.isNode) {
-            Ext.data.NodeInterface.decorate(me.model);
+            Ext.data.NodeInterface.decorate(model);
         }
 
 
@@ -401,6 +419,11 @@ Ext.define('Ext.data.TreeStore', {
     getNodeById: function(id) {
         return this.tree.getNodeById(id);
     },
+    
+    // inherit docs
+    getById: function(id) {
+        return this.getNodeById(id);    
+    },
 
     /**
      * Loads the Store using its configured {@link #proxy}.
@@ -414,8 +437,7 @@ Ext.define('Ext.data.TreeStore', {
         options.params = options.params || {};
 
         var me = this,
-            node = options.node || me.tree.getRootNode(),
-            root;
+            node = options.node || me.tree.getRootNode();
 
         // If there is not a node it means the user hasnt defined a rootnode yet. In this case lets just
         // create one for them.
@@ -424,6 +446,9 @@ Ext.define('Ext.data.TreeStore', {
                 expanded: true
             }, true);
         }
+
+        // Assign the ID of the Operation so that a REST proxy can create the correct URL
+        options.id = node.getId();
 
         if (me.clearOnLoad) {
             if(me.clearRemovedOnLoad) {
@@ -571,11 +596,7 @@ Ext.define('Ext.data.TreeStore', {
         var me = this,
             successful = operation.wasSuccessful(),
             records = operation.getRecords(),
-            node = operation.node,
-            filtered,
-            childNodes,
-            len,
-            i;
+            node = operation.node;
 
         me.loading = false;
         node.set('loading', false);
@@ -600,6 +621,21 @@ Ext.define('Ext.data.TreeStore', {
         me.fireEvent('load', me, operation.node, records, successful);
         //this is a callback that would have been passed to the 'read' function and is optional
         Ext.callback(operation.callback, operation.scope || me, [records, operation, successful]);
+    },
+    
+    onCreateRecords: function(records) {
+        this.callParent(arguments);
+        
+        var i = 0,
+            len = records.length,
+            tree = this.tree,
+            node;
+
+        for (; i < len; ++i) {
+            node = records[i];
+            tree.onNodeIdChanged(node, null, node.getId());
+        }
+        
     },
     
     cleanRecords: function(node, records){

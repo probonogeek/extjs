@@ -6,7 +6,6 @@
  * <p>A store configuration would be something like:<pre><code>
 var store = new Ext.data.JsonPStore({
     // store configs
-    autoDestroy: true,
     storeId: 'myStore',
 
     // proxy configs

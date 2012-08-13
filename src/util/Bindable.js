@@ -8,20 +8,23 @@ Ext.define('Ext.util.Bindable', {
     
     /**
      * Binds a store to this instance.
-     * @param {Ext.data.AbstractStore} store The store to bind (may be null to unbind the existing store).
-     * @param {Boolean} initial (Optional) true to not remove listeners
+     * @param {Ext.data.AbstractStore/String} [store] The store to bind or ID of the store.
+     * When no store given (or when `null` or `undefined` passed), unbinds the existing store.
+     * @param {Boolean} [initial=false] True to not remove listeners from existing store.
      */
     bindStore: function(store, initial){
         var me = this,
             oldStore = me.store;
-            
+        
         if (!initial && me.store) {
+            // Perform implementation-specific unbinding operations *before* possible Store destruction.
+            me.onUnbindStore(oldStore, initial);
+
             if (store !== oldStore && oldStore.autoDestroy) {
                 oldStore.destroyStore();
             } else {
                 me.unbindStoreListeners(oldStore);
             }
-            me.onUnbindStore(oldStore, initial);
         }
         if (store) {
             store = Ext.data.StoreManager.lookup(store);

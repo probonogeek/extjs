@@ -68,7 +68,6 @@ Ext.define('Ext.form.field.HtmlEditor', {
     ],
 
     fieldSubTpl: [
-        '{%Ext.DomHelper.generateMarkup(values.$comp.toolbar.getRenderTree(), out)%}',
         '{beforeTextAreaTpl}',
         '<textarea id="{cmpId}-textareaEl" name="{name}" tabIndex="-1" {inputAttrTpl}',
                  ' class="{textareaCls}" style="{size}" autocomplete="off">',
@@ -169,11 +168,11 @@ Ext.define('Ext.form.field.HtmlEditor', {
      * Enable font selection. Not available in Safari.
      */
     enableFont : true,
+    //<locale>
     /**
      * @cfg {String} createLinkText
      * The default text for the create link prompt
      */
-    //<locale>
     createLinkText : 'Please enter the URL for the link:',
     //</locale>
     /**
@@ -202,7 +201,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
      */
     defaultValue: (Ext.isOpera || Ext.isIE6) ? '&#160;' : '&#8203;',
 
-    fieldBodyCls: Ext.baseCSSPrefix + 'html-editor-wrap',
+    editorWrapCls: Ext.baseCSSPrefix + 'html-editor-wrap',
 
     componentLayout: 'htmleditor',
 
@@ -212,6 +211,8 @@ Ext.define('Ext.form.field.HtmlEditor', {
     sourceEditMode : false,
     iframePad:3,
     hideMode:'offsets',
+
+    afterBodyEl: '</div>',
 
     maskOnDisable: true,
 
@@ -605,6 +606,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
     },
 
     initRenderData: function() {
+        this.beforeSubTpl = '<div class="' + this.editorWrapCls + '">' + Ext.DomHelper.markup(this.toolbar.getRenderTree());
         return Ext.applyIf(this.callParent(), this.getLabelableRenderData());
     },
 
@@ -796,7 +798,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
      */
     syncValue : function(){
         var me = this,
-            body, changed, html, bodyStyle, match, oldValue;
+            body, changed, html, bodyStyle, match;
 
         if (me.initialized) {
             body = me.getEditorBody();
@@ -959,7 +961,12 @@ Ext.define('Ext.form.field.HtmlEditor', {
             try {
                 doc = me.getDoc();
                 if (doc) {
-                    Ext.EventManager.removeAll(doc);
+                    // removeAll() doesn't currently know how to handle iframe document,
+                    // so for now we have to wrap it in an Ext.Element using Ext.fly,
+                    // or else IE6/7 will leak big time when the page is refreshed.
+                    // TODO: this may not be needed once we find a more permanent fix.
+                    // see EXTJSIV-5891.
+                    Ext.EventManager.removeAll(Ext.fly(doc));
                     for (prop in doc) {
                         if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
                             delete doc[prop];
@@ -1282,6 +1289,7 @@ Ext.define('Ext.form.field.HtmlEditor', {
         return this.toolbar;
     },
 
+    //<locale>
     /**
      * @property {Object} buttonTips
      * Object collection of toolbar tooltips for the buttons in the editor. The key is the command id associated with
@@ -1300,7 +1308,6 @@ Ext.define('Ext.form.field.HtmlEditor', {
      *         },
      *         ...
      */
-    //<locale>
     buttonTips : {
         bold : {
             title: 'Bold (Ctrl+B)',

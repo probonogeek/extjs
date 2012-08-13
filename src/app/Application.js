@@ -99,11 +99,6 @@ Ext.define('Ext.app.Application', {
     enableQuickTips: true,
 
     /**
-     * @cfg {String} defaultUrl
-     * When the app is first loaded, this url will be redirected to.
-     */
-
-    /**
      * @cfg {String} appFolder
      * The path to the directory which contains all application's classes.
      * This path will be registered via {@link Ext.Loader#setPath} for the namespace specified
@@ -116,7 +111,13 @@ Ext.define('Ext.app.Application', {
      * True to automatically load and instantiate AppName.view.Viewport before firing the launch function.
      */
     autoCreateViewport: false,
-
+    
+    /**
+     * @cfg {Object} paths
+     * Additional load paths to add to Ext.Loader.
+     * See {@link Ext.Loader#paths} config for more details.
+     */
+    
     /**
      * Creates new Application.
      * @param {Object} [config] Config object.
@@ -125,14 +126,15 @@ Ext.define('Ext.app.Application', {
         config = config || {};
         Ext.apply(this, config);
 
-        var requires = config.requires || [],
+        var me = this,
+            requires = config.requires || [],
             controllers, ln, i, controller,
             paths, path, ns;
 
-        Ext.Loader.setPath(this.name, this.appFolder);
+        Ext.Loader.setPath(me.name, me.appFolder);
 
-        if (this.paths) {
-            paths = this.paths;
+        if (me.paths) {
+            paths = me.paths;
 
             for (ns in paths) {
                 if (paths.hasOwnProperty(ns)) {
@@ -143,33 +145,34 @@ Ext.define('Ext.app.Application', {
             }
         }
 
-        this.callParent(arguments);
+        me.callParent(arguments);
 
-        this.eventbus = new Ext.app.EventBus;
+        me.eventbus = new Ext.app.EventBus;
 
-        controllers = Ext.Array.from(this.controllers);
+        controllers = Ext.Array.from(me.controllers);
         ln = controllers && controllers.length;
 
-        this.controllers = new Ext.util.MixedCollection();
+        me.controllers = new Ext.util.MixedCollection();
 
-        if (this.autoCreateViewport) {
-            requires.push(this.getModuleClassName('Viewport', 'view'));
+        if (me.autoCreateViewport) {
+            requires.push(me.getModuleClassName('Viewport', 'view'));
         }
 
         for (i = 0; i < ln; i++) {
-            requires.push(this.getModuleClassName(controllers[i], 'controller'));
+            requires.push(me.getModuleClassName(controllers[i], 'controller'));
         }
 
         Ext.require(requires);
 
         Ext.onReady(function() {
+            me.init(me);
             for (i = 0; i < ln; i++) {
-                controller = this.getController(controllers[i]);
-                controller.init(this);
+                controller = me.getController(controllers[i]);
+                controller.init(me);
             }
 
-            this.onBeforeLaunch.call(this);
-        }, this);
+            me.onBeforeLaunch.call(me);
+        }, me);
     },
 
     control: function(selectors, listeners, controller) {
@@ -181,7 +184,7 @@ Ext.define('Ext.app.Application', {
      * @template
      * Called automatically when the page has completely loaded. This is an empty function that should be
      * overridden by each application that needs to take action on page load.
-     * @param {String} profile The detected {@link #profiles application profile}
+     * @param {String} profile The detected application profile
      * @return {Boolean} By default, the Application will dispatch to the configured startup controller and
      * action immediately after running the launch function. Return false to prevent this behavior.
      */

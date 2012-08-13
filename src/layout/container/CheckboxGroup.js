@@ -32,31 +32,20 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         '</tr></tbody></table>'
     ],
 
+    lastOwnerItemsGeneration : null,
+
     beginLayout: function(ownerContext) {
         var me = this,
             columns,
-            numCols, numChildren,
-            childItems,
+            numCols,
             i, width, cwidth,
             totalFlex = 0, flexedCols = 0,
             autoFlex = me.autoFlex,
-            currGen = me.owner.items.generation,
             innerCtStyle = me.innerCt.dom.style;
 
         me.callParent(arguments);
-        childItems = ownerContext.childItems;
 
-        // If the child items have changed since the last layout then we need to fixup
-        // the association of items to columns:
-        if (me.lastChildGeneration != currGen) {
-            me.lastChildGeneration = currGen;
-            me.fixColumns();
-        }
-
-        // fixColumns may have updated the element cache, no need to get the columnEls
-        // now...
-        columns = me.columnEls;
-
+        columns = me.columnNodes;
         ownerContext.innerCtContext = ownerContext.getEl('innerCt', me);
 
         // The columns config may be an array of widths. Any value < 1 is taken to be a fraction:
@@ -132,11 +121,10 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         // Grab defined childEls
         me.callParent();
 
-        // Grab columns TDs
-        me.columnEls = me.innerCt.query('td.' + me.owner.groupCls);
+        me.rowEl = me.innerCt.down('tr');
 
-        // we just rendered so the items are in the correct columns:
-        me.lastChildGeneration = me.owner.items.generation;
+        // Grab columns TDs
+        me.columnNodes = me.rowEl.dom.childNodes;
     },
 
     /*
@@ -147,7 +135,7 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         var me = this,
             targetContext, widthShrinkWrap, heightShrinkWrap, shrinkWrap, table, targetPadding;
 
-        // The columnEls are widthed using their own width attributes, we just need to wait
+        // The columnNodes are widthed using their own width attributes, we just need to wait
         // for all children to have arranged themselves in that width, and then collect our height.
         if (!ownerContext.getDomProp('containerChildrenDone')) {
             me.done = false;
@@ -221,55 +209,6 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
             me.configureItem(item);
             tree = item.getRenderTree();
             Ext.DomHelper.generateMarkup(tree, out);
-        }
-    },
-
-    // Distribute child items between column elements according to row first or
-    // column first order
-    fixColumns: function () {
-        var me = this,
-            owner = me.owner,
-            cfgCols = owner.columns,
-            columns = me.columnEls,
-            items = owner.items.items,
-            columnCount = columns.length,
-            itemCount = items.length,
-            columnIndex, i, rowCount, tr, td, newCount;
-
-        // if running in 'auto' columns mode, and the number of items has increased (add call)
-        // then we need to add a new td to the table
-        if ((!cfgCols || cfgCols == 'auto') && (itemCount > columnCount)) {
-
-            // add column td's for each new item added
-            newCount = itemCount - columnCount;
-            for (i = 0; i < newCount; i++) {
-                tr = me.innerCt.down('tr');
-                tr.createChild({
-                    cls: owner.groupCls,
-                    tag: 'td',
-                    vAlign: 'top'
-                });
-            }
-            me.cacheElements();
-            columns = me.columnEls;
-            columnCount = columns.length;
-        }
-
-        if (owner.vertical) {
-            columnIndex = -1; // first loop will increment this to 0
-            rowCount = Math.ceil(itemCount / columnCount);
-
-            for (i = 0; i < itemCount; ++i) {
-                if (i % rowCount === 0) {
-                    ++columnIndex;
-                }
-                columns[columnIndex].appendChild(items[i].el.dom);
-            }
-        } else {
-            for (i = 0; i < itemCount; ++i) {
-                columnIndex = i % columnCount;
-                columns[columnIndex].appendChild(items[i].el.dom);
-            }
         }
     },
 
@@ -348,17 +287,13 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         return data;
     },
 
-    // Overridden method from AbstractContainer.
-    getRenderTarget: function() {
-        return this.innerCt;
-    },
-
     initLayout: function () {
         var me = this,
             owner = me.owner;
 
         me.columnsArray = Ext.isArray(owner.columns);
-        me.evenColumns = Ext.isNumber(owner.columns);
+        me.autoColumns = !owner.columns || owner.columns === 'auto';
+        me.vertical = owner.vertical;
 
         me.callParent();
     },
@@ -372,5 +307,151 @@ Ext.define('Ext.layout.container.CheckboxGroup', {
         this.callParent(arguments);
 
         renderTpl.renderColumn = this.doRenderColumn;
+    },
+
+    renderChildren: function () {
+        var me = this,
+            generation = me.owner.items.generation;
+
+        if (me.lastOwnerItemsGeneration !== generation) {
+            me.lastOwnerItemsGeneration = generation;
+            me.renderItems(me.getLayoutItems());
+        }
+    },
+
+    /**
+     * Iterates over all passed items, ensuring they are rendered.  If the items are already rendered,
+     * also determines if the items are in the proper place in the dom.
+     * @protected
+     */
+    renderItems : function(items) {
+        var me = this,
+            itemCount = items.length,
+            i,
+            item,
+            rowCount,
+            columnCount,
+            rowIndex,
+            columnIndex;
+
+        if (itemCount) {
+            Ext.suspendLayouts();
+
+            if (me.autoColumns) {
+                me.addMissingColumns(itemCount);
+            }
+
+            columnCount = me.columnNodes.length;
+            rowCount = Math.ceil(itemCount / columnCount);
+
+            for (i = 0; i < itemCount; i++) {
+                item = items[i];
+                rowIndex = me.getRenderRowIndex(i, rowCount, columnCount);
+                columnIndex = me.getRenderColumnIndex(i, rowCount, columnCount);
+
+                if (!item.rendered) {
+                    me.renderItem(item, rowIndex, columnIndex);
+                } else if (!me.isItemAtPosition(item, rowIndex, columnIndex)) {
+                    me.moveItem(item, rowIndex, columnIndex);
+                }
+            }
+
+            if (me.autoColumns) {
+                me.removeExceedingColumns(itemCount);
+            }
+
+            Ext.resumeLayouts(true);
+        }
+    },
+
+    isItemAtPosition : function(item, rowIndex, columnIndex) {
+        return item.el.dom === this.getNodeAt(rowIndex, columnIndex);
+    },
+
+    getRenderColumnIndex : function(itemIndex, rowCount, columnCount) {
+        if (this.vertical) {
+            return Math.floor(itemIndex / rowCount);
+        } else {
+            return itemIndex % columnCount;
+        }
+    },
+
+    getRenderRowIndex : function(itemIndex, rowCount, columnCount) {
+        var me = this;
+        if (me.vertical) {
+            return itemIndex % rowCount;
+        } else {
+            return Math.floor(itemIndex / columnCount);
+        }
+    },
+
+    getNodeAt : function(rowIndex, columnIndex) {
+        return this.columnNodes[columnIndex].childNodes[rowIndex];
+    },
+
+    addMissingColumns : function(itemsCount) {
+        var me = this,
+            existingColumnsCount = me.columnNodes.length,
+            missingColumnsCount,
+            row,
+            cls,
+            i;
+        if (existingColumnsCount < itemsCount) {
+            missingColumnsCount = itemsCount - existingColumnsCount;
+            row = me.rowEl;
+            cls = me.owner.groupCls;
+            for (i = 0; i < missingColumnsCount; i++) {
+                row.createChild({
+                    cls: cls,
+                    tag: 'td',
+                    vAlign: 'top'
+                });
+            }
+        }
+    },
+
+    removeExceedingColumns : function(itemsCount) {
+        var me = this,
+            existingColumnsCount = me.columnNodes.length,
+            exceedingColumnsCount,
+            row,
+            i;
+        if (existingColumnsCount > itemsCount) {
+            exceedingColumnsCount = existingColumnsCount - itemsCount;
+            row = me.rowEl;
+            for (i = 0; i < exceedingColumnsCount; i++) {
+                row.last().remove();
+            }
+        }
+    },
+
+    /**
+     * Renders the given Component into the specified row and column
+     * @param {Ext.Component} item The Component to render
+     * @param {number} rowIndex row index
+     * @param {number} columnIndex column index
+     * @private
+     */
+    renderItem : function(item, rowIndex, columnIndex) {
+        var me = this;
+
+        me.configureItem(item);
+        item.render(Ext.get(me.columnNodes[columnIndex]), rowIndex);
+        me.afterRenderItem(item);
+    },
+
+    /**
+     * Moves the given already rendered Component to the specified row and column
+     * @param {Ext.Component} item The Component to move
+     * @param {number} rowIndex row index
+     * @param {number} columnIndex column index
+     * @private
+     */
+    moveItem : function(item, rowIndex, columnIndex) {
+        var me = this,
+            column = me.columnNodes[columnIndex],
+            targetNode = column.childNodes[rowIndex];
+        column.insertBefore(item.el.dom, targetNode || null);
     }
+
 });

@@ -246,11 +246,15 @@ Ext.define('Ext.Action', {
     callEach : function(fnName, args){
         var items = this.items,
             i = 0,
-            len = items.length;
+            len = items.length,
+            item;
 
+        Ext.suspendLayouts();
         for(; i < len; i++){
-            items[i][fnName].apply(items[i], args);
+            item = items[i];
+            item[fnName].apply(item, args);
         }
+        Ext.resumeLayouts(true);
     },
 
     // private

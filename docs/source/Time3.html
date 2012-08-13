@@ -78,30 +78,31 @@ Ext.define('Ext.form.field.Time', {
      * valid format -- see {@link #format} and {@link #altFormats}.
      */
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-minText'>    /**
 </span>     * @cfg {String} minText
      * The error text to display when the entered time is before {@link #minValue}.
      */
-    //&lt;locale&gt;
     minText : &quot;The time in this field must be equal to or after {0}&quot;,
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-maxText'>    /**
 </span>     * @cfg {String} maxText
      * The error text to display when the entered time is after {@link #maxValue}.
      */
-    //&lt;locale&gt;
     maxText : &quot;The time in this field must be equal to or before {0}&quot;,
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-invalidText'>    /**
 </span>     * @cfg {String} invalidText
      * The error text to display when the time in the field is invalid.
      */
-    //&lt;locale&gt;
     invalidText : &quot;{0} is not a valid time&quot;,
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-format'>    /**
 </span>     * @cfg {String} [format=undefined]
      * The default time format string which can be overriden for localization support. The format must be valid
@@ -109,10 +110,10 @@ Ext.define('Ext.form.field.Time', {
      *
      * Defaults to `'g:i A'`, e.g., `'3:15 PM'`. For 24-hour time format try `'H:i'` instead.
      */
-    //&lt;locale&gt;
     format : &quot;g:i A&quot;,
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-submitFormat'>    /**
 </span>     * @cfg {String} [submitFormat=undefined]
      * The date format string which will be submitted to the server. The format must be valid according to
@@ -120,16 +121,14 @@ Ext.define('Ext.form.field.Time', {
      *
      * Defaults to {@link #format}.
      */
-    //&lt;locale&gt;
-    submitFormat: 'g:i A',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Time-cfg-altFormats'>    /**
 </span>     * @cfg {String} altFormats
      * Multiple date formats separated by &quot;|&quot; to try when parsing a user input value and it doesn't match the defined
      * format.
      */
-    //&lt;locale&gt;
     altFormats : &quot;g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A&quot;,
     //&lt;/locale&gt;
 
@@ -192,6 +191,23 @@ Ext.define('Ext.form.field.Time', {
             formatDate: Ext.Function.bind(me.formatDate, me)
         });
         this.callParent();
+    },
+
+<span id='Ext-form-field-Time-method-transformOriginalValue'>    /**
+</span>     * @private
+     */
+    transformOriginalValue: function(value) {
+        if (Ext.isString(value)) {
+            return this.rawToValue(value);
+        }
+        return value;
+    },
+
+<span id='Ext-form-field-Time-method-isEqual'>    /**
+</span>     * @private
+     */
+    isEqual: function(v1, v2) {
+        return Ext.Date.isEqual(v1, v2);
     },
 
 <span id='Ext-form-field-Time-method-setMinValue'>    /**
@@ -461,17 +477,16 @@ Ext.define('Ext.form.field.Time', {
         me.setRawValue(me.formatDate(me.getValue()));
     },
 
-    setValue: function(v) {
+    setValue: function() {
 
         // Store MUST be created for parent setValue to function
         this.getPicker();
 
-        this.callParent([this.parseDate(v)]);
+        this.callParent(arguments);
     },
 
     getValue: function() {
-        var val = this.callParent(arguments);
-        return this.parseDate(val);
+        return this.parseDate(this.callParent(arguments));
     }
 });</pre>
 </body>

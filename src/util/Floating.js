@@ -128,10 +128,10 @@ Ext.define('Ext.util.Floating', {
         // Next item goes 10 above;
         index += 10;
 
-        // When a Container with floating items has its z-index set, it rebases any floating items it is managing.
+        // When a Container with floating descendants has its z-index set, it rebases any floating descendants it is managing.
         // The returned value is a round number approximately 10000 above the last z-index used.
-        if (me.floatingItems) {
-            index = Math.floor(me.floatingItems.setBase(index) / 100) * 100 + 10000;
+        if (me.floatingDescendants) {
+            index = Math.floor(me.floatingDescendants.setBase(index) / 100) * 100 + 10000;
         }
         return index;
     },
@@ -157,7 +157,7 @@ Ext.define('Ext.util.Floating', {
             xy;
 
         if (vector) {
-            xy = me.getPosition();
+            xy = me.getPosition(!!me.floatParent);
             xy[0] += vector[0];
             xy[1] += vector[1];
             me.setPosition(xy);
@@ -296,7 +296,7 @@ Ext.define('Ext.util.Floating', {
         return me;
     },
     
-    onFloatShow: function(){
+    onFloatShow: function() {
         if (this.needsCenter) {
             this.center();    
         }
@@ -304,7 +304,7 @@ Ext.define('Ext.util.Floating', {
     },
 
     // private
-    syncShadow : function(){
+    syncShadow : function() {
         if (this.floating) {
             this.el.sync(true);
         }
@@ -312,10 +312,11 @@ Ext.define('Ext.util.Floating', {
 
     // private
     fitContainer: function() {
-        var parent = this.floatParent,
-            container = parent ? parent.getTargetEl() : this.container,
-            size = container.getViewSize(false);
+        var me = this,
+            parent = me.floatParent,
+            container = parent ? parent.getTargetEl() : me.container;
 
-        this.setSize(size);
+        me.setSize(container.getViewSize(false));
+        me.setPosition.apply(me, parent ? [0, 0] : container.getXY());
     }
 });

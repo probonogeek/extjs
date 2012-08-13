@@ -107,17 +107,24 @@ Ext.define('Ext.data.writer.Writer', {
             name,
             field,
             key,
+            value,
             f, fLen;
-        
+
         if (writeAll) {
             fLen = fieldItems.length;
 
             for (f = 0; f < fLen; f++) {
                 field = fieldItems[f];
-
                 if (field.persist) {
-                    name       = field[nameProperty] || field.name;
-                    data[name] = record.get(field.name);
+                    name = field[nameProperty] || field.name;
+                    value = record.get(field.name);
+                    if (field.serialize) {
+                        data[name] = field.serialize(value, record);
+                    } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                        data[name] = Ext.Date.format(value, field.dateFormat);
+                    } else {
+                        data[name] = value;
+                    }
                 }
             }
         } else {
@@ -125,14 +132,23 @@ Ext.define('Ext.data.writer.Writer', {
             changes = record.getChanges();
             for (key in changes) {
                 if (changes.hasOwnProperty(key)) {
-                    field      = fields.get(key);
-                    name       = field[nameProperty] || field.name;
-                    data[name] = changes[key];
+                    field = fields.get(key);
+                    if (field.persist) {
+                        name = field[nameProperty] || field.name;
+                        value = record.get(field.name);
+                        if (field.serialize) {
+                            data[name] = field.serialize(value, record);
+                        } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                            data[name] = Ext.Date.format(value, field.dateFormat);
+                        } else {
+                            data[name] = value;
+                        }
+                    }
                 }
             }
         }
-        if(isPhantom) {
-            if(clientIdProperty && operation && operation.records.length > 1) {
+        if (isPhantom) {
+            if (clientIdProperty && operation && operation.records.length > 1) {
                 // include clientId for phantom records, if multiple records are being written to the server in one operation.
                 // The server can then return the clientId with each record so the operation can match the server records with the client records
                 data[clientIdProperty] = record.internalId;

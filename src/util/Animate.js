@@ -202,40 +202,10 @@ Ext.define('Ext.util.Animate', {
     uses: ['Ext.fx.Manager', 'Ext.fx.Anim'],
 
     /**
-     * Perform custom animation on this object.
+     * Performs custom animation on this object.
      *
-     * This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.Element Element}
+     * This method is applicable to both the {@link Ext.Component Component} class and the {@link Ext.draw.Sprite Sprite}
      * class. It performs animated transitions of certain properties of this object over a specified timeline.
-     *
-     * The sole parameter is an object which specifies start property values, end property values, and properties which
-     * describe the timeline. 
-     *
-     * ### Animating an {@link Ext.Element Element}
-     *
-     * When animating an Element, the following properties may be specified in `from`, `to`, and `keyframe` objects:
-     *
-     *   - `x` - The page X position in pixels.
-     *
-     *   - `y` - The page Y position in pixels
-     *
-     *   - `left` - The element's CSS `left` value. Units must be supplied.
-     *
-     *   - `top` - The element's CSS `top` value. Units must be supplied.
-     *
-     *   - `width` - The element's CSS `width` value. Units must be supplied.
-     *
-     *   - `height` - The element's CSS `height` value. Units must be supplied.
-     *
-     *   - `scrollLeft` - The element's `scrollLeft` value.
-     *
-     *   - `scrollTop` - The element's `scrollLeft` value.
-     *
-     *   - `opacity` - The element's `opacity` value. This must be a value between `0` and `1`.
-     *
-     * **Be aware than animating an Element which is being used by an Ext Component without in some way informing the
-     * Component about the changed element state will result in incorrect Component behaviour. This is because the
-     * Component will be using the old state of the element. To avoid this problem, it is now possible to directly
-     * animate certain properties of Components.**
      *
      * ### Animating a {@link Ext.Component Component}
      *
@@ -256,7 +226,7 @@ Ext.define('Ext.util.Animate', {
      *   - `dynamic` - Specify as true to update the Component's layout (if it is a Container) at every frame of the animation.
      *     *Use sparingly as laying out on every intermediate size change is an expensive operation.*
      *
-     * For example, to animate a Window to a new size, ensuring that its internal layout, and any shadow is correct:
+     * For example, to animate a Window to a new size, ensuring that its internal layout and any shadow is correct:
      *
      *     myWindow = Ext.create('Ext.window.Window', {
      *         title: 'Test Component animation',
@@ -281,7 +251,7 @@ Ext.define('Ext.util.Animate', {
      *         myWindow.animate({
      *             to: {
      *                 width: (myWindow.getWidth() == 500) ? 700 : 500,
-     *                 height: (myWindow.getHeight() == 300) ? 400 : 300,
+     *                 height: (myWindow.getHeight() == 300) ? 400 : 300
      *             }
      *         });
      *     });
@@ -290,46 +260,8 @@ Ext.define('Ext.util.Animate', {
      * size. If dynamic updating of the Window's child Components is required, then configure the animation with
      * `dynamic: true` and the two child items will maintain their proportions during the animation.
      *
-     * @param {Object} config An object containing properties which describe the animation's start and end states, and
-     * the timeline of the animation. Of the properties listed below, only **`to`** is mandatory.
-     * 
-     * Properties include:
-     *
-     * @param {Object} config.from
-     * An object which specifies start values for the properties being animated. If not supplied, properties are
-     * animated from current settings. The actual properties which may be animated depend upon ths object being
-     * animated. See the sections below on Element and Component animation.
-     *
-     * @param {Object} config.to
-     * An object which specifies end values for the properties being animated.
-     *
-     * @param {Number} config.duration
-     * The duration **in milliseconds** for which the animation will run.
-     *
-     * @param {String} config.easing
-     * A string value describing an easing type to modify the rate of change from the default linear to non-linear.
-     * Values may be one of:
-     *
-     *   - ease
-     *   - easeIn
-     *   - easeOut
-     *   - easeInOut
-     *   - backIn
-     *   - backOut
-     *   - elasticIn
-     *   - elasticOut
-     *   - bounceIn
-     *   - bounceOut
-     *
-     * @param {Object} config.keyframes
-     * This is an object which describes the state of animated properties at certain points along the timeline. it is an
-     * object containing properties who's names are the percentage along the timeline being described and who's values
-     * specify the animation state at that point.
-     *
-     * @param {Object} config.listeners
-     * This is a standard {@link Ext.util.Observable#listeners listeners} configuration object which may be used to
-     * inject behaviour at either the `beforeanimate` event or the `afteranimate` event.
-     *
+     * @param {Object} config  Configuration for {@link Ext.fx.Anim}.
+     * Note that the {@link Ext.fx.Anim#to to} config is required.
      * @return {Object} this
      */
     animate: function(animObj) {

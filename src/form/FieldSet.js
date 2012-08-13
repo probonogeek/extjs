@@ -210,6 +210,7 @@ Ext.define('Ext.form.FieldSet', {
         }
         if (me.title || me.checkboxToggle || me.collapsible) {
             me.addCls(baseCls + '-with-legend');
+            me.legend = Ext.widget(me.createLegendCt());
         }
     },
 
@@ -250,7 +251,7 @@ Ext.define('Ext.form.FieldSet', {
             items = [],
             legend = {
                 xtype: 'container',
-                baseCls: this.baseCls + '-header',
+                baseCls: me.baseCls + '-header',
                 id: me.id + '-legend',
                 autoEl: 'legend',
                 items: items,
@@ -261,9 +262,8 @@ Ext.define('Ext.form.FieldSet', {
         // Checkbox
         if (me.checkboxToggle) {
             items.push(me.createCheckboxCmp());
-        }
-        // Toggle button
-        else if (me.collapsible) {
+        } else if (me.collapsible) {
+            // Toggle button
             items.push(me.createToggleCmp());
         }
 
@@ -362,15 +362,13 @@ Ext.define('Ext.form.FieldSet', {
         // the renderData! The "this" pointer is the renderTpl instance!
 
         var me = renderData.$comp,
-            legend, tree;
-
+            legend = me.legend,
+            tree;
+            
         // Create the Legend component if needed
-        if (me.title || me.checkboxToggle || me.collapsible) {
-            me.legend = legend = Ext.widget(me.createLegendCt());
-
+        if (legend) {
             legend.ownerLayout.configureItem(legend);
-            tree = me.legend.getRenderTree();
-
+            tree = legend.getRenderTree();
             Ext.DomHelper.generateMarkup(tree, out);
         }
     },
@@ -462,7 +460,10 @@ Ext.define('Ext.form.FieldSet', {
             }
             me.collapsed = !expanded;
             if (me.rendered) {
-                me.updateLayout();
+                // say explicitly we are not root because when we have a fixed/configured height
+                // our ownerLayout would say we are root and so would not have it's height
+                // updated since it's not included in the layout cycle
+                me.updateLayout({ isRoot: false });
                 me.fireEvent(operation, me);
             }
         }

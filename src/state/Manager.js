@@ -7,8 +7,6 @@
 // in your initialization function
 init : function(){
    Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-   var win = new Window(...);
-   win.restoreState();
 }
  </code></pre>
  * This class passes on calls from components to the underlying {@link Ext.state.Provider} so that
