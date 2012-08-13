@@ -73,55 +73,55 @@ Ext.define('Ext.form.field.Date', {
     requires: ['Ext.picker.Date'],
     alternateClassName: ['Ext.form.DateField', 'Ext.form.Date'],
 
+    //<locale>
     /**
      * @cfg {String} format
      * The default date format string which can be overriden for localization support. The format must be valid
      * according to {@link Ext.Date#parse}.
      */
-    //<locale>
     format : "m/d/Y",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} altFormats
      * Multiple date formats separated by "|" to try when parsing a user input value and it does not match the defined
      * format.
      */
-    //<locale>
     altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d|n-j|n/j",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} disabledDaysText
      * The tooltip to display when the date falls on a disabled day.
      */
-    //<locale>
     disabledDaysText : "Disabled",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} disabledDatesText
      * The tooltip text to display when the date falls on a disabled date.
      */
-    //<locale>
     disabledDatesText : "Disabled",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} minText
      * The error text to display when the date in the cell is before {@link #minValue}.
      */
-    //<locale>
     minText : "The date in this field must be equal to or after {0}",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} maxText
      * The error text to display when the date in the cell is after {@link #maxValue}.
      */
-    //<locale>
     maxText : "The date in this field must be equal to or before {0}",
     //</locale>
+    //<locale>
     /**
      * @cfg {String} invalidText
      * The error text to display when the date in the field is invalid.
      */
-    //<locale>
     invalidText : "{0} is not a valid date - it must be in the format {1}",
     //</locale>
     /**
@@ -197,13 +197,13 @@ Ext.define('Ext.form.field.Date', {
     initTimeFormat: 'H',
 
     matchFieldWidth: false,
+    //<locale>
     /**
      * @cfg {Number} [startDay=undefined]
      * Day index at which the week should begin, 0-based.
      *
      * Defaults to `0` (Sunday).
      */
-    //<locale>
     startDay: 0,
     //</locale>
 

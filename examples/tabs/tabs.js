@@ -2,7 +2,7 @@ Ext.require('Ext.tab.*');
 
 Ext.onReady(function(){
     // basic tabs 1, built from existing content
-    var tabs = Ext.createWidget('tabpanel', {
+    var tabs = Ext.widget('tabpanel', {
         renderTo: 'tabs1',
         width: 450,
         activeTab: 0,
@@ -20,7 +20,7 @@ Ext.onReady(function(){
     });
     
     // second tabs built from JS
-    var tabs2 = Ext.createWidget('tabpanel', {
+    var tabs2 = Ext.widget('tabpanel', {
         renderTo: document.body,
         activeTab: 0,
         width: 600,
@@ -57,7 +57,9 @@ Ext.onReady(function(){
                 title: 'Event Tab',
                 listeners: {
                     activate: function(tab){
-                        alert(tab.title + ' was activated.');
+                        setTimeout(function() {
+                            alert(tab.title + ' was activated.');
+                        }, 1);
                     }
                 },
                 html: "I am tab 4's content. I also have an event listener attached."

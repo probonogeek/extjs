@@ -1,5 +1,4 @@
 /**
- * @class Ext.draw.engine.Svg
  * Provides specific methods to draw with SVG.
  */
 Ext.define('Ext.draw.engine.Svg', {
@@ -656,6 +655,7 @@ Ext.define('Ext.draw.engine.Svg', {
 
     /**
      * Checks if the specified CSS class exists on this element's DOM node.
+     * @param {Ext.draw.Sprite} sprite The sprite to look into.
      * @param {String} className The CSS class to check for
      * @return {Boolean} True if the class exists, else false
      */

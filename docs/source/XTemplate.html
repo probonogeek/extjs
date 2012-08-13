@@ -142,7 +142,7 @@
  *                 '&lt;p&gt;teenager&lt;/p&gt;',
  *             '&lt;tpl elseif=&quot;age &amp;gt;= 2&quot;&gt;',
  *                 '&lt;p&gt;kid&lt;/p&gt;',
- *             '&lt;tpl else&quot;&gt;',
+ *             '&lt;tpl else&gt;',
  *                 '&lt;p&gt;baby&lt;/p&gt;',
  *             '&lt;/tpl&gt;',
  *         '&lt;/tpl&gt;&lt;/p&gt;'
@@ -156,7 +156,7 @@
  *             '&lt;tpl switch=&quot;name&quot;&gt;',
  *                 '&lt;tpl case=&quot;Aubrey&quot; case=&quot;Nikol&quot;&gt;',
  *                     '&lt;p&gt;girl&lt;/p&gt;',
- *                 '&lt;tpl default&quot;&gt;',
+ *                 '&lt;tpl default&gt;',
  *                     '&lt;p&gt;boy&lt;/p&gt;',
  *             '&lt;/tpl&gt;',
  *         '&lt;/tpl&gt;&lt;/p&gt;'
@@ -266,7 +266,7 @@
  *             disableFormats: true,
  *             // member functions:
  *             isGirl: function(name){
- *                return name == 'Sara Grace';
+ *                return name == 'Aubrey' || name == 'Nikol';
  *             },
  *             isBaby: function(age){
  *                return age &lt; 1;
@@ -280,6 +280,11 @@ Ext.define('Ext.XTemplate', {
 
     requires: 'Ext.XTemplateCompiler',
 
+<span id='Ext-XTemplate-property-emptyObj'>    /**
+</span>     * @private
+     */
+    emptyObj: {},
+
 <span id='Ext-XTemplate-cfg-compiled'>    /**
 </span>     * @cfg {Boolean} compiled
      * Only applies to {@link Ext.Template}, XTemplates are compiled automatically on the
@@ -292,11 +297,11 @@ Ext.define('Ext.XTemplate', {
      * be accessed within the scope of the generated function.
      */
 
-    apply: function(values) {
-        return this.applyOut(values, []).join('');
+    apply: function(values, parent) {
+        return this.applyOut(values, [], parent).join('');
     },
 
-    applyOut: function(values, out) {
+    applyOut: function(values, out, parent) {
         var me = this,
             compiler;
 
@@ -310,7 +315,7 @@ Ext.define('Ext.XTemplate', {
         }
 
         try {
-            me.fn.call(me, out, values, {}, 1, 1);
+            me.fn.call(me, out, values, parent || me.emptyObj, 1, 1);
         } catch (e) {
             //&lt;debug&gt;
             Ext.log('Error: ' + e.message);

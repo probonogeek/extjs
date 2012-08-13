@@ -13,9 +13,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     alternateClassName: 'Ext.ux.Multiselect',
     alias: ['widget.multiselectfield', 'widget.multiselect'],
     
-    requires: ['Ext.panel.Panel', 'Ext.view.BoundList'],
+    requires: ['Ext.panel.Panel', 'Ext.view.BoundList', 'Ext.layout.container.Fit'],
     
     uses: ['Ext.view.DragZone', 'Ext.view.DropZone'],
+    
+    layout: 'fit',
     
     /**
      * @cfg {String} [dragGroup=""] The ddgroup name for the MultiSelect DragZone.
@@ -114,7 +116,13 @@ Ext.define('Ext.ux.form.MultiSelect', {
      */
     
     ignoreSelectChange: 0,
-    
+
+    /**
+     * @cfg {Object} listConfig
+     * An optional set of configuration properties that will be passed to the {@link Ext.view.BoundList}'s constructor.
+     * Any configuration that is valid for BoundList can be included.
+     */
+
     initComponent: function(){
         var me = this;
 
@@ -129,7 +137,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
         if (!Ext.isDefined(me.valueField)) {
             me.valueField = me.displayField;
         }
-        Ext.apply(me, me.setupItems());
+        me.items = me.setupItems();
         
         
         me.callParent();
@@ -140,16 +148,18 @@ Ext.define('Ext.ux.form.MultiSelect', {
     setupItems: function() {
         var me = this;
         
-        me.boundList = Ext.create('Ext.view.BoundList', {
+        me.boundList = Ext.create('Ext.view.BoundList', Ext.apply({
             deferInitialRefresh: false,
+            border: false,
             multiSelect: true,
             store: me.store,
             displayField: me.displayField,
             disabled: me.disabled
-        });
+        }, me.listConfig));
         
         me.boundList.getSelectionModel().on('selectionchange', me.onSelectChange, me);
         return {
+            border: true,
             layout: 'fit',
             title: me.title,
             tbar: me.tbar,

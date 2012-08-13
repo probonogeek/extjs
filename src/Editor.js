@@ -238,7 +238,7 @@ Ext.define('Ext.Editor', {
              * Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed.  You can check
              * {@link Ext.EventObject#getKey} to determine which key was pressed.
              * @param {Ext.Editor} this
-             * @param {Ext.form.field.Field} The field attached to this editor
+             * @param {Ext.form.field.Field} field The field attached to this editor
              * @param {Ext.EventObject} event The event object
              */
             'specialkey'

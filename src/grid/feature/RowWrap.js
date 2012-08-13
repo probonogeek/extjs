@@ -29,7 +29,8 @@ Ext.define('Ext.grid.feature.RowWrap', {
 
         // Extra functionality needed on header resize when row is wrapped:
         // Every individual cell in a column needs its width syncing.
-        view.onHeaderResize = Ext.Function.createSequence(view.onHeaderResize, me.onHeaderResize, me);
+        // So we produce a different column selector which includes al TDs in a column
+        view.getComponentLayout().getColumnSelector = me.getColumnSelector;
     },
 
     disable: function(){
@@ -42,7 +43,6 @@ Ext.define('Ext.grid.feature.RowWrap', {
             view.rowSelector = saved;
         }
         delete me.savedRowSelector;
-        delete view.onHeaderResize;
     },
 
     mutateMetaRowTpl: function(metaRowTpl) {  
@@ -110,11 +110,8 @@ Ext.define('Ext.grid.feature.RowWrap', {
         };
     },
 
-    // When row is wrapped, every individual cell in a column needs its width syncing
-    onHeaderResize: function(header, w, suppressFocus) {
-        var el = this.view.el;
-        if (el) {
-            el.select('td.' + Ext.baseCSSPrefix + 'grid-col-resizer-' + header.id).setWidth(w);
-        }
+    getColumnSelector: function(header) {
+        var s = Ext.baseCSSPrefix + 'grid-col-resizer-' + header.id;
+        return 'th.' + s + ',td.' + s;
     }
 });

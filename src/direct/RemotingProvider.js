@@ -296,7 +296,7 @@ TestAction.multiply(
                     event = new Ext.direct.ExceptionEvent({
                         data: null,
                         transaction: transaction,
-                        code: Ext.direct.Manager.self.exceptions.TRANSPORT,
+                        code: Ext.direct.Manager.exceptions.TRANSPORT,
                         message: 'Unable to connect to the server.',
                         xhr: response
                     });

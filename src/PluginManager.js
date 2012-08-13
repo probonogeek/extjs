@@ -1,6 +1,4 @@
 /**
- * @singleton
- *
  * Provides a registry of available Plugin classes indexed by a mnemonic code known as the Plugin's ptype.
  *
  * A plugin may be specified simply as a *config object* as long as the correct `ptype` is specified:
@@ -16,8 +14,7 @@
  *
  * Alternatively you can instantiate the plugin with Ext.create:
  *
- *     Ext.create('Ext.view.plugin.AutoComplete', {
- *         ptype: 'gridviewdragdrop',
+ *     Ext.create('Ext.grid.plugin.DragDrop', {
  *         dragText: 'Drag and drop to reorganize'
  *     })
  */

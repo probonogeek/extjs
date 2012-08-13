@@ -165,13 +165,14 @@ Ext.onReady(function() {
                 split: true,
                 collapsible: true
             }, {
-                title: 'South Western',
+                title: 'South Western - not resizable',
                 region: 'west',
                 flex: 1,
                 minWidth: 80,
                 html: 'South Western<br>I collapse to nothing',
                 split: true,
                 collapsible: true,
+                splitterResize: false,
                 collapseMode: 'mini'
             }]
         }]

@@ -86,11 +86,6 @@ Ext.define('Ext.container.Viewport', {
      */
 
     /**
-     * @cfg {Boolean} hideParent
-     * @private
-     */
-
-    /**
      * @cfg {String/HTMLElement/Ext.Element} renderTo
      * Always renders to document body.
      * @private
@@ -105,16 +100,6 @@ Ext.define('Ext.container.Viewport', {
     /**
      * @cfg {Number} width
      * Sets itself to viewport height.
-     * @private
-     */
-
-    /**
-     * @cfg {Boolean} deferHeight
-     * @private
-     */
-
-    /**
-     * @cfg {Boolean} monitorResize
      * @private
      */
 

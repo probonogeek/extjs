@@ -37,21 +37,27 @@ Ext.define('Ext.picker.Month', {
           '<div class="' + Ext.baseCSSPrefix + 'clear"></div>',
         '</div>',
         '<tpl if="showButtons">',
-          '<div id="{id}-buttonsEl" class="{baseCls}-buttons"></div>',
+            '<div id="{id}-buttonsEl" class="{baseCls}-buttons">{%',
+                'var me=values.$comp, okBtn=me.okBtn, cancelBtn=me.cancelBtn;',
+                'okBtn.ownerLayout = cancelBtn.ownerLayout = me.componentLayout;',
+                'okBtn.ownerCt = cancelBtn.ownerCt = me;',
+                'Ext.DomHelper.generateMarkup(okBtn.getRenderTree(), out);',
+                'Ext.DomHelper.generateMarkup(cancelBtn.getRenderTree(), out);',
+            '%}</div>',
         '</tpl>'
     ],
 
+    //<locale>
     /**
      * @cfg {String} okText The text to display on the ok button.
      */
-    //<locale>
     okText: 'OK',
     //</locale>
 
+    //<locale>
     /**
      * @cfg {String} cancelText The text to display on the cancel button.
      */
-    //<locale>
     cancelText: 'Cancel',
     //</locale>
 
@@ -153,6 +159,20 @@ Ext.define('Ext.picker.Month', {
         }
         me.setValue(me.value);
         me.activeYear = me.getYear(new Date().getFullYear() - 4, -4);
+
+        if (me.showButtons) {
+            me.okBtn = new Ext.button.Button({
+                text: me.okText,
+                handler: me.onOkClick,
+                scope: me
+            });
+            me.cancelBtn = new Ext.button.Button({
+                text: me.cancelText,
+                handler: me.onCancelClick,
+                scope: me
+            });
+        }
+
         this.callParent();
     },
 
@@ -198,21 +218,6 @@ Ext.define('Ext.picker.Month', {
         // keep a reference to the year/month elements since we'll be re-using them
         me.years = body.select('.' + me.baseCls + '-year a');
         me.months = body.select('.' + me.baseCls + '-month a');
-
-        if (me.showButtons) {
-            me.okBtn = new Ext.button.Button({
-                text: me.okText,
-                renderTo: buttonsEl,
-                handler: me.onOkClick,
-                scope: me
-            });
-            me.cancelBtn = new Ext.button.Button({
-                text: me.cancelText,
-                renderTo: buttonsEl,
-                handler: me.onCancelClick,
-                scope: me
-            });
-        }
 
         me.backRepeater = new Ext.util.ClickRepeater(me.prevEl, {
             handler: Ext.Function.bind(me.adjustYear, me, [-me.totalYears])
@@ -486,5 +491,24 @@ Ext.define('Ext.picker.Month', {
         me.years = me.months = null;
         Ext.destroyMembers(me, 'backRepeater', 'nextRepeater', 'okBtn', 'cancelBtn');
         me.callParent();
+    },
+
+    // Do the job of a container layout at this point even though we are not a Container.
+    // TODO: Refactor as a Container.
+    finishRenderChildren: function () {
+        var me = this;
+
+        this.callParent(arguments);
+
+        if (this.showButtons) {
+            me.okBtn.finishRender();
+            me.cancelBtn.finishRender();
+        }
+    },
+
+    onDestroy: function() {
+        Ext.destroyMembers(this, 'okBtn', 'cancelBtn');
+        this.callParent();
     }
+    
 });

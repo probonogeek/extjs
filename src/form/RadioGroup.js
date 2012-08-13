@@ -62,11 +62,11 @@ Ext.define('Ext.form.RadioGroup', {
      * be used as the error text.
      */
     allowBlank : true,
+    //<locale>
     /**
      * @cfg {String} blankText
      * Error text to display if the {@link #allowBlank} validation fails
      */
-    //<locale>
     blankText : 'You must select one item in this group',
     //</locale>
 

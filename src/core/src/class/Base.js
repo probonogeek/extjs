@@ -42,6 +42,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          * @param config
          */
         extend: function(parent) {
@@ -92,11 +94,15 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          */
         $onExtended: [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          */
         triggerExtended: function() {
             var callbacks = this.$onExtended,
@@ -113,6 +119,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          */
         onExtended: function(fn, scope) {
             this.$onExtended.push({
@@ -125,6 +133,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          * @param config
          */
         addConfig: function(config, fullMerge) {
@@ -201,6 +211,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          * @param {Object} members
          */
         addInheritableStatics: function(members) {
@@ -246,7 +258,7 @@ var noArgs = [],
          *         }
          *     });
          *
-         *      My.awesome.Cat.implement({
+         *      My.awesome.Cat.addMembers({
          *          meow: function() {
          *             alert('Meowww...');
          *          }
@@ -296,6 +308,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          * @param name
          * @param member
          */
@@ -314,7 +328,10 @@ var noArgs = [],
         },
 
         /**
-         * @private
+         * Adds members to class.
+         * @static
+         * @inheritable
+         * @deprecated 4.1 Use {@link #addMembers} instead.
          */
         implement: function() {
             this.addMembers.apply(this, arguments);
@@ -519,6 +536,7 @@ var noArgs = [],
         /**
          * Used internally by the mixins pre-processor
          * @private
+         * @static
          * @inheritable
          */
         mixin: function(name, mixinClass) {
@@ -613,6 +631,8 @@ var noArgs = [],
 
         /**
          * @private
+         * @static
+         * @inheritable
          */
         addXtype: function(xtype) {
             var prototype = this.prototype,
@@ -639,16 +659,22 @@ var noArgs = [],
     });
 
     Base.implement({
+        /** @private */
         isInstance: true,
 
+        /** @private */
         $className: 'Ext.Base',
 
+        /** @private */
         configClass: Ext.emptyFn,
 
+        /** @private */
         initConfigList: [],
 
+        /** @private */
         configMap: {},
 
+        /** @private */
         initConfigMap: {},
 
         /**
@@ -899,7 +925,7 @@ var noArgs = [],
          *
          * @protected
          * @param {Object} config
-         * @return {Object} mixins The mixin prototypes as key - value pairs
+         * @return {Ext.Base} this
          */
         initConfig: function(config) {
             var instanceConfig = config,
@@ -993,8 +1019,11 @@ var noArgs = [],
         },
 
         /**
-         *
-         * @param name
+         * Returns the initial configuration passed to constructor when instantiating
+         * this class.
+         * @param {String} [name] Name of the config option to return.
+         * @return {Object/Mixed} The full config object or a single config value
+         * when `name` parameter specified.
          */
         getInitialConfig: function(name) {
             var config = this.config;
@@ -1044,6 +1073,9 @@ var noArgs = [],
         },
         //</feature>
 
+        /**
+         * @private
+         */
         destroy: function() {
             this.destroy = Ext.emptyFn;
         }

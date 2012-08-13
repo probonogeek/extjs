@@ -76,7 +76,8 @@ Ext.define('Ext.util.ComponentDragger', {
             c = me.initialConstrainTo,
             delegateRegion,
             elRegion,
-            shadowSize = comp.el.shadow ? comp.el.shadow.offset : 0;
+            dragEl = me.proxy ? me.proxy.el : comp.el,
+            shadowSize = (!me.constrainDelegate && dragEl.shadow && !dragEl.shadowDisabled) ? dragEl.shadow.getShadowSize() : 0;
 
         // The configured constrainTo might be a Region or an element
         if (!(c instanceof Ext.util.Region)) {
@@ -85,7 +86,7 @@ Ext.define('Ext.util.ComponentDragger', {
 
         // Reduce the constrain region to allow for shadow
         if (shadowSize) {
-            c.adjust(0, -shadowSize, -shadowSize, shadowSize);
+            c.adjust(shadowSize[0], -shadowSize[1], -shadowSize[2], shadowSize[3]);
         }
 
         // If they only want to constrain the *delegate* to within the constrain region,
@@ -93,7 +94,7 @@ Ext.define('Ext.util.ComponentDragger', {
         // edges of the Component.
         if (!me.constrainDelegate) {
             delegateRegion = Ext.fly(me.dragTarget).getRegion();
-            elRegion = me.proxy ? me.proxy.el.getRegion() : comp.el.getRegion();
+            elRegion = dragEl.getRegion();
 
             c.adjust(
                 delegateRegion.top - elRegion.top,

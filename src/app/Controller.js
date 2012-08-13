@@ -1,6 +1,4 @@
 /**
- * @class Ext.app.Controller
- *
  * Controllers are the glue that binds an application together. All they really do is listen for events (usually from
  * views) and take some action. Here's how we might create a Controller to manage Users:
  *
@@ -47,7 +45,7 @@
  * functions. The overall effect is that whenever any component that matches our selector fires a 'render' event, our
  * onPanelRendered function is called.
  *
- * <u>Using refs</u>
+ * ## Using refs
  *
  * One of the most useful parts of Controllers is the new ref system. These use the new {@link Ext.ComponentQuery} to
  * make it really easy to get references to Views on your page. Let's look at an example of this now:
@@ -98,7 +96,7 @@
  * your Controller as you go. For an example of real-world usage of Controllers see the Feed Viewer example in the
  * examples/app/feed-viewer folder in the SDK download.
  *
- * <u>Generated getter methods</u>
+ * ## Generated getter methods
  *
  * Refs aren't the only thing that generate convenient getter methods. Controllers often have to deal with Models and
  * Stores so the framework offers a couple of easy ways to get access to those too. Let's look at another example:
@@ -124,7 +122,7 @@
  * Of course, you could do anything in this function but in this case we just did something simple to demonstrate the
  * functionality.
  *
- * <u>Further Reading</u>
+ * ## Further Reading
  *
  * For more information about writing Ext JS 4 applications, please see the
  * [application architecture guide](#/guide/application_architecture). Also see the {@link Ext.app.Application} documentation.
@@ -154,14 +152,21 @@ Ext.define('Ext.app.Controller', {
      * 
      *     Ext.define("MyApp.controller.Foo", {
      *         extend: "Ext.app.Controller",
-     *         requires: ['MyApp.model.User', 'MyApp.model.Vehicle']
+     *         requires: ['MyApp.model.User', 'MyApp.model.Vehicle'],
+     *         getUserModel: function() {
+     *             return this.getModel("User");
+     *         },
+     *         getVehicleModel: function() {
+     *             return this.getModel("Vehicle");
+     *         }
      *     });
      * 
      */
 
     /**
      * @cfg {String[]} views
-     * Array of views to require from AppName.view namespace. For example:
+     * Array of views to require from AppName.view namespace and to generate getter methods for.
+     * For example:
      * 
      *     Ext.define("MyApp.controller.Foo", {
      *         extend: "Ext.app.Controller",
@@ -172,14 +177,21 @@ Ext.define('Ext.app.Controller', {
      * 
      *     Ext.define("MyApp.controller.Foo", {
      *         extend: "Ext.app.Controller",
-     *         requires: ['MyApp.view.List', 'MyApp.view.Detail']
+     *         requires: ['MyApp.view.List', 'MyApp.view.Detail'],
+     *         getListView: function() {
+     *             return this.getView("List");
+     *         },
+     *         getDetailView: function() {
+     *             return this.getView("Detail");
+     *         }
      *     });
-     * 
+     *
      */
 
     /**
      * @cfg {String[]} stores
-     * Array of stores to require from AppName.store namespace. For example:
+     * Array of stores to require from AppName.store namespace and to generate getter methods for.
+     * For example:
      * 
      *     Ext.define("MyApp.controller.Foo", {
      *         extend: "Ext.app.Controller",
@@ -191,8 +203,14 @@ Ext.define('Ext.app.Controller', {
      *     Ext.define("MyApp.controller.Foo", {
      *         extend: "Ext.app.Controller",
      *         requires: ['MyApp.store.Users', 'MyApp.store.Vehicles']
+     *         getUsersStore: function() {
+     *             return this.getView("Users");
+     *         },
+     *         getVehiclesStore: function() {
+     *             return this.getView("Vehicles");
+     *         }
      *     });
-     * 
+     *
      */
 
     /**
@@ -211,6 +229,14 @@ Ext.define('Ext.app.Controller', {
      * 
      * This will add method `getList` to the controller which will internally use
      * Ext.ComponentQuery to reference the grid component on page.
+     *
+     * The following fields can be used in ref definition:
+     *
+     * - `ref` - name of the reference.
+     * - `selector` - Ext.ComponentQuery selector to access the component.
+     * - `autoCreate` - True to create the component automatically if not found on page.
+     * - `forceCreate` - Forces the creation of the component every time reference is accessed
+     *   (when `get<REFNAME>` is called).
      */
 
     onClassExtended: function(cls, data, hooks) {
@@ -285,7 +311,7 @@ Ext.define('Ext.app.Controller', {
      * @param {Ext.app.Application} application
      * @template
      */
-    init: function(application) {},
+    init: Ext.emptyFn,
 
     /**
      * A template method like {@link #init}, but called after the viewport is created.
@@ -294,7 +320,7 @@ Ext.define('Ext.app.Controller', {
      * @param {Ext.app.Application} application
      * @template
      */
-    onLaunch: function(application) {},
+    onLaunch: Ext.emptyFn,
 
     createGetters: function(type, refs) {
         type = Ext.String.capitalize(type);
@@ -331,6 +357,8 @@ Ext.define('Ext.app.Controller', {
             i = 0,
             length = refs.length,
             info, ref, fn;
+        
+        me.references = me.references || [];
 
         for (; i < length; i++) {
             info = refs[i];
@@ -340,11 +368,14 @@ Ext.define('Ext.app.Controller', {
             if (!me[fn]) {
                 me[fn] = Ext.Function.pass(me.getRef, [ref, info], me);
             }
-            me.references = me.references || [];
             me.references.push(ref.toLowerCase());
         }
     },
 
+    /**
+     * Registers a {@link #refs reference}.
+     * @param {Object} ref
+     */
     addRef: function(ref) {
         return this.ref([ref]);
     },
@@ -378,6 +409,10 @@ Ext.define('Ext.app.Controller', {
         return cached;
     },
 
+    /**
+     * Returns true if a {@link #refs reference} is registered.
+     * @return {Boolean}
+     */
     hasRef: function(ref) {
         return this.references && this.references.indexOf(ref.toLowerCase()) !== -1;
     },

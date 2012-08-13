@@ -104,6 +104,8 @@ Ext.define('Ext.form.FieldContainer', {
     alias: 'widget.fieldcontainer',
 
     componentLayout: 'fieldcontainer',
+    
+    componentCls: Ext.baseCSSPrefix + 'form-fieldcontainer',
 
     /**
      * @cfg {Boolean} combineLabels
@@ -112,12 +114,12 @@ Ext.define('Ext.form.FieldContainer', {
      */
     combineLabels: false,
 
+    //<locale>
     /**
      * @cfg {String} labelConnector
      * The string to use when joining the labels of individual sub-fields, when {@link #combineLabels} is
      * set to true. Defaults to ', '.
      */
-    //<locale>
     labelConnector: ', ',
     //</locale>
 
@@ -184,6 +186,8 @@ Ext.define('Ext.form.FieldContainer', {
      * Returns the combined field label if {@link #combineLabels} is set to true and if there is no
      * set {@link #fieldLabel}. Otherwise returns the fieldLabel like normal. You can also override
      * this method to provide a custom generated label.
+     * @template
+     * @return {String} The label, or empty string if none.
      */
     getFieldLabel: function() {
         var label = this.fieldLabel || '';
@@ -222,7 +226,7 @@ Ext.define('Ext.form.FieldContainer', {
         var me = this,
             label = me.labelEl;
         if (label) {
-            label.update(me.getFieldLabel());
+            me.setFieldLabel(me.getFieldLabel());
         }
     },
 

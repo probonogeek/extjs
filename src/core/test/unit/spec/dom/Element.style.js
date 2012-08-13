@@ -114,5 +114,39 @@ describe("Ext.Element.style", function() {
         });
 
     });
+    
+    describe('setStyle', function() {
+        var el, dom;
+        beforeEach(function(){
+            dom = document.createElement('div');
+            testEl.appendChild(dom);
+            el = new Ext.Element(dom);
+        });
+        afterEach(function(){
+            dom.parentNode.removeChild(dom);
+            el = dom = null;
+        });
+
+        describe('font-size', function() {
+            it('should set the font size', function() {
+                el.setStyle('font-size', '50px');
+                expect(el.getStyle('font-size')).toEqual('50px');
+            });
+        });
+
+        describe('font-sstyle', function() {
+            it('should set the font style', function() {
+                el.setStyle('font-style', 'italic');
+                expect(el.getStyle('font-style')).toEqual('italic');
+            });
+        });
+
+        describe('font-family', function() {
+            it('should set the font family', function() {
+                el.setStyle('font-family', 'courier');
+                expect(el.getStyle('font-family')).toEqual('courier');
+            });
+        });
+    });
 
 }, "/src/dom/Element.style.js");

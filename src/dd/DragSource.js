@@ -106,6 +106,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Event} e The event object
      * @param {String} id The id of the dragged element
      * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
      */
     beforeDragEnter: function(target, e, id) {
         return true;
@@ -142,6 +143,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Event} e The event object
      * @param {String} id The id of the dragged element
      * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
      */
     beforeDragOver: function(target, e, id) {
         return true;
@@ -177,6 +179,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Event} e The event object
      * @param {String} id The id of the dragged element
      * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
      */
     beforeDragOut: function(target, e, id){
         return true;
@@ -218,6 +221,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Event} e The event object
      * @param {String} id The id of the dragged element
      * @return {Boolean} isValid True if the drag drop event is valid, else false to cancel
+     * @template
      */
     beforeDragDrop: function(target, e, id){
         return true;
@@ -246,6 +250,14 @@ Ext.define('Ext.dd.DragSource', {
 
     // private
     onInvalidDrop: function(target, e, id) {
+        // This method may be called by the DragDropManager.
+        // To preserve backwards compat, it only passes the event object
+        // Here we correct the arguments.
+        if (!e) {
+            e = target;
+            target = null;
+            id = e.getTarget().id;
+        }
         this.beforeInvalidDrop(target, e, id);
         if (this.cachedTarget) {
             if(this.cachedTarget.isNotifyTarget){
@@ -283,6 +295,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Event} e The event object
      * @param {String} id The id of the dragged element
      * @return {Boolean} isValid True if the invalid drop should proceed, else false to cancel
+     * @template
      */
     beforeInvalidDrop: function(target, e, id) {
         return true;
@@ -307,6 +320,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Object} data An object containing arbitrary data to be shared with drop targets
      * @param {Event} e The event object
      * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
      */
     onBeforeDrag: function(data, e){
         return true;
@@ -318,6 +332,7 @@ Ext.define('Ext.dd.DragSource', {
      * @param {Number} x The x position of the click on the dragged object
      * @param {Number} y The y position of the click on the dragged object
      * @method
+     * @template
      */
     onStartDrag: Ext.emptyFn,
 

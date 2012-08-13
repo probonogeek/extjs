@@ -141,14 +141,14 @@ Ext.define('Ext.ModelManager', {
     },
 
     /**
-     * Creates a new instance of a Model using the given data.
-     *
-     * This method is deprecated.  Use {@link Ext#create Ext.create} instead.  For example:
+     * Creates a new instance of a Model using the given data. Deprecated, instead use Ext.create:
      *
      *     Ext.create('User', {
      *         first: 'Ed',
      *         last: 'Spencer'
      *     });
+     *
+     * @deprecated 4.1 Use {@link Ext#create Ext.create} instead.
      *
      * @param {Object} data Data to initialize the Model's fields with
      * @param {String} name The name of the model to create

@@ -56,6 +56,11 @@ Ext.define('Ext.data.Operation', {
      * The batch that this Operation is a part of.
      */
     batch: undefined,
+    
+    /**
+     * @cfg {Object} params
+     * Parameters to pass along with the request when performing the operation.
+     */
 
     /**
      * @cfg {Function} callback
@@ -156,33 +161,40 @@ Ext.define('Ext.data.Operation', {
      */
     commitRecords: function (serverRecords) {
         var me = this,
-            mc, index, clientRecords, serverRec, clientRec;
+            mc, index, clientRecords, serverRec, clientRec, i, len;
 
         if (!me.actionSkipSyncRe.test(me.action)) {
             clientRecords = me.records;
 
             if (clientRecords && clientRecords.length) {
                 if (clientRecords.length > 1) {
-                    // if this operation has multiple records, client records need to be matched up with server records
-                    // so that any data returned from the server can be updated in the client records.
-                    mc = new Ext.util.MixedCollection();
-                    mc.addAll(serverRecords);
+                    // If this operation has multiple records, client records need to be matched up with server records
+                    // so that any data returned from the server can be updated in the client records. If we don't have
+                    // a clientIdProperty specified on the model and we've done a create, just assume the data is returned in order.
+                    // If it's an update, the records should already have an id which should match what the server returns.
+                    if (me.action == 'update' || clientRecords[0].clientIdProperty) {
+                        mc = new Ext.util.MixedCollection();
+                        mc.addAll(serverRecords);
 
-                    for (index = clientRecords.length; index--; ) {
-                        clientRec = clientRecords[index];
-                        serverRec = mc.findBy(me.matchClientRec, clientRec);
+                        for (index = clientRecords.length; index--; ) {
+                            clientRec = clientRecords[index];
+                            serverRec = mc.findBy(me.matchClientRec, clientRec);
 
-                        // Replace client record data with server record data
-                        clientRec.copyFrom(serverRec);
+                            // Replace client record data with server record data
+                            clientRec.copyFrom(serverRec);
+                        }
+                    } else {
+                        for (i = 0, len = clientRecords.length; i < len; ++i) {
+                            clientRec = clientRecords[i];
+                            serverRec = serverRecords[i];
+                            if (clientRec && serverRec) {
+                                me.updateRecord(clientRec, serverRec);
+                            }
+                        }
                     }
                 } else {
                     // operation only has one record, so just match the first client record up with the first server record
-                    clientRec = clientRecords[0];
-                    serverRec = serverRecords[0];
-                    // if the client record is not a phantom, make sure the ids match before replacing the client data with server data.
-                    if(serverRec && (clientRec.phantom || clientRec.getId() === serverRec.getId())) {
-                        clientRec.copyFrom(serverRec);
-                    }
+                    this.updateRecord(clientRecords[0], serverRecords[0]);   
                 }
 
                 if (me.actionCommitRecordsRe.test(me.action)) {
@@ -191,6 +203,13 @@ Ext.define('Ext.data.Operation', {
                     }
                 }
             }
+        }
+    },
+    
+    updateRecord: function(clientRec, serverRec) {
+        // if the client record is not a phantom, make sure the ids match before replacing the client data with server data.
+        if(serverRec && (clientRec.phantom || clientRec.getId() === serverRec.getId())) {
+            clientRec.copyFrom(serverRec);
         }
     },
 

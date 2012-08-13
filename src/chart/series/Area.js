@@ -248,14 +248,9 @@ Ext.define('Ext.chart.series.Area', {
                 }
                 areaElem = record.get(areas[areaIndex]);
                 if (typeof areaElem == 'number') {
-                    minY = mmin(minY, areaElem);
                     yValue.push(areaElem);
-                    acumY += areaElem;
                 }
             }
-            minX = mmin(minX, xValue);
-            maxX = mmax(maxX, xValue);
-            maxY = mmax(maxY, acumY);
             yValues.push(yValue);
         }
 

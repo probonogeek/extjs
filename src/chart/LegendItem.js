@@ -168,6 +168,7 @@ Ext.define('Ext.chart.LegendItem', {
                 }, true);
             }
             toggle = !toggle;
+            me.legend.chart.redraw();
         }, me);
         me.updatePosition({x:0, y:0}); //Relative to 0,0 at first so that the bbox is calculated correctly
     },

@@ -64,18 +64,18 @@ fields : {
      * &lt;/code&gt;&lt;/pre&gt;
      */
 
-<span id='Ext-ux-grid-menu-RangeMenu-cfg-iconCls'>    /**
-</span>     * @cfg {Object} iconCls
-     * The iconCls to be applied to each comparator field item.
+<span id='Ext-ux-grid-menu-RangeMenu-cfg-itemIconCls'>    /**
+</span>     * @cfg {Object} itemIconCls
+     * The itemIconCls to be applied to each comparator field item.
      * Defaults to:&lt;pre&gt;
-iconCls : {
+itemIconCls : {
     gt : 'ux-rangemenu-gt',
     lt : 'ux-rangemenu-lt',
     eq : 'ux-rangemenu-eq'
 }
      * &lt;/pre&gt;
      */
-    iconCls : {
+    itemIconCls : {
         gt : 'ux-rangemenu-gt',
         lt : 'ux-rangemenu-lt',
         eq : 'ux-rangemenu-eq'
@@ -153,7 +153,7 @@ menuItemCfgs : {
                     enableKeyEvents: true,
                     hideLabel: false,
                     fieldLabel: me.iconTpl.apply({
-                        cls: me.iconCls[item] || 'no-icon',
+                        cls: me.itemIconCls[item] || 'no-icon',
                         text: me.fieldLabels[item] || '',
                         src: Ext.BLANK_IMAGE_URL
                     }),

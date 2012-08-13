@@ -85,7 +85,7 @@ Ext.define('Ext.grid.column.Column', {
     ],
 
     renderTpl:
-        '<div id="{id}-titleEl" class="' + Ext.baseCSSPrefix + 'column-header-inner">' +
+        '<div id="{id}-titleEl" {tipMarkup}class="' + Ext.baseCSSPrefix + 'column-header-inner">' +
             '<span id="{id}-textEl" class="' + Ext.baseCSSPrefix + 'column-header-text">' +
                 '{text}' +
             '</span>' +
@@ -128,6 +128,12 @@ Ext.define('Ext.grid.column.Column', {
     text: '&#160;',
 
     /**
+     * @cfg {String} header
+     * The header text.
+     * @deprecated 4.0 Use {@link #text} instead.
+     */
+
+    /**
      * @cfg {String} menuText
      * The text to render in the column visibility selection menu for this column.  If not
      * specified, will default to the text value.
@@ -159,7 +165,13 @@ Ext.define('Ext.grid.column.Column', {
     /**
      * @cfg {Boolean} fixed
      * True to prevent the column from being resizable.
-     * @deprecated
+     * @deprecated 4.0 Use {@link #resizable} instead.
+     */
+
+    /**
+     * @cfg {Boolean} [locked=false]
+     * True to lock this column in place.  Implicitly enables locking on the grid.
+     * See also {@link Ext.grid.Panel#enableLocking}.
      */
 
     /**
@@ -181,8 +193,8 @@ Ext.define('Ext.grid.column.Column', {
     menuDisabled: false,
 
     /**
-     * @cfg {Function} renderer
-     * A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.)
+     * @cfg {Function/String} renderer
+     * A renderer is an 'interceptor' method which can be used to transform data (value, appearance, etc.)
      * before it is rendered. Example:
      *
      *     {
@@ -192,6 +204,12 @@ Ext.define('Ext.grid.column.Column', {
      *             }
      *             return value + ' people';
      *         }
+     *     }
+     *
+     * Additionally a string naming an {@link Ext.util.Format} method can be passed:
+     *
+     *     {
+     *         renderer: 'uppercase'
      *     }
      *
      * @cfg {Object} renderer.value The data value for the current cell
@@ -205,7 +223,20 @@ Ext.define('Ext.grid.column.Column', {
      * @cfg {String} renderer.return The HTML string to be rendered.
      */
     renderer: false,
+
+    /**
+     * @cfg {Object} scope
+     * The scope to use when calling the {@link #renderer} function.
+     */
     
+    /**
+     * @method defaultRenderer
+     * When defined this will take precedence over the {@link Ext.grid.column.Column#renderer renderer} config.
+     * This is meant to be defined in subclasses that wish to supply their own renderer.
+     * @protected
+     * @template
+     */
+
     /**
      * @cfg {Function} editRenderer
      * A renderer to be used in conjunction with {@link Ext.grid.plugin.RowEditing RowEditing}. This renderer is used to
@@ -225,6 +256,17 @@ Ext.define('Ext.grid.column.Column', {
      * False to disable drag-drop reordering of this column.
      */
     draggable: true,
+    
+    /**
+     * @cfg {String} tooltip
+     * A tooltip to display for this column header
+     */
+    
+    /**
+     * @cfg {String} [tooltipType="qtip"]
+     * The type of {@link #tooltip} to use. Either 'qtip' for QuickTips or 'title' for title attribute.
+     */
+    tooltipType: 'qtip',
 
     // Header does not use the typical ComponentDraggable class and therefore we
     // override this with an emptyFn. It is controlled at the HeaderDragZone.
@@ -361,10 +403,19 @@ Ext.define('Ext.grid.column.Column', {
     },
 
     initRenderData: function() {
-        var me = this;
+        var me = this,
+            tipMarkup = '',
+            tip = me.tooltip,
+            attr = me.tooltipType == 'qtip' ? 'data-qtip' : 'title';
+            
+        if (!Ext.isEmpty(tip)) {
+            tipMarkup = attr + '="' + tip + '" ';
+        }
+            
         return Ext.applyIf(me.callParent(arguments), {
             text: me.text,
-            menuDisabled: me.menuDisabled
+            menuDisabled: me.menuDisabled,
+            tipMarkup: tipMarkup
         });
     },
 
@@ -508,7 +559,8 @@ Ext.define('Ext.grid.column.Column', {
         });
     },
 
-   
+    // private
+    // Inform the header container about the resize
     afterComponentLayout: function(width, height, oldWidth, oldHeight) {
         var me = this,
             ownerHeaderCt = me.getOwnerHeaderCt();
@@ -518,7 +570,6 @@ Ext.define('Ext.grid.column.Column', {
         if (ownerHeaderCt && (oldWidth != null || me.flex) && width !== oldWidth) {
             ownerHeaderCt.onHeaderResize(me, width, true);
         }
-        delete me.oldWidth;
     },
 
     // private
@@ -563,7 +614,7 @@ Ext.define('Ext.grid.column.Column', {
     onDestroy: function() {
         var me = this;
         // force destroy on the textEl, IE reports a leak
-        Ext.destroy(me.textEl, me.keyNav);
+        Ext.destroy(me.textEl, me.keyNav, me.field);
         delete me.keyNav;
         me.callParent(arguments);
     },

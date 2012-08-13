@@ -48,6 +48,14 @@ Ext.define('Ext.grid.column.Date', {
      * Defaults to the default date from {@link Ext.Date#defaultFormat} which itself my be overridden
      * in a locale file.
      */
+    /**
+     * @cfg renderer
+     * @hide
+     */
+    /**
+     * @cfg scope
+     * @hide
+     */
 
     initComponent: function(){
         if (!this.format) {

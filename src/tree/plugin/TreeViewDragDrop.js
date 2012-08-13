@@ -114,25 +114,35 @@ Ext.define('Ext.tree.plugin.TreeViewDragDrop', {
      * @param {String} dropPosition `"before"`, `"after"` or `"append"` depending on whether the mouse is above or below
      * the midline of the node, or the node is a branch node which accepts new child nodes.
      */
+
     //<locale>
+    /**
+     * @cfg
+     * The text to show while dragging.
+     *
+     * Two placeholders can be used in the text:
+     *
+     * - `{0}` The number of selected items.
+     * - `{1}` 's' when more than 1 items (only useful for English).
+     */
     dragText : '{0} selected node{1}',
     //</locale>
 
     /**
-     * @cfg {Boolean} allowParentInsert
+     * @cfg {Boolean} allowParentInserts
      * Allow inserting a dragged node between an expanded parent node and its first child that will become a sibling of
      * the parent when dropped.
      */
     allowParentInserts: false,
 
     /**
-     * @cfg {String} allowContainerDrop
+     * @cfg {Boolean} allowContainerDrops
      * True if drops on the tree container (outside of a specific tree node) are allowed.
      */
     allowContainerDrops: false,
 
     /**
-     * @cfg {String} appendOnly
+     * @cfg {Boolean} appendOnly
      * True if the tree should only allow append drops (use for trees which are sorted).
      */
     appendOnly: false,

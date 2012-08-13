@@ -15,10 +15,13 @@ Ext.define('Ext.view.Table', {
     extend: 'Ext.view.View',
     alias: 'widget.tableview',
     uses: [
+        'Ext.view.TableLayout',
         'Ext.view.TableChunker',
         'Ext.util.DelayedTask',
         'Ext.util.MixedCollection'
     ],
+
+    componentLayout: 'tableview',
 
     baseCls: Ext.baseCSSPrefix + 'grid-view',
 
@@ -101,33 +104,36 @@ Ext.define('Ext.view.Table', {
      * True to enable text selections.
      */
 
+    /**
+     * @private
+     * Simple initial tpl for TableView just to satisfy the validation within AbstractView.initComponent.
+     */
+    initialTpl: '<div></div>',
+
     initComponent: function() {
         var me = this,
             scroll = me.scroll;
+
+        /**
+         * @private
+         * @property {Ext.dom.AbstractElement.Fly} table
+         * A flyweight Ext.Element which encapsulates a reference to the transient `<table>` element within this View.
+         * *Note that the `dom` reference will not be present until the first data refresh*
+         */
+        me.table = new Ext.dom.Element.Fly();
+        me.table.id = me.id + 'gridTable';
 
         // Scrolling within a TableView is controlled by the scroll config of its owning GridPanel
         // It must see undefined in this property in order to leave the scroll styles alone at afterRender time
         me.autoScroll = undefined;
 
-        //Scrolling is handled at the View's element level
+        // Convert grid scroll config to standard Component scrolling configurations.
         if (scroll === true || scroll === 'both') {
-            me.style = Ext.apply(me.style||{}, {
-                overflow: 'auto'
-            });
+            me.autoScroll = true;
         } else if (scroll === 'horizontal') {
-            me.style = Ext.apply(me.style||{}, {
-                "overflow-x": 'auto',
-                "overflow-y": 'hidden'
-            });
+            me.overflowX = 'auto';
         } else if (scroll === 'vertical') {
-            me.style = Ext.apply(me.style||{}, {
-                "overflow-x": 'hidden',
-                "overflow-y": 'auto'
-            });
-        } else {
-            me.style = Ext.apply(me.style||{}, {
-                overflow: 'hidden'
-            });
+            me.overflowY = 'auto';
         }
         me.selModel.view = me;
         me.headerCt.view = me;
@@ -137,7 +143,8 @@ Ext.define('Ext.view.Table', {
         me.initFeatures(me.grid);
         delete me.grid;
 
-        me.tpl = '<div></div>';
+        // The real tpl is generated, but AbstractView.initComponent insists upon the presence of a fully instantiated XTemplate at construction time.
+        me.tpl = me.getTpl('initialTpl');
         me.callParent();
     },
     
@@ -154,7 +161,7 @@ Ext.define('Ext.view.Table', {
             destinationCellIdx = toIdx,
             colCount = me.getGridColumns().length,
             lastIdx = colCount - 1,
-            doFirstLastClasses = (me.firstCls || me.lastCls) && (toIdx == 0 || toIdx == colCount || fromIdx == 0 || fromIdx == lastIdx),
+            doFirstLastClasses = (me.firstCls || me.lastCls) && (toIdx === 0 || toIdx == colCount || fromIdx === 0 || fromIdx == lastIdx),
             i,
             j,
             rows, len, tr, headerRows;
@@ -284,7 +291,7 @@ Ext.define('Ext.view.Table', {
             len;
 
         me.featuresMC = new Ext.util.MixedCollection();
-        features = me.features = me.prepareFeatures();
+        features = me.features = me.constructFeatures();
         len = features ? features.length : 0;
         for (i = 0; i < len; i++) {
             feature = features[i];
@@ -307,7 +314,7 @@ Ext.define('Ext.view.Table', {
      * 
      * MUST NOT update the this.features property, and MUST NOT update the instantiated Features.
      */
-    prepareFeatures: function() {
+    constructFeatures: function() {
         var me = this,
             features = me.features,
             feature,
@@ -387,10 +394,11 @@ Ext.define('Ext.view.Table', {
 
     // TODO: Refactor headerCt dependency here to colModel
     collectData: function(records, startIndex) {
-        var preppedRecords = this.callParent(arguments),
-            headerCt  = this.headerCt,
+        var me = this,
+            preppedRecords = me.callParent(arguments),
+            headerCt  = me.headerCt,
             fullWidth = headerCt.getFullWidth(),
-            features  = this.features,
+            features  = me.features,
             ln = features.length,
             o = {
                 rows: preppedRecords,
@@ -407,12 +415,12 @@ Ext.define('Ext.view.Table', {
         jln = preppedRecords.length;
         // process row classes, rowParams has been deprecated and has been moved
         // to the individual features that implement the behavior.
-        if (this.getRowClass) {
+        if (me.getRowClass) {
             for (; j < jln; j++) {
                 rowParams = {};
                 rec = preppedRecords[j];
                 cls = rec.rowCls || '';
-                rec.rowCls = this.getRowClass(records[j], j, rowParams, this.store) + ' ' + cls;
+                rec.rowCls = this.getRowClass(records[j], j, rowParams, me.store) + ' ' + cls;
                 //<debug>
                 if (rowParams.alt) {
                     Ext.Error.raise("The getRowClass alt property is no longer supported.");
@@ -447,89 +455,19 @@ Ext.define('Ext.view.Table', {
         return o;
     },
 
-    /**
-     * In FF10, flex columns transitioning from hidden to visible may not always be
-     * displayed properly initially.  Simply re-measuring the width after the styling
-     * changes take place seems to be enough to poke the browser into doing it's thing
-     * @private
-     */
-    forceReflow: Ext.isGecko10
-        ? function() {
-            var el = this.el.down('table'),
-                width;
-            if (el) {
-                width = el.getWidth();
-            }
-        }
-        : Ext.emptyFn,
-
-    /**
-     * When a header is resized, setWidth on the individual columns resizer class,
-     * the top level table, save/restore scroll state, generate a new template and
-     * restore focus to the grid view's element so that keyboard navigation
-     * continues to work.
-     * @private
-     */
-    onHeaderResize: function(header, w, suppressFocus) {
-        var me = this,
-            el = me.el;
-
-        if (el) {
-            // Grab the col and set the width, css
-            // class is generated in TableChunker.
-            // Select composites because there may be several chunks.
-            el.select('th.' + Ext.baseCSSPrefix + 'grid-col-resizer-'+header.id).setWidth(w);
-            el.select('table.' + Ext.baseCSSPrefix + 'grid-table-resizer').setWidth(me.headerCt.getFullWidth());
-            if (!me.ignoreTemplate) {
-                me.setNewTemplate();
-            }
-            if (!suppressFocus) {
-                me.el.focus();
-            }
-            me.forceReflow();
-        }
-    },
-
-    /**
-     * When a header is shown restore its oldWidth if it was previously hidden.
-     * @private
-     */
-    onHeaderShow: function(headerCt, header, suppressFocus) {
-        var me = this;
-        me.ignoreTemplate = true;
-        // restore headers that were dynamically hidden
-        if (header.oldWidth) {
-            me.onHeaderResize(header, header.oldWidth, suppressFocus);
-            delete header.oldWidth;
-        // flexed headers will have a calculated size set
-        // this additional check has to do with the fact that
-        // defaults: {width: 100} will fight with a flex value
-        } else if (header.width && !header.flex) {
-            me.onHeaderResize(header, header.width, suppressFocus);
-        } else if (header.el) {
-            me.onHeaderResize(header, header.el.getWidth(), suppressFocus);
-        }
-        delete me.ignoreTemplate;
-        me.setNewTemplate();
-    },
-
-    /**
-     * When the header hides treat it as a resize to 0.
-     * @private
-     */
-    onHeaderHide: function(headerCt, header, suppressFocus) {
-        this.onHeaderResize(header, 0, suppressFocus);
-    },
-
     // Private. Called when the table changes height.
     // For example, see examples/grid/group-summary-grid.html
     // If we have flexed column headers, we need to update the header layout
     // because it may have to accommodate (or cease to accommodate) a vertical scrollbar.
-    // Only do this on platforms with have a space-consuming scrollbar
+    // Only do this on platforms which have a space-consuming scrollbar.
+    // Only do it when vertical scrolling is enabled.
     refreshSize: function() {
         var me = this,
             cmp;
-            
+
+        // On every update of the layout system due to data update, capture the table's DOM in our private flyweight
+        me.table.attach(me.el.child('table', true));
+
         if (!me.hasLoadingHeight) {
             cmp = me.up('tablepanel');
 
@@ -539,7 +477,9 @@ Ext.define('Ext.view.Table', {
 
             me.callParent();
 
-            if (cmp && Ext.getScrollbarSize().width) {
+            // If the OS displays scrollbars, and we are overflowing vertically, ensure the
+            // HeaderContainer accounts for the scrollbar.
+            if (cmp && Ext.getScrollbarSize().width && (me.autoScroll || me.overflowY)) {
                 cmp.updateLayout();
             }
 
@@ -611,16 +551,16 @@ Ext.define('Ext.view.Table', {
     },
 
     onCellSelect: function(position) {
-        var cell = this.getCellByPosition(position);
+        var cell = this.getCellByPosition(position, true);
         if (cell) {
-            cell.addCls(this.selectedCellCls);
+            Ext.fly(cell).addCls(this.selectedCellCls);
         }
     },
 
     onCellDeselect: function(position) {
-        var cell = this.getCellByPosition(position);
+        var cell = this.getCellByPosition(position, true);
         if (cell) {
-            cell.removeCls(this.selectedCellCls);
+            Ext.fly(cell).removeCls(this.selectedCellCls);
         }
 
     },
@@ -629,13 +569,13 @@ Ext.define('Ext.view.Table', {
         this.focusCell(position);
     },
 
-    getCellByPosition: function(position) {
+    getCellByPosition: function(position, returnDom) {
         if (position) {
             var node   = this.getNode(position.row),
                 header = this.headerCt.getHeaderAtIndex(position.column);
 
             if (header && node) {
-                return Ext.fly(node).down(header.getCellSelector());
+                return Ext.fly(node).down(header.getCellSelector(), returnDom);
             }
         }
         return false;
@@ -758,13 +698,15 @@ Ext.define('Ext.view.Table', {
     onUpdate : function(store, record, operation, changedFieldNames) {
         var me = this,
             index,
-            newRow, oldRow,
+            newRow, newAttrs, attLen, i, attName, oldRow, oldRowDom,
             oldCells, newCells, len, i,
             columns, overItemCls,
-            isHovered, row;
-            
-        if (me.rendered) {
-            
+            isHovered, row,
+            // See if an editing plugin is active.
+            isEditing = me.editingPlugin && me.editingPlugin.editing;
+
+        if (me.viewReady) {
+
             index = me.store.indexOf(record);
             columns = me.headerCt.getGridColumns();
             overItemCls = me.overItemCls;
@@ -774,34 +716,53 @@ Ext.define('Ext.view.Table', {
             if (columns.length && index > -1) {
                 newRow = me.bufferRender([record], index)[0];
                 oldRow = me.all.item(index);
-                isHovered = oldRow.hasCls(overItemCls);
-                oldRow.dom.className = newRow.className;
-                if(isHovered) {
-                    oldRow.addCls(overItemCls);
-                }
+                if (oldRow) {
+                    oldRowDom = oldRow.dom;
+                    isHovered = oldRow.hasCls(overItemCls);
 
-                // Replace changed cells in the existing row structure with the new version from the rendered row.
-                oldCells = oldRow.query(this.cellSelector);
-                newCells = Ext.fly(newRow).query(this.cellSelector);
-                len = newCells.length;
-                // row is the element that contains the cells.  This will be a different element from oldRow when using a rowwrap feature
-                row = oldCells[0].parentNode;
-                for (i = 0; i < len; i++) {
-                    // If the field at this column index was changed, replace the cell.
-                    if (me.shouldUpdateCell(columns[i], changedFieldNames)) {
-                        row.insertBefore(newCells[i], oldCells[i]);
-                        row.removeChild(oldCells[i]);
+                    // Copy new row attributes across. Use IE-specific method if possible.
+                    if (oldRowDom.mergeAttributes) {
+                        oldRowDom.mergeAttributes(newRow, true);
+                    } else {
+                        newAttrs = newRow.attributes;
+                        attLen = newAttrs.length;
+                        for (i = 0; i < attLen; i++) {
+                            attName = newAttrs[i].name;
+                            if (attName !== 'id') {
+                                oldRowDom.setAttribute(attName, newAttrs[i].value);
+                            }
+                        }
+                    }
+
+                    if (isHovered) {
+                        oldRow.addCls(overItemCls);
+                    }
+
+                    // Replace changed cells in the existing row structure with the new version from the rendered row.
+                    oldCells = oldRow.query(me.cellSelector);
+                    newCells = Ext.fly(newRow).query(me.cellSelector);
+                    len = newCells.length;
+                    // row is the element that contains the cells.  This will be a different element from oldRow when using a rowwrap feature     
+                    row = oldCells[0].parentNode;
+                    for (i = 0; i < len; i++) {
+                        // If the field at this column index was changed, or column has a custom renderer
+                        // (which means value could rely on any other changed field) the update the cell's content.
+                        if (me.shouldUpdateCell(columns[i], changedFieldNames)) {
+                            // If an editor plugin is active, we carefully replace just the *contents* of the cell.
+                            if (isEditing) {
+                                Ext.fly(oldCells[i]).syncContent(newCells[i]);
+                            }
+                            // Otherwise, we simply replace whole TDs with a new version
+                            else {
+                                row.insertBefore(newCells[i], oldCells[i]);
+                                row.removeChild(oldCells[i]);
+                            }
+                        }
                     }
                 }
-
-                // Maintain selection after update
-                // TODO: Move to approriate event handler.
-                me.selModel.refresh();
-                me.doStripeRows(index, index);
                 me.fireEvent('itemupdate', record, index, newRow);
             }
         }
-
     },
     
     shouldUpdateCell: function(column, changedFieldNames){
@@ -818,9 +779,16 @@ Ext.define('Ext.view.Table', {
      * invalidates the scrollers.
      */
     refresh: function() {
-        this.setNewTemplate();
-        this.callParent(arguments);
-        this.doStripeRows(0);
+        var me = this;
+        me.setNewTemplate();
+        me.callParent(arguments);
+        me.doStripeRows(0);
+        me.headerCt.setSortState();
+    },
+
+    clearViewEl: function() {
+        this.callParent();
+        delete this.table.dom;
     },
 
     processItemEvent: function(record, row, rowIndex, e) {

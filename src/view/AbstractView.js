@@ -71,22 +71,22 @@ Ext.define('Ext.view.AbstractView', {
     /**
      * @cfg {String} overItemCls
      * A CSS class to apply to each item in the view on mouseover.
-     * Ensure {@link #trackOver} is set to `true` to make use of this.
+     * Setting this will automatically set {@link #trackOver} to `true`.
      */
 
+    //<locale>
     /**
      * @cfg {String} loadingText
      * A string to display during data load operations.  If specified, this text will be
      * displayed in a loading div and the view's contents will be cleared while loading, otherwise the view's
      * contents will continue to display normally until the new data is loaded and the contents are replaced.
      */
-    //<locale>
     loadingText: 'Loading...',
     //</locale>
-    
+
     /**
      * @cfg {Boolean/Object} loadMask
-     * False to disable a load mask from displaying will the view is loading. This can also be a
+     * False to disable a load mask from displaying while the view is loading. This can also be a
      * {@link Ext.LoadMask} configuration object.
      */
     loadMask: true,
@@ -112,18 +112,18 @@ Ext.define('Ext.view.AbstractView', {
      */
 
     /**
-     * @cfg {String} [selectedItemCls='x-view-selected']
+     * @cfg {String} selectedItemCls
      * A CSS class to apply to each selected item in the view.
      */
     selectedItemCls: Ext.baseCSSPrefix + 'item-selected',
 
+    //<locale>
     /**
      * @cfg {String} emptyText
      * The text to display in the view when there is no data to display.
      * Note that when using local data the emptyText will not be displayed unless you set
      * the {@link #deferEmptyText} option to false.
      */
-    //<locale>
     emptyText: "",
     //</locale>
 
@@ -135,7 +135,11 @@ Ext.define('Ext.view.AbstractView', {
 
     /**
      * @cfg {Boolean} trackOver
-     * True to enable mouseenter and mouseleave events
+     * When `true` the {@link #overItemCls} will be applied to rows when hovered over.
+     * This in return will also cause {@link Ext.view.View#highlightitem highlightitem} and
+     * {@link Ext.view.View#unhighlightitem unhighlightitem} events to be fired.
+     *
+     * Enabled automatically when the {@link #overItemCls} config is set.
      */
     trackOver: false,
 
@@ -306,7 +310,10 @@ Ext.define('Ext.view.AbstractView', {
             cfg = {
                 msg: me.loadingText,
                 msgCls: me.loadingCls,
-                useMsg: me.loadingUseMsg
+                useMsg: me.loadingUseMsg,
+                // The store gets bound in initComponent, so while
+                // rendering let's push on the store
+                store: me.getMaskStore()
             };
 
         me.callParent(arguments);
@@ -329,12 +336,30 @@ Ext.define('Ext.view.AbstractView', {
         }
     },
     
-    onBoxReady: function(){
-        var me = this,
-            store = me.store;
+    finishRender: function(){
+        var me = this;
+        me.callParent(arguments);
+        // Kick off the refresh before layouts are resumed after the render 
+        // completes, but after afterrender is fired on the view
+        if (!me.up('[collapsed],[hidden]')) {
+            me.doFirstRefresh(me.store);
+        }
+    },
+
+    onBoxReady: function() {
+        var me = this;
 
         me.callParent(arguments);
-        me.doFirstRefresh(me.store);
+
+        // If the refresh was not kicked off on render due to a collapsed or hidden ancestor,
+        // kick it off as soon as we get layed out
+        if (!me.firstRefreshDone) {
+            me.doFirstRefresh(me.store);
+        }
+    },
+    
+    getMaskStore: function(){
+        return this.store;    
     },
     
     onMaskBeforeShow: function(){
@@ -350,15 +375,20 @@ Ext.define('Ext.view.AbstractView', {
             me.updateLayout();
         }
     },
-    
+
     onMaskHide: function(){
         var me = this;
-        
+
         if (!me.destroying && me.hasLoadingHeight) {
             me.minHeight = me.oldMinHeight;
             me.updateLayout();
             delete me.hasLoadingHeight;
         }
+    },
+
+    beforeRender: function() {
+        this.callParent(arguments);
+        this.getSelectionModel().beforeViewRender(this);
     },
 
     afterRender: function() {
@@ -515,10 +545,10 @@ Ext.define('Ext.view.AbstractView', {
         // *after* the fixedNodes count.
         // In particular, this is used in infinite grid scrolling: A very tall "stretcher" element is
         // inserted into the View's element to create a scrollbar of the correct proportion.
-        
+
         var me = this,
             el = me.getTargetEl();
-            
+
         if (me.fixedNodes) {
             while (el.dom.childNodes[me.fixedNodes]) {
                 el.dom.removeChild(el.dom.childNodes[me.fixedNodes]);
@@ -540,7 +570,7 @@ Ext.define('Ext.view.AbstractView', {
         if (this.rendered) {
             var dom = this.el.dom,
                 state = this.scrollState;
-            
+
             state.left = dom.scrollLeft;
             state.top = dom.scrollTop;
         }
@@ -555,7 +585,7 @@ Ext.define('Ext.view.AbstractView', {
         if (this.rendered) {
             var dom = this.el.dom, 
                 state = this.scrollState;
-            
+
             dom.scrollLeft = state.left;
             dom.scrollTop = state.top;
         }
@@ -623,7 +653,7 @@ Ext.define('Ext.view.AbstractView', {
             index,
             node;
 
-        if (me.rendered) {
+        if (me.viewReady) {
             index = me.store.indexOf(record);
             if (index > -1) {
                 node = me.bufferRender([record], index)[0];
@@ -664,13 +694,13 @@ Ext.define('Ext.view.AbstractView', {
             me.updateIndexes(index);
 
             // Ensure layout system knows about new content size
-            this.refreshSize();
+            me.refreshSize();
 
             if (me.hasListeners.itemadd) {
                 me.fireEvent('itemadd', records, index, nodes);
             }
         }
-        
+
     },
 
     doAdd: function(nodes, records, index) {
@@ -697,7 +727,7 @@ Ext.define('Ext.view.AbstractView', {
     onRemove : function(ds, record, index) {
         var me = this;
 
-        if (me.rendered) {
+        if (me.all.getCount()) {
             if (me.store.getCount() === 0) {
                 // Refresh so emptyText can be applied if necessary
                 me.refresh();
@@ -705,6 +735,9 @@ Ext.define('Ext.view.AbstractView', {
                 // Just remove the element which corresponds to the removed record
                 // The tpl's full HTML will still be in place.
                 me.doRemove(record, index);
+                if (me.selModel.refreshOnRemove) {
+                    me.selModel.refresh();
+                }
                 me.updateIndexes(index);
             }
 
@@ -734,10 +767,10 @@ Ext.define('Ext.view.AbstractView', {
         var ns = this.all.elements,
             records = this.store.getRange(),
             i;
-            
+
         startIndex = startIndex || 0;
         endIndex = endIndex || ((endIndex === 0) ? 0 : (ns.length - 1));
-        for(i = startIndex; i <= endIndex; i++){
+        for (i = startIndex; i <= endIndex; i++) {
             ns[i].viewIndex = i;
             ns[i].viewRecordId = records[i].internalId;
             if (!ns[i].boundView) {
@@ -750,7 +783,7 @@ Ext.define('Ext.view.AbstractView', {
      * Returns the store associated with this DataView.
      * @return {Ext.data.Store} The store
      */
-    getStore : function(){
+    getStore : function() {
         return this.store;
     },
 
@@ -761,12 +794,16 @@ Ext.define('Ext.view.AbstractView', {
     bindStore : function(store, initial) {
         var me = this;
         me.mixins.bindable.bindStore.apply(me, arguments);
-        // Bind the store to our selection model
-        me.getSelectionModel().bindStore(me.store);
+
+        // Bind the store to our selection model unless it's the initial bind.
+        // Initial bind takes place afterRender
+        if (!initial) {
+            me.getSelectionModel().bindStore(me.store);
+        }
 
         // If we have already achieved our first layout, refresh immediately.
         // If we have bound to the Store before the first layout, then onBoxReady will
-        // call doFirstRefresh1
+        // call doFirstRefresh
         if (me.componentLayoutCounter) {
             me.doFirstRefresh(store);
         }
@@ -781,6 +818,9 @@ Ext.define('Ext.view.AbstractView', {
     doFirstRefresh: function(store) {
         var me = this;
 
+        // Flag to prevent a second "first" refresh from onBoxReady
+        me.firstRefreshDone = true;
+
         // 4.1.0: If we have a store, and the Store is *NOT* already loading (a refresh is on the way), then
         // on first layout, refresh regardless of record count.
         // Template may contain boilerplate HTML outside of record iteration loop.
@@ -788,32 +828,53 @@ Ext.define('Ext.view.AbstractView', {
         // We call refresh on a defer if this is the initial call, and we are configured to defer the initial refresh.
         if (store && !store.loading) {
             if (me.deferInitialRefresh) {
-                Ext.Function.defer(function () {
-                    if (!me.isDestroyed) {
-                        me.refresh();
-                    }
-                }, 1);
+                me.applyFirstRefresh();
             } else {
                 me.refresh();
             }
         }
     },
     
+    applyFirstRefresh: function(){
+        var me = this;
+        if (me.isDestroyed) {
+            return;
+        }
+        
+        // In the case of an animated collapse/expand, the layout will
+        // be marked as though it's complete, yet the element itself may
+        // still be animating, which means we could trigger a layout while
+        // everything is not in the correct place. As such, wait until the
+        // animation has finished before kicking off the refresh. The problem
+        // occurs because both the refresh and the animation are running on
+        // a timer which makes it impossible to control the order of when
+        // the refresh is fired.
+        if (me.up('[isCollapsingOrExpanding]')) {
+            Ext.Function.defer(me.applyFirstRefresh, 100, me);
+        } else {
+            Ext.Function.defer(function () {
+                if (!me.isDestroyed) {
+                    me.refresh();
+                }
+            }, 1);
+        }
+    },
+
     onUnbindStore: function(store) {
         this.setMaskBind(null);
     },
-    
+
     onBindStore: function(store) {
         this.setMaskBind(store);
     },
-    
+
     setMaskBind: function(store) {
         var mask = this.loadMask;
         if (mask && mask.bindStore) {
             mask.bindStore(store);
         }
     },
-    
+
     getStoreListeners: function() {
         var me = this;
         return {
@@ -821,7 +882,7 @@ Ext.define('Ext.view.AbstractView', {
             add: me.onAdd,
             remove: me.onRemove,
             update: me.onUpdate,
-            clear: me.refresh    
+            clear: me.refresh
         };
     },
 
@@ -830,9 +891,22 @@ Ext.define('Ext.view.AbstractView', {
      * Calls this.refresh if this.blockRefresh is not true
      */
     onDataRefresh: function() {
-        if (this.blockRefresh !== true) {
-            this.refresh.apply(this, arguments);
+        var me = this,
+            // If we have an ancestor in a non-boxready state (collapsed or in-transition, or hidden), and we are still waiting
+            // for the first refresh, then block the refresh because that first visible, expanded layout will trigger the refresh
+            blockedByAncestor = !me.firstRefreshDone && (!me.rendered || me.up('[collapsed],[isCollapsingOrExpanding],[hidden]'));
+
+        // If are blocking *an initial refresh* because of an ancestor in a non-boxready state,
+        // then cancel any defer on the initial refresh that is going to happen on boxReady - that will be a data-driven refresh, NOT
+        // a render-time, delayable refresh. This is particularly important if the boxready occurs because of the "preflight" layout
+        // of an animated expand. If refresh is delayed it occur during the expand animation and cause errors.
+        if (blockedByAncestor) {
+            me.deferInitialRefresh = false;
+        } else if (me.blockRefresh !== true) {
+            me.firstRefreshDone = true;
+            me.refresh.apply(me, arguments);
         }
+
     },
 
     /**
@@ -915,6 +989,7 @@ Ext.define('Ext.view.AbstractView', {
      * @param {Ext.data.Model[]/Number} records An array of records or an index
      * @param {Boolean} keepExisting
      * @param {Boolean} suppressEvent Set to false to not fire a select event
+     * @deprecated 4.0 Use {@link Ext.selection.Model#select} instead.
      */
     select: function(records, keepExisting, suppressEvent) {
         this.selModel.select(records, keepExisting, suppressEvent);
@@ -939,7 +1014,7 @@ Ext.define('Ext.view.AbstractView', {
         if ((!nodeInfo && nodeInfo !== 0) || !this.rendered) {
             return null;
         }
-        
+
         if (Ext.isString(nodeInfo)) {
             return document.getElementById(nodeInfo);
         }
@@ -976,22 +1051,14 @@ Ext.define('Ext.view.AbstractView', {
      * @return {HTMLElement[]} An array of nodes
      */
     getNodes: function(start, end) {
-        var ns = this.all.elements,
-            nodes = [],
-            i;
+        var ns = this.all.elements;
 
-        start = start || 0;
-        end = !Ext.isDefined(end) ? Math.max(ns.length - 1, 0) : end;
-        if (start <= end) {
-            for (i = start; i <= end && ns[i]; i++) {
-                nodes.push(ns[i]);
-            }
+        if (end === undefined) {
+            end = ns.length;
         } else {
-            for (i = start; i >= end && ns[i]; i--) {
-                nodes.push(ns[i]);
-            }
+            end++;
         }
-        return nodes;
+        return this.all.elements.slice(start||0, end);
     },
 
     /**
@@ -1002,6 +1069,9 @@ Ext.define('Ext.view.AbstractView', {
      */
     indexOf: function(node) {
         node = this.getNode(node);
+        if (!node && node !== 0) {
+            return -1;
+        }
         if (Ext.isNumber(node.viewIndex)) {
             return node.viewIndex;
         }
@@ -1020,7 +1090,7 @@ Ext.define('Ext.view.AbstractView', {
     // invoked by the selection model to maintain visual UI cues
     onItemSelect: function(record) {
         var node = this.getNode(record);
-        
+
         if (node) {
             Ext.fly(node).addCls(this.selectedItemCls);
         }
@@ -1029,7 +1099,7 @@ Ext.define('Ext.view.AbstractView', {
     // invoked by the selection model to maintain visual UI cues
     onItemDeselect: function(record) {
         var node = this.getNode(record);
-        
+
         if (node) {
             Ext.fly(node).removeCls(this.selectedItemCls);
         }
@@ -1049,21 +1119,25 @@ Ext.define('Ext.view.AbstractView', {
              * @cfg {Boolean} [multiSelect=false]
              * True to allow selection of more than one item at a time, false to allow selection of only a single item
              * at a time or no selection at all, depending on the value of {@link #singleSelect}.
+             * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'MULTI' instead.
              */
             /**
-             * @cfg {Boolean} [singleSelect=false]
-             * True to allow selection of exactly one item at a time, false to allow no selection at all.
-             * Note that if {@link #multiSelect} = true, this value will be ignored.
+             * @cfg {Boolean} [singleSelect]
+             * Allows selection of exactly one item at a time. As this is the default selection mode anyway, this config
+             * is completely ignored.
+             * @removed 4.1.1 Use {@link Ext.selection.Model#mode} 'SINGLE' instead.
              */
             /**
              * @cfg {Boolean} [simpleSelect=false]
              * True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl,
              * false to force the user to hold Ctrl or Shift to select more than on item.
+             * @deprecated 4.1.1 Use {@link Ext.selection.Model#mode} 'SIMPLE' instead.
              */
 
             /**
              * Gets the number of selected nodes.
              * @return {Number} The node count
+             * @deprecated 4.0 Use {@link Ext.selection.Model#getCount} instead.
              */
             getSelectionCount : function(){
                 if (Ext.global.console) {
@@ -1075,6 +1149,7 @@ Ext.define('Ext.view.AbstractView', {
             /**
              * Gets an array of the selected records
              * @return {Ext.data.Model[]} An array of {@link Ext.data.Model} objects
+             * @deprecated 4.0 Use {@link Ext.selection.Model#getSelection} instead.
              */
             getSelectedRecords : function(){
                 if (Ext.global.console) {
@@ -1091,6 +1166,10 @@ Ext.define('Ext.view.AbstractView', {
                 return sm.select.apply(sm, arguments);
             },
 
+            /**
+             * Deselects all selected records.
+             * @deprecated 4.0 Use {@link Ext.selection.Model#deselectAll} instead.
+             */
             clearSelections: function() {
                 if (Ext.global.console) {
                     Ext.global.console.warn("DataView: clearSelections will be removed, please access deselectAll through DataView's SelectionModel, ie: view.getSelectionModel().deselectAll()");

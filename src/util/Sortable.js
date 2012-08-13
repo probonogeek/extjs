@@ -81,9 +81,9 @@ Ext.define("Ext.util.Sortable", {
      *     store.sort('myField', 'ASC');
      *     store.sort('myField', 'DESC');
      *
-     * @param {String/Ext.util.Sorter[]} sorters Either a string name of one of the fields in this Store's configured
+     * @param {String/Ext.util.Sorter[]} [sorters] Either a string name of one of the fields in this Store's configured
      * {@link Ext.data.Model Model}, or an array of sorter configurations.
-     * @param {String} direction The overall direction to sort the data by. Defaults to "ASC".
+     * @param {String} [direction="ASC"] The overall direction to sort the data by.
      * @return {Ext.util.Sorter[]}
      */
     sort: function(sorters, direction, where, doSort) {
@@ -244,5 +244,26 @@ Ext.define("Ext.util.Sortable", {
 
     getSorters: function() {
         return this.sorters.items;
+    },
+    
+    /**
+     * Gets the first sorter from the sorters collection, excluding
+     * any groupers that may be in place
+     * @protected
+     * @return {Ext.util.Sorter} The sorter, null if none exist
+     */
+    getFirstSorter: function(){
+        var sorters = this.sorters.items,
+            len = sorters.length,
+            i = 0,
+            sorter;
+            
+        for (; i < len; ++i) {
+            sorter = sorters[i];
+            if (!sorter.isGrouper) {
+                return sorter;    
+            }
+        }
+        return null;
     }
 });

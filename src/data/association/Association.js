@@ -109,13 +109,31 @@
 Ext.define('Ext.data.association.Association', {
     alternateClassName: 'Ext.data.Association',
     /**
-     * @cfg {String} ownerModel (required)
+     * @cfg {String} ownerModel
      * The string name of the model that owns the association.
+     *
+     * **NB!** This config is required when instantiating the Association directly.
+     * However, it cannot be used at all when defining the association as a config
+     * object inside Model, because the name of the model itself will be supplied
+     * automatically as the value of this config.
      */
 
     /**
-     * @cfg {String} associatedModel (required)
+     * @cfg {String} associatedModel
      * The string name of the model that is being associated with.
+     *
+     * **NB!** This config is required when instantiating the Association directly.
+     * When defining the association as a config object inside Model, the #model
+     * configuration will shadow this config.
+     */
+
+    /**
+     * @cfg {String} model
+     * The string name of the model that is being associated with.
+     *
+     * This config option is to be used when defining the association as a config
+     * object within Model.  The value is then mapped to #associatedModel when
+     * Association is instantiated inside Model.
      */
 
     /**
@@ -137,32 +155,34 @@ Ext.define('Ext.data.association.Association', {
 
     defaultReaderType: 'json',
 
+    isAssociation: true,
+
+    initialConfig: null,
+
     statics: {
         AUTO_ID: 1000,
         
         create: function(association){
-            if (!association.isAssociation) {
-                if (Ext.isString(association)) {
-                    association = {
-                        type: association
-                    };
-                }
+            if (Ext.isString(association)) {
+                association = {
+                    type: association
+                };
+            }
 
-                switch (association.type) {
-                    case 'belongsTo':
-                        return new Ext.data.association.BelongsTo(association);
-                    case 'hasMany':
-                        return new Ext.data.association.HasMany(association);
-                    case 'hasOne':
-                        return new Ext.data.association.HasOne(association);
-                    //TODO Add this back when it's fixed
+            switch (association.type) {
+                case 'belongsTo':
+                    return new Ext.data.association.BelongsTo(association);
+                case 'hasMany':
+                    return new Ext.data.association.HasMany(association);
+                case 'hasOne':
+                    return new Ext.data.association.HasOne(association);
+                //TODO Add this back when it's fixed
 //                    case 'polymorphic':
 //                        return Ext.create('Ext.data.PolymorphicAssociation', association);
-                    default:
-                        //<debug>
-                        Ext.Error.raise('Unknown Association type: "' + association.type + '"');
-                        //</debug>
-                }
+                default:
+                    //<debug>
+                    Ext.Error.raise('Unknown Association type: "' + association.type + '"');
+                    //</debug>
             }
             return association;
         }
@@ -175,12 +195,14 @@ Ext.define('Ext.data.association.Association', {
     constructor: function(config) {
         Ext.apply(this, config);
 
-        var types           = Ext.ModelManager.types,
+        var me = this,
+            types           = Ext.ModelManager.types,
             ownerName       = config.ownerModel,
             associatedName  = config.associatedModel,
             ownerModel      = types[ownerName],
-            associatedModel = types[associatedName],
-            ownerProto;
+            associatedModel = types[associatedName];
+
+        me.initialConfig = config;
 
         //<debug>
         if (ownerModel === undefined) {
@@ -191,8 +213,8 @@ Ext.define('Ext.data.association.Association', {
         }
         //</debug>
 
-        this.ownerModel = ownerModel;
-        this.associatedModel = associatedModel;
+        me.ownerModel = ownerModel;
+        me.associatedModel = associatedModel;
 
         /**
          * @property {String} ownerName
@@ -205,12 +227,12 @@ Ext.define('Ext.data.association.Association', {
          * 'Order')
          */
 
-        Ext.applyIf(this, {
+        Ext.applyIf(me, {
             ownerName : ownerName,
             associatedName: associatedName
         });
         
-        this.associationId = 'association' + (++this.statics().AUTO_ID);
+        me.associationId = 'association' + (++me.statics().AUTO_ID);
     },
 
     /**

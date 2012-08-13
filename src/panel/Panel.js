@@ -178,17 +178,15 @@ Ext.define('Ext.panel.Panel', {
      * (orientated correctly depending on the {@link #collapseDirection}) will be inserted to show a the title and a re-
      * expand tool.
      *
-     * When a child item of a {@link Ext.layout.container.Border border layout}, this config has two options:
+     * When a child item of a {@link Ext.layout.container.Border border layout}, this config has three possible values:
      *
-     * - **`undefined/omitted`**
+     * - `undefined` - When collapsed, a placeholder {@link Ext.panel.Header Header} is injected into the layout to
+     *   represent the Panel and to provide a UI with a Tool to allow the user to re-expand the Panel.
      *
-     *   When collapsed, a placeholder {@link Ext.panel.Header Header} is injected into the layout to represent the Panel
-     *   and to provide a UI with a Tool to allow the user to re-expand the Panel.
+     * - `"header"` - The Panel collapses to leave its header visible as when not inside a
+     *   {@link Ext.layout.container.Border border layout}.
      *
-     * - **`header`** :
-     *
-     *   The Panel collapses to leave its header visible as when not inside a {@link Ext.layout.container.Border border
-     *   layout}.
+     * - `"mini"` - The Panel collapses without a visible header.
      */
 
     /**
@@ -228,7 +226,7 @@ Ext.define('Ext.panel.Panel', {
     collapsible: false,
 
     /**
-     * @cfg {Boolean} collapseDirection
+     * @cfg {String} collapseDirection
      * The direction to collapse the Panel when the toggle button is clicked.
      *
      * Defaults to the {@link #headerPosition}
@@ -529,6 +527,9 @@ Ext.define('Ext.panel.Panel', {
         }
     },
 
+    /**
+     * Gets the {@link Ext.panel.Header Header} for this panel.
+     */
     getHeader: function() {
         return this.header;
     },
@@ -552,6 +553,8 @@ Ext.define('Ext.panel.Panel', {
             } else {
                 header.title = newTitle;
             }
+        } else {
+            me.updateHeader();
         }
 
         if (reExpander) {
@@ -584,6 +587,8 @@ Ext.define('Ext.panel.Panel', {
             } else {
                 header.iconCls = newIconCls;
             }
+        } else {
+            me.updateHeader();
         }
 
         if (placeholder && placeholder.setIconCls) {
@@ -612,6 +617,8 @@ Ext.define('Ext.panel.Panel', {
             } else {
                 header.icon = newIcon;
             }
+        } else {
+            me.updateHeader();
         }
 
         if (placeholder && placeholder.setIcon) {
@@ -976,13 +983,13 @@ Ext.define('Ext.panel.Panel', {
             header = me.header,
             title = me.title,
             tools = me.tools,
+            icon = me.icon || me.iconCls,
             vertical = me.headerPosition == 'left' || me.headerPosition == 'right';
 
-        if ((header !== false) && (force || title || (tools && tools.length) || (me.collapsible && !me.titleCollapse))) {
+        if ((header !== false) && (force || (title || icon) || (tools && tools.length) || (me.collapsible && !me.titleCollapse))) {
             if (header && header.isHeader) {
                 header.show();
             } else {
-
                 // Apply the header property to the header config
                 header = me.header = Ext.widget(Ext.apply({
                     xtype       : 'header',
@@ -998,7 +1005,7 @@ Ext.define('Ext.panel.Panel', {
                     ui          : me.ui,
                     id          : me.id + '_header',
                     indicateDrag: me.draggable,
-                    frame       : me.frame && me.frameHeader,
+                    frame       : (me.frame || me.alwaysFramed) && me.frameHeader,
                     ignoreParentFrame : me.frame || me.overlapHeader,
                     ignoreBorderManagement: me.frame || me.ignoreHeaderBorderManagement,
                     listeners   : me.collapsible && me.titleCollapse ? {
@@ -1098,7 +1105,7 @@ Ext.define('Ext.panel.Panel', {
 
             me.tools.push(tool);
 
-            if (header) {
+            if (header && header.isHeader) {
                 header.addTool(tool);
             }
         }
@@ -1145,7 +1152,18 @@ Ext.define('Ext.panel.Panel', {
         var dir = this.getCollapsed();
         return dir == 'top' || dir == 'bottom';
     },
+    
+    restoreDimension: function(){
+        var dir = this.collapseDirection;
+        // If we're collapsing top/bottom, we want to restore the height
+        // If we're collapsing left/right, we want to restore the width
+        return (dir === 'top' || dir === 'bottom') ? 'height' : 'width';    
+    },
 
+    /**
+     * Returns the current collapsed state of the panel.
+     * @return {Boolean/String} False when not collapsed, otherwise the value of {@link #collapseDirection}.
+     */
     getCollapsed: function() {
         var me = this;
         // The collapsed flag, when the Panel is collapsed acts as the direction in which the collapse took
@@ -1347,7 +1365,7 @@ Ext.define('Ext.panel.Panel', {
         // and it will be restored to an unconfigured-width shrinkWrapped state on expand.
         collapseMemento.capture(['height', 'minHeight', 'width', 'minWidth']);
         if (lastBox) {
-            collapseMemento.capture(['x', 'y', 'height', 'width'], lastBox, 'last.');
+            collapseMemento.capture(me.restoreDimension(), lastBox, 'last.');
         }
         // If the panel has a shrinkWrapped height/width and is already rendered, configure its width/height as its calculated width/height,
         // so that the collapsed header will have the same width or height as the panel did before it was collapsed.
@@ -1400,11 +1418,12 @@ Ext.define('Ext.panel.Panel', {
         var me = this,
             lastBox = me.lastBox,
             collapseMemento = me.collapseMemento,
+            restoreDimension = this.restoreDimension(),
             reExpander;
 
-        collapseMemento.restore(['height', 'minHeight', 'width', 'minWidth']);
+        collapseMemento.restore(['minHeight', 'minWidth', restoreDimension]);
         if (lastBox) {
-            collapseMemento.restore(['x', 'y', 'height', 'width'], true, lastBox, 'last.');
+            collapseMemento.restore(restoreDimension, true, lastBox, 'last.');
         }
 
         if (me.ownerCt) {
@@ -1437,12 +1456,14 @@ Ext.define('Ext.panel.Panel', {
      * the collapse takes place will remain visible. Fires the {@link #beforecollapse} event which will cancel the
      * collapse action if it returns false.
      *
-     * @param {String} direction . The direction to collapse towards. Must be one of
+     * @param {String} [direction] The direction to collapse towards. Must be one of
      *
      *   - Ext.Component.DIRECTION_TOP
      *   - Ext.Component.DIRECTION_RIGHT
      *   - Ext.Component.DIRECTION_BOTTOM
      *   - Ext.Component.DIRECTION_LEFT
+     *
+     * Defaults to {@link #collapseDirection}.
      *
      * @param {Boolean} [animate] True to animate the transition, else false (defaults to the value of the
      * {@link #animCollapse} panel config)
@@ -1690,11 +1711,13 @@ Ext.define('Ext.panel.Panel', {
         // Function to be called when the mouse leaves the floated Panel
         // Slide out when the mouse leaves the region bounded by the slid Component and its placeholder.
         function onMouseLeaveFloated(e) {
-            var slideRegion = me.el.getRegion().union(placeholder.el.getRegion()).adjust(1, -1, -1, 1);
+            if (!me.isDestroyed) {
+                var slideRegion = me.el.getRegion().union(placeholder.el.getRegion()).adjust(1, -1, -1, 1);
 
-            // If mouse is not within slide Region, slide it out
-            if (!slideRegion.contains(e.getPoint())) {
-                me.slideOutFloatedPanel();
+                // If mouse is not within slide Region, slide it out
+                if (!slideRegion.contains(e.getPoint())) {
+                    me.slideOutFloatedPanel();
+                }
             }
         }
 
@@ -1827,7 +1850,7 @@ Ext.define('Ext.panel.Panel', {
     /**
      * Expands the panel body so that it becomes visible.  Fires the {@link #beforeexpand} event which will
      * cancel the expand action if it returns false.
-     * @param {Boolean} animate True to animate the transition, else false (defaults to the value of the
+     * @param {Boolean} [animate] True to animate the transition, else false (defaults to the value of the
      * {@link #animCollapse} panel config)
      * @return {Ext.panel.Panel} this
      */
@@ -2078,6 +2101,8 @@ Ext.define('Ext.panel.Panel', {
                 cls: me.baseCls + '-ghost ' + (cls ||'')
             });
             me.ghostPanel = ghostPanel;
+        } else {
+            ghostPanel.el.show();
         }
         ghostPanel.floatParent = me.floatParent;
         if (me.floating) {
@@ -2098,7 +2123,6 @@ Ext.define('Ext.panel.Panel', {
             ghostPanel.setIconCls(me.iconCls);
         }
 
-        ghostPanel.el.show();
         ghostPanel.setPagePosition(box.x, box.y);
         ghostPanel.setSize(box.width, box.height);
         me.el.hide();
@@ -2128,14 +2152,14 @@ Ext.define('Ext.panel.Panel', {
     },
 
     beginDrag: function() {
-        if (this.floatingItems) {
-            this.floatingItems.hide();
+        if (this.floatingDescendants) {
+            this.floatingDescendants.hide();
         }
     },
 
     endDrag: function() {
-        if (this.floatingItems) {
-            this.floatingItems.show();
+        if (this.floatingDescendants) {
+            this.floatingDescendants.show();
         }
     },
 

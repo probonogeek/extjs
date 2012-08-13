@@ -98,7 +98,9 @@ Ext.define('Ext.selection.DataViewModel', {
         view.el.set({
             tabIndex: -1
         });
-        me.keyNav = new Ext.util.KeyNav(view.el, {
+        me.keyNav = new Ext.util.KeyNav({
+            target: view.el,
+            ignoreInputFields: true,
             down: Ext.pass(me.onNavKey, [1], me),
             right: Ext.pass(me.onNavKey, [1], me),
             left: Ext.pass(me.onNavKey, [-1], me),

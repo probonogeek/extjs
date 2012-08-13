@@ -11,7 +11,8 @@
  *
  * To change the active card of a container, call the setActiveItem method of its layout:
  *
- *     Ext.create('Ext.panel.Panel', {
+ *     @example
+ *     var p = Ext.create('Ext.panel.Panel', {
  *         layout: 'card',
  *         items: [
  *             { html: 'Card 1' },

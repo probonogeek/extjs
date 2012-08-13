@@ -79,6 +79,11 @@ Ext.define('Ext.grid.RowEditor', {
             me.setField(me.fields);
             delete me.fields;
         }
+        
+        me.mon(Ext.container.Container.hierarchyEventSource, {
+            scope: me,
+            show: me.repositionIfVisible
+        });
 
         form = me.getForm();
         form.trackResetOnLoad = true;
@@ -91,10 +96,15 @@ Ext.define('Ext.grid.RowEditor', {
         if (me.errorSummary && me.isVisible()) {
             me[valid ? 'hideToolTip' : 'showToolTip']();
         }
-        if (me.floatingButtons) {
-            me.floatingButtons.child('#update').setDisabled(!valid);
-        }
+        me.updateButton(valid);
         me.isValid = valid;
+    },
+    
+    updateButton: function(valid){
+        var buttons = this.floatingButtons; 
+        if (buttons) {
+            buttons.child('#update').setDisabled(!valid);
+        }    
     },
 
     afterRender: function() {
@@ -124,6 +134,7 @@ Ext.define('Ext.grid.RowEditor', {
         me.mon(plugin.view, {
             beforerefresh: me.onBeforeViewRefresh,
             refresh: me.onViewRefresh,
+            itemremove: me.onViewItemRemove,
             scope: me
         });
     },
@@ -157,6 +168,14 @@ Ext.define('Ext.grid.RowEditor', {
         }
     },
 
+    onViewItemRemove: function(record, index) {
+        var context = this.context;
+        if (context && record === context.record) {
+            // if the record being edited was removed, cancel editing
+            this.editingPlugin.cancelEdit();
+        }
+    },
+
     onCtScroll: function(e, target) {
         var me = this,
             scrollTop  = target.scrollTop,
@@ -187,27 +206,21 @@ Ext.define('Ext.grid.RowEditor', {
     onColumnResize: function(column, width) {
         if (!column.isGroupHeader) {
             column.getEditor().setWidth(width - 2);
-            if (this.isVisible()) {
-                this.reposition();
-            }
+            this.repositionIfVisible();
         }
     },
 
     onColumnHide: function(column) {
         if (!column.isGroupHeader) {
             column.getEditor().hide();
-            if (this.isVisible()) {
-                this.reposition();
-            }
+            this.repositionIfVisible();
         }
     },
 
     onColumnShow: function(column) {
         var field = column.getEditor();
         field.setWidth(column.getWidth() - 2).show();
-        if (this.isVisible()) {
-            this.reposition();
-        }
+        this.repositionIfVisible();
     },
 
     onColumnMove: function(column, fromIdx, toIdx) {
@@ -266,6 +279,7 @@ Ext.define('Ext.grid.RowEditor', {
             cssPrefix = Ext.baseCSSPrefix,
             btnsCss = cssPrefix + 'grid-row-editor-buttons',
             plugin = me.editingPlugin,
+            minWidth = Ext.panel.Panel.prototype.minButtonWidth,
             btns;
 
         if (!me.floatingButtons) {
@@ -295,14 +309,13 @@ Ext.define('Ext.grid.RowEditor', {
                     handler: plugin.completeEdit,
                     scope: plugin,
                     text: me.saveBtnText,
-                    disabled: !me.isValid,
-                    minWidth: Ext.panel.Panel.prototype.minButtonWidth
+                    minWidth: minWidth
                 }, {
                     xtype: 'button',
                     handler: plugin.cancelEdit,
                     scope: plugin,
                     text: me.cancelBtnText,
-                    minWidth: Ext.panel.Panel.prototype.minButtonWidth
+                    minWidth: minWidth
                 }]
             });
 
@@ -316,6 +329,21 @@ Ext.define('Ext.grid.RowEditor', {
             });
         }
         return me.floatingButtons;
+    },
+    
+    repositionIfVisible: function(c){
+        var me = this,
+            view = me.view;
+        
+        // If we're showing ourselves, jump out
+        // If the component we're showing doesn't contain the view
+        if (c && (c == me || !view.isDescendantOf(c))) {
+            return;
+        }
+        
+        if (me.isVisible() && view.isVisible(true)) {
+            me.reposition();    
+        }
     },
 
     reposition: function(animateConfig) {
@@ -474,7 +502,8 @@ Ext.define('Ext.grid.RowEditor', {
             fields = form.getFields(),
             items  = fields.items,
             length = items.length,
-            i, displayFields;
+            i, displayFields,
+            isValid;
             
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         for (i = 0; i < length; i++) {
@@ -487,13 +516,16 @@ Ext.define('Ext.grid.RowEditor', {
             items[i].resumeEvents();
         }
 
+        isValid = form.isValid();
         if (me.errorSummary) {
-            if (form.isValid()) {
+            if (isValid) {
                 me.hideToolTip();
             } else {
                 me.showToolTip();
             }
         }
+        
+        me.updateButton(isValid);
 
         // render display fields so they honor the column renderer/template
         displayFields = me.query('>displayfield');

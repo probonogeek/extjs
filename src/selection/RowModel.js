@@ -108,6 +108,7 @@ Ext.define('Ext.selection.RowModel', {
         // Drive the KeyNav off the View's itemkeydown event so that beforeitemkeydown listeners may veto
         me.keyNav = new Ext.util.KeyNav({
             target: view,
+            ignoreInputFields: true,
             eventName: 'itemkeydown',
             processEvent: function(view, record, node, index, event) {
                 event.record = record;
@@ -123,6 +124,7 @@ Ext.define('Ext.selection.RowModel', {
             home: me.onKeyHome,
             end: me.onKeyEnd,
             space: me.onKeySpace,
+            enter: me.onKeyEnter,
             scope: me
         });
     },
@@ -250,6 +252,8 @@ Ext.define('Ext.selection.RowModel', {
             }
         }
     },
+    
+    onKeyEnter: Ext.emptyFn,
 
     // Navigate one record up. This could be a selection or
     // could be simply focusing a record for discontiguous
@@ -443,6 +447,20 @@ Ext.define('Ext.selection.RowModel', {
 
         if (position) {
             editingPlugin.startEditByPosition(position);
+        }
+    },
+
+
+    /**
+     * Returns position of the first selected cell in the selection in the format {row: row, column: column}
+     */
+    getCurrentPosition: function() {
+        var firstSelection = this.selected.items[0];
+        if (firstSelection) {
+            return {
+                row: this.store.indexOf(firstSelection),
+                column: 0
+            };
         }
     },
 

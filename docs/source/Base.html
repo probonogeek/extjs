@@ -57,8 +57,10 @@ var noArgs = [],
             return Ext.create.apply(Ext, [this].concat(Array.prototype.slice.call(arguments, 0)));
         },
 
-<span id='Ext-Base-method-extend'>        /**
+<span id='Ext-Base-static-method-extend'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          * @param config
          */
         extend: function(parent) {
@@ -107,13 +109,17 @@ var noArgs = [],
             //&lt;/feature&gt;
         },
 
-<span id='Ext-Base-property-S-onExtended'>        /**
+<span id='Ext-Base-static-property-S-onExtended'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          */
         $onExtended: [],
 
-<span id='Ext-Base-method-triggerExtended'>        /**
+<span id='Ext-Base-static-method-triggerExtended'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          */
         triggerExtended: function() {
             var callbacks = this.$onExtended,
@@ -128,8 +134,10 @@ var noArgs = [],
             }
         },
 
-<span id='Ext-Base-method-onExtended'>        /**
+<span id='Ext-Base-static-method-onExtended'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          */
         onExtended: function(fn, scope) {
             this.$onExtended.push({
@@ -140,8 +148,10 @@ var noArgs = [],
             return this;
         },
 
-<span id='Ext-Base-method-addConfig'>        /**
+<span id='Ext-Base-static-method-addConfig'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          * @param config
          */
         addConfig: function(config, fullMerge) {
@@ -216,8 +226,10 @@ var noArgs = [],
             return this;
         },
 
-<span id='Ext-Base-method-addInheritableStatics'>        /**
+<span id='Ext-Base-static-method-addInheritableStatics'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          * @param {Object} members
          */
         addInheritableStatics: function(members) {
@@ -263,7 +275,7 @@ var noArgs = [],
          *         }
          *     });
          *
-         *      My.awesome.Cat.implement({
+         *      My.awesome.Cat.addMembers({
          *          meow: function() {
          *             alert('Meowww...');
          *          }
@@ -311,8 +323,10 @@ var noArgs = [],
             return this;
         },
 
-<span id='Ext-Base-method-addMember'>        /**
+<span id='Ext-Base-static-method-addMember'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          * @param name
          * @param member
          */
@@ -330,8 +344,11 @@ var noArgs = [],
             return this;
         },
 
-<span id='Ext-Base-method-implement'>        /**
-</span>         * @private
+<span id='Ext-Base-static-method-implement'>        /**
+</span>         * Adds members to class.
+         * @static
+         * @inheritable
+         * @deprecated 4.1 Use {@link #addMembers} instead.
          */
         implement: function() {
             this.addMembers.apply(this, arguments);
@@ -533,9 +550,10 @@ var noArgs = [],
         },
 
         //&lt;feature classSystem.mixins&gt;
-<span id='Ext-Base-method-mixin'>        /**
+<span id='Ext-Base-static-method-mixin'>        /**
 </span>         * Used internally by the mixins pre-processor
          * @private
+         * @static
          * @inheritable
          */
         mixin: function(name, mixinClass) {
@@ -628,8 +646,10 @@ var noArgs = [],
             });
         }),
 
-<span id='Ext-Base-method-addXtype'>        /**
+<span id='Ext-Base-static-method-addXtype'>        /**
 </span>         * @private
+         * @static
+         * @inheritable
          */
         addXtype: function(xtype) {
             var prototype = this.prototype,
@@ -656,17 +676,23 @@ var noArgs = [],
     });
 
     Base.implement({
-        isInstance: true,
+<span id='Ext-Base-property-isInstance'>        /** @private */
+</span>        isInstance: true,
 
-        $className: 'Ext.Base',
+<span id='Ext-Base-property-S-className'>        /** @private */
+</span>        $className: 'Ext.Base',
 
-        configClass: Ext.emptyFn,
+<span id='Ext-Base-method-configClass'>        /** @private */
+</span>        configClass: Ext.emptyFn,
 
-        initConfigList: [],
+<span id='Ext-Base-property-initConfigList'>        /** @private */
+</span>        initConfigList: [],
 
-        configMap: {},
+<span id='Ext-Base-property-configMap'>        /** @private */
+</span>        configMap: {},
 
-        initConfigMap: {},
+<span id='Ext-Base-property-initConfigMap'>        /** @private */
+</span>        initConfigMap: {},
 
 <span id='Ext-Base-method-statics'>        /**
 </span>         * Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#self},
@@ -916,7 +942,7 @@ var noArgs = [],
          *
          * @protected
          * @param {Object} config
-         * @return {Object} mixins The mixin prototypes as key - value pairs
+         * @return {Ext.Base} this
          */
         initConfig: function(config) {
             var instanceConfig = config,
@@ -1010,8 +1036,11 @@ var noArgs = [],
         },
 
 <span id='Ext-Base-method-getInitialConfig'>        /**
-</span>         *
-         * @param name
+</span>         * Returns the initial configuration passed to constructor when instantiating
+         * this class.
+         * @param {String} [name] Name of the config option to return.
+         * @return {Object/Mixed} The full config object or a single config value
+         * when `name` parameter specified.
          */
         getInitialConfig: function(name) {
             var config = this.config;
@@ -1061,6 +1090,9 @@ var noArgs = [],
         },
         //&lt;/feature&gt;
 
+<span id='Ext-Base-method-destroy'>        /**
+</span>         * @private
+         */
         destroy: function() {
             this.destroy = Ext.emptyFn;
         }

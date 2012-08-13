@@ -20,7 +20,7 @@ Ext.define('Ext.data.validations', {
     lengthMessage: 'is the wrong length',
     
     /**
-     * @property {Boolean} formatMessage
+     * @property {String} formatMessage
      * The default error message used when a format validation fails.
      */
     formatMessage: 'is the wrong format',
@@ -134,7 +134,7 @@ Ext.define('Ext.data.validations', {
     },
     
     /**
-     * Validates that the given value is present in the configured `list`.
+     * Validates that the given value is not present in the configured `list`.
      * For example:
      *
      *     validations: [{type: 'exclusion', field: 'username', list: ['Admin', 'Operator']}]

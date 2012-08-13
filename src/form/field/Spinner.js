@@ -153,7 +153,7 @@ Ext.define('Ext.form.field.Spinner', {
 
         me.callParent(arguments);
         triggers = me.triggerEl;
-
+        
         /**
          * @property {Ext.Element} spinUpEl
          * The spinner up button element
@@ -164,6 +164,8 @@ Ext.define('Ext.form.field.Spinner', {
          * The spinner down button element
          */
         me.spinDownEl = triggers.item(1);
+        
+        me.triggerCell = me.spinUpEl.parent(); 
 
         // Set initial enabled/disabled states
         me.setSpinUpEnabled(me.spinUpEnabled);
@@ -236,7 +238,7 @@ Ext.define('Ext.form.field.Spinner', {
 
     // private
     // Handle trigger mouse up gesture; refocuses the input element upon end of spin.
-    onTriggerWrapMousup: function() {
+    onTriggerWrapMouseup: function() {
         this.inputEl.focus();
     },
 

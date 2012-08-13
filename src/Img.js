@@ -97,6 +97,7 @@ Ext.define('Ext.Img', {
 
     /**
      * Updates the {@link #src} of the image.
+     * @param {String} src
      */
     setSrc: function(src) {
         var me = this,

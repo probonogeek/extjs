@@ -76,7 +76,7 @@ Ext.onReady(function() {
     var store = createStore(10);
 
     Ext.data.Store.prototype.prefetch = Ext.Function.createInterceptor(Ext.data.Store.prototype.prefetch, function(options) {
-        if (!this.pagesRequested[options.page]) {
+        if (!this.pagesRequested || !this.pagesRequested[options.page]) {
             logPanel.log('Prefetch rows ' + options.start + '-' + (options.start + options.limit));
         }
     });
@@ -139,8 +139,8 @@ Ext.onReady(function() {
     var controls = Ext.create('Ext.form.Panel', {
         region: 'north',
         split: true,
-        height: 330,
-        minHeight: 330,
+        height: 345,
+        minHeight: 345,
         bodyPadding: 5,
         layout: 'form',
         defaults: {

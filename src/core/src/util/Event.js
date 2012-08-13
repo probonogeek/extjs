@@ -8,6 +8,8 @@ Ext.require('Ext.util.DelayedTask', function() {
      * @private
      */
     Ext.util.Event = Ext.extend(Object, (function() {
+        var noOptions = {};
+
         function createTargeted(handler, listener, o, scope){
             return function(){
                 if (o.target === arguments[0]){
@@ -86,31 +88,31 @@ Ext.require('Ext.util.DelayedTask', function() {
                 }
             },
 
-            createListener: function(fn, scope, o) {
-                o = o || {};
+            createListener: function(fn, scope, options) {
+                options = options || noOptions;
                 scope = scope || this.observable;
 
                 var listener = {
                         fn: fn,
                         scope: scope,
-                        o: o,
+                        o: options,
                         ev: this
                     },
                     handler = fn;
 
                 // The order is important. The 'single' wrapper must be wrapped by the 'buffer' and 'delayed' wrapper
                 // because the event removal that the single listener does destroys the listener's DelayedTask(s)
-                if (o.single) {
-                    handler = createSingle(handler, listener, o, scope);
+                if (options.single) {
+                    handler = createSingle(handler, listener, options, scope);
                 }
-                if (o.target) {
-                    handler = createTargeted(handler, listener, o, scope);
+                if (options.target) {
+                    handler = createTargeted(handler, listener, options, scope);
                 }
-                if (o.delay) {
-                    handler = createDelayed(handler, listener, o, scope);
+                if (options.delay) {
+                    handler = createDelayed(handler, listener, options, scope);
                 }
-                if (o.buffer) {
-                    handler = createBuffered(handler, listener, o, scope);
+                if (options.buffer) {
+                    handler = createBuffered(handler, listener, options, scope);
                 }
 
                 listener.fireFn = handler;
@@ -127,7 +129,11 @@ Ext.require('Ext.util.DelayedTask', function() {
                     listener = listeners[i];
                     if (listener) {
                         s = listener.scope;
-                        if (listener.fn == fn && (s == scope || s == this.observable)) {
+
+                        // Compare the listener's scope with *JUST THE PASSED SCOPE* if one is passed, and only fall back to the owning Observable if none is passed.
+                        // We cannot use the test (s == scope || s == this.observable)
+                        // Otherwise, if the Observable itself adds Ext.emptyFn as a listener, and then Ext.emptyFn is added under another scope, there will be a false match.
+                        if (listener.fn == fn && (s == (scope || this.observable))) {
                             return i;
                         }
                     }

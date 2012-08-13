@@ -484,13 +484,12 @@ Ext.define('Ext.chart.series.Pie', {
                                 strokeLinejoin: "round"
                             }, rendererAttributes, shadowAttr));
                         }
+                        shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply({}, rendererAttributes, shadowAttr), i, store);
                         if (animate) {
-                            shadowAttr = me.renderer(shadow, store.getAt(i), Ext.apply({}, rendererAttributes, shadowAttr), i, store);
                             me.onAnimate(shadow, {
                                 to: shadowAttr
                             });
                         } else {
-                            shadowAttr = me.renderer(shadow, store.getAt(i), shadowAttr, i, store);
                             shadow.setAttributes(shadowAttr, true);
                         }
                         shadows.push(shadow);
@@ -868,7 +867,7 @@ Ext.define('Ext.chart.series.Pie', {
         //changed to trigger one itemmouseout between two itemmouseovers.
         this.unHighlightItem();
 
-        if (!item || item.sprite && item.sprite._animating) {
+        if (!item || me.animating || (item.sprite && item.sprite._animating)) {
             return;
         }
         me.callParent([item]);

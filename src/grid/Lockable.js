@@ -122,17 +122,35 @@ Ext.define('Ext.grid.Lockable', {
             xtype = me.determineXTypeToCreate(),
             // share the selection model
             selModel = me.getSelectionModel(),
-            lockedFeatures = me.prepareFeatures(),
-            normalFeatures = me.prepareFeatures(),
+            lockedFeatures,
+            normalFeatures,
+            lockedPlugins,
+            normalPlugins,
             lockedGrid,
             normalGrid,
-            i = 0, len,
+            i, len,
             columns,
             lockedHeaderCt,
             normalHeaderCt,
             lockedView,
             normalView,
             listeners;
+
+        lockedFeatures = me.constructFeatures();
+
+        // Clone any Features in the Array which are already instantiated
+        me.cloneFeatures();
+        normalFeatures = me.constructFeatures();
+
+        lockedPlugins = me.constructPlugins();
+
+        // Clone any Plugins in the Array which are already instantiated
+        me.clonePlugins();
+        normalPlugins = me.constructPlugins();
+
+        // The "shell" Panel which just acts as a Container for the two grids must not use the features and plugins
+        delete me.features;
+        delete me.plugins;
 
         // Each Feature must have a reference to its counterpart on the opposite side of the locking view
         for (i = 0, len = (lockedFeatures ? lockedFeatures.length : 0); i < len; i++) {
@@ -153,7 +171,8 @@ Ext.define('Ext.grid.Lockable', {
             isLayoutRoot: function() {
                 return false;
             },
-            features: lockedFeatures
+            features: lockedFeatures,
+            plugins: lockedPlugins
         }, me.lockedGridConfig);
 
         normalGrid = Ext.apply({
@@ -166,7 +185,8 @@ Ext.define('Ext.grid.Lockable', {
             isLayoutRoot: function() {
                 return false;
             },
-            features: normalFeatures
+            features: normalFeatures,
+            plugins: normalPlugins
         }, me.normalGridConfig);
 
         me.addCls(Ext.baseCSSPrefix + 'grid-locked');
@@ -223,8 +243,12 @@ Ext.define('Ext.grid.Lockable', {
         Ext.applyIf(lockedGrid.viewConfig, me.viewConfig);
         Ext.applyIf(normalGrid.viewConfig, me.viewConfig);
 
-        me.normalGrid = Ext.ComponentManager.create(normalGrid);
         me.lockedGrid = Ext.ComponentManager.create(lockedGrid);
+        lockedView = me.lockedGrid.getView();
+        
+        normalGrid.viewConfig.lockingPartner = lockedView;
+        me.normalGrid = Ext.ComponentManager.create(normalGrid);
+        normalView = me.normalGrid.getView();
 
         me.view = new Ext.grid.LockingView({
             locked: me.lockedGrid,
@@ -232,29 +256,20 @@ Ext.define('Ext.grid.Lockable', {
             panel: me
         });
 
-        lockedView = me.lockedGrid.getView();
-        normalView = me.normalGrid.getView();
-
-        // Set up listeners for the locked view
-        // If the OS does not show a space-taking scrollbar, the locked view can be overflow:auto
-        // And therefore we can listen for the DOM scroll event on its element
-        if (scrollLocked) {
-            listeners = {
-                scroll: {
-                    fn: me.onLockedViewScroll,
-                    element: 'el',
-                    scope: me
-                }
-            };
-        }
-        // If there are scrollbars, we have to monitor the mousewheel and fake a scroll
-        else {
-            listeners = {
-                mousewheel: {
-                    fn: me.onLockedViewMouseWheel,
-                    element: 'el',
-                    scope: me
-                }
+        // Set up listeners for the locked view. If its SelModel ever scrolls it, the normal view must sync
+        listeners = {
+            scroll: {
+                fn: me.onLockedViewScroll,
+                element: 'el',
+                scope: me
+            }
+        };
+        // If there are system scrollbars, we have to monitor the mousewheel and fake a scroll
+        if (!scrollLocked) {
+            listeners.mousewheel = {
+                fn: me.onLockedViewMouseWheel,
+                element: 'el',
+                scope: me
             };
         }
         if (me.syncRowHeight) {
@@ -494,9 +509,10 @@ Ext.define('Ext.grid.Lockable', {
             me.lockedHeights = [];
 
             for (; i < ln; i++) {
-                me.lockedHeights[i] = rowEls[i].clientHeight;
+                me.lockedHeights[i] = rowEls[i].offsetHeight;
             }
             me.syncRowHeights();
+            me.updateSpacer();
         }
     },
 
@@ -516,7 +532,7 @@ Ext.define('Ext.grid.Lockable', {
             me.normalHeights = [];
     
             for (; i < ln; i++) {
-                me.normalHeights[i] = rowEls[i].clientHeight;
+                me.normalHeights[i] = rowEls[i].offsetHeight;
             }
             me.syncRowHeights();
             me.updateSpacer();
@@ -528,7 +544,7 @@ Ext.define('Ext.grid.Lockable', {
 
         // Only bother if there are some columns in the normal grid to sync
         if (this.normalGrid.headerCt.getGridColumns().length) {
-            this.lockedHeights[index] = node.clientHeight;
+            this.lockedHeights[index] = node.offsetHeight;
             this.syncRowHeights();
         }
     },
@@ -538,7 +554,7 @@ Ext.define('Ext.grid.Lockable', {
     
         // Only bother if there are some columns in the locked grid to sync
         if (this.lockedGrid.headerCt.getGridColumns().length) {
-            this.normalHeights[index] = node.clientHeight;
+            this.normalHeights[index] = node.offsetHeight;
             this.syncRowHeights();
         }
     },
@@ -551,7 +567,6 @@ Ext.define('Ext.grid.Lockable', {
         var me = this,
             lockedHeights = me.lockedHeights,
             normalHeights = me.normalHeights,
-            calcHeights   = [],
             ln = lockedHeights.length,
             i  = 0,
             lockedView, normalView,
@@ -579,9 +594,6 @@ Ext.define('Ext.grid.Lockable', {
             }
 
             // Synchronize the scrollTop positions of the two views
-            // We don't use setScrollTop here because if the scrollTop is
-            // set to the exact same value some browsers won't fire the scroll
-            // event. Instead, we directly set the scrollTop.
             scrollTop = normalView.el.dom.scrollTop;
             normalView.el.dom.scrollTop = scrollTop;
             lockedView.el.dom.scrollTop = scrollTop;
@@ -595,8 +607,8 @@ Ext.define('Ext.grid.Lockable', {
     // inject Lock and Unlock text
     modifyHeaderCt: function() {
         var me = this;
-        me.lockedGrid.headerCt.getMenuItems = me.getMenuItems(true);
-        me.normalGrid.headerCt.getMenuItems = me.getMenuItems(false);
+        me.lockedGrid.headerCt.getMenuItems = me.getMenuItems(me.lockedGrid.headerCt.getMenuItems, true);
+        me.normalGrid.headerCt.getMenuItems = me.getMenuItems(me.normalGrid.headerCt.getMenuItems, false);
     },
 
     onUnlockMenuClick: function() {
@@ -607,7 +619,7 @@ Ext.define('Ext.grid.Lockable', {
         this.lock();
     },
 
-    getMenuItems: function(locked) {
+    getMenuItems: function(getMenuItems, locked) {
         var me            = this,
             unlockText    = me.unlockText,
             lockText      = me.lockText,
@@ -618,8 +630,11 @@ Ext.define('Ext.grid.Lockable', {
 
         // runs in the scope of headerCt
         return function() {
-            var o = Ext.grid.header.Container.prototype.getMenuItems.call(this);
-            o.push('-',{
+
+            // We cannot use the method from HeaderContainer's prototype here
+            // because other plugins or features may already have injected an implementation
+            var o = getMenuItems.call(this);
+            o.push('-', {
                 cls: unlockCls,
                 text: unlockText,
                 handler: unlockHandler,
@@ -662,7 +677,7 @@ Ext.define('Ext.grid.Lockable', {
         }
 
         Ext.suspendLayouts();
-        normalHCt.remove(activeHd, false);
+        activeHd.ownerCt.remove(activeHd, false);
         activeHd.locked = true;
         if (Ext.isDefined(toIdx)) {
             lockedHCt.insert(toIdx, activeHd);
@@ -753,7 +768,7 @@ Ext.define('Ext.grid.Lockable', {
         activeHd = activeHd || lockedHCt.getMenu().activeHeader;
 
         Ext.suspendLayouts();
-        lockedHCt.remove(activeHd, false);
+        activeHd.ownerCt.remove(activeHd, false);
         if (me.syncLockedWidth()) {
             refreshLocked = true;
         }
@@ -857,7 +872,56 @@ Ext.define('Ext.grid.Lockable', {
             lockedGrid.getView().refresh();
             normalGrid.getView().refresh();
         }
+    },
+
+    /**
+     * Clones items in the features array if they are instantiated Features. If an item
+     * is just a feature config, it leaves it alone.
+     *
+     * This is so that features can be replicated on both sides of the LockingView
+     *
+     */
+    cloneFeatures: function() {
+        var me = this,
+            features = me.features,
+            feature,
+            i = 0, len;
+        
+        if (features) {
+            len = features.length;
+            for (; i < len; i++) {
+                feature = features[i];
+                if (feature.isFeature) {
+                    features[i] = feature.clone();
+                }
+            }
+        }
+    },
+
+    /**
+     * Clones items in the plugins array if they are instantiated Plugins. If an item
+     * is just a plugin config, it leaves it alone.
+     *
+     * This is so that plugins can be replicated on both sides of the LockingView
+     *
+     */
+    clonePlugins: function() {
+        var me = this,
+            plugins = me.plugins,
+            plugin,
+            i = 0, len;
+        
+        if (plugins) {
+            len = plugins.length;
+            for (; i < len; i++) {
+                plugin = plugins[i];
+                if (typeof plugin.init === 'function') {
+                    plugins[i] = plugin.clone();
+                }
+            }
+        }
     }
 }, function() {
-    this.borrow(Ext.view.Table, ['prepareFeatures']);
+    this.borrow(Ext.view.Table, ['constructFeatures']);
+    this.borrow(Ext.AbstractComponent, ['constructPlugins', 'constructPlugin']);
 });

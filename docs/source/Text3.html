@@ -115,6 +115,7 @@ Ext.define('Ext.form.field.Text', {
      */
     growMax : 800,
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Text-cfg-growAppend'>    /**
 </span>     * @cfg {String} growAppend
      * A string that will be appended to the field's current value for the purposes of calculating the target field
@@ -122,7 +123,6 @@ Ext.define('Ext.form.field.Text', {
      * common fonts) to leave enough space for the next typed character and avoid the field value shifting before the
      * width is adjusted.
      */
-    //&lt;locale&gt;
     growAppend: 'W',
     //&lt;/locale&gt;
 
@@ -134,7 +134,7 @@ Ext.define('Ext.form.field.Text', {
 <span id='Ext-form-field-Text-cfg-maskRe'>    /**
 </span>     * @cfg {RegExp} maskRe An input mask regular expression that will be used to filter keystrokes (character being
      * typed) that do not match.
-     * Note: It dose not filter characters already in the input.
+     * Note: It does not filter characters already in the input.
      */
 
 <span id='Ext-form-field-Text-cfg-disableKeyFilter'>    /**
@@ -178,11 +178,11 @@ Ext.define('Ext.form.field.Text', {
     minLengthText : 'The minimum length for this field is {0}',
     //&lt;/locale&gt;
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Text-cfg-maxLengthText'>    /**
 </span>     * @cfg {String} maxLengthText
      * Error text to display if the **{@link #maxLength maximum length}** validation fails
      */
-    //&lt;locale&gt;
     maxLengthText : 'The maximum length for this field is {0}',
     //&lt;/locale&gt;
 
@@ -191,11 +191,11 @@ Ext.define('Ext.form.field.Text', {
      * true to automatically select any existing field text when the field receives input focus
      */
 
+    //&lt;locale&gt;
 <span id='Ext-form-field-Text-cfg-blankText'>    /**
 </span>     * @cfg {String} blankText
      * The error text to display if the **{@link #allowBlank}** validation fails
      */
-    //&lt;locale&gt;
     blankText : 'This field is required',
     //&lt;/locale&gt;
 
@@ -251,12 +251,22 @@ Ext.define('Ext.form.field.Text', {
      */
     emptyCls : Ext.baseCSSPrefix + 'form-empty-field',
 
+<span id='Ext-form-field-Text-cfg-requiredCls'>    /**
+</span>     * @cfg {String} [requiredCls='x-form-required-field']
+     * The CSS class to apply to a required field, i.e. a field where **{@link #allowBlank}** is false.
+     */
+    requiredCls : Ext.baseCSSPrefix + 'form-required-field',
+
 <span id='Ext-form-field-Text-cfg-enableKeyEvents'>    /**
 </span>     * @cfg {Boolean} [enableKeyEvents=false]
      * true to enable the proxying of key events for the HTML input field
      */
 
     componentLayout: 'textfield',
+
+    // private
+    valueContainsPlaceholder : false,
+
 
     initComponent: function () {
         var me = this;
@@ -299,7 +309,8 @@ Ext.define('Ext.form.field.Text', {
         me.addStateEvents('change');
         me.setGrowSizePolicy();
     },
-    
+
+    // private
     setGrowSizePolicy: function(){
         if (this.grow) {
             this.shrinkWrap |= 1; // width must shrinkWrap
@@ -350,22 +361,35 @@ Ext.define('Ext.form.field.Text', {
         var me = this,
             value = me.getRawValue(),
             isEmpty = me.emptyText &amp;&amp; value.length &lt; 1,
+            maxLength = me.maxLength,
             placeholder;
+            
+        // We can't just dump the value here, since MAX_VALUE ends up
+        // being something like 1.xxxxe+300, which gets interpreted as 1
+        // in the markup
+        if (me.enforceMaxLength) {
+            if (maxLength === Number.MAX_VALUE) {
+                maxLength = undefined;
+            }
+        } else {
+            maxLength = undefined;
+        }
 
         if (isEmpty) {
             if (Ext.supports.Placeholder) {
                 placeholder = me.emptyText;
             } else {
                 value = me.emptyText;
+                me.valueContainsPlaceholder = true;
             }
         }
 
         return Ext.apply(me.callParent(), {
-            maxLength   : me.enforceMaxLength ? me.maxLength : undefined,
+            maxLength   : maxLength,
             readOnly    : me.readOnly,
             placeholder : placeholder,
             value       : value,
-            fieldCls    : me.fieldCls + ((isEmpty &amp;&amp; (placeholder || value)) ? ' ' + me.emptyCls : '')
+            fieldCls    : me.fieldCls + ((isEmpty &amp;&amp; (placeholder || value)) ? ' ' + me.emptyCls : '') + (me.allowBlank ? '' :  ' ' + me.requiredCls)
         });
     },
 
@@ -452,6 +476,7 @@ Ext.define('Ext.form.field.Text', {
                 me.inputEl.dom.placeholder = emptyText;
             } else if (isEmpty) {
                 me.setRawValue(emptyText);
+                me.valueContainsPlaceholder = true;
             }
 
             //all browsers need this because of a styling issue with chrome + placeholders.
@@ -482,10 +507,11 @@ Ext.define('Ext.form.field.Text', {
             isEmpty;
 
         me.callParent(arguments);
-        if (emptyText &amp;&amp; !Ext.supports.Placeholder &amp;&amp; inputEl.dom.value === emptyText) {
+        if ((emptyText &amp;&amp; !Ext.supports.Placeholder) &amp;&amp; (inputEl.dom.value === me.emptyText &amp;&amp; me.valueContainsPlaceholder)) {
             me.setRawValue('');
             isEmpty = true;
             inputEl.removeCls(me.emptyCls);
+            me.valueContainsPlaceholder = false;
         } else if (Ext.supports.Placeholder) {
             me.inputEl.removeCls(me.emptyCls);
         }
@@ -521,11 +547,11 @@ Ext.define('Ext.form.field.Text', {
         var key = e.getKey(),
             charCode = String.fromCharCode(e.getCharCode());
 
-        if(Ext.isGecko &amp;&amp; (e.isNavKeyPress() || key === e.BACKSPACE || (key === e.DELETE &amp;&amp; e.button === -1))){
+        if((Ext.isGecko || Ext.isOpera) &amp;&amp; (e.isNavKeyPress() || key === e.BACKSPACE || (key === e.DELETE &amp;&amp; e.button === -1))){
             return;
         }
 
-        if(!Ext.isGecko &amp;&amp; e.isSpecialKey() &amp;&amp; !charCode){
+        if((!Ext.isGecko &amp;&amp; !Ext.isOpera) &amp;&amp; e.isSpecialKey() &amp;&amp; !charCode){
             return;
         }
         if(!this.maskRe.test(charCode)){
@@ -553,7 +579,7 @@ Ext.define('Ext.form.field.Text', {
     getRawValue: function() {
         var me = this,
             v = me.callParent();
-        if (v === me.emptyText) {
+        if (v === me.emptyText &amp;&amp; me.valueContainsPlaceholder) {
             v = '';
         }
         return v;
@@ -571,6 +597,7 @@ Ext.define('Ext.form.field.Text', {
 
         if (inputEl &amp;&amp; me.emptyText &amp;&amp; !Ext.isEmpty(value)) {
             inputEl.removeCls(me.emptyCls);
+            me.valueContainsPlaceholder = false;
         }
 
         me.callParent(arguments);
@@ -598,7 +625,7 @@ Ext.define('Ext.form.field.Text', {
      *     If the `{@link #validator}` has not halted validation,
      *     basic validation proceeds as follows:
      *
-     *     - `{@link #allowBlank}` : (Invalid message = `{@link #emptyText}`)
+     *     - `{@link #allowBlank}` : (Invalid message = `{@link #blankText}`)
      *
      *         Depending on the configuration of `{@link #allowBlank}`, a
      *         blank field will cause validation to halt at this step and return
@@ -654,7 +681,7 @@ Ext.define('Ext.form.field.Text', {
             }
         }
 
-        if (value.length &lt; 1 || value === emptyText) {
+        if (value.length &lt; 1 || (value === me.emptyText &amp;&amp; me.valueContainsPlaceholder)) {
             if (!allowBlank) {
                 errors.push(me.blankText);
             }

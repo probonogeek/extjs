@@ -56,7 +56,7 @@ Ext.onReady(function() {
         p3.toggle(id == p3.id);
     };
 
-    Ext.createWidget('panel', {
+    Ext.widget('panel', {
         renderTo: Ext.getBody(),
         id: 'demo-ct',
         border: false,

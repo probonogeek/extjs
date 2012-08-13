@@ -201,12 +201,7 @@
  * A Store is just a collection of Model instances - usually loaded from a server somewhere. Store can also maintain a
  * set of added, updated and removed Model instances to be synchronized with the server via the Proxy. See the {@link
  * Ext.data.Store Store docs} for more information on Stores.
- *
- * @constructor
- * Creates new Model instance.
- * @param {Object} data An object containing keys corresponding to this model's fields, and their associated values
  */
-
 Ext.define('Ext.data.Model', {
     alternateClassName: 'Ext.data.Record',
 
@@ -253,7 +248,8 @@ Ext.define('Ext.data.Model', {
 
                 validations = data.validations || [],
                 fields = data.fields || [],
-                associations = data.associations || [],
+                field,
+                associationsConfigs = data.associations || [],
                 addAssociations = function(items, type) {
                     var i = 0,
                         len,
@@ -270,7 +266,7 @@ Ext.define('Ext.data.Model', {
                             }
 
                             item.type = type;
-                            associations.push(item);
+                            associationsConfigs.push(item);
                         }
                     }
                 },
@@ -284,7 +280,7 @@ Ext.define('Ext.data.Model', {
                 superFields = superCls.fields,
                 superAssociations = superCls.associations,
 
-                association, i, ln,
+                associationConfig, i, ln,
                 dependencies = [],
                 idProperty = data.idProperty || cls.prototype.idProperty,
 
@@ -345,7 +341,8 @@ Ext.define('Ext.data.Model', {
             });  
 
             for (i = 0, ln = fields.length; i < ln; ++i) {
-                fieldsMixedCollection.add(new Ext.data.Field(fields[i]));
+                field = fields[i];
+                fieldsMixedCollection.add(field.isField ? field : new Ext.data.Field(field));
             }
             if (!fieldsMixedCollection.get(idProperty)) {
                 fieldsMixedCollection.add(new Ext.data.Field(idProperty));
@@ -374,33 +371,45 @@ Ext.define('Ext.data.Model', {
             delete data.hasOne;
 
             if (superAssociations) {
-                associations = superAssociations.items.concat(associations);
+                associationsConfigs = superAssociations.items.concat(associationsConfigs);
             }
 
-            for (i = 0, ln = associations.length; i < ln; ++i) {
-                dependencies.push('association.' + associations[i].type.toLowerCase());
+            for (i = 0, ln = associationsConfigs.length; i < ln; ++i) {
+                dependencies.push('association.' + associationsConfigs[i].type.toLowerCase());
             }
 
             // If we have not been supplied with a Proxy *instance*, then add the proxy type to our dependency list
             if (clsProxy && !clsProxy.isProxy) {
+                //<debug>
+                if (typeof clsProxy !== 'string' && !clsProxy.type) {
+                    Ext.log.warn(name + ': proxy type is ' + clsProxy.type);
+                }
+                //</debug>
+
                 dependencies.push('proxy.' + (typeof clsProxy === 'string' ? clsProxy : clsProxy.type));
             }
 
             Ext.require(dependencies, function() {
                 Ext.ModelManager.registerType(name, cls);
 
-                for (i = 0, ln = associations.length; i < ln; ++i) {
-                    association = associations[i];
-
-                    Ext.apply(association, {
-                        ownerModel: name,
-                        associatedModel: association.model
-                    });
-
-                    if (Ext.ModelManager.getModel(association.model) === undefined) {
-                        Ext.ModelManager.registerDeferredAssociation(association);
+                for (i = 0, ln = associationsConfigs.length; i < ln; ++i) {
+                    associationConfig = associationsConfigs[i];
+                    if (associationConfig.isAssociation) {
+                        associationConfig = Ext.applyIf({
+                            ownerModel: name,
+                            associatedModel: associationConfig.model
+                        }, associationConfig.initialConfig);
                     } else {
-                        associationsMixedCollection.add(Ext.data.association.Association.create(association));
+                        Ext.apply(associationConfig, {
+                            ownerModel: name,
+                            associatedModel: associationConfig.model
+                        });
+                    }
+
+                    if (Ext.ModelManager.getModel(associationConfig.model) === undefined) {
+                        Ext.ModelManager.registerDeferredAssociation(associationConfig);
+                    } else {
+                        associationsMixedCollection.add(Ext.data.association.Association.create(associationConfig));
                     }
                 }
 
@@ -570,10 +579,35 @@ Ext.define('Ext.data.Model', {
     },
 
     statics: {
+        /**
+         * @property
+         * @static
+         * @private
+         */
         PREFIX : 'ext-record',
+        /**
+         * @property
+         * @static
+         * @private
+         */
         AUTO_ID: 1,
+        /**
+         * @property
+         * @static
+         * The update operation of type 'edit'. Used by {@link Ext.data.Store#update Store.update} event.
+         */
         EDIT   : 'edit',
+        /**
+         * @property
+         * @static
+         * The update operation of type 'reject'. Used by {@link Ext.data.Store#update Store.update} event.
+         */
         REJECT : 'reject',
+        /**
+         * @property
+         * @static
+         * The update operation of type 'commit'. Used by {@link Ext.data.Store#update Store.update} event.
+         */
         COMMIT : 'commit',
 
         /**
@@ -779,8 +813,15 @@ Ext.define('Ext.data.Model', {
      * @param {Number/String} newId The new id
      */
 
-    // id, raw and convertedData not documented intentionally, meant to be used internally.
+    /**
+     * Creates new Model instance.
+     * @param {Object} data An object containing keys corresponding to this model's fields, and their associated values
+     */
     constructor: function(data, id, raw, convertedData) {
+        // id, raw and convertedData not documented intentionally, meant to be used internally.
+        // TODO: find where "raw" is used and remove it. The first parameter, "data" is raw, unconverted data. "raw" is redundant.
+        // The "convertedData" parameter is a converted object hash with all properties corresponding to defined Fields
+        // and all values of the defined type. It is used directly as this record's data property.
         data = data || {};
 
         var me = this,
@@ -804,7 +845,7 @@ Ext.define('Ext.data.Model', {
         /**
          * @property {Object} raw The raw data used to create this model if created via a reader.
          */
-        me.raw = raw;
+        me.raw = raw || data; // If created using data in constructor, use data
 
         if (!me.data) {
             me.data = {};
@@ -818,9 +859,7 @@ Ext.define('Ext.data.Model', {
         // Deal with spelling error in previous releases
         if (me.persistanceProperty) {
             //<debug>
-            if (Ext.isDefined(Ext.global.console)) {
-                Ext.global.console.warn('Ext.data.Model: persistanceProperty has been deprecated. Use persistenceProperty instead.');
-            }
+            Ext.log.warn('Ext.data.Model: persistanceProperty has been deprecated. Use persistenceProperty instead.');
             //</debug>
             me.persistenceProperty = me.persistanceProperty;
         }
@@ -840,7 +879,10 @@ Ext.define('Ext.data.Model', {
                 for (; i < length; i++) {
                     field = fields[i];
                     name  = field.name;
-                    value = data[i];
+
+                    // Use the original ordinal position at which the Model inserted the field into its collection.
+                    // Fields are sorted to place fields with a *convert* function last.
+                    value = data[field.originalIndex];
 
                     if (value === undefined) {
                         value = field.defaultValue;
@@ -1189,9 +1231,8 @@ Ext.define('Ext.data.Model', {
 
     //<debug>
     markDirty : function() {
-        if (Ext.isDefined(Ext.global.console)) {
-            Ext.global.console.warn('Ext.data.Model: markDirty has been deprecated. Use setDirty instead.');
-        }
+        Ext.log.warn('Ext.data.Model: markDirty has been deprecated. Use setDirty instead.');
+
         return this.setDirty.apply(this, arguments);
     },
     //</debug>
@@ -1201,7 +1242,7 @@ Ext.define('Ext.data.Model', {
      * all changes made to the model instance since either creation, or the last commit operation. Modified fields are
      * reverted to their original values.
      *
-     * Developers should subscribe to the {@link Ext.data.Store#update} event to have their code notified of reject
+     * Developers should subscribe to the {@link Ext.data.Store#event-update} event to have their code notified of reject
      * operations.
      *
      * @param {Boolean} silent (optional) True to skip notification of the owning store of the change.
@@ -1233,7 +1274,7 @@ Ext.define('Ext.data.Model', {
      * Usually called by the {@link Ext.data.Store} which owns the model instance. Commits all changes made to the
      * instance since either creation or the last commit operation.
      *
-     * Developers should subscribe to the {@link Ext.data.Store#update} event to have their code notified of commit
+     * Developers should subscribe to the {@link Ext.data.Store#event-update} event to have their code notified of commit
      * operations.
      *
      * @param {Boolean} silent (optional) True to skip notification of the owning store of the change.
@@ -1264,7 +1305,9 @@ Ext.define('Ext.data.Model', {
     copy : function(newId) {
         var me = this;
 
-        return new me.self(Ext.apply({}, me[me.persistenceProperty]), newId);
+        // Use raw data as the data param.
+        // Pass a copy iof our converted data in to be used as the new record's convertedData
+        return new me.self(me.raw, newId, null, Ext.apply({}, me[me.persistenceProperty]));
     },
 
     /**
@@ -1591,7 +1634,7 @@ Ext.define('Ext.data.Model', {
      * @return {Object} The nested data set for the Model's loaded associations
      */
     prepareAssociatedData: function(seenKeys, depth) {
-        /**
+        /*
          * In this method we use a breadth first strategy instead of depth
          * first. The reason for doing so is that it prevents messy & difficult
          * issues when figuring out which associations we've already processed

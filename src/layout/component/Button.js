@@ -20,7 +20,7 @@ Ext.define('Ext.layout.component.Button', {
     constructor: function () {
         this.callParent(arguments);
 
-        this.hackWidth = Ext.isIE && (!Ext.isStrict || Ext.isIE6 || Ext.isIE7);
+        this.hackWidth = Ext.isIE && (!Ext.isStrict || Ext.isIE6 || Ext.isIE7 || Ext.isIE8);
         this.heightIncludesPadding = Ext.isIE6 && Ext.isStrict;
     },
 
@@ -257,5 +257,15 @@ Ext.define('Ext.layout.component.Button', {
         }
 
         me.callParent(arguments);
+    },
+    
+    finishedLayout: function(){
+        var owner = this.owner;
+        this.callParent(arguments);
+        // Fixes issue EXTJSIV-5989. Looks like a browser repaint bug
+        // This hack can be removed once it is resolved.
+        if (Ext.isWebKit) {
+            owner.el.dom.offsetWidth;
+        }
     }
 });

@@ -32,9 +32,9 @@
  *         title: 'Simpsons',
  *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
  *         columns: [
- *             { header: 'Name',  dataIndex: 'name' },
- *             { header: 'Email', dataIndex: 'email', flex: 1 },
- *             { header: 'Phone', dataIndex: 'phone' }
+ *             { text: 'Name',  dataIndex: 'name' },
+ *             { text: 'Email', dataIndex: 'email', flex: 1 },
+ *             { text: 'Phone', dataIndex: 'phone' }
  *         ],
  *         height: 200,
  *         width: 400,
@@ -57,19 +57,19 @@
  *
  *     columns: [
  *         {
- *             header: 'Name',
+ *             text: 'Name',
  *             dataIndex: 'name',
  *             sortable: false,
  *             hideable: false,
  *             flex: 1
  *         },
  *         {
- *             header: 'Email',
+ *             text: 'Email',
  *             dataIndex: 'email',
  *             hidden: true
  *         },
  *         {
- *             header: 'Phone',
+ *             text: 'Phone',
  *             dataIndex: 'phone',
  *             width: 100
  *         }
@@ -88,7 +88,7 @@
  *
  *     columns: [
  *         {
- *             header: 'Email',
+ *             text: 'Email',
  *             dataIndex: 'email',
  *             renderer: function(value) {
  *                 return Ext.String.format('<a href="mailto:{0}">{1}</a>', value, value);
@@ -117,78 +117,6 @@
  * keyboard navigation will walk from cell to cell instead of row to row. Cell-based selection models are usually used in
  * conjunction with editing.
  *
- * ## Editing
- *
- * Grid has built-in support for in-line editing. There are two chief editing modes - cell editing and row editing. Cell
- * editing is easy to add to your existing column setup - here we'll just modify the example above to include an editor
- * on both the name and the email columns:
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Simpsons',
- *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *         columns: [
- *             { header: 'Name',  dataIndex: 'name', field: 'textfield' },
- *             { header: 'Email', dataIndex: 'email', flex: 1,
- *                 field: {
- *                     xtype: 'textfield',
- *                     allowBlank: false
- *                 }
- *             },
- *             { header: 'Phone', dataIndex: 'phone' }
- *         ],
- *         selType: 'cellmodel',
- *         plugins: [
- *             Ext.create('Ext.grid.plugin.CellEditing', {
- *                 clicksToEdit: 1
- *             })
- *         ],
- *         height: 200,
- *         width: 400,
- *         renderTo: Ext.getBody()
- *     });
- *
- * This requires a little explanation. We're passing in {@link #store store} and {@link #columns columns} as normal, but
- * this time we've also specified a {@link Ext.grid.column.Column#field field} on two of our columns. For the Name column
- * we just want a default textfield to edit the value, so we specify 'textfield'. For the Email column we customized the
- * editor slightly by passing allowBlank: false, which will provide inline validation.
- *
- * To support cell editing, we also specified that the grid should use the 'cellmodel' {@link #selType}, and created an
- * instance of the {@link Ext.grid.plugin.CellEditing CellEditing plugin}, which we configured to activate each editor after a
- * single click.
- *
- * ## Row Editing
- *
- * The other type of editing is row-based editing, using the RowEditor component. This enables you to edit an entire row
- * at a time, rather than editing cell by cell. Row Editing works in exactly the same way as cell editing, all we need to
- * do is change the plugin type to {@link Ext.grid.plugin.RowEditing}, and set the selType to 'rowmodel':
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Simpsons',
- *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *         columns: [
- *             { header: 'Name',  dataIndex: 'name', field: 'textfield' },
- *             { header: 'Email', dataIndex: 'email', flex:1,
- *                 field: {
- *                     xtype: 'textfield',
- *                     allowBlank: false
- *                 }
- *             },
- *             { header: 'Phone', dataIndex: 'phone' }
- *         ],
- *         selType: 'rowmodel',
- *         plugins: [
- *             Ext.create('Ext.grid.plugin.RowEditing', {
- *                 clicksToEdit: 1
- *             })
- *         ],
- *         height: 200,
- *         width: 400,
- *         renderTo: Ext.getBody()
- *     });
- *
- * Again we passed some configuration to our {@link Ext.grid.plugin.RowEditing} plugin, and now when we click each row a row
- * editor will appear and enable us to edit each of the columns we have specified an editor for.
- *
  * ## Sorting & Filtering
  *
  * Every grid is attached to a {@link Ext.data.Store Store}, which provides multi-sort and filtering capabilities. It's
@@ -215,127 +143,35 @@
  *
  * See {@link Ext.data.Store} for examples of filtering.
  *
- * ## Grouping
- *
- * Grid supports the grouping of rows by any field. For example if we had a set of employee records, we might want to
- * group by the department that each employee works in. Here's how we might set that up:
- *
- *     @example
- *     var store = Ext.create('Ext.data.Store', {
- *         storeId:'employeeStore',
- *         fields:['name', 'seniority', 'department'],
- *         groupField: 'department',
- *         data: {'employees':[
- *             { "name": "Michael Scott",  "seniority": 7, "department": "Management" },
- *             { "name": "Dwight Schrute", "seniority": 2, "department": "Sales" },
- *             { "name": "Jim Halpert",    "seniority": 3, "department": "Sales" },
- *             { "name": "Kevin Malone",   "seniority": 4, "department": "Accounting" },
- *             { "name": "Angela Martin",  "seniority": 5, "department": "Accounting" }
- *         ]},
- *         proxy: {
- *             type: 'memory',
- *             reader: {
- *                 type: 'json',
- *                 root: 'employees'
- *             }
- *         }
- *     });
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Employees',
- *         store: Ext.data.StoreManager.lookup('employeeStore'),
- *         columns: [
- *             { header: 'Name',     dataIndex: 'name' },
- *             { header: 'Seniority', dataIndex: 'seniority' }
- *         ],
- *         features: [{ftype:'grouping'}],
- *         width: 200,
- *         height: 275,
- *         renderTo: Ext.getBody()
- *     });
- *
- * ## Infinite Scrolling
- *
- * Grid supports infinite scrolling as an alternative to using a paging toolbar. Your users can scroll through thousands
- * of records without the performance penalties of renderering all the records on screen at once. The grid should be bound
- * to a *buffered* store with a pageSize specified.
- *
- * The number of rows rendered outside the visible area, and the buffering of pages of data from the remote server for
- * immediate rendering upon scroll can be controlled by configuring the {@link Ext.grid.PagingScroller #verticalScroller}.
- *
- * You can tell it to create a larger table to provide more scrolling before a refresh is needed, and also to keep more pages
- * of records in memory for faster refreshing when scrolling.
- *
- *     var myStore = Ext.create('Ext.data.Store', {
- *         // ...
- *         buffered: true,
- *         pageSize: 100,
- *         // ...
- *     });
- *
- *     var grid = Ext.create('Ext.grid.Panel', {
- *         // ...
- *         autoLoad: true,
- *         verticalScroller: {
- *             trailingBufferZone: 200,  // Keep 200 records buffered in memory behind scroll
- *             leadingBufferZone: 5000   // Keep 5000 records buffered in memory ahead of scroll
- *         },
- *         // ...
- *     });
- *
- * ## Paging
- *
- * Grid supports paging through large sets of data via a PagingToolbar or PagingGridScroller (see the Infinite Scrolling section above).
- * To leverage paging via a toolbar or scroller, you need to set a pageSize configuration on the Store.
- *
- *     @example
- *     var itemsPerPage = 2;   // set the number of items you want per page
- *
- *     var store = Ext.create('Ext.data.Store', {
- *         id:'simpsonsStore',
- *         autoLoad: false,
- *         fields:['name', 'email', 'phone'],
- *         pageSize: itemsPerPage, // items per page
- *         proxy: {
- *             type: 'ajax',
- *             url: 'pagingstore.js',  // url that will load data with respect to start and limit params
- *             reader: {
- *                 type: 'json',
- *                 root: 'items',
- *                 totalProperty: 'total'
- *             }
- *         }
- *     });
- *
- *     // specify the page you want to load
- *     store.loadPage(1);
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Simpsons',
- *         store: store,
- *         columns: [
- *             {header: 'Name',  dataIndex: 'name'},
- *             {header: 'Email', dataIndex: 'email', flex:1},
- *             {header: 'Phone', dataIndex: 'phone'}
- *         ],
- *         width: 400,
- *         height: 125,
- *         dockedItems: [{
- *             xtype: 'pagingtoolbar',
- *             store: store,   // same store GridPanel is using
- *             dock: 'bottom',
- *             displayInfo: true
- *         }],
- *         renderTo: Ext.getBody()
- *     });
- *     
  * ## State saving
  * 
  * When configured {@link #stateful}, grids save their column state (order and width) encapsulated within the default
  * Panel state of changed width and height and collapsed/expanded state.
  *
- * Each {@link @columns column} of the grid may be configured with a {@link Ext.grid.column.Column#stateId stateId} which
+ * Each {@link #columns column} of the grid may be configured with a {@link Ext.grid.column.Column#stateId stateId} which
  * identifies that column locally within the grid.
+ *
+ * ## Plugins and Features
+ *
+ * Grid supports addition of extra functionality through features and plugins:
+ *
+ * - {@link Ext.grid.plugin.CellEditing CellEditing} - editing grid contents one cell at a time.
+ *
+ * - {@link Ext.grid.plugin.RowEditing RowEditing} - editing grid contents an entire row at a time.
+ *
+ * - {@link Ext.grid.plugin.DragDrop DragDrop} - drag-drop reordering of grid rows.
+ *
+ * - {@link Ext.toolbar.Paging Paging toolbar} - paging through large sets of data.
+ *
+ * - {@link Ext.grid.PagingScroller Infinite scrolling} - another way to handle large sets of data.
+ *
+ * - {@link Ext.grid.RowNumberer RowNumberer} - automatically numbered rows.
+ *
+ * - {@link Ext.grid.feature.Grouping Grouping} - grouping together rows having the same value in a particular field.
+ *
+ * - {@link Ext.grid.feature.Summary Summary} - a summary row at the bottom of a grid.
+ *
+ * - {@link Ext.grid.feature.GroupingSummary GroupingSummary} - a summary row at the bottom of each group.
  */
 Ext.define('Ext.grid.Panel', {
     extend: 'Ext.panel.Table',

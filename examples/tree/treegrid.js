@@ -1,17 +1,25 @@
+Ext.Loader.setConfig({
+    enabled: true
+});Ext.Loader.setPath('Ext.ux', '../ux');
+
 Ext.require([
     'Ext.data.*',
     'Ext.grid.*',
-    'Ext.tree.*'
+    'Ext.tree.*',
+    'Ext.ux.CheckColumn'
 ]);
 
 Ext.onReady(function() {
+    Ext.QuickTips.init();
+
     //we want to setup a model and store instead of using dataUrl
     Ext.define('Task', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'task',     type: 'string'},
             {name: 'user',     type: 'string'},
-            {name: 'duration', type: 'string'}
+            {name: 'duration', type: 'string'},
+            {name: 'done',     type: 'boolean'}
         ]
     });
 
@@ -70,6 +78,23 @@ Ext.onReady(function() {
             flex: 1,
             dataIndex: 'user',
             sortable: true
+        }, {
+            xtype: 'checkcolumn',
+            header: 'Done',
+            dataIndex: 'done',
+            width: 40,
+            stopSelection: false
+        }, {
+            text: 'Edit',
+            width: 40,
+            menuDisabled: true,
+            xtype: 'actioncolumn',
+            tooltip: 'Edit task',
+            align: 'center',
+            icon: '../simple-tasks/resources/images/edit_task.png',
+            handler: function(grid, rowIndex, colIndex, actionItem, event, record, row) {
+                Ext.Msg.alert('Editing' + (record.get('done') ? ' completed task' : '') , record.get('task'));
+            }
         }]
     });
 });

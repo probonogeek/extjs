@@ -82,6 +82,14 @@ Ext.apply(Ext, {
 
         return entry;
     },
+    
+    updateCacheEntry: function(cacheItem, dom){
+        cacheItem.dom = dom;
+        if (cacheItem.el) {
+            cacheItem.el.dom = dom;
+        }
+        return cacheItem;
+    },
 
     /**
      * Generates unique ids. If the element already has an id, it is unchanged
@@ -241,6 +249,7 @@ Ext.apply(Ext, {
     /**
      * Alias for {@link Ext.String#htmlEncode}.
      * @inheritdoc Ext.String#htmlEncode
+     * @ignore
      */
     htmlEncode : function(value) {
         return Ext.String.htmlEncode(value);
@@ -249,6 +258,7 @@ Ext.apply(Ext, {
     /**
      * Alias for {@link Ext.String#htmlDecode}.
      * @inheritdoc Ext.String#htmlDecode
+     * @ignore
      */
     htmlDecode : function(value) {
          return Ext.String.htmlDecode(value);
@@ -257,6 +267,7 @@ Ext.apply(Ext, {
     /**
      * Alias for {@link Ext.String#urlAppend}.
      * @inheritdoc Ext.String#urlAppend
+     * @ignore
      */
     urlAppend : function(url, s) {
         return Ext.String.urlAppend(url, s);
@@ -505,7 +516,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
     nullLog = function () {};
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
-    Ext.setVersion('extjs', '4.1.0');
+    Ext.setVersion('extjs', '4.1.1');
     Ext.apply(Ext, {
         /**
          * @property {String} SSL_SECURE_URL
@@ -630,16 +641,12 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
                             delete cache[id];
                         }
 
-                        // removing an iframe this way can cause severe leaks
-                        // fixes leak issue with htmleditor in themes example
-                        if (n.tagName.toUpperCase() != 'IFRAME') {
-                            if (isIE8 && n.parentNode) {
-                                n.parentNode.removeChild(n);
-                            }
-                            d = d || document.createElement('div');
-                            d.appendChild(n);
-                            d.innerHTML = '';
+                        if (isIE8 && n.parentNode) {
+                            n.parentNode.removeChild(n);
                         }
+                        d = d || document.createElement('div');
+                        d.appendChild(n);
+                        d.innerHTML = '';
                     }
                 };
             }())
@@ -1078,23 +1085,23 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          * The `Ext.log.out` array can also be written to a popup window by entering the
          * following in the URL bar (a "bookmarklet"):
          *
-         *    javascript:void(Ext.log.show());
+         *     javascript:void(Ext.log.show());
          *
          * If additional parameters are passed, they are joined and appended to the message.
          * A technique for tracing entry and exit of a function is this:
          *
-         *      function foo () {
-         *          Ext.log({ indent: 1 }, '>> foo');
+         *     function foo () {
+         *         Ext.log({ indent: 1 }, '>> foo');
          *
-         *          // log statements in here or methods called from here will be indented
-         *          // by one step
+         *         // log statements in here or methods called from here will be indented
+         *         // by one step
          *
-         *          Ext.log({ outdent: 1 }, '<< foo');
-         *      }
+         *         Ext.log({ outdent: 1 }, '<< foo');
+         *     }
          *
          * This method does nothing in a release build.
          *
-         * @param {String/Object} message The message to log or an options object with any
+         * @param {String/Object} [options] The message to log or an options object with any
          * of the following properties:
          *
          *  - `msg`: The message to log (required).
@@ -1103,6 +1110,9 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          *  - `stack`: True to include a stack trace in the log.
          *  - `indent`: Cause subsequent log statements to be indented one step.
          *  - `outdent`: Cause this and following statements to be one step less indented.
+         *
+         * @param {String...} [message] The message to log (required unless specified in
+         * options object).
          *
          * @method
          */

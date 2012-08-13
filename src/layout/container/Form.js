@@ -104,40 +104,47 @@ Ext.define('Ext.layout.container.Form', {
     },
 
     getRenderTree: function() {
-        var result = this.callParent(arguments),
-            i = 0, len = result.length,
-            item;
+        var me = this,
+            result = me.callParent(arguments),
+            i, len;
 
-        for (; i < len; i++) {
-            item = result[i];
-            if (item.tag && item.tag == 'table') {
-                item.tag = 'tbody';
-                delete item.cellspacing;
-                delete item.cellpadding;
-
-                // IE6 doesn't separate cells nicely to provide input field
-                // vertical separation. It also does not support transparent borders
-                // which is how the extra 1px is added to the 2px each side cell spacing.
-                // So it needs a 5px high pad row.
-                if (Ext.isIE6) {
-                    item.cn = this.padRow;
-                }
-            } else {
-                result[i] = {
-                    tag: 'tbody',
-                    cn: {
-                        tag: 'tr',
-                        cn: {
-                            tag: 'td',
-                            colspan: 3,
-                            style: 'width:100%',
-                            cn: item
-                        }
-                    }
-                };
-            }
+        for (i = 0, len = result.length; i < len; i++) {
+            result[i] = me.transformItemRenderTree(result[i]);
         }
         return result;
+    },
+
+    transformItemRenderTree: function(item) {
+
+        if (item.tag && item.tag == 'table') {
+            item.tag = 'tbody';
+            delete item.cellspacing;
+            delete item.cellpadding;
+
+            // IE6 doesn't separate cells nicely to provide input field
+            // vertical separation. It also does not support transparent borders
+            // which is how the extra 1px is added to the 2px each side cell spacing.
+            // So it needs a 5px high pad row.
+            if (Ext.isIE6) {
+                item.cn = this.padRow;
+            }
+
+            return item;
+        }
+
+        return {
+            tag: 'tbody',
+            cn: {
+                tag: 'tr',
+                cn: {
+                    tag: 'td',
+                    colspan: 3,
+                    style: 'width:100%',
+                    cn: item
+                }
+            }
+        };
+
     },
 
     isValidParent: function(item, target, position) {

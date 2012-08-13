@@ -25,7 +25,7 @@ Ext.define('Ext.selection.TreeModel', {
             if (focused.isExpanded()) {
                 this.onKeyDown(e, t);
             // if its not a leaf node, expand it
-            } else if (!focused.isLeaf()) {
+            } else if (focused.isExpandable()) {
                 view.expand(focused);
             }
         }
@@ -60,19 +60,19 @@ Ext.define('Ext.selection.TreeModel', {
         }
     },
     
-    onKeyPress: function(e, t) {
-        var key = e.getKey(),
-            selected, 
-            checked;
-        
-        if (key === e.SPACE || key === e.ENTER) {
-            e.stopEvent();
-            selected = this.getLastSelected();
-            if (selected) {
-                this.view.onCheckChange(selected);
-            }
-        } else {
-            this.callParent(arguments);
+    onKeySpace: function(e, t) {
+        this.toggleCheck(e);
+    },
+    
+    onKeyEnter: function(e, t) {
+        this.toggleCheck(e);
+    },
+    
+    toggleCheck: function(e){
+        e.stopEvent();
+        var selected = this.getLastSelected();
+        if (selected) {
+            this.view.onCheckChange(selected);
         }
     }
 });

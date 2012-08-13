@@ -82,7 +82,7 @@ Ext.define('PageAnalyzer.models.ComponentTreeNode', {
             for (i = 0; i < len; i++) {
                 child = children[i];
                 if (!child.data.hidden) {
-                    spec[child.data.compId] = child.getTestSpec();
+                    spec[i] = child.getTestSpec();
                 }
             }
             return spec;

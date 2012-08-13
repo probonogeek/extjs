@@ -42,7 +42,7 @@
  *
  *     Option    Default   Description
  *     --------- --------  ---------------------------------------------
- *     {@link Ext.fx.Anim#duration duration}  .35       The duration of the animation in seconds
+ *     {@link Ext.fx.Anim#duration duration}  350       The duration of the animation in milliseconds
  *     {@link Ext.fx.Anim#easing easing}    easeOut   The easing method
  *     {@link Ext.fx.Anim#callback callback}  none      A function to execute when the anim completes
  *     {@link Ext.fx.Anim#scope scope}     this      The scope (this) of the callback function
@@ -51,7 +51,7 @@
  *
  *     // Element animation options object
  *     var opt = {
- *         {@link Ext.fx.Anim#duration duration}: 1,
+ *         {@link Ext.fx.Anim#duration duration}: 1000,
  *         {@link Ext.fx.Anim#easing easing}: 'elasticIn',
  *         {@link Ext.fx.Anim#callback callback}: this.foo,
  *         {@link Ext.fx.Anim#scope scope}: this
@@ -340,6 +340,8 @@ var HIDDEN = 'hidden',
     mask : function(msg, msgCls /* private - passed by AbstractComponent.mask to avoid the need to interrogate the DOM to get the height*/, elHeight) {
         var me            = this,
             dom           = me.dom,
+            // In some cases, setExpression will exist but not be of a function type,
+            // so we check it explicitly here to stop IE throwing errors
             setExpression = dom.style.setExpression,
             data          = (me.$cache || me.getCache()).data,
             maskEl        = data.maskEl,
@@ -388,13 +390,19 @@ var HIDDEN = 'hidden',
         // Fix for https://sencha.jira.com/browse/EXTJSIV-19.
         // IE6 strict mode and IE6-9 quirks mode takes off left+right padding when calculating width!
         if (!Ext.supports.IncludePaddingInWidthCalculation && setExpression) {
-            maskEl.dom.style.setExpression('width', 'this.parentNode.clientWidth + "px"');
+            // In an occasional case setExpression will throw an exception
+            try {
+                maskEl.dom.style.setExpression('width', 'this.parentNode.clientWidth + "px"');
+            } catch (e) {}
         }
 
         // Some versions and modes of IE subtract top+bottom padding when calculating height.
         // Different versions from those which make the same error for width!
         if (!Ext.supports.IncludePaddingInHeightCalculation && setExpression) {
-            maskEl.dom.style.setExpression('height', 'this.parentNode.' + (dom == DOC.body ? 'scrollHeight' : 'offsetHeight') + ' + "px"');
+            // In an occasional case setExpression will throw an exception
+            try {
+                maskEl.dom.style.setExpression('height', 'this.parentNode.' + (dom == DOC.body ? 'scrollHeight' : 'offsetHeight') + ' + "px"');
+            } catch (e) {}
         }
         // ie will not expand full height automatically
         else if (Ext.isIE && !(Ext.isIE7 && Ext.isStrict) && me.getStyle('height') == 'auto') {
@@ -1181,6 +1189,65 @@ var HIDDEN = 'hidden',
         },
 
         /**
+         * @private.
+         * Currently used for updating grid cells without modifying DOM structure
+         *
+         * Synchronizes content of this Element with the content of the passed element.
+         * 
+         * Style and CSS class are copied from source into this Element, and contents are synched
+         * recursively. If a child node is a text node, the textual data is copied.
+         */
+        syncContent: function(source) {
+            source = Ext.getDom(source);
+            var me = this,
+                sourceNodes = source.childNodes,
+                sourceLen = sourceNodes.length,
+                dest = me.dom,
+                destNodes = dest.childNodes,
+                destLen = destNodes.length,
+                i,  destNode, sourceNode,
+                nodeType;
+
+            // Copy top node's style and CSS class
+            dest.style.cssText = source.style.cssText;
+            dest.className = source.className;
+
+            // If the number of child nodes does not match, fall back to replacing innerHTML
+            if (sourceLen !== destLen) {
+                source.innerHTML = dest.innerHTML;
+                return;
+            }
+
+            // Loop through source nodes.
+            // If there are fewer, we must remove excess
+            for (i = 0; i < sourceLen; i++) {
+                sourceNode = sourceNodes[i];
+                destNode = destNodes[i];
+                nodeType = sourceNode.nodeType;
+
+                // If node structure is out of sync, just drop innerHTML in and return
+                if (nodeType !== destNode.nodeType || (nodeType === 1 && sourceNode.tagName !== destNode.tagName)) {
+                    dest.innerHTML = source.innerHTML;
+                    return;
+                }
+
+                // Update text node
+                if (nodeType === 3) {
+                    destNode.data = sourceNode.data;
+                }
+                // Sync element content
+                else {
+                    if (sourceNode.id && destNode.id !== sourceNode.id) {
+                        destNode.id = sourceNode.id;
+                    }
+                    destNode.style.cssText = sourceNode.style.cssText;
+                    destNode.className = sourceNode.className;
+                    Ext.fly(destNode).syncContent(sourceNode);
+                }
+            }
+        },
+
+        /**
          * Updates the innerHTML of this element, optionally searching for and processing scripts.
          * @param {String} html The new HTML
          * @param {Boolean} [loadScripts] True to look for and process scripts (defaults to false)
@@ -1284,7 +1351,16 @@ var HIDDEN = 'hidden',
          */
         getScopeParent: function() {
             var parent = this.dom.parentNode;
-            return Ext.scopeResetCSS ? parent.parentNode : parent;
+            if (Ext.scopeResetCSS) {
+                // If it's a normal reset, we will be wrapped in a single x-reset element, so grab the parent
+                parent = parent.parentNode;
+                if (!Ext.supports.CSS3LinearGradient || !Ext.supports.CSS3BorderRadius) {
+                    // In the cases where we have nbr or nlg, it will be wrapped in a second element,
+                    // so we need to go and get the parent again.
+                    parent = parent.parentNode;
+                }
+            }
+            return parent;
         },
 
         /**
@@ -1325,7 +1401,7 @@ var HIDDEN = 'hidden',
     if (Ext.isIE) {
         El.prototype.getById = function (id, asDom) {
             var dom = this.dom,
-                cached, el, ret;
+                cacheItem, el, ret;
 
             if (dom) {
                 // for normal elements getElementById is the best solution, but if the el is
@@ -1337,10 +1413,9 @@ var HIDDEN = 'hidden',
                     } else {
                         // calling El.get here is a real hit (2x slower) because it has to
                         // redetermine that we are giving it a dom el.
-                        cached = EC[id];
-                        if (cached && cached.el) {
-                            ret = cached.el;
-                            ret.dom = el;
+                        cacheItem = EC[id];
+                        if (cacheItem && cacheItem.el) {
+                            ret = Ext.updateCacheEntry(cacheItem, el).el;
                         } else {
                             ret = new Element(el);
                         }

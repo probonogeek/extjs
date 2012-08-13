@@ -38,11 +38,11 @@ Ext.define('Ext.LoadMask', {
      * hidden on either load success, or load fail.
      */
 
+    //<locale>
     /**
      * @cfg {String} [msg="Loading..."]
      * The text to display in a centered loading message box.
      */
-    //<locale>
     msg : 'Loading...',
     //</locale>
 
@@ -134,19 +134,7 @@ Ext.define('Ext.LoadMask', {
             
         if (comp.floating) {
             listeners.move = me.sizeMask;
-            /*
-             *  if floating, set to restack and bind the component to the mask if it's
-             *  determined that the owning component isn't at the front of the stack
-             *
-             *  if there are multiple floating components, each could have its own zIndexManager,
-             *  so it's necessary to have a ref to the owning component to be able
-             *  to look up it's z-index and then adjust accordingly in me.setZIndex
-             *  - the restack simply acts as a flag to know to adjust the z-index in me.setZIndex
-             */
-            if (comp.zIndexManager.front !== comp) {
-                me.restack = true;
-                me.activeOwner = comp;
-            }
+            me.activeOwner = comp;
         } else if (comp.ownerCt) {
             me.onComponentAdded(comp.ownerCt);
         } else {
@@ -400,13 +388,14 @@ Ext.define('Ext.LoadMask', {
     },
 
     setZIndex: function(index) {
-        var me = this;
+        var me = this,
+            owner = me.activeOwner;
             
-        if (me.restack) {
+        if (owner) {
             // it seems silly to add 1 to have it subtracted in the call below,
             // but this allows the x-mask el to have the correct z-index (same as the component)
             // so instead of directly changing the zIndexStack just get the z-index of the owner comp
-            index = parseInt(me.activeOwner.el.getStyle('zIndex'), 10) + 1;
+            index = parseInt(owner.el.getStyle('zIndex'), 10) + 1;
         }
 
         me.getMaskEl().setStyle('zIndex', index - 1);

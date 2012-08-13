@@ -1,8 +1,6 @@
 /**
- * @class Ext.draw.engine.Vml
  * Provides specific methods to draw with VML.
  */
-
 Ext.define('Ext.draw.engine.Vml', {
 
     /* Begin Definitions */

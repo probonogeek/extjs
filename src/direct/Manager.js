@@ -55,13 +55,14 @@ Ext.define('Ext.direct.Manager', {
 
     requires: ['Ext.util.MixedCollection'],
 
-    statics: {
-        exceptions: {
-            TRANSPORT: 'xhr',
-            PARSE: 'parse',
-            LOGIN: 'login',
-            SERVER: 'exception'
-        }
+    /**
+     * Exception types.
+     */
+    exceptions: {
+        TRANSPORT: 'xhr',
+        PARSE: 'parse',
+        LOGIN: 'login',
+        SERVER: 'exception'
     },
 
     /* End Definitions */

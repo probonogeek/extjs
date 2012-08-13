@@ -59,6 +59,7 @@ Ext.define('Ext.dd.DropTarget', {
      * @param {Object} data An object containing arbitrary data supplied by the drag source
      * @return {String} status The CSS class that communicates the drop status back to the source so that the
      * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
      */
     notifyEnter : function(dd, e, data){
         if(this.overClass){
@@ -76,6 +77,7 @@ Ext.define('Ext.dd.DropTarget', {
      * @param {Object} data An object containing arbitrary data supplied by the drag source
      * @return {String} status The CSS class that communicates the drop status back to the source so that the
      * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
      */
     notifyOver : function(dd, e, data){
         return this.dropAllowed;
@@ -88,6 +90,7 @@ Ext.define('Ext.dd.DropTarget', {
      * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
      * @param {Event} e The event
      * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @template
      */
     notifyOut : function(dd, e, data){
         if(this.overClass){
@@ -104,6 +107,7 @@ Ext.define('Ext.dd.DropTarget', {
      * @param {Event} e The event
      * @param {Object} data An object containing arbitrary data supplied by the drag source
      * @return {Boolean} False if the drop was invalid.
+     * @template
      */
     notifyDrop : function(dd, e, data){
         return false;

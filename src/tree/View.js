@@ -23,6 +23,12 @@ Ext.define('Ext.tree.View', {
     nodeAnimWrapCls: Ext.baseCSSPrefix + 'tree-animator-wrap',
 
     blockRefresh: true,
+    
+    /**
+     * @cfg
+     * @inheritdoc
+     */
+    loadMask: false,
 
     /** 
      * @cfg {Boolean} rootVisible
@@ -49,7 +55,7 @@ Ext.define('Ext.tree.View', {
     stripeRows: false,
 
     // fields that will trigger a change in the ui that aren't likely to be bound to a column
-    uiFields: ['expanded', 'loaded', 'checked', 'expandable', 'leaf', 'icon', 'iconCls', 'loading'],
+    uiFields: ['expanded', 'loaded', 'checked', 'expandable', 'leaf', 'icon', 'iconCls', 'loading', 'qtip', 'qtitle'],
 
     initComponent: function() {
         var me = this,
@@ -112,6 +118,10 @@ Ext.define('Ext.tree.View', {
             click: me.onCheckboxChange
         });
     },
+    
+    getMaskStore: function(){
+        return this.panel.getStore();    
+    },
 
     afterComponentLayout: function(){
         this.callParent(arguments);
@@ -173,6 +183,9 @@ Ext.define('Ext.tree.View', {
         return rec.get('checked');
     },
 
+    /**
+     * @private
+     */
     createAnimWrap: function(record, index) {
         var thHtml = '',
             headerCt = this.panel.headerCt,
@@ -306,20 +319,18 @@ Ext.define('Ext.tree.View', {
     },
 
     beginBulkUpdate: function(){
-        this.bulkUpdate = true;
-        this.ownerCt.changingScrollbars = true;  
+        this.bulkUpdate = true;  
     },
 
     endBulkUpdate: function(){
         this.bulkUpdate = false;
-        this.ownerCt.changingScrollbars = true;  
     },
 
     onRemove : function(ds, record, index) {
         var me = this,
             bulk = me.bulkUpdate;
             
-        if (me.rendered) {
+        if (me.viewReady) {
             me.doRemove(record, index);
             if (!bulk) {
                 me.updateIndexes(index);
@@ -339,9 +350,10 @@ Ext.define('Ext.tree.View', {
         var me = this,
             all = me.all,
             animWrap = me.getAnimWrap(record),
-            node = all.item(index).dom;
+            item = all.item(index),
+            node = item ? item.dom : null;
 
-        if (!animWrap || !animWrap.collapsing) {
+        if (!node || !animWrap || !animWrap.collapsing) {
             return me.callParent(arguments);
         }
 
@@ -414,6 +426,7 @@ Ext.define('Ext.tree.View', {
                     // Move all the nodes out of the anim wrap to their proper location
                     animWrap.el.insertSibling(targetEl.query(me.itemSelector), 'before');
                     animWrap.el.remove();
+                    me.refreshSize();
                     delete me.animWraps[animWrap.record.internalId];
                     delete queue[id];
                 }
@@ -483,6 +496,7 @@ Ext.define('Ext.tree.View', {
                 scope: me,
                 lastframe: function() {
                     animWrap.el.remove();
+                    me.refreshSize();
                     delete me.animWraps[animWrap.record.internalId];
                     delete queue[id];
                 }             
@@ -582,10 +596,12 @@ Ext.define('Ext.tree.View', {
     },
 
     onItemDblClick: function(record, item, index) {
-        var editingPlugin = this.editingPlugin;
-        this.callParent(arguments);
-        if (this.toggleOnDblClick && !(editingPlugin && editingPlugin.clicksToEdit === 2)) {
-            this.toggle(record);
+        var me = this,
+            editingPlugin = me.editingPlugin;
+            
+        me.callParent(arguments);
+        if (me.toggleOnDblClick && record.isExpandable() && !(editingPlugin && editingPlugin.clicksToEdit === 2)) {
+            me.toggle(record);
         }
     },
 
@@ -597,7 +613,7 @@ Ext.define('Ext.tree.View', {
     },
 
     onItemClick: function(record, item, index, e) {
-        if (e.getTarget(this.expanderSelector, item)) {
+        if (e.getTarget(this.expanderSelector, item) && record.isExpandable()) {
             this.toggle(record, e.ctrlKey);
             return false;
         }
@@ -631,7 +647,17 @@ Ext.define('Ext.tree.View', {
     },
 
     shouldUpdateCell: function(column, changedFieldNames){
-        return Ext.Array.contains(this.uiFields, column.dataIndex) || this.callParent(arguments);
+        if (changedFieldNames) {
+            var i = 0,
+                len = changedFieldNames.length;
+                
+            for (; i < len; ++i) {
+                if (Ext.Array.contains(this.uiFields, changedFieldNames[i])) {
+                    return true;
+                }
+            }
+        }
+        return this.callParent(arguments);
     },
 
     /**

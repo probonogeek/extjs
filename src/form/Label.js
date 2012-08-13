@@ -103,8 +103,9 @@ Ext.define('Ext.form.Label', {
         
         if(me.rendered){
             me.el.dom.innerHTML = encode !== false ? Ext.util.Format.htmlEncode(text) : text;
+            me.updateLayout();
         }
-        return this;
+        return me;
     }
 });
 

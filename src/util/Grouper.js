@@ -14,6 +14,8 @@ Ext.define('Ext.util.Grouper', {
     extend: 'Ext.util.Sorter',
 
     /* End Definitions */
+   
+   isGrouper: true,
 
     /**
      * Returns the value for grouping to be used.

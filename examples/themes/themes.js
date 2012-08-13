@@ -75,7 +75,7 @@ function getCollapsedPanel () {
 }
 
 function getMaskedPanel (rtl) {
-    return Ext.createWidget({
+    return Ext.widget({
         xtype: 'panel',
 
         x: 180, y: 20,
@@ -156,7 +156,7 @@ function getPanelWithToolbars () {
     /**
      * Toolbar with a menu
      */
-    /*var xxxxxxx = Ext.createWidget('menu', {
+    /*var xxxxxxx = Ext.widget('menu', {
         items: [
             {text: 'Menu item'},
             {text: 'Check 1', checked: true},
@@ -167,7 +167,7 @@ function getPanelWithToolbars () {
             '-',
             {
                 text: 'Sub-items',
-                menu: Ext.createWidget('menu', {
+                menu: Ext.widget('menu', {
                     items: [
                         {text: 'Item 1'},
                         {text: 'Item 2'}
@@ -236,7 +236,7 @@ function getPanelWithToolbars () {
                         '-',
                         {
                             text: 'Sub-items',
-                            menu: Ext.createWidget('menu', {
+                            menu: Ext.widget('menu', {
                                 items: [
                                     {text: 'Item 1'},
                                     {text: 'Item 2'}
@@ -248,7 +248,7 @@ function getPanelWithToolbars () {
                 {
                     xtype: 'splitbutton',
                     text : 'Split Button',
-                    menu : Ext.createWidget('menu', {
+                    menu : Ext.widget('menu', {
                         items: [
                             {text: 'Item 1'},
                             {text: 'Item 2'}
@@ -543,7 +543,7 @@ function getStore () {
 
 function getGrid () {
     var store = getStore(),
-        pagingBar = Ext.createWidget('pagingtoolbar', {
+        pagingBar = Ext.widget('pagingtoolbar', {
             store      : store,
             displayInfo: true,
             displayMsg : 'Displaying topics {0} - {1} of {2}'
@@ -734,7 +734,7 @@ function getDatePicker () {
 }
 
 function getProgressBar () {
-    var progressbar = Ext.createWidget('progressbar', {
+    var progressbar = Ext.widget('progressbar', {
         value: 0.5
     });
 
@@ -758,10 +758,7 @@ function getProgressBar () {
         rtl: rtl,
 
         bodyPadding: 5,
-        layout: {
-            type : 'vbox',
-            align: 'stretch'
-        },
+        layout: 'anchor',
 
         items: [
             progressbar,
@@ -769,7 +766,8 @@ function getProgressBar () {
                 xtype    : 'slider',
                 hideLabel: true,
                 value    : 50,
-                margin   : '5 0 0 0'
+                margin   : '5 0 0 0',
+                anchor   : '100%'
             },
             {
                 xtype   : 'slider',
@@ -806,7 +804,7 @@ function getFramedGrid () {
 }
 
 function getBasicWindow () {
-    return Ext.createWidget('window', {
+    return Ext.widget('window', {
         id: 'basicWindow',
         x: 500, y: 20,
         hidden: false,
@@ -859,7 +857,7 @@ function addResizer(containerEl) {
 }
 
 function addFormWindow () {
-    Ext.createWidget('window', {
+    Ext.widget('window', {
         x: 660, y: 1230,
 
         width   : 450,

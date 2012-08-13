@@ -147,7 +147,7 @@ Ext.define('Ext.direct.PollingProvider', {
         } else {
             me.fireEvent('data', me, new Ext.direct.ExceptionEvent({
                 data: null,
-                code: Ext.direct.Manager.self.exceptions.TRANSPORT,
+                code: Ext.direct.Manager.exceptions.TRANSPORT,
                 message: 'Unable to connect to the server.',
                 xhr: response
             }));

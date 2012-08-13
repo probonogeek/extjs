@@ -90,6 +90,8 @@ Ext.define('Ext.calendar.form.EventDetails', {
         this.titleField = new Ext.form.Text({
             fieldLabel: 'Title',
             name: Ext.calendar.data.EventMappings.Title.name,
+            emptyText: 'Event Title',
+            allowBlank: false,
             anchor: '90%'
         });
         this.dateRangeField = new Ext.calendar.form.field.DateRange({

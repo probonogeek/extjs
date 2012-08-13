@@ -172,6 +172,12 @@ Ext.define('Ext.util.Observable', {
     isObservable: true,
 
     /**
+     * @private
+     * Initial suspended call count. Incremented when {@link #suspendEvents} is called, decremented when {@link #resumeEvents} is called.
+     */
+    eventsSuspended: 0,
+
+    /**
      * @property {Object} hasListeners
      * @readonly
      * This object holds a key for any event that has a listener. The listener may be set
@@ -467,7 +473,8 @@ Ext.define('Ext.util.Observable', {
      */
     addListener: function(ename, fn, scope, options) {
         var me = this,
-            config, event, hasListeners;
+            config, event, hasListeners,
+            prevListenerCount = 0;
 
         if (typeof ename !== 'string') {
             options = ename;
@@ -481,9 +488,10 @@ Ext.define('Ext.util.Observable', {
             }
         } else {
             ename = ename.toLowerCase();
-            me.events[ename] = me.events[ename] || true;
-            event = me.events[ename] || true;
-            if (Ext.isBoolean(event)) {
+            event = me.events[ename];
+            if (event && event.isEvent) {
+                prevListenerCount = event.listeners.length;
+            } else {
                 me.events[ename] = event = new Ext.util.Event(me, ename);
             }
 
@@ -496,16 +504,20 @@ Ext.define('Ext.util.Observable', {
                 //</debug>
                 fn = scope[fn] || me[fn];
             }
-            event.addListener(fn, scope, Ext.isObject(options) ? options : {});
+            event.addListener(fn, scope, options);
 
-            hasListeners = me.hasListeners;
-            if (hasListeners.hasOwnProperty(ename)) {
-                // if we already have listeners at this level, just increment the count...
-                ++hasListeners[ename];
-            } else {
-                // otherwise, start the count at 1 (which hides whatever is in our prototype
-                // chain)...
-                hasListeners[ename] = 1;
+            // If a new listener has been added (Event.addListener rejects duplicates of the same fn+scope)
+            // then increment the hasListeners counter
+            if (event.listeners.length !== prevListenerCount) {
+                hasListeners = me.hasListeners;
+                if (hasListeners.hasOwnProperty(ename)) {
+                    // if we already have listeners at this level, just increment the count...
+                    ++hasListeners[ename];
+                } else {
+                    // otherwise, start the count at 1 (which hides whatever is in our prototype
+                    // chain)...
+                    hasListeners[ename] = 1;
+                }
             }
         }
     },
@@ -539,9 +551,7 @@ Ext.define('Ext.util.Observable', {
             ename = ename.toLowerCase();
             event = me.events[ename];
             if (event && event.isEvent) {
-                event.removeListener(fn, scope);
-
-                if (! --me.hasListeners[ename]) {
+                if (event.removeListener(fn, scope) && !--me.hasListeners[ename]) {
                     // Delete this entry, since 0 does not mean no one is listening, just
                     // that no one is *directly& listening. This allows the eventBus or
                     // class observers to "poke" through and expose their presence.
@@ -671,7 +681,7 @@ Ext.define('Ext.util.Observable', {
      * after the {@link #resumeEvents} call instead of discarding all suspended events.
      */
     suspendEvents: function(queueSuspended) {
-        this.eventsSuspended = true;
+        this.eventsSuspended += 1;
         if (queueSuspended && !this.eventQueue) {
             this.eventQueue = [];
         }
@@ -688,13 +698,14 @@ Ext.define('Ext.util.Observable', {
             queued = me.eventQueue,
             qLen, q;
 
-        me.eventsSuspended = false;
-        delete me.eventQueue;
+        if (me.eventsSuspended && ! --me.eventsSuspended) {
+            delete me.eventQueue;
 
-        if (queued) {
-            qLen = queued.length;
-            for (q = 0; q < qLen; q++) {
-                me.continueFireEvent.apply(me, queued[q]);
+            if (queued) {
+                qLen = queued.length;
+                for (q = 0; q < qLen; q++) {
+                    me.continueFireEvent.apply(me, queued[q]);
+                }
             }
         }
     },
@@ -713,14 +724,13 @@ Ext.define('Ext.util.Observable', {
      *
      * @param {Object} origin The Observable whose events this object is to relay.
      * @param {String[]} events Array of event names to relay.
-     * @param {String} [prefix] A common prefix to attach to the event names. For example:
+     * @param {String} [prefix] A common prefix to prepend to the event names. For example:
      *
      *     this.relayEvents(this.getStore(), ['load', 'clear'], 'store');
      *
      * Now the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.
      */
     relayEvents : function(origin, events, prefix) {
-        prefix = prefix || '';
         var me = this,
             len = events.length,
             i = 0,
@@ -729,9 +739,10 @@ Ext.define('Ext.util.Observable', {
 
         for (; i < len; i++) {
             oldName = events[i];
-            newName = prefix + oldName;
-            me.events[newName] = me.events[newName] || true;
-            origin.on(oldName, me.createRelayer(newName));
+            newName = prefix ? prefix + oldName : oldName;
+
+            // Add the relaying function as a ManagedListener so that it is removed when this.clearListeners is called (usually when _this_ is destroyed)
+            me.mon(origin, oldName, me.createRelayer(newName));
         }
     },
 
@@ -744,7 +755,7 @@ Ext.define('Ext.util.Observable', {
      */
     createRelayer: function(newName, beginEnd){
         var me = this;
-        return function(){
+        return function() {
             return me.fireEvent.apply(me, [newName].concat(Array.prototype.slice.apply(arguments, beginEnd || [0, -1])));
         };
     },

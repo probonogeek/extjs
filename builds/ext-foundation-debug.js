@@ -16,7 +16,7 @@ requirements will be met: http://www.gnu.org/copyleft/gpl.html.
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2012-04-20 14:10:47 (19f55ab932145a3443b228045fa80950dfeaf9cc)
+Build date: 2012-07-04 21:11:01 (65ff594cd80b9bad45df640c22cc0adb52c95a7b)
 */
 
 
@@ -533,7 +533,7 @@ Ext.globalEval = Ext.global.execScript
 (function() {
 
 
-var version = '4.1.0', Version;
+var version = '4.1.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         
@@ -703,6 +703,7 @@ var version = '4.1.0', Version;
         }
     });
 
+    
     Ext.apply(Ext, {
         
         versions: {},
@@ -3689,16 +3690,22 @@ var noArgs = [],
     });
 
     Base.implement({
+        
         isInstance: true,
 
+        
         $className: 'Ext.Base',
 
+        
         configClass: Ext.emptyFn,
 
+        
         initConfigList: [],
 
+        
         configMap: {},
 
+        
         initConfigMap: {},
 
         
@@ -3857,6 +3864,7 @@ var noArgs = [],
             }
         },
 
+        
         destroy: function() {
             this.destroy = Ext.emptyFn;
         }
@@ -3926,20 +3934,8 @@ var noArgs = [],
             var name, i;
 
             if (!Class) {
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
                 Class = makeCtor(
                 );
-                
             }
 
             for (i = 0; i < baseStaticMemberLength; i++) {
@@ -4308,8 +4304,9 @@ var noArgs = [],
 
         if (Class) {
             cls = new ExtClass(Class, members);
-        }
-        else {
+            
+            cls.prototype.constructor = Class;
+        } else {
             cls = new ExtClass(members);
         }
 
@@ -4328,6 +4325,16 @@ var noArgs = [],
 
 
 (function(Class, alias, arraySlice, arrayFrom, global) {
+
+    
+    function makeCtor () {
+        function constructor () {
+            
+            
+            return this.constructor.apply(this, arguments) || null;
+        }
+        return constructor;
+    }
 
     var Manager = Ext.ClassManager = {
 
@@ -4671,9 +4678,15 @@ var noArgs = [],
         
         create: function(className, data, createdFn) {
 
+            var ctor = makeCtor();
+            if (typeof data == 'function') {
+                data = data(ctor);
+            }
+
+
             data.$className = className;
 
-            return new Class(data, function() {
+            return new Class(ctor, data, function() {
                 var postprocessorStack = data.postprocessors || Manager.defaultPostprocessors,
                     registeredPostprocessors = Manager.postprocessors,
                     postprocessors = [],
@@ -4719,13 +4732,17 @@ var noArgs = [],
                 createdFn = clsData.createdFn;
 
             if (!postprocessor) {
-                me.set(className, cls);
-
-                if (createdFn) {
-                     createdFn.call(cls, cls);
+                if (className) {
+                    me.set(className, cls);
                 }
 
-                me.triggerCreated(className);
+                if (createdFn) {
+                    createdFn.call(cls, cls);
+                }
+
+                if (className) {
+                    me.triggerCreated(className);
+                }
                 return;
             }
 
@@ -5615,7 +5632,8 @@ Ext.Loader = new function() {
             var config = Loader.getConfig(),
                 noCacheUrl = url + (config.disableCaching ? ('?' + config.disableCachingParam + '=' + Ext.Date.now()) : ''),
                 isCrossOriginRestricted = false,
-                xhr, status, onScriptError;
+                xhr, status, onScriptError,
+                debugSourceURL = "";
 
             scope = scope || Loader;
 
@@ -5652,7 +5670,11 @@ Ext.Loader = new function() {
                 ) {
                     
                     
-                    Ext.globalEval(xhr.responseText + "\n//@ sourceURL=" + url);
+                    if (!Ext.isIE) {
+                        debugSourceURL = "\n//@ sourceURL=" + url;
+                    }
+
+                    Ext.globalEval(xhr.responseText + debugSourceURL);
 
                     onLoad.call(scope);
                 }

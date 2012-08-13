@@ -119,7 +119,7 @@ Ext.onReady(function() {
     Ext.each(configs, function(config) {
         var element = Ext.getBody().createChild({cls: 'panel-container'});
         
-        Ext.createWidget('panel', Ext.applyIf(config, {
+        Ext.widget('panel', Ext.applyIf(config, {
             renderTo: element,
             bodyPadding: 7
         }));

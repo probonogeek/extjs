@@ -461,7 +461,7 @@
          *
          *     // change the height to 150px and animate with a custom configuration
          *     Ext.fly('elId').setHeight(150, {
-         *         duration : .5, // animation will have a duration of .5 seconds
+         *         duration : 500, // animation will have a duration of .5 seconds
          *         // will change the content to "finished"
          *         callback: function(){ this.{@link #update}("finished"); }
          *     });

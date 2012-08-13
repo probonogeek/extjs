@@ -112,22 +112,74 @@ Element.override({
         return me;
     },
 
+    pxRe: /^\d+(?:\.\d*)?px$/i,
+
+    /**
+     * Returns the x-coordinate of this element reletive to its `offsetParent`.
+     * @return {Number} The local x-coordinate (relative to the `offsetParent`).
+     */
+    getLocalX: function() {
+        var me = this,
+            offsetParent,
+            x = me.getStyle(LEFT);
+
+        if (!x || x === AUTO) {
+            return 0;
+        }
+        if (x && me.pxRe.test(x)) {
+            return parseFloat(x);
+        }
+
+        x = me.getX();
+
+        offsetParent = me.dom.offsetParent;
+        if (offsetParent) {
+            x -= Ext.fly(offsetParent).getX();
+        }
+
+        return x;
+    },
+
+    /**
+     * Returns the y-coordinate of this element reletive to its `offsetParent`.
+     * @return {Number} The local y-coordinate (relative to the `offsetParent`).
+     */
+    getLocalY: function() {
+        var me = this,
+            offsetParent,
+            y = me.getStyle(TOP);
+
+        if (!y || y === AUTO) {
+            return 0;
+        }
+        if (y && me.pxRe.test(y)) {
+            return parseFloat(y);
+        }
+
+        y = me.getY();
+
+        offsetParent = me.dom.offsetParent;
+        if (offsetParent) {
+            y -= Ext.fly(offsetParent).getY();
+        }
+
+        return y;
+    },
+
     getLeft: function(local) {
-        return !local ? this.getX() : parseFloat(this.getStyle(LEFT)) || 0;
+        return local ? this.getLocalX() : this.getX();
     },
 
     getRight: function(local) {
-        var me = this;
-        return !local ? me.getX() + me.getWidth() : (me.getLeft(true) + me.getWidth()) || 0;
+        return (local ? this.getLocalX() : this.getX()) + this.getWidth();
     },
 
     getTop: function(local) {
-        return !local ? this.getY() : parseFloat(this.getStyle(TOP)) || 0;
+        return local ? this.getLocalY() : this.getY();
     },
 
     getBottom: function(local) {
-        var me = this;
-        return !local ? me.getY() + me.getHeight() : (me.getTop(true) + me.getHeight()) || 0;
+        return (local ? this.getLocalY() : this.getY()) + this.getHeight();
     },
 
     translatePoints: function(x, y) {
@@ -438,7 +490,7 @@ Element.override({
             height = me.getHeight(true);
         }
 
-        return new Ext.util.Region(top, left + width, top + height, left);
+        return new Ext.util.Region(top, left + width - 1, top + height - 1, left);
     },
 
     /**

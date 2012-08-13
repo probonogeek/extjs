@@ -169,7 +169,7 @@ Ext.define('Ext.data.proxy.JsonP', {
     /**
      * @private
      * Performs the read request to the remote domain. JsonP proxy does not actually create an Ajax request,
-     * instead we write out a <script> tag based on the configuration of the internal Ext.data.Request object
+     * instead we write out a `<script>` tag based on the configuration of the internal Ext.data.Request object
      * @param {Ext.data.Operation} operation The {@link Ext.data.Operation Operation} object to execute
      * @param {Function} callback A callback function to execute when the Operation has been completed
      * @param {Object} scope The scope to execute the callback in

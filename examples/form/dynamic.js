@@ -36,11 +36,12 @@ Ext.onReady(function() {
             fieldLabel: 'First Name',
             afterLabelTextTpl: required,
             name: 'first',
-            allowBlank:false
+            allowBlank: false
         },{
             fieldLabel: 'Last Name',
             afterLabelTextTpl: required,
-            name: 'last'
+            name: 'last',
+            allowBlank: false
         },{
             fieldLabel: 'Company',
             name: 'company'
@@ -48,6 +49,7 @@ Ext.onReady(function() {
             fieldLabel: 'Email',
             afterLabelTextTpl: required,
             name: 'email',
+            allowBlank: false,
             vtype:'email'
         }, {
             fieldLabel: 'DOB',
@@ -68,9 +70,15 @@ Ext.onReady(function() {
         }],
 
         buttons: [{
-            text: 'Save'
+            text: 'Save',
+            handler: function() {
+                this.up('form').getForm().isValid();
+            }
         },{
-            text: 'Cancel'
+            text: 'Cancel',
+            handler: function() {
+                this.up('form').getForm().reset();
+            }
         }]
     });
 
@@ -192,6 +200,7 @@ Ext.onReady(function() {
                     xtype:'textfield',
                     fieldLabel: 'First Name',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'first',
                     anchor:'95%',
                     value: 'Don'
@@ -209,6 +218,7 @@ Ext.onReady(function() {
                     xtype:'textfield',
                     fieldLabel: 'Last Name',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'last',
                     anchor:'100%',
                     value: 'Griffin'
@@ -216,6 +226,7 @@ Ext.onReady(function() {
                     xtype:'textfield',
                     fieldLabel: 'Email',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'email',
                     vtype:'email',
                     anchor:'100%'
@@ -230,9 +241,15 @@ Ext.onReady(function() {
         }],
 
         buttons: [{
-            text: 'Save'
+            text: 'Save',
+            handler: function() {
+                this.up('form').getForm().isValid();
+            }
         },{
-            text: 'Cancel'
+            text: 'Cancel',
+            handler: function() {
+                this.up('form').getForm().reset();
+            }
         }]
     });
 
@@ -272,11 +289,12 @@ Ext.onReady(function() {
                     fieldLabel: 'First Name',
                     name: 'first',
                     afterLabelTextTpl: required,
-                    allowBlank:false,
+                    allowBlank: false,
                     value: 'Ed'
                 },{
                     fieldLabel: 'Last Name',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'last',
                     value: 'Spencer'
                 },{
@@ -286,11 +304,12 @@ Ext.onReady(function() {
                 }, {
                     fieldLabel: 'Email',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'email',
                     vtype:'email'
                 }]
             },{
-                title:'Phone Numbers',
+                title: 'Phone Numbers',
                 defaultType: 'textfield',
                 defaults: {
                     anchor: '100%'
@@ -313,9 +332,15 @@ Ext.onReady(function() {
         },
 
         buttons: [{
-            text: 'Save'
+            text: 'Save',
+            handler: function() {
+                this.up('form').getForm().isValid();
+            }
         },{
-            text: 'Cancel'
+            text: 'Cancel',
+            handler: function() {
+                this.up('form').getForm().reset();
+            }
         }]
     });
 
@@ -355,6 +380,7 @@ Ext.onReady(function() {
                 items: [{
                     fieldLabel: 'First Name',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'first',
                     anchor:'95%'
                 }, {
@@ -370,11 +396,13 @@ Ext.onReady(function() {
                 items: [{
                     fieldLabel: 'Last Name',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'last',
                     anchor:'95%'
                 },{
                     fieldLabel: 'Email',
                     afterLabelTextTpl: required,
+                    allowBlank: false,
                     name: 'email',
                     vtype:'email',
                     anchor:'95%'
@@ -398,7 +426,6 @@ Ext.onReady(function() {
                 items: [{
                     fieldLabel: 'First Name',
                     name: 'first',
-                    allowBlank:false,
                     value: 'Jamie'
                 },{
                     fieldLabel: 'Last Name',
@@ -447,9 +474,15 @@ Ext.onReady(function() {
         }],
 
         buttons: [{
-            text: 'Save'
+            text: 'Save',
+            handler: function() {
+                this.up('form').getForm().isValid();
+            }
         },{
-            text: 'Cancel'
+            text: 'Cancel',
+            handler: function() {
+                this.up('form').getForm().reset();
+            }
         }]
     });
 
