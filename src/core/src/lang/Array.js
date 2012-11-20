@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require Number.js
+
 /**
  * @class Ext.Array
  * @singleton

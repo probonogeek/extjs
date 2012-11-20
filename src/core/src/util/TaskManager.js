@@ -1,3 +1,8 @@
+//@tag extras,core
+//@require Format.js
+//@define Ext.util.TaskManager
+//@define Ext.TaskManager
+
 /**
  * Provides the ability to execute one or more arbitrary tasks in a asynchronous manner.
  * Generally, you can use the singleton {@link Ext.TaskManager} instead, but if needed,

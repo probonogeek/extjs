@@ -1,3 +1,6 @@
+//@tag extras,core
+//@require ../util/TaskManager.js
+
 /**
  * @class Ext.perf.Accumulator
  * @private

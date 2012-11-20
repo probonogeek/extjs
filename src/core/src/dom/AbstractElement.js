@@ -1,3 +1,9 @@
+//@tag dom,core
+//@require AbstractHelper.js
+//@require Ext.Supports
+//@require Ext.EventManager
+//@define Ext.dom.AbstractElement
+
 /**
  * @class Ext.dom.AbstractElement
  * @extend Ext.Base

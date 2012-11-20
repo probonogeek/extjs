@@ -1,23 +1,41 @@
 /*
-This file is part of Ext JS 4.1
+Ext JS 4.1 - JavaScript Library
+Copyright (c) 2006-2012, Sencha Inc.
+All rights reserved.
+licensing@sencha.com
 
-Copyright (c) 2011-2012 Sencha Inc
+http://www.sencha.com/license
 
-Contact:  http://www.sencha.com/contact
+Open Source License
+------------------------------------------------------------------------------------------
+This version of Ext JS is licensed under the terms of the Open Source GPL 3.0 license. 
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
+http://www.gnu.org/licenses/gpl.html
 
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+There are several FLOSS exceptions available for use with this release for
+open source applications that are distributed under a license other than GPL.
 
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
+* Open Source License Exception for Applications
 
-Build date: 2012-07-04 21:11:01 (65ff594cd80b9bad45df640c22cc0adb52c95a7b)
+  http://www.sencha.com/products/floss-exception.php
+
+* Open Source License Exception for Development
+
+  http://www.sencha.com/products/ux-exception.php
+
+
+Alternate Licensing
+------------------------------------------------------------------------------------------
+Commercial and OEM Licenses are available for an alternate download of Ext JS.
+This is the appropriate option if you are creating proprietary applications and you are 
+not prepared to distribute and share the source code of your application under the 
+GPL v3 license. Please visit http://www.sencha.com/license for more details.
+
+--
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT OF THIRD-PARTY INTELLECTUAL PROPERTY RIGHTS.  See the GNU General Public License for more details.
 */
+//@tag foundation,core
 
 
 var Ext = Ext || {};
@@ -529,11 +547,16 @@ Ext.globalEval = Ext.global.execScript
         }());
     };
 
+//@tag foundation,core
+
+//@require ../Ext.js
+
+
 
 (function() {
 
 
-var version = '4.1.1', Version;
+var version = '4.1.1.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         
@@ -740,6 +763,11 @@ var version = '4.1.1', Version;
 
 }());
 
+//@tag foundation,core
+
+//@require ../version/Version.js
+
+
 
 
 Ext.String = (function() {
@@ -911,6 +939,14 @@ Ext.htmlDecode = Ext.String.htmlDecode;
 
 Ext.urlAppend = Ext.String.urlAppend;
 
+//@tag foundation,core
+
+//@require String.js
+
+//@define Ext.Number
+
+
+
 
 Ext.Number = new function() {
 
@@ -1018,6 +1054,12 @@ Ext.Number = new function() {
         return me.from.apply(this, arguments);
     };
 };
+
+//@tag foundation,core
+
+//@require Number.js
+
+
 
 (function() {
 
@@ -1755,6 +1797,11 @@ Ext.Number = new function() {
     };
 }());
 
+//@tag foundation,core
+
+//@require Array.js
+
+
 
 Ext.Function = {
 
@@ -1977,6 +2024,11 @@ Ext.pass = Ext.Function.alias(Ext.Function, 'pass');
 
 
 Ext.bind = Ext.Function.alias(Ext.Function, 'bind');
+
+//@tag foundation,core
+
+//@require Function.js
+
 
 
 
@@ -2335,6 +2387,13 @@ Ext.urlDecode = function() {
 };
 
 }());
+
+//@tag foundation,core
+
+//@require Object.js
+
+//@define Ext.Date
+
 
 
 
@@ -3294,6 +3353,11 @@ var utilDate = Ext.Date;
 
 }());
 
+//@tag foundation,core
+
+//@require ../lang/Date.js
+
+
 
 (function(flexSetter) {
 
@@ -3425,6 +3489,10 @@ var noArgs = [],
             for (name in members) {
                 if (members.hasOwnProperty(name)) {
                     member = members[name];
+                    if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn && member !== Ext.identityFn) {
+                        member.$owner = this;
+                        member.$name = name;
+                    }
                     this[name] = member;
                 }
             }
@@ -3613,8 +3681,18 @@ var noArgs = [],
 
             
             return (method = this.callParent.caller) && (method.$previous ||
-                  ((method = method.$owner ? method : method.caller) &&
-                        method.$owner.superclass.$class[method.$name])).apply(this, args || noArgs);
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name])).apply(this, args || noArgs);
+        },
+
+        
+        callSuper: function(args) {
+            var method;
+
+            
+            return (method = this.callSuper.caller) &&
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name]).apply(this, args || noArgs);
         },
 
         
@@ -3730,6 +3808,21 @@ var noArgs = [],
                 superMethod = (method = this.callParent.caller) && (method.$previous ||
                         ((method = method.$owner ? method : method.caller) &&
                                 method.$owner.superclass[method.$name]));
+
+
+            return superMethod.apply(this, args || noArgs);
+        },
+
+        
+        callSuper: function(args) {
+            
+            
+            
+            
+            var method,
+                superMethod = (method = this.callSuper.caller) &&
+                    ((method = method.$owner ? method : method.caller) &&
+                        method.$owner.superclass[method.$name]);
 
 
             return superMethod.apply(this, args || noArgs);
@@ -3876,6 +3969,11 @@ var noArgs = [],
     Ext.Base = Base;
 
 }(Ext.Function.flexSetter));
+
+//@tag foundation,core
+
+//@require Base.js
+
 
 
 (function() {
@@ -4323,6 +4421,11 @@ var noArgs = [],
 
 }());
 
+//@tag foundation,core
+
+//@require Class.js
+
+
 
 (function(Class, alias, arraySlice, arrayFrom, global) {
 
@@ -4642,6 +4745,50 @@ var noArgs = [],
                 Ext.Array.include(nameToAliasesMap[className], alias);
             }
 
+            return this;
+        },
+
+        
+        addNameAliasMappings: function(aliases){
+            var aliasToNameMap = this.maps.aliasToName,
+                nameToAliasesMap = this.maps.nameToAliases,
+                className, aliasList, alias, i;
+
+            for (className in aliases) {
+                aliasList = nameToAliasesMap[className] ||
+                    (nameToAliasesMap[className] = []);
+
+                for (i = 0; i < aliases[className].length; i++) {
+                    alias = aliases[className][i];
+                    if (!aliasToNameMap[alias]) {
+                        aliasToNameMap[alias] = className;
+                        aliasList.push(alias);
+                    }
+                }
+
+            }
+            return this;
+        },
+
+        
+        addNameAlternateMappings: function(alternates) {
+            var alternateToName = this.maps.alternateToName,
+                nameToAlternates = this.maps.nameToAlternates,
+                className, aliasList, alternate, i;
+
+            for (className in alternates) {
+                aliasList = nameToAlternates[className] ||
+                    (nameToAlternates[className] = []);
+
+                for (i  = 0; i < alternates[className].length; i++) {
+                    alternate = alternates[className];
+                    if (!alternateToName[alternate]) {
+                        alternateToName[alternate] = className;
+                        aliasList.push(alternate);
+                    }
+                }
+
+            }
             return this;
         },
 
@@ -5225,6 +5372,13 @@ var noArgs = [],
 
 }(Ext.Class, Ext.Function.alias, Array.prototype.slice, Ext.Array.from, Ext.global));
 
+//@tag foundation,core
+
+//@require ClassManager.js
+
+//@define Ext.Loader
+
+
 
 
 Ext.Loader = new function() {
@@ -5306,6 +5460,16 @@ Ext.Loader = new function() {
 
             return Loader;
         }),
+
+        
+        addClassPathMappings: function(paths) {
+            var name;
+
+            for(name in paths){
+                Loader.config.paths[name] = paths[name];
+            }
+            return Loader;
+        },
 
         
         getPath: function(className) {
@@ -6074,6 +6238,43 @@ Ext.Loader = new function() {
 };
 
 
+
+if (Ext._classPathMetadata) {
+    Ext.Loader.addClassPathMappings(Ext._classPathMetadata);
+    Ext._classPathMetadata = null;
+}
+
+
+(function() {
+    var scripts = document.getElementsByTagName('script'),
+        currentScript = scripts[scripts.length - 1],
+        src = currentScript.src,
+        path = src.substring(0, src.lastIndexOf('/') + 1),
+        Loader = Ext.Loader;
+
+
+    Loader.setConfig({
+        enabled: true,
+        disableCaching: true,
+        paths: {
+            'Ext': path + 'src'
+        }
+    });
+})();
+
+
+
+Ext._endTime = new Date().getTime();
+if (Ext._beforereadyhandler){
+    Ext._beforereadyhandler();
+}
+
+//@tag foundation,core
+
+//@require ../class/Loader.js
+
+
+
 Ext.Error = Ext.extend(Error, {
     statics: {
         
@@ -6155,6 +6356,10 @@ Ext.deprecated = function (suggestion) {
 };
 
 
+
+//@tag extras,core
+
+//@require ../lang/Error.js
 
 
 
@@ -6298,6 +6503,12 @@ Ext.JSON = (new(function() {
 Ext.encode = Ext.JSON.encode;
 
 Ext.decode = Ext.JSON.decode;
+
+//@tag extras,core
+
+//@require misc/JSON.js
+
+
 
 Ext.apply(Ext, {
     userAgent: navigator.userAgent.toLowerCase(),
@@ -6537,7 +6748,7 @@ window.undefined = window.undefined;
     nullLog = function () {};
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
-    Ext.setVersion('extjs', '4.1.1');
+    Ext.setVersion('extjs', '4.1.1.1');
     Ext.apply(Ext, {
         
         SSL_SECURE_URL : isSecure && isIE ? 'javascript:\'\'' : 'about:blank',
@@ -6928,6 +7139,13 @@ Ext.application = function(config) {
     });
 };
 
+//@tag extras,core
+
+//@require ../Ext-more.js
+
+//@define Ext.util.Format
+
+
 
 (function() {
     Ext.ns('Ext.util');
@@ -7251,6 +7469,15 @@ Ext.application = function(config) {
     });
 }());
 
+//@tag extras,core
+
+//@require Format.js
+
+//@define Ext.util.TaskManager
+
+//@define Ext.TaskManager
+
+
 
 Ext.define('Ext.util.TaskRunner', {
     
@@ -7498,6 +7725,11 @@ function () {
     proto.destroy = proto.stop;
 });
 
+//@tag extras,core
+
+//@require ../util/TaskManager.js
+
+
 
 Ext.define('Ext.perf.Accumulator', (function () {
     var currentFrame = null,
@@ -7740,6 +7972,11 @@ function () {
     Ext.perf.getTimestamp = this.getTimestamp;
 });
 
+//@tag extras,core
+
+//@require Accumulator.js
+
+
 
 Ext.define('Ext.perf.Monitor', {
     singleton: true,
@@ -7946,6 +8183,13 @@ Ext.define('Ext.perf.Monitor', {
         this.watchGC();
     }
 });
+
+//@tag extras,core
+
+//@require perf/Monitor.js
+
+//@define Ext.Supports
+
 
 
 Ext.is = {
@@ -8415,6 +8659,12 @@ Ext.supports = {
 
 Ext.supports.init(); 
 
+//@tag dom,core
+
+//@require ../Support.js
+
+//@define Ext.util.DelayedTask
+
 
 
 Ext.util.DelayedTask = function(fn, scope, args) {
@@ -8443,6 +8693,14 @@ Ext.util.DelayedTask = function(fn, scope, args) {
         }
     };
 };
+
+//@tag dom,core
+
+//@define Ext.util.Event
+
+//@require Ext.util.DelayedTask
+
+
 Ext.require('Ext.util.DelayedTask', function() {
 
     
@@ -8646,6 +8904,13 @@ Ext.require('Ext.util.DelayedTask', function() {
         };
     }()));
 });
+
+//@tag dom,core
+
+//@require util/Event.js
+
+//@define Ext.EventManager
+
 
 
 Ext.EventManager = new function() {
@@ -9609,6 +9874,13 @@ Ext.EventManager = new function() {
     Ext.onReady(initExtCss);
 };
 
+//@tag dom,core
+
+//@require EventManager.js
+
+//@define Ext.EventObject
+
+
 
 Ext.define('Ext.EventObjectImpl', {
     uses: ['Ext.util.Point'],
@@ -10314,6 +10586,11 @@ Ext.EventObject = new Ext.EventObjectImpl();
 });
 
 
+//@tag dom,core
+
+//@require ../EventObject.js
+
+
 
 Ext.define('Ext.dom.AbstractQuery', {
     
@@ -10367,6 +10644,11 @@ Ext.define('Ext.dom.AbstractQuery', {
     }
 
 });
+
+//@tag dom,core
+
+//@require AbstractQuery.js
+
 
 
 Ext.define('Ext.dom.AbstractHelper', {
@@ -10572,6 +10854,17 @@ Ext.define('Ext.dom.AbstractHelper', {
     }
 
 });
+
+//@tag dom,core
+
+//@require AbstractHelper.js
+
+//@require Ext.Supports
+
+//@require Ext.EventManager
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function() {
@@ -11069,6 +11362,15 @@ Ext.define('Ext.dom.AbstractElement', {
 
 }());
 
+//@tag dom,core
+
+//@require AbstractElement.js
+
+//@define Ext.dom.AbstractElement-static
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.addInheritableStatics({
     unitRe: /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
@@ -11440,6 +11742,13 @@ Ext.dom.AbstractElement.addInheritableStatics({
     });
 }());
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-static
+
+//@define Ext.dom.AbstractElement-alignment
+
+
 
 Ext.dom.AbstractElement.override({
 
@@ -11591,6 +11900,15 @@ Ext.dom.AbstractElement.override({
 
 });
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-alignment
+
+//@define Ext.dom.AbstractElement-insertion
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.addMethods({
     
@@ -11725,6 +12043,15 @@ Ext.dom.AbstractElement.addMethods({
         return returnEl ? Ext.get(el) : el;
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-insertion
+
+//@define Ext.dom.AbstractElement-position
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function(){
@@ -11961,6 +12288,15 @@ Element.override({
 });
 
 }());
+
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-position
+
+//@define Ext.dom.AbstractElement-style
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function(){
@@ -12615,6 +12951,15 @@ Element.override({
     });
 }());
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-style
+
+//@define Ext.dom.AbstractElement-traversal
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.override({
     
@@ -12727,6 +13072,15 @@ Ext.dom.AbstractElement.override({
     }
 });
 
+//@tag dom,core
+
+//@define Ext.DomHelper
+
+//@define Ext.core.DomHelper
+
+//@require Ext.dom.AbstractElement-traversal
+
+
 
 (function() {
 
@@ -12758,6 +13112,7 @@ var afterbegin = 'afterbegin',
 
 Ext.define('Ext.dom.Helper', {
     extend: 'Ext.dom.AbstractHelper',
+    requires:['Ext.dom.AbstractElement'],
 
     tableRe: /^table|tbody|tr|td$/i,
 
@@ -13025,6 +13380,17 @@ Ext.define('Ext.dom.Helper', {
 
 
 }());
+
+//@tag dom,core
+
+//@require Helper.js
+
+//@define Ext.dom.Query
+
+//@define Ext.core.Query
+
+//@define Ext.DomQuery
+
 
 
 
@@ -13924,6 +14290,15 @@ Ext.dom.Query = Ext.core.DomQuery = Ext.DomQuery = (function(){
 Ext.query = Ext.DomQuery.select;
 
 
+//@tag dom,core
+
+//@require Query.js
+
+//@define Ext.dom.Element
+
+//@require Ext.dom.AbstractElement
+
+
 
 (function() {
 
@@ -14799,6 +15174,15 @@ var HIDDEN = 'hidden',
 
 }());
 
+//@tag dom,core
+
+//@require Element.js
+
+//@define Ext.dom.Element-alignment
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override((function() {
 
@@ -15045,6 +15429,16 @@ Ext.dom.Element.override((function() {
         }
     };
 }()));
+
+//@tag dom,core
+
+//@require Ext.dom.Element-alignment
+
+//@define Ext.dom.Element-anim
+
+//@define Ext.dom.Element
+
+
 
 
 
@@ -15748,6 +16142,15 @@ Ext.dom.Element.override({
     }
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-anim
+
+//@define Ext.dom.Element-dd
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     
@@ -15768,6 +16171,15 @@ Ext.dom.Element.override({
         return Ext.apply(dd, overrides);
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.Element-dd
+
+//@define Ext.dom.Element-fx
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -15933,6 +16345,15 @@ Element.override({
 });
 
 }());
+
+//@tag dom,core
+
+//@require Ext.dom.Element-fx
+
+//@define Ext.dom.Element-position
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -16372,6 +16793,15 @@ Element.override({
 }());
 
 
+//@tag dom,core
+
+//@require Ext.dom.Element-position
+
+//@define Ext.dom.Element-scroll
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     
@@ -16541,6 +16971,15 @@ Ext.dom.Element.override({
         return scrolled;
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.Element-scroll
+
+//@define Ext.dom.Element-style
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -17237,6 +17676,15 @@ Ext.onReady(function () {
     
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-style
+
+//@define Ext.dom.Element-traversal
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     select: function(selector) {
@@ -17244,11 +17692,16 @@ Ext.dom.Element.override({
     }
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-traversal
+
+
 
 Ext.define('Ext.dom.CompositeElementLite', {
     alternateClassName: 'Ext.CompositeElementLite',
 
-    requires: ['Ext.dom.Element'],
+    requires: ['Ext.dom.Element', 'Ext.dom.Query'],
 
     statics: {
         
@@ -17543,6 +17996,8 @@ Ext.define('Ext.dom.CompositeElementLite', {
         return Ext.dom.Element.select.apply(Ext.dom.Element, arguments);
     };
 });
+
+//@tag dom,core
 
 
 Ext.define('Ext.dom.CompositeElement', {

@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require Array.js
+
 /**
  * @class Ext.Function
  *

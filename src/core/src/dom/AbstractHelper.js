@@ -1,3 +1,6 @@
+//@tag dom,core
+//@require AbstractQuery.js
+
 /**
  * Abstract base class for {@link Ext.dom.Helper}.
  * @private

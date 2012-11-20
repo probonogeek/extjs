@@ -1,3 +1,7 @@
+//@tag extras,core
+//@require perf/Monitor.js
+//@define Ext.Supports
+
 /**
  * @class Ext.is
  * 

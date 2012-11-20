@@ -1,3 +1,6 @@
+//@tag dom,core
+//@require ../EventObject.js
+
 /**
  * @class Ext.dom.AbstractQuery
  * @private

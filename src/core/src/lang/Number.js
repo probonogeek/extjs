@@ -1,3 +1,7 @@
+//@tag foundation,core
+//@require String.js
+//@define Ext.Number
+
 /**
  * @class Ext.Number
  *

@@ -1,23 +1,41 @@
 /*
-This file is part of Ext JS 4.1
+Ext JS 4.1 - JavaScript Library
+Copyright (c) 2006-2012, Sencha Inc.
+All rights reserved.
+licensing@sencha.com
 
-Copyright (c) 2011-2012 Sencha Inc
+http://www.sencha.com/license
 
-Contact:  http://www.sencha.com/contact
+Open Source License
+------------------------------------------------------------------------------------------
+This version of Ext JS is licensed under the terms of the Open Source GPL 3.0 license. 
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
+http://www.gnu.org/licenses/gpl.html
 
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+There are several FLOSS exceptions available for use with this release for
+open source applications that are distributed under a license other than GPL.
 
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
+* Open Source License Exception for Applications
 
-Build date: 2012-07-04 21:11:01 (65ff594cd80b9bad45df640c22cc0adb52c95a7b)
+  http://www.sencha.com/products/floss-exception.php
+
+* Open Source License Exception for Development
+
+  http://www.sencha.com/products/ux-exception.php
+
+
+Alternate Licensing
+------------------------------------------------------------------------------------------
+Commercial and OEM Licenses are available for an alternate download of Ext JS.
+This is the appropriate option if you are creating proprietary applications and you are 
+not prepared to distribute and share the source code of your application under the 
+GPL v3 license. Please visit http://www.sencha.com/license for more details.
+
+--
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT OF THIRD-PARTY INTELLECTUAL PROPERTY RIGHTS.  See the GNU General Public License for more details.
 */
+//@tag foundation,core
 /**
  * @class Ext
  * @singleton
@@ -749,6 +767,9 @@ Ext.globalEval = Ext.global.execScript
         }());
     };
 
+//@tag foundation,core
+//@require ../Ext.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -779,7 +800,7 @@ Ext.globalEval = Ext.global.execScript
 (function() {
 
 // Current core version
-var version = '4.1.1', Version;
+var version = '4.1.1.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**
@@ -1123,6 +1144,9 @@ var version = '4.1.1', Version;
 
 }());
 
+//@tag foundation,core
+//@require ../version/Version.js
+
 /**
  * @class Ext.String
  *
@@ -1456,6 +1480,11 @@ Ext.htmlDecode = Ext.String.htmlDecode;
  * @inheritdoc Ext.String#urlAppend
  */
 Ext.urlAppend = Ext.String.urlAppend;
+
+//@tag foundation,core
+//@require String.js
+//@define Ext.Number
+
 /**
  * @class Ext.Number
  *
@@ -1631,6 +1660,10 @@ Ext.Number = new function() {
         return me.from.apply(this, arguments);
     };
 };
+
+//@tag foundation,core
+//@require Number.js
+
 /**
  * @class Ext.Array
  * @singleton
@@ -2819,6 +2852,9 @@ Ext.Number = new function() {
     };
 }());
 
+//@tag foundation,core
+//@require Array.js
+
 /**
  * @class Ext.Function
  *
@@ -3304,6 +3340,9 @@ Ext.pass = Ext.Function.alias(Ext.Function, 'pass');
  * @inheritdoc Ext.Function#bind
  */
 Ext.bind = Ext.Function.alias(Ext.Function, 'bind');
+
+//@tag foundation,core
+//@require Function.js
 
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
@@ -3910,6 +3949,10 @@ Ext.urlDecode = function() {
 };
 
 }());
+
+//@tag foundation,core
+//@require Object.js
+//@define Ext.Date
 
 /**
  * @class Ext.Date
@@ -5375,6 +5418,9 @@ var utilDate = Ext.Date;
 
 }());
 
+//@tag foundation,core
+//@require ../lang/Date.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -5570,7 +5616,9 @@ var noArgs = [],
             for (name in members) {
                 if (members.hasOwnProperty(name)) {
                     member = members[name];
-                    if (typeof member == 'function') {
+                    if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn && member !== Ext.identityFn) {
+                        member.$owner = this;
+                        member.$name = name;
                         member.displayName = Ext.getClassName(this) + '.' + name;
                     }
                     this[name] = member;
@@ -5887,8 +5935,18 @@ var noArgs = [],
 
             // This code is intentionally inlined for the least number of debugger stepping
             return (method = this.callParent.caller) && (method.$previous ||
-                  ((method = method.$owner ? method : method.caller) &&
-                        method.$owner.superclass.$class[method.$name])).apply(this, args || noArgs);
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name])).apply(this, args || noArgs);
+        },
+
+        // Documented downwards
+        callSuper: function(args) {
+            var method;
+
+            // This code is intentionally inlined for the least number of debugger stepping
+            return (method = this.callSuper.caller) &&
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name]).apply(this, args || noArgs);
         },
 
         /**
@@ -6171,6 +6229,9 @@ var noArgs = [],
          *
          *      alert(My.Derived2.method(10); // now alerts 40
          *
+         * To override a method and replace it and also call the superclass method, use
+         * {@link #callSuper}. This is often done to patch a method to fix a bug.
+         *
          * @protected
          * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
          * from the current method, for example: `this.callParent(arguments)`
@@ -6204,6 +6265,88 @@ var noArgs = [],
                 if (!(methodName in parentClass)) {
                     throw new Error("this.callParent() was called but there's no such method (" + methodName +
                                 ") found in the parent class (" + (Ext.getClassName(parentClass) || 'Object') + ")");
+                }
+            }
+
+            return superMethod.apply(this, args || noArgs);
+        },
+
+        /**
+         * This method is used by an override to call the superclass method but bypass any
+         * overridden method. This is often done to "patch" a method that contains a bug
+         * but for whatever reason cannot be fixed directly.
+         *
+         * Consider:
+         *
+         *      Ext.define('Ext.some.Class', {
+         *          method: function () {
+         *              console.log('Good');
+         *          }
+         *      });
+         *
+         *      Ext.define('Ext.some.DerivedClass', {
+         *          method: function () {
+         *              console.log('Bad');
+         *
+         *              // ... logic but with a bug ...
+         *
+         *              this.callParent();
+         *          }
+         *      });
+         *
+         * To patch the bug in `DerivedClass.method`, the typical solution is to create an
+         * override:
+         *
+         *      Ext.define('App.paches.DerivedClass', {
+         *          override: 'Ext.some.DerivedClass',
+         *
+         *          method: function () {
+         *              console.log('Fixed');
+         *
+         *              // ... logic but with bug fixed ...
+         *
+         *              this.callSuper();
+         *          }
+         *      });
+         *
+         * The patch method cannot use `callParent` to call the superclass `method` since
+         * that would call the overridden method containing the bug. In other words, the
+         * above patch would only produce "Fixed" then "Good" in the console log, whereas,
+         * using `callParent` would produce "Fixed" then "Bad" then "Good".
+         *
+         * @protected
+         * @param {Array/Arguments} args The arguments, either an array or the `arguments` object
+         * from the current method, for example: `this.callSuper(arguments)`
+         * @return {Object} Returns the result of calling the superclass method
+         */
+        callSuper: function(args) {
+            // NOTE: this code is deliberately as few expressions (and no function calls)
+            // as possible so that a debugger can skip over this noise with the minimum number
+            // of steps. Basically, just hit Step Into until you are where you really wanted
+            // to be.
+            var method,
+                superMethod = (method = this.callSuper.caller) &&
+                    ((method = method.$owner ? method : method.caller) &&
+                        method.$owner.superclass[method.$name]);
+
+            if (!superMethod) {
+                method = this.callSuper.caller;
+                var parentClass, methodName;
+
+                if (!method.$owner) {
+                    if (!method.caller) {
+                        throw new Error("Attempting to call a protected method from the public scope, which is not allowed");
+                    }
+
+                    method = method.caller;
+                }
+
+                parentClass = method.$owner.superclass;
+                methodName = method.$name;
+
+                if (!(methodName in parentClass)) {
+                    throw new Error("this.callSuper() was called but there's no such method (" + methodName +
+                        ") found in the parent class (" + (Ext.getClassName(parentClass) || 'Object') + ")");
                 }
             }
 
@@ -6462,6 +6605,9 @@ var noArgs = [],
     Ext.Base = Base;
 
 }(Ext.Function.flexSetter));
+
+//@tag foundation,core
+//@require Base.js
 
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
@@ -7107,6 +7253,9 @@ var noArgs = [],
 
 }());
 
+//@tag foundation,core
+//@require Class.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -7683,6 +7832,58 @@ var noArgs = [],
                 Ext.Array.include(nameToAliasesMap[className], alias);
             }
 
+            return this;
+        },
+
+        /**
+         * Adds a batch of class name to alias mappings
+         * @param {Object} aliases The set of mappings of the form
+         * className : [values...]
+         */
+        addNameAliasMappings: function(aliases){
+            var aliasToNameMap = this.maps.aliasToName,
+                nameToAliasesMap = this.maps.nameToAliases,
+                className, aliasList, alias, i;
+
+            for (className in aliases) {
+                aliasList = nameToAliasesMap[className] ||
+                    (nameToAliasesMap[className] = []);
+
+                for (i = 0; i < aliases[className].length; i++) {
+                    alias = aliases[className][i];
+                    if (!aliasToNameMap[alias]) {
+                        aliasToNameMap[alias] = className;
+                        aliasList.push(alias);
+                    }
+                }
+
+            }
+            return this;
+        },
+
+        /**
+         *
+         * @param {Object} alternates The set of mappings of the form
+         * className : [values...]
+         */
+        addNameAlternateMappings: function(alternates) {
+            var alternateToName = this.maps.alternateToName,
+                nameToAlternates = this.maps.nameToAlternates,
+                className, aliasList, alternate, i;
+
+            for (className in alternates) {
+                aliasList = nameToAlternates[className] ||
+                    (nameToAlternates[className] = []);
+
+                for (i  = 0; i < alternates[className].length; i++) {
+                    alternate = alternates[className];
+                    if (!alternateToName[alternate]) {
+                        alternateToName[alternate] = className;
+                        aliasList.push(alternate);
+                    }
+                }
+
+            }
             return this;
         },
 
@@ -8728,6 +8929,10 @@ var noArgs = [],
 
 }(Ext.Class, Ext.Function.alias, Array.prototype.slice, Ext.Array.from, Ext.global));
 
+//@tag foundation,core
+//@require ClassManager.js
+//@define Ext.Loader
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -9031,6 +9236,21 @@ Ext.Loader = new function() {
 
             return Loader;
         }),
+
+        /**
+         * Sets a batch of path entries
+         *
+         * @param {Object } paths a set of className: path mappings
+         * @return {Ext.Loader} this
+         */
+        addClassPathMappings: function(paths) {
+            var name;
+
+            for(name in paths){
+                Loader.config.paths[name] = paths[name];
+            }
+            return Loader;
+        },
 
         /**
          * Translates a className to a file path by adding the
@@ -10097,6 +10317,46 @@ Ext.Loader = new function() {
     Manager.onCreated(Loader.historyPush);
 };
 
+// simple mechanism for automated means of injecting large amounts of dependency info
+// at the appropriate time in the load cycle
+if (Ext._classPathMetadata) {
+    Ext.Loader.addClassPathMappings(Ext._classPathMetadata);
+    Ext._classPathMetadata = null;
+}
+
+// initalize the default path of the framework
+(function() {
+    var scripts = document.getElementsByTagName('script'),
+        currentScript = scripts[scripts.length - 1],
+        src = currentScript.src,
+        path = src.substring(0, src.lastIndexOf('/') + 1),
+        Loader = Ext.Loader;
+
+    if(src.indexOf("/platform/core/src/class/") != -1) {
+        path = path + "../../../../extjs/";
+    } else if(src.indexOf("/core/src/class/") != -1) {
+        path = path + "../../../";
+    }
+
+    Loader.setConfig({
+        enabled: true,
+        disableCaching: true,
+        paths: {
+            'Ext': path + 'src'
+        }
+    });
+})();
+
+// allows a tools like dynatrace to deterministically detect onReady state by invoking
+// a callback (intended for external consumption)
+Ext._endTime = new Date().getTime();
+if (Ext._beforereadyhandler){
+    Ext._beforereadyhandler();
+}
+
+//@tag foundation,core
+//@require ../class/Loader.js
+
 /**
  * @author Brian Moeskau <brian@sencha.com>
  * @docauthor Brian Moeskau <brian@sencha.com>
@@ -10419,6 +10679,4 @@ Ext.deprecated = function (suggestion) {
     // its (better) thing.
     poll();
 }());
-
-
 

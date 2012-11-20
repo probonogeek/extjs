@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require Class.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -580,6 +583,58 @@
                 Ext.Array.include(nameToAliasesMap[className], alias);
             }
 
+            return this;
+        },
+
+        /**
+         * Adds a batch of class name to alias mappings
+         * @param {Object} aliases The set of mappings of the form
+         * className : [values...]
+         */
+        addNameAliasMappings: function(aliases){
+            var aliasToNameMap = this.maps.aliasToName,
+                nameToAliasesMap = this.maps.nameToAliases,
+                className, aliasList, alias, i;
+
+            for (className in aliases) {
+                aliasList = nameToAliasesMap[className] ||
+                    (nameToAliasesMap[className] = []);
+
+                for (i = 0; i < aliases[className].length; i++) {
+                    alias = aliases[className][i];
+                    if (!aliasToNameMap[alias]) {
+                        aliasToNameMap[alias] = className;
+                        aliasList.push(alias);
+                    }
+                }
+
+            }
+            return this;
+        },
+
+        /**
+         *
+         * @param {Object} alternates The set of mappings of the form
+         * className : [values...]
+         */
+        addNameAlternateMappings: function(alternates) {
+            var alternateToName = this.maps.alternateToName,
+                nameToAlternates = this.maps.nameToAlternates,
+                className, aliasList, alternate, i;
+
+            for (className in alternates) {
+                aliasList = nameToAlternates[className] ||
+                    (nameToAlternates[className] = []);
+
+                for (i  = 0; i < alternates[className].length; i++) {
+                    alternate = alternates[className];
+                    if (!alternateToName[alternate]) {
+                        alternateToName[alternate] = className;
+                        aliasList.push(alternate);
+                    }
+                }
+
+            }
             return this;
         },
 

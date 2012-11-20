@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Ext.dom.AbstractElement-position
+//@define Ext.dom.AbstractElement-style
+//@define Ext.dom.AbstractElement
+
 /**
  * @class Ext.dom.AbstractElement
  */

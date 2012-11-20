@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require ../Ext.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>
@@ -28,7 +31,7 @@
 (function() {
 
 // Current core version
-var version = '4.1.1', Version;
+var version = '4.1.1.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**

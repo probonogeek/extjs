@@ -1,3 +1,7 @@
+//@tag dom,core
+//@require ../Support.js
+//@define Ext.util.DelayedTask
+
 /**
  * @class Ext.util.DelayedTask
  * 

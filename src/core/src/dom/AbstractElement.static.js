@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require AbstractElement.js
+//@define Ext.dom.AbstractElement-static
+//@define Ext.dom.AbstractElement
+
 /**
  * @class Ext.dom.AbstractElement
  */

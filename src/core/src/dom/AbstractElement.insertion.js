@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Ext.dom.AbstractElement-alignment
+//@define Ext.dom.AbstractElement-insertion
+//@define Ext.dom.AbstractElement
+
 /**
  * @class Ext.dom.AbstractElement
  */

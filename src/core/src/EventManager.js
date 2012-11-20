@@ -1,3 +1,7 @@
+//@tag dom,core
+//@require util/Event.js
+//@define Ext.EventManager
+
 /**
  * @class Ext.EventManager
  * Registers event handlers that want to receive a normalized EventObject instead of the standard browser event and provides

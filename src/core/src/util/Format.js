@@ -1,3 +1,7 @@
+//@tag extras,core
+//@require ../Ext-more.js
+//@define Ext.util.Format
+
 /**
  * @class Ext.util.Format
  *  

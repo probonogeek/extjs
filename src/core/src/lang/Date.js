@@ -1,3 +1,7 @@
+//@tag foundation,core
+//@require Object.js
+//@define Ext.Date
+
 /**
  * @class Ext.Date
  * A set of useful static methods to deal with date

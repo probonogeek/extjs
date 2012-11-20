@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require Function.js
+
 /**
  * @author Jacky Nguyen <jacky@sencha.com>
  * @docauthor Jacky Nguyen <jacky@sencha.com>

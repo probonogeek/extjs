@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Ext.dom.Element-anim
+//@define Ext.dom.Element-dd
+//@define Ext.dom.Element
+
 /**
  * @class Ext.dom.Element
  */

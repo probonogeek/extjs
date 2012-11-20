@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Element.js
+//@define Ext.dom.Element-alignment
+//@define Ext.dom.Element
+
 /**
  * @class Ext.dom.Element
  */
