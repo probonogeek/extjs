@@ -1,3 +1,4 @@
+//@define Ext.fx.Easing
 /**
  * @class Ext.fx.Easing
  *

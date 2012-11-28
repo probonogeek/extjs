@@ -1,3 +1,6 @@
+//@tag extras,core
+//@require misc/JSON.js
+
 /**
  * @class Ext
  *
@@ -516,7 +519,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
     nullLog = function () {};
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
-    Ext.setVersion('extjs', '4.1.1');
+    Ext.setVersion('extjs', '4.1.1.1');
     Ext.apply(Ext, {
         /**
          * @property {String} SSL_SECURE_URL

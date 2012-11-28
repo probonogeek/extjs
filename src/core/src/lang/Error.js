@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require ../class/Loader.js
+
 /**
  * @author Brian Moeskau <brian@sencha.com>
  * @docauthor Brian Moeskau <brian@sencha.com>

@@ -1,3 +1,9 @@
+//@tag dom,core
+//@require Helper.js
+//@define Ext.dom.Query
+//@define Ext.core.Query
+//@define Ext.DomQuery
+
 /*
  * This is code is also distributed under MIT license for use
  * with jQuery and prototype JavaScript libraries.

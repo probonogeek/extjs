@@ -1,23 +1,41 @@
 /*
-This file is part of Ext JS 4.1
+Ext JS 4.1 - JavaScript Library
+Copyright (c) 2006-2012, Sencha Inc.
+All rights reserved.
+licensing@sencha.com
 
-Copyright (c) 2011-2012 Sencha Inc
+http://www.sencha.com/license
 
-Contact:  http://www.sencha.com/contact
+Open Source License
+------------------------------------------------------------------------------------------
+This version of Ext JS is licensed under the terms of the Open Source GPL 3.0 license. 
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
+http://www.gnu.org/licenses/gpl.html
 
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+There are several FLOSS exceptions available for use with this release for
+open source applications that are distributed under a license other than GPL.
 
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
+* Open Source License Exception for Applications
 
-Build date: 2012-07-04 21:11:01 (65ff594cd80b9bad45df640c22cc0adb52c95a7b)
+  http://www.sencha.com/products/floss-exception.php
+
+* Open Source License Exception for Development
+
+  http://www.sencha.com/products/ux-exception.php
+
+
+Alternate Licensing
+------------------------------------------------------------------------------------------
+Commercial and OEM Licenses are available for an alternate download of Ext JS.
+This is the appropriate option if you are creating proprietary applications and you are 
+not prepared to distribute and share the source code of your application under the 
+GPL v3 license. Please visit http://www.sencha.com/license for more details.
+
+--
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT OF THIRD-PARTY INTELLECTUAL PROPERTY RIGHTS.  See the GNU General Public License for more details.
 */
+//@tag foundation,core
 
 
 var Ext = Ext || {};
@@ -529,11 +547,16 @@ Ext.globalEval = Ext.global.execScript
         }());
     };
 
+//@tag foundation,core
+
+//@require ../Ext.js
+
+
 
 (function() {
 
 
-var version = '4.1.1', Version;
+var version = '4.1.1.1', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         
@@ -740,6 +763,11 @@ var version = '4.1.1', Version;
 
 }());
 
+//@tag foundation,core
+
+//@require ../version/Version.js
+
+
 
 
 Ext.String = (function() {
@@ -911,6 +939,14 @@ Ext.htmlDecode = Ext.String.htmlDecode;
 
 Ext.urlAppend = Ext.String.urlAppend;
 
+//@tag foundation,core
+
+//@require String.js
+
+//@define Ext.Number
+
+
+
 
 Ext.Number = new function() {
 
@@ -1018,6 +1054,12 @@ Ext.Number = new function() {
         return me.from.apply(this, arguments);
     };
 };
+
+//@tag foundation,core
+
+//@require Number.js
+
+
 
 (function() {
 
@@ -1755,6 +1797,11 @@ Ext.Number = new function() {
     };
 }());
 
+//@tag foundation,core
+
+//@require Array.js
+
+
 
 Ext.Function = {
 
@@ -1977,6 +2024,11 @@ Ext.pass = Ext.Function.alias(Ext.Function, 'pass');
 
 
 Ext.bind = Ext.Function.alias(Ext.Function, 'bind');
+
+//@tag foundation,core
+
+//@require Function.js
+
 
 
 
@@ -2335,6 +2387,13 @@ Ext.urlDecode = function() {
 };
 
 }());
+
+//@tag foundation,core
+
+//@require Object.js
+
+//@define Ext.Date
+
 
 
 
@@ -3294,6 +3353,11 @@ var utilDate = Ext.Date;
 
 }());
 
+//@tag foundation,core
+
+//@require ../lang/Date.js
+
+
 
 (function(flexSetter) {
 
@@ -3425,6 +3489,10 @@ var noArgs = [],
             for (name in members) {
                 if (members.hasOwnProperty(name)) {
                     member = members[name];
+                    if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn && member !== Ext.identityFn) {
+                        member.$owner = this;
+                        member.$name = name;
+                    }
                     this[name] = member;
                 }
             }
@@ -3613,8 +3681,18 @@ var noArgs = [],
 
             
             return (method = this.callParent.caller) && (method.$previous ||
-                  ((method = method.$owner ? method : method.caller) &&
-                        method.$owner.superclass.$class[method.$name])).apply(this, args || noArgs);
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name])).apply(this, args || noArgs);
+        },
+
+        
+        callSuper: function(args) {
+            var method;
+
+            
+            return (method = this.callSuper.caller) &&
+                ((method = method.$owner ? method : method.caller) &&
+                    method.$owner.superclass.self[method.$name]).apply(this, args || noArgs);
         },
 
         
@@ -3730,6 +3808,21 @@ var noArgs = [],
                 superMethod = (method = this.callParent.caller) && (method.$previous ||
                         ((method = method.$owner ? method : method.caller) &&
                                 method.$owner.superclass[method.$name]));
+
+
+            return superMethod.apply(this, args || noArgs);
+        },
+
+        
+        callSuper: function(args) {
+            
+            
+            
+            
+            var method,
+                superMethod = (method = this.callSuper.caller) &&
+                    ((method = method.$owner ? method : method.caller) &&
+                        method.$owner.superclass[method.$name]);
 
 
             return superMethod.apply(this, args || noArgs);
@@ -3876,6 +3969,11 @@ var noArgs = [],
     Ext.Base = Base;
 
 }(Ext.Function.flexSetter));
+
+//@tag foundation,core
+
+//@require Base.js
+
 
 
 (function() {
@@ -4323,6 +4421,11 @@ var noArgs = [],
 
 }());
 
+//@tag foundation,core
+
+//@require Class.js
+
+
 
 (function(Class, alias, arraySlice, arrayFrom, global) {
 
@@ -4642,6 +4745,50 @@ var noArgs = [],
                 Ext.Array.include(nameToAliasesMap[className], alias);
             }
 
+            return this;
+        },
+
+        
+        addNameAliasMappings: function(aliases){
+            var aliasToNameMap = this.maps.aliasToName,
+                nameToAliasesMap = this.maps.nameToAliases,
+                className, aliasList, alias, i;
+
+            for (className in aliases) {
+                aliasList = nameToAliasesMap[className] ||
+                    (nameToAliasesMap[className] = []);
+
+                for (i = 0; i < aliases[className].length; i++) {
+                    alias = aliases[className][i];
+                    if (!aliasToNameMap[alias]) {
+                        aliasToNameMap[alias] = className;
+                        aliasList.push(alias);
+                    }
+                }
+
+            }
+            return this;
+        },
+
+        
+        addNameAlternateMappings: function(alternates) {
+            var alternateToName = this.maps.alternateToName,
+                nameToAlternates = this.maps.nameToAlternates,
+                className, aliasList, alternate, i;
+
+            for (className in alternates) {
+                aliasList = nameToAlternates[className] ||
+                    (nameToAlternates[className] = []);
+
+                for (i  = 0; i < alternates[className].length; i++) {
+                    alternate = alternates[className];
+                    if (!alternateToName[alternate]) {
+                        alternateToName[alternate] = className;
+                        aliasList.push(alternate);
+                    }
+                }
+
+            }
             return this;
         },
 
@@ -5225,6 +5372,13 @@ var noArgs = [],
 
 }(Ext.Class, Ext.Function.alias, Array.prototype.slice, Ext.Array.from, Ext.global));
 
+//@tag foundation,core
+
+//@require ClassManager.js
+
+//@define Ext.Loader
+
+
 
 
 Ext.Loader = new function() {
@@ -5306,6 +5460,16 @@ Ext.Loader = new function() {
 
             return Loader;
         }),
+
+        
+        addClassPathMappings: function(paths) {
+            var name;
+
+            for(name in paths){
+                Loader.config.paths[name] = paths[name];
+            }
+            return Loader;
+        },
 
         
         getPath: function(className) {
@@ -6074,6 +6238,43 @@ Ext.Loader = new function() {
 };
 
 
+
+if (Ext._classPathMetadata) {
+    Ext.Loader.addClassPathMappings(Ext._classPathMetadata);
+    Ext._classPathMetadata = null;
+}
+
+
+(function() {
+    var scripts = document.getElementsByTagName('script'),
+        currentScript = scripts[scripts.length - 1],
+        src = currentScript.src,
+        path = src.substring(0, src.lastIndexOf('/') + 1),
+        Loader = Ext.Loader;
+
+
+    Loader.setConfig({
+        enabled: true,
+        disableCaching: true,
+        paths: {
+            'Ext': path + 'src'
+        }
+    });
+})();
+
+
+
+Ext._endTime = new Date().getTime();
+if (Ext._beforereadyhandler){
+    Ext._beforereadyhandler();
+}
+
+//@tag foundation,core
+
+//@require ../class/Loader.js
+
+
+
 Ext.Error = Ext.extend(Error, {
     statics: {
         
@@ -6155,6 +6356,10 @@ Ext.deprecated = function (suggestion) {
 };
 
 
+
+//@tag extras,core
+
+//@require ../lang/Error.js
 
 
 
@@ -6298,6 +6503,12 @@ Ext.JSON = (new(function() {
 Ext.encode = Ext.JSON.encode;
 
 Ext.decode = Ext.JSON.decode;
+
+//@tag extras,core
+
+//@require misc/JSON.js
+
+
 
 Ext.apply(Ext, {
     userAgent: navigator.userAgent.toLowerCase(),
@@ -6537,7 +6748,7 @@ window.undefined = window.undefined;
     nullLog = function () {};
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
-    Ext.setVersion('extjs', '4.1.1');
+    Ext.setVersion('extjs', '4.1.1.1');
     Ext.apply(Ext, {
         
         SSL_SECURE_URL : isSecure && isIE ? 'javascript:\'\'' : 'about:blank',
@@ -6928,6 +7139,13 @@ Ext.application = function(config) {
     });
 };
 
+//@tag extras,core
+
+//@require ../Ext-more.js
+
+//@define Ext.util.Format
+
+
 
 (function() {
     Ext.ns('Ext.util');
@@ -7251,6 +7469,15 @@ Ext.application = function(config) {
     });
 }());
 
+//@tag extras,core
+
+//@require Format.js
+
+//@define Ext.util.TaskManager
+
+//@define Ext.TaskManager
+
+
 
 Ext.define('Ext.util.TaskRunner', {
     
@@ -7498,6 +7725,11 @@ function () {
     proto.destroy = proto.stop;
 });
 
+//@tag extras,core
+
+//@require ../util/TaskManager.js
+
+
 
 Ext.define('Ext.perf.Accumulator', (function () {
     var currentFrame = null,
@@ -7740,6 +7972,11 @@ function () {
     Ext.perf.getTimestamp = this.getTimestamp;
 });
 
+//@tag extras,core
+
+//@require Accumulator.js
+
+
 
 Ext.define('Ext.perf.Monitor', {
     singleton: true,
@@ -7946,6 +8183,13 @@ Ext.define('Ext.perf.Monitor', {
         this.watchGC();
     }
 });
+
+//@tag extras,core
+
+//@require perf/Monitor.js
+
+//@define Ext.Supports
+
 
 
 Ext.is = {
@@ -8415,6 +8659,12 @@ Ext.supports = {
 
 Ext.supports.init(); 
 
+//@tag dom,core
+
+//@require ../Support.js
+
+//@define Ext.util.DelayedTask
+
 
 
 Ext.util.DelayedTask = function(fn, scope, args) {
@@ -8443,6 +8693,14 @@ Ext.util.DelayedTask = function(fn, scope, args) {
         }
     };
 };
+
+//@tag dom,core
+
+//@define Ext.util.Event
+
+//@require Ext.util.DelayedTask
+
+
 Ext.require('Ext.util.DelayedTask', function() {
 
     
@@ -8646,6 +8904,13 @@ Ext.require('Ext.util.DelayedTask', function() {
         };
     }()));
 });
+
+//@tag dom,core
+
+//@require util/Event.js
+
+//@define Ext.EventManager
+
 
 
 Ext.EventManager = new function() {
@@ -9609,6 +9874,13 @@ Ext.EventManager = new function() {
     Ext.onReady(initExtCss);
 };
 
+//@tag dom,core
+
+//@require EventManager.js
+
+//@define Ext.EventObject
+
+
 
 Ext.define('Ext.EventObjectImpl', {
     uses: ['Ext.util.Point'],
@@ -10314,6 +10586,11 @@ Ext.EventObject = new Ext.EventObjectImpl();
 });
 
 
+//@tag dom,core
+
+//@require ../EventObject.js
+
+
 
 Ext.define('Ext.dom.AbstractQuery', {
     
@@ -10367,6 +10644,11 @@ Ext.define('Ext.dom.AbstractQuery', {
     }
 
 });
+
+//@tag dom,core
+
+//@require AbstractQuery.js
+
 
 
 Ext.define('Ext.dom.AbstractHelper', {
@@ -10572,6 +10854,17 @@ Ext.define('Ext.dom.AbstractHelper', {
     }
 
 });
+
+//@tag dom,core
+
+//@require AbstractHelper.js
+
+//@require Ext.Supports
+
+//@require Ext.EventManager
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function() {
@@ -11069,6 +11362,15 @@ Ext.define('Ext.dom.AbstractElement', {
 
 }());
 
+//@tag dom,core
+
+//@require AbstractElement.js
+
+//@define Ext.dom.AbstractElement-static
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.addInheritableStatics({
     unitRe: /\d+(px|em|%|en|ex|pt|in|cm|mm|pc)$/i,
@@ -11440,6 +11742,13 @@ Ext.dom.AbstractElement.addInheritableStatics({
     });
 }());
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-static
+
+//@define Ext.dom.AbstractElement-alignment
+
+
 
 Ext.dom.AbstractElement.override({
 
@@ -11591,6 +11900,15 @@ Ext.dom.AbstractElement.override({
 
 });
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-alignment
+
+//@define Ext.dom.AbstractElement-insertion
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.addMethods({
     
@@ -11725,6 +12043,15 @@ Ext.dom.AbstractElement.addMethods({
         return returnEl ? Ext.get(el) : el;
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-insertion
+
+//@define Ext.dom.AbstractElement-position
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function(){
@@ -11961,6 +12288,15 @@ Element.override({
 });
 
 }());
+
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-position
+
+//@define Ext.dom.AbstractElement-style
+
+//@define Ext.dom.AbstractElement
+
 
 
 (function(){
@@ -12615,6 +12951,15 @@ Element.override({
     });
 }());
 
+//@tag dom,core
+
+//@require Ext.dom.AbstractElement-style
+
+//@define Ext.dom.AbstractElement-traversal
+
+//@define Ext.dom.AbstractElement
+
+
 
 Ext.dom.AbstractElement.override({
     
@@ -12727,6 +13072,15 @@ Ext.dom.AbstractElement.override({
     }
 });
 
+//@tag dom,core
+
+//@define Ext.DomHelper
+
+//@define Ext.core.DomHelper
+
+//@require Ext.dom.AbstractElement-traversal
+
+
 
 (function() {
 
@@ -12758,6 +13112,7 @@ var afterbegin = 'afterbegin',
 
 Ext.define('Ext.dom.Helper', {
     extend: 'Ext.dom.AbstractHelper',
+    requires:['Ext.dom.AbstractElement'],
 
     tableRe: /^table|tbody|tr|td$/i,
 
@@ -13025,6 +13380,17 @@ Ext.define('Ext.dom.Helper', {
 
 
 }());
+
+//@tag dom,core
+
+//@require Helper.js
+
+//@define Ext.dom.Query
+
+//@define Ext.core.Query
+
+//@define Ext.DomQuery
+
 
 
 
@@ -13924,6 +14290,15 @@ Ext.dom.Query = Ext.core.DomQuery = Ext.DomQuery = (function(){
 Ext.query = Ext.DomQuery.select;
 
 
+//@tag dom,core
+
+//@require Query.js
+
+//@define Ext.dom.Element
+
+//@require Ext.dom.AbstractElement
+
+
 
 (function() {
 
@@ -14799,6 +15174,15 @@ var HIDDEN = 'hidden',
 
 }());
 
+//@tag dom,core
+
+//@require Element.js
+
+//@define Ext.dom.Element-alignment
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override((function() {
 
@@ -15045,6 +15429,16 @@ Ext.dom.Element.override((function() {
         }
     };
 }()));
+
+//@tag dom,core
+
+//@require Ext.dom.Element-alignment
+
+//@define Ext.dom.Element-anim
+
+//@define Ext.dom.Element
+
+
 
 
 
@@ -15748,6 +16142,15 @@ Ext.dom.Element.override({
     }
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-anim
+
+//@define Ext.dom.Element-dd
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     
@@ -15768,6 +16171,15 @@ Ext.dom.Element.override({
         return Ext.apply(dd, overrides);
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.Element-dd
+
+//@define Ext.dom.Element-fx
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -15933,6 +16345,15 @@ Element.override({
 });
 
 }());
+
+//@tag dom,core
+
+//@require Ext.dom.Element-fx
+
+//@define Ext.dom.Element-position
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -16372,6 +16793,15 @@ Element.override({
 }());
 
 
+//@tag dom,core
+
+//@require Ext.dom.Element-position
+
+//@define Ext.dom.Element-scroll
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     
@@ -16541,6 +16971,15 @@ Ext.dom.Element.override({
         return scrolled;
     }
 });
+
+//@tag dom,core
+
+//@require Ext.dom.Element-scroll
+
+//@define Ext.dom.Element-style
+
+//@define Ext.dom.Element
+
 
 
 (function() {
@@ -17237,6 +17676,15 @@ Ext.onReady(function () {
     
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-style
+
+//@define Ext.dom.Element-traversal
+
+//@define Ext.dom.Element
+
+
 
 Ext.dom.Element.override({
     select: function(selector) {
@@ -17244,11 +17692,16 @@ Ext.dom.Element.override({
     }
 });
 
+//@tag dom,core
+
+//@require Ext.dom.Element-traversal
+
+
 
 Ext.define('Ext.dom.CompositeElementLite', {
     alternateClassName: 'Ext.CompositeElementLite',
 
-    requires: ['Ext.dom.Element'],
+    requires: ['Ext.dom.Element', 'Ext.dom.Query'],
 
     statics: {
         
@@ -17544,6 +17997,8 @@ Ext.define('Ext.dom.CompositeElementLite', {
     };
 });
 
+//@tag dom,core
+
 
 Ext.define('Ext.dom.CompositeElement', {
     alternateClassName: 'Ext.CompositeElement',
@@ -17582,821 +18037,1505 @@ Ext.define('Ext.dom.CompositeElement', {
 
 Ext.select = Ext.Element.select;
 
-
-this.ExtBootstrapData = {
-    "nameToAliasesMap":{
-        "Ext.AbstractComponent":[],
-        "Ext.AbstractManager":[],
-        "Ext.AbstractPlugin":[],
-        "Ext.Ajax":[],
-        "Ext.ComponentLoader":[],
-        "Ext.ComponentManager":[],
-        "Ext.ComponentQuery":[],
-        "Ext.ElementLoader":[],
-        "Ext.ModelManager":[],
-        "Ext.PluginManager":[],
-        "Ext.Template":[],
-        "Ext.XTemplate":[],
-        "Ext.XTemplateCompiler":[],
-        "Ext.XTemplateParser":[],
-        "Ext.app.Application":[],
-        "Ext.app.Controller":[],
-        "Ext.app.EventBus":[],
-        "Ext.chart.Callout":[],
-        "Ext.chart.Chart":["widget.chart"
-        ],
-        "Ext.chart.Highlight":[],
-        "Ext.chart.Label":[],
-        "Ext.chart.Legend":[],
-        "Ext.chart.LegendItem":[],
-        "Ext.chart.Mask":[],
-        "Ext.chart.MaskLayer":[],
-        "Ext.chart.Navigation":[],
-        "Ext.chart.Shape":[],
-        "Ext.chart.Tip":[],
-        "Ext.chart.TipSurface":[],
-        "Ext.chart.axis.Abstract":[],
-        "Ext.chart.axis.Axis":[],
-        "Ext.chart.axis.Category":["axis.category"
-        ],
-        "Ext.chart.axis.Gauge":["axis.gauge"
-        ],
-        "Ext.chart.axis.Numeric":["axis.numeric"
-        ],
-        "Ext.chart.axis.Radial":["axis.radial"
-        ],
-        "Ext.chart.axis.Time":["axis.time"
-        ],
-        "Ext.chart.series.Area":["series.area"
-        ],
-        "Ext.chart.series.Bar":["series.bar"
-        ],
-        "Ext.chart.series.Cartesian":[],
-        "Ext.chart.series.Column":["series.column"
-        ],
-        "Ext.chart.series.Gauge":["series.gauge"
-        ],
-        "Ext.chart.series.Line":["series.line"
-        ],
-        "Ext.chart.series.Pie":["series.pie"
-        ],
-        "Ext.chart.series.Radar":["series.radar"
-        ],
-        "Ext.chart.series.Scatter":["series.scatter"
-        ],
-        "Ext.chart.series.Series":[],
-        "Ext.chart.theme.Base":[],
-        "Ext.chart.theme.Theme":[],
-        "Ext.container.AbstractContainer":[],
-        "Ext.container.DockingContainer":[],
-        "Ext.data.AbstractStore":[],
-        "Ext.data.ArrayStore":["store.array"
-        ],
-        "Ext.data.Batch":[],
-        "Ext.data.BufferStore":["store.buffer"
-        ],
-        "Ext.data.Connection":[],
-        "Ext.data.DirectStore":["store.direct"
-        ],
-        "Ext.data.Errors":[],
-        "Ext.data.Field":["data.field"
-        ],
-        "Ext.data.IdGenerator":[],
-        "Ext.data.JsonP":[],
-        "Ext.data.JsonPStore":["store.jsonp"
-        ],
-        "Ext.data.JsonStore":["store.json"
-        ],
-        "Ext.data.Model":[],
-        "Ext.data.NodeInterface":[],
-        "Ext.data.NodeStore":["store.node"
-        ],
-        "Ext.data.Operation":[],
-        "Ext.data.Request":[],
-        "Ext.data.ResultSet":[],
-        "Ext.data.SequentialIdGenerator":["idgen.sequential"
-        ],
-        "Ext.data.SortTypes":[],
-        "Ext.data.Store":["store.store"
-        ],
-        "Ext.data.StoreManager":[],
-        "Ext.data.Tree":["data.tree"
-        ],
-        "Ext.data.TreeStore":["store.tree"
-        ],
-        "Ext.data.Types":[],
-        "Ext.data.UuidGenerator":[],
-        "Ext.data.validations":[],
-        "Ext.data.XmlStore":["store.xml"
-        ],
-        "Ext.data.association.Association":[],
-        "Ext.data.association.BelongsTo":["association.belongsto"
-        ],
-        "Ext.data.association.HasMany":["association.hasmany"
-        ],
-        "Ext.data.association.HasOne":["association.hasone"
-        ],
-        "Ext.data.proxy.Ajax":["proxy.ajax"
-        ],
-        "Ext.data.proxy.Client":[],
-        "Ext.data.proxy.Direct":["proxy.direct"
-        ],
-        "Ext.data.proxy.JsonP":["proxy.jsonp",
-            "proxy.scripttag"
-        ],
-        "Ext.data.proxy.LocalStorage":["proxy.localstorage"
-        ],
-        "Ext.data.proxy.Memory":["proxy.memory"
-        ],
-        "Ext.data.proxy.Proxy":["proxy.proxy"
-        ],
-        "Ext.data.proxy.Rest":["proxy.rest"
-        ],
-        "Ext.data.proxy.Server":["proxy.server"
-        ],
-        "Ext.data.proxy.SessionStorage":["proxy.sessionstorage"
-        ],
-        "Ext.data.proxy.WebStorage":[],
-        "Ext.data.reader.Array":["reader.array"
-        ],
-        "Ext.data.reader.Json":["reader.json"
-        ],
-        "Ext.data.reader.Reader":[],
-        "Ext.data.reader.Xml":["reader.xml"
-        ],
-        "Ext.data.writer.Json":["writer.json"
-        ],
-        "Ext.data.writer.Writer":["writer.base"
-        ],
-        "Ext.data.writer.Xml":["writer.xml"
-        ],
-        "Ext.direct.Event":["direct.event"
-        ],
-        "Ext.direct.ExceptionEvent":["direct.exception"
-        ],
-        "Ext.direct.JsonProvider":["direct.jsonprovider"
-        ],
-        "Ext.direct.Manager":[],
-        "Ext.direct.PollingProvider":["direct.pollingprovider"
-        ],
-        "Ext.direct.Provider":["direct.provider"
-        ],
-        "Ext.direct.RemotingEvent":["direct.rpc"
-        ],
-        "Ext.direct.RemotingMethod":[],
-        "Ext.direct.RemotingProvider":["direct.remotingprovider"
-        ],
-        "Ext.direct.Transaction":["direct.transaction"
-        ],
-        "Ext.draw.Color":[],
-        "Ext.draw.Component":["widget.draw"
-        ],
-        "Ext.draw.CompositeSprite":[],
-        "Ext.draw.Draw":[],
-        "Ext.draw.Matrix":[],
-        "Ext.draw.Sprite":[],
-        "Ext.draw.SpriteDD":[],
-        "Ext.draw.Surface":[],
-        "Ext.draw.Text":["widget.text"
-        ],
-        "Ext.draw.engine.ImageExporter":[],
-        "Ext.draw.engine.Svg":[],
-        "Ext.draw.engine.SvgExporter":[],
-        "Ext.draw.engine.Vml":[],
-        "Ext.fx.Anim":[],
-        "Ext.fx.Animator":[],
-        "Ext.fx.CubicBezier":[],
-        "Ext.fx.Manager":[],
-        "Ext.fx.PropertyHandler":[],
-        "Ext.fx.Queue":[],
-        "Ext.fx.target.Component":[],
-        "Ext.fx.target.CompositeElement":[],
-        "Ext.fx.target.CompositeElementCSS":[],
-        "Ext.fx.target.CompositeSprite":[],
-        "Ext.fx.target.Element":[],
-        "Ext.fx.target.ElementCSS":[],
-        "Ext.fx.target.Sprite":[],
-        "Ext.fx.target.Target":[],
-        "Ext.layout.ClassList":[],
-        "Ext.layout.Context":[],
-        "Ext.layout.ContextItem":[],
-        "Ext.layout.Layout":[],
-        "Ext.layout.component.Auto":["layout.autocomponent"
-        ],
-        "Ext.layout.component.Component":[],
-        "Ext.layout.component.Draw":["layout.draw"
-        ],
-        "Ext.layout.container.Auto":["layout.auto",
-            "layout.autocontainer"
-        ],
-        "Ext.panel.AbstractPanel":[],
-        "Ext.selection.DataViewModel":[],
-        "Ext.selection.Model":[],
-        "Ext.state.CookieProvider":[],
-        "Ext.state.LocalStorageProvider":["state.localstorage"
-        ],
-        "Ext.state.Manager":[],
-        "Ext.state.Provider":[],
-        "Ext.state.Stateful":[],
-        "Ext.util.AbstractMixedCollection":[],
-        "Ext.util.Bindable":[],
-        "Ext.util.ElementContainer":[],
-        "Ext.util.Filter":[],
-        "Ext.util.Grouper":[],
-        "Ext.util.HashMap":[],
-        "Ext.util.Inflector":[],
-        "Ext.util.LruCache":[],
-        "Ext.util.Memento":[],
-        "Ext.util.MixedCollection":[],
-        "Ext.util.Observable":[],
-        "Ext.util.Offset":[],
-        "Ext.util.Point":[],
-        "Ext.util.ProtoElement":[],
-        "Ext.util.Queue":[],
-        "Ext.util.Region":[],
-        "Ext.util.Renderable":[],
-        "Ext.util.Sortable":[],
-        "Ext.util.Sorter":[],
-        "Ext.view.AbstractView":[],
-        "Ext.Action":[],
-        "Ext.Component":["widget.component",
-            "widget.box"
-        ],
-        "Ext.Editor":["widget.editor"
-        ],
-        "Ext.FocusManager":[],
-        "Ext.Img":["widget.image",
-            "widget.imagecomponent"
-        ],
-        "Ext.Layer":[],
-        "Ext.LoadMask":["widget.loadmask"
-        ],
-        "Ext.ProgressBar":["widget.progressbar"
-        ],
-        "Ext.Shadow":[],
-        "Ext.ShadowPool":[],
-        "Ext.ZIndexManager":[],
-        "Ext.button.Button":["widget.button"
-        ],
-        "Ext.button.Cycle":["widget.cycle"
-        ],
-        "Ext.button.Split":["widget.splitbutton"
-        ],
-        "Ext.container.ButtonGroup":["widget.buttongroup"
-        ],
-        "Ext.container.Container":["widget.container"
-        ],
-        "Ext.container.Viewport":["widget.viewport"
-        ],
-        "Ext.dd.DD":[],
-        "Ext.dd.DDProxy":[],
-        "Ext.dd.DDTarget":[],
-        "Ext.dd.DragDrop":[],
-        "Ext.dd.DragDropManager":[],
-        "Ext.dd.DragSource":[],
-        "Ext.dd.DragTracker":[],
-        "Ext.dd.DragZone":[],
-        "Ext.dd.DropTarget":[],
-        "Ext.dd.DropZone":[],
-        "Ext.dd.Registry":[],
-        "Ext.dd.ScrollManager":[],
-        "Ext.dd.StatusProxy":[],
-        "Ext.dom.Element":[],
-        "Ext.dom.Helper":[],
-        "Ext.flash.Component":["widget.flash"
-        ],
-        "Ext.form.Basic":[],
-        "Ext.form.CheckboxGroup":["widget.checkboxgroup"
-        ],
-        "Ext.form.CheckboxManager":[],
-        "Ext.form.FieldAncestor":[],
-        "Ext.form.FieldContainer":["widget.fieldcontainer"
-        ],
-        "Ext.form.FieldSet":["widget.fieldset"
-        ],
-        "Ext.form.Label":["widget.label"
-        ],
-        "Ext.form.Labelable":[],
-        "Ext.form.Panel":["widget.form"
-        ],
-        "Ext.form.RadioGroup":["widget.radiogroup"
-        ],
-        "Ext.form.RadioManager":[],
-        "Ext.form.action.Action":[],
-        "Ext.form.action.DirectLoad":["formaction.directload"
-        ],
-        "Ext.form.action.DirectSubmit":["formaction.directsubmit"
-        ],
-        "Ext.form.action.Load":["formaction.load"
-        ],
-        "Ext.form.action.StandardSubmit":["formaction.standardsubmit"
-        ],
-        "Ext.form.action.Submit":["formaction.submit"
-        ],
-        "Ext.form.field.Base":["widget.field"
-        ],
-        "Ext.form.field.Checkbox":["widget.checkboxfield",
-            "widget.checkbox"
-        ],
-        "Ext.form.field.ComboBox":["widget.combobox",
-            "widget.combo"
-        ],
-        "Ext.form.field.Date":["widget.datefield"
-        ],
-        "Ext.form.field.Display":["widget.displayfield"
-        ],
-        "Ext.form.field.Field":[],
-        "Ext.form.field.File":["widget.filefield",
-            "widget.fileuploadfield"
-        ],
-        "Ext.form.field.Hidden":["widget.hiddenfield",
-            "widget.hidden"
-        ],
-        "Ext.form.field.HtmlEditor":["widget.htmleditor"
-        ],
-        "Ext.form.field.Number":["widget.numberfield"
-        ],
-        "Ext.form.field.Picker":["widget.pickerfield"
-        ],
-        "Ext.form.field.Radio":["widget.radiofield",
-            "widget.radio"
-        ],
-        "Ext.form.field.Spinner":["widget.spinnerfield"
-        ],
-        "Ext.form.field.Text":["widget.textfield"
-        ],
-        "Ext.form.field.TextArea":["widget.textareafield",
-            "widget.textarea"
-        ],
-        "Ext.form.field.Time":["widget.timefield"
-        ],
-        "Ext.form.field.Trigger":["widget.triggerfield",
-            "widget.trigger"
-        ],
-        "Ext.form.field.VTypes":[],
-        "Ext.grid.CellEditor":[],
-        "Ext.grid.ColumnComponentLayout":["layout.columncomponent"
-        ],
-        "Ext.grid.ColumnLayout":["layout.gridcolumn"
-        ],
-        "Ext.grid.Lockable":[],
-        "Ext.grid.LockingView":[],
-        "Ext.grid.PagingScroller":[],
-        "Ext.grid.Panel":["widget.gridpanel",
-            "widget.grid"
-        ],
-        "Ext.grid.RowEditor":[],
-        "Ext.grid.RowNumberer":["widget.rownumberer"
-        ],
-        "Ext.grid.Scroller":[],
-        "Ext.grid.View":["widget.gridview"
-        ],
-        "Ext.grid.ViewDropZone":[],
-        "Ext.grid.column.Action":["widget.actioncolumn"
-        ],
-        "Ext.grid.column.Boolean":["widget.booleancolumn"
-        ],
-        "Ext.grid.column.Column":["widget.gridcolumn"
-        ],
-        "Ext.grid.column.Date":["widget.datecolumn"
-        ],
-        "Ext.grid.column.Number":["widget.numbercolumn"
-        ],
-        "Ext.grid.column.Template":["widget.templatecolumn"
-        ],
-        "Ext.grid.feature.AbstractSummary":["feature.abstractsummary"
-        ],
-        "Ext.grid.feature.Chunking":["feature.chunking"
-        ],
-        "Ext.grid.feature.Feature":["feature.feature"
-        ],
-        "Ext.grid.feature.Grouping":["feature.grouping"
-        ],
-        "Ext.grid.feature.GroupingSummary":["feature.groupingsummary"
-        ],
-        "Ext.grid.feature.RowBody":["feature.rowbody"
-        ],
-        "Ext.grid.feature.RowWrap":["feature.rowwrap"
-        ],
-        "Ext.grid.feature.Summary":["feature.summary"
-        ],
-        "Ext.grid.header.Container":["widget.headercontainer"
-        ],
-        "Ext.grid.header.DragZone":[],
-        "Ext.grid.header.DropZone":[],
-        "Ext.grid.plugin.CellEditing":["plugin.cellediting"
-        ],
-        "Ext.grid.plugin.DragDrop":["plugin.gridviewdragdrop"
-        ],
-        "Ext.grid.plugin.Editing":["editing.editing"
-        ],
-        "Ext.grid.plugin.HeaderReorderer":["plugin.gridheaderreorderer"
-        ],
-        "Ext.grid.plugin.HeaderResizer":["plugin.gridheaderresizer"
-        ],
-        "Ext.grid.plugin.RowEditing":["plugin.rowediting"
-        ],
-        "Ext.grid.property.Grid":["widget.propertygrid"
-        ],
-        "Ext.grid.property.HeaderContainer":[],
-        "Ext.grid.property.Property":[],
-        "Ext.grid.property.Store":[],
-        "Ext.layout.component.Body":["layout.body"
-        ],
-        "Ext.layout.component.BoundList":["layout.boundlist"
-        ],
-        "Ext.layout.component.Button":["layout.button"
-        ],
-        "Ext.layout.component.Dock":["layout.dock"
-        ],
-        "Ext.layout.component.FieldSet":["layout.fieldset"
-        ],
-        "Ext.layout.component.ProgressBar":["layout.progressbar"
-        ],
-        "Ext.layout.component.Tab":["layout.tab"
-        ],
-        "Ext.layout.component.field.ComboBox":["layout.combobox"
-        ],
-        "Ext.layout.component.field.Field":["layout.field"
-        ],
-        "Ext.layout.component.field.FieldContainer":["layout.fieldcontainer"
-        ],
-        "Ext.layout.component.field.HtmlEditor":["layout.htmleditor"
-        ],
-        "Ext.layout.component.field.Slider":["layout.sliderfield"
-        ],
-        "Ext.layout.component.field.Text":["layout.textfield"
-        ],
-        "Ext.layout.component.field.TextArea":["layout.textareafield"
-        ],
-        "Ext.layout.component.field.Trigger":["layout.triggerfield"
-        ],
-        "Ext.layout.container.Absolute":["layout.absolute"
-        ],
-        "Ext.layout.container.Accordion":["layout.accordion"
-        ],
-        "Ext.layout.container.Anchor":["layout.anchor"
-        ],
-        "Ext.layout.container.Border":["layout.border"
-        ],
-        "Ext.layout.container.Box":["layout.box"
-        ],
-        "Ext.layout.container.Card":["layout.card"
-        ],
-        "Ext.layout.container.CheckboxGroup":["layout.checkboxgroup"
-        ],
-        "Ext.layout.container.Column":["layout.column"
-        ],
-        "Ext.layout.container.Container":[],
-        "Ext.layout.container.Editor":["layout.editor"
-        ],
-        "Ext.layout.container.Fit":["layout.fit"
-        ],
-        "Ext.layout.container.Form":["layout.form"
-        ],
-        "Ext.layout.container.HBox":["layout.hbox"
-        ],
-        "Ext.layout.container.Table":["layout.table"
-        ],
-        "Ext.layout.container.VBox":["layout.vbox"
-        ],
-        "Ext.layout.container.boxOverflow.Menu":[],
-        "Ext.layout.container.boxOverflow.None":[],
-        "Ext.layout.container.boxOverflow.Scroller":[],
-        "Ext.menu.CheckItem":["widget.menucheckitem"
-        ],
-        "Ext.menu.ColorPicker":["widget.colormenu"
-        ],
-        "Ext.menu.DatePicker":["widget.datemenu"
-        ],
-        "Ext.menu.Item":["widget.menuitem"
-        ],
-        "Ext.menu.KeyNav":[],
-        "Ext.menu.Manager":[],
-        "Ext.menu.Menu":["widget.menu"
-        ],
-        "Ext.menu.Separator":["widget.menuseparator"
-        ],
-        "Ext.panel.DD":[],
-        "Ext.panel.Header":["widget.header"
-        ],
-        "Ext.panel.Panel":["widget.panel"
-        ],
-        "Ext.panel.Proxy":[],
-        "Ext.panel.Table":["widget.tablepanel"
-        ],
-        "Ext.panel.Tool":["widget.tool"
-        ],
-        "Ext.picker.Color":["widget.colorpicker"
-        ],
-        "Ext.picker.Date":["widget.datepicker"
-        ],
-        "Ext.picker.Month":["widget.monthpicker"
-        ],
-        "Ext.picker.Time":["widget.timepicker"
-        ],
-        "Ext.resizer.BorderSplitter":["widget.bordersplitter"
-        ],
-        "Ext.resizer.BorderSplitterTracker":[],
-        "Ext.resizer.Handle":[],
-        "Ext.resizer.Resizer":[],
-        "Ext.resizer.ResizeTracker":[],
-        "Ext.resizer.Splitter":["widget.splitter"
-        ],
-        "Ext.resizer.SplitterTracker":[],
-        "Ext.selection.CellModel":["selection.cellmodel"
-        ],
-        "Ext.selection.CheckboxModel":["selection.checkboxmodel"
-        ],
-        "Ext.selection.RowModel":["selection.rowmodel"
-        ],
-        "Ext.selection.TreeModel":["selection.treemodel"
-        ],
-        "Ext.slider.Multi":["widget.multislider"
-        ],
-        "Ext.slider.Single":["widget.slider",
-            "widget.sliderfield"
-        ],
-        "Ext.slider.Thumb":[],
-        "Ext.slider.Tip":["widget.slidertip"
-        ],
-        "Ext.tab.Bar":["widget.tabbar"
-        ],
-        "Ext.tab.Panel":["widget.tabpanel"
-        ],
-        "Ext.tab.Tab":["widget.tab"
-        ],
-        "Ext.tip.QuickTip":["widget.quicktip"
-        ],
-        "Ext.tip.QuickTipManager":[],
-        "Ext.tip.Tip":[],
-        "Ext.tip.ToolTip":["widget.tooltip"
-        ],
-        "Ext.toolbar.Fill":["widget.tbfill"
-        ],
-        "Ext.toolbar.Item":["widget.tbitem"
-        ],
-        "Ext.toolbar.Paging":["widget.pagingtoolbar"
-        ],
-        "Ext.toolbar.Separator":["widget.tbseparator"
-        ],
-        "Ext.toolbar.Spacer":["widget.tbspacer"
-        ],
-        "Ext.toolbar.TextItem":["widget.tbtext"
-        ],
-        "Ext.toolbar.Toolbar":["widget.toolbar"
-        ],
-        "Ext.tree.Column":["widget.treecolumn"
-        ],
-        "Ext.tree.Panel":["widget.treepanel"
-        ],
-        "Ext.tree.View":["widget.treeview"
-        ],
-        "Ext.tree.ViewDragZone":[],
-        "Ext.tree.ViewDropZone":[],
-        "Ext.tree.plugin.TreeViewDragDrop":["plugin.treeviewdragdrop"
-        ],
-        "Ext.util.Animate":[],
-        "Ext.util.ClickRepeater":[],
-        "Ext.util.ComponentDragger":[],
-        "Ext.util.Cookies":[],
-        "Ext.util.CSS":[],
-        "Ext.util.Floating":[],
-        "Ext.util.History":[],
-        "Ext.util.KeyMap":[],
-        "Ext.util.KeyNav":[],
-        "Ext.util.TextMetrics":[],
-        "Ext.view.BoundList":["widget.boundlist"
-        ],
-        "Ext.view.BoundListKeyNav":[],
-        "Ext.view.DragZone":[],
-        "Ext.view.DropZone":[],
-        "Ext.view.Table":["widget.tableview"
-        ],
-        "Ext.view.TableChunker":[],
-        "Ext.view.View":["widget.dataview"
-        ],
-        "Ext.window.MessageBox":["widget.messagebox"
-        ],
-        "Ext.window.Window":["widget.window"
-        ]
-    },
-    "alternateToNameMap":{
-        "Ext.ComponentMgr":"Ext.ComponentManager",
-        "Ext.ModelMgr":"Ext.ModelManager",
-        "Ext.PluginMgr":"Ext.PluginManager",
-        "Ext.chart.Axis":"Ext.chart.axis.Axis",
-        "Ext.chart.CategoryAxis":"Ext.chart.axis.Category",
-        "Ext.chart.NumericAxis":"Ext.chart.axis.Numeric",
-        "Ext.chart.TimeAxis":"Ext.chart.axis.Time",
-        "Ext.chart.BarSeries":"Ext.chart.series.Bar",
-        "Ext.chart.BarChart":"Ext.chart.series.Bar",
-        "Ext.chart.StackedBarChart":"Ext.chart.series.Bar",
-        "Ext.chart.CartesianSeries":"Ext.chart.series.Cartesian",
-        "Ext.chart.CartesianChart":"Ext.chart.series.Cartesian",
-        "Ext.chart.ColumnSeries":"Ext.chart.series.Column",
-        "Ext.chart.ColumnChart":"Ext.chart.series.Column",
-        "Ext.chart.StackedColumnChart":"Ext.chart.series.Column",
-        "Ext.chart.LineSeries":"Ext.chart.series.Line",
-        "Ext.chart.LineChart":"Ext.chart.series.Line",
-        "Ext.chart.PieSeries":"Ext.chart.series.Pie",
-        "Ext.chart.PieChart":"Ext.chart.series.Pie",
-        "Ext.data.Record":"Ext.data.Model",
-        "Ext.StoreMgr":"Ext.data.StoreManager",
-        "Ext.data.StoreMgr":"Ext.data.StoreManager",
-        "Ext.StoreManager":"Ext.data.StoreManager",
-        "Ext.data.Association":"Ext.data.association.Association",
-        "Ext.data.BelongsToAssociation":"Ext.data.association.BelongsTo",
-        "Ext.data.HasManyAssociation":"Ext.data.association.HasMany",
-        "Ext.data.HasOneAssociation":"Ext.data.association.HasOne",
-        "Ext.data.HttpProxy":"Ext.data.proxy.Ajax",
-        "Ext.data.AjaxProxy":"Ext.data.proxy.Ajax",
-        "Ext.data.ClientProxy":"Ext.data.proxy.Client",
-        "Ext.data.DirectProxy":"Ext.data.proxy.Direct",
-        "Ext.data.ScriptTagProxy":"Ext.data.proxy.JsonP",
-        "Ext.data.LocalStorageProxy":"Ext.data.proxy.LocalStorage",
-        "Ext.data.MemoryProxy":"Ext.data.proxy.Memory",
-        "Ext.data.DataProxy":"Ext.data.proxy.Proxy",
-        "Ext.data.Proxy":"Ext.data.proxy.Proxy",
-        "Ext.data.RestProxy":"Ext.data.proxy.Rest",
-        "Ext.data.ServerProxy":"Ext.data.proxy.Server",
-        "Ext.data.SessionStorageProxy":"Ext.data.proxy.SessionStorage",
-        "Ext.data.WebStorageProxy":"Ext.data.proxy.WebStorage",
-        "Ext.data.ArrayReader":"Ext.data.reader.Array",
-        "Ext.data.JsonReader":"Ext.data.reader.Json",
-        "Ext.data.Reader":"Ext.data.reader.Reader",
-        "Ext.data.DataReader":"Ext.data.reader.Reader",
-        "Ext.data.XmlReader":"Ext.data.reader.Xml",
-        "Ext.data.JsonWriter":"Ext.data.writer.Json",
-        "Ext.data.DataWriter":"Ext.data.writer.Writer",
-        "Ext.data.Writer":"Ext.data.writer.Writer",
-        "Ext.data.XmlWriter":"Ext.data.writer.Xml",
-        "Ext.Direct.Transaction":"Ext.direct.Transaction",
-        "Ext.AbstractSelectionModel":"Ext.selection.Model",
-        "Ext.FocusMgr":"Ext.FocusManager",
-        "Ext.WindowGroup":"Ext.ZIndexManager",
-        "Ext.Button":"Ext.button.Button",
-        "Ext.CycleButton":"Ext.button.Cycle",
-        "Ext.SplitButton":"Ext.button.Split",
-        "Ext.ButtonGroup":"Ext.container.ButtonGroup",
-        "Ext.Container":"Ext.container.Container",
-        "Ext.Viewport":"Ext.container.Viewport",
-        "Ext.dd.DragDropMgr":"Ext.dd.DragDropManager",
-        "Ext.dd.DDM":"Ext.dd.DragDropManager",
-        "Ext.Element":"Ext.dom.Element",
-        "Ext.core.Element":"Ext.dom.Element",
-        "Ext.FlashComponent":"Ext.flash.Component",
-        "Ext.form.BasicForm":"Ext.form.Basic",
-        "Ext.FormPanel":"Ext.form.Panel",
-        "Ext.form.FormPanel":"Ext.form.Panel",
-        "Ext.form.Action":"Ext.form.action.Action",
-        "Ext.form.Action.DirectLoad":"Ext.form.action.DirectLoad",
-        "Ext.form.Action.DirectSubmit":"Ext.form.action.DirectSubmit",
-        "Ext.form.Action.Load":"Ext.form.action.Load",
-        "Ext.form.Action.Submit":"Ext.form.action.Submit",
-        "Ext.form.Field":"Ext.form.field.Base",
-        "Ext.form.BaseField":"Ext.form.field.Base",
-        "Ext.form.Checkbox":"Ext.form.field.Checkbox",
-        "Ext.form.ComboBox":"Ext.form.field.ComboBox",
-        "Ext.form.DateField":"Ext.form.field.Date",
-        "Ext.form.Date":"Ext.form.field.Date",
-        "Ext.form.DisplayField":"Ext.form.field.Display",
-        "Ext.form.Display":"Ext.form.field.Display",
-        "Ext.form.FileUploadField":"Ext.form.field.File",
-        "Ext.ux.form.FileUploadField":"Ext.form.field.File",
-        "Ext.form.File":"Ext.form.field.File",
-        "Ext.form.Hidden":"Ext.form.field.Hidden",
-        "Ext.form.HtmlEditor":"Ext.form.field.HtmlEditor",
-        "Ext.form.NumberField":"Ext.form.field.Number",
-        "Ext.form.Number":"Ext.form.field.Number",
-        "Ext.form.Picker":"Ext.form.field.Picker",
-        "Ext.form.Radio":"Ext.form.field.Radio",
-        "Ext.form.Spinner":"Ext.form.field.Spinner",
-        "Ext.form.TextField":"Ext.form.field.Text",
-        "Ext.form.Text":"Ext.form.field.Text",
-        "Ext.form.TextArea":"Ext.form.field.TextArea",
-        "Ext.form.TimeField":"Ext.form.field.Time",
-        "Ext.form.Time":"Ext.form.field.Time",
-        "Ext.form.TriggerField":"Ext.form.field.Trigger",
-        "Ext.form.TwinTriggerField":"Ext.form.field.Trigger",
-        "Ext.form.Trigger":"Ext.form.field.Trigger",
-        "Ext.list.ListView":"Ext.grid.Panel",
-        "Ext.ListView":"Ext.grid.Panel",
-        "Ext.grid.GridPanel":"Ext.grid.Panel",
-        "Ext.grid.ActionColumn":"Ext.grid.column.Action",
-        "Ext.grid.BooleanColumn":"Ext.grid.column.Boolean",
-        "Ext.grid.Column":"Ext.grid.column.Column",
-        "Ext.grid.DateColumn":"Ext.grid.column.Date",
-        "Ext.grid.NumberColumn":"Ext.grid.column.Number",
-        "Ext.grid.TemplateColumn":"Ext.grid.column.Template",
-        "Ext.grid.PropertyGrid":"Ext.grid.property.Grid",
-        "Ext.grid.PropertyColumnModel":"Ext.grid.property.HeaderContainer",
-        "Ext.PropGridProperty":"Ext.grid.property.Property",
-        "Ext.grid.PropertyStore":"Ext.grid.property.Store",
-        "Ext.layout.component.AbstractDock":"Ext.layout.component.Dock",
-        "Ext.layout.AbsoluteLayout":"Ext.layout.container.Absolute",
-        "Ext.layout.AccordionLayout":"Ext.layout.container.Accordion",
-        "Ext.layout.AnchorLayout":"Ext.layout.container.Anchor",
-        "Ext.layout.BorderLayout":"Ext.layout.container.Border",
-        "Ext.layout.BoxLayout":"Ext.layout.container.Box",
-        "Ext.layout.CardLayout":"Ext.layout.container.Card",
-        "Ext.layout.ColumnLayout":"Ext.layout.container.Column",
-        "Ext.layout.ContainerLayout":"Ext.layout.container.Container",
-        "Ext.layout.FitLayout":"Ext.layout.container.Fit",
-        "Ext.layout.FormLayout":"Ext.layout.container.Form",
-        "Ext.layout.HBoxLayout":"Ext.layout.container.HBox",
-        "Ext.layout.TableLayout":"Ext.layout.container.Table",
-        "Ext.layout.VBoxLayout":"Ext.layout.container.VBox",
-        "Ext.layout.boxOverflow.Menu":"Ext.layout.container.boxOverflow.Menu",
-        "Ext.layout.boxOverflow.None":"Ext.layout.container.boxOverflow.None",
-        "Ext.layout.boxOverflow.Scroller":"Ext.layout.container.boxOverflow.Scroller",
-        "Ext.menu.TextItem":"Ext.menu.Item",
-        "Ext.menu.MenuMgr":"Ext.menu.Manager",
-        "Ext.Panel":"Ext.panel.Panel",
-        "Ext.dd.PanelProxy":"Ext.panel.Proxy",
-        "Ext.ColorPalette":"Ext.picker.Color",
-        "Ext.DatePicker":"Ext.picker.Date",
-        "Ext.MonthPicker":"Ext.picker.Month",
-        "Ext.Resizable":"Ext.resizer.Resizer",
-        "Ext.slider.MultiSlider":"Ext.slider.Multi",
-        "Ext.Slider":"Ext.slider.Single",
-        "Ext.form.SliderField":"Ext.slider.Single",
-        "Ext.slider.SingleSlider":"Ext.slider.Single",
-        "Ext.slider.Slider":"Ext.slider.Single",
-        "Ext.TabPanel":"Ext.tab.Panel",
-        "Ext.QuickTip":"Ext.tip.QuickTip",
-        "Ext.Tip":"Ext.tip.Tip",
-        "Ext.ToolTip":"Ext.tip.ToolTip",
-        "Ext.Toolbar.Fill":"Ext.toolbar.Fill",
-        "Ext.Toolbar.Item":"Ext.toolbar.Item",
-        "Ext.PagingToolbar":"Ext.toolbar.Paging",
-        "Ext.Toolbar.Separator":"Ext.toolbar.Separator",
-        "Ext.Toolbar.Spacer":"Ext.toolbar.Spacer",
-        "Ext.Toolbar.TextItem":"Ext.toolbar.TextItem",
-        "Ext.Toolbar":"Ext.toolbar.Toolbar",
-        "Ext.tree.TreePanel":"Ext.tree.Panel",
-        "Ext.TreePanel":"Ext.tree.Panel",
-        "Ext.History":"Ext.util.History",
-        "Ext.KeyMap":"Ext.util.KeyMap",
-        "Ext.KeyNav":"Ext.util.KeyNav",
-        "Ext.BoundList":"Ext.view.BoundList",
-        "Ext.DataView":"Ext.view.View",
-        "Ext.Window":"Ext.window.Window"
-    }
-};
-
-(function() {
-    var scripts = document.getElementsByTagName('script'),
-        currentScript = scripts[scripts.length - 1],
-        src = currentScript.src,
-        path = src.substring(0, src.lastIndexOf('/') + 1),
-        Loader = Ext.Loader,
-        ClassManager = Ext.ClassManager,
-        data = this.ExtBootstrapData,
-        nameToAliasesMap = data.nameToAliasesMap,
-        alternateToNameMap = data.alternateToNameMap,
-        i, ln, name, aliases;
-
-    if (nameToAliasesMap) {
-        for (name in nameToAliasesMap) {
-            if (nameToAliasesMap.hasOwnProperty(name)) {
-                aliases = nameToAliasesMap[name];
-
-                if (aliases.length > 0) {
-                    for (i = 0,ln = aliases.length; i < ln; i++) {
-                        ClassManager.setAlias(name, aliases[i]);
-                    }
-                }
-                else {
-                    ClassManager.setAlias(name, null);
-                }
-            }
-        }
-    }
-
-    if (alternateToNameMap) {
-        Ext.merge(ClassManager.maps.alternateToName, alternateToNameMap);
-    }
-
-    Loader.setConfig({
-        enabled: true,
-        disableCaching: true,
-        paths: {
-            'Ext': path + 'src'
-        }
-    });
-
-    try {
-        delete this.ExtBootstrapData;
-    } catch (e) {
-        this.ExtBootstrapData = null;
-    }
-})();
-
-
-
-
-Ext._endTime = new Date().getTime();
-if (Ext._beforereadyhandler){
-    Ext._beforereadyhandler();
-}
+Ext.ClassManager.addNameAlternateMappings({
+  "Ext.draw.engine.ImageExporter": [],
+  "Ext.layout.component.Auto": [],
+  "Ext.grid.property.Store": [
+    "Ext.grid.PropertyStore"
+  ],
+  "Ext.layout.container.Box": [
+    "Ext.layout.BoxLayout"
+  ],
+  "Ext.direct.JsonProvider": [],
+  "Ext.tree.Panel": [
+    "Ext.tree.TreePanel",
+    "Ext.TreePanel"
+  ],
+  "Ext.data.Model": [
+    "Ext.data.Record"
+  ],
+  "Ext.data.reader.Reader": [
+    "Ext.data.Reader",
+    "Ext.data.DataReader"
+  ],
+  "Ext.tab.Tab": [],
+  "Ext.button.Button": [
+    "Ext.Button"
+  ],
+  "Ext.util.Grouper": [],
+  "Ext.util.TaskRunner": [],
+  "Ext.direct.RemotingProvider": [],
+  "Ext.data.NodeInterface": [],
+  "Ext.grid.column.Date": [
+    "Ext.grid.DateColumn"
+  ],
+  "Ext.form.field.Trigger": [
+    "Ext.form.TriggerField",
+    "Ext.form.TwinTriggerField",
+    "Ext.form.Trigger"
+  ],
+  "Ext.grid.plugin.RowEditing": [],
+  "Ext.tip.QuickTip": [
+    "Ext.QuickTip"
+  ],
+  "Ext.form.action.Load": [
+    "Ext.form.Action.Load"
+  ],
+  "Ext.form.field.ComboBox": [
+    "Ext.form.ComboBox"
+  ],
+  "Ext.layout.container.Border": [
+    "Ext.layout.BorderLayout"
+  ],
+  "Ext.data.JsonPStore": [],
+  "Ext.layout.component.field.TextArea": [],
+  "Ext.dom.AbstractHelper": [],
+  "Ext.layout.container.Container": [
+    "Ext.layout.ContainerLayout"
+  ],
+  "Ext.util.Sortable": [],
+  "Ext.selection.Model": [
+    "Ext.AbstractSelectionModel"
+  ],
+  "Ext.draw.CompositeSprite": [],
+  "Ext.fx.Queue": [],
+  "Ext.dd.StatusProxy": [],
+  "Ext.form.field.Checkbox": [
+    "Ext.form.Checkbox"
+  ],
+  "Ext.XTemplateCompiler": [],
+  "Ext.direct.Transaction": [
+    "Ext.Direct.Transaction"
+  ],
+  "Ext.util.Offset": [],
+  "Ext.dom.Element": [
+    "Ext.Element",
+    "Ext.core.Element"
+  ],
+  "Ext.view.DragZone": [],
+  "Ext.util.KeyNav": [
+    "Ext.KeyNav"
+  ],
+  "Ext.form.field.File": [
+    "Ext.form.FileUploadField",
+    "Ext.ux.form.FileUploadField",
+    "Ext.form.File"
+  ],
+  "Ext.slider.Single": [
+    "Ext.Slider",
+    "Ext.form.SliderField",
+    "Ext.slider.SingleSlider",
+    "Ext.slider.Slider"
+  ],
+  "Ext.panel.Proxy": [
+    "Ext.dd.PanelProxy"
+  ],
+  "Ext.fx.target.Target": [],
+  "Ext.ComponentManager": [
+    "Ext.ComponentMgr"
+  ],
+  "Ext.grid.feature.GroupingSummary": [],
+  "Ext.grid.property.HeaderContainer": [
+    "Ext.grid.PropertyColumnModel"
+  ],
+  "Ext.layout.component.BoundList": [],
+  "Ext.tab.Bar": [],
+  "Ext.app.Application": [],
+  "Ext.ShadowPool": [],
+  "Ext.layout.container.Accordion": [
+    "Ext.layout.AccordionLayout"
+  ],
+  "Ext.resizer.ResizeTracker": [],
+  "Ext.layout.container.boxOverflow.None": [
+    "Ext.layout.boxOverflow.None"
+  ],
+  "Ext.panel.Tool": [],
+  "Ext.tree.View": [],
+  "Ext.ElementLoader": [],
+  "Ext.grid.ColumnComponentLayout": [],
+  "Ext.toolbar.Separator": [
+    "Ext.Toolbar.Separator"
+  ],
+  "Ext.dd.DragZone": [],
+  "Ext.util.Renderable": [],
+  "Ext.layout.component.FieldSet": [],
+  "Ext.util.Bindable": [],
+  "Ext.data.SortTypes": [],
+  "Ext.util.Animate": [],
+  "Ext.form.field.Date": [
+    "Ext.form.DateField",
+    "Ext.form.Date"
+  ],
+  "Ext.Component": [],
+  "Ext.chart.axis.Axis": [
+    "Ext.chart.Axis"
+  ],
+  "Ext.fx.target.CompositeSprite": [],
+  "Ext.menu.DatePicker": [],
+  "Ext.form.field.Picker": [
+    "Ext.form.Picker"
+  ],
+  "Ext.fx.Animator": [],
+  "Ext.Ajax": [],
+  "Ext.layout.component.Dock": [
+    "Ext.layout.component.AbstractDock"
+  ],
+  "Ext.util.Filter": [],
+  "Ext.dd.DragDrop": [],
+  "Ext.grid.Scroller": [],
+  "Ext.view.View": [
+    "Ext.DataView"
+  ],
+  "Ext.data.association.BelongsTo": [
+    "Ext.data.BelongsToAssociation"
+  ],
+  "Ext.fx.target.Element": [],
+  "Ext.draw.Surface": [],
+  "Ext.dd.DDProxy": [],
+  "Ext.data.AbstractStore": [],
+  "Ext.form.action.StandardSubmit": [],
+  "Ext.grid.Lockable": [],
+  "Ext.dd.Registry": [],
+  "Ext.picker.Month": [
+    "Ext.MonthPicker"
+  ],
+  "Ext.container.Container": [
+    "Ext.Container"
+  ],
+  "Ext.menu.Manager": [
+    "Ext.menu.MenuMgr"
+  ],
+  "Ext.util.KeyMap": [
+    "Ext.KeyMap"
+  ],
+  "Ext.data.Batch": [],
+  "Ext.resizer.Handle": [],
+  "Ext.util.ElementContainer": [],
+  "Ext.grid.feature.Grouping": [],
+  "Ext.tab.Panel": [
+    "Ext.TabPanel"
+  ],
+  "Ext.layout.component.Body": [],
+  "Ext.layout.Context": [],
+  "Ext.layout.component.field.ComboBox": [],
+  "Ext.dd.DDTarget": [],
+  "Ext.chart.Chart": [],
+  "Ext.data.Field": [],
+  "Ext.chart.series.Gauge": [],
+  "Ext.data.StoreManager": [
+    "Ext.StoreMgr",
+    "Ext.data.StoreMgr",
+    "Ext.StoreManager"
+  ],
+  "Ext.tip.QuickTipManager": [
+    "Ext.QuickTips"
+  ],
+  "Ext.data.IdGenerator": [],
+  "Ext.grid.plugin.Editing": [],
+  "Ext.grid.RowEditor": [],
+  "Ext.state.LocalStorageProvider": [],
+  "Ext.form.action.Action": [
+    "Ext.form.Action"
+  ],
+  "Ext.ProgressBar": [],
+  "Ext.tree.ViewDragZone": [],
+  "Ext.data.reader.Array": [
+    "Ext.data.ArrayReader"
+  ],
+  "Ext.picker.Date": [
+    "Ext.DatePicker"
+  ],
+  "Ext.data.proxy.JsonP": [
+    "Ext.data.ScriptTagProxy"
+  ],
+  "Ext.chart.series.Area": [],
+  "Ext.fx.Anim": [],
+  "Ext.menu.Item": [
+    "Ext.menu.TextItem"
+  ],
+  "Ext.chart.Legend": [],
+  "Ext.grid.plugin.HeaderReorderer": [],
+  "Ext.layout.container.VBox": [
+    "Ext.layout.VBoxLayout"
+  ],
+  "Ext.view.DropZone": [],
+  "Ext.layout.component.Button": [],
+  "Ext.form.field.Hidden": [
+    "Ext.form.Hidden"
+  ],
+  "Ext.form.FieldContainer": [],
+  "Ext.data.proxy.Server": [
+    "Ext.data.ServerProxy"
+  ],
+  "Ext.chart.series.Cartesian": [
+    "Ext.chart.CartesianSeries",
+    "Ext.chart.CartesianChart"
+  ],
+  "Ext.grid.column.Column": [
+    "Ext.grid.Column"
+  ],
+  "Ext.data.ResultSet": [],
+  "Ext.data.association.HasMany": [
+    "Ext.data.HasManyAssociation"
+  ],
+  "Ext.layout.container.Fit": [
+    "Ext.layout.FitLayout"
+  ],
+  "Ext.util.CSS": [],
+  "Ext.layout.component.field.Field": [],
+  "Ext.data.proxy.Ajax": [
+    "Ext.data.HttpProxy",
+    "Ext.data.AjaxProxy"
+  ],
+  "Ext.form.Label": [],
+  "Ext.data.writer.Writer": [
+    "Ext.data.DataWriter",
+    "Ext.data.Writer"
+  ],
+  "Ext.view.BoundListKeyNav": [],
+  "Ext.form.FieldSet": [],
+  "Ext.XTemplateParser": [],
+  "Ext.form.field.VTypes": [
+    "Ext.form.VTypes"
+  ],
+  "Ext.fx.PropertyHandler": [],
+  "Ext.form.CheckboxGroup": [],
+  "Ext.data.JsonP": [],
+  "Ext.draw.engine.Vml": [],
+  "Ext.layout.container.CheckboxGroup": [],
+  "Ext.panel.Header": [],
+  "Ext.app.Controller": [],
+  "Ext.grid.plugin.CellEditing": [],
+  "Ext.form.field.Time": [
+    "Ext.form.TimeField",
+    "Ext.form.Time"
+  ],
+  "Ext.fx.CubicBezier": [],
+  "Ext.button.Cycle": [
+    "Ext.CycleButton"
+  ],
+  "Ext.data.Tree": [],
+  "Ext.ModelManager": [
+    "Ext.ModelMgr"
+  ],
+  "Ext.data.XmlStore": [],
+  "Ext.grid.ViewDropZone": [],
+  "Ext.grid.header.DropZone": [],
+  "Ext.Layer": [],
+  "Ext.util.HashMap": [],
+  "Ext.grid.column.Template": [
+    "Ext.grid.TemplateColumn"
+  ],
+  "Ext.ComponentLoader": [],
+  "Ext.EventObjectImpl": [],
+  "Ext.form.FieldAncestor": [],
+  "Ext.chart.axis.Gauge": [],
+  "Ext.data.validations": [],
+  "Ext.data.Connection": [],
+  "Ext.dd.DropZone": [],
+  "Ext.direct.ExceptionEvent": [],
+  "Ext.resizer.Splitter": [],
+  "Ext.form.RadioManager": [],
+  "Ext.data.association.HasOne": [
+    "Ext.data.HasOneAssociation"
+  ],
+  "Ext.draw.Text": [],
+  "Ext.window.MessageBox": [],
+  "Ext.fx.target.CompositeElementCSS": [],
+  "Ext.chart.series.Line": [
+    "Ext.chart.LineSeries",
+    "Ext.chart.LineChart"
+  ],
+  "Ext.view.Table": [],
+  "Ext.data.writer.Json": [
+    "Ext.data.JsonWriter"
+  ],
+  "Ext.fx.Manager": [],
+  "Ext.fx.target.CompositeElement": [],
+  "Ext.chart.Label": [],
+  "Ext.grid.View": [],
+  "Ext.Action": [],
+  "Ext.form.Basic": [
+    "Ext.form.BasicForm"
+  ],
+  "Ext.container.Viewport": [
+    "Ext.Viewport"
+  ],
+  "Ext.state.Stateful": [],
+  "Ext.grid.feature.RowBody": [],
+  "Ext.form.field.Text": [
+    "Ext.form.TextField",
+    "Ext.form.Text"
+  ],
+  "Ext.data.reader.Xml": [
+    "Ext.data.XmlReader"
+  ],
+  "Ext.grid.feature.AbstractSummary": [],
+  "Ext.chart.axis.Category": [
+    "Ext.chart.CategoryAxis"
+  ],
+  "Ext.layout.container.Absolute": [
+    "Ext.layout.AbsoluteLayout"
+  ],
+  "Ext.data.reader.Json": [
+    "Ext.data.JsonReader"
+  ],
+  "Ext.util.TextMetrics": [],
+  "Ext.data.TreeStore": [],
+  "Ext.view.BoundList": [
+    "Ext.BoundList"
+  ],
+  "Ext.form.field.HtmlEditor": [
+    "Ext.form.HtmlEditor"
+  ],
+  "Ext.layout.container.Form": [
+    "Ext.layout.FormLayout"
+  ],
+  "Ext.chart.MaskLayer": [],
+  "Ext.util.Observable": [],
+  "Ext.resizer.BorderSplitterTracker": [],
+  "Ext.util.LruCache": [],
+  "Ext.tip.Tip": [
+    "Ext.Tip"
+  ],
+  "Ext.dom.CompositeElement": [
+    "Ext.CompositeElement"
+  ],
+  "Ext.grid.feature.RowWrap": [],
+  "Ext.data.proxy.Client": [
+    "Ext.data.ClientProxy"
+  ],
+  "Ext.data.Types": [],
+  "Ext.draw.SpriteDD": [],
+  "Ext.layout.container.boxOverflow.Menu": [
+    "Ext.layout.boxOverflow.Menu"
+  ],
+  "Ext.LoadMask": [],
+  "Ext.toolbar.Paging": [
+    "Ext.PagingToolbar"
+  ],
+  "Ext.data.association.Association": [
+    "Ext.data.Association"
+  ],
+  "Ext.tree.ViewDropZone": [],
+  "Ext.grid.LockingView": [],
+  "Ext.toolbar.Toolbar": [
+    "Ext.Toolbar"
+  ],
+  "Ext.tip.ToolTip": [
+    "Ext.ToolTip"
+  ],
+  "Ext.chart.Highlight": [],
+  "Ext.state.Manager": [],
+  "Ext.util.Inflector": [],
+  "Ext.grid.Panel": [
+    "Ext.list.ListView",
+    "Ext.ListView",
+    "Ext.grid.GridPanel"
+  ],
+  "Ext.XTemplate": [],
+  "Ext.data.NodeStore": [],
+  "Ext.Shadow": [],
+  "Ext.form.action.Submit": [
+    "Ext.form.Action.Submit"
+  ],
+  "Ext.form.Panel": [
+    "Ext.FormPanel",
+    "Ext.form.FormPanel"
+  ],
+  "Ext.chart.series.Series": [],
+  "Ext.perf.Accumulator": [],
+  "Ext.data.Request": [],
+  "Ext.dd.DD": [],
+  "Ext.dom.CompositeElementLite": [
+    "Ext.CompositeElementLite"
+  ],
+  "Ext.toolbar.Fill": [
+    "Ext.Toolbar.Fill"
+  ],
+  "Ext.grid.RowNumberer": [],
+  "Ext.data.proxy.WebStorage": [
+    "Ext.data.WebStorageProxy"
+  ],
+  "Ext.util.Floating": [],
+  "Ext.form.action.DirectSubmit": [
+    "Ext.form.Action.DirectSubmit"
+  ],
+  "Ext.util.Cookies": [],
+  "Ext.data.UuidGenerator": [],
+  "Ext.util.Point": [],
+  "Ext.fx.target.Component": [],
+  "Ext.form.CheckboxManager": [],
+  "Ext.form.field.Field": [],
+  "Ext.form.field.Display": [
+    "Ext.form.DisplayField",
+    "Ext.form.Display"
+  ],
+  "Ext.layout.container.Anchor": [
+    "Ext.layout.AnchorLayout"
+  ],
+  "Ext.layout.component.field.Text": [],
+  "Ext.data.DirectStore": [],
+  "Ext.data.BufferStore": [],
+  "Ext.grid.ColumnLayout": [],
+  "Ext.chart.series.Column": [
+    "Ext.chart.ColumnSeries",
+    "Ext.chart.ColumnChart",
+    "Ext.chart.StackedColumnChart"
+  ],
+  "Ext.Template": [],
+  "Ext.AbstractComponent": [],
+  "Ext.flash.Component": [
+    "Ext.FlashComponent"
+  ],
+  "Ext.form.field.Base": [
+    "Ext.form.Field",
+    "Ext.form.BaseField"
+  ],
+  "Ext.data.SequentialIdGenerator": [],
+  "Ext.grid.header.Container": [],
+  "Ext.container.ButtonGroup": [
+    "Ext.ButtonGroup"
+  ],
+  "Ext.grid.column.Action": [
+    "Ext.grid.ActionColumn"
+  ],
+  "Ext.layout.component.field.Trigger": [],
+  "Ext.layout.component.field.FieldContainer": [],
+  "Ext.chart.Shape": [],
+  "Ext.panel.DD": [],
+  "Ext.container.AbstractContainer": [],
+  "Ext.data.ArrayStore": [],
+  "Ext.window.Window": [
+    "Ext.Window"
+  ],
+  "Ext.picker.Color": [
+    "Ext.ColorPalette"
+  ],
+  "Ext.grid.feature.Feature": [],
+  "Ext.chart.theme.Theme": [],
+  "Ext.util.ClickRepeater": [],
+  "Ext.form.field.Spinner": [
+    "Ext.form.Spinner"
+  ],
+  "Ext.container.DockingContainer": [],
+  "Ext.selection.DataViewModel": [],
+  "Ext.dd.DragTracker": [],
+  "Ext.dd.DragDropManager": [
+    "Ext.dd.DragDropMgr",
+    "Ext.dd.DDM"
+  ],
+  "Ext.selection.CheckboxModel": [],
+  "Ext.layout.container.Column": [
+    "Ext.layout.ColumnLayout"
+  ],
+  "Ext.menu.KeyNav": [],
+  "Ext.draw.Matrix": [],
+  "Ext.form.field.Number": [
+    "Ext.form.NumberField",
+    "Ext.form.Number"
+  ],
+  "Ext.data.proxy.Direct": [
+    "Ext.data.DirectProxy"
+  ],
+  "Ext.chart.Navigation": [],
+  "Ext.slider.Tip": [],
+  "Ext.chart.theme.Base": [],
+  "Ext.form.field.TextArea": [
+    "Ext.form.TextArea"
+  ],
+  "Ext.form.field.Radio": [
+    "Ext.form.Radio"
+  ],
+  "Ext.layout.component.ProgressBar": [],
+  "Ext.chart.series.Pie": [
+    "Ext.chart.PieSeries",
+    "Ext.chart.PieChart"
+  ],
+  "Ext.view.TableChunker": [],
+  "Ext.tree.plugin.TreeViewDragDrop": [],
+  "Ext.direct.Provider": [],
+  "Ext.layout.Layout": [],
+  "Ext.toolbar.TextItem": [
+    "Ext.Toolbar.TextItem"
+  ],
+  "Ext.dom.Helper": [],
+  "Ext.util.AbstractMixedCollection": [],
+  "Ext.data.JsonStore": [],
+  "Ext.button.Split": [
+    "Ext.SplitButton"
+  ],
+  "Ext.dd.DropTarget": [],
+  "Ext.direct.RemotingEvent": [],
+  "Ext.draw.Sprite": [],
+  "Ext.fx.target.Sprite": [],
+  "Ext.data.proxy.LocalStorage": [
+    "Ext.data.LocalStorageProxy"
+  ],
+  "Ext.layout.component.Draw": [],
+  "Ext.AbstractPlugin": [],
+  "Ext.Editor": [],
+  "Ext.chart.axis.Radial": [],
+  "Ext.chart.Tip": [],
+  "Ext.layout.container.Table": [
+    "Ext.layout.TableLayout"
+  ],
+  "Ext.chart.axis.Abstract": [],
+  "Ext.data.proxy.Rest": [
+    "Ext.data.RestProxy"
+  ],
+  "Ext.util.Queue": [],
+  "Ext.state.CookieProvider": [],
+  "Ext.Img": [],
+  "Ext.dd.DragSource": [],
+  "Ext.grid.CellEditor": [],
+  "Ext.layout.ClassList": [],
+  "Ext.util.Sorter": [],
+  "Ext.resizer.SplitterTracker": [],
+  "Ext.panel.Table": [],
+  "Ext.draw.Color": [],
+  "Ext.chart.series.Bar": [
+    "Ext.chart.BarSeries",
+    "Ext.chart.BarChart",
+    "Ext.chart.StackedBarChart"
+  ],
+  "Ext.PluginManager": [
+    "Ext.PluginMgr"
+  ],
+  "Ext.util.ComponentDragger": [],
+  "Ext.chart.series.Scatter": [],
+  "Ext.chart.Callout": [],
+  "Ext.data.Store": [],
+  "Ext.grid.feature.Summary": [],
+  "Ext.layout.component.Component": [],
+  "Ext.util.ProtoElement": [],
+  "Ext.direct.Manager": [],
+  "Ext.data.proxy.Proxy": [
+    "Ext.data.DataProxy",
+    "Ext.data.Proxy"
+  ],
+  "Ext.menu.CheckItem": [],
+  "Ext.dom.AbstractElement": [],
+  "Ext.layout.container.Card": [
+    "Ext.layout.CardLayout"
+  ],
+  "Ext.draw.Component": [],
+  "Ext.toolbar.Item": [
+    "Ext.Toolbar.Item"
+  ],
+  "Ext.form.RadioGroup": [],
+  "Ext.slider.Thumb": [],
+  "Ext.grid.header.DragZone": [],
+  "Ext.form.action.DirectLoad": [
+    "Ext.form.Action.DirectLoad"
+  ],
+  "Ext.picker.Time": [],
+  "Ext.resizer.BorderSplitter": [],
+  "Ext.ZIndexManager": [
+    "Ext.WindowGroup"
+  ],
+  "Ext.menu.ColorPicker": [],
+  "Ext.menu.Menu": [],
+  "Ext.chart.LegendItem": [],
+  "Ext.toolbar.Spacer": [
+    "Ext.Toolbar.Spacer"
+  ],
+  "Ext.panel.Panel": [
+    "Ext.Panel"
+  ],
+  "Ext.util.Memento": [],
+  "Ext.data.proxy.Memory": [
+    "Ext.data.MemoryProxy"
+  ],
+  "Ext.chart.axis.Time": [
+    "Ext.chart.TimeAxis"
+  ],
+  "Ext.grid.plugin.DragDrop": [],
+  "Ext.layout.component.Tab": [],
+  "Ext.ComponentQuery": [],
+  "Ext.draw.engine.SvgExporter": [],
+  "Ext.grid.feature.Chunking": [],
+  "Ext.layout.container.Auto": [],
+  "Ext.view.AbstractView": [],
+  "Ext.util.Region": [],
+  "Ext.draw.Draw": [],
+  "Ext.fx.target.ElementCSS": [],
+  "Ext.grid.PagingScroller": [],
+  "Ext.layout.component.field.HtmlEditor": [],
+  "Ext.data.proxy.SessionStorage": [
+    "Ext.data.SessionStorageProxy"
+  ],
+  "Ext.app.EventBus": [],
+  "Ext.menu.Separator": [],
+  "Ext.util.History": [
+    "Ext.History"
+  ],
+  "Ext.direct.Event": [],
+  "Ext.direct.RemotingMethod": [],
+  "Ext.dd.ScrollManager": [],
+  "Ext.chart.Mask": [],
+  "Ext.selection.CellModel": [],
+  "Ext.view.TableLayout": [],
+  "Ext.state.Provider": [],
+  "Ext.layout.container.Editor": [],
+  "Ext.data.Errors": [],
+  "Ext.dom.AbstractQuery": [],
+  "Ext.selection.TreeModel": [],
+  "Ext.form.Labelable": [],
+  "Ext.grid.column.Number": [
+    "Ext.grid.NumberColumn"
+  ],
+  "Ext.draw.engine.Svg": [],
+  "Ext.grid.property.Grid": [
+    "Ext.grid.PropertyGrid"
+  ],
+  "Ext.FocusManager": [
+    "Ext.FocusMgr"
+  ],
+  "Ext.AbstractManager": [],
+  "Ext.chart.series.Radar": [],
+  "Ext.grid.property.Property": [
+    "Ext.PropGridProperty"
+  ],
+  "Ext.chart.TipSurface": [],
+  "Ext.grid.column.Boolean": [
+    "Ext.grid.BooleanColumn"
+  ],
+  "Ext.direct.PollingProvider": [],
+  "Ext.grid.plugin.HeaderResizer": [],
+  "Ext.data.writer.Xml": [
+    "Ext.data.XmlWriter"
+  ],
+  "Ext.tree.Column": [],
+  "Ext.slider.Multi": [
+    "Ext.slider.MultiSlider"
+  ],
+  "Ext.panel.AbstractPanel": [],
+  "Ext.layout.component.field.Slider": [],
+  "Ext.chart.axis.Numeric": [
+    "Ext.chart.NumericAxis"
+  ],
+  "Ext.layout.container.boxOverflow.Scroller": [
+    "Ext.layout.boxOverflow.Scroller"
+  ],
+  "Ext.data.Operation": [],
+  "Ext.layout.container.HBox": [
+    "Ext.layout.HBoxLayout"
+  ],
+  "Ext.resizer.Resizer": [
+    "Ext.Resizable"
+  ],
+  "Ext.selection.RowModel": [],
+  "Ext.layout.ContextItem": [],
+  "Ext.util.MixedCollection": [],
+  "Ext.perf.Monitor": [
+    "Ext.Perf"
+  ]
+});Ext.ClassManager.addNameAliasMappings({
+  "Ext.draw.engine.ImageExporter": [],
+  "Ext.layout.component.Auto": [
+    "layout.autocomponent"
+  ],
+  "Ext.grid.property.Store": [],
+  "Ext.layout.container.Box": [
+    "layout.box"
+  ],
+  "Ext.direct.JsonProvider": [
+    "direct.jsonprovider"
+  ],
+  "Ext.tree.Panel": [
+    "widget.treepanel"
+  ],
+  "Ext.data.Model": [],
+  "Ext.data.reader.Reader": [],
+  "Ext.tab.Tab": [
+    "widget.tab"
+  ],
+  "Ext.button.Button": [
+    "widget.button"
+  ],
+  "Ext.util.Grouper": [],
+  "Ext.util.TaskRunner": [],
+  "Ext.direct.RemotingProvider": [
+    "direct.remotingprovider"
+  ],
+  "Ext.data.NodeInterface": [],
+  "Ext.grid.column.Date": [
+    "widget.datecolumn"
+  ],
+  "Ext.form.field.Trigger": [
+    "widget.triggerfield",
+    "widget.trigger"
+  ],
+  "Ext.grid.plugin.RowEditing": [
+    "plugin.rowediting"
+  ],
+  "Ext.tip.QuickTip": [
+    "widget.quicktip"
+  ],
+  "Ext.form.action.Load": [
+    "formaction.load"
+  ],
+  "Ext.form.field.ComboBox": [
+    "widget.combobox",
+    "widget.combo"
+  ],
+  "Ext.layout.container.Border": [
+    "layout.border"
+  ],
+  "Ext.data.JsonPStore": [
+    "store.jsonp"
+  ],
+  "Ext.layout.component.field.TextArea": [
+    "layout.textareafield"
+  ],
+  "Ext.dom.AbstractHelper": [],
+  "Ext.layout.container.Container": [],
+  "Ext.util.Sortable": [],
+  "Ext.selection.Model": [],
+  "Ext.draw.CompositeSprite": [],
+  "Ext.fx.Queue": [],
+  "Ext.dd.StatusProxy": [],
+  "Ext.form.field.Checkbox": [
+    "widget.checkboxfield",
+    "widget.checkbox"
+  ],
+  "Ext.XTemplateCompiler": [],
+  "Ext.direct.Transaction": [
+    "direct.transaction"
+  ],
+  "Ext.util.Offset": [],
+  "Ext.dom.Element": [],
+  "Ext.view.DragZone": [],
+  "Ext.util.KeyNav": [],
+  "Ext.form.field.File": [
+    "widget.filefield",
+    "widget.fileuploadfield"
+  ],
+  "Ext.slider.Single": [
+    "widget.slider",
+    "widget.sliderfield"
+  ],
+  "Ext.panel.Proxy": [],
+  "Ext.fx.target.Target": [],
+  "Ext.ComponentManager": [],
+  "Ext.grid.feature.GroupingSummary": [
+    "feature.groupingsummary"
+  ],
+  "Ext.grid.property.HeaderContainer": [],
+  "Ext.layout.component.BoundList": [
+    "layout.boundlist"
+  ],
+  "Ext.tab.Bar": [
+    "widget.tabbar"
+  ],
+  "Ext.app.Application": [],
+  "Ext.ShadowPool": [],
+  "Ext.layout.container.Accordion": [
+    "layout.accordion"
+  ],
+  "Ext.resizer.ResizeTracker": [],
+  "Ext.layout.container.boxOverflow.None": [],
+  "Ext.panel.Tool": [
+    "widget.tool"
+  ],
+  "Ext.tree.View": [
+    "widget.treeview"
+  ],
+  "Ext.ElementLoader": [],
+  "Ext.grid.ColumnComponentLayout": [
+    "layout.columncomponent"
+  ],
+  "Ext.toolbar.Separator": [
+    "widget.tbseparator"
+  ],
+  "Ext.dd.DragZone": [],
+  "Ext.util.Renderable": [],
+  "Ext.layout.component.FieldSet": [
+    "layout.fieldset"
+  ],
+  "Ext.util.Bindable": [],
+  "Ext.data.SortTypes": [],
+  "Ext.util.Animate": [],
+  "Ext.form.field.Date": [
+    "widget.datefield"
+  ],
+  "Ext.Component": [
+    "widget.component",
+    "widget.box"
+  ],
+  "Ext.chart.axis.Axis": [],
+  "Ext.fx.target.CompositeSprite": [],
+  "Ext.menu.DatePicker": [
+    "widget.datemenu"
+  ],
+  "Ext.form.field.Picker": [
+    "widget.pickerfield"
+  ],
+  "Ext.fx.Animator": [],
+  "Ext.Ajax": [],
+  "Ext.layout.component.Dock": [
+    "layout.dock"
+  ],
+  "Ext.util.Filter": [],
+  "Ext.dd.DragDrop": [],
+  "Ext.grid.Scroller": [],
+  "Ext.view.View": [
+    "widget.dataview"
+  ],
+  "Ext.data.association.BelongsTo": [
+    "association.belongsto"
+  ],
+  "Ext.fx.target.Element": [],
+  "Ext.draw.Surface": [],
+  "Ext.dd.DDProxy": [],
+  "Ext.data.AbstractStore": [],
+  "Ext.form.action.StandardSubmit": [
+    "formaction.standardsubmit"
+  ],
+  "Ext.grid.Lockable": [],
+  "Ext.dd.Registry": [],
+  "Ext.picker.Month": [
+    "widget.monthpicker"
+  ],
+  "Ext.container.Container": [
+    "widget.container"
+  ],
+  "Ext.menu.Manager": [],
+  "Ext.util.KeyMap": [],
+  "Ext.data.Batch": [],
+  "Ext.resizer.Handle": [],
+  "Ext.util.ElementContainer": [],
+  "Ext.grid.feature.Grouping": [
+    "feature.grouping"
+  ],
+  "Ext.tab.Panel": [
+    "widget.tabpanel"
+  ],
+  "Ext.layout.component.Body": [
+    "layout.body"
+  ],
+  "Ext.layout.Context": [],
+  "Ext.layout.component.field.ComboBox": [
+    "layout.combobox"
+  ],
+  "Ext.dd.DDTarget": [],
+  "Ext.chart.Chart": [
+    "widget.chart"
+  ],
+  "Ext.data.Field": [
+    "data.field"
+  ],
+  "Ext.chart.series.Gauge": [
+    "series.gauge"
+  ],
+  "Ext.data.StoreManager": [],
+  "Ext.tip.QuickTipManager": [],
+  "Ext.data.IdGenerator": [],
+  "Ext.grid.plugin.Editing": [
+    "editing.editing"
+  ],
+  "Ext.grid.RowEditor": [],
+  "Ext.state.LocalStorageProvider": [
+    "state.localstorage"
+  ],
+  "Ext.form.action.Action": [],
+  "Ext.ProgressBar": [
+    "widget.progressbar"
+  ],
+  "Ext.tree.ViewDragZone": [],
+  "Ext.data.reader.Array": [
+    "reader.array"
+  ],
+  "Ext.picker.Date": [
+    "widget.datepicker"
+  ],
+  "Ext.data.proxy.JsonP": [
+    "proxy.jsonp",
+    "proxy.scripttag"
+  ],
+  "Ext.chart.series.Area": [
+    "series.area"
+  ],
+  "Ext.fx.Anim": [],
+  "Ext.menu.Item": [
+    "widget.menuitem"
+  ],
+  "Ext.chart.Legend": [],
+  "Ext.grid.plugin.HeaderReorderer": [
+    "plugin.gridheaderreorderer"
+  ],
+  "Ext.layout.container.VBox": [
+    "layout.vbox"
+  ],
+  "Ext.view.DropZone": [],
+  "Ext.layout.component.Button": [
+    "layout.button"
+  ],
+  "Ext.form.field.Hidden": [
+    "widget.hiddenfield",
+    "widget.hidden"
+  ],
+  "Ext.form.FieldContainer": [
+    "widget.fieldcontainer"
+  ],
+  "Ext.data.proxy.Server": [
+    "proxy.server"
+  ],
+  "Ext.chart.series.Cartesian": [],
+  "Ext.grid.column.Column": [
+    "widget.gridcolumn"
+  ],
+  "Ext.data.ResultSet": [],
+  "Ext.data.association.HasMany": [
+    "association.hasmany"
+  ],
+  "Ext.layout.container.Fit": [
+    "layout.fit"
+  ],
+  "Ext.util.CSS": [],
+  "Ext.layout.component.field.Field": [
+    "layout.field"
+  ],
+  "Ext.data.proxy.Ajax": [
+    "proxy.ajax"
+  ],
+  "Ext.form.Label": [
+    "widget.label"
+  ],
+  "Ext.data.writer.Writer": [
+    "writer.base"
+  ],
+  "Ext.view.BoundListKeyNav": [],
+  "Ext.form.FieldSet": [
+    "widget.fieldset"
+  ],
+  "Ext.XTemplateParser": [],
+  "Ext.form.field.VTypes": [],
+  "Ext.fx.PropertyHandler": [],
+  "Ext.form.CheckboxGroup": [
+    "widget.checkboxgroup"
+  ],
+  "Ext.data.JsonP": [],
+  "Ext.draw.engine.Vml": [],
+  "Ext.layout.container.CheckboxGroup": [
+    "layout.checkboxgroup"
+  ],
+  "Ext.panel.Header": [
+    "widget.header"
+  ],
+  "Ext.app.Controller": [],
+  "Ext.grid.plugin.CellEditing": [
+    "plugin.cellediting"
+  ],
+  "Ext.form.field.Time": [
+    "widget.timefield"
+  ],
+  "Ext.fx.CubicBezier": [],
+  "Ext.button.Cycle": [
+    "widget.cycle"
+  ],
+  "Ext.data.Tree": [
+    "data.tree"
+  ],
+  "Ext.ModelManager": [],
+  "Ext.data.XmlStore": [
+    "store.xml"
+  ],
+  "Ext.grid.ViewDropZone": [],
+  "Ext.grid.header.DropZone": [],
+  "Ext.Layer": [],
+  "Ext.util.HashMap": [],
+  "Ext.grid.column.Template": [
+    "widget.templatecolumn"
+  ],
+  "Ext.ComponentLoader": [],
+  "Ext.EventObjectImpl": [],
+  "Ext.form.FieldAncestor": [],
+  "Ext.chart.axis.Gauge": [
+    "axis.gauge"
+  ],
+  "Ext.data.validations": [],
+  "Ext.data.Connection": [],
+  "Ext.dd.DropZone": [],
+  "Ext.direct.ExceptionEvent": [
+    "direct.exception"
+  ],
+  "Ext.resizer.Splitter": [
+    "widget.splitter"
+  ],
+  "Ext.form.RadioManager": [],
+  "Ext.data.association.HasOne": [
+    "association.hasone"
+  ],
+  "Ext.draw.Text": [
+    "widget.text"
+  ],
+  "Ext.window.MessageBox": [
+    "widget.messagebox"
+  ],
+  "Ext.fx.target.CompositeElementCSS": [],
+  "Ext.chart.series.Line": [
+    "series.line"
+  ],
+  "Ext.view.Table": [
+    "widget.tableview"
+  ],
+  "Ext.data.writer.Json": [
+    "writer.json"
+  ],
+  "Ext.fx.Manager": [],
+  "Ext.fx.target.CompositeElement": [],
+  "Ext.chart.Label": [],
+  "Ext.grid.View": [
+    "widget.gridview"
+  ],
+  "Ext.Action": [],
+  "Ext.form.Basic": [],
+  "Ext.container.Viewport": [
+    "widget.viewport"
+  ],
+  "Ext.state.Stateful": [],
+  "Ext.grid.feature.RowBody": [
+    "feature.rowbody"
+  ],
+  "Ext.form.field.Text": [
+    "widget.textfield"
+  ],
+  "Ext.data.reader.Xml": [
+    "reader.xml"
+  ],
+  "Ext.grid.feature.AbstractSummary": [
+    "feature.abstractsummary"
+  ],
+  "Ext.chart.axis.Category": [
+    "axis.category"
+  ],
+  "Ext.layout.container.Absolute": [
+    "layout.absolute"
+  ],
+  "Ext.data.reader.Json": [
+    "reader.json"
+  ],
+  "Ext.util.TextMetrics": [],
+  "Ext.data.TreeStore": [
+    "store.tree"
+  ],
+  "Ext.view.BoundList": [
+    "widget.boundlist"
+  ],
+  "Ext.form.field.HtmlEditor": [
+    "widget.htmleditor"
+  ],
+  "Ext.layout.container.Form": [
+    "layout.form"
+  ],
+  "Ext.chart.MaskLayer": [],
+  "Ext.util.Observable": [],
+  "Ext.resizer.BorderSplitterTracker": [],
+  "Ext.util.LruCache": [],
+  "Ext.tip.Tip": [],
+  "Ext.dom.CompositeElement": [],
+  "Ext.grid.feature.RowWrap": [
+    "feature.rowwrap"
+  ],
+  "Ext.data.proxy.Client": [],
+  "Ext.data.Types": [],
+  "Ext.draw.SpriteDD": [],
+  "Ext.layout.container.boxOverflow.Menu": [],
+  "Ext.LoadMask": [
+    "widget.loadmask"
+  ],
+  "Ext.toolbar.Paging": [
+    "widget.pagingtoolbar"
+  ],
+  "Ext.data.association.Association": [],
+  "Ext.tree.ViewDropZone": [],
+  "Ext.grid.LockingView": [],
+  "Ext.toolbar.Toolbar": [
+    "widget.toolbar"
+  ],
+  "Ext.tip.ToolTip": [
+    "widget.tooltip"
+  ],
+  "Ext.chart.Highlight": [],
+  "Ext.state.Manager": [],
+  "Ext.util.Inflector": [],
+  "Ext.grid.Panel": [
+    "widget.gridpanel",
+    "widget.grid"
+  ],
+  "Ext.XTemplate": [],
+  "Ext.data.NodeStore": [
+    "store.node"
+  ],
+  "Ext.Shadow": [],
+  "Ext.form.action.Submit": [
+    "formaction.submit"
+  ],
+  "Ext.form.Panel": [
+    "widget.form"
+  ],
+  "Ext.chart.series.Series": [],
+  "Ext.perf.Accumulator": [],
+  "Ext.data.Request": [],
+  "Ext.dd.DD": [],
+  "Ext.dom.CompositeElementLite": [],
+  "Ext.toolbar.Fill": [
+    "widget.tbfill"
+  ],
+  "Ext.grid.RowNumberer": [
+    "widget.rownumberer"
+  ],
+  "Ext.data.proxy.WebStorage": [],
+  "Ext.util.Floating": [],
+  "Ext.form.action.DirectSubmit": [
+    "formaction.directsubmit"
+  ],
+  "Ext.util.Cookies": [],
+  "Ext.data.UuidGenerator": [
+    "idgen.uuid"
+  ],
+  "Ext.util.Point": [],
+  "Ext.fx.target.Component": [],
+  "Ext.form.CheckboxManager": [],
+  "Ext.form.field.Field": [],
+  "Ext.form.field.Display": [
+    "widget.displayfield"
+  ],
+  "Ext.layout.container.Anchor": [
+    "layout.anchor"
+  ],
+  "Ext.layout.component.field.Text": [
+    "layout.textfield"
+  ],
+  "Ext.data.DirectStore": [
+    "store.direct"
+  ],
+  "Ext.data.BufferStore": [
+    "store.buffer"
+  ],
+  "Ext.grid.ColumnLayout": [
+    "layout.gridcolumn"
+  ],
+  "Ext.chart.series.Column": [
+    "series.column"
+  ],
+  "Ext.Template": [],
+  "Ext.AbstractComponent": [],
+  "Ext.flash.Component": [
+    "widget.flash"
+  ],
+  "Ext.form.field.Base": [
+    "widget.field"
+  ],
+  "Ext.data.SequentialIdGenerator": [
+    "idgen.sequential"
+  ],
+  "Ext.grid.header.Container": [
+    "widget.headercontainer"
+  ],
+  "Ext.container.ButtonGroup": [
+    "widget.buttongroup"
+  ],
+  "Ext.grid.column.Action": [
+    "widget.actioncolumn"
+  ],
+  "Ext.layout.component.field.Trigger": [
+    "layout.triggerfield"
+  ],
+  "Ext.layout.component.field.FieldContainer": [
+    "layout.fieldcontainer"
+  ],
+  "Ext.chart.Shape": [],
+  "Ext.panel.DD": [],
+  "Ext.container.AbstractContainer": [],
+  "Ext.data.ArrayStore": [
+    "store.array"
+  ],
+  "Ext.window.Window": [
+    "widget.window"
+  ],
+  "Ext.picker.Color": [
+    "widget.colorpicker"
+  ],
+  "Ext.grid.feature.Feature": [
+    "feature.feature"
+  ],
+  "Ext.chart.theme.Theme": [],
+  "Ext.util.ClickRepeater": [],
+  "Ext.form.field.Spinner": [
+    "widget.spinnerfield"
+  ],
+  "Ext.container.DockingContainer": [],
+  "Ext.selection.DataViewModel": [],
+  "Ext.dd.DragTracker": [],
+  "Ext.dd.DragDropManager": [],
+  "Ext.selection.CheckboxModel": [
+    "selection.checkboxmodel"
+  ],
+  "Ext.layout.container.Column": [
+    "layout.column"
+  ],
+  "Ext.menu.KeyNav": [],
+  "Ext.draw.Matrix": [],
+  "Ext.form.field.Number": [
+    "widget.numberfield"
+  ],
+  "Ext.data.proxy.Direct": [
+    "proxy.direct"
+  ],
+  "Ext.chart.Navigation": [],
+  "Ext.slider.Tip": [
+    "widget.slidertip"
+  ],
+  "Ext.chart.theme.Base": [],
+  "Ext.form.field.TextArea": [
+    "widget.textareafield",
+    "widget.textarea"
+  ],
+  "Ext.form.field.Radio": [
+    "widget.radiofield",
+    "widget.radio"
+  ],
+  "Ext.layout.component.ProgressBar": [
+    "layout.progressbar"
+  ],
+  "Ext.chart.series.Pie": [
+    "series.pie"
+  ],
+  "Ext.view.TableChunker": [],
+  "Ext.tree.plugin.TreeViewDragDrop": [
+    "plugin.treeviewdragdrop"
+  ],
+  "Ext.direct.Provider": [
+    "direct.provider"
+  ],
+  "Ext.layout.Layout": [],
+  "Ext.toolbar.TextItem": [
+    "widget.tbtext"
+  ],
+  "Ext.dom.Helper": [],
+  "Ext.util.AbstractMixedCollection": [],
+  "Ext.data.JsonStore": [
+    "store.json"
+  ],
+  "Ext.button.Split": [
+    "widget.splitbutton"
+  ],
+  "Ext.dd.DropTarget": [],
+  "Ext.direct.RemotingEvent": [
+    "direct.rpc"
+  ],
+  "Ext.draw.Sprite": [],
+  "Ext.fx.target.Sprite": [],
+  "Ext.data.proxy.LocalStorage": [
+    "proxy.localstorage"
+  ],
+  "Ext.layout.component.Draw": [
+    "layout.draw"
+  ],
+  "Ext.AbstractPlugin": [],
+  "Ext.Editor": [
+    "widget.editor"
+  ],
+  "Ext.chart.axis.Radial": [
+    "axis.radial"
+  ],
+  "Ext.chart.Tip": [],
+  "Ext.layout.container.Table": [
+    "layout.table"
+  ],
+  "Ext.chart.axis.Abstract": [],
+  "Ext.data.proxy.Rest": [
+    "proxy.rest"
+  ],
+  "Ext.util.Queue": [],
+  "Ext.state.CookieProvider": [],
+  "Ext.Img": [
+    "widget.image",
+    "widget.imagecomponent"
+  ],
+  "Ext.dd.DragSource": [],
+  "Ext.grid.CellEditor": [],
+  "Ext.layout.ClassList": [],
+  "Ext.util.Sorter": [],
+  "Ext.resizer.SplitterTracker": [],
+  "Ext.panel.Table": [
+    "widget.tablepanel"
+  ],
+  "Ext.draw.Color": [],
+  "Ext.chart.series.Bar": [
+    "series.bar"
+  ],
+  "Ext.PluginManager": [],
+  "Ext.util.ComponentDragger": [],
+  "Ext.chart.series.Scatter": [
+    "series.scatter"
+  ],
+  "Ext.chart.Callout": [],
+  "Ext.data.Store": [
+    "store.store"
+  ],
+  "Ext.grid.feature.Summary": [
+    "feature.summary"
+  ],
+  "Ext.layout.component.Component": [],
+  "Ext.util.ProtoElement": [],
+  "Ext.direct.Manager": [],
+  "Ext.data.proxy.Proxy": [
+    "proxy.proxy"
+  ],
+  "Ext.menu.CheckItem": [
+    "widget.menucheckitem"
+  ],
+  "Ext.dom.AbstractElement": [],
+  "Ext.layout.container.Card": [
+    "layout.card"
+  ],
+  "Ext.draw.Component": [
+    "widget.draw"
+  ],
+  "Ext.toolbar.Item": [
+    "widget.tbitem"
+  ],
+  "Ext.form.RadioGroup": [
+    "widget.radiogroup"
+  ],
+  "Ext.slider.Thumb": [],
+  "Ext.grid.header.DragZone": [],
+  "Ext.form.action.DirectLoad": [
+    "formaction.directload"
+  ],
+  "Ext.picker.Time": [
+    "widget.timepicker"
+  ],
+  "Ext.resizer.BorderSplitter": [
+    "widget.bordersplitter"
+  ],
+  "Ext.ZIndexManager": [],
+  "Ext.menu.ColorPicker": [
+    "widget.colormenu"
+  ],
+  "Ext.menu.Menu": [
+    "widget.menu"
+  ],
+  "Ext.chart.LegendItem": [],
+  "Ext.toolbar.Spacer": [
+    "widget.tbspacer"
+  ],
+  "Ext.panel.Panel": [
+    "widget.panel"
+  ],
+  "Ext.util.Memento": [],
+  "Ext.data.proxy.Memory": [
+    "proxy.memory"
+  ],
+  "Ext.chart.axis.Time": [
+    "axis.time"
+  ],
+  "Ext.grid.plugin.DragDrop": [
+    "plugin.gridviewdragdrop"
+  ],
+  "Ext.layout.component.Tab": [
+    "layout.tab"
+  ],
+  "Ext.ComponentQuery": [],
+  "Ext.draw.engine.SvgExporter": [],
+  "Ext.grid.feature.Chunking": [
+    "feature.chunking"
+  ],
+  "Ext.layout.container.Auto": [
+    "layout.auto",
+    "layout.autocontainer"
+  ],
+  "Ext.view.AbstractView": [],
+  "Ext.util.Region": [],
+  "Ext.draw.Draw": [],
+  "Ext.fx.target.ElementCSS": [],
+  "Ext.grid.PagingScroller": [],
+  "Ext.layout.component.field.HtmlEditor": [
+    "layout.htmleditor"
+  ],
+  "Ext.data.proxy.SessionStorage": [
+    "proxy.sessionstorage"
+  ],
+  "Ext.app.EventBus": [],
+  "Ext.menu.Separator": [
+    "widget.menuseparator"
+  ],
+  "Ext.util.History": [],
+  "Ext.direct.Event": [
+    "direct.event"
+  ],
+  "Ext.direct.RemotingMethod": [],
+  "Ext.dd.ScrollManager": [],
+  "Ext.chart.Mask": [],
+  "Ext.selection.CellModel": [
+    "selection.cellmodel"
+  ],
+  "Ext.view.TableLayout": [
+    "layout.tableview"
+  ],
+  "Ext.state.Provider": [],
+  "Ext.layout.container.Editor": [
+    "layout.editor"
+  ],
+  "Ext.data.Errors": [],
+  "Ext.dom.AbstractQuery": [],
+  "Ext.selection.TreeModel": [
+    "selection.treemodel"
+  ],
+  "Ext.form.Labelable": [],
+  "Ext.grid.column.Number": [
+    "widget.numbercolumn"
+  ],
+  "Ext.draw.engine.Svg": [],
+  "Ext.grid.property.Grid": [
+    "widget.propertygrid"
+  ],
+  "Ext.FocusManager": [],
+  "Ext.AbstractManager": [],
+  "Ext.chart.series.Radar": [
+    "series.radar"
+  ],
+  "Ext.grid.property.Property": [],
+  "Ext.chart.TipSurface": [],
+  "Ext.grid.column.Boolean": [
+    "widget.booleancolumn"
+  ],
+  "Ext.direct.PollingProvider": [
+    "direct.pollingprovider"
+  ],
+  "Ext.grid.plugin.HeaderResizer": [
+    "plugin.gridheaderresizer"
+  ],
+  "Ext.data.writer.Xml": [
+    "writer.xml"
+  ],
+  "Ext.tree.Column": [
+    "widget.treecolumn"
+  ],
+  "Ext.slider.Multi": [
+    "widget.multislider"
+  ],
+  "Ext.panel.AbstractPanel": [],
+  "Ext.layout.component.field.Slider": [
+    "layout.sliderfield"
+  ],
+  "Ext.chart.axis.Numeric": [
+    "axis.numeric"
+  ],
+  "Ext.layout.container.boxOverflow.Scroller": [],
+  "Ext.data.Operation": [],
+  "Ext.layout.container.HBox": [
+    "layout.hbox"
+  ],
+  "Ext.resizer.Resizer": [],
+  "Ext.selection.RowModel": [
+    "selection.rowmodel"
+  ],
+  "Ext.layout.ContextItem": [],
+  "Ext.util.MixedCollection": [],
+  "Ext.perf.Monitor": []
+});

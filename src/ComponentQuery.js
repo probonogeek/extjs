@@ -78,7 +78,7 @@
  */
 Ext.define('Ext.ComponentQuery', {
     singleton: true,
-    uses: ['Ext.ComponentManager']
+    requires: ['Ext.ComponentManager']
 }, function() {
 
     var cq = this,

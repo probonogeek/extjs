@@ -1,3 +1,8 @@
+//@tag dom,core
+//@define Ext.DomHelper
+//@define Ext.core.DomHelper
+//@require Ext.dom.AbstractElement-traversal
+
 /**
  * @class Ext.DomHelper
  * @extends Ext.dom.Helper
@@ -168,6 +173,7 @@ var afterbegin = 'afterbegin',
  */
 Ext.define('Ext.dom.Helper', {
     extend: 'Ext.dom.AbstractHelper',
+    requires:['Ext.dom.AbstractElement'],
 
     tableRe: /^table|tbody|tr|td$/i,
 

@@ -1,3 +1,7 @@
+//@tag dom,core
+//@require Ext.dom.AbstractElement-static
+//@define Ext.dom.AbstractElement-alignment
+
 /**
  * @class Ext.dom.AbstractElement
  */

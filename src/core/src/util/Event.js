@@ -1,3 +1,7 @@
+//@tag dom,core
+//@define Ext.util.Event
+//@require Ext.util.DelayedTask
+
 Ext.require('Ext.util.DelayedTask', function() {
 
     /**

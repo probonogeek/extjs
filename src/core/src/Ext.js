@@ -1,3 +1,4 @@
+//@tag foundation,core
 /**
  * @class Ext
  * @singleton

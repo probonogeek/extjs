@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Ext.dom.Element-position
+//@define Ext.dom.Element-scroll
+//@define Ext.dom.Element
+
 /**
  * @class Ext.dom.Element
  */

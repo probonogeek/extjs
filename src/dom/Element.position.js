@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Ext.dom.Element-fx
+//@define Ext.dom.Element-position
+//@define Ext.dom.Element
+
 /**
  * @class Ext.dom.Element
  */

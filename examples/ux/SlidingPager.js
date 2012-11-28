@@ -7,7 +7,6 @@
 * @param {Object} config Configuration options
 */
 Ext.define('Ext.ux.SlidingPager', {
-    extend: 'Object',
     requires: [
         'Ext.slider.Single',
         'Ext.slider.Tip'

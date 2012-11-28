@@ -16,7 +16,6 @@
  * the item has been created.
  */
  Ext.define('Ext.ux.ToolbarDroppable', {
-    extend: 'Object',
 
     /**
      * @constructor

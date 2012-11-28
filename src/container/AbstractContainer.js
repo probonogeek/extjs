@@ -237,6 +237,8 @@ Ext.define('Ext.container.AbstractContainer', {
      */
     bubbleEvents: ['add', 'remove'],
 
+    defaultLayoutType: 'auto',
+
     // @private
     initComponent : function(){
         var me = this;

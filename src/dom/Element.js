@@ -1,3 +1,8 @@
+//@tag dom,core
+//@require Query.js
+//@define Ext.dom.Element
+//@require Ext.dom.AbstractElement
+
 /**
  * @class Ext.dom.Element
  * @alternateClassName Ext.Element

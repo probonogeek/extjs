@@ -1,3 +1,6 @@
+//@tag extras,core
+//@require Accumulator.js
+
 /**
  * @class Ext.perf.Monitor
  * @singleton

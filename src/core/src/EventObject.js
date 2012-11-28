@@ -1,3 +1,7 @@
+//@tag dom,core
+//@require EventManager.js
+//@define Ext.EventObject
+
 /**
  * @class Ext.EventObject
 

@@ -295,6 +295,8 @@ Ext.define('Ext.Component', {
 
     monPropRe: /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
 
+    defaultComponentLayoutType: 'autocomponent',
+
     //renderTpl: new Ext.XTemplate(
     //    '<div id="{id}" class="{baseCls} {cls} {cmpCls}<tpl if="typeof ui !== \'undefined\'"> {uiBase}-{ui}</tpl>"<tpl if="typeof style !== \'undefined\'"> style="{style}"</tpl>></div>', {
     //        compiled: true,

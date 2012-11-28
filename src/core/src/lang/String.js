@@ -1,3 +1,6 @@
+//@tag foundation,core
+//@require ../version/Version.js
+
 /**
  * @class Ext.String
  *

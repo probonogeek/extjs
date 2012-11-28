@@ -1,3 +1,4 @@
+//@tag dom,core
 /**
  * @class Ext.dom.CompositeElement
  * <p>This class encapsulates a <i>collection</i> of DOM elements, providing methods to filter

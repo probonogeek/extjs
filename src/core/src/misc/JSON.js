@@ -1,3 +1,6 @@
+//@tag extras,core
+//@require ../lang/Error.js
+
 /**
  * Modified version of [Douglas Crockford's JSON.js][dc] that doesn't
  * mess with the Object prototype.
